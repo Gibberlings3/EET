@@ -1,0 +1,87 @@
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ActionOverride("Edwin",DestroyItem("MISC89_")) // Edwin's amulet
+    GiveItemCreate("CLCK14","Edwin",1,0,0) // Adventurer's Robe
+    GiveItemCreate("DAGG01","Edwin",1,0,0) // Dagger
+    GiveItemCreate("EDWINKEY","Edwin",1,0,0) // Mae'Var's Strongbox Key
+    GiveItemCreate("MISC89","Edwin",1,0,0) // Edwin's Amulet
+    SmallWait(10)
+    ActionOverride("Edwin",FillSlot(SLOT_ARMOR))
+    ActionOverride("Edwin",FillSlot(SLOT_WEAPON))
+    ActionOverride("Edwin",FillSlot(SLOT_AMULET))
+    SmallWait(10)
+    GiveItemCreate("STAF01","Edwin",1,0,0) // Quarterstaff
+    ActionOverride("Edwin",EquipMostDamagingMelee())
+    ActionOverride("Edwin",ChangeAIScript("Edwin",OVERRIDE))
+    ActionOverride("Edwin",ChangeAIScript("wtarsgt",GENERAL))
+    ActionOverride("Edwin",ChangeAIScript("dplayer",DEFAULT))
+    ActionOverride("Edwin",ChangeAIScript("K#IMEDW",RACE))
+    ActionOverride("Edwin",SetDialogue("Edwin"))
+    ActionOverride("Edwin",SetNumTimesTalkedTo(0))
+    ReallyForceSpellRES("K#POREDW","Edwin")
+    SetGlobal("EdwinImport","GLOBAL",1)
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  LevelLT(Player1,9)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin7",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  LevelGT(Player1,8)
+  LevelLT(Player1,11)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin9",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  Level(Player1,11)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin11",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  Level(Player1,12)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin12",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  LevelGT(Player1,12)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin13",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END

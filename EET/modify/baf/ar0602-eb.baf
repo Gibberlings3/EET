@@ -1,0 +1,20 @@
+IF // for some reason in BG2:EE race script need to be assigned after "NewGame" cutscene, otherwise it won't last
+  Global("ImoenImport","GLOBAL",0)
+  Global("Imoen2PartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ImoenImport","GLOBAL",1)
+    ActionOverride("Imoen2",ChangeAIScript("K#IMIMO",RACE))
+    ActionOverride("Imoen2",SetDialog("IMOENJ"))
+    Continue()
+END
+
+IF
+  Global("K#ImoenImport","AR0602",0)
+  Global("Imoen2PartyBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#ImoenImport","AR0602",1)
+    ActionOverride("Imoen2",SetDialog("IMOENJ")) //Irenicus Dungeon Imoen has IMOEN2 variable now, so the IMOENJ dialogue need to be set manually
+    Continue()
+END

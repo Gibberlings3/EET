@@ -1,0 +1,101 @@
+PRINT ~Compatibility with The BG1 NPC Project - patching BG2 resources...~
+
+//////////////////////////////
+//Required Modifications
+//////////////////////////////
+
+COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
+	COUNT_REGEXP_INSTANCES ~BG1NPC\.TP2. #0 #0 ~ num_matches
+	//COUNT_REGEXP_INSTANCES ~STRATAGEMS\.TP2. #0 #604. ~ num_matches2 // Smarter Priests
+
+ACTION_IF (num_matches > 0) BEGIN
+	/*ACTION_IF (num_matches2 = 0) BEGIN //only if SCS Smarter Priests are not installed
+		EXTEND_TOP ~PRIEST4.BCS~ ~EET/compat/bg1npc/baf/x#pries4.baf~ //Add a few spells
+	END*/
+	EXTEND_TOP ~REDDEATH.BCS~ ~EET/compat/bg1npc/baf/X#BRDWI.BAF~ EVALUATE_BUFFER //Interjection scripting changes, BG1 NPCs
+END
+
+//////////////////////////////
+//Banters, Quests, and Interjections
+//////////////////////////////
+
+COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
+	COUNT_REGEXP_INSTANCES ~BG1NPC\.TP2. #0 #1 ~ num_matches
+
+ACTION_IF (num_matches > 0) BEGIN
+	EXTEND_TOP ~NIEMAIN.BCS~ ~EET/compat/bg1npc/baf/X#NIEMAIN.BAF~ EVALUATE_BUFFER
+
+	COPY_EXISTING ~BEARBL.CRE~ ~override~
+		WRITE_ASCII 0x280 ~bearbl~ #32 //death variable
+	BUT_ONLY
+
+	COPY_EXISTING ~BEARBR.CRE~ ~override~
+		WRITE_ASCII 0x280 ~bearbr~ #32 //death variable
+	BUT_ONLY
+END
+
+//////////////////////////////
+//Dynaheir's Romance Core (teen content)
+//////////////////////////////
+
+COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
+	COUNT_REGEXP_INSTANCES ~BG1NPC\.TP2. #0 #12 ~ num_matches
+
+//Disable Dynaheir's End Cutscene (EET implements different transition, so just like in BGT case this cutscene should be disabled)
+<<<<<<<< EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf
+IF
+  InParty("dynaheir")
+  !Dead("dynaheir")
+  !Global("X#DynaheirRomanceInactive","GLOBAL",1)
+  OR(2)
+    Global("X#DynaheirRomanceActive","GLOBAL",1)
+    Global("X#DynaheirRomanceActive","GLOBAL",2)
+  Global("DeathOfSarevok","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("DeathOfSarevok","GLOBAL",-1)
+    Continue()
+END
+
+IF
+  InParty("dynaheir")
+  !Dead("dynaheir")
+  !Global("X#DynaheirRomanceInactive","GLOBAL",1)
+  OR(2)
+    Global("X#DynaheirRomanceActive","GLOBAL",1)
+    Global("X#DynaheirRomanceActive","GLOBAL",2)
+  Dead("sarevok")
+  GlobalTimerExpired("DeathOfSarevok","GLOBAL")
+  Global("endofbg1","GLOBAL",0)
+  Global("X#DynaDeath","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("X#DynaDeath","GLOBAL",1)
+    AddexperienceParty(15000)
+    StartCutSceneMode()
+    ClearAllActions()
+    MultiPlayerSync()
+    SaveGame(2)
+    SmallWait(2)
+    StartMovie("ENDMOVIE")
+    SmallWait(2)
+    DisplayStringHead(Player1,0)
+    Wait(4)
+    FadeToColor([20.0],0)
+    DayNight(MIDNIGHT)
+    StartCutScene("X#DYDEAD")
+END
+>>>>>>>>
+
+COPY + ~%patch_dir%/bcs/FH0125.bcs~ ~%patch_dir%/bcs~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~OR(4)[%newline%]*Global("X#DynaheirRomanceInactive","GLOBAL",1)[%newline%]*Global("X#DynaheirRomanceActive","GLOBAL",0)[%newline%]*Dead("dynaheir")[%newline%]*!InParty("dynaheir")~ ~~
+		//before replacing bcs block to change unknown string to dummy 0
+		REPLACE_TEXTUALLY ~DisplayStringHead(Player1,.*)[%newline%]*Wait(4)[%newline%]*FadeToColor(\[20\.0\],0)[%newline%]*DayNight(MIDNIGHT)[%newline%]*StartCutScene("X#DYDEAD")~ ~DisplayStringHead(Player1,0)
+    Wait(4)
+    FadeToColor([20.0],0)
+    DayNight(MIDNIGHT)
+    StartCutScene("X#DYDEAD")~
+	END
+	REPLACE_BCS_BLOCK ~EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf~ ~EET/modify/baf/!empty.baf~
+BUT_ONLY

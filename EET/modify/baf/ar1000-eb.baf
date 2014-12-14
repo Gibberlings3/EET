@@ -1,0 +1,84 @@
+IF
+  Global("ViconiaImport","GLOBAL",0)
+  Global("ViconiaPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#PORVIC","Viconia")
+    ActionOverride("Viconia",SetDialogue("VICONI"))
+    ActionOverride("Viconia",SetNumTimesTalkedTo(0))
+    ActionOverride("Viconia",ChangeAIScript("Viconia",OVERRIDE))
+    ActionOverride("Viconia",ChangeAIScript("initrg10",CLASS))
+    ActionOverride("Viconia",ChangeAIScript("VICX",GENERAL))
+    ActionOverride("Viconia",ChangeAIScript("vicx",RACE))
+    ActionOverride("Viconia",ChangeAIScript("K#IMVIC",DEFAULT))
+    SetGlobal("ViconiaImport","GLOBAL",1)
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  LevelLT(Player1,8)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI6",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  Level(Player1,8)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI8",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  OR(2)
+    Level(Player1,9)
+    Level(Player1,10)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI9",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  OR(2)
+    Level(Player1,11)
+    Level(Player1,12)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI11",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  LevelGT(Player1,12)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI13",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END

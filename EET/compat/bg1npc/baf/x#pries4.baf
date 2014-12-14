@@ -1,0 +1,86 @@
+IF
+  HPPercentLT(Myself,40)
+  HaveSpell(CLERIC_CURE_CRITICAL_WOUNDS)
+THEN
+  RESPONSE #100
+    Spell(Myself,CLERIC_CURE_CRITICAL_WOUNDS)
+END
+
+IF
+  HPPercentLT(Myself,60)
+  HaveSpell(CLERIC_CURE_SERIOUS_WOUNDS)
+THEN
+  RESPONSE #100
+    Spell(Myself,CLERIC_CURE_SERIOUS_WOUNDS)
+END
+
+IF
+  HPPercentLT(Myself,80)
+  HaveSpell(CLERIC_CURE_LIGHT_WOUNDS)
+THEN
+  RESPONSE #100
+    Spell(Myself,CLERIC_CURE_LIGHT_WOUNDS)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  HaveSpell(CLERIC_PROTECT_FROM_EVIL)
+THEN
+  RESPONSE #100
+    ApplySpell(Myself,CLERIC_PROTECT_FROM_EVIL)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  HaveSpell(CLERIC_DISPEL_MAGIC)
+THEN
+  RESPONSE #100
+    Spell(NearestEnemyOf(Myself),CLERIC_DISPEL_MAGIC)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  HaveSpell(CLERIC_PROTECTION_FROM_FIRE)
+THEN
+  RESPONSE #100
+    ApplySpell(Myself,CLERIC_PROTECTION_FROM_FIRE)
+END
+
+IF
+  Detect([PC])
+  !See(LastSeenBy(Myself))
+  HaveSpell(CLERIC_INVISIBILITY_PURGE)
+THEN
+  RESPONSE #100
+    Spell(Myself,CLERIC_INVISIBILITY_PURGE)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  HaveSpell(CLERIC_FLAME_STRIKE)
+THEN
+  RESPONSE #100
+    Spell(NearestEnemyOf(Myself),CLERIC_FLAME_STRIKE)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  HaveSpell(CLERIC_RIGID_THINKING)
+  !StateCheck(NearestEnemyOf(Myself),STATE_CONFUSED)
+THEN
+  RESPONSE #100
+    Spell(NearestEnemyOf(Myself),CLERIC_RIGID_THINKING)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  HaveSpell(CLERIC_SILENCE_15_FOOT)
+  !See(NearestEnemyOfType([0.0.0.MAGE]))
+  !See(NearestEnemyOfType([0.0.0.CLERIC_MAGE]))
+  !See(NearestEnemyOfType([0.0.0.CLERIC]))
+  !See(NearestEnemyOfType([0.0.0.DRUID]))
+  !See(NearestEnemyOfType([0.0.0.0]))
+THEN
+  RESPONSE #100
+    Spell(LastSeenBy(Myself),CLERIC_SILENCE_15_FOOT)
+END

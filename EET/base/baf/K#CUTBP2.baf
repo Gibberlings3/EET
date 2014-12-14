@@ -1,0 +1,27 @@
+IF
+  True()
+THEN
+  RESPONSE #100
+    StartCutSceneMode()
+    CutSceneId(Player1)
+    FadeToColor([20.0],0)
+    IncrementChapter("BPEND")
+    Wait(2)
+    StartMovie("BLACKPIT")
+    Wait(1)
+    LeaveAreaLUAPanic("OH8000","",[0.0],S)
+    LeaveAreaLUA("OH8000","",[0.0],S)
+    ActionOverride(Player2,LeaveAreaLUA("OH8000","",[0.0],SWW))
+    ActionOverride(Player3,LeaveAreaLUA("OH8000","",[0.0],NW))
+    ActionOverride(Player4,LeaveAreaLUA("OH8000","",[0.0],NNE))
+    ActionOverride(Player5,LeaveAreaLUA("OH8000","",[0.0],E))
+    ActionOverride(Player6,LeaveAreaLUA("OH8000","",[0.0],SSE))
+    MultiPlayerSync()
+    SetGlobal("OHB_START_TAVERN","oh8000",0)
+    SetGlobal("Chapter","GLOBAL",0)
+    SetGlobal("tier","GLOBAL",0)
+    Wait(1)
+    FadeFromColor([20.0],0)
+    Wait(1)
+    EndCutSceneMode()
+END

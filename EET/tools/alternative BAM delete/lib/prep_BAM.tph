@@ -1,0 +1,12 @@
+//stability change - system could freeze on lower end computers, so filenames have been moved to prep_BAM.lst and are deleted 1 by 1
+
+PRINT ~Deleting unneeded files. This can take a while...~
+
+COPY + ~EET/lib/prep_BAM.lst~ ~EET/lib/prep_BAM.lst~
+	COUNT_2DA_ROWS 1 "cntrow" //count every single row
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 1 "file"
+		INNER_ACTION BEGIN
+			DELETE + ~EET/temp/BAM/%file%~
+		END
+	END

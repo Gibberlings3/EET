@@ -1,0 +1,57 @@
+IF
+  See(NearestEnemyOf(Myself))
+  !GlobalTimerNotExpired("Prep","LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("Prep","LOCALS",1000)
+    ReallyForceSpell(Myself,WIZARD_LUCK)
+    ReallyForceSpell(Myself,WIZARD_SHIELD)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  !HasBounceEffects(LastSeenBy(Myself))
+  !GlobalTimerNotExpired("Barrage","LOCALS")
+  RandomNum(2,1)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_MELF_ACID_ARROW)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_DEAFNESS)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_MAGIC_MISSILE)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_LARLOCH_MINOR_DRAIN)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_CHROMATIC_ORB)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_RAY_OF_ENFEEBLEMENT)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  Range(NearestEnemyOf(Myself),10)
+THEN
+  RESPONSE #100
+    AttackOneRound(NearestEnemyOf(Myself))
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+  RESPONSE #100
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  !Range(NearestEnemyOf(Myself),10)
+THEN
+  RESPONSE #100
+    AttackOneRound(NearestEnemyOf(Myself))
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+  RESPONSE #50
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+END

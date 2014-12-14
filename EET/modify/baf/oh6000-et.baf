@@ -1,0 +1,23 @@
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  Global("NeeraImport","GLOBAL",0)
+  Global("NeeraPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    GiveItemCreate("NEBELT01","NEERA",1,0,0) // Adoy's Belt
+    GiveItemCreate("STAFN1","NEERA",1,0,0) // Quarterstaff +2
+    SmallWait(10)
+    ActionOverride("NEERA",FillSlot(SLOT_BELT))
+    ActionOverride("NEERA",FillSlot(SLOT_WEAPON))
+    SmallWait(10)
+    ActionOverride("NEERA",EquipMostDamagingMelee())
+    ActionOverride("NEERA",ChangeAIScript("NEERA",OVERRIDE))
+    ActionOverride("NEERA",ChangeAIScript("",GENERAL))
+    ActionOverride("NEERA",ChangeAIScript("WTARSGT",DEFAULT))
+    ActionOverride("NEERA",ChangeAIScript("K#IMNEE",RACE))
+    ActionOverride("NEERA",SetDialogue("NEERA"))
+    ActionOverride("NEERA",SetNumTimesTalkedTo(0))
+    //ReallyForceSpellRES("K#PORNEE","NEERA")
+    SetGlobal("NeeraImport","GLOBAL",1)
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+END

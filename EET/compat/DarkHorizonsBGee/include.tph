@@ -1,0 +1,12 @@
+COPY + ~%patch_dir%/itm/CMBRQ04.ITM~ ~%patch_dir%/itm~
+	WRITE_ASCII 0x3a ~IBRAC24#~ #8
+
+//for some reason this item fails the auto traification procedure, it need to be moved manually. I've tried to fix it without success.
+MOVE + ~%patch_dir%/itm/CMSTQ04.ITM~ ~EET/compat/DarkHorizonsBGee~//temp folder is deleted after the installation is over
+COPY ~EET/compat/DarkHorizonsBGee/CMSTQ04.ITM~ ~override~
+	PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
+		READ_LONG offset "StrRef"
+		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
+			SAY offset ( AT "StrRef" )
+		END
+	END

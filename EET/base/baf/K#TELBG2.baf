@@ -1,0 +1,182 @@
+IF
+  Global("K#AdvanceTimeOneYear","FH2600",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#AdvanceTimeOneYear","FH2600",1)
+    AdvanceTime(ONE_YEAR)
+    Continue()
+END
+
+IF
+  InPartyAllowDead("OBE")
+THEN
+  RESPONSE #100
+    ActionOverride("OBE",LeaveParty())
+    ActionOverride("OBE",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("CANDEROUS")
+THEN
+  RESPONSE #100
+    ActionOverride("CANDEROUS",LeaveParty())
+    ActionOverride("CANDEROUS",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("MORDAINE")
+THEN
+  RESPONSE #100
+    ActionOverride("MORDAINE",LeaveParty())
+    ActionOverride("MORDAINE",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("ARKANIS")
+THEN
+  RESPONSE #100
+    ActionOverride("ARKANIS",LeaveParty())
+    ActionOverride("ARKANIS",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("DEEDER")
+THEN
+  RESPONSE #100
+    ActionOverride("DEEDER",LeaveParty())
+    ActionOverride("DEEDER",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("OSPREY")
+THEN
+  RESPONSE #100
+    ActionOverride("OSPREY",LeaveParty())
+    ActionOverride("OSPREY",DestroySelf())
+    Continue()
+END
+
+IF
+  XPLT(Player1,89000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XPBG1",Player1)
+    Continue()
+END
+
+IF
+  XPLT(Player2,89000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XPBG1",Player2)
+    Continue()
+END
+
+IF
+  XPLT(Player3,89000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XPBG1",Player3)
+    Continue()
+END
+
+IF
+  XPLT(Player4,89000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XPBG1",Player4)
+    Continue()
+END
+
+IF
+  XPLT(Player5,89000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XPBG1",Player5)
+    Continue()
+END
+
+IF
+  XPLT(Player6,89000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XPBG1",Player6)
+    Continue()
+END
+
+IF
+  ReputationGT(Player1,9)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Cure Light Wounds
+    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Slow Poison
+    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Slow Poison
+    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Draw Upon Holy Might
+    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Draw Upon Holy Might
+    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Cure Light Wounds
+    Continue()
+END
+
+IF
+  ReputationLT(Player1,10)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Larloch's Minor Drain
+    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Horror
+    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Horror
+    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Vampiric Touch
+    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Vampiric Touch
+    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Larloch's Minor Drain
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    //Find Gorion
+    EraseJournalEntry(@31438)
+    //Phlydia's Book
+    EraseJournalEntry(@27362)
+    EraseJournalEntry(@27363)
+    EraseJournalEntry(@27364)
+    //Firebead's Scroll
+    EraseJournalEntry(@27080)
+    EraseJournalEntry(@27081)
+    //Dreppin's Cow
+    EraseJournalEntry(@26992)
+    EraseJournalEntry(@26993)
+    //Reevor's Storehouse
+    EraseJournalEntry(@27411)
+    EraseJournalEntry(@27412)
+    //Hull's Sword
+    EraseJournalEntry(@27149)
+    EraseJournalEntry(@27150)
+    EraseJournalEntry(@27151)
+    //An Errand for Fuller
+    EraseJournalEntry(@27109)
+    EraseJournalEntry(@27110)
+    EraseJournalEntry(@27111)
+    ActionOverride(Player1,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player2,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player3,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player4,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player5,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player6,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player1,SetPlayerSound(Myself,33347,EXISTANCE5))//Your history is nearly as unknown as your future (...)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0602","",[3744.2801],S))
+    ActionOverride(Player1,LeaveAreaLUA("AR0602","",[3744.2801],S))
+    ActionOverride(Player2,LeaveAreaLUA("AR0602","",[3585.2917],SWW))
+    ActionOverride(Player3,LeaveAreaLUA("AR0602","",[3532.2956],NW))
+    ActionOverride(Player4,LeaveAreaLUA("AR0602","",[3374.3068],NNE))
+    ActionOverride(Player5,LeaveAreaLUA("AR0602","",[3824.2447],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0602","",[3889.2479],SSE))
+    MultiPlayerSync()
+    Wait(1)
+    DestroySelf()
+END

@@ -1,0 +1,147 @@
+IF
+  Global("MinscImport","GLOBAL",1)
+  CheckStat(Myself,15,DEX)
+THEN
+  RESPONSE #100
+    ApplySpellRES("K#BDEX16",Myself)
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",1)
+  LevelLT(Protagonist,8)
+  XPLT(Myself,90000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XP90k",Myself)
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",1)
+  Level(Protagonist,8)
+  XPLT(Myself,161000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XP161k",Myself)
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",1)
+  Level(Protagonist,9)
+  XPLT(Myself,400000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XP400k",Myself)
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",1)
+  LevelGT(Protagonist,9)
+  LevelLT(Protagonist,12)
+  XPLT(Myself,800000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XP800k",Myself)
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",1)
+  LevelGT(Protagonist,11)
+  XPLT(Myself,1200000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XP1kk2",Myself)
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetPlayerSound(Myself,-1,INITIAL_MEETING)
+    SetPlayerSound(Myself,30788,MORALE)
+    SetPlayerSound(Myself,4087,HAPPY)
+    SetPlayerSound(Myself,4088,UNHAPPY_ANNOYED)
+    SetPlayerSound(Myself,4089,UNHAPPY_SERIOUS)
+    SetPlayerSound(Myself,4090,UNHAPPY_BREAKING_POINT)
+    SetPlayerSound(Myself,30790,LEADER)
+    SetPlayerSound(Myself,4092,TIRED)
+    SetPlayerSound(Myself,4093,BORED)
+    SetPlayerSound(Myself,4086,BATTLE_CRY1)
+    SetPlayerSound(Myself,30793,BATTLE_CRY2)
+    SetPlayerSound(Myself,30794,BATTLE_CRY3)
+    SetPlayerSound(Myself,-1,BATTLE_CRY4)
+    SetPlayerSound(Myself,-1,BATTLE_CRY5)
+    SetPlayerSound(Myself,-1,ATTACK1)
+    SetPlayerSound(Myself,-1,ATTACK2)
+    SetPlayerSound(Myself,-1,ATTACK3)
+    SetPlayerSound(Myself,-1,ATTACK4)
+    SetPlayerSound(Myself,5359,DAMAGE)
+    SetPlayerSound(Myself,5360,DYING)
+    SetPlayerSound(Myself,4094,HURT)
+    SetPlayerSound(Myself,4095,AREA_FOREST)
+    SetPlayerSound(Myself,5357,AREA_CITY)
+    SetPlayerSound(Myself,4096,AREA_DUNGEON)
+    SetPlayerSound(Myself,5358,AREA_DAY)
+    SetPlayerSound(Myself,4097,AREA_NIGHT)
+    SetPlayerSound(Myself,4098,SELECT_COMMON1)
+    SetPlayerSound(Myself,4099,SELECT_COMMON2)
+    SetPlayerSound(Myself,4100,SELECT_COMMON3)
+    SetPlayerSound(Myself,30796,SELECT_COMMON4)
+    SetPlayerSound(Myself,30798,SELECT_COMMON5)
+    SetPlayerSound(Myself,30799,SELECT_COMMON6)
+    SetPlayerSound(Myself,4101,SELECT_ACTION1)
+    SetPlayerSound(Myself,30800,SELECT_ACTION2)
+    SetPlayerSound(Myself,30801,SELECT_ACTION3)
+    SetPlayerSound(Myself,4104,SELECT_ACTION4)
+    SetPlayerSound(Myself,30806,SELECT_ACTION5)
+    SetPlayerSound(Myself,30807,SELECT_ACTION6)
+    SetPlayerSound(Myself,4107,SELECT_ACTION7)
+    SetPlayerSound(Myself,-1,INTERACTION1)
+    SetPlayerSound(Myself,-1,INTERACTION1)
+    SetPlayerSound(Myself,-1,INTERACTION2)
+    SetPlayerSound(Myself,-1,INTERACTION3)
+    SetPlayerSound(Myself,-1,INTERACTION4)
+    SetPlayerSound(Myself,-1,INTERACTION5)
+    SetPlayerSound(Myself,-1,INSULT)
+    SetPlayerSound(Myself,-1,COMPLIMENT1)
+    SetPlayerSound(Myself,-1,COMPLIMENT2)
+    SetPlayerSound(Myself,-1,COMPLIMENT3)
+    SetPlayerSound(Myself,-1,SPECIAL1)
+    SetPlayerSound(Myself,-1,SPECIAL2)
+    SetPlayerSound(Myself,-1,SPECIAL3)
+    SetPlayerSound(Myself,-1,REACT_TO_DIE_GENERAL)
+    SetPlayerSound(Myself,-1,REACT_TO_DIE_SPECIFIC)
+    SetPlayerSound(Myself,-1,RESPONSE_TO_COMPLIMENT1)
+    SetPlayerSound(Myself,-1,RESPONSE_TO_COMPLIMENT2)
+    SetPlayerSound(Myself,-1,RESPONSE_TO_COMPLIMENT3)
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT1)
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT2)
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT3)
+    SetPlayerSound(Myself,-1,DIALOG_HOSTILE)
+    SetPlayerSound(Myself,-1,DIALOG_DEFAULT)
+    SetPlayerSound(Myself,30808,SELECT_RARE1)
+    SetPlayerSound(Myself,30809,SELECT_RARE2)
+    SetPlayerSound(Myself,30937,CRITICAL_HIT)
+    SetPlayerSound(Myself,31850,CRITICAL_MISS)
+    SetPlayerSound(Myself,31901,TARGET_IMMUNE)
+    SetPlayerSound(Myself,33805,INVENTORY_FULL)
+    SetPlayerSound(Myself,34379,PICKED_POCKET)
+    SetPlayerSound(Myself,34380,HIDDEN_IN_SHADOWS)
+    SetPlayerSound(Myself,34381,SPELL_DISRUPTED)
+    SetPlayerSound(Myself,34744,SET_A_TRAP)
+    SetPlayerSound(Myself,-1,EXISTANCE4)
+    SetPlayerSound(Myself,10185,EXISTANCE5)
+    SetGlobal("MinscImport","GLOBAL",2)
+END
+
+IF
+  Global("MinscImport","GLOBAL",2)
+THEN
+  RESPONSE #100
+    ChangeAIScript("",RACE)
+END

@@ -1,0 +1,21 @@
+IF
+  Global("ImoenSpawned","GLOBAL",0)//ImoenSpawned variable name kept for BGT compatibility reasons
+  LevelLT(Protagonist,13)
+  XPLT("Imoen2",400000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XP400k","Imoen2")
+    SetGlobal("ImoenSpawned","GLOBAL",1)
+    Continue()
+END
+
+IF
+  Global("ImoenSpawned","GLOBAL",0)
+  LevelGT(Protagonist,13)
+  XPLT("Imoen2",1200000)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#XP1kk2","Imoen2")
+    SetGlobal("ImoenSpawned","GLOBAL",1)
+    Continue()
+END

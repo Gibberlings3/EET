@@ -1,0 +1,406 @@
+//move, create if not existing, rename scripts that will be automatically appended
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_prepBCS_BG1bcsBG2bcs" BEGIN
+	"DORND" => "DORND"
+	"EDWIND" => "EDWIND"
+	"IMOEND" => "IMOEN2D"
+	"JAHEID" => "JAHEIRAD"
+	"MINSCD" => "MINSCD"
+	"NEERAD" => "NEERAD"
+	"RASAADD" => "RASAADD"
+	"VICOND" => "VICOND"
+END
+ACTION_PHP_EACH "table_prepBCS_BG1bcsBG2bcs" AS "BG1bcs" => "BG2bcs" BEGIN
+	ACTION_IF (FILE_EXISTS ~%patch_dir%/bcs/%BG1bcs%.BCS~) BEGIN
+		MOVE + ~%patch_dir%/bcs/%BG1bcs%.BCS~ ~%patch_dir%/bcs_app/%BG2bcs%.BCS~
+	END ELSE BEGIN
+		COPY + ~EET/base/blank.bcs~ ~%patch_dir%/bcs_app/%BG2bcs%.BCS~
+	END
+END
+
+//rename scripts
+MOVE + ~%patch_dir%/bcs/BRANWEN.BCS~ ~%patch_dir%/bcs/BRANWEN_.BCS~
+	~%patch_dir%/bcs/DORN.BCS~ ~%patch_dir%/bcs/DORN_.BCS~
+	~%patch_dir%/bcs/EDWIN.BCS~ ~%patch_dir%/bcs/EDWIN_.BCS~
+	~%patch_dir%/bcs/FALDORN.BCS~ ~%patch_dir%/bcs/FALDORN_.BCS~
+	~%patch_dir%/bcs/GARRICK.BCS~ ~%patch_dir%/bcs/GARRICK_.BCS~
+	~%patch_dir%/bcs/GUARD2.BCS~ ~%patch_dir%/bcs/GUARD2_.BCS~
+	~%patch_dir%/bcs/GUARD3.BCS~ ~%patch_dir%/bcs/GUARD3_.BCS~
+	~%patch_dir%/bcs/IMOEN.BCS~ ~%patch_dir%/bcs/IMOEN_.BCS~
+	~%patch_dir%/bcs/JAHEIRA.BCS~ ~%patch_dir%/bcs/JAHEIRA_.BCS~
+	~%patch_dir%/bcs/MINSC.BCS~ ~%patch_dir%/bcs/MINSC_.BCS~
+	~%patch_dir%/bcs/NEERA.BCS~ ~%patch_dir%/bcs/NEERA_.BCS~
+	~%patch_dir%/bcs/RASAAD.BCS~ ~%patch_dir%/bcs/RASAAD_.BCS~
+	~%patch_dir%/bcs/SAREVOK.BCS~ ~%patch_dir%/bcs/SAREVOK_.BCS~
+	~%patch_dir%/bcs/SENDAI.BCS~ ~%patch_dir%/bcs/SENDAI_.BCS~
+	~%patch_dir%/bcs/SKIE.BCS~ ~%patch_dir%/bcs/SKIE_.BCS~
+	//~%patch_dir%/bcs/TANARI.BCS~ ~%patch_dir%/bcs/TANARI_.BCS~//BG2:EE version used as a base
+	~%patch_dir%/bcs/VICONIA.BCS~ ~%patch_dir%/bcs/VICONIA_.BCS~
+
+//rename area scripts
+ACTION_FOR_EACH script IN "0002" "0004" "0005" "0006" "0007" "0008" "0009" "0010" "0011" "0012" "0013" "0014" "0015" "0016" "0017" "0018" "0019" "0020" "0021" "0100" "0101" "0102" "0103" "0104" "0105" "0106" "0107" "0108" "0109" "0110" "0111" "0112" "0114" "0115" "0116" "0117" "0118" "0119" "0120" "0121" "0123" "0125" "0126" "0127" "0128" "0129" "0130" "0131" "0132" "0133" "0134" "0135" "0136" "0137" "0138" "0139" "0140" "0141" "0142" "0143" "0144" "0145" "0146" "0148" "0149" "0150" "0151" "0152" "0153" "0154" "0155" "0156" "0157" "0158" "0159" "0160" "0161" "0162" "0163" "0164" "0165" "0166" "0167" "0168" "0169" "0170" "0171" "0200" "0224" "0225" "0226" "0300" "0302" "0303" "0304" "0305" "0306" "0307" "0308" "0400" "0401" "0500" "0501" "0502" "0503" "0504" "0505" "0506" "0507" "0508" "0509" "0510" "0511" "0512" "0513" "0514" "0515" "0516" "0600" "0601" "0602" "0603" "0606" "0607" "0608" "0609" "0611" "0612" "0613" "0614" "0615" "0616" "0617" "0618" "0619" "0620" "0621" "0700" "0702" "0703" "0704" "0705" "0706" "0707" "0708" "0709" "0710" "0711" "0712" "0713" "0714" "0715" "0716" "0717" "0718" "0719" "0720" "0721" "0722" "0723" "0724" "0725" "0726" "0800" "0801" "0802" "0803" "0804" "0805" "0806" "0807" "0808" "0809" "0810" "0811" "0812" "0813" "0814" "0900" "0901" "1000" "1001" "1002" "1003" "1004" "1005" "1006" "1007" "1008" "1009" "1100" "1101" "1102" "1103" "1104" "1105" "1106" "1107" "1108" "1109" "1110" "1111" "1112" "1113" "1114" "1115" "1116" "1117" "1200" "1201" "1202" "1203" "1204" "1205" "1206" "1207" "1208" "1209" "1210" "1211" "1212" "1213" "1214" "1215" "1300" "1301" "1302" "1303" "1304" "1305" "1306" "1307" "1308" "1309" "1310" "1311" "1312" "1313" "1314" "1315" "1316" "1317" "1320" "1400" "1401" "1402" "1403" "1404" "1500" "1501" "1502" "1503" "1504" "1505" "1600" "1601" "1602" "1603" "1700" "1800" "1801" "1802" "1803" "1804" "1805" "1806" "1807" "1808" "1809" "1900" "1901" "1902" "1903" "1904" "1905" "1906" "1907" "2000" "2001" "2002" "2003" "2004" "2005" "2006" "2007" "2008" "2009" "2010" "2011" "2012" "2100" "2101" "2200" "2215" "2300" "2301" "2302" "2303" "2304" "2305" "2306" "2400" "2600" "2602" "2605" "2606" "2607" "2608" "2609" "2610" "2611" "2612" "2613" "2614" "2615" "2616" "2617" "2618" "2619" "2626" "2627" "2628" "2629" "2630" "2631" "2632" "2633" "2643" "2700" "2800" "2900" "3000" "3100" "3200" "3201" "3202" "3300" "3301" "3302" "3303" "3304" "3305" "3306" "3307" "3308" "3309" "3310" "3311" "3312" "3313" "3314" "3315" "3316" "3317" "3318" "3319" "3320" "3321" "3322" "3323" "3324" "3325" "3326" "3327" "3328" "3329" "3330" "3331" "3332" "3333" "3334" "3335" "3336" "3337" "3338" "3339" "3340" "3341" "3342" "3343" "3344" "3345" "3346" "3347" "3348" "3349" "3350" "3351" "3352" "3353" "3354" "3355" "3356" "3357" "3400" "3401" "3402" "3500" "3600" "3601" "3700" "3800" "3802" "3900" "3901" "4000" "4001" "4002" "4003" "4004" "4005" "4006" "4007" "4008" "4009" "4010" "4011" "4012" "4013" "4014" "4100" "4101" "4200" "4300" "4400" "4401" "4500" "4501" "4600" "4700" "4701" "4800" "4801" "4802" "4803" "4804" "4805" "4806" "4807" "4808" "4809" "4810" "4900" "4901" "4902" "4903" "4904" "4905" "4906" "4907" "4908" "4909" "5000" "5001" "5100" "5101" "5102" "5103" "5200" "5201" "5202" "5300" "5400" "5401" "5402" "5403" "5404" "5405" "5406" "5500" "5506" "5600" "5601" "5700" "5701" "5800" "5801" "5900" "5901" "6000" "6001" "6100" BEGIN
+	ACTION_IF (FILE_EXISTS ~%patch_dir%/bcs/AR%script%.BCS~) BEGIN
+		MOVE + ~%patch_dir%/bcs/AR%script%.BCS~ ~%patch_dir%/bcs/FH%script%.BCS~
+	END
+END
+
+//delete global scripts
+DELETE + ~%patch_dir%/bcs/BALDUR.BCS~
+	~%patch_dir%/bcs/BALDUR25.BCS~
+	~%patch_dir%/bcs/DPLAYER2.BCS~
+	~%patch_dir%/bcs/DPLAYER3.BCS~
+//delete script that will use BG2:EE version as a base
+	~%patch_dir%/bcs/TANARI.BCS~//BG1 version uses BG2 one as a base
+	~%patch_dir%/bcs/AMNISE.BCS~
+	~%patch_dir%/bcs/ANKHEG.BCS~
+	~%patch_dir%/bcs/BALOR01.BCS~
+	~%patch_dir%/bcs/BEAR.BCS~
+	~%patch_dir%/bcs/CBEAR.BCS~
+	~%patch_dir%/bcs/CCRAWLER.BCS~
+	~%patch_dir%/bcs/CDRYAD.BCS~
+	~%patch_dir%/bcs/CTCK.BCS~//?
+	~%patch_dir%/bcs/CUTTUTOR.BCS~
+	~%patch_dir%/bcs/DEFAULT.BCS~//
+	~%patch_dir%/bcs/DEMGLASU.BCS~
+	~%patch_dir%/bcs/DEMNABSU.BCS~
+	~%patch_dir%/bcs/DEMPIT.BCS~
+	~%patch_dir%/bcs/DEMPITSU.BCS~
+	~%patch_dir%/bcs/DEMSUC.BCS~
+	~%patch_dir%/bcs/DEVAGOOD.BCS~//
+	~%patch_dir%/bcs/DIREWOLF.BCS~
+	~%patch_dir%/bcs/DJINNI01.BCS~
+	~%patch_dir%/bcs/EFREET01.BCS~
+	~%patch_dir%/bcs/ETTERCAP.BCS~
+	~%patch_dir%/bcs/FIGHTER2.BCS~//unused
+	~%patch_dir%/bcs/FIGHTER4.BCS~
+	~%patch_dir%/bcs/GBASILSK.BCS~
+	~%patch_dir%/bcs/GENSHY.BCS~
+	~%patch_dir%/bcs/GIBBER.BCS~
+	~%patch_dir%/bcs/GNOLLF.BCS~
+	~%patch_dir%/bcs/GTCK.BCS~//?
+	~%patch_dir%/bcs/HAMA.BCS~
+	~%patch_dir%/bcs/HOBGOBF.BCS~
+	~%patch_dir%/bcs/ICMYC01.BCS~//
+	~%patch_dir%/bcs/INITDLG.BCS~
+	~%patch_dir%/bcs/INITDLG2.BCS~
+	~%patch_dir%/bcs/INITMAIN.BCS~
+	~%patch_dir%/bcs/KOBOLDF.BCS~
+	~%patch_dir%/bcs/LBASILSK.BCS~
+	~%patch_dir%/bcs/MAGE1.BCS~
+	~%patch_dir%/bcs/MAGE3.BCS~
+	~%patch_dir%/bcs/MAGE4.BCS~
+	~%patch_dir%/bcs/MAGE5.BCS~
+	~%patch_dir%/bcs/MAGE6.BCS~
+	~%patch_dir%/bcs/MAGE7.BCS~
+	~%patch_dir%/bcs/MAGE8.BCS~
+	~%patch_dir%/bcs/MAGETEST.BCS~//unused in BG1:EE, BG2:EE have separate test script assigned to cre
+	~%patch_dir%/bcs/NISHRU01.BCS~
+	~%patch_dir%/bcs/OGRE.BCS~
+	~%patch_dir%/bcs/PREY.BCS~
+	~%patch_dir%/bcs/PRIEST1.BCS~
+	~%patch_dir%/bcs/PRIEST2.BCS~
+	~%patch_dir%/bcs/PRIEST3.BCS~
+	~%patch_dir%/bcs/PRIEST4.BCS~
+	~%patch_dir%/bcs/PRIEST5.BCS~
+	~%patch_dir%/bcs/PSPIDER.BCS~
+	~%patch_dir%/bcs/QUASIT01.BCS~
+	~%patch_dir%/bcs/RUNENEMY.BCS~
+	~%patch_dir%/bcs/SEEENEMY.BCS~
+	~%patch_dir%/bcs/SHADFI02.BCS~
+	~%patch_dir%/bcs/SIRSPELL.BCS~
+	~%patch_dir%/bcs/SLIFIS01.BCS~//no changed, only different StrRef
+	~%patch_dir%/bcs/TROLIC01.BCS~//BG2:EE version is newer
+	~%patch_dir%/bcs/WARDOG.BCS~
+	~%patch_dir%/bcs/WDARSGT.BCS~
+	~%patch_dir%/bcs/WDASIGHT.BCS~
+	~%patch_dir%/bcs/WDRUNSGT.BCS~
+	~%patch_dir%/bcs/WILDDOG.BCS~
+	~%patch_dir%/bcs/WTARSGT.BCS~
+	~%patch_dir%/bcs/WTASIGHT.BCS~
+	~%patch_dir%/bcs/WTRUNSGT.BCS~
+	~%patch_dir%/bcs/WTRUNWAT.BCS~
+	~%patch_dir%/bcs/WYVERN.BCS~
+	~%patch_dir%/bcs/XVART.BCS~
+//delete scripts unchanged in BG2:EE
+	~%patch_dir%/bcs/AMNISE2.BCS~
+	~%patch_dir%/bcs/AMNISH3.BCS~
+	~%patch_dir%/bcs/BANDIC.BCS~
+	~%patch_dir%/bcs/BANDIT3.BCS~
+	~%patch_dir%/bcs/BANDITCY.BCS~
+	~%patch_dir%/bcs/BARUK.BCS~
+	~%patch_dir%/bcs/BORNWAIT.BCS~
+	~%patch_dir%/bcs/BRILLA.BCS~
+	~%patch_dir%/bcs/CARSA.BCS~
+	~%patch_dir%/bcs/CH6END.BCS~
+	~%patch_dir%/bcs/CHARLSTN.BCS~
+	~%patch_dir%/bcs/CLAIRD.BCS~
+	~%patch_dir%/bcs/CLERIC1.BCS~
+	~%patch_dir%/bcs/CLKANVIL.BCS~
+	~%patch_dir%/bcs/CLKENGIN.BCS~
+	~%patch_dir%/bcs/CRUSHTR2.BCS~
+	~%patch_dir%/bcs/CRUSHTR3.BCS~
+	~%patch_dir%/bcs/CRUSHTRP.BCS~
+	~%patch_dir%/bcs/CTAR.BCS~
+	~%patch_dir%/bcs/CTAR2.BCS~
+	~%patch_dir%/bcs/CTAR3.BCS~
+	~%patch_dir%/bcs/CTAR4.BCS~
+	~%patch_dir%/bcs/CTAR5.BCS~
+	~%patch_dir%/bcs/CTAR6.BCS~
+	~%patch_dir%/bcs/CTAR7.BCS~
+	~%patch_dir%/bcs/CTAR8.BCS~
+	~%patch_dir%/bcs/CTAR9.BCS~
+	~%patch_dir%/bcs/CTAR10.BCS~
+	~%patch_dir%/bcs/CTAS.BCS~
+	~%patch_dir%/bcs/CTCL.BCS~
+	~%patch_dir%/bcs/CTCON.BCS~
+	~%patch_dir%/bcs/CTCORB.BCS~
+	~%patch_dir%/bcs/CTDC.BCS~
+	~%patch_dir%/bcs/CTFB.BCS~
+	~%patch_dir%/bcs/CTFB2.BCS~
+	~%patch_dir%/bcs/CTFS.BCS~
+	~%patch_dir%/bcs/CTHP.BCS~
+	~%patch_dir%/bcs/CTLB.BCS~
+	~%patch_dir%/bcs/CTLB2.BCS~
+	~%patch_dir%/bcs/CTMIS.BCS~
+	~%patch_dir%/bcs/CTMM.BCS~
+	~%patch_dir%/bcs/CTSC.BCS~
+	~%patch_dir%/bcs/CTSI.BCS~
+	~%patch_dir%/bcs/CULTMAGE.BCS~
+	~%patch_dir%/bcs/CULTSHT.BCS~
+	~%patch_dir%/bcs/CULTTHF.BCS~
+	~%patch_dir%/bcs/CUT.BCS~
+	~%patch_dir%/bcs/DAESE.BCS~
+	~%patch_dir%/bcs/DAESEWLF.BCS~
+	~%patch_dir%/bcs/DEATHKN2.BCS~
+	~%patch_dir%/bcs/DELORNA.BCS~
+	~%patch_dir%/bcs/DIGSHOUT.BCS~
+	~%patch_dir%/bcs/DILLAR.BCS~
+	~%patch_dir%/bcs/DOOREXIT.BCS~
+	~%patch_dir%/bcs/DOPDUR1.BCS~
+	~%patch_dir%/bcs/DOPDUR2.BCS~
+	~%patch_dir%/bcs/DOPDUR3.BCS~
+	~%patch_dir%/bcs/DPLAYER.BCS~
+	~%patch_dir%/bcs/DRADEEL.BCS~
+	~%patch_dir%/bcs/DREADWLF.BCS~
+	~%patch_dir%/bcs/DUMISL.BCS~
+	~%patch_dir%/bcs/DUMKIE.BCS~
+	~%patch_dir%/bcs/DURBOOK1.BCS~
+	~%patch_dir%/bcs/DURBOOK2.BCS~
+	~%patch_dir%/bcs/DURBOOK3.BCS~
+	~%patch_dir%/bcs/DURBOOK4.BCS~
+	~%patch_dir%/bcs/DURSWORD.BCS~
+	~%patch_dir%/bcs/DURTOMB.BCS~
+	~%patch_dir%/bcs/ELDCUT01.BCS~
+	~%patch_dir%/bcs/EWMOVE.BCS~
+	~%patch_dir%/bcs/FDRAKET1.BCS~
+	~%patch_dir%/bcs/FDRAKET2.BCS~
+	~%patch_dir%/bcs/FDRAKET3.BCS~
+	~%patch_dir%/bcs/FDRAKET4.BCS~
+	~%patch_dir%/bcs/FDRAKET5.BCS~
+	~%patch_dir%/bcs/FDRAKET6.BCS~
+	~%patch_dir%/bcs/FDRAKET7.BCS~
+	~%patch_dir%/bcs/FERGUS.BCS~
+	~%patch_dir%/bcs/FGUARD.BCS~
+	~%patch_dir%/bcs/FIREBEAD.BCS~
+	~%patch_dir%/bcs/FIREDAM.BCS~
+	~%patch_dir%/bcs/FISHER.BCS~
+	~%patch_dir%/bcs/FLAM6.BCS~
+	~%patch_dir%/bcs/FLAMC7.BCS~
+	~%patch_dir%/bcs/FLAMEN2.BCS~
+	~%patch_dir%/bcs/FLAMPUN.BCS~
+	~%patch_dir%/bcs/FLAMPUN2.BCS~
+	~%patch_dir%/bcs/FLAYER01.BCS~
+	~%patch_dir%/bcs/FOLLOW.BCS~
+	~%patch_dir%/bcs/FOLLOW2.BCS~
+	~%patch_dir%/bcs/FTOWNA3.BCS~
+	~%patch_dir%/bcs/GANTOL.BCS~
+	~%patch_dir%/bcs/GARRCUT.BCS~
+	~%patch_dir%/bcs/GATEWARD.BCS~
+	~%patch_dir%/bcs/GDCHANGE.BCS~
+	~%patch_dir%/bcs/GENSHT01.BCS~
+	~%patch_dir%/bcs/GG300.BCS~
+	~%patch_dir%/bcs/GHAST.BCS~
+	~%patch_dir%/bcs/GHOUL.BCS~
+	~%patch_dir%/bcs/GTAR.BCS~
+	~%patch_dir%/bcs/GTAR2.BCS~
+	~%patch_dir%/bcs/GTAR3.BCS~
+	~%patch_dir%/bcs/GTAR4.BCS~
+	~%patch_dir%/bcs/GTAR5.BCS~
+	~%patch_dir%/bcs/GTAR6.BCS~
+	~%patch_dir%/bcs/GTAR7.BCS~
+	~%patch_dir%/bcs/GTAR8.BCS~
+	~%patch_dir%/bcs/GTAR9.BCS~
+	~%patch_dir%/bcs/GTAR10.BCS~
+	~%patch_dir%/bcs/GTAS.BCS~
+	~%patch_dir%/bcs/GTCL.BCS~
+	~%patch_dir%/bcs/GTCON.BCS~
+	~%patch_dir%/bcs/GTCORB.BCS~
+	~%patch_dir%/bcs/GTDC.BCS~
+	~%patch_dir%/bcs/GTFB.BCS~
+	~%patch_dir%/bcs/GTFB2.BCS~
+	~%patch_dir%/bcs/GTFB3.BCS~
+	~%patch_dir%/bcs/GTFS.BCS~
+	~%patch_dir%/bcs/GTGW.BCS~
+	~%patch_dir%/bcs/GTHP.BCS~
+	~%patch_dir%/bcs/GTLB.BCS~
+	~%patch_dir%/bcs/GTMIS.BCS~
+	~%patch_dir%/bcs/GTMM.BCS~
+	~%patch_dir%/bcs/GTSC.BCS~
+	~%patch_dir%/bcs/GTSI.BCS~
+	~%patch_dir%/bcs/GTST.BCS~
+	~%patch_dir%/bcs/GTWEB.BCS~
+	~%patch_dir%/bcs/GUARD1.BCS~
+	~%patch_dir%/bcs/GUARDS.BCS~
+	~%patch_dir%/bcs/HELPMUL.BCS~
+	~%patch_dir%/bcs/HELSHARA.BCS~
+	~%patch_dir%/bcs/HOBGOBC.BCS~
+	~%patch_dir%/bcs/HOUSEN2.BCS~
+	~%patch_dir%/bcs/HUSAM2.BCS~
+	~%patch_dir%/bcs/INFO02.BCS~
+	~%patch_dir%/bcs/INFO03.BCS~
+	~%patch_dir%/bcs/INFO04.BCS~
+	~%patch_dir%/bcs/INFO05.BCS~
+	~%patch_dir%/bcs/INFO06.BCS~
+	~%patch_dir%/bcs/INFO07.BCS~
+	~%patch_dir%/bcs/INFO09.BCS~
+	~%patch_dir%/bcs/INFO10.BCS~
+	~%patch_dir%/bcs/INFO11.BCS~
+	~%patch_dir%/bcs/INFO12.BCS~
+	~%patch_dir%/bcs/INFO13.BCS~
+	~%patch_dir%/bcs/INFO15.BCS~
+	~%patch_dir%/bcs/INFO16.BCS~
+	~%patch_dir%/bcs/INFO17.BCS~
+	~%patch_dir%/bcs/INITINV.BCS~
+	~%patch_dir%/bcs/ITHMEERA.BCS~
+	~%patch_dir%/bcs/KING.BCS~
+	~%patch_dir%/bcs/KIRIAN.BCS~
+	//~%patch_dir%/bcs/KIRINH.BCS~//the same, not used in BG2:EE
+	~%patch_dir%/bcs/KORAX.BCS~
+	~%patch_dir%/bcs/LAKADA.BCS~
+	~%patch_dir%/bcs/LARYS.BCS~
+	~%patch_dir%/bcs/LDCHANGE.BCS~
+	~%patch_dir%/bcs/LEAVECH7.BCS~
+	~%patch_dir%/bcs/LEVER1.BCS~
+	~%patch_dir%/bcs/LEVER2.BCS~
+	~%patch_dir%/bcs/LEVER3.BCS~
+	~%patch_dir%/bcs/LEVER4.BCS~
+	~%patch_dir%/bcs/LEVER5.BCS~
+	~%patch_dir%/bcs/LEVER6.BCS~
+	~%patch_dir%/bcs/LEVER7.BCS~
+	~%patch_dir%/bcs/LEVER8.BCS~
+	~%patch_dir%/bcs/LEVER9.BCS~
+	~%patch_dir%/bcs/LEVER10.BCS~
+	~%patch_dir%/bcs/LEVER11.BCS~
+	~%patch_dir%/bcs/LGAREA.BCS~
+	~%patch_dir%/bcs/LOUPGAR.BCS~
+	~%patch_dir%/bcs/MAGE8D.BCS~
+	~%patch_dir%/bcs/MARALE.BCS~
+	~%patch_dir%/bcs/MDAREA.BCS~
+	~%patch_dir%/bcs/MENDAS2.BCS~
+	~%patch_dir%/bcs/MEPAIR.BCS~
+	~%patch_dir%/bcs/MEPDUS.BCS~
+	~%patch_dir%/bcs/MEPEAR.BCS~
+	~%patch_dir%/bcs/MEPFIR.BCS~
+	~%patch_dir%/bcs/MEPICE.BCS~
+	~%patch_dir%/bcs/MEYM.BCS~
+	~%patch_dir%/bcs/MORSWORD.BCS~
+	~%patch_dir%/bcs/MOVEP1.BCS~
+	~%patch_dir%/bcs/NADDIE.BCS~
+	~%patch_dir%/bcs/NARC.BCS~
+	~%patch_dir%/bcs/NARRAT2.BCS~
+	~%patch_dir%/bcs/NEMOVE.BCS~
+	~%patch_dir%/bcs/NEVILL.BCS~
+	~%patch_dir%/bcs/NIEMAIN.BCS~
+	~%patch_dir%/bcs/NOBLPA.BCS~
+	~%patch_dir%/bcs/NOBLPA1.BCS~
+	~%patch_dir%/bcs/NOBLPA2.BCS~
+	~%patch_dir%/bcs/NOBLPA3.BCS~
+	~%patch_dir%/bcs/NOBLPA4.BCS~
+	~%patch_dir%/bcs/NOBLPA5.BCS~
+	~%patch_dir%/bcs/NPC.BCS~
+	~%patch_dir%/bcs/NSMOVE.BCS~
+	~%patch_dir%/bcs/NWMOVE.BCS~
+	~%patch_dir%/bcs/NYMPH.BCS~
+	~%patch_dir%/bcs/OBESTATE.BCS~
+	~%patch_dir%/bcs/OCDOOR.BCS~
+	~%patch_dir%/bcs/OGREBJOR.BCS~
+	~%patch_dir%/bcs/OGREMASU.BCS~
+	~%patch_dir%/bcs/PALIN.BCS~
+	~%patch_dir%/bcs/PBEAR1.BCS~
+	~%patch_dir%/bcs/PHANDALY.BCS~
+	~%patch_dir%/bcs/POGHMA8.BCS~
+	~%patch_dir%/bcs/PRIEST6.BCS~
+	~%patch_dir%/bcs/PTD1.BCS~
+	~%patch_dir%/bcs/RANDFLY.BCS~
+	~%patch_dir%/bcs/RANDWALK.BCS~
+	~%patch_dir%/bcs/RAT02.BCS~
+	~%patch_dir%/bcs/REDDEATH.BCS~
+	~%patch_dir%/bcs/REVENANT.BCS~
+	~%patch_dir%/bcs/REVENT2.BCS~
+	~%patch_dir%/bcs/SARDOPP.BCS~
+	~%patch_dir%/bcs/SAREVARO.BCS~
+	~%patch_dir%/bcs/SAREVFIR.BCS~
+	~%patch_dir%/bcs/SAREVSTI.BCS~
+	~%patch_dir%/bcs/SAREVWEB.BCS~
+	~%patch_dir%/bcs/SCARCUT2.BCS~
+	~%patch_dir%/bcs/SCHLUM.BCS~
+	~%patch_dir%/bcs/SERVSU.BCS~
+	~%patch_dir%/bcs/SHADOW2.BCS~
+	~%patch_dir%/bcs/SHIT.BCS~
+	~%patch_dir%/bcs/SHOUTDL2.BCS~
+	~%patch_dir%/bcs/SHOUTDLG.BCS~
+	~%patch_dir%/bcs/SKELETNW.BCS~
+	~%patch_dir%/bcs/SKELETON.BCS~
+	~%patch_dir%/bcs/SLAVE.BCS~
+	~%patch_dir%/bcs/SLIME.BCS~
+	~%patch_dir%/bcs/SMAREA.BCS~
+	~%patch_dir%/bcs/SPIDVO01.BCS~
+	~%patch_dir%/bcs/SUMSHT01.BCS~
+	~%patch_dir%/bcs/SUMSHT02.BCS~
+	~%patch_dir%/bcs/TASLOIFL.BCS~
+	~%patch_dir%/bcs/TETHTORL.BCS~
+	~%patch_dir%/bcs/THALANTR.BCS~
+	~%patch_dir%/bcs/TROLIC02.BCS~
+	~%patch_dir%/bcs/TRPSKEL.BCS~
+	~%patch_dir%/bcs/TTSER1.BCS~
+	~%patch_dir%/bcs/TTSER2.BCS~
+	~%patch_dir%/bcs/TTSKEL.BCS~
+	~%patch_dir%/bcs/TTTRAP.BCS~
+	~%patch_dir%/bcs/TURNINVS.BCS~
+	~%patch_dir%/bcs/UMBHUL01.BCS~
+	~%patch_dir%/bcs/URNTRAP1.BCS~
+	~%patch_dir%/bcs/URNTRAP2.BCS~
+	~%patch_dir%/bcs/URNTRAP3.BCS~
+	~%patch_dir%/bcs/URNTRAP4.BCS~
+	~%patch_dir%/bcs/URNTRAP5.BCS~
+	~%patch_dir%/bcs/URNTRAP6.BCS~
+	~%patch_dir%/bcs/VAMPWOLF.BCS~
+	~%patch_dir%/bcs/VAX.BCS~
+	~%patch_dir%/bcs/VIKING.BCS~
+	~%patch_dir%/bcs/VWENCH.BCS~
+	~%patch_dir%/bcs/WAIT.BCS~
+	~%patch_dir%/bcs/WAITHOLD.BCS~
+	~%patch_dir%/bcs/WAITHSTL.BCS~
+	~%patch_dir%/bcs/WAITTURN.BCS~
+	~%patch_dir%/bcs/WANDATTK.BCS~
+	~%patch_dir%/bcs/WANDHOLD.BCS~
+	~%patch_dir%/bcs/WANDHSTL.BCS~
+	~%patch_dir%/bcs/WARDDOP1.BCS~
+	~%patch_dir%/bcs/WARDDOP2.BCS~
+	~%patch_dir%/bcs/WARDEXIT.BCS~
+	~%patch_dir%/bcs/WARDTELE.BCS~
+	~%patch_dir%/bcs/WATCHEN2.BCS~
+	~%patch_dir%/bcs/WDHSTLBE.BCS~
+	~%patch_dir%/bcs/WEREWOLF.BCS~
+	~%patch_dir%/bcs/WINSKI.BCS~
+	~%patch_dir%/bcs/WIZELSU2.BCS~
+	~%patch_dir%/bcs/WIZELSUM.BCS~
+	~%patch_dir%/bcs/WIZEYE.BCS~
+	~%patch_dir%/bcs/WOLF.BCS~
+	~%patch_dir%/bcs/WOLFWEGL.BCS~
+	~%patch_dir%/bcs/WOLFWERE.BCS~
+	~%patch_dir%/bcs/WORGAR.BCS~
+	~%patch_dir%/bcs/WTHSTLBE.BCS~
+	~%patch_dir%/bcs/WTTURNBE.BCS~
+	~%patch_dir%/bcs/YAGO.BCS~
+	~%patch_dir%/bcs/ZOMBIE.BCS~
+	~%patch_dir%/bcs/ZOMBIEW.BCS~

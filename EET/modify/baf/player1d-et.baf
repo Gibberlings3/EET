@@ -1,0 +1,177 @@
+IF
+  GlobalGT("Chapter","GLOBAL",1)
+  Global("BG1DREAM","GLOBAL",0)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT2_")
+    SetGlobal("BG1DREAM","GLOBAL",2)//just like in BG:EE "DREAM" variable starts at 2
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN101") // Cure Light Wounds
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",1)
+  Global("BG1DREAM","GLOBAL",0)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT2_")
+    SetGlobal("BG1DREAM","GLOBAL",2)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN104") // Larloch's Minor Drain
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",2)
+  Global("BG1DREAM","GLOBAL",2)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT3_")
+    SetGlobal("BG1DREAM","GLOBAL",3)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN101") // Cure Light Wounds
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",2)
+  Global("BG1DREAM","GLOBAL",2)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT3_")
+    SetGlobal("BG1DREAM","GLOBAL",3)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN104") // Larloch's Minor Drain
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",3)
+  Global("BG1DREAM","GLOBAL",3)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT4_")
+    SetGlobal("BG1DREAM","GLOBAL",4)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN102") // Slow Poison
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",3)
+  Global("BG1DREAM","GLOBAL",3)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT4_")
+    SetGlobal("BG1DREAM","GLOBAL",4)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN105") // Horror
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",4)
+  Global("BG1DREAM","GLOBAL",4)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT5_")
+    SetGlobal("BG1DREAM","GLOBAL",5)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN102") // Slow Poison
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",4)
+  Global("BG1DREAM","GLOBAL",4)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT5_")
+    SetGlobal("BG1DREAM","GLOBAL",5)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN105") // Horror
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",5)
+  Global("BG1DREAM","GLOBAL",5)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT6_")
+    SetGlobal("BG1DREAM","GLOBAL",6)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN103") // Draw Upon Holy Might
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",5)
+  Global("BG1DREAM","GLOBAL",5)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT6_")
+    SetGlobal("BG1DREAM","GLOBAL",6)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN106") // Vampiric Touch
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",6)
+  Global("BG1DREAM","GLOBAL",6)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT7_")
+    SetGlobal("BG1DREAM","GLOBAL",7)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN103") // Draw Upon Holy Might
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",6)
+  Global("BG1DREAM","GLOBAL",6)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT7_")
+    SetGlobal("BG1DREAM","GLOBAL",7)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN106") // Vampiric Touch
+    RestParty()
+END

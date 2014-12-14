@@ -1,0 +1,468 @@
+IF
+  Global("TUTFAM01","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DisplayStringNoName(Myself,62026) // You may not cast the Find Familiar spell in the tutorial.
+    DestroySelf()
+END
+
+IF
+  NextTriggerObject(Protagonist)
+  Summoned(Myself)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMPRO","GLOBAL",0)
+END
+
+IF
+  Global("K#FAMPRO","GLOBAL",1)
+THEN
+  RESPONSE #100
+    DisplayStringNoName(Myself,8538) // Only the protagonist may cast Find Familiar.
+    DestroySelf()
+END
+
+IF
+  GlobalGT("K#FAMID","GLOBAL",0)
+  OR(8)
+    Dead("fampsd")
+    Dead("famfair")
+    Dead("famfer")
+    Dead("famrab")
+    Dead("famcat")
+    Dead("famimp")
+    Dead("famdust")
+    Dead("famquas")
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",0)
+END
+
+IF
+  GlobalGT("K#FAMID","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DisplayStringNoName(Myself,8537) // A familiar has already been summoned.
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  OR(2)
+    Alignment(Protagonist,LAWFUL_GOOD)
+    Alignment(Protagonist,NEUTRAL_GOOD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",21)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMPSD25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","fampsd")
+    SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
+    ActionOverride("fampsd",SetNumTimesTalkedTo(0))
+    ActionOverride("fampsd",MakeGlobal())
+    ActionOverride("fampsd",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("fampsd",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  Alignment(Protagonist,CHAOTIC_GOOD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",22)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMFAI25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfair")
+    SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
+    ActionOverride("famfair",SetNumTimesTalkedTo(0))
+    ActionOverride("famfair",MakeGlobal())
+    ActionOverride("famfair",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfair",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  Alignment(Protagonist,LAWFUL_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",23)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMFER25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfer")
+    SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
+    ActionOverride("famfer",SetNumTimesTalkedTo(0))
+    ActionOverride("famfer",MakeGlobal())
+    ActionOverride("famfer",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfer",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  Alignment(Protagonist,NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",24)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMRAB25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famrab")
+    SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
+    ActionOverride("famrab",SetNumTimesTalkedTo(0))
+    ActionOverride("famrab",MakeGlobal())
+    ActionOverride("famrab",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famrab",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  Alignment(Protagonist,CHAOTIC_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",25)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMCAT25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famcat")
+    SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
+    ActionOverride("famcat",SetNumTimesTalkedTo(0))
+    ActionOverride("famcat",MakeGlobal())
+    ActionOverride("famcat",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famcat",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  Alignment(Protagonist,LAWFUL_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",26)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMIMP25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famimp")
+    SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
+    ActionOverride("famimp",SetNumTimesTalkedTo(0))
+    ActionOverride("famimp",MakeGlobal())
+    ActionOverride("famimp",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famimp",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  Alignment(Protagonist,NEUTRAL_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",27)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMDUS25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famdust")
+    SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
+    ActionOverride("famdust",SetNumTimesTalkedTo(0))
+    ActionOverride("famdust",MakeGlobal())
+    ActionOverride("famdust",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famdust",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  GlobalGT("Chapter","GLOBAL",7)
+  Alignment(Protagonist,CHAOTIC_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",28)
+    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    CreateCreatureObject("FAMQUA25",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famquas")
+    SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
+    ActionOverride("famquas",SetNumTimesTalkedTo(0))
+    ActionOverride("famquas",MakeGlobal())
+    ActionOverride("famquas",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famquas",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  OR(2)
+    Alignment(Protagonist,LAWFUL_GOOD)
+    Alignment(Protagonist,NEUTRAL_GOOD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",11)
+    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    CreateCreatureObject("FAMPSD",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","fampsd")
+    SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
+    ActionOverride("fampsd",SetNumTimesTalkedTo(0))
+    ActionOverride("fampsd",MakeGlobal())
+    ActionOverride("fampsd",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("fampsd",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  Alignment(Protagonist,CHAOTIC_GOOD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",12)
+    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    CreateCreatureObject("FAMFAIR",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfair")
+    SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
+    ActionOverride("famfair",SetNumTimesTalkedTo(0))
+    ActionOverride("famfair",MakeGlobal())
+    ActionOverride("famfair",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfair",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  Alignment(Protagonist,LAWFUL_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",13)
+    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    CreateCreatureObject("FAMFER",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfer")
+    SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
+    ActionOverride("famfer",SetNumTimesTalkedTo(0))
+    ActionOverride("famfer",MakeGlobal())
+    ActionOverride("famfer",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfer",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  Alignment(Protagonist,NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",14)
+    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    CreateCreatureObject("FAMRAB",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famrab")
+    SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
+    ActionOverride("famrab",SetNumTimesTalkedTo(0))
+    ActionOverride("famrab",MakeGlobal())
+    ActionOverride("famrab",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famrab",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  Alignment(Protagonist,CHAOTIC_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",15)
+    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    CreateCreatureObject("FAMCAT",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famcat")
+    SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
+    ActionOverride("famcat",SetNumTimesTalkedTo(0))
+    ActionOverride("famcat",MakeGlobal())
+    ActionOverride("famcat",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famcat",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  Alignment(Protagonist,LAWFUL_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",16)
+    ReallyForceSpellRES("K#FAM+9",Protagonist)
+    CreateCreatureObject("FAMIMP",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famimp")
+    SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
+    ActionOverride("famimp",SetNumTimesTalkedTo(0))
+    ActionOverride("famimp",MakeGlobal())
+    ActionOverride("famimp",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famimp",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  Alignment(Protagonist,NEUTRAL_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",17)
+    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    CreateCreatureObject("FAMDUST",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famdust")
+    SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
+    ActionOverride("famdust",SetNumTimesTalkedTo(0))
+    ActionOverride("famdust",MakeGlobal())
+    ActionOverride("famdust",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famdust",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",2)
+  Alignment(Protagonist,CHAOTIC_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",18)
+    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    CreateCreatureObject("FAMQUAS",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famquas")
+    SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
+    ActionOverride("famquas",SetNumTimesTalkedTo(0))
+    ActionOverride("famquas",MakeGlobal())
+    ActionOverride("famquas",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famquas",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  OR(2)
+    Alignment(Protagonist,LAWFUL_GOOD)
+    Alignment(Protagonist,NEUTRAL_GOOD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",1)
+    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    CreateCreatureObject("FAMPSD_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","fampsd")
+    SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
+    ActionOverride("fampsd",SetNumTimesTalkedTo(0))
+    ActionOverride("fampsd",MakeGlobal())
+    ActionOverride("fampsd",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("fampsd",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Alignment(Protagonist,CHAOTIC_GOOD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",2)
+    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    CreateCreatureObject("FAMFAIR_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfair")
+    SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
+    ActionOverride("famfair",SetNumTimesTalkedTo(0))
+    ActionOverride("famfair",MakeGlobal())
+    ActionOverride("famfair",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfair",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Alignment(Protagonist,LAWFUL_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",3)
+    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    CreateCreatureObject("FAMFER_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfer")
+    SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
+    ActionOverride("famfer",SetNumTimesTalkedTo(0))
+    ActionOverride("famfer",MakeGlobal())
+    ActionOverride("famfer",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfer",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Alignment(Protagonist,NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",4)
+    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    CreateCreatureObject("FAMRAB_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famrab")
+    SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
+    ActionOverride("famrab",SetNumTimesTalkedTo(0))
+    ActionOverride("famrab",MakeGlobal())
+    ActionOverride("famrab",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famrab",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Alignment(Protagonist,CHAOTIC_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",5)
+    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    CreateCreatureObject("FAMCAT_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famcat")
+    SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
+    ActionOverride("famcat",SetNumTimesTalkedTo(0))
+    ActionOverride("famcat",MakeGlobal())
+    ActionOverride("famcat",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famcat",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Alignment(Protagonist,LAWFUL_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",6)
+    ReallyForceSpellRES("K#FAM+4",Protagonist)
+    CreateCreatureObject("FAMIMP_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famimp")
+    SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
+    ActionOverride("famimp",SetNumTimesTalkedTo(0))
+    ActionOverride("famimp",MakeGlobal())
+    ActionOverride("famimp",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famimp",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Alignment(Protagonist,NEUTRAL_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",7)
+    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    CreateCreatureObject("FAMDUST_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famdust")
+    SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
+    ActionOverride("famdust",SetNumTimesTalkedTo(0))
+    ActionOverride("famdust",MakeGlobal())
+    ActionOverride("famdust",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famdust",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  Alignment(Protagonist,CHAOTIC_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FAMID","GLOBAL",8)
+    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    CreateCreatureObject("FAMQUAS_",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famquas")
+    SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
+    ActionOverride("famquas",SetNumTimesTalkedTo(0))
+    ActionOverride("famquas",MakeGlobal())
+    ActionOverride("famquas",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famquas",AddFamiliar())
+    DestroySelf()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    DestroySelf()
+END

@@ -1,0 +1,17 @@
+IF
+  Time(DUSK_END)
+  !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("DAYNITE_")
+    SetGlobalTimer("K#TimerSunset","GLOBAL",ONE_HOUR)
+END
+
+IF
+  Time(DAWN_END)
+  !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("NITEDAY_")
+    SetGlobalTimer("K#TimerSunrise","GLOBAL",ONE_HOUR)
+END

@@ -1,0 +1,14 @@
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3")  // ~Mendas~
+  Exists(Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+END

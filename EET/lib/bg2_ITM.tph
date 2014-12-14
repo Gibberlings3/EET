@@ -1,0 +1,32 @@
+COPY_EXISTING ~AX1H01.ITM~ ~override~
+	~BLUN02.ITM~ ~override~
+	~BLUN04.ITM~ ~override~
+	~BLUN06.ITM~ ~override~
+	~DAGG01.ITM~ ~override~
+	~DAGG06.ITM~ ~override~
+	~DAGG07.ITM~ ~override~
+	~HALB01.ITM~ ~override~
+	~SPER01.ITM~ ~override~
+	~SW1H01.ITM~ ~override~
+	~SW1H04.ITM~ ~override~
+	~SW1H07.ITM~ ~override~
+	~SW1H12.ITM~ ~override~
+	~SW1H17.ITM~ ~override~
+	~SW1H20.ITM~ ~override~
+	~SW1H43.ITM~ ~override~
+	~SW1H46.ITM~ ~override~
+	~SW1H48.ITM~ ~override~
+	~SW2H01.ITM~ ~override~
+	LPF ~ADD_ITEM_EFFECT~
+		INT_VAR
+		opcode = 309   //set local variable
+		target = 1     //self
+		parameter1 = 1 //value
+		timing = 1
+		probability1 = 1
+		header = 1
+		type = 1       //melee
+		STR_VAR
+		resource = EVALUATE_BUFFER "%SOURCE_RES%"
+	END
+BUT_ONLY

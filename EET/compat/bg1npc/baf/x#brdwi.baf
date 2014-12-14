@@ -1,0 +1,11 @@
+/* Append this to the override script of every dwarven riddler */
+/* Coder: Rastor */
+
+IF %BGT_VAR%
+NumTimesTalkedToGT(0)
+InParty("branwen")
+Global("P#BranwenDwarfInterject","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("P#BranwenDwarfInterject","GLOBAL",1)
+END

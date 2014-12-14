@@ -1,0 +1,30 @@
+IF
+  AreaCheck("FH0226")
+  Dead("SewerOgre")  // SewerOgre
+  Allegiance(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,ENEMY)
+END
+
+IF
+  AreaCheck("FH0226")
+  See("SewerOgre")  // SewerOgre
+  !Dead("SewerOgre")  // SewerOgre
+  Allegiance("SewerOgre",NEUTRAL)  // SewerOgre
+  Allegiance(Myself,ENEMY)
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,NEUTRAL)
+END
+
+IF
+  AreaCheck("FH0226")
+  See("SewerOgre")  // SewerOgre
+  !Dead("SewerOgre")  // SewerOgre
+  Allegiance("SewerOgre",ENEMY)  // SewerOgre
+  Allegiance(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,ENEMY)
+END

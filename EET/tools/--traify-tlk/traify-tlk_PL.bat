@@ -1,0 +1,1 @@
+Weidu.exe --noautoupdate --no-auto-tp2 --logapp --out "bgee.tra" --use-lang "pl_PL" --traify-tlk

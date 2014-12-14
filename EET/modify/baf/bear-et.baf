@@ -1,0 +1,17 @@
+IF
+  Range([GOODCUTOFF],7)
+  Allegiance(Myself,NEUTRAL)
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  AttackedBy([ANYONE],DEFAULT)
+  Allegiance(Myself,NEUTRAL)
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+THEN
+  RESPONSE #100
+    Enemy()
+END

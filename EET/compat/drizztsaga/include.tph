@@ -1,0 +1,64 @@
+/*not needed, since the tp2 skipped this part for EE
+COPY + ~%patch_dir%/cre/ORC06.cre~ ~override~
+	~%patch_dir%/cre/HLOLAF.cre~ ~override~
+	~%patch_dir%/cre/CHAK.cre~ ~override~
+	~%patch_dir%/cre/AR18FIG.cre~ ~override~
+	WRITE_LONG 0x28 0xE710 //changed animation back to IC_OROG2 (OROG_BLUE)*/
+
+COPY + ~%patch_dir%/cre/F_GIANTF.cre~ ~%patch_dir%/cre~
+	WRITE_LONG 0x28 0xe24F //changed animation to use existing Expanded Animations entry - IC_GIANT_FROST
+
+//IC_GIANT_FROST Extended Animations resources
+COPY ~EET/compat/drizztsaga/mgfr~ ~override~
+
+//delete files existing in BG2:EE
+DELETE + ~EET/temp/bam/mcora1.bam~
+	~EET/temp/bam/mcora1e.bam~
+	~EET/temp/bam/mcora2.bam~
+	~EET/temp/bam/mcora2e.bam~
+	~EET/temp/bam/mcorca.bam~
+	~EET/temp/bam/mcorcae.bam~
+	~EET/temp/bam/mcorde.bam~
+	~EET/temp/bam/mcordee.bam~
+	~EET/temp/bam/mcorgh.bam~
+	~EET/temp/bam/mcorghe.bam~
+	~EET/temp/bam/mcorgu.bam~
+	~EET/temp/bam/mcorgue.bam~
+	~EET/temp/bam/mcorsc.bam~
+	~EET/temp/bam/mcorsce.bam~
+	~EET/temp/bam/mcorsd.bam~
+	~EET/temp/bam/mcorsde.bam~
+	~EET/temp/bam/mcorsl.bam~
+	~EET/temp/bam/mcorsle.bam~
+	~EET/temp/bam/mcorsp.bam~
+	~EET/temp/bam/mcorspe.bam~
+	~EET/temp/bam/mcortw.bam~
+	~EET/temp/bam/mcortwe.bam~
+	~EET/temp/bam/mcorwk.bam~
+	~EET/temp/bam/mcorwke.bam~
+	~EET/temp/bam/mtana1.bam~
+	~EET/temp/bam/mtana1e.bam~
+	~EET/temp/bam/mtana2.bam~
+	~EET/temp/bam/mtana2e.bam~
+	~EET/temp/bam/mtana3.bam~
+	~EET/temp/bam/mtana3e.bam~
+	~EET/temp/bam/mtanca.bam~
+	~EET/temp/bam/mtancae.bam~
+	~EET/temp/bam/mtande.bam~
+	~EET/temp/bam/mtandee.bam~
+	~EET/temp/bam/mtangh.bam~
+	~EET/temp/bam/mtanghe.bam~
+	~EET/temp/bam/mtangu.bam~
+	~EET/temp/bam/mtangue.bam~
+	~EET/temp/bam/mtansc.bam~
+	~EET/temp/bam/mtansce.bam~
+	~EET/temp/bam/mtansd.bam~
+	~EET/temp/bam/mtansde.bam~
+	~EET/temp/bam/mtansl.bam~
+	~EET/temp/bam/mtansle.bam~
+	~EET/temp/bam/mtansp.bam~
+	~EET/temp/bam/mtanspe.bam~
+	~EET/temp/bam/mtantw.bam~
+	~EET/temp/bam/mtantwe.bam~
+	~EET/temp/bam/mtanwk.bam~
+	~EET/temp/bam/mtanwke.bam~

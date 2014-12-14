@@ -1,0 +1,25 @@
+IF
+  Global("OHH_DORN_INIT","ar0900",0)
+  Global("DornImport","GLOBAL",0)
+  Global("DornPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    GiveItemCreate("HELM01","DORN",1,0,0) // Helmet
+    GiveItemCreate("PLAT01","DORN",1,0,0) // Plate Mail
+    GiveItemCreate("SW2HD1","DORN",1,0,0) // Two-Handed Sword
+    SmallWait(10)
+    ActionOverride("DORN",FillSlot(SLOT_HELMET))
+    ActionOverride("DORN",FillSlot(SLOT_ARMOR))
+    ActionOverride("DORN",FillSlot(SLOT_WEAPON))
+    SmallWait(10)
+    ActionOverride("DORN",EquipMostDamagingMelee())
+    ActionOverride("DORN",ChangeAIScript("DORN",OVERRIDE))
+    ActionOverride("DORN",ChangeAIScript("",GENERAL))
+    ActionOverride("DORN",ChangeAIScript("",DEFAULT))
+    ActionOverride("DORN",ChangeAIScript("K#IMDOR",RACE))
+    ActionOverride("DORN",SetDialogue("DORN"))
+    ActionOverride("DORN",SetNumTimesTalkedTo(0))
+    //ReallyForceSpellRES("K#PORDOR","DORN")
+    SetGlobal("DornImport","GLOBAL",1)
+    SetGlobal("OHH_DORN_INIT","ar0900",1)
+END

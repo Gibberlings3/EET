@@ -1,0 +1,93 @@
+IF
+  InPartyAllowDead("OBE")
+THEN
+  RESPONSE #100
+    ActionOverride("OBE",LeaveParty())
+    ActionOverride("OBE",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("CANDEROUS")
+THEN
+  RESPONSE #100
+    ActionOverride("CANDEROUS",LeaveParty())
+    ActionOverride("CANDEROUS",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("MORDAINE")
+THEN
+  RESPONSE #100
+    ActionOverride("MORDAINE",LeaveParty())
+    ActionOverride("MORDAINE",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("ARKANIS")
+THEN
+  RESPONSE #100
+    ActionOverride("ARKANIS",LeaveParty())
+    ActionOverride("ARKANIS",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("DEEDER")
+THEN
+  RESPONSE #100
+    ActionOverride("DEEDER",LeaveParty())
+    ActionOverride("DEEDER",DestroySelf())
+    Continue()
+END
+
+IF
+  InPartyAllowDead("OSPREY")
+THEN
+  RESPONSE #100
+    ActionOverride("OSPREY",LeaveParty())
+    ActionOverride("OSPREY",DestroySelf())
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    Wait(2)
+    //Find Gorion
+    EraseJournalEntry(@31438)
+    //Phlydia's Book
+    EraseJournalEntry(@27362)
+    EraseJournalEntry(@27363)
+    EraseJournalEntry(@27364)
+    //Firebead's Scroll
+    EraseJournalEntry(@27080)
+    EraseJournalEntry(@27081)
+    //Dreppin's Cow
+    EraseJournalEntry(@26992)
+    EraseJournalEntry(@26993)
+    //Reevor's Storehouse
+    EraseJournalEntry(@27411)
+    EraseJournalEntry(@27412)
+    //Hull's Sword
+    EraseJournalEntry(@27149)
+    EraseJournalEntry(@27150)
+    EraseJournalEntry(@27151)
+    //An Errand for Fuller
+    EraseJournalEntry(@27109)
+    EraseJournalEntry(@27110)
+    EraseJournalEntry(@27111)
+	ActionOverride(Player1,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player2,LeaveParty())
+    ActionOverride(Player3,LeaveParty())
+    ActionOverride(Player4,LeaveParty())
+    ActionOverride(Player5,LeaveParty())
+    ActionOverride(Player6,LeaveParty())
+    ActionOverride(Player1,LeaveAreaLUAPanic("TU0015","",[607.660],S))
+    ActionOverride(Player1,LeaveAreaLUA("TU0015","",[607.660],S))
+    MultiPlayerSync()
+    Wait(1)
+END
