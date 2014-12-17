@@ -58,7 +58,7 @@ END*/
 MKDIR ~EET/temp~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/uninstall.flag~
 
-ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ THEN BEGIN
+ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
 	OUTER_SPRINT os_quote ~~
 	OUTER_SPRINT exe ~.exe~
@@ -152,7 +152,7 @@ Example: C:/Program Files (x86)/BeamDog/Games/00766~
 END
 
 OUTER_WHILE (valid_dir = 0) BEGIN
-	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/data/v2017.bif~) THEN BEGIN
+	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/data/v2017.bif~) BEGIN
 		PRINT ~~
 		PRINT ~Invalid BG:EE directory, or incorrect BG:EE installation.
 It is safe to abort this installation by closing this window or pressing Ctrl+C.~
@@ -2795,44 +2795,174 @@ END
 ///// WBM                                              \\\\\
 /////                                                  \\\\\
 
-MOVE ~movies/INTRO15F.wbm~ ~movies/BG2INTRO.wbm~//renamed (using name from the vanilla game) to prevent from playing in Start Screen
-	~movies/DAYNITE.wbm~ ~movies/DAYNITE_.wbm~//renamed to bypass hardcoded day/niteday movies when area has 'city' and 'extended nights' flags...
-	~movies/NITEDAY.wbm~ ~movies/NITEDAY_.wbm~//...day/night movies are now triggered via area scripts
+MKDIR ~lang/%LANGUAGE_BG2%/movies~
+
+//resolve BG2 movies conflicts
+
+//renamed (using name from the vanilla game) to prevent from playing in Start Screen
+ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~) BEGIN
+	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/BG2INTRO.wbm~
+END ELSE BEGIN
+	COPY_LARGE ~movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/BG2INTRO.wbm~
+END
+
+//renamed to bypass hardcoded day/niteday movies when area has 'city' and 'extended nights' flags day/night movies are now triggered via area scripts
+ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/DAYNITE.wbm~)
+AND (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/NITEDAY.wbm~) BEGIN
+	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/DAYNITE.wbm~ ~lang/%LANGUAGE_BG2%/movies/DAYNITE_.wbm~
+	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/NITEDAY.wbm~ ~lang/%LANGUAGE_BG2%/movies/NITEDAY_.wbm~
+END ELSE BEGIN
+	COPY_LARGE ~movies/DAYNITE.wbm~ ~lang/%LANGUAGE_BG2%/movies/DAYNITE_.wbm~
+	COPY_LARGE ~movies/NITEDAY.wbm~ ~lang/%LANGUAGE_BG2%/movies/NITEDAY_.wbm~
+END
 
 //copy movies from BG:EE
+
+//renamed due to name conflict
 ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/movies/BLACKPIT.wbm~) BEGIN
-	COPY_LARGE ~%bgee_dir%/lang/%LANGUAGE%/movies/BLACKPIT.wbm~ ~movies/BLACKPI_.wbm~ //renamed due to name conflict
+	COPY_LARGE ~%bgee_dir%/lang/%LANGUAGE%/movies/BLACKPIT.wbm~ ~lang/%LANGUAGE_BG2%/movies/BLACKPI_.wbm~
 END ELSE BEGIN
-	COPY_LARGE ~%bgee_dir%/lang/en_US/movies/BLACKPIT.wbm~ ~movies/BLACKPI_.wbm~
+	COPY_LARGE ~%bgee_dir%/lang/en_US/movies/BLACKPIT.wbm~ ~lang/%LANGUAGE_BG2%/movies/BLACKPI_.wbm~
 END
 
 //copy BG1 movies converted to HD
 //ENDCRDIT.wbm => ENDCRDI_.wbm
 //INTRO.wbm => INTRO15.wbm
-COPY_LARGE ~EET/base/movies~ ~movies~
+COPY_LARGE ~EET/base/movies~ ~lang/%LANGUAGE_BG2%/movies~
+
+//copy BG1 movies with voice over
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/BEREGOST.wbm~)
 AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/INTRO15F.wbm~)
 AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/NASHKELL.wbm~)
 AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/WYVERN.wbm~) BEGIN
-	COPY_LARGE ~%tra_path%/%LANGUAGE%/movies~ ~movies~
+	COPY_LARGE ~%tra_path%/%LANGUAGE%/movies~ ~lang/%LANGUAGE_BG2%/movies~
 END ELSE BEGIN
-	COPY_LARGE ~%tra_path%/en_US/movies~ ~movies~
+	COPY_LARGE ~%tra_path%/en_US/movies~ ~lang/%LANGUAGE_BG2%/movies~
 END
+
+//update Baldur.ini
 
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 	COPY ~%USER_DIRECTORY%/Baldur.ini~ ~%USER_DIRECTORY%~
-		REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'BG2INTRO', '1',
-	'MOVIES', 'BG4LOGO', '1',
-	'MOVIES', 'BILOGO', '1',
-	'MOVIES', 'BLACKPI_', '1',
-	'MOVIES', 'BWDRAGON', '1',
-	'MOVIES', 'CREDITS_', '1',
-	'MOVIES', 'INFELOGO', '1',
-	'MOVIES', 'INTRO15F', '1',
-	'MOVIES', 'TSRLOGO', '1',
+		SPRINT textToReplace ~'Text'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'Language',	'Text',	'%LANGUAGE_BG2%',~
+		END ELSE BEGIN
+			REPLACE_TEXTUALLY ~'Language',[ 	]+'Text',[ 	]+'.*'~ ~'Language',	'Text',	'%LANGUAGE_BG2%'~
+		END
+		SPRINT textToReplace ~'Cheats'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'Game Options',	'Cheats',	'1',~
+		END
+		SPRINT textToReplace ~'Wild Surge Keys'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'Game Options',	'Wild Surge Keys',	'1',~
+		END
+		SPRINT textToReplace ~'Logging On'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'Program Options',	'Logging On',	'1',~
+		END
+		SPRINT textToReplace ~'Debug Mode'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'Program Options',	'Debug Mode',	'1',~
+		END
+		SPRINT textToReplace ~'WOTC'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
 	'MOVIES', 'WOTC', '1',~
+		END
+		SPRINT textToReplace ~'TSRLOGO'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'TSRLOGO', '1',~
+		END
+		SPRINT textToReplace ~'INTRO15F'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'INTRO15F', '1',~
+		END
+		SPRINT textToReplace ~'INFELOGO'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'INFELOGO', '1',~
+		END
+		SPRINT textToReplace ~'CREDITS_'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'CREDITS_', '1',~
+		END
+		SPRINT textToReplace ~'BWDRAGON'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'BWDRAGON', '1',~
+		END
+		SPRINT textToReplace ~'BLACKPI_'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'BLACKPI_', '1',~
+		END
+		SPRINT textToReplace ~'BILOGO'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'BILOGO', '1',~
+		END
+		SPRINT textToReplace ~'BG4LOGO'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'BG4LOGO', '1',~
+		END
+		SPRINT textToReplace ~'BG2INTRO'~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 0) BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'MOVIES', 'BG2INTRO', '1',~
+		END
 	BUT_ONLY
+END ELSE BEGIN
+<<<<<<<< EET-inlined/Baldur.ini
+CREATE TABLE options (
+	section string,
+	name string,
+	value string
+);
+INSERT INTO options ROWS (
+	'MOVIES',	'BG2INTRO',	'1',
+	'MOVIES',	'BG4LOGO',	'1',
+	'MOVIES',	'BILOGO',	'1',
+	'MOVIES',	'BLACKPI_',	'1',
+	'MOVIES',	'BWDRAGON',	'1',
+	'MOVIES',	'CREDITS_',	'1',
+	'MOVIES',	'INFELOGO',	'1',
+	'MOVIES',	'INTRO15F',	'1',
+	'MOVIES',	'TSRLOGO',	'1',
+	'MOVIES',	'WOTC',	'1',
+	'Program Options',	'Debug Mode',	'1',
+	'Program Options',	'Logging On',	'1',
+	'Game Options',	'Wild Surge Keys',	'1',
+	'Game Options',	'Cheats',	'1',
+	'Language',	'Text',	'%LANGUAGE_BG2%',
+);
+>>>>>>>>
+	COPY ~EET-inlined/Baldur.ini~ ~%USER_DIRECTORY%/Baldur.ini~ EVALUATE_BUFFER
 END
 
 /////                                                  \\\\\
@@ -3041,7 +3171,8 @@ COPY ~%areas_dir%/bgTU00xx~ ~override~
 	~%areas_dir%/bgAR61xx~ ~override~
 */
 
-COPY ~EET-inlined/blank.txt~ ~override/EET.flag~
+//currently commented out due to amount of BG2:EE mods with GAME_IS without EET argument. If you place dummy EET.flag inside override directory WeiDU will recognize this installation a EET 
+//COPY ~EET-inlined/blank.txt~ ~override/EET.flag~
 
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/readme.html~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW %tra_path%/%LANGUAGE%/readme.html~
