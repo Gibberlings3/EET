@@ -627,16 +627,18 @@ END
 ///// Compatibility patches                            \\\\\
 /////                                                  \\\\\
 
-COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
-	PATCH_FOR_EACH "modname" IN bg1npc DarkHorizonsBGee drizztsaga karatur BEGIN
-		COUNT_REGEXP_INSTANCES ~%modname%\.TP2~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			PATCH_PRINT ~Including %modname% compatibility patches~
-			INNER_ACTION BEGIN
-				INCLUDE ~EET/compat/%modname%/include.tph~
+ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
+	COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
+		PATCH_FOR_EACH "modname" IN bg1npc DarkHorizonsBGee drizztsaga karatur BEGIN
+			COUNT_REGEXP_INSTANCES ~%modname%\.TP2~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				PATCH_PRINT ~Including %modname% compatibility patches~
+				INNER_ACTION BEGIN
+					INCLUDE ~EET/compat/%modname%/include.tph~
+				END
 			END
 		END
-	END
+END
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -3006,10 +3008,10 @@ ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_areas.tbl~) BEGIN
 		END
 END ELSE BEGIN
     MKDIR ~Worldmap~
-	//create dummy files to solve BP-BGT reinstallation problem (they will be stored in backup dir, so Worldmap will be able to detect them when you uninstall EET)
+	/*//create dummy files to solve BP-BGT reinstallation problem (they will be stored in backup dir, so Worldmap will be able to detect them when you uninstall EET)
 	COPY + ~EET-inlined/blank.txt~ ~Worldmap/map_mods_areas.tbl~
 		~EET-inlined/blank.txt~ ~Worldmap/map_mods_links.tbl~
-		~EET-inlined/blank.txt~ ~Worldmap/map_mods_trans.tra~
+		~EET-inlined/blank.txt~ ~Worldmap/map_mods_trans.tra~*/
 
     COPY ~EET/Worldmap/areas.tbl~ ~Worldmap/map_mods_areas.tbl~
 		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
