@@ -27,8 +27,8 @@ LANGUAGE ~Polski (Polish)~
 
 BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~ DESIGNATED 0
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ ~Please install it on BG2:EE engine.~
-REQUIRE_PREDICATE FILE_EXISTS ~setup-bp-bgt-worldmap.tp2~ ~BP-BGT Worldmap tp2 file not detected. Extract the Worldmap mod without installing it and run this setup again.~
-REQUIRE_PREDICATE NOT MOD_IS_INSTALLED ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
+REQUIRE_FILE ~setup-bp-bgt-worldmap.tp2~ ~BP-BGT Worldmap tp2 file not detected. Extract the Worldmap mod without installing it and run this setup again.~
+FORBID_COMPONENET ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -60,7 +60,7 @@ COPY + ~EET-inlined/blank.txt~ ~EET/temp/uninstall.flag~
 
 ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
-	OUTER_SPRINT os_quote ~~
+	OUTER_SPRINT os_directory ""
 	OUTER_SPRINT exe ~.exe~
 	OUTER_SPRINT bgee_dir ~C:/Program Files (x86)/BeamDog/Games/00766~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
@@ -70,9 +70,9 @@ ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) AND (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
 		AT_INTERACTIVE_EXIT ~rmdir /s /q EET\temp~ EXACT
 	END
-END ELSE BEGIN
+END ELSE ACTION_IF "%WEIDU_OS%" STRIN_EQUAL_CASE "OSX" BEGIN
 	OUTER_SPRINT os_slash ~/~
-	OUTER_SPRINT os_quote ~"~
+	OUTER_SPRINT os_directory "./"
 	OUTER_SPRINT exe ~~
 	OUTER_SPRINT bgee_dir ~Applications/Baldur\'s\ Gate-EE/Game\ Data/00777/Baldur\'s\ Gate\ -\ Enhanced\ Edition.app/Contents/Resources~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~EET/weidu~
@@ -87,7 +87,7 @@ END
 OUTER_SPRINT ~newline~ ~%WNL%%LNL%%MNL%%TAB% ~
 OUTER_SPRINT slash ~/~
 OUTER_SPRINT quote ~"~
-OUTER_SPRINT tilde ~~~~~~~~~~~//~
+OUTER_SPRINT tilde "~"
 OUTER_SPRINT tra_path ~EET/lang~
 OUTER_SPRINT patch_dir ~EET/temp/patch~
 OUTER_SPRINT areas_dir ~EET/temp/areas~
@@ -256,7 +256,7 @@ PRINT ~~
 PRINT ~Extracting texts for translation from BG:EE...~
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGEcase%/dialog.tlk~ BEGIN
-	AT_NOW ~%os_quote%%WEIDU_EXECUTABLE%%os_quote% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --out "EET/bgee.tra"~
+	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --out "EET/bgee.tra"~
 	LAM bash_log
 END ELSE BEGIN
 	FAIL ~TLK for language: %LANGUAGEcase% not found in %bgee_dir%~
@@ -341,7 +341,7 @@ ACTION_FOR_EACH "var" IN ARE BCS CRE DLG EFF ITM SPL STO VVC WED BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
-	AT_NOW ~%os_quote%%WEIDU_EXECUTABLE%%os_quote% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	/*GET_FILE_ARRAY array_override ~%bgee_dir%/override~ ~^.+\.%var%$~
 	ACTION_PHP_EACH array_override AS aray_fileNo => array_file BEGIN
@@ -360,7 +360,7 @@ MKDIR ~%patch_dir%/GAM~
 ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/BALDUR.GAM~) BEGIN
 	COPY + ~%bgee_dir%/override/BALDUR.GAM~ ~%patch_dir%/GAM~
 END ELSE BEGIN
-	AT_NOW ~%os_quote%%WEIDU_EXECUTABLE%%os_quote% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/GAM" --biff-get-rest "BALDUR.GAM"~
+	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/GAM" --biff-get-rest "BALDUR.GAM"~
 	LAM bash_log
 END
 
@@ -441,7 +441,7 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~EET/temp/%var%~
-	AT_NOW ~%os_quote%%WEIDU_EXECUTABLE%%os_quote% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	/*GET_FILE_ARRAY array_override ~%bgee_dir%/override~ ~^.+\.%var%$~
 	ACTION_PHP_EACH array_override AS aray_fileNo => array_file BEGIN
@@ -466,7 +466,7 @@ ACTION_FOR_EACH file IN "ANIMATE.IDS" "GTIMES.IDS" "BGEE.SQL" BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
 	END ELSE BEGIN
-		AT_NOW ~%os_quote%%WEIDU_EXECUTABLE%%os_quote% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/array" --biff-get-rest "%file%"~
+		AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/array" --biff-get-rest "%file%"~
 		LAM bash_log
 	END
 END
@@ -633,9 +633,7 @@ ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 			COUNT_REGEXP_INSTANCES ~%modname%\.TP2~ num_matches
 			PATCH_IF (num_matches > 0) BEGIN
 				PATCH_PRINT ~Including %modname% compatibility patches~
-				INNER_ACTION BEGIN
-					INCLUDE ~EET/compat/%modname%/include.tph~
-				END
+				PATCH_INCLUDE ~EET/compat/%modname%/include.tph~
 			END
 		END
 END
@@ -869,16 +867,16 @@ COPY + ~%patch_dir%/are~ ~%patch_dir%/are~
 			SET "unassigned" = 1
 		END
 		PATCH_IF ("%unassigned%" = 1) BEGIN
-			PATCH_PRINT "%SOURCE_FILE% - Area Script (%SOURCE_RES%.BCS) assigned"
+			PATCH_PRINT ~%SOURCE_FILE% - Area Script (%SOURCE_RES%.BCS) assigned~
 			WRITE_ASCIIE 0x94 ~%SOURCE_RES%~ #8
 		END ELSE PATCH_IF ("%missing%" = 1) BEGIN
 			PATCH_IF NOT (("%script%" STRING_EQUAL_CASE "NONE") OR ("%script%" STRING_EQUAL_CASE "")) BEGIN
-				PATCH_PRINT "%SOURCE_FILE% - Missing area Script (%script%.BCS) created"
+				PATCH_PRINT ~%SOURCE_FILE% - Missing area Script (%script%.BCS) created~
 				INNER_ACTION BEGIN
 					COPY + ~EET/base/blank.bcs~ ~%patch_dir%/bcs/%script%.BCS~
 				END
 			END ELSE BEGIN
-				PATCH_PRINT "%SOURCE_FILE% - Missing area Script (%SOURCE_RES%.BCS) created and assigned"
+				PATCH_PRINT ~%SOURCE_FILE% - Missing area Script (%SOURCE_RES%.BCS) created and assigned~
 				INNER_ACTION BEGIN
 					COPY + ~EET/base/blank.bcs~ ~%patch_dir%/bcs/%SOURCE_RES%.BCS~
 				END
