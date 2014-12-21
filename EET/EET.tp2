@@ -12,10 +12,11 @@ LANGUAGE ~English~
 	~en_US~
 	~EET/lang/en_US/prompts.tra~
 	~EET/lang/en_US/setup.tra~
-	//~EET/lang/en_US/areas.tra~//this one is not meant to be loaded
+	//~EET/lang/en_US/areas.tra~//this file is not meant to be loaded
 	~EET/lang/en_US/dialog.tra~
 	~EET/lang/en_US/itm_spl.tra~
 	~EET/lang/en_US/scripts.tra~
+	//~EET/lang/en_US/worldmap.tra~//this file is not meant to be loaded
 LANGUAGE ~Polski (Polish)~
 	~pl_PL~
 	~EET/lang/pl_PL/prompts.tra~
@@ -24,11 +25,12 @@ LANGUAGE ~Polski (Polish)~
 	~EET/lang/pl_PL/dialog.tra~
 	~EET/lang/pl_PL/itm_spl.tra~
 	~EET/lang/pl_PL/scripts.tra~
+	//~EET/lang/pl_PL/worldmap.tra~
 
 BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~ DESIGNATED 0
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ ~Please install it on BG2:EE engine.~
+FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
 REQUIRE_FILE ~setup-bp-bgt-worldmap.tp2~ ~BP-BGT Worldmap tp2 file not detected. Extract the Worldmap mod without installing it and run this setup again.~
-FORBID_COMPONENET ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -60,7 +62,7 @@ COPY + ~EET-inlined/blank.txt~ ~EET/temp/uninstall.flag~
 
 ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
-	OUTER_SPRINT os_directory ""
+	OUTER_SPRINT os_directory ~~
 	OUTER_SPRINT exe ~.exe~
 	OUTER_SPRINT bgee_dir ~C:/Program Files (x86)/BeamDog/Games/00766~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
@@ -70,9 +72,9 @@ ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) AND (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
 		AT_INTERACTIVE_EXIT ~rmdir /s /q EET\temp~ EXACT
 	END
-END ELSE ACTION_IF "%WEIDU_OS%" STRIN_EQUAL_CASE "OSX" BEGIN
+END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 	OUTER_SPRINT os_slash ~/~
-	OUTER_SPRINT os_directory "./"
+	OUTER_SPRINT os_directory ~./~
 	OUTER_SPRINT exe ~~
 	OUTER_SPRINT bgee_dir ~Applications/Baldur\'s\ Gate-EE/Game\ Data/00777/Baldur\'s\ Gate\ -\ Enhanced\ Edition.app/Contents/Resources~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~EET/weidu~
@@ -750,7 +752,7 @@ PRINT ~Please be patient during the conversion process. This may take some time.
 COPY + ~EET/temp/Filelist.txt~ ~EET/temp/Filelist.txt~
 	COUNT_2DA_ROWS 1 "cntrow" //count every single row
 	PATCH_PRINT ~%cntrow% entries parsed, commencing patching...~
-	FOR (count=0; count<"%cntrow%"; count=count+1) BEGIN
+	FOR (count = 0; count < "%cntrow%"; count = count + 1) BEGIN
 		SET cntcurrent = "%count%" + 1
 		LAUNCH_PATCH_MACRO ~PCU_core_init2~
 		//copy the file, and patch
