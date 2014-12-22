@@ -3174,7 +3174,7 @@ COPY ~%areas_dir%/bgTU00xx~ ~override~
 */
 
 //currently commented out due to amount of BG2:EE mods with GAME_IS without EET argument. If you place dummy EET.flag inside override directory WeiDU will recognize this installation a EET 
-//COPY ~EET-inlined/blank.txt~ ~override/EET.flag~
+//COPY_EXISTING sw1h01.itm ~override/EET.flag~
 
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/readme.html~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW %tra_path%/%LANGUAGE%/readme.html~
