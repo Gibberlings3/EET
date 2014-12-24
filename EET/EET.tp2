@@ -148,18 +148,29 @@ Is this correct? [Y]es or [N]o~
 	ACTION_IF (first_prompt = 0) BEGIN
 		PRINT ~~
 		PRINT ~Enter the full path to your BG:EE installation then press Enter.
-Example: C:/Program Files (x86)/BeamDog/Games/00766~
+Example: C:\Program Files (x86)\BeamDog\Games\00766~
 		ACTION_READLN ~bgee_dir~
 	END
 END
 
 OUTER_WHILE (valid_dir = 0) BEGIN
+	OUTER_INNER_PATCH_SAVE ~bgee_dir~ ~%bgee_dir%~ BEGIN
+		PATCH_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN //Win32
+			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
+			REPLACE_TEXTUALLY ~/~ ~\~ //change slashes
+			REPLACE_TEXTUALLY ~[\\/]*$~ ~~ //remove terminal slashes
+		END ELSE PATCH_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
+			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
+			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
+			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes//*/
+		END
+	END
 	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/data/v2017.bif~) BEGIN
 		PRINT ~~
 		PRINT ~Invalid BG:EE directory, or incorrect BG:EE installation.
 It is safe to abort this installation by closing this window or pressing Ctrl+C.~
 		PRINT ~Enter the full path to your BG:EE installation then press Enter.
-Example: C:/Program Files (x86)/BeamDog/Games/00766~
+Example: C:\Program Files (x86)\BeamDog\Games\00766~
 		ACTION_READLN ~bgee_dir~
 	END ELSE BEGIN
 		OUTER_SET valid_dir = 1
