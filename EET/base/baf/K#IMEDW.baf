@@ -1,18 +1,18 @@
 IF
   Global("EdwinImport","GLOBAL",1)
-  CheckStat(Myself,9,STR)
+  CheckStatLT(Myself,10,STR)
 THEN
   RESPONSE #100
-    ApplySpellRES("K#BSTR10",Myself)
+    ChangeStat(Myself,STR,10,SET)
     Continue()
 END
 
 IF
   Global("EdwinImport","GLOBAL",1)
-  CheckStat(Myself,9,WIS)
+  CheckStatLT(Myself,10,WIS)
 THEN
   RESPONSE #100
-    ApplySpellRES("K#BWIS10",Myself)
+    ChangeStat(Myself,WIS,10,SET)
     Continue()
 END
 
@@ -22,7 +22,7 @@ IF
   XPLT(Myself,161000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP161k",Myself)
+    ChangeStat(Myself,XP,161000,SET)
     Continue()
 END
 
@@ -33,7 +33,7 @@ IF
   XPLT(Myself,211000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP211k",Myself)
+    ChangeStat(Myself,XP,211000,SET)
     Continue()
 END
 
@@ -43,7 +43,7 @@ IF
   XPLT(Myself,400000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP400k",Myself)
+    ChangeStat(Myself,XP,400000,SET)
     Continue()
 END
 
@@ -53,7 +53,7 @@ IF
   XPLT(Myself,800000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP800k",Myself)
+    ChangeStat(Myself,XP,800000,SET)
     Continue()
 END
 
@@ -63,7 +63,7 @@ IF
   XPLT(Myself,1200000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP1kk2",Myself)
+    ChangeStat(Myself,XP,1200000,SET)
     Continue()
 END
 

@@ -157,7 +157,7 @@ OUTER_WHILE (valid_dir = 0) BEGIN
 	OUTER_INNER_PATCH_SAVE ~bgee_dir~ ~%bgee_dir%~ BEGIN
 		PATCH_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN //Win32
 			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
-			REPLACE_TEXTUALLY ~/~ ~\~ //change slashes
+			REPLACE_TEXTUALLY ~\~ ~/~ //change slashes
 			REPLACE_TEXTUALLY ~[\\/]*$~ ~~ //remove terminal slashes
 		END ELSE PATCH_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
@@ -2339,13 +2339,6 @@ COPY ~EET/temp/pro~ ~override~
 ///// SPL                                              \\\\\
 /////                                                  \\\\\
 
-ACTION_FOR_EACH "value" IN 4 6 9 12 24 BEGIN
-	COPY ~EET/base/spl/K#FAMHP.SPL~ ~override/K#FAM+%value%.SPL~
-		WRITE_LONG 0x9e %value%
-	COPY ~EET/base/spl/K#FAMHP.SPL~ ~override/K#FAM-%value%.SPL~
-		SET %value% = 0 - %value%
-		WRITE_LONG 0x9e %value%
-END
 COPY ~EET/base/spl/SPWI123.SPL~ ~override~
 	~EET/base/spl/SPCL342.SPL~ ~override~
 
@@ -2388,12 +2381,7 @@ OUTER_FOR (lvl = 1; lvl <= 4; lvl = lvl + 1) BEGIN
 END
 
 //transition related spells
-COPY ~EET/base/spl/K#BCON16.SPL~ ~override~
-	~EET/base/spl/K#BDEX16.SPL~ ~override~
-	~EET/base/spl/K#BDEX17.SPL~ ~override~
-	~EET/base/spl/K#BWIS10.SPL~ ~override~
-	~EET/base/spl/K#BWIS18.SPL~ ~override~
-	~EET/base/spl/K#DEATH.SPL~ ~override~
+COPY ~EET/base/spl/K#DEATH.SPL~ ~override~
 	~EET/base/spl/K#DISPEL.SPL~ ~override~
 	~EET/base/spl/K#FREEA.SPL~ ~override~
 	~EET/base/spl/K#LIVE.SPL~ ~override~
@@ -2411,33 +2399,6 @@ ACTION_PHP_EACH "table_EET_portraitID" AS "portrait" => "ID" BEGIN
 	COPY ~EET/base/spl/K#PORTR.SPL~ ~override/K#POR%ID%.SPL~
 	WRITE_EVALUATED_ASCII ~0xae~ ~%portrait%S~ #8 // Small portrait
 	WRITE_EVALUATED_ASCII ~0xde~ ~%portrait%M~ #8 // Medium portrait
-END
-
-//Adding XP for imported NPC if they end up having less experience after BG1/BG2, also used for optional XP limit
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_spellExperience" BEGIN
-	"0" => "0"
-	"90k" => "90000"
-	"95k" => "95000"
-	"161k" => "161000"
-	"200k" => "200000"
-	"211k" => "211000"
-	"250k" => "250000"
-	"400k" => "400000"
-	"450k" => "450000"
-	"500k" => "500000"
-	"800k" => "800000"
-	"1kk2" => "1200000"
-	"2kk5" => "2500000"
-	"BG1" => "89000"
-	"BGEE" => "161000"
-	"SoA" => "2950000"
-	"ToB" => "8000000"
-	"BP1" => "600000"
-	"BP2" => "8000000"
-END
-ACTION_PHP_EACH "table_EET_spellExperience" AS "spell" => "experience" BEGIN
-	COPY ~EET/base/spl/K#XP-SET.SPL~ ~override/K#XP%spell%.SPL~
-	WRITE_LONG 0x9e %experience%
 END
 
 //ADD_SPELL "%patch_dir%/spl/SPCL101.SPL" 4 1 "DARK_GIFT"//appends also to spell selection screen during character generation which should not be the case
@@ -3182,10 +3143,12 @@ COPY ~%areas_dir%/bgTU00xx~ ~override~
 	~%areas_dir%/bgAR59xx~ ~override~
 	~%areas_dir%/bgAR60xx~ ~override~
 	~%areas_dir%/bgAR61xx~ ~override~
+	~EET/temp/wav~ ~override~
 */
 
-//currently commented out due to amount of BG2:EE mods with GAME_IS without EET argument. If you place dummy EET.flag inside override directory WeiDU will recognize this installation a EET 
-//COPY_EXISTING sw1h01.itm ~override/EET.flag~
+COPY_EXISTING sw1h01.itm ~override/EET.flag~
+PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as EET~
+PRINT ~To install mods without EET argument in GAME_IS command you need to temporarily move it away from override directory~
 
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/readme.html~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW %tra_path%/%LANGUAGE%/readme.html~

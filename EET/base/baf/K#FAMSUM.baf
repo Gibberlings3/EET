@@ -7,7 +7,7 @@ THEN
 END
 
 IF
-  NextTriggerObject(Protagonist)
+  NextTriggerObject(Player1)
   Summoned(Myself)
 THEN
   RESPONSE #100
@@ -18,7 +18,7 @@ IF
   Global("K#FAMPRO","GLOBAL",1)
 THEN
   RESPONSE #100
-    DisplayStringNoName(Myself,8538) // Only the protagonist may cast Find Familiar.
+    DisplayStringNoName(Myself,8538) // Only the Player1 may cast Find Familiar.
     DestroySelf()
 END
 
@@ -50,12 +50,12 @@ IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
   OR(2)
-    Alignment(Protagonist,LAWFUL_GOOD)
-    Alignment(Protagonist,NEUTRAL_GOOD)
+    Alignment(Player1,LAWFUL_GOOD)
+    Alignment(Player1,NEUTRAL_GOOD)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",21)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMPSD25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","fampsd")
     SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
@@ -69,11 +69,11 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Protagonist,CHAOTIC_GOOD)
+  Alignment(Player1,CHAOTIC_GOOD)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",22)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMFAI25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfair")
     SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
@@ -87,11 +87,11 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Protagonist,LAWFUL_NEUTRAL)
+  Alignment(Player1,LAWFUL_NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",23)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMFER25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfer")
     SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
@@ -105,11 +105,11 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Protagonist,NEUTRAL)
+  Alignment(Player1,NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",24)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMRAB25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famrab")
     SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
@@ -123,11 +123,11 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Protagonist,CHAOTIC_NEUTRAL)
+  Alignment(Player1,CHAOTIC_NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",25)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMCAT25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famcat")
     SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
@@ -141,11 +141,11 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Protagonist,LAWFUL_EVIL)
+  Alignment(Player1,LAWFUL_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",26)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMIMP25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famimp")
     SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
@@ -159,11 +159,11 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Protagonist,NEUTRAL_EVIL)
+  Alignment(Player1,NEUTRAL_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",27)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMDUS25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famdust")
     SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
@@ -177,11 +177,11 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Protagonist,CHAOTIC_EVIL)
+  Alignment(Player1,CHAOTIC_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",28)
-    ReallyForceSpellRES("K#FAM+24",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
     CreateCreatureObject("FAMQUA25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famquas")
     SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
@@ -195,12 +195,12 @@ END
 IF
   Global("ENDOFBG1","GLOBAL",2)
   OR(2)
-    Alignment(Protagonist,LAWFUL_GOOD)
-    Alignment(Protagonist,NEUTRAL_GOOD)
+    Alignment(Player1,LAWFUL_GOOD)
+    Alignment(Player1,NEUTRAL_GOOD)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",11)
-    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
     CreateCreatureObject("FAMPSD",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","fampsd")
     SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
@@ -213,11 +213,11 @@ END
 
 IF
   Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Protagonist,CHAOTIC_GOOD)
+  Alignment(Player1,CHAOTIC_GOOD)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",12)
-    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
     CreateCreatureObject("FAMFAIR",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfair")
     SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
@@ -230,11 +230,11 @@ END
 
 IF
   Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Protagonist,LAWFUL_NEUTRAL)
+  Alignment(Player1,LAWFUL_NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",13)
-    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
     CreateCreatureObject("FAMFER",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfer")
     SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
@@ -247,11 +247,11 @@ END
 
 IF
   Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Protagonist,NEUTRAL)
+  Alignment(Player1,NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",14)
-    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
     CreateCreatureObject("FAMRAB",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famrab")
     SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
@@ -264,11 +264,11 @@ END
 
 IF
   Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Protagonist,CHAOTIC_NEUTRAL)
+  Alignment(Player1,CHAOTIC_NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",15)
-    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
     CreateCreatureObject("FAMCAT",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famcat")
     SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
@@ -281,11 +281,11 @@ END
 
 IF
   Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Protagonist,LAWFUL_EVIL)
+  Alignment(Player1,LAWFUL_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",16)
-    ReallyForceSpellRES("K#FAM+9",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,9,ADD)
     CreateCreatureObject("FAMIMP",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famimp")
     SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
@@ -298,11 +298,11 @@ END
 
 IF
   Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Protagonist,NEUTRAL_EVIL)
+  Alignment(Player1,NEUTRAL_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",17)
-    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
     CreateCreatureObject("FAMDUST",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famdust")
     SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
@@ -315,11 +315,11 @@ END
 
 IF
   Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Protagonist,CHAOTIC_EVIL)
+  Alignment(Player1,CHAOTIC_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",18)
-    ReallyForceSpellRES("K#FAM+12",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
     CreateCreatureObject("FAMQUAS",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famquas")
     SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
@@ -332,12 +332,12 @@ END
 
 IF
   OR(2)
-    Alignment(Protagonist,LAWFUL_GOOD)
-    Alignment(Protagonist,NEUTRAL_GOOD)
+    Alignment(Player1,LAWFUL_GOOD)
+    Alignment(Player1,NEUTRAL_GOOD)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",1)
-    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
     CreateCreatureObject("FAMPSD_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","fampsd")
     SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
@@ -349,11 +349,11 @@ THEN
 END
 
 IF
-  Alignment(Protagonist,CHAOTIC_GOOD)
+  Alignment(Player1,CHAOTIC_GOOD)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",2)
-    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
     CreateCreatureObject("FAMFAIR_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfair")
     SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
@@ -365,11 +365,11 @@ THEN
 END
 
 IF
-  Alignment(Protagonist,LAWFUL_NEUTRAL)
+  Alignment(Player1,LAWFUL_NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",3)
-    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
     CreateCreatureObject("FAMFER_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfer")
     SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
@@ -381,11 +381,11 @@ THEN
 END
 
 IF
-  Alignment(Protagonist,NEUTRAL)
+  Alignment(Player1,NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",4)
-    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
     CreateCreatureObject("FAMRAB_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famrab")
     SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
@@ -397,11 +397,11 @@ THEN
 END
 
 IF
-  Alignment(Protagonist,CHAOTIC_NEUTRAL)
+  Alignment(Player1,CHAOTIC_NEUTRAL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",5)
-    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
     CreateCreatureObject("FAMCAT_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famcat")
     SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
@@ -413,11 +413,11 @@ THEN
 END
 
 IF
-  Alignment(Protagonist,LAWFUL_EVIL)
+  Alignment(Player1,LAWFUL_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",6)
-    ReallyForceSpellRES("K#FAM+4",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,4,ADD)
     CreateCreatureObject("FAMIMP_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famimp")
     SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
@@ -429,11 +429,11 @@ THEN
 END
 
 IF
-  Alignment(Protagonist,NEUTRAL_EVIL)
+  Alignment(Player1,NEUTRAL_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",7)
-    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
     CreateCreatureObject("FAMDUST_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famdust")
     SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
@@ -445,11 +445,11 @@ THEN
 END
 
 IF
-  Alignment(Protagonist,CHAOTIC_EVIL)
+  Alignment(Player1,CHAOTIC_EVIL)
 THEN
   RESPONSE #100
     SetGlobal("K#FAMID","GLOBAL",8)
-    ReallyForceSpellRES("K#FAM+6",Protagonist)
+    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
     CreateCreatureObject("FAMQUAS_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famquas")
     SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)

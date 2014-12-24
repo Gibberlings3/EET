@@ -416,12 +416,195 @@ COPY + ~EET/temp/array/GTIMES.IDS~ ~EET/temp/array~
 	END
 
 ////////////////////////
-// Script compiler
+// IWD:EE
 ////////////////////////
 
-MKDIR ~Script compiler~
-ACTION_FOR_EACH "file" IN ANIMATE ACTION AREAFLAG CLASS GTIMES SNDSLOT SOUNDOFF TRIGGER BEGIN
-	ACTION_IF (FILE_EXISTS ~override/%file%.IDS~) BEGIN
-		COPY + ~override/%file%.IDS~ ~Script compiler~
+APPEND ~ACTION.IDS~ ~34 UseItemSlotAbility(O:Target*,I:Slot*SLOTS,I:Ability*)~             UNLESS ~34 UseItemSlotAbility(~
+APPEND ~ACTION.IDS~ ~75 SetNoWaitX(I:SetReset*BOOLEAN)~                                    UNLESS ~75 SetNoWaitX(~
+APPEND ~ACTION.IDS~ ~230 RestPartyEx(I:Gold*,I:HpBonus*,I:DisableMovie*BOOLEAN)~           UNLESS ~230 RestPartyEx(~
+APPEND ~ACTION.IDS~ ~280 DestroyAllFragileEquipment(I:Type*ITEMFLAG)~                      UNLESS ~280 DestroyAllFragileEquipment(~
+APPEND ~ACTION.IDS~ ~308 AddMapNoteColor(P:Position*,I:StringRef*,I:Color*Mapnotes)~       UNLESS ~308 AddMapNoteColor(~
+APPEND ~ACTION.IDS~ ~367 SetWorldmap(S:Worlmap*)~                                          UNLESS ~367 SetWorldmap(~
+APPEND ~ACTION.IDS~ ~368 WaitRandom(I:MinTime*,I:MaxTime*)~                                UNLESS ~368 WaitRandom(~
+APPEND ~ACTION.IDS~ ~369 StartRandomTimer(I:TimerID*,I:MinTime*,I:MaxTime*)~               UNLESS ~369 StartRandomTimer(~
+APPEND ~ACTION.IDS~ ~370 ChangeStat(O:Object*,I:Stat*Stats,I:Value*,I:Modifier*StatMod)~   UNLESS ~370 ChangeStat(~
+APPEND ~ACTION.IDS~ ~371 ResetMorale(I:Failure*BOOLEAN, I:Level*)~                         UNLESS ~371 ResetMorale(~
+APPEND ~ACTION.IDS~ ~372 MoveToCampaignX(S:Campaign*)~                                     UNLESS ~372 MoveToCampaignX(~
+APPEND ~ACTION.IDS~ ~373 AddWorldmapAreaFlagX(S:Area*,I:Type*WMPFLAG)~                     UNLESS ~373 AddWorldmapAreaFlagX(~
+APPEND ~ACTION.IDS~ ~374 RemoveWorldmapAreaFlagX(S:Area*,I:Type*WMPFLAG)~                  UNLESS ~374 RemoveWorldmapAreaFlagX(~
+APPEND ~ACTION.IDS~ ~376 DisplayStringNoNameDlg(O:Object*,I:StrRef*)~                      UNLESS ~376 DisplayStringNoNameDlg(~
+APPEND ~ACTION.IDS~ ~377 SetGlobalTimerRandomX(S:Name*,S:Area*,I:Min*GTimes,I:Max*GTimes)~ UNLESS ~377 SetGlobalTimerRandomX(~
+APPEND ~ACTION.IDS~ ~378 ExportParty(S:Name*)~                                             UNLESS ~378 ExportParty(~
+
+APPEND ~ACTSLEEP.IDS~ ~330 AddAreaType(I:Type*AREATYPE)~                                   UNLESS ~330 AddAreaType(~
+APPEND ~ACTSLEEP.IDS~ ~331 RemoveAreaType(I:Type*AREATYPE)~                                UNLESS ~331 RemoveAreaType(~
+APPEND ~ACTSLEEP.IDS~ ~332 AddAreaFlag(I:Type*AREAFLAG)~                                   UNLESS ~332 AddAreaFlag(~
+APPEND ~ACTSLEEP.IDS~ ~333 RemoveAreaFlag(I:Type*AREAFLAG)~                                UNLESS ~333 RemoveAreaFlag(~
+APPEND ~ACTSLEEP.IDS~ ~356 TransformItem(S:OldItem*,S:NewItem*)~                           UNLESS ~356 TransformItem(~
+APPEND ~ACTSLEEP.IDS~ ~357 ForceRandomEncounter(S:Area*)~                                  UNLESS ~357 ForceRandomEncounter(~
+APPEND ~ACTSLEEP.IDS~ ~359 SetMusic(I:Slot*MUSIC,I:Song*SONGLIST)~                         UNLESS ~359 SetMusic(~
+APPEND ~ACTSLEEP.IDS~ ~360 ChangeStoreMarkup(S:Store*,I:BuyMarkup*,I:SellMarkup*)~         UNLESS ~360 ChangeStoreMarkup(~
+APPEND ~ACTSLEEP.IDS~ ~364 SetGlobalRandom(S:Name*,S:Area*,I:Count*,I:Size*)~              UNLESS ~364 SetGlobalRandom(~
+APPEND ~ACTSLEEP.IDS~ ~367 SetWorldmap(S:Worlmap*)~                                        UNLESS ~367 SetWorldmap(~
+APPEND ~ACTSLEEP.IDS~ ~369 StartRandomTimer(I:TimerID*,I:MinTime*,I:MaxTime*)~             UNLESS ~369 StartRandomTimer(~
+APPEND ~ACTSLEEP.IDS~ ~370 ChangeStat(O:Object*,I:Stat*Stats,I:Value*,I:Modifier*StatMod)~ UNLESS ~370 ChangeStat(~
+APPEND ~ACTSLEEP.IDS~ ~376 DisplayStringNoNameDlg(O:Object*,I:StrRef*)~                    UNLESS ~376 DisplayStringNoNameDlg(~
+
+APPEND ~AREAFLAG.IDS~ ~8 DREAMAREA~      UNLESS ~8 DREAMAREA~
+APPEND ~AREAFLAG.IDS~ ~16 PLAYER1CANDIE~ UNLESS ~16 PLAYER1CANDIE~
+APPEND ~AREAFLAG.IDS~ ~32 NOREST~        UNLESS ~32 NOREST~
+
+APPEND ~INSTANT.IDS~ ~330 AddAreaType(I:Type*AREATYPE)~                                   UNLESS ~330 AddAreaType(~
+APPEND ~INSTANT.IDS~ ~331 RemoveAreaType(I:Type*AREATYPE)~                                UNLESS ~331 RemoveAreaType(~
+APPEND ~INSTANT.IDS~ ~332 AddAreaFlag(I:Type*AREAFLAG)~                                   UNLESS ~332 AddAreaFlag(~
+APPEND ~INSTANT.IDS~ ~333 RemoveAreaFlag(I:Type*AREAFLAG)~                                UNLESS ~333 RemoveAreaFlag(~
+APPEND ~INSTANT.IDS~ ~356 TransformItem(S:OldItem*,S:NewItem*)~                           UNLESS ~356 TransformItem(~
+APPEND ~INSTANT.IDS~ ~357 ForceRandomEncounter(S:Area*)~                                  UNLESS ~357 ForceRandomEncounter(~
+APPEND ~INSTANT.IDS~ ~359 SetMusic(I:Slot*MUSIC,I:Song*SONGLIST)~                         UNLESS ~359 SetMusic(~
+APPEND ~INSTANT.IDS~ ~360 ChangeStoreMarkup(S:Store*,I:BuyMarkup*,I:SellMarkup*)~         UNLESS ~360 ChangeStoreMarkup(~
+APPEND ~INSTANT.IDS~ ~364 SetGlobalRandom(S:Name*,S:Area*,I:Count*,I:Size*)~              UNLESS ~364 SetGlobalRandom(~
+APPEND ~INSTANT.IDS~ ~367 SetWorldmap(S:Worlmap*)~                                        UNLESS ~367 SetWorldmap(~
+APPEND ~INSTANT.IDS~ ~369 StartRandomTimer(I:TimerID*,I:MinTime*,I:MaxTime*)~             UNLESS ~369 StartRandomTimer(~
+APPEND ~INSTANT.IDS~ ~370 ChangeStat(O:Object*,I:Stat*Stats,I:Value*,I:Modifier*StatMod)~ UNLESS ~370 ChangeStat(~
+APPEND ~INSTANT.IDS~ ~376 DisplayStringNoNameDlg(O:Object*,I:StrRef*)~                    UNLESS ~376 DisplayStringNoNameDlg(~
+
+APPEND ~SPECIFIC.IDS~ ~172 BARBARIAN~      UNLESS ~172 BARBARIAN~
+APPEND ~SPECIFIC.IDS~ ~165 SNOW_TROLL~     UNLESS ~165 SNOW_TROLL~
+APPEND ~SPECIFIC.IDS~ ~150 WATER_DWELLING~ UNLESS ~150 WATER_DWELLING~
+
+APPEND ~TRIGGER.IDS~ ~0x40E1 ExtendedStateCheck(O:Object*,I:State*extstate)~       UNLESS ~0x40E1 ExtendedStateCheck(~
+APPEND ~TRIGGER.IDS~ ~0x40E2 CheckSpellState(O:Object*,I:State*splstate)~          UNLESS ~0x40E2 CheckSpellState(~
+APPEND ~TRIGGER.IDS~ ~0x40E3 NearLocation(O:Object*,I:PointX*,I:PointY*,I:Range*)~ UNLESS ~0x40E3 NearLocation(~
+APPEND ~TRIGGER.IDS~ ~0x40E4 NearSavedLocation(O:Object*,S:Global*,I:Range*)~      UNLESS ~0x40E4 NearSavedLocation(~
+APPEND ~TRIGGER.IDS~ ~0x40E5 Switch(S:Global*,S:Area*)~                            UNLESS ~0x40E5 Switch(~
+APPEND ~TRIGGER.IDS~ ~0x40E6 IsWeaponRanged(O:Object*)~                            UNLESS ~0x40E6 IsWeaponRanged(~
+APPEND ~TRIGGER.IDS~ ~0x40E9 NightmareModeOn()~                                    UNLESS ~0x40E9 NightmareModeOn()~
+
+ACTION_FOR_EACH file IN EXTSTATE ITEMFLAG MAPNOTES SPLSTATE STATMOD WMPFLAG BEGIN
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%file%.IDS~ BEGIN
+<<<<<<<< EET-inlined/dummy.ids
+IDS V1.0
+>>>>>>>>
+		COPY ~EET-inlined/dummy.ids~ ~override/%file%.IDS~
 	END
 END
+
+APPEND ~EXTSTATE.IDS~ ~0x00000001 STATE_PRAYER~                  UNLESS ~0x00000001 STATE_PRAYER~
+APPEND ~EXTSTATE.IDS~ ~0x00000002 STATE_PRAYER_BAD~              UNLESS ~0x00000002 STATE_PRAYER_BAD~
+APPEND ~EXTSTATE.IDS~ ~0x00000004 STATE_RECITATION~              UNLESS ~0x00000004 STATE_RECITATION~
+APPEND ~EXTSTATE.IDS~ ~0x00000008 STATE_RECITATION_BAD~          UNLESS ~0x00000008 STATE_RECITATION_BAD~
+APPEND ~EXTSTATE.IDS~ ~0x00000010 STATE_EYE_OF_THE_MIND~         UNLESS ~0x00000010 STATE_EYE_OF_THE_MIND~
+APPEND ~EXTSTATE.IDS~ ~0x00000020 STATE_EYE_OF_THE_SWORD~        UNLESS ~0x00000020 STATE_EYE_OF_THE_SWORD~
+APPEND ~EXTSTATE.IDS~ ~0x00000040 STATE_EYE_OF_THE_MAGE~         UNLESS ~0x00000040 STATE_EYE_OF_THE_MAGE~
+APPEND ~EXTSTATE.IDS~ ~0x00000080 STATE_EYE_OF_VENOM~            UNLESS ~0x00000080 STATE_EYE_OF_VENOM~
+APPEND ~EXTSTATE.IDS~ ~0x00000100 STATE_EYE_OF_THE_SPIRIT~       UNLESS ~0x00000100 STATE_EYE_OF_THE_SPIRIT~
+APPEND ~EXTSTATE.IDS~ ~0x00000200 STATE_EYE_OF_FORTITUDE~        UNLESS ~0x00000200 STATE_EYE_OF_FORTITUDE~
+APPEND ~EXTSTATE.IDS~ ~0x00000400 STATE_EYE_OF_STONE~            UNLESS ~0x00000400 STATE_EYE_OF_STONE~
+APPEND ~EXTSTATE.IDS~ ~0x00000800 STATE_ANIMAL_RAGE~             UNLESS ~0x00000800 STATE_ANIMAL_RAGE~
+APPEND ~EXTSTATE.IDS~ ~0x00001000 STATE_SUPPRESS_HP_INFO~        UNLESS ~0x00001000 STATE_SUPPRESS_HP_INFO~
+APPEND ~EXTSTATE.IDS~ ~0x00002000 STATE_BERSERK_ALWAYS_ACTIVE~   UNLESS ~0x00002000 STATE_BERSERK_ALWAYS_ACTIVE~
+APPEND ~EXTSTATE.IDS~ ~0x00004000 STATE_SNEAK_ATTACK_IMMUNITY~   UNLESS ~0x00004000 STATE_SNEAK_ATTACK_IMMUNITY~
+APPEND ~EXTSTATE.IDS~ ~0x00008000 STATE_CYNICISM_EQUIPPED~       UNLESS ~0x00008000 STATE_CYNICISM_EQUIPPED~
+APPEND ~EXTSTATE.IDS~ ~0x00010000 STATE_UNSTUN_ON_DAMAGE~        UNLESS ~0x00010000 STATE_UNSTUN_ON_DAMAGE~
+APPEND ~EXTSTATE.IDS~ ~0x00020000 STATE_DEAFENED~                UNLESS ~0x00020000 STATE_DEAFENED~
+APPEND ~EXTSTATE.IDS~ ~0x00040000 STATE_CHAOTIC_COMMANDS~        UNLESS ~0x00040000 STATE_CHAOTIC_COMMANDS~
+APPEND ~EXTSTATE.IDS~ ~0x00080000 STATE_MISCAST_MAGIC~           UNLESS ~0x00080000 STATE_MISCAST_MAGIC~
+APPEND ~EXTSTATE.IDS~ ~0x00100000 STATE_PAIN~                    UNLESS ~0x00100000 STATE_PAIN~
+APPEND ~EXTSTATE.IDS~ ~0x00200000 STATE_MALISON~                 UNLESS ~0x00200000 STATE_MALISON~
+APPEND ~EXTSTATE.IDS~ ~0x00400000 STATE_BLOOD_RAGE~              UNLESS ~0x00400000 STATE_BLOOD_RAGE~
+APPEND ~EXTSTATE.IDS~ ~0x00800000 STATE_CATS_GRACE~              UNLESS ~0x00800000 STATE_CATS_GRACE~
+APPEND ~EXTSTATE.IDS~ ~0x01000000 STATE_MOLD_TOUCH~              UNLESS ~0x01000000 STATE_MOLD_TOUCH~
+APPEND ~EXTSTATE.IDS~ ~0x02000000 STATE_SHROUD_OF_FLAME~         UNLESS ~0x02000000 STATE_SHROUD_OF_FLAME~
+APPEND ~EXTSTATE.IDS~ ~0x04000000 STATE_STATIC_CHARGE~           UNLESS ~0x04000000 STATE_STATIC_CHARGE~
+APPEND ~EXTSTATE.IDS~ ~0x08000000 STATE_DOESNT_AWAKEN_ON_DAMAGE~ UNLESS ~0x08000000 STATE_DOESNT_AWAKEN_ON_DAMAGE~
+
+APPEND ~ITEMFLAG.IDS~ ~1   INDESTRUCTIBLE~      UNLESS ~1   INDESTRUCTIBLE~
+APPEND ~ITEMFLAG.IDS~ ~2   TWOHANDED~           UNLESS ~2   TWOHANDED~
+APPEND ~ITEMFLAG.IDS~ ~4   DROPPABLE~           UNLESS ~4   DROPPABLE~
+APPEND ~ITEMFLAG.IDS~ ~8   DISPLAYABLE~         UNLESS ~8   DISPLAYABLE~
+APPEND ~ITEMFLAG.IDS~ ~16  CURSED~              UNLESS ~16  CURSED~
+APPEND ~ITEMFLAG.IDS~ ~32  NOTCOPIABLE~         UNLESS ~32  NOTCOPIABLE~
+APPEND ~ITEMFLAG.IDS~ ~64  MAGIC~               UNLESS ~64  MAGIC~
+APPEND ~ITEMFLAG.IDS~ ~128 LEFTHANDED~          UNLESS ~128 LEFTHANDED~
+APPEND ~ITEMFLAG.IDS~ ~256 SILVER~              UNLESS ~256 SILVER~
+APPEND ~ITEMFLAG.IDS~ ~512 COLDIRON~            UNLESS ~512 COLDIRON~
+APPEND ~ITEMFLAG.IDS~ ~1024 OFFHANDED~          UNLESS ~1024 OFFHANDED~
+APPEND ~ITEMFLAG.IDS~ ~2048 DIALOG~             UNLESS ~2048 DIALOG~
+APPEND ~ITEMFLAG.IDS~ ~0x1000 FAKE_OFFHAND~     UNLESS ~0x1000 FAKE_OFFHAND~
+APPEND ~ITEMFLAG.IDS~ ~0x2000 DISABLE_OFFHAND~  UNLESS ~0x2000 DISABLE_OFFHAND~
+APPEND ~ITEMFLAG.IDS~ ~0x0008000 ADAMANTINE~    UNLESS ~0x0008000 ADAMANTINE~
+APPEND ~ITEMFLAG.IDS~ ~0x01000000 BODYPART~     UNLESS ~0x01000000 BODYPART~
+APPEND ~ITEMFLAG.IDS~ ~0x02000000 CRITICAL_HIT~ UNLESS ~0x02000000 CRITICAL_HIT~
+
+APPEND ~MAPNOTES.IDS~ ~0 DEFAULT~ UNLESS ~0 DEFAULT~
+APPEND ~MAPNOTES.IDS~ ~1 SLATE~   UNLESS ~1 SLATE~
+APPEND ~MAPNOTES.IDS~ ~2 RED~     UNLESS ~2 RED~
+APPEND ~MAPNOTES.IDS~ ~3 GREEN~   UNLESS ~3 GREEN~
+APPEND ~MAPNOTES.IDS~ ~4 YELLOW~  UNLESS ~4 YELLOW~
+APPEND ~MAPNOTES.IDS~ ~5 TEAL~    UNLESS ~5 TEAL~
+APPEND ~MAPNOTES.IDS~ ~6 PURPLE~  UNLESS ~6 PURPLE~
+APPEND ~MAPNOTES.IDS~ ~7 SALMON~  UNLESS ~7 SALMON~
+
+APPEND ~SPLSTATE.IDS~ ~0 HOPELESSNESS~                                               UNLESS ~0 HOPELESSNESS~
+APPEND ~SPLSTATE.IDS~ ~1 PROTECTION_FROM_EVIL~                                       UNLESS ~1 PROTECTION_FROM_EVIL~
+APPEND ~SPLSTATE.IDS~ ~2 ARMOR_OF_FAITH~                                             UNLESS ~2 ARMOR_OF_FAITH~
+APPEND ~SPLSTATE.IDS~ ~3 NAUSEA~                                                     UNLESS ~3 NAUSEA~
+APPEND ~SPLSTATE.IDS~ ~4 ENFEEBLED~                                                  UNLESS ~4 ENFEEBLED~
+APPEND ~SPLSTATE.IDS~ ~5 RED_FIRESHIELD~                                             UNLESS ~5 RED_FIRESHIELD~
+APPEND ~SPLSTATE.IDS~ ~6 BLUE_FIRESHIELD~                                            UNLESS ~6 BLUE_FIRESHIELD~
+APPEND ~SPLSTATE.IDS~ ~7 HELD~                                                       UNLESS ~7 HELD~
+APPEND ~SPLSTATE.IDS~ ~8 DEATH_WARD~                                                 UNLESS ~8 DEATH_WARD~
+APPEND ~SPLSTATE.IDS~ ~9 HOLY_POWER~                                                 UNLESS ~9 HOLY_POWER~
+APPEND ~SPLSTATE.IDS~ ~10 BENEFICIAL_CHANT~                                          UNLESS ~10 BENEFICIAL_CHANT~
+APPEND ~SPLSTATE.IDS~ ~11 DETRIMENTAL_CHANT~                                         UNLESS ~11 DETRIMENTAL_CHANT~
+APPEND ~SPLSTATE.IDS~ ~12 BENEFICIAL_PRAYER~                                         UNLESS ~12 BENEFICIAL_PRAYER~
+APPEND ~SPLSTATE.IDS~ ~13 DETRIMENTAL_PRAYER~                                        UNLESS ~13 DETRIMENTAL_PRAYER~
+APPEND ~SPLSTATE.IDS~ ~14 BENEFICIAL_RECITATION~                                     UNLESS ~14 BENEFICIAL_RECITATION~
+APPEND ~SPLSTATE.IDS~ ~15 DETRIMENTAL_RECITATION~                                    UNLESS ~15 DETRIMENTAL_RECITATION~
+APPEND ~SPLSTATE.IDS~ ~16 ALLIED_RIGHTEOUS_WRATH_OF_THE_FAITHFUL~                    UNLESS ~16 ALLIED_RIGHTEOUS_WRATH_OF_THE_FAITHFUL~
+APPEND ~SPLSTATE.IDS~ ~17 ALLIED_AND_SAME_ALIGNMENT_RIGHTEOUS_WRATH_OF_THE_FAITHFUL~ UNLESS ~17 ALLIED_AND_SAME_ALIGNMENT_RIGHTEOUS_WRATH_OF_THE_FAITHFUL~
+APPEND ~SPLSTATE.IDS~ ~18 STONESKIN~                                                 UNLESS ~18 STONESKIN~
+APPEND ~SPLSTATE.IDS~ ~19 IRON_SKINS~                                                UNLESS ~19 IRON_SKINS~
+APPEND ~SPLSTATE.IDS~ ~20 SANCTUARY~                                                 UNLESS ~20 SANCTUARY~
+APPEND ~SPLSTATE.IDS~ ~21 OTILUKES_RESILIENT_SPHERE~                                 UNLESS ~21 OTILUKES_RESILIENT_SPHERE~
+APPEND ~SPLSTATE.IDS~ ~22 BLESS~                                                     UNLESS ~22 BLESS~
+APPEND ~SPLSTATE.IDS~ ~23 AID~                                                       UNLESS ~23 AID~
+APPEND ~SPLSTATE.IDS~ ~24 BARKSKIN~                                                  UNLESS ~24 BARKSKIN~
+APPEND ~SPLSTATE.IDS~ ~25 DRAW_UPON_HOLY_MIGHT~                                      UNLESS ~25 DRAW_UPON_HOLY_MIGHT~
+APPEND ~SPLSTATE.IDS~ ~26 ENTANGLE~                                                  UNLESS ~26 ENTANGLE~
+APPEND ~SPLSTATE.IDS~ ~27 WEB~                                                       UNLESS ~27 WEB~
+APPEND ~SPLSTATE.IDS~ ~28 GREASE~                                                    UNLESS ~28 GREASE~
+APPEND ~SPLSTATE.IDS~ ~29 FREE_ACTION~                                               UNLESS ~29 FREE_ACTION~
+APPEND ~SPLSTATE.IDS~ ~30 ENTROPY_SHIELD~                                            UNLESS ~30 ENTROPY_SHIELD~
+APPEND ~SPLSTATE.IDS~ ~31 STORM_SHELL~                                               UNLESS ~31 STORM_SHELL~
+APPEND ~SPLSTATE.IDS~ ~32 PROTECTION_FROM_THE_ELEMENTS~                              UNLESS ~32 PROTECTION_FROM_THE_ELEMENTS~
+APPEND ~SPLSTATE.IDS~ ~33 BERSERK_ALWAYS_ACTIVE~                                     UNLESS ~33 BERSERK_ALWAYS_ACTIVE~
+APPEND ~SPLSTATE.IDS~ ~34 BLOOD_RAGE~                                                UNLESS ~34 BLOOD_RAGE~
+APPEND ~SPLSTATE.IDS~ ~35 SUPPRESS_HP_INFO~                                          UNLESS ~35 SUPPRESS_HP_INFO~
+APPEND ~SPLSTATE.IDS~ ~36 DOESNT_AWAKEN_ON_DAMAGE~                                   UNLESS ~36 DOESNT_AWAKEN_ON_DAMAGE~
+APPEND ~SPLSTATE.IDS~ ~37 UNSTUN_ON_DAMAGE~                                          UNLESS ~37 UNSTUN_ON_DAMAGE~
+APPEND ~SPLSTATE.IDS~ ~38 DEAFENED~                                                  UNLESS ~38 DEAFENED~
+APPEND ~SPLSTATE.IDS~ ~39 ANIMAL_RAGE~                                               UNLESS ~39 ANIMAL_RAGE~
+APPEND ~SPLSTATE.IDS~ ~40 SNEAK_ATTACK_IMMUNITY~                                     UNLESS ~40 SNEAK_ATTACK_IMMUNITY~
+APPEND ~SPLSTATE.IDS~ ~41 CHAOTIC_COMMANDS~                                          UNLESS ~41 CHAOTIC_COMMANDS~
+APPEND ~SPLSTATE.IDS~ ~42 MISCAST_MAGIC~                                             UNLESS ~42 MISCAST_MAGIC~
+APPEND ~SPLSTATE.IDS~ ~43 PAIN~                                                      UNLESS ~43 PAIN~
+APPEND ~SPLSTATE.IDS~ ~44 MALISON~                                                   UNLESS ~44 MALISON~
+APPEND ~SPLSTATE.IDS~ ~45 CATS_GRACE~                                                UNLESS ~45 CATS_GRACE~
+APPEND ~SPLSTATE.IDS~ ~46 MOLD_TOUCH~                                                UNLESS ~46 MOLD_TOUCH~
+APPEND ~SPLSTATE.IDS~ ~47 SHROUD_OF_FLAME~                                           UNLESS ~47 SHROUD_OF_FLAME~
+APPEND ~SPLSTATE.IDS~ ~48 EYE_OF_THE_MIND~                                           UNLESS ~48 EYE_OF_THE_MIND~
+APPEND ~SPLSTATE.IDS~ ~49 EYE_OF_THE_SWORD~                                          UNLESS ~49 EYE_OF_THE_SWORD~
+APPEND ~SPLSTATE.IDS~ ~50 EYE_OF_THE_MAGE~                                           UNLESS ~50 EYE_OF_THE_MAGE~
+APPEND ~SPLSTATE.IDS~ ~51 EYE_OF_VENOM~                                              UNLESS ~51 EYE_OF_VENOM~
+APPEND ~SPLSTATE.IDS~ ~52 EYE_OF_THE_SPIRIT~                                         UNLESS ~52 EYE_OF_THE_SPIRIT~
+APPEND ~SPLSTATE.IDS~ ~53 EYE_OF_FORTITUDE~                                          UNLESS ~53 EYE_OF_FORTITUDE~
+APPEND ~SPLSTATE.IDS~ ~54 EYE_OF_STONE~                                              UNLESS ~54 EYE_OF_STONE~
+APPEND ~SPLSTATE.IDS~ ~251 CHAIN_LIGHTNING~                                          UNLESS ~251 CHAIN_LIGHTNING~
+APPEND ~SPLSTATE.IDS~ ~252 EVASION~                                                  UNLESS ~252 EVASION~
+APPEND ~SPLSTATE.IDS~ ~253 ACID_LEVEL_2~                                             UNLESS ~253 ACID_LEVEL_2~
+APPEND ~SPLSTATE.IDS~ ~254 ACID_LEVEL_3~                                             UNLESS ~254 ACID_LEVEL_3~
+APPEND ~SPLSTATE.IDS~ ~255 CYNICISM_EQUIPPED~                                        UNLESS ~255 CYNICISM_EQUIPPED~
+
+APPEND ~STATMOD.IDS~ ~1 ADD~ UNLESS ~1 ADD~
+APPEND ~STATMOD.IDS~ ~2 SET~ UNLESS ~2 SET~

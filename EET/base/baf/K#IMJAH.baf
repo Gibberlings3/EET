@@ -1,9 +1,9 @@
 IF
   Global("JaheiraImport","GLOBAL",1)
-  CheckStat(Myself,14,DEX)
+  CheckStatLT(Myself,17,DEX)
 THEN
   RESPONSE #100
-    ApplySpellRES("K#BDEX17",Myself)
+    ChangeStat(Myself,DEX,17,SET)
     Continue()
 END
 
@@ -13,7 +13,7 @@ IF
   XPLT(Myself,90000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP90k",Myself)
+    ChangeStat(Myself,XP,90000,SET)
     Continue()
 END
 
@@ -24,7 +24,7 @@ IF
   XPLT(Myself,161000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP161k",Myself)
+    ChangeStat(Myself,XP,161000,SET)
     Continue()
 END
 
@@ -34,7 +34,7 @@ IF
   XPLT(Myself,400000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP400k",Myself)
+    ChangeStat(Myself,XP,400000,SET)
     Continue()
 END
 
@@ -44,7 +44,7 @@ IF
   XPLT(Myself,800000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP800k",Myself)
+    ChangeStat(Myself,XP,800000,SET)
     Continue()
 END
 

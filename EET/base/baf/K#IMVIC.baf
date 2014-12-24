@@ -1,18 +1,18 @@
 IF
   Global("ViconiaImport","GLOBAL",1)
-  CheckStat(Myself,15,WIS)
+  CheckStatLT(Myself,18,WIS)
 THEN
   RESPONSE #100
-    ApplySpellRES("K#BWIS18",Myself)
+    ChangeStat(Myself,WIS,18,SET)
     Continue()
 END
 
 IF
   Global("ViconiaImport","GLOBAL",1)
-  CheckStat(Myself,50,RESISTMAGIC)
+  CheckStatLT(Myself,65,RESISTMAGIC)
 THEN
   RESPONSE #100
-    ApplySpellRES("K#BMAG65",Myself)
+    ChangeStat(Myself,RESISTMAGIC,65,SET)
     Continue()
 END
 
@@ -22,7 +22,7 @@ IF
   XPLT(Myself,161000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP161k",Myself)
+    ChangeStat(Myself,XP,161000,SET)
     Continue()
 END
 
@@ -33,7 +33,7 @@ IF
   XPLT(Myself,400000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP400k",Myself)
+    ChangeStat(Myself,XP,400000,SET)
     Continue()
 END
 
@@ -44,7 +44,7 @@ IF
   XPLT(Myself,800000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP800k",Myself)
+    ChangeStat(Myself,XP,800000,SET)
     Continue()
 END
 
@@ -54,7 +54,7 @@ IF
   XPLT(Myself,1200000)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#XP1kk2",Myself)
+    ChangeStat(Myself,XP,1200000,SET)
     Continue()
 END
 
