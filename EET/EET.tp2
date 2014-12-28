@@ -66,6 +66,7 @@ ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT exe ~.exe~
 	OUTER_SPRINT bgee_dir ~C:/Program Files (x86)/BeamDog/Games/00766~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
+	OUTER_SPRINT bash_debug ~ 2>&1|EET\install\win32\mtee.exe EET\temp\bash.debug /A~
 	ACTION_IF (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
 		AT_INTERACTIVE_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
 	END
@@ -78,12 +79,18 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 	OUTER_SPRINT exe ~~
 	OUTER_SPRINT bgee_dir ~Applications/Baldur\'s\ Gate-EE/Game\ Data/00777/Baldur\'s\ Gate\ -\ Enhanced\ Edition.app/Contents/Resources~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~EET/weidu~
+	OUTER_SPRINT bash_debug ~ 2>>EET/temp/bash.debug | tee -a EET/temp/bash.debug~
 	ACTION_IF (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
 		AT_INTERACTIVE_UNINSTALL ~rm -rf EET/temp~
 	END
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) AND (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
 		AT_INTERACTIVE_EXIT ~rm -rf EET/temp~
 	END
+END
+
+ACTION_FOR_EACH tool IN tis2bg2 tileconv BEGIN
+	OUTER_SPRINT EVAL ~%tool%~ ~EET%os_slash%install%os_slash%%WEIDU_OS%%os_slash%%tool%%exe%~
+	PRINT ~%tool% path assigned~
 END
 
 OUTER_SPRINT ~newline~ ~%WNL%%LNL%%MNL%%TAB% ~
@@ -356,13 +363,6 @@ ACTION_FOR_EACH "var" IN ARE BCS CRE DLG EFF ITM SPL STO VVC WED BEGIN
 	MKDIR ~%patch_dir%/%var%~
 	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
-	/*GET_FILE_ARRAY array_override ~%bgee_dir%/override~ ~^.+\.%var%$~
-	ACTION_PHP_EACH array_override AS aray_fileNo => array_file BEGIN
-		COPY + ~%array_file%~ ~%patch_dir%/%var%~
-	END
-	OUTER_PATCH action_clear_array_yeah BEGIN
-		CLEAR_ARRAY array_override
-	END*/
 	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/%var%~
 	END
@@ -456,13 +456,6 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	MKDIR ~EET/temp/%var%~
 	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
-	/*GET_FILE_ARRAY array_override ~%bgee_dir%/override~ ~^.+\.%var%$~
-	ACTION_PHP_EACH array_override AS aray_fileNo => array_file BEGIN
-		COPY + ~%array_file%~ ~EET/temp/%var%~
-	END
-	OUTER_PATCH action_clear_array_yeah BEGIN
-		CLEAR_ARRAY array_override
-	END*/
 	//due to lack of official BG:EE dubbing support for all languages, local 'movies' dir is often used as an 'override' alternative for sounds (this way the game can still have multi dubs)
 	ACTION_IF (("%var%" STRING_EQUAL_CASE "WAV")=1) BEGIN
 		ACTION_BASH_FOR ~%bgee_dir%/lang/%LANGUAGE%/movies~ ~^.+\.%var%$~ BEGIN
@@ -972,7 +965,7 @@ COPY ~EET/base/are~ ~override~
 /////                                                  \\\\\
 
 COPY ~EET/temp/bam~ ~override~
-	~EET/modify/bam~ ~override~
+	~EET/base/bam~ ~override~
 
 /////                                                  \\\\\
 ///// BCS                                              \\\\\
@@ -1816,6 +1809,14 @@ APPEND_OUTER + ~EET/temp/eff.tph~ ~%debug%~
 COPY ~EET/base/eff~ ~override~
 
 /////                                                  \\\\\
+///// GUI                                              \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~BGEE.GUI~ ~override~
+	REPLACE_TEXTUALLY ~SELECT 450, 20, 120, 16~ ~SELECT 903, 18, 120, 16~ //move build version to the right corner
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// ITM                                              \\\\\
 /////                                                  \\\\\
 
@@ -1910,8 +1911,12 @@ COPY ~EET/base/itm/K#TELSPL.ITM~ ~override~
 ///// MOS                                              \\\\\
 /////                                                  \\\\\
 
+ACTION_BASH_FOR ~EET/base/mos~ ~^.+\.mos$~ BEGIN
+	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_FILE%" "EET%os_slash%base%os_slash%mos%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
+END
+LAM bash_log
+
 COPY ~EET/temp/mos~ ~override~
-	~EET/base/mos~ ~override~
 
 /////                                                  \\\\\
 ///// MUS / ACM                                        \\\\\
@@ -2511,6 +2516,7 @@ APPEND_OUTER + ~EET/temp/sto.tph~ ~%debug%~
 /////                                                  \\\\\
 
 COPY ~EET/temp/tis~ ~override~
+	~EET/base/tis~ ~override~
 
 /////                                                  \\\\\
 ///// VVC                                              \\\\\
