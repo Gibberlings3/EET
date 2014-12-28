@@ -461,7 +461,8 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("TurnDay","AR4000",1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
-    SetGlobal("ENDOFBG2","GLOBAL",2)~
+    SetGlobal("ENDOFBG2","GLOBAL",2)
+    SetWorldmap("WORLDMAP")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
