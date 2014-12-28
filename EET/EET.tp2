@@ -2339,6 +2339,11 @@ COPY ~EET/temp/pro~ ~override~
 ///// SPL                                              \\\\\
 /////                                                  \\\\\
 
+ACTION_FOR_EACH "value" IN 4 6 9 12 24 BEGIN
+	COPY ~EET/base/spl/K#CURE.SPL~ ~override/K#CURE%value%.SPL~
+		WRITE_LONG 0x9e %value%
+END
+
 COPY ~EET/base/spl/SPWI123.SPL~ ~override~
 	~EET/base/spl/SPCL342.SPL~ ~override~
 
