@@ -1799,6 +1799,9 @@ COPY_EXISTING ~STRTGOLD.2DA~ ~override~
 // STARTARE.2DA
 ////////////////////////
 
+//APPEND ~STARTARE.2DA~ ~START_MP_XP             2500000~ UNLESS ~START_MP_XP~
+//APPEND ~STARTARE.2DA~ ~START_MP_XP_CAP         8000000~ UNLESS ~START_MP_XP_CAP~
+
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_entryValue_startare" BEGIN
 	"START_AREA" => "FH2600"
 	"START_XPOS" => "1080"
@@ -1809,8 +1812,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_entryValue_startare" BEGIN
 	"START_AREA_MP" => "AR4000"
 	"START_XPOS_MP" => "1311"
 	"START_YPOS_MP" => "2347"
-	"START_XP" => "0"//89000 in BG2 - add via script
-	"START_XP_CAP" => "8000000"//161000 in BG1 - add via script
+	"START_XP" => "1"//89000 in BG2 - added via script
+	"START_XP_CAP" => "8000000"//161000 in BG1 - added via script
 END
 
 COPY_EXISTING ~STARTARE.2DA~ ~override~
