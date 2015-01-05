@@ -5,29 +5,26 @@ README ~EET/help/[%LANGUAGE%]readme.htm~ ~EET/help/[en_US]readme.htm~
 //AUTO_TRA ~EET/lang/%s~//%~
 
 /*ALWAYS
-	INCLUDE ~EET/lib/always.tpa~
+	INCLUDE ~EET/lib/always.tph~
 END*/
 
 LANGUAGE ~English~
 	~en_US~
 	~EET/lang/en_US/prompts.tra~
 	~EET/lang/en_US/setup.tra~
-	//~EET/lang/en_US/areas.tra~//this file is not meant to be loaded
 	~EET/lang/en_US/dialog.tra~
-	~EET/lang/en_US/itm_spl.tra~
 	~EET/lang/en_US/scripts.tra~
-	//~EET/lang/en_US/worldmap.tra~//this file is not meant to be loaded
+	//~EET/lang/en_US/map_mods_trans.tra~//this file is not meant to be loaded
 LANGUAGE ~Polski (Polish)~
 	~pl_PL~
 	~EET/lang/pl_PL/prompts.tra~
 	~EET/lang/pl_PL/setup.tra~
-	//~EET/lang/pl_PL/areas.tra~
 	~EET/lang/pl_PL/dialog.tra~
-	~EET/lang/pl_PL/itm_spl.tra~
 	~EET/lang/pl_PL/scripts.tra~
-	//~EET/lang/pl_PL/worldmap.tra~
+	//~EET/lang/pl_PL/map_mods_trans.tra~
 
-BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~ DESIGNATED 0
+BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~
+DESIGNATED 0
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ ~Please install it on BG2:EE engine.~
 FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
 REQUIRE_FILE ~setup-bp-bgt-worldmap.tp2~ ~BP-BGT Worldmap tp2 file not detected. Extract the Worldmap mod without installing it and run this setup again.~
@@ -206,7 +203,7 @@ ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 			READ_2DA_ENTRY cnt 0 1 "col1"
 			INNER_ACTION BEGIN
-				COPY - ~EET/compatibility.list~ ~EET~
+				COPY - ~EET/tbl/compatibility.tbl~ ~EET~
 					COUNT_2DA_ROWS 1 "cntrow2"
 					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
 						READ_2DA_ENTRY cnt2 0 1 "compareWith"
@@ -326,8 +323,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY charsetsTable BEGIN
 	//"zh_cn" => ""
 END
 
-ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN areas dialog itm_spl scripts END
-ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog itm_spl scripts END
+ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN dialog scripts END
+ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog scripts END
 LAF ~HANDLE_CHARSETS~
 	INT_VAR
 	infer_charsets = 0
@@ -1013,19 +1010,19 @@ COMPILE ~%patch_dir%/bcs~
 // patching BG:EE scripts
 INCLUDE ~EET/lib/bg1_BCS.tph~
 
-//Combine EET-transition.tbl
+//Combine transition.tbl
 ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/EET-transition.tbl~) BEGIN
 	COPY + ~%bgee_dir%/override/EET-transition.tbl~ ~EET/temp~
 END
 
 ACTION_IF (FILE_EXISTS ~override/EET-transition.tbl~) BEGIN
 	COPY ~override/EET-transition.tbl~ ~override~
-		APPEND_FILE ~EET/base/EET-transition.tbl~
+		APPEND_FILE ~EET/tbl/EET-transition.tbl~
 		PATCH_IF (FILE_EXISTS ~EET/temp/EET-transition.tbl~) BEGIN
 			APPEND_FILE ~EET/temp/EET-transition.tbl~
 		END
 END ELSE BEGIN
-    COPY ~EET/base/EET-transition.tbl~ ~override~
+    COPY ~EET/tbl/EET-transition.tbl~ ~override~
 		PATCH_IF (FILE_EXISTS ~EET/temp/EET-transition.tbl~) BEGIN
 			APPEND_FILE ~EET/temp/EET-transition.tbl~
 		END
@@ -1568,102 +1565,6 @@ END
 
 COMPILE ~%patch_dir%/dlg~
 	~EET/modify/d~
-	~EET/base/d~
-
-//Greater Teleport spell (modify both scripts and dialogues)
-<<<<<<<< EET-inlined/K#TELCUT.baf
-IF
-  True()
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    CreateVisualEffectObject("SPDIMNDR",Player1)
-    CreateVisualEffectObject("SPDIMNDR",Player2)
-    CreateVisualEffectObject("SPDIMNDR",Player3)
-    CreateVisualEffectObject("SPDIMNDR",Player4)
-    CreateVisualEffectObject("SPDIMNDR",Player5)
-    CreateVisualEffectObject("SPDIMNDR",Player6)
-    Wait(3)
-    FadeToColor([20.0],0)
-    Wait(1)
-    LeaveAreaLUAPanic("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%)
-    LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%)
-    ActionOverride(Player2,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
-    ActionOverride(Player3,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
-    ActionOverride(Player4,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
-    ActionOverride(Player5,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
-    ActionOverride(Player6,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
-    MultiPlayerSync()
-    Wait(1)
-    FadeFromColor([20.0],0)
-    CreateVisualEffectObject("SPDIMNDR",Myself)
-    ActionOverride(Player2,CreateVisualEffectObject("SPDIMNDR",Myself))
-    ActionOverride(Player3,CreateVisualEffectObject("SPDIMNDR",Myself))
-    ActionOverride(Player4,CreateVisualEffectObject("SPDIMNDR",Myself))
-    ActionOverride(Player5,CreateVisualEffectObject("SPDIMNDR",Myself))
-    ActionOverride(Player6,CreateVisualEffectObject("SPDIMNDR",Myself))
-    Wait(3)
-    EndCutSceneMode()
-END
->>>>>>>>
-
-<<<<<<<< EET-inlined/area-et.baf
-IF
-  Global("K#BeenIn%area%","GLOBAL",0)
-  //AreaCheck("%area%")
-THEN
-  RESPONSE #100
-    SetGlobal("K#BeenIn%area%","GLOBAL",1)
-    Continue()
-END
->>>>>>>>
-
-<<<<<<<< EET-inlined/K#TELSPL-eb.d
-EXTEND_BOTTOM K#TELSPL 0
-	IF ~OR(2) Global("K#BeenIn%area%","GLOBAL",1) Global("K#DebugMode","GLOBAL",1)~ THEN REPLY ~%string%~ DO ~ClearAllActions()
-StartCutScene("K#%area%")
-DestroySelf()~ EXIT
-END
->>>>>>>>
-
-COPY - ~EET/base/EET-teleport.tbl~ ~EET/base/EET-teleport.tbl~
-	COUNT_2DA_ROWS 4 cntrow
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET update = 0
-		READ_2DA_ENTRY cnt 0 4 "area"
-		READ_2DA_ENTRY cnt 1 4 "Xcoordinate"
-		READ_2DA_ENTRY cnt 2 4 "Ycoordinate"
-		READ_2DA_ENTRY cnt 3 4 "Orientation"
-		INNER_ACTION BEGIN
-			ACTION_IF (("%area%" STRING_EQUAL_CASE "%area_last%")=0) BEGIN
-				EXTEND_TOP ~%area%.BCS~ ~EET-inlined/area-et.baf~ EVALUATE_BUFFER
-				COPY - ~EET-inlined/K#TELCUT.baf~ ~EET-inlined/K#%area%.baf~
-				COMPILE ~EET-inlined/K#%area%.baf~ EVALUATE_BUFFER
-				COPY - ~%tra_path%/%LANGUAGE%/areas.tra~ ~%tra_path%/%LANGUAGE%/areas.tra~
-					REPLACE_TEXTUALLY ~%slash%%slash%.*~ ~~
-					COUNT_2DA_ROWS 3 cntrow2
-					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-						READ_2DA_ENTRY cnt2 0 3 "compareWith"
-						READ_2DA_ENTRY cnt2 2 3 "string"
-						PATCH_IF (("@%area%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-							INNER_PATCH_SAVE string "%string%" BEGIN
-								REPLACE_TEXTUALLY "###" " "
-								REPLACE_TEXTUALLY ~"~ ~~ //"
-								REPLACE_TEXTUALLY "~" ""
-							END
-							SET update = 1
-							SET cnt2 = cntrow2
-						END
-					END
-				ACTION_IF ("%update%" = 1) BEGIN 
-					COMPILE ~EET-inlined/K#TELSPL-eb.d~ EVALUATE_BUFFER
-				END ELSE BEGIN
-					WARN ~Translation for %area% used in K#TELSPL.DLG not found.~
-				END
-			END
-		END
-		SPRINT ~area_last~ ~%area%~
-	END
 
 /////                                                  \\\\\
 ///// GAM                                              \\\\\
@@ -1815,7 +1716,7 @@ COPY ~EET/base/eff~ ~override~
 /////                                                  \\\\\
 
 COPY_EXISTING ~BGEE.GUI~ ~override~
-	REPLACE_TEXTUALLY ~SELECT 450, 20, 120, 16~ ~SELECT 903, 18, 120, 16~ //move build version to the right corner
+	REPLACE_TEXTUALLY ~SELECT 450, 20, 120, 16~ ~SELECT 903, 18, 120, 16~ //move build version to the upper right corner
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -1904,10 +1805,6 @@ END
 
 COPY ~EET/base/itm/K#TELBG2.ITM~ ~override~
 	~EET/base/itm/K#TELTUT.ITM~ ~override~
-
-COPY ~EET/base/itm/K#TELSPL.ITM~ ~override~
-	SAY 0xc @2000000
-	SAY 0x54 @2000001
 
 /////                                                  \\\\\
 ///// MOS                                              \\\\\
@@ -2487,10 +2384,6 @@ COPY + ~EET-inlined/blank.txt~ ~EET/temp/spl.tph~
 	PATCH_LOG ~%debug%~
 APPEND_OUTER + ~EET/temp/spl.tph~ ~%debug%~
 
-COPY ~EET/base/spl/K#TELSPL.SPL~ ~override~
-	SAY 0x8 @2000000
-	SAY 0x50 @2000001
-
 /////                                                  \\\\\
 ///// STO                                              \\\\\
 /////                                                  \\\\\
@@ -2970,38 +2863,42 @@ AND (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_links.tbl~) BEGIN
 		END
 END
 
+MKDIR ~Worldmap~
+
 ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_areas.tbl~) BEGIN
 	COPY ~Worldmap/map_mods_areas.tbl~ ~Worldmap~
-		APPEND_FILE ~EET/Worldmap/areas.tbl~
+		APPEND_FILE ~EET/tbl/map_mods_areas.tbl~
 		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
 			APPEND_FILE ~EET/temp/map_mods_areas.tbl~
 		END
+END ELSE BEGIN
+    COPY ~EET/tbl/map_mods_areas.tbl~ ~Worldmap~
+		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
+			APPEND_FILE ~EET/temp/map_mods_areas.tbl~
+		END
+END
+
+ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_links.tbl~) BEGIN
 	COPY ~Worldmap/map_mods_links.tbl~ ~Worldmap~
-		APPEND_FILE ~EET/Worldmap/links.tbl~
+		APPEND_FILE ~EET/tbl/map_mods_links.tbl~
 		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_links.tbl~) BEGIN
 			APPEND_FILE ~EET/temp/map_mods_links.tbl~
 		END
+END ELSE BEGIN
+    COPY ~EET/tbl/map_mods_links.tbl~ ~Worldmap~
+		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_links.tbl~) BEGIN
+			APPEND_FILE ~EET/temp/map_mods_links.tbl~
+		END
+END
+
+ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_trans.tbl~) BEGIN
 	COPY ~Worldmap/map_mods_trans.tra~ ~Worldmap~
-		APPEND_FILE ~%tra_path%/%LANGUAGE%/worldmap.tra~
+		APPEND_FILE ~%tra_path%/%LANGUAGE%/map_mods_trans.tra~
 		PATCH_IF (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_trans.tra~) BEGIN
 			APPEND_FILE ~%bgee_dir%/Worldmap/map_mods_trans.tra~
 		END
 END ELSE BEGIN
-    MKDIR ~Worldmap~
-	/*//create dummy files to solve BP-BGT reinstallation problem (they will be stored in backup dir, so Worldmap will be able to detect them when you uninstall EET)
-	COPY + ~EET-inlined/blank.txt~ ~Worldmap/map_mods_areas.tbl~
-		~EET-inlined/blank.txt~ ~Worldmap/map_mods_links.tbl~
-		~EET-inlined/blank.txt~ ~Worldmap/map_mods_trans.tra~*/
-
-    COPY ~EET/Worldmap/areas.tbl~ ~Worldmap/map_mods_areas.tbl~
-		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/map_mods_areas.tbl~
-		END
-    COPY ~EET/Worldmap/links.tbl~ ~Worldmap/map_mods_links.tbl~
-		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_links.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/map_mods_links.tbl~
-		END
-    COPY ~%tra_path%/%LANGUAGE%/worldmap.tra~ ~Worldmap/map_mods_trans.tra~
+    COPY ~%tra_path%/%LANGUAGE%/map_mods_trans.tra~ ~Worldmap~
 		PATCH_IF (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_trans.tra~) BEGIN
 			APPEND_FILE ~%bgee_dir%/Worldmap/map_mods_trans.tra~
 		END

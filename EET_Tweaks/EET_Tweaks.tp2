@@ -1,0 +1,372 @@
+BACKUP ~EET_Tweaks/backup~
+AUTHOR ~K4thos (swit)~
+VERSION ~beta 0.1~
+README ~EET_Tweaks/help/[%LANGUAGE%]readme.htm~ ~EET_Tweaks/help/[en_US]readme.htm~
+//AUTO_TRA ~EET_Tweaks/lang/%s~//%~
+
+ALWAYS
+	INCLUDE ~EET_Tweaks/lib/always.tph~
+END
+
+LANGUAGE ~English~
+	~en_US~
+	~EET_Tweaks/lang/en_US/prompts.tra~
+	~EET_Tweaks/lang/en_US/setup.tra~
+LANGUAGE ~Polski (Polish)~
+	~pl_PL~
+	~EET_Tweaks/lang/pl_PL/prompts.tra~
+	~EET_Tweaks/lang/pl_PL/setup.tra~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Component 0: Teleport spell                      \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Teleport spell~
+DESIGNATED 0
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible with EET.~
+
+LOAD_TRA ~EET_Tweaks/lang/%LANGUAGE%/0.tra~
+
+COMPILE ~EET_Tweaks/0/K#TELSPL.d~
+
+//modify both scripts and dialogue
+<<<<<<<< EET_Tweaks-inlined/0/K#TELCUT.baf
+IF
+  True()
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    CreateVisualEffectObject("SPDIMNDR",Player1)
+    CreateVisualEffectObject("SPDIMNDR",Player2)
+    CreateVisualEffectObject("SPDIMNDR",Player3)
+    CreateVisualEffectObject("SPDIMNDR",Player4)
+    CreateVisualEffectObject("SPDIMNDR",Player5)
+    CreateVisualEffectObject("SPDIMNDR",Player6)
+    Wait(3)
+    FadeToColor([20.0],0)
+    Wait(1)
+    LeaveAreaLUAPanic("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%)
+    LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%)
+    ActionOverride(Player2,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
+    ActionOverride(Player3,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
+    ActionOverride(Player4,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
+    ActionOverride(Player5,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
+    ActionOverride(Player6,LeaveAreaLUA("%area%","",[%Xcoordinate%.%Ycoordinate%],%Orientation%))
+    MultiPlayerSync()
+    Wait(1)
+    FadeFromColor([20.0],0)
+    CreateVisualEffectObject("SPDIMNDR",Myself)
+    ActionOverride(Player2,CreateVisualEffectObject("SPDIMNDR",Myself))
+    ActionOverride(Player3,CreateVisualEffectObject("SPDIMNDR",Myself))
+    ActionOverride(Player4,CreateVisualEffectObject("SPDIMNDR",Myself))
+    ActionOverride(Player5,CreateVisualEffectObject("SPDIMNDR",Myself))
+    ActionOverride(Player6,CreateVisualEffectObject("SPDIMNDR",Myself))
+    Wait(3)
+    EndCutSceneMode()
+END
+>>>>>>>>
+
+<<<<<<<< EET_Tweaks-inlined/0/area-et.baf
+IF
+  Global("K#BeenIn%area%","GLOBAL",0)
+  //AreaCheck("%area%")
+THEN
+  RESPONSE #100
+    SetGlobal("K#BeenIn%area%","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
+
+<<<<<<<< EET_Tweaks-inlined/0/K#TELSPL-eb.d
+EXTEND_BOTTOM K#TELSPL 0
+	IF ~OR(2) Global("K#BeenIn%area%","GLOBAL",1) Global("K#DebugMode","GLOBAL",1)~ THEN REPLY ~%string%~ DO ~ClearAllActions()
+StartCutScene("K#%area%")
+DestroySelf()~ EXIT
+END
+>>>>>>>>
+
+COPY - ~EET_Tweaks/0/EET-teleport.tbl~ ~EET_Tweaks/0/EET-teleport.tbl~
+	COUNT_2DA_ROWS 4 cntrow
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		SET update = 0
+		READ_2DA_ENTRY cnt 0 4 "area"
+		READ_2DA_ENTRY cnt 1 4 "Xcoordinate"
+		READ_2DA_ENTRY cnt 2 4 "Ycoordinate"
+		READ_2DA_ENTRY cnt 3 4 "Orientation"
+		INNER_ACTION BEGIN
+			ACTION_IF (("%area%" STRING_EQUAL_CASE "%area_last%")=0) BEGIN
+				EXTEND_TOP ~%area%.BCS~ ~EET_Tweaks-inlined/0/area-et.baf~ EVALUATE_BUFFER
+				COPY - ~EET_Tweaks-inlined/0/K#TELCUT.baf~ ~EET_Tweaks-inlined/0/K#%area%.baf~
+				COMPILE ~EET_Tweaks-inlined/0/K#%area%.baf~ EVALUATE_BUFFER
+				COPY - ~%tra_path%/%LANGUAGE%/areas.tra~ ~%tra_path%/%LANGUAGE%/areas.tra~
+					REPLACE_TEXTUALLY ~%slash%%slash%.*~ ~~
+					COUNT_2DA_ROWS 3 cntrow2
+					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
+						READ_2DA_ENTRY cnt2 0 3 "compareWith"
+						READ_2DA_ENTRY cnt2 2 3 "string"
+						PATCH_IF (("@%area%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
+							INNER_PATCH_SAVE string "%string%" BEGIN
+								REPLACE_TEXTUALLY "###" " "
+								REPLACE_TEXTUALLY ~"~ ~~ //"
+								REPLACE_TEXTUALLY "~" ""
+							END
+							SET update = 1
+							SET cnt2 = cntrow2
+						END
+					END
+				ACTION_IF ("%update%" = 1) BEGIN 
+					COMPILE ~EET_Tweaks-inlined/0/K#TELSPL-eb.d~ EVALUATE_BUFFER
+				END ELSE BEGIN
+					WARN ~Translation for %area% used in K#TELSPL.DLG not found.~
+				END
+			END
+		END
+		SPRINT ~area_last~ ~%area%~
+	END
+
+COPY ~EET_Tweaks/0/K#TELSPL.SPL~ ~override~
+	SAY 0x8 @2000000
+	SAY 0x50 @2000001
+
+COPY ~EET_Tweaks/0/K#TELSPL.ITM~ ~override~
+	SAY 0xc @2000000
+	SAY 0x54 @2000001
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Component 1: Consistent NPC appearance           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Consistent NPC appearance~
+DESIGNATED 1
+REQUIRE_PREDICATE GAME_IS ~eet bgt~ ~This component is compatible with EET and BGT.~
+
+OUTER_SET valid_answer = 0
+OUTER_SET button = 0
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF ("%button%" = 1) BEGIN //BG:EE
+		OUTER_SET option = 0
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 2) BEGIN //BG2:EE
+		OUTER_SET option = 1
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~Which game should be used as a portraits and colours base for NPCs that are joinable in both BG:EE and BG2:EE?
+ 1] BG:EE
+ 2] BG2:EE~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+INCLUDE ~EET_TWEAKS/lib/1.tph~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Component 2: Consistent NPC voices               \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Consistent NPC voices~
+DESIGNATED 2
+REQUIRE_PREDICATE GAME_IS ~eet bgt~ ~This component is compatible with EET and BGT.~
+REQUIRE_PREDICATE ("%LANGUAGE%" STRING_EQUAL_CASE ~pl_PL~) ~This component is only for Polish language (unless someone will suggest changes for other languages in future).~
+
+INCLUDE ~EET_TWEAKS/lib/2_%LANGUAGE%.tph~ //no point in bloating the main file, especially if there will be more languages added in future
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Component 3: Adjust BG:EE XP CAP                 \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust BG:EE XP CAP~
+DESIGNATED 3
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible with EET.~
+
+OUTER_SET valid_answer = 0
+OUTER_SET button = 0
+OUTER_SPRINT value ~dummy~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF ("%button%" = 1) BEGIN //89,000
+		OUTER_SET value = 89000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 2) BEGIN //161,000
+		OUTER_SET value = 161000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 3) BEGIN //custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 1) BEGIN
+			PRINT ~Type in the integer value for XP CAP:~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 4) BEGIN //disable
+		OUTER_SET value = 100000000
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~What value should be used for BG:EE XP CAP?
+ 1]  89,000 - BG2:EE starting XP
+ 2] 161,000 - BG:EE XP CAP (default)
+ 3] custom value
+ 4] disable XP CAP~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+COPY_EXISTING ~BALDUR.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		PATCH_FOR_EACH number IN 1 2 3 4 5 6 BEGIN
+			SPRINT textToReplace ~GlobalLT("ENDOFBG1","GLOBAL",2)[%newline%]*XPGT(Player%number%,[0-9]+)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ChangeStat(Player%number%,XP,[0-9]+,SET)~
+			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				REPLACE_TEXTUALLY ~%textToReplace%~ ~GlobalLT("ENDOFBG1","GLOBAL",2)
+  XPGT(Player%number%,%value%)
+THEN
+  RESPONSE #100
+    ChangeStat(Player%number%,XP,%value%,SET)~
+			END ELSE BEGIN
+				PATCH_WARN ~Warning: could not find EET XP CAP data in %SOURCE_FILESPEC%~
+			END
+		END
+	END
+BUT_ONLY
+
+ACTION_IF (value = "100000000") BEGIN
+	PRINT ~XP CAP has been disabled~
+END ELSE BEGIN
+	PRINT ~XP CAP set to %value%~
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Component 4: Adjust BG2:EE XP CAP                \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust BG2:EE XP CAP~
+DESIGNATED 4
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible with EET.~
+
+OUTER_SET valid_answer = 0
+OUTER_SET button = 0
+OUTER_SPRINT value ~dummy~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF ("%button%" = 1) BEGIN //2,950,000
+		OUTER_SET value = 2950000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 2) BEGIN //8,000,000
+		OUTER_SET value = 8000000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 3) BEGIN //custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 10) BEGIN
+			PRINT ~Type in the integer value for XP CAP:~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 4) BEGIN //disable
+		OUTER_SET value = "-1"
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~What value should be used for BG2:EE SoA XP CAP?
+ 1] 2,950,000 - BG2 without expansion XP CAP
+ 2] 8,000,000 - BG2:EE XP CAP (default)
+ 3] custom value
+ 4] disable XP CAP~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+COPY_EXISTING ~XPCAP.2DA~ ~override~
+	REPLACE_TEXTUALLY ~[1-9][0-9]+~ ~%value%~ EVALUATE_BUFFER //numbers >=10 only, otherwise, it changes 2DA as well
+	BUT_ONLY
+COPY_EXISTING ~STARTARE.2DA~ ~override~
+	REPLACE_TEXTUALLY ~START_XP_CAP[ 	]+[-0-9]+~ ~%value%~ EVALUATE_BUFFER
+	BUT_ONLY
+
+ACTION_IF (value = "-1") BEGIN
+	PRINT ~XP CAP has been disabled~
+END ELSE BEGIN
+	PRINT ~XP CAP set to %value%~
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Component 5: Additional BG2:EE SoA XP CAP        \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Additional BG2:SoA XP CAP~
+DESIGNATED 5
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible with EET.~
+
+OUTER_SET valid_answer = 0
+OUTER_SET button = 0
+OUTER_SPRINT value ~dummy~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF ("%button%" = 1) BEGIN //2,500,000
+		OUTER_SET value = 2500000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 2) BEGIN //2,950,000
+		OUTER_SET value = 2950000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 3) BEGIN //custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 1) BEGIN
+			PRINT ~Type in the integer value for XP CAP:~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~What value should be used for BG2:EE SoA XP CAP?
+ 1] 2,500,000 - BG2:ToB starting XP for NPC
+ 2] 2,950,000 - BG2 without expansion XP CAP
+ 3] custom value~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+<<<<<<<< EET_Tweaks-inlined/6/baldur-eb.baf
+IF
+  GlobalLT("ENDOFBG2","GLOBAL",2)
+  XPGT(Player%number%,%value%)
+THEN
+  RESPONSE #100
+    ChangeStat(Player%number%,XP,%value%,SET)
+    Continue()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH number IN 1 2 3 4 5 6 BEGIN
+	EXTEND_BOTTOM ~BALDUR.BCS~ ~EET_Tweaks-inlined/6/baldur-eb.baf~ EVALUATE_BUFFER
+END
+
+PRINT ~XP CAP set to %value%~
