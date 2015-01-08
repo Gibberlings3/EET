@@ -101,6 +101,7 @@ OUTER_SPRINT areas_dir ~EET/temp/areas~
 OUTER_SET auto_install = 0
 OUTER_SET valid_dir = 0
 OUTER_SET first_prompt = 0
+OUTER_SET allow_mod = 0
 
 COPY - ~weidu.conf~ ~weidu.conf~
 	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
@@ -188,6 +189,7 @@ END
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
+	COPY + ~EET-inlined/blank.txt~ ~EET/temp/patches.tbl~
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~
 		REPLACE_TEXTUALLY ~^.~ ~~
@@ -208,12 +210,23 @@ ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
 						READ_2DA_ENTRY cnt2 0 1 "compareWith"
 						PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-							PATCH_PRINT ~%col1% BG:EE mod detected~
-						END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Mm]~ = 0) BEGIN
-							PATCH_PRINT ~Warning: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
-						END ELSE BEGIN
-							PATCH_FAIL ~%col1% BG:EE mod is not recognized by EET, so it can't be installed on BG2:EE~
+							READ_2DA_ENTRY cnt2 1 1 "patches"
+							PATCH_IF ("%patches%" = 1) BEGIN
+								INNER_ACTION BEGIN
+									APPEND_OUTER + ~EET/temp/patches.tbl~ ~%col1%~
+								END
+								SET patches = 0
+							END
+							SET allow_mod = 1
 						END
+					END
+					PATCH_IF ("%allow_mod%" = 1) BEGIN
+						PATCH_PRINT ~%col1% BG:EE mod detected~
+						SET allow_mod = 0
+					END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Mm]~ = 0) BEGIN
+						PATCH_WARN ~Warning: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
+					END ELSE BEGIN
+						PATCH_FAIL ~%col1% BG:EE mod is not recognized by EET, so it can't be installed on BG2:EE~
 					END
 			END
 		END
@@ -445,7 +458,7 @@ MKDIR ~%areas_dir%/bgTU00xx~
 	~%areas_dir%/bgAR60xx~
 	~%areas_dir%/bgAR61xx~
 	~EET/temp/array~
-	~%bgee_dir%/lang/%LANGUAGE%/movies~
+	~%bgee_dir%/lang/%LANGUAGE%/override~
 
 ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	PRINT ~~
@@ -453,14 +466,13 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	MKDIR ~EET/temp/%var%~
 	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
-	//due to lack of official BG:EE dubbing support for all languages, local 'movies' dir is often used as an 'override' alternative for sounds (this way the game can still have multi dubs)
 	ACTION_IF (("%var%" STRING_EQUAL_CASE "WAV")=1) BEGIN
-		ACTION_BASH_FOR ~%bgee_dir%/lang/%LANGUAGE%/movies~ ~^.+\.%var%$~ BEGIN
+		ACTION_BASH_FOR ~%bgee_dir%/lang/%LANGUAGE%/override~ ~^.+\.%var%$~ BEGIN
 			COPY + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
 		END
 	END
 	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
-		COPY + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
+		COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
 	END
 	INCLUDE ~EET/lib/prep_%var%.tph~
 END
@@ -630,13 +642,14 @@ END
 ///// Compatibility patches                            \\\\\
 /////                                                  \\\\\
 
-ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
-		PATCH_FOR_EACH "modname" IN bg1npc DarkHorizonsBGee drizztsaga karatur BEGIN
-			COUNT_REGEXP_INSTANCES ~%modname%\.TP2~ num_matches
-			PATCH_IF (num_matches > 0) BEGIN
-				PATCH_PRINT ~Including %modname% compatibility patches~
-				PATCH_INCLUDE ~EET/compat/%modname%/include.tph~
+ACTION_IF FILE_EXISTS ~EET/temp/patches.tbl~ BEGIN
+	COPY - ~EET/temp/patches.tbl~ ~EET/temp~
+		COUNT_2DA_ROWS 1 "cntrow"
+		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+			READ_2DA_ENTRY cnt 0 1 "modname"
+			PATCH_PRINT ~Including %modname% compatibility patches~
+			INNER_ACTION BEGIN
+				INCLUDE ~EET/compat/%modname%/include.tph~
 			END
 		END
 END
@@ -1815,7 +1828,7 @@ ACTION_BASH_FOR ~EET/base/mos~ ~^.+\.mos$~ BEGIN
 END
 LAM bash_log
 
-COPY ~EET/temp/mos~ ~override~
+COPY_LARGE ~EET/temp/mos~ ~override~
 
 /////                                                  \\\\\
 ///// MUS / ACM                                        \\\\\
@@ -2415,8 +2428,8 @@ APPEND_OUTER + ~EET/temp/sto.tph~ ~%debug%~
 ///// TIS                                              \\\\\
 /////                                                  \\\\\
 
-COPY ~EET/temp/tis~ ~override~
-	~EET/base/tis~ ~override~
+COPY_LARGE ~EET/temp/tis~ ~override~
+	~EET/base/tis~ ~override~ //remove this line when weidu fix the problem with unbiffing
 
 /////                                                  \\\\\
 ///// VVC                                              \\\\\
@@ -3056,6 +3069,8 @@ PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as E
 PRINT ~To install mods without EET argument in GAME_IS command you need to temporarily move it away from override directory~
 
 INCLUDE ~EET/lib/end.tph~ //just in case you need to parse some additional code at the end of installation
+
+COPY ~SETUP-EET.DEBUG~ ~EET~ //backup debug file
 
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/readme.html~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW %tra_path%/%LANGUAGE%/readme.html~
