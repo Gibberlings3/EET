@@ -1812,16 +1812,17 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_entryValue_startare" BEGIN
 	"START_AREA_MP" => "AR4000"
 	"START_XPOS_MP" => "1311"
 	"START_YPOS_MP" => "2347"
-	"START_XP" => "1"//89000 in BG2 - added via script
-	"START_XP_CAP" => "8000000"//161000 in BG1 - added via script
+	"START_XP" => "1"
+	"START_XP_CAP" => "8000000"
 END
 
 COPY_EXISTING ~STARTARE.2DA~ ~override~
+	COUNT_2DA_ROWS 2 "cntrow"
 	PHP_EACH "table_2DA_entryValue_startare" AS "entry" => "value" BEGIN
-		FOR (cnt = 0; cnt < 13; cnt = cnt + 1) BEGIN
-			READ_2DA_ENTRY cnt 0 1 "row_name"
+		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+			READ_2DA_ENTRY cnt 0 2 "row_name"
 			PATCH_IF (("%row_name%" STRING_EQUAL_CASE "%entry%")=1) BEGIN
-				SET_2DA_ENTRY cnt 1 1 ~%value%~
+				SET_2DA_ENTRY cnt 1 2 ~%value%~
 			END
 		END
 	END
