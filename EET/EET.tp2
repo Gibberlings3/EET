@@ -2715,10 +2715,10 @@ END
 
 //copy BG1 movies converted to HD
 //ENDCRDIT.wbm => ENDCRDI_.wbm
-//INTRO.wbm => INTRO15.wbm
 COPY_LARGE ~EET/base/movies~ ~lang/%LANGUAGE_BG2%/movies~
 
 //copy BG1 movies with voice over
+//INTRO.wbm => INTRO15F.wbm
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/BEREGOST.wbm~)
 AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/INTRO15F.wbm~)
 AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/NASHKELL.wbm~)
@@ -3070,7 +3070,7 @@ PRINT ~To install mods without EET argument in GAME_IS command you need to tempo
 
 INCLUDE ~EET/lib/end.tph~ //just in case you need to parse some additional code at the end of installation
 
-COPY ~SETUP-EET.DEBUG~ ~EET~ //backup debug file
+COPY_LARGE ~SETUP-EET.DEBUG~ ~EET~ //backup debug file
 
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/readme.html~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW %tra_path%/%LANGUAGE%/readme.html~
