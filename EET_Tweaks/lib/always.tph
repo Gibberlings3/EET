@@ -1,5 +1,51 @@
+/////                                                  \\\\\
+///// Common variables                                 \\\\\
+/////                                                  \\\\\
+
 OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
 OUTER_SPRINT tra_path ~EET_Tweaks/lang~
+
+/////                                                  \\\\\
+///// Check --args-list                                \\\\\
+/////                                                  \\\\\
+
+OUTER_SET ARGS_check = 0
+OUTER_SET ARGS_component = "-1"
+OUTER_SET number = 0
+
+OUTER_WHILE (ARGS_check = 0) BEGIN
+	ACTION_IF VARIABLE_IS_SET EVALUATE_BUFFER ~%argv[%number%]%~ BEGIN
+		OUTER_SPRINT ARGS_var EVALUATE_BUFFER ~%argv[%number%]%~
+		OUTER_INNER_PATCH ARGS_var BEGIN
+			INNER_PATCH_SAVE ~ARGS_var~ ~%ARGS_var%~ BEGIN
+				REPLACE_EVALUATE ~\([0-9]+\)-\([0-9]+\)~ BEGIN
+					PATCH_IF IS_AN_INT MATCH1 BEGIN
+						SET ARGS_component = "%MATCH1%"
+						PATCH_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
+							PATCH_IF IS_AN_INT MATCH2 BEGIN
+								SET ARGS_value = "%MATCH2%"
+								SET ARGS_check = 1
+								PATCH_PRINT ~ARGS_var = %ARGS_var%; ARGS_component = %ARGS_component%; ARGS_value = %ARGS_value%~
+							END ELSE BEGIN
+								SET ARGS_value = "-1"
+							END
+						END
+					END ELSE BEGIN
+						SET ARGS_component = "-1"
+					END
+				END
+				~~
+			END
+		END
+		OUTER_SET number = (number + 1)
+	END ELSE BEGIN
+		OUTER_SET ARGS_check = 1
+	END
+END
+
+/////                                                  \\\\\
+///// HANDLE_CHARSETS                                  \\\\\
+/////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY charsetsTable BEGIN
 	"cs_cz" => "CP1250"
