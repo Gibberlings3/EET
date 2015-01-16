@@ -94,6 +94,7 @@ OUTER_SPRINT ~newline~ ~%WNL%%LNL%%MNL%%TAB% ~
 OUTER_SPRINT slash ~/~
 OUTER_SPRINT quote ~"~
 OUTER_SPRINT tilde "~"
+OUTER_SPRINT bg2ee_dir ~.~
 OUTER_SPRINT tra_path ~EET/lang~
 OUTER_SPRINT patch_dir ~EET/temp/patch~
 OUTER_SPRINT areas_dir ~EET/temp/areas~
@@ -102,10 +103,6 @@ OUTER_SET auto_install = 0
 OUTER_SET valid_dir = 0
 OUTER_SET first_prompt = 0
 OUTER_SET allow_mod = 0
-
-COPY - ~weidu.conf~ ~weidu.conf~
-	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
-PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
 /////                                                  \\\\\
 ///// Include                                          \\\\\
@@ -239,44 +236,46 @@ END
 OUTER_SPRINT ~LANGUAGEcase~ ~%LANGUAGE%~
 ACTION_TO_LOWER LANGUAGEcase
 
-COPY - ~weidu.conf~ ~weidu.conf~
-	READ_2DA_ENTRY 0 2 3 "lang_dir"
-OUTER_SPRINT ~tlk_dir~ ~lang/%lang_dir%~
-
 <<<<<<<< EET-inlined/weidu.conf
 lang_dir = %LANGUAGEcase%>>>>>>>>
 
-ACTION_IF NOT FILE_EXISTS ~%bgee_dir%/weidu.conf~ BEGIN
-	COPY ~EET-inlined/weidu.conf~ ~%bgee_dir%/weidu.conf~ EVALUATE_BUFFER
-		PATCH_PRINT ~weidu.conf created within BG:EE directory and set to %LANGUAGEcase%~
-END ELSE BEGIN
-	COPY - ~%bgee_dir%/weidu.conf~ ~%bgee_dir%~
-		READ_2DA_ENTRY 0 2 3 "compareWith"
-		PATCH_IF (("%LANGUAGEcase%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-			PATCH_PRINT ~weidu.conf detected with the same language setting as the installation: %LANGUAGEcase%~
-		END ELSE BEGIN
-			PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~0~ = 0) BEGIN
-				SPRINT conf_prompt ~y~
-			END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~1~ = 0) BEGIN
-				SPRINT conf_prompt ~n~
-			END ELSE BEGIN
-				SPRINT conf_prompt ~a~
-				WHILE (~%conf_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
-					PATCH_PRINT ~%bgee_dir%/weidu.conf file has %compareWith% language set instead of %LANGUAGEcase%.
+ACTION_FOR_EACH dir IN "%bgee_dir%" "%bg2ee_dir%" BEGIN
+	ACTION_IF NOT FILE_EXISTS ~%dir%/weidu.conf~ BEGIN
+		COPY ~EET-inlined/weidu.conf~ ~%dir%/weidu.conf~ EVALUATE_BUFFER
+			PATCH_PRINT ~weidu.conf created within BG:EE directory and set to %LANGUAGEcase%~
+	END ELSE BEGIN
+		COPY - ~%dir%/weidu.conf~ ~%dir%~
+			READ_2DA_ENTRY 0 2 3 "compareWith"
+			PATCH_IF (("%LANGUAGEcase%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
+				PATCH_PRINT ~%dir%/weidu.conf detected with the same language setting as the installation: %LANGUAGEcase%~
+			END ELSE PATCH_IF FILE_EXISTS ~%dir%/lang/%LANGUAGE%/dialog.tlk~ BEGIN
+				PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~0~ = 0) BEGIN
+					SPRINT conf_prompt ~y~
+				END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~1~ = 0) BEGIN
+					SPRINT conf_prompt ~n~
+				END ELSE BEGIN
+					SPRINT conf_prompt ~a~
+					WHILE (~%conf_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
+						PATCH_PRINT ~%dir%/weidu.conf file has %compareWith% language set instead of %LANGUAGEcase%.
 Is this correct? [Y]es (keep it as it is) or [N]o (change it to %LANGUAGEcase%)~
-					PATCH_READLN ~conf_prompt~
+						PATCH_READLN ~conf_prompt~
+					END
+				END
+				PATCH_IF ((~%conf_prompt%~ STRING_EQUAL_CASE ~n~)=1) BEGIN
+					PATCH_PRINT ~%dir%/weidu.conf %compareWith% changed to %LANGUAGEcase%~
+					INNER_ACTION BEGIN
+						COPY ~EET-inlined/weidu.conf~ ~%dir%/weidu.conf~ EVALUATE_BUFFER
+					END
+				END ELSE BEGIN
+					SPRINT LANGUAGEcase ~%LANGUAGE%~ EVALUATE_BUFFER
 				END
 			END
-			PATCH_IF ((~%conf_prompt%~ STRING_EQUAL_CASE ~n~)=1) BEGIN
-				PATCH_PRINT ~weidu.conf %compareWith% changed to %LANGUAGEcase%~
-				INNER_ACTION BEGIN
-					COPY ~EET-inlined/weidu.conf~ ~%bgee_dir%/weidu.conf~ EVALUATE_BUFFER
-				END
-			END ELSE BEGIN
-				SPRINT LANGUAGEcase ~%LANGUAGE%~ EVALUATE_BUFFER
-			END
-		END
+	END
 END
+
+COPY - ~weidu.conf~ ~weidu.conf~
+	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
+PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
 /////                                                  \\\\\
 ///// Extraction of TLK from BG:EE                     \\\\\
@@ -3069,8 +3068,6 @@ PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as E
 PRINT ~To install mods without EET argument in GAME_IS command you need to temporarily move it away from override directory~
 
 INCLUDE ~EET/lib/end.tph~ //just in case you need to parse some additional code at the end of installation
-
-COPY_LARGE ~SETUP-EET.DEBUG~ ~EET~ //backup debug file
 
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/readme.html~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW %tra_path%/%LANGUAGE%/readme.html~
