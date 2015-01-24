@@ -1,0 +1,12 @@
+/* If Timer GlobalTimerExpired("c#q04_SpiderTimer","GLOBAL"), wraith spider will hatch */
+
+IF
+	GlobalTimerExpired("c#q04_SpiderTimer","GLOBAL")
+	GlobalLT("C#Q04_WyvernDeliverer","GLOBAL",7)
+	PartyHasItem("C#Q04001") // Egg
+THEN
+	RESPONSE #100
+		SetGlobal("C#Q04_WyvernDeliverer","GLOBAL",9)
+		ActionOverride(Player1,CreateCreature("C#Q04009",[-1.-1],S))
+		ActionOverride("C#Q04009",StartDialogueNoSet([PC]))
+END

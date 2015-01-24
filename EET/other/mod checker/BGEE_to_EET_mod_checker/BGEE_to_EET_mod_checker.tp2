@@ -4,10 +4,15 @@ VERSION ~beta 0.1~
 README "BGEE_to_EET_mod_checker/readme.txt"
 
 BEGIN ~BGEE_to_EET_mod_checker~ DESIGNATED 0
+NO_LOG_RECORD
+
+<<<<<<<< blank.txt
+
+>>>>>>>>
 
 OUTER_SPRINT ~append~ ~~
 ACTION_FOR_EACH file IN BG1 BG2 BEGIN
-	COPY ~BGEE_to_EET_mod_checker/filelist%file%.txt~ ~BGEE_to_EET_mod_checker~
+	COPY + ~blank.txt~ ~BGEE_to_EET_mod_checker/filelist%file%.txt~
 		APPEND_FILE ~BGEE_to_EET_mod_checker/lib/%file%_2DA.2da~
 		APPEND_FILE ~BGEE_to_EET_mod_checker/lib/%file%_ARE.2da~
 		APPEND_FILE ~BGEE_to_EET_mod_checker/lib/%file%_BAM.2da~
@@ -39,4 +44,5 @@ ACTION_FOR_EACH file IN BG1 BG2 BEGIN
 		END
 END
 
-APPEND_OUTER ~BGEE_to_EET_mod_checker/list.txt~ ~%append%~
+COPY + ~blank.txt~ ~BGEE_to_EET_mod_checker/list.txt~
+APPEND_OUTER + ~BGEE_to_EET_mod_checker/list.txt~ ~%append%~

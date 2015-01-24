@@ -1,0 +1,7 @@
+COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
+	COUNT_REGEXP_INSTANCES ~BG1RE\.TP2. #0 #0 ~ num_matches
+
+ACTION_IF (num_matches > 0) BEGIN
+	EXTEND_BOTTOM ~BALDUR.bcs~ ~EET/compat/bg1re/baf/c#lc_details.baf~
+	EXTEND_BOTTOM ~BALDUR.bcs~ ~EET/compat/bg1re/baf/c#lc_descriptiontext.baf~
+END

@@ -1,0 +1,6 @@
+COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
+	COUNT_REGEXP_INSTANCES ~BGQE\.TP2. #0 #3 ~ num_matches
+
+ACTION_IF (num_matches > 0) BEGIN
+	EXTEND_BOTTOM ~baldur.bcs~ ~EET/compat/bgqe/baf/c#q04spiderhatch.baf~
+END

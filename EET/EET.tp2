@@ -2728,100 +2728,36 @@ END ELSE BEGIN
 END
 
 //update Baldur.ini
-
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 	COPY ~%USER_DIRECTORY%/Baldur.ini~ ~%USER_DIRECTORY%~
-		SPRINT textToReplace ~'Text'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		COUNT_REGEXP_INSTANCES ~'Text'~ num_matches
 		PATCH_IF (num_matches = 0) BEGIN
 			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
 	'Language',	'Text',	'%LANGUAGE_BG2%',~
 		END ELSE BEGIN
 			REPLACE_TEXTUALLY ~'Language',[ 	]+'Text',[ 	]+'.*'~ ~'Language',	'Text',	'%LANGUAGE_BG2%'~
 		END
-		SPRINT textToReplace ~'Cheats'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'Game Options',	'Cheats',	'1',~
+		DEFINE_ASSOCIATIVE_ARRAY table_EET_ini BEGIN
+			"Game Options" => "Cheats"
+			"Game Options" => "Wild Surge Keys"
+			"Program Options" => "Logging On"
+			"Program Options" => "Debug Mode"
+			"MOVIES" => "WOTC"
+			"MOVIES" => "TSRLOGO"
+			"MOVIES" => "INTRO15F"
+			"MOVIES" => "INFELOGO"
+			"MOVIES" => "CREDITS_"
+			"MOVIES" => "BWDRAGON"
+			"MOVIES" => "BLACKPI_"
+			"MOVIES" => "BILOGO"
+			"MOVIES" => "BG4LOGO"
+			"MOVIES" => "BG2INTRO"
 		END
-		SPRINT textToReplace ~'Wild Surge Keys'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'Game Options',	'Wild Surge Keys',	'1',~
-		END
-		SPRINT textToReplace ~'Logging On'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'Program Options',	'Logging On',	'1',~
-		END
-		SPRINT textToReplace ~'Debug Mode'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'Program Options',	'Debug Mode',	'1',~
-		END
-		SPRINT textToReplace ~'WOTC'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'WOTC', '1',~
-		END
-		SPRINT textToReplace ~'TSRLOGO'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'TSRLOGO', '1',~
-		END
-		SPRINT textToReplace ~'INTRO15F'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'INTRO15F', '1',~
-		END
-		SPRINT textToReplace ~'INFELOGO'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'INFELOGO', '1',~
-		END
-		SPRINT textToReplace ~'CREDITS_'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'CREDITS_', '1',~
-		END
-		SPRINT textToReplace ~'BWDRAGON'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'BWDRAGON', '1',~
-		END
-		SPRINT textToReplace ~'BLACKPI_'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'BLACKPI_', '1',~
-		END
-		SPRINT textToReplace ~'BILOGO'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'BILOGO', '1',~
-		END
-		SPRINT textToReplace ~'BG4LOGO'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'BG4LOGO', '1',~
-		END
-		SPRINT textToReplace ~'BG2INTRO'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 0) BEGIN
-			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
-	'MOVIES', 'BG2INTRO', '1',~
+		PHP_EACH "table_EET_ini" AS "row" => "option" BEGIN
+			COUNT_REGEXP_INSTANCES ~'%option%'~ num_matches
+			PATCH_IF (num_matches = 0) BEGIN
+				REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+	'%row%',	'%option%',	'1',~
 		END
 	BUT_ONLY
 END ELSE BEGIN
