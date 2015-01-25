@@ -21,7 +21,7 @@ LANGUAGE ~Polski (Polish)~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 0: Teleport spell                                \\\\\
+///// Teleport spell                                   \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -140,7 +140,7 @@ COPY ~EET_Tweaks/0/K#TELSPL.ITM~ ~override~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 1: Consistent NPC appearance                     \\\\\
+///// Consistent NPC appearance                        \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -178,7 +178,7 @@ INCLUDE ~EET_TWEAKS/lib/1.tph~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 2: Consistent NPC voices                         \\\\\
+///// Consistent NPC voices                            \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -195,7 +195,7 @@ INCLUDE ~EET_TWEAKS/lib/2_%LANGUAGE%.tph~ //no point in bloating the main file, 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 3: Adjust BG:EE XP CAP                           \\\\\
+///// Adjust BG:EE XP CAP                              \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -263,7 +263,7 @@ PRINT ~XP CAP set to %value%~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 4: Adjust BG2:EE XP CAP                          \\\\\
+///// Adjust BG2:EE XP CAP                             \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -324,7 +324,7 @@ END
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 5: Additional BG2:EE SoA XP CAP                  \\\\\
+///// Additional BG2:EE SoA XP CAP                     \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -385,14 +385,14 @@ PRINT ~XP CAP set to %value%~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 6: Adjust XP for Traps, Spells and Lockpicking   \\\\\
+///// Adjust XP for Traps, Spells and Lockpicking      \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 BEGIN ~Adjust XP for Traps, Spells and Lockpicking~
 //DESIGNATED 6
-REQUIRE_PREDICATE GAME_IS ~soa tob bgt iwd_in_bg2 bgee bg2ee eet iwdee~ ~This component is not compatible with your game.~
+REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -481,14 +481,14 @@ BUT_ONLY
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 7: Adjust XP for killing creatures               \\\\\
+///// Adjust XP for killing creatures                  \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 BEGIN ~Adjust XP for killing creatures~
 //DESIGNATED 7
-REQUIRE_PREDICATE GAME_IS ~soa tob bgt iwd_in_bg2 bgee bg2ee eet iwdee~ ~This component is not compatible with your game.~
+REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -559,14 +559,14 @@ BUT_ONLY
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 8: Adjust XP for quests                          \\\\\
+///// Adjust XP for quests                             \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 BEGIN ~Adjust XP for quests~
 //DESIGNATED 8
-REQUIRE_PREDICATE GAME_IS ~soa tob bgt iwd_in_bg2 bgee bg2ee eet iwdee~ ~This component is not compatible with your game.~
+REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -800,14 +800,14 @@ BUT_ONLY
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 9: Party XP for quests distributed individually  \\\\\
+///// Party XP for quests distributed individually     \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 BEGIN ~Party XP for quests distributed individually~
 //DESIGNATED 9
-REQUIRE_PREDICATE GAME_IS ~soa tob bgt iwd_in_bg2 bgee bg2ee eet iwdee~ ~This component is not compatible with your game.~
+REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
 COPY_EXISTING ~XPLIST.2da~ ~override~
 	COUNT_2DA_COLS "cntcol"
@@ -862,7 +862,7 @@ END
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 10: 3E Thief Sneak Attack                        \\\\\
+///// 3E Thief Sneak Attack                            \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -875,10 +875,9 @@ LOAD_TRA ~EET_Tweaks/lang/%LANGUAGE%/10.tra~
 
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 	COPY ~%USER_DIRECTORY%/Baldur.ini~ ~%USER_DIRECTORY%~
-		SPRINT textToReplace ~'3E Thief Sneak Attack'~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		COUNT_REGEXP_INSTANCES ~'3E Thief Sneak Attack'~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~\(%textToReplace%,[ 	]+\)'.'~ ~\1'1'~
+			REPLACE_TEXTUALLY ~\('3E Thief Sneak Attack',[ 	]+\)'.'~ ~\1'1'~
 		END ELSE BEGIN
 			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
 	'Game Options',	'3E Thief Sneak Attack',	'1',~
@@ -924,12 +923,186 @@ STRING_SET ~74298~ @6 //Shadowdancer kit description
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// 11: IWD:EE Bard Songs                             \\\\\
+///// Adjust FPS and fix audio skipping in cutscenes   \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust FPS and fix audio skipping in cutscenes~
+//DESIGNATED 11
+REQUIRE_PREDICATE GAME_IS ~soa tob iwd how totlm tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
+
+OUTER_SET valid_answer = 0
+OUTER_SET button = 0
+OUTER_SPRINT value ~dummy~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
+		OUTER_SET value = "%ARGS_value%"
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 1) BEGIN //60
+		OUTER_SET value = 60
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 2) BEGIN //45
+		OUTER_SET value = 45
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 3) BEGIN //Custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% <= 30) OR (%value% > 60) BEGIN
+			PRINT ~Type in the FPS vakue (30+ up to 60):~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~Choose Maximum Frame Rate:
+ 1] 60 FPS
+ 2] 45 FPS
+ 3] Custom value~//%~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+ACTION_IF GAME_IS ~iwd how totlm iwdee~ BEGIN
+	OUTER_SPRINT ini ~IWD~
+END ELSE BEGIN
+	OUTER_SPRINT ini ~Baldur~
+END
+
+ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/%ini%.ini~) BEGIN
+	COPY ~%USER_DIRECTORY%/%ini%.ini~ ~%USER_DIRECTORY%~
+		PATCH_IF ENGINE_IS ~bgee bg2ee iwdee~ BEGIN
+			COUNT_REGEXP_INSTANCES ~'Maximum Frame Rate'~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				REPLACE_TEXTUALLY ~\('Maximum Frame Rate',[ 	]+\)'[0-9]+'~ ~\1'%value%'~
+			END ELSE BEGIN
+				REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+		'Program Options',	'Maximum Frame Rate',	'%value%',~
+			END
+		END ELSE BEGIN
+			//patch ini file for non EE games
+		END
+	BUT_ONLY
+END ELSE ACTION_IF ENGINE_IS ~bgee bg2ee iwdee~ BEGIN
+<<<<<<<< EET_Tweaks-inlined/11/%ini%.ini
+CREATE TABLE options (
+	section string,
+	name string,
+	value string
+);
+INSERT INTO options ROWS (
+	'Program Options',	'Maximum Frame Rate',	'%value%',
+);
+>>>>>>>>
+	COPY ~EET_Tweaks-inlined/11/%ini%.ini~ ~%USER_DIRECTORY%/%ini%.ini~ EVALUATE_BUFFER
+END ELSE BEGIN
+	//create ini file for non EE games
+END
+
+//Individual patches if global replacing is not enough to fix the problem (for example if next scene depends on CRE finishing the animation instead of waiting)
+//unused, just a reference how to patch individual cutscenes if needed
+/*COPY_EXISTING ~NEWGAME.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		COUNT_REGEXP_INSTANCES ~ActionOverride("csgolem",SmallWait(1))~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~ActionOverride("csgolem",SmallWait(1))~ ~ActionOverride("csgolem",SmallWait(35))~
+			PATCH_PRINT ~Individually Patching %SOURCE_FILE%: ActionOverride("csgolem",SmallWait(1)) => ActionOverride("csgolem",SmallWait(10))~
+		END
+		COUNT_REGEXP_INSTANCES ~Wait(2)[%newline%]*DisplayStringWait(Myself,2833)~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~Wait(2)[%newline%]*DisplayStringWait(Myself,2833)~ ~SmallWait(40)
+    DisplayStringWait(Myself,2833)~
+			PATCH_PRINT ~Individually Patching %SOURCE_FILE%: Wait(2)	DisplayStringWait(Myself,2833) => SmallWait(40)	DisplayStringWait(Myself,2833)~
+		END
+	END
+BUT_ONLY*/
+
+//Below code will update timers depending on the chosen FPS and should fix like 99% of the issues for English audio
+//only Wait and SmallWait 1 line below and above DisplayStringX actions will be affected, so it should not slow your game in other places
+//the code itself is rather embarrassing as I'm not that good with regexp - feel free to improve it directly on GitHub
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE ~\(.*\)\([%newline%]+.*DisplayString.+[%newline%]+\)\(.*\)~ BEGIN
+			SPRINT string1 ~%MATCH1%~
+			SPRINT string2 ~%MATCH2%~
+			SPRINT string3 ~%MATCH3%~
+			INNER_PATCH_SAVE ~string1~ ~%string1%~ BEGIN
+				REPLACE_EVALUATE ~\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
+					SET time = "%MATCH2%"
+					SPRINT new_MATCH1 "%MATCH1%"
+					PATCH_IF "%MATCH1%" STRING_MATCHES_REGEXP ".*Small$" = 0 BEGIN
+						SET time = ("%time%" * "%value%" / 30)
+						INNER_PATCH_SAVE ~new_MATCH1~ ~%new_MATCH1%~ BEGIN
+							REPLACE_TEXTUALLY ~Small$~ ~~
+						END
+					END ELSE BEGIN
+						SET time = ("%time%" * 15 * "%value%" / 30)
+					END
+					PATCH_IF ("%time%" < 1) BEGIN
+						SET time = 1
+					END
+					PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%Wait(%MATCH2%)%MATCH3% => %new_MATCH1%SmallWait(%time%)%MATCH3%~
+				END
+				~%new_MATCH1%SmallWait(%time%)%MATCH3%~
+			END
+			INNER_PATCH_SAVE ~string3~ ~%string3%~ BEGIN
+				REPLACE_EVALUATE ~\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
+					SET time = "%MATCH2%"
+					SPRINT new_MATCH1 "%MATCH1%"
+					PATCH_IF "%MATCH1%" STRING_MATCHES_REGEXP ".*Small$" = 0 BEGIN
+						SET time = ("%time%" * "%value%" / 30)
+						INNER_PATCH_SAVE ~new_MATCH1~ ~%new_MATCH1%~ BEGIN
+							REPLACE_TEXTUALLY ~Small$~ ~~
+						END
+					END ELSE BEGIN
+						SET time = ("%time%" * 15 * "%value%" / 30)
+					END
+					PATCH_IF ("%time%" < 1) BEGIN
+						SET time = 1
+					END
+					PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%Wait(%MATCH2%)%MATCH3% => %new_MATCH1%SmallWait(%time%)%MATCH3%~
+				END
+				~%new_MATCH1%SmallWait(%time%)%MATCH3%~
+			END
+		END
+		~%string1%%string2%%string3%~
+	END
+BUT_ONLY
+
+//unused (updates only Wait and SmallWait 1 line below DisplayStringX actions, not above)
+/*COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE ~\(DisplayString.+[%newline%]+\)\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
+			SET time = "%MATCH3%"
+			SPRINT new_MATCH2 "%MATCH2%"
+			PATCH_IF "%MATCH2%" STRING_MATCHES_REGEXP ".*Small$" = 0 BEGIN
+				SET time = ("%time%" * "%value%" / 30)
+				INNER_PATCH_SAVE ~new_MATCH2~ ~%new_MATCH2%~ BEGIN
+					REPLACE_TEXTUALLY ~Small$~ ~~
+				END
+			END ELSE BEGIN
+				SET time = ("%time%" * 15 * "%value%" / 30)
+			END
+			PATCH_IF ("%time%" < 1) BEGIN
+				SET time = 1
+			END
+			PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%%MATCH2%Wait(%MATCH3%)%MATCH4% => %new_MATCH2%SmallWait(%time%)%MATCH4%~
+		END
+		~%new_MATCH2%SmallWait(%time%)~
+	END
+BUT_ONLY*/
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// IWD:EE Bard Songs                                \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 //BEGIN ~IWD:EE Bard Songs~
-//DESIGNATED 11
+//DESIGNATED 12
 //REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ ~This component is compatible only with EET and BG2:EE.~
 
