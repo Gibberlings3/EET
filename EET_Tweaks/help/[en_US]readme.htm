@@ -1,0 +1,669 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Baldur's Gate: Enhanced Edition Trilogy Tweaks (EETT)</title>
+	<style type="text/css">/*<![CDATA[*/
+    <!-- 
+      body {
+        margin: 0;
+        padding: 0;
+        cursor: default;
+        text-align: center;
+        color: #000;
+        background: #e3e3db url('http://spellholdstudios.net/images/sh_bg_main.jpg');
+      }
+      
+      #wrap {
+        text-align: left;
+        margin: 0 auto;
+        margin-top: 20px;
+        width: 88%;
+        font-family: Verdana, Tahoma, Arial, sans-serif;
+        font-size: 12px;
+        color: #333;
+      }
+      
+      #header {
+        text-align: center;
+        background: #e5e5e5;
+        border: 1px solid #781808;
+        border-top: 5px solid #781808;
+        border-bottom: 5px solid #781808;
+        padding: 5px 0 13px 0;
+      }
+      
+      #header .about {
+        margin: 7px 0 0 0;
+        padding: 0;
+        font-style: italic;
+        color: #555;
+      }
+      
+      #header .menu {
+        font-weight: bold;
+        margin: 0;
+        color: #999;
+      }
+      
+      #header .menu a:link,
+      #header .menu a:visited {
+        color: #333;
+      }
+      
+      #maindiv {
+        margin: 0 auto;
+        margin-top: -20px;
+        width: 80%;
+      }
+      
+      #maindiv .content {
+        counter-increment: kman;
+        counter-reset: h2;
+        background-color: #e8e8e6;
+        padding: 0 0 25px 0;
+        margin: 50px auto;
+        border-width: 1px 1px 4px 10px;
+        border-style: solid;
+        border-color: #781808;
+        position: relative;
+        display: block;
+      }
+      
+      #maindiv .content::before {
+        content: counter(kman, lower-roman);
+        font-size: 100%;
+        font-weight: bold;
+        text-align: center;
+        color: #eee;
+        background-color: #781808;
+        width: 35px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        display: block;
+      }
+      
+      h2 {
+        display: block;
+        font-family: Verdana, Trebuchet MS, Arial, serif;
+        text-align: left;
+        text-indent: 30px;
+        padding: 0px;
+        margin: 20px 0 0 0;
+        border-bottom: dotted 2px #d0d0d0;
+        border-top: dotted 2px #d0d0d0;
+        background: #deded9;
+        font-size: 160%;
+      }
+      
+      h2::first-letter {
+        color: #781808;
+        background-color: transparent;
+      }
+      
+      #maindiv p {
+	font-size: 100%;
+	font-style: normal;
+	line-height: 150%;
+	padding: 0px;
+	margin: 10px auto;
+	width: 90%;
+	display: block;
+	text-align: justify;
+      }
+      
+      #maindiv address a:link,
+      #maindiv address a:visited {
+        font-weight: bold;
+        text-decoration: underline;
+        background-color: transparent;
+        color: #eaeaea !important;
+        padding-right: 5px;
+        padding-left: 6px;
+      }
+      
+      #maindiv address a:focus,
+      #maindiv address a:hover {
+        text-decoration: none;
+        color: #F1F1F1;
+        border: 0;
+      }
+      
+      #maindiv address a:active {
+        color: #fff;
+        text-decoration: line-through;
+        border: none;
+      }
+      
+      #maindiv address {
+        font-size: 95%;
+        font-style: normal;
+        font-weight: bold;
+        text-decoration: none;
+        color: #BBB;
+        background-color: #781808;
+        padding: 3px 0px 0px;
+        margin: 0px;
+        width: 100%;
+        position: absolute;
+        bottom: -1px;
+        left: 0px;
+        display: block;
+        text-align: right;
+      }
+      
+      #maindiv .important {
+        font-size: 95%;
+        font-family: Verdana;
+        text-align: left;
+        background-color: #F1F1F1;
+        border-top: solid 1px #aaa;
+        border-bottom: solid 1px #aaa;
+        border-left: solid 6px #aaa;
+        border-right: solid 6px #aaa;
+        padding: 10px;
+        margin: 20px auto;
+        width: 80%;
+        line-height: 160%;
+      }
+      
+      #maindiv .important::before {
+        display: none;
+      }
+      
+      #maindiv .important p {
+        font-size: 100%;
+        text-indent: 0px;
+        margin: 5px 0 10px 0;
+      }
+      
+      #maindiv ul {
+	margin: -10px 0 0 30px;
+        *margin-left: 65px;
+      }
+      
+      #maindiv ol {
+        margin: -10px 0 0 35px;
+        *margin-left: 70px;
+      }
+      
+      #maindiv .important ul {
+        margin: -10px 0 0 15px;
+      }
+      
+      #maindiv .important ol {
+        margin: -10px 0 0 20px;
+      }
+      
+      #maindiv ul li {
+	list-style-type: square;
+	line-height: 150%;
+	text-align: justify;
+	margin-right: 5%;
+      }
+      
+      #maindiv ol li {
+	line-height: 150%;
+	text-align: justify;
+	margin-right: 5%;
+      }
+      
+      .t1 {
+        font-weight: bold;
+        width: 26%;
+        text-align: right;
+        clear: right;
+        float: left;
+        *float: none;
+        *margin-left: 65px;
+        line-height: 22px;
+      }
+      
+      .t2 {
+        text-align: left;
+        width: 73%;
+        float: right;
+        *float: none;
+        line-height: 22px;
+      }
+      
+      hr {
+        margin: 10px 0 10px 0;
+        padding: 0;
+        height: 1px;
+        border: 0;
+        color: #aaa;
+        background-color: #aaa;
+      }
+      
+      hr.floatfix {
+        clear: both;
+        color: #e8e8e6;
+        background-color: #e8e8e6;
+        *margin: 0;
+        *padding: 0;
+      }
+      
+      h1 {
+        font-size: 225%;
+        color: #444;
+        padding: 5px 0 5px 0;
+        margin: 0;
+        width: 100%;
+      }
+      
+      h3,
+      h4,
+      h5 {
+        margin: 10px 40px 10px 40px;
+        padding: 0;
+      }
+      
+      h3 {
+        font-size: 125%;
+        font-style: italic;
+      }
+      
+      h4 {
+        font-size: 125%;
+      }
+      
+      h5 {
+        font-size: 100%;
+      }
+      
+      h6 {
+        width: 100%;
+        margin: 10px 0 15px 0;
+        background-color: #ECECEC;
+        text-align: left;
+        text-indent: 30px;
+        font-size: 100%;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        border-bottom: solid 1px #bbb;
+        border-top: solid 1px #bbb;
+      }
+      
+      a:link,
+      a:visited {
+        color: #781808;
+        font-weight: bold;
+        text-decoration: none;
+      }
+
+      a:hover,
+      a:active {
+        color: #222;
+        border-bottom: 1px solid black;
+      }
+
+      .tg {
+        border-collapse:collapse;
+		border-spacing:0;
+		margin:0px auto;
+      }
+
+      .tg td{
+	    text-align:justify;
+        font-family:Verdana, sans-serif;
+		font-size:12px;
+		padding:10px 5px;
+		border-style:solid;
+		border-width:1px;
+		overflow:hidden;
+		word-break:normal;
+      }
+
+      .tg th{
+	    text-align:justify;
+        font-family:Verdana, sans-serif;
+		font-size:12px;
+		font-weight:normal;
+		padding:10px 5px;
+		border-style:solid;
+		border-width:1px;
+		overflow:hidden;
+		word-break:normal;
+      }
+
+    -->
+    /*]]>*/
+	</style>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+</head>
+<body>
+<p pbzloc="322"><a id="top" name="top"></a></p>
+
+<div id="wrap">
+<div id="header">
+<h1>Baldur's Gate: Enhanced Edition Trilogy Tweaks (EETT)</h1>
+<strong>Tweak Pack</strong>
+
+<hr />
+<p class="about">Project Lead: K4thos</p>
+<p class="about">Contributors: Crevs Daak</p>
+
+<p class="about">
+	<a href="http://www.spellholdstudios.net/">Mod Website</a> &#8226;
+	<a href="http://www.shsforums.net/">Mod Forum</a>
+	<a href="https://github.com/K4thos/EET">Source Code</a>
+</p>
+
+<hr />
+<p class="menu"><a href="#intro">Introduction</a> &middot; <a href="#installation">Installation and Uninstallation</a> &middot; <a href="#credits">Credits</a> &middot; <a href="#legalese">Legalese</a> &middot; <a href="#version">Version History</a></p>
+</div>
+
+<div id="maindiv"><!-- ================== I n t r o d u c t i o n ================== --><a id="intro" name="intro"></a>
+
+<div class="content">
+<h2>Introduction</h2>
+
+<p>Baldur's Gate: Enhanced Edition Trilogy Tweaks (EETT) is a modification that offers several optional tweaks for Infinity Engine games. Mostly related to Baldur's Gate: Enhanced Edition Trilogy (EET) mod, but some are more universal and will work with different games and IE engine versions.</p>
+
+<p>The components of this modification are:</p>
+<hr />
+
+<h3>Teleport spell</h3>
+<p>Compatibility: EET</p>
+<p>Leftover from the earlier version of EET that didn't have native worldmap support for going back to BG1 areas after starting BG2. Teleport is still a nice and lore friendly feature, so it's now part of this tweak pack. Learning this spell will allow your party teleport to areas that you have previously visited. Additionally modders can use this spell for easier mod debugging by typing in the console: SetGlobal("NameOfTheVariable","GLOBAL",1) which will enable teleportation to all areas regardless if you visited them.</p>
+<hr />
+
+<h3>Consistent NPC appearance</h3>
+<p>Compatibility: EET (BGT version will be added soon)</p>
+<p>Choose which game should be used as a base for join-able NPCs colours and portraits. This component will read all the data from one of the NPC CRE files introduced in the chosen game and apply it to all other CRE files that have been added by both games. Affected NPCs: Edwin, Imoen, Jaheira, Minsc, Viconia, Dorn, Neera, Rasaad.</p>
+<p>It also gives BG:EE appearance to NPCs that shows up in BG2:EE, but are not join-able (at least in vanilla game). List in the spoiler to not ruin surprises for those who didn't finish BG2:EE and Black Pits 2 yet, and don't know that these NPC exists in game:</p>
+<p><a href="#" onclick="toggle('Consistent NPC appearance'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Consistent NPC appearance">
+	Coran, Safana, Faldorn, Garrick, Xzar, Tiax, Quayle, Baeloth, Najim.
+</ul>
+<hr />
+
+<h3>Consistent NPC voices</h3>
+<p>Compatibility: EET (BGT version will be added soon)</p>
+<p>Inconsistency between voice artists and/or performance in BG1 and BG2 is a big problem in non English versions of the game. This component will do it's best to make them consistent in both portion of the story by either adding/replacing/removing sound files. Currently it only works for Polish version of the game, but I'm open for adding support for different languages if someone is interested in tweaking the code. This component affects following BG1 NPCs:</p>
+<p><a href="#" onclick="toggle('Consistent NPC voices'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Consistent NPC voices">
+	<li><strong>Edwin</strong>: the same voice actor (Robert Płuszka) plays the role in both games, so there is no need for special treatment. Just added some sounds to BG1 CRE files that were introduced in BG2 (comments on nature, more attack taunts etc.)</li>
+	<li><strong>Imoen</strong>: it's hard to believe but the same voice actress (Anna Dużyńska) played the role in both games. The problem is that in BG1 for whatever stupid reason she used Russian accent and sounds nothing like in BG2. That is why she will now use her BG2 voice set (from later part of game, not those pessimistic lines from Irenicus Dungeon). Remaining original BG1 tracks are replaced with dummy (silent) files.</li>
+	<li><strong>Jaheira</strong>: the same voice actress (Henryka Korzycka) plays the role in both games, but she did MUCH better job in BG2 (compare "For the fallen!" line for example). So her lines remains mostly unchanged, but voices for common actions has been replaced with BG2 ones if they were available.</li>
+	<li><strong>Minsc</strong>: 2 entirely different voice actors play the role (BG1: ?, BG2: Janusz Marcinowicz), and the one in BG1 is nothing like the English voice actor. Simply bland and even worse he is often mispronouncing Boo name :( That is why all sounds are replaced with BG2 ones and remaining BG1 tracks are replaced with dummy (silent) files.</li>
+	<li><strong>Viconia</strong>: the same voice actress (Gabriela Kownacka) plays the role in both games, so she keeps all of her BG1 voices and receives additional sounds introduced in BG2 (see Edwin)</li>
+</ul>
+<hr />
+
+<h3>Adjust BG:EE XP CAP</h3>
+<p>Compatibility: EET</p>
+<p>Just like vanilla BG:EE, EET adds XP CAP to BG1 portion of the game. You can adjust it or disable completely here. Available options:</p>
+<p><a href="#" onclick="toggle('Adjust BG:EE XP CAP'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust BG:EE XP CAP">
+	<li><strong> 89,000</strong> (BG2:EE starting XP)</li>
+	<li><strong>161,000</strong> (BG:EE XP CAP - default)</li>
+	<li><strong>Custom value</strong> (type in integer value)</li>
+	<li><strong>Disable XP CAP</strong> (sets XP CAP to 100,000,000)</li>
+</ul>
+<hr />
+
+<h3>Adjust BG2:EE XP CAP</h3>
+<p>Compatibility: BG2:EE, EET</p>
+<p>Simply adjust BG2:EE XP CAP via editing 2DA files. Available options:</p>
+<p><a href="#" onclick="toggle('Adjust BG2:EE XP CAP'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust BG2:EE XP CAP">
+	<li><strong>2,950,000</strong> (BG2 without expansion XP CAP)</li>
+	<li><strong>8,000,000</strong> (BG2:EE XP CAP - default)</li>
+	<li><strong>Custom value</strong> (type in integer value)</li>
+	<li><strong>Disable XP CAP</strong></li>
+</ul>
+<hr />
+
+<h3>Additional BG2:EE SoA XP CAP</h3>
+<p>Compatibility: EET</p>
+<p>Like in vanilla game EET doesn't have pre ToB XP CAP. This tweak allows to add it into the game for those who don't like to be overpowered in Shadows of Amn portion of the game. Available options:</p>
+<p><a href="#" onclick="toggle('Additional BG2:EE SoA XP CAP'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Additional BG2:EE SoA XP CAP">
+	<li><strong>2,500,000</strong> (BG2:ToB starting XP for NPC)</li>
+	<li><strong>2,950,000</strong> (BG2 without expansion XP CAP)</li>
+	<li><strong>Custom value</strong> (type in integer value)</li>
+</ul>
+<hr />
+
+<h3>Adjust XP for Traps, Spells and Lockpicking</h3>
+<p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
+<p>Adjust XP rewards for disarming Traps, learning Spells and Lockpicking via editing 2DA files. Available options:</p>
+<p><a href="#" onclick="toggle('Adjust XP for Traps, Spells and Lockpicking'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust XP for Traps, Spells and Lockpicking">
+	<li><strong>Increase to 150%</strong></li>
+	<li><strong>Decrease to 75%</strong></li>
+	<li><strong>Decrease to 50%</strong></li>
+	<li><strong>Decrease to 25%</strong></li>
+	<li><strong>Decrease to 10%</strong></li>
+	<li><strong>Disable</strong> (no XP for these actions at all)</li>
+	<li><strong>Custom value</strong> (type in integer percentage value)</li>
+	<li><strong>Use XP values from BG1:EE</strong> (default)</li>
+	<li><strong>Use XP values from BG2:EE</strong> (keep in mind that it's way to high for BG1 portion of the game, but consider installing it after starting BG2)</li>
+</ul>
+<hr />
+
+<h3>Adjust XP for killing creatures</h3>
+<p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
+<p>Adjust XP rewards for killing monsters (also affects mods). Available options:</p>
+<p><a href="#" onclick="toggle('Adjust XP for killing creatures'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust XP for killing creatures">
+	<li><strong>Increase to 150%</strong></li>
+	<li><strong>Decrease to 75%</strong></li>
+	<li><strong>Decrease to 50%</strong></li>
+	<li><strong>Decrease to 25%</strong></li>
+	<li><strong>Decrease to 10%</strong></li>
+	<li><strong>Disable</strong> (no XP for killing creatures)</li>
+	<li><strong>Custom value</strong> (type in integer percentage value)</li>
+</ul>
+<hr />
+
+<h3>Adjust XP for quests</h3>
+<p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
+<p>As above but for quests (also affects mods). Available options:</p>
+<p><a href="#" onclick="toggle('Adjust XP for quests'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust XP for quests">
+	<li><strong>Increase to 150%</strong></li>
+	<li><strong>Decrease to 75%</strong></li>
+	<li><strong>Decrease to 50%</strong></li>
+	<li><strong>Decrease to 25%</strong></li>
+	<li><strong>Decrease to 10%</strong></li>
+	<li><strong>Disable</strong> (no XP for quests)</li>
+	<li><strong>Custom value</strong> (type in integer percentage value)</li>
+</ul>
+<hr />
+
+<h3>Party XP for quests distributed individually</h3>
+<p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
+<p>You think that you are really good player because you were able to solo the game? I thought so too until I played Black Pits 2 solo which has different XP reward system than vanilla game - each party member receives XP individually, which means you are not rewarded with more XP if you have smaller party. This tweak does exactly the same thing but for whole BG saga (also affects mods). I highly recommend it to veterans as it truly offers hardcore solo or smaller party challenge. If you are playing with party of 6 this component won't change anything in your game as all party members will receive their XP and the total XP pool is not changed by this tweak.</p>
+<hr />
+
+<h3>3E Thief Sneak Attack</h3>
+<p>Compatibility: BG2:EE, EET</p>
+<p>Enables 3E Thief Sneak Attack mechanics known from IWD in BG2:EE. It works exactly the same as in IWD:EE and replaces Backstabbing.</p>
+<hr />
+
+<h3>Adjust FPS and fix audio skipping in cutscenes</h3>
+<p>Compatibility: BG2, IWD, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
+<p>Seriously who still plays at default 30 FPS (which really means 15 FPS in game) these days? I've been playing on higher frame rates even in 1998 and can't stand sloppy gameplay on default settings. The only problem with adjusting FPS is annoying audio skipping in some cutscenes. This tweak should automatically fix 99% of such problems. (also affects mods). Available options:</p>
+<p><a href="#" onclick="toggle('Adjust FPS and fix audio skipping in cutscenes'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust FPS and fix audio skipping in cutscenes">
+	<li><strong>60 FPS</strong></li>
+	<li><strong>45 FPS</strong></li>
+	<li><strong>Custom value</strong> (type in integer value up to 60)</li>
+</ul>
+<hr />
+
+<address><span class="footer">EETT &gt; Introduction</span> &#8226;<a href="#top">BACK TO TOP</a></address>
+</div>
+<!-- ================== I n s t a l l a t i o n ================== --><a id="installation" name="installation"></a>
+
+<div class="content">
+<h2>Installation and Uninstallation</h2>
+
+<h3>Compatibility and install order</h3>
+
+<p>This mod should be installed at the end, after any mod that alters CRE and BCS files. You can safely keep it as the last mod in your load order, which will allow you to install/uninstall/re-install components during play through, without risking breaking other mods.</p>
+<p>If you are going to use XP related components than you should not install 'Ding0 Experience Fixer' (DEF JAM), as it does the same thing, but is far less flexible and does not cover mod related spells, items and effects like this mod.</p>
+<hr />
+
+<h3>Installation</h3>
+
+<ol>
+	<li>Extract EET_Tweaks-v#.7z to your install directory</li>
+	<li>Run setup-EET_Tweaks.exe in your install directory and follow the installation prompts</li>
+</ol>
+<hr />
+
+<h3>Uninstallation and Reinstallation</h3>
+
+<p>Run setup-EET_Tweaks.exe in your install directory and follow the installation prompts</p>
+<hr />
+
+<h3>Auto-installation (for expert users)</h3>
+
+<p>Instead of directly running the executable go to the command line, navigate to your installation directory, and execute setup-EET_Tweaks.exe using the construction below. Alternatively, place the construction in a batch file or the Run... dialog in the Start menu.</p>
+
+<div class="important">
+<p>setup-EET_Tweaks.exe --force-install-list <em>[number]</em> --skip-at-view --language <em>X</em> --args-list <em>[options]</em></p>
+</div>
+
+<p>Parameters:</p>
+
+<div class="important">
+<table border="1">
+	<tbody>
+		<tr>
+			<td><em>X</em></td>
+			<td>
+			<p>0 - English<br />
+			1 - Polish</p>
+			</td>
+		</tr>
+		<tr>
+			<td><em>[number]</em></td>
+			<td>
+			<p>0 - install Teleport spell<br />
+			1 - install Consistent NPC appearance<br />
+			2 - install Consistent NPC voices<br />
+			3 - install Adjust BG:EE XP CAP<br />
+			4 - install Adjust BG2:EE XP CAP<br />
+			5 - install Additional BG2:EE SoA XP CAP<br />
+			6 - install Adjust XP for Traps, Spells and Lockpicking<br />
+			7 - install Adjust XP for killing creatures<br />
+			8 - install Adjust XP for quests<br />
+			9 - install Party XP for quests distributed individually<br />
+			10 - install 3E Thief Sneak Attack<br />
+			11 - install Adjust FPS and fix audio skipping in cutscenes</p>
+			</td>
+		</tr>
+		<tr>
+			<td><em>[options]</em></td>
+			<td>Some components allows you to choose options during installation. If this is the case than you can skip the prompt and choose them here by typing number of the component followed by '-' and the value.<br />
+			Component 1 (Consistent NPC appearance) uses 0 for BG1 base and 1 for BG2 base.<br />
+			The value that you send to all other components with options (3, 4, 5, 6, 7, 8, 11) works the same way as if you had type in the value during installation prompt via 'Custom value' option.</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<p>Example:</p>
+
+<div class="important">
+<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 --skip-at-view --language 1 --args-list "1-1" "3-161000" "4-10000000" "5-2500000" "6-25" "7-10" "8-120" "11-60"</p>
+</div>
+
+<p>This construction installs all components of this mod using the English language and with following settings: BG2 used as a base for join-able NPCs; BG:EE XP CAP set to 161,000; BG2:EE XP CAP set to 10,000,000; additional BG2:SoA XP CAP set to 2,500,000; XP rewards for Traps, Spells and Lockpicking decreased to 25%; XP rewards for killing monsters decreased to 10%; XP rewards for quests increased to 120%; FPS set to 60 frames per second.</p>
+
+<address><span class="footer">EETT &gt; Installation and Uninstallation</span> &#8226;<a href="#top">BACK TO TOP</a></address>
+</div>
+<!-- ================== C r e d i t s ================== --><a id="credits" name="credits"></a>
+
+<div class="content">
+<h2>Credits</h2>
+
+<h3>Kudos (in alphabetical order)</h3>
+
+<ul>
+	<li>Many thanks to AL|EN for integration with Big World Setup</li>
+	<li>Many thanks to Argent77 for Near Infinity development and for advices regarding PVRZ files</li>
+	<li>Many thanks to Ascension64 who is a project leader or BGT-WeiDU</li>
+	<li>Many thanks to Bardez who created the original Baldur's Gate Trilogy</li>
+	<li>Many thanks to Beamdog for creating Enhanced Edition of Infinity Engine games</li>
+	<li>Many thanks to Bioware and Black Isle Studios for creating Baldur's Gate series</li>
+	<li>Many thanks to Crevs Daak for GitHub contribution to the project</li>
+	<li>Many thanks to Ding0 for Experience Fixer that inspired some XP related tweaks in this package</li>
+	<li>Many thanks to Weimer for creating the WeiDU utility</li>
+	<li>Many thanks to Wisp for the Enhanced Edition WeiDU development</li>
+	<li>Many thanks to you and all the other players who have contributed to the completeness of this modification</li>
+</ul>
+
+<h3>Translations</h3>
+
+<p><strong>Polish:</strong> </p>
+
+<address><span class="footer">EETT &gt; Credits</span> &#8226;<a href="#top">BACK TO TOP</a></address>
+</div>
+<!-- ================== L e g a l e s e ================== --><a id="legalese" name="legalese"></a>
+
+<div class="content">
+<h2>Legalese</h2>
+
+<p>2012 - 2014 Hasbro, Inc. All Rights Reserved. Baldur's Gate, Dungeons & Dragons, D&D, the Forgotten Realms, Baldur's Gate, Wizards of the Coast and their logos are trademarks of Wizards of the Coast LLC in the U.S.A. and other countries. Hasbro and its logo are trademarks of Hasbro, Inc.</p>
+
+<p>1998 BioWare Corp. All Rights Reserved. BioWare, the BioWare Infinity Engine and the BioWare logo are trademarks of Bioware Corp. Black Isle Studios and the Black Isle Studios logo are trademarks of Interplay Entertainment Corp.</p>
+
+<p>2012 - 2014 Beamdog. All Rights Reserved.</p>
+
+<p><strong>USE THIS MODIFICATION AT YOUR OWN RISK. This modification is not developed, supported, or endorsed by BioWare Corp., Hasbro, Beamdog. All images and contents of this mod are &copy; BioWare Corp., Interplay, Black Isle or Wizards of the Coast, Inc.</strong></p>
+
+<p>This is a community modification, created as a hobby for free. You can distribute among your peers as much as you like. My code is open sourced and released under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a>.</p>
+
+<p>This modification is available as an open repository on <a href="https://github.com/K4thos/EET">GitHub</a>, which allows everyone to add new commits. Feel free to suggest improvements and fixes by directly modifying the code on the site. Any help on improving the mod is appreciated.</p>
+
+<address><span class="footer">EETT &gt; Legalese</span> &#8226;<a href="#top">BACK TO TOP</a></address>
+</div>
+<!-- ================== V e r s i o n   H i s t o r y ================== --><a id="version" name="version"></a>
+
+<div class="content">
+<h2>Version history</h2>
+
+<p><a href="#" onclick="toggle('1.0'); return false;">Expand/Collapse All</a></p>
+
+<h6><a href="#" onclick="toggle('1.0'); return false;">Version 1.0 (01 Jan 15)</a></h6>
+
+<ul class="vlisthide" id="1.0">
+	<li>First public release</li>
+</ul>
+
+<address><span class="footer">EETT &gt; Version History</span> &#8226;<a href="#top">BACK TO TOP</a></address>
+</div>
+</div>
+</div>
+<number><script type="text/javascript">
+    <!--
+      function toggle(id) {
+        element = document.getElementById(id);
+        if ( element.style.display == 'none' ) {
+          element.style.display = '';
+          if ( document.all ) {
+            document.getElementById('vhistoryaddress').style.display = 'none'; // IE hack
+          }
+        } else {
+          element.style.display = 'none';
+          if ( document.all ) {
+            document.getElementById('vhistoryaddress').style.display = ''; // IE hack
+          }
+        }
+      }
+
+      elements = document.getElementsByTagName('*');
+      for ( var i = 0; i < elements.length; i++ ) {
+        if ( elements[i].className == 'vlisthide' ) {
+          elements[i].style.display = 'none';
+        }
+      }
+    //-->
+    </script></number></body>
+</html>
