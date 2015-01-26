@@ -338,7 +338,7 @@
 <div id="wrap">
 <div id="header">
 <h1>Baldur's Gate: Enhanced Edition Trilogy Tweaks (EETT)</h1>
-<strong>Tweak Pack</strong>
+<strong>Tweak Pack for Infinity Engine games</strong>
 
 <hr />
 <p class="about">Project Lead: K4thos</p>
@@ -366,7 +366,7 @@
 
 <h3>Teleport spell</h3>
 <p>Compatibility: EET</p>
-<p>Leftover from the earlier version of EET that didn't have native worldmap support for going back to BG1 areas after starting BG2. Teleport is still a nice and lore friendly feature, so it's now part of this tweak pack. Learning this spell will allow your party teleport to areas that you have previously visited. Additionally modders can use this spell for easier mod debugging by typing in the console: SetGlobal("NameOfTheVariable","GLOBAL",1) which will enable teleportation to all areas regardless if you visited them.</p>
+<p>Leftover from the earlier version of EET that didn't have native worldmap support for going back to BG1 areas after starting BG2. Teleport is still a nice and lore friendly feature, so it's now part of this tweak pack. Learning this spell will allow your party fast travel to areas that you have previously visited. Additionally modders can use this spell for easier mod debugging by typing in the console: SetGlobal("K#DebugMode","GLOBAL",1) which will enable teleportation to all areas regardless if you visited them. The spell itself will be added to your inventory after finishing Shadows of Amn portion of the game. You can also spawn it via console: CreateItem("K#TELSPL",1)</p>
 <hr />
 
 <h3>Consistent NPC appearance</h3>
@@ -406,7 +406,7 @@
 
 <h3>Adjust BG2:EE XP CAP</h3>
 <p>Compatibility: BG2:EE, EET</p>
-<p>Simply adjust BG2:EE XP CAP via editing 2DA files. Available options:</p>
+<p>Simply adjusts whole game XP CAP via editing XPCAP.2DA and STARTARE.2DA files. Available options:</p>
 <p><a href="#" onclick="toggle('Adjust BG2:EE XP CAP'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust BG2:EE XP CAP">
 	<li><strong>2,950,000</strong> (BG2 without expansion XP CAP)</li>
@@ -418,7 +418,7 @@
 
 <h3>Additional BG2:EE SoA XP CAP</h3>
 <p>Compatibility: EET</p>
-<p>Like in vanilla game EET doesn't have pre ToB XP CAP. This tweak allows to add it into the game for those who don't like to be overpowered in Shadows of Amn portion of the game. Available options:</p>
+<p>Like in vanilla game EET doesn't have pre ToB XP CAP. This tweak allows to add it into the game for those who don't like to be overpowered in Shadows of Amn portion of the game. It expands BALDUR.BCS file. Available options:</p>
 <p><a href="#" onclick="toggle('Additional BG2:EE SoA XP CAP'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Additional BG2:EE SoA XP CAP">
 	<li><strong>2,500,000</strong> (BG2:ToB starting XP for NPC)</li>
@@ -429,7 +429,7 @@
 
 <h3>Adjust XP for Traps, Spells and Lockpicking</h3>
 <p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
-<p>Adjust XP rewards for disarming Traps, learning Spells and Lockpicking via editing 2DA files. Available options:</p>
+<p>Adjust XP rewards for disarming Traps, learning Spells and Lockpicking via editing XPBONUS.2DA. Available options:</p>
 <p><a href="#" onclick="toggle('Adjust XP for Traps, Spells and Lockpicking'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust XP for Traps, Spells and Lockpicking">
 	<li><strong>Increase to 150%</strong></li>
@@ -446,7 +446,7 @@
 
 <h3>Adjust XP for killing creatures</h3>
 <p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
-<p>Adjust XP rewards for killing monsters (also affects mods). Available options:</p>
+<p>Adjust XP rewards for killing monsters. Edits all CRE files in game (also affects mods). Available options:</p>
 <p><a href="#" onclick="toggle('Adjust XP for killing creatures'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust XP for killing creatures">
 	<li><strong>Increase to 150%</strong></li>
@@ -461,7 +461,7 @@
 
 <h3>Adjust XP for quests</h3>
 <p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
-<p>As above but for quests (also affects mods). Available options:</p>
+<p>As above but for quests. It edits XPLIST.2da, as well as all BCS, DLG, ITM, SPL, EFF files (also affects mods). Available options:</p>
 <p><a href="#" onclick="toggle('Adjust XP for quests'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust XP for quests">
 	<li><strong>Increase to 150%</strong></li>
@@ -486,7 +486,7 @@
 
 <h3>Adjust FPS and fix audio skipping in cutscenes</h3>
 <p>Compatibility: BG2, IWD, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
-<p>Seriously who still plays at default 30 FPS (which really means 15 FPS in game) these days? I've been playing on higher frame rates even in 1998 and can't stand sloppy gameplay on default settings. The only problem with adjusting FPS is annoying audio skipping in some cutscenes. This tweak should automatically fix 99% of such problems. (also affects mods). Available options:</p>
+<p>Seriously who still plays at default 30 FPS (which really means 15 FPS in game) these days? I've been playing on higher frame rates even in 1998 and just can't stand sloppy gameplay on default settings. The only problem with adjusting FPS is annoying audio skipping in some cutscenes. This tweak should automatically fix 99% of such problems (just a guess based on what I've already tested). Of course if you are using non English voices that are longer than original ones than this tweak may be a little less effective, but you should still notice major improvements. This tweak adjusts globally each Wait and SmallWait BCS action but only 1 line before and/or after DisplayStringX action is used, so it shouldn't really slow down cutscenes other than fixing the audio skipping problem (also affects mods). Available options:</p>
 <p><a href="#" onclick="toggle('Adjust FPS and fix audio skipping in cutscenes'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust FPS and fix audio skipping in cutscenes">
 	<li><strong>60 FPS</strong></li>
@@ -571,7 +571,7 @@
 <p>Example:</p>
 
 <div class="important">
-<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 --skip-at-view --language 1 --args-list "1-1" "3-161000" "4-10000000" "5-2500000" "6-25" "7-10" "8-120" "11-60"</p>
+<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 --skip-at-view --language 0 --args-list "1-1" "3-161000" "4-10000000" "5-2500000" "6-25" "7-10" "8-120" "11-60"</p>
 </div>
 
 <p>This construction installs all components of this mod using the English language and with following settings: BG2 used as a base for join-able NPCs; BG:EE XP CAP set to 161,000; BG2:EE XP CAP set to 10,000,000; additional BG2:SoA XP CAP set to 2,500,000; XP rewards for Traps, Spells and Lockpicking decreased to 25%; XP rewards for killing monsters decreased to 10%; XP rewards for quests increased to 120%; FPS set to 60 frames per second.</p>
@@ -587,10 +587,10 @@
 
 <ul>
 	<li>Many thanks to AL|EN for integration with Big World Setup</li>
-	<li>Many thanks to Argent77 for Near Infinity development and for advices regarding PVRZ files</li>
-	<li>Many thanks to Ascension64 who is a project leader or BGT-WeiDU</li>
+	<li>Many thanks to Argent77 for Near Infinity development</li>
+	<li>Many thanks to Ascension64 who is a project leader of BGT-WeiDU</li>
 	<li>Many thanks to Bardez who created the original Baldur's Gate Trilogy</li>
-	<li>Many thanks to Beamdog for creating Enhanced Edition of Infinity Engine games</li>
+	<li>Many thanks to Beamdog for creating Enhanced Editions of Infinity Engine games</li>
 	<li>Many thanks to Bioware and Black Isle Studios for creating Baldur's Gate series</li>
 	<li>Many thanks to Crevs Daak for GitHub contribution to the project</li>
 	<li>Many thanks to Ding0 for Experience Fixer that inspired some XP related tweaks in this package</li>
@@ -616,7 +616,7 @@
 
 <p>2012 - 2014 Beamdog. All Rights Reserved.</p>
 
-<p><strong>USE THIS MODIFICATION AT YOUR OWN RISK. This modification is not developed, supported, or endorsed by BioWare Corp., Hasbro, Beamdog. All images and contents of this mod are &copy; BioWare Corp., Interplay, Black Isle or Wizards of the Coast, Inc.</strong></p>
+<p><strong>USE THIS MODIFICATION AT YOUR OWN RISK. This modification is not developed, supported, or endorsed by BioWare Corp., Hasbro, Beamdog.</strong></p>
 
 <p>This is a community modification, created as a hobby for free. You can distribute among your peers as much as you like. My code is open sourced and released under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a>.</p>
 
