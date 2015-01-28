@@ -439,8 +439,8 @@
 	<li><strong>Decrease to 10%</strong></li>
 	<li><strong>Disable</strong> (no XP for these actions at all)</li>
 	<li><strong>Custom value</strong> (type in integer percentage value)</li>
-	<li><strong>Use XP values from BG1:EE</strong> (default)</li>
-	<li><strong>Use XP values from BG2:EE</strong> (keep in mind that it's way to high for BG1 portion of the game, but consider installing it after starting BG2)</li>
+	<li><strong>Use XP values from BG1</strong> (default in EET)</li>
+	<li><strong>Use XP values from BG2</strong> (if you are usinf EET/BGT/Tutu than keep in mind that it's way to high for BG1 portion of the game, but consider installing it after starting BG2)</li>
 </ul>
 <hr />
 
@@ -476,7 +476,7 @@
 
 <h3>Party XP for quests distributed individually</h3>
 <p>Compatibility: BG2, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
-<p>You think that you are really good player because you were able to solo the game? I thought so too until I played Black Pits 2 solo which has different XP reward system than vanilla game - each party member receives XP individually, which means you are not rewarded with more XP if you have smaller party. This tweak does exactly the same thing but for whole BG saga (also affects mods). I highly recommend it to veterans as it truly offers hardcore solo or smaller party challenge. If you are playing with party of 6 this component won't change anything in your game as all party members will receive their XP and the total XP pool is not changed by this tweak.</p>
+<p>You think that you are really good player because you were able to solo the game? I thought so too until I played Black Pits 2 solo which has different XP reward system than vanilla game - each party member receives XP individually, which means you are not rewarded with more XP if you have smaller party. This tweak does exactly the same thing but for whole BG saga (also affects mods). I highly recommend it (together with reducing XP for creatures that still adds XP to whole party) for veterans as it truly offers hardcore solo or smaller party challenge. If you are playing with party of 6 this component won't change anything in your game as all party members will receive their XP and the total XP pool is not changed by this tweak.</p>
 <hr />
 
 <h3>3E Thief Sneak Attack</h3>
@@ -504,8 +504,9 @@
 
 <h3>Compatibility and install order</h3>
 
-<p>This mod should be installed at the end, after any mod that alters CRE and BCS files. You can safely keep it as the last mod in your load order, which will allow you to install/uninstall/re-install components during play through, without risking breaking other mods.</p>
-<p>If you are going to use XP related components than you should not install 'Ding0 Experience Fixer' (DEF JAM), as it does the same thing, but is far less flexible and does not cover mod related spells, items and effects like this mod.</p>
+<p>This mod should be installed at the end, after any mod that alters CRE, BCS, DLG, ITM, SPL, EFF files. You can safely keep it as the last mod in your load order, which will allow you to install/uninstall/re-install components during play through, without risking breaking other mods.</p>
+<p>You don't need to worry about components installation order - weidu is smart enough to reinstall previous components if needed. For example you can install 'Party XP for quests distributed individually' before or after installing 'Adjust XP for quests' component. The outcome will be the same.
+<p>If you are going to use XP related components than you should not install 'Ding0 Experience Fixer' (DEF JAM), as it does the same thing, but compared to this mod is less precise, flexible and doesn't cover mod related SPL, ITM, EFF files and new ChangeStat action added by EE engine (at least the version v6 that was the most recent one when I was writing this readme).</p>
 <hr />
 
 <h3>Installation</h3>
@@ -523,7 +524,7 @@
 
 <h3>Auto-installation (for expert users)</h3>
 
-<p>Instead of directly running the executable go to the command line, navigate to your installation directory, and execute setup-EET_Tweaks.exe using the construction below. Alternatively, place the construction in a batch file or the Run... dialog in the Start menu.</p>
+<p>Instead of directly running the executable go to the command line, navigate to your installation directory, and execute setup-EET_Tweaks.exe using the construction below. Alternatively, place the construction in a batch file or the 'Run...' dialog in the Start menu.</p>
 
 <div class="important">
 <p>setup-EET_Tweaks.exe --force-install-list <em>[number]</em> --skip-at-view --language <em>X</em> --args-list <em>[options]</em></p>
@@ -594,6 +595,7 @@
 	<li>Many thanks to Bioware and Black Isle Studios for creating Baldur's Gate series</li>
 	<li>Many thanks to Crevs Daak for GitHub contribution to the project</li>
 	<li>Many thanks to Ding0 for Experience Fixer that inspired some XP related tweaks in this package</li>
+	<li>Many thanks to Spellhold Studios for HTML template and for hosting my mods</li>
 	<li>Many thanks to Weimer for creating the WeiDU utility</li>
 	<li>Many thanks to Wisp for the Enhanced Edition WeiDU development</li>
 	<li>Many thanks to you and all the other players who have contributed to the completeness of this modification</li>

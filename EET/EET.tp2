@@ -2758,6 +2758,7 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 			PATCH_IF (num_matches = 0) BEGIN
 				REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
 	'%row%',	'%option%',	'1',~
+			END
 		END
 	BUT_ONLY
 END ELSE BEGIN
