@@ -28,7 +28,7 @@ LANGUAGE ~Polski (Polish)~
 
 BEGIN ~Teleport spell~
 //DESIGNATED 0
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible only with EET.~
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
 LOAD_TRA ~EET_Tweaks/lang/%LANGUAGE%/0.tra~
 
@@ -147,7 +147,7 @@ COPY ~EET_Tweaks/0/K#TELSPL.ITM~ ~override~
 
 BEGIN ~Consistent NPC appearance~
 //DESIGNATED 1
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible only with EET.~
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -185,7 +185,7 @@ INCLUDE ~EET_TWEAKS/lib/1.tph~
 
 BEGIN ~Consistent NPC voices~
 //DESIGNATED 2
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible only with EET.~
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 REQUIRE_PREDICATE ("%LANGUAGE%" STRING_EQUAL_CASE ~pl_PL~) ~This component is only for Polish language (unless someone will suggest changes for other languages in future).~
 
 LOAD_TRA ~EET_Tweaks/lang/%LANGUAGE%/2.tra~
@@ -202,7 +202,7 @@ INCLUDE ~EET_TWEAKS/lib/2_%LANGUAGE%.tph~ //no point in bloating the main file, 
 
 BEGIN ~Adjust BG:EE XP CAP~
 //DESIGNATED 3
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible only with EET.~
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -270,7 +270,7 @@ PRINT ~XP CAP set to %value%~
 
 BEGIN ~Adjust BG2:EE XP CAP~
 //DESIGNATED 4
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible only with EET.~
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -331,7 +331,7 @@ END
 
 BEGIN ~Additional BG2:SoA XP CAP~
 //DESIGNATED 5
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is compatible only with EET.~
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -869,7 +869,7 @@ END
 
 BEGIN ~3E Thief Sneak Attack~
 //DESIGNATED 10
-REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ ~This component is compatible only with EET and BG2:EE.~
+REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ ~This component is not compatible with your game.~
 
 LOAD_TRA ~EET_Tweaks/lang/%LANGUAGE%/10.tra~
 
@@ -1000,99 +1000,113 @@ END ELSE BEGIN
 	//create ini file for non EE games
 END
 
-//Individual patches if global replacing is not enough to fix the problem (for example if next scene depends on CRE finishing the animation instead of waiting)
-//unused, just a reference how to patch individual cutscenes if needed
-/*COPY_EXISTING ~NEWGAME.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		COUNT_REGEXP_INSTANCES ~ActionOverride("csgolem",SmallWait(1))~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~ActionOverride("csgolem",SmallWait(1))~ ~ActionOverride("csgolem",SmallWait(35))~
-			PATCH_PRINT ~Individually Patching %SOURCE_FILE%: ActionOverride("csgolem",SmallWait(1)) => ActionOverride("csgolem",SmallWait(10))~
-		END
-		COUNT_REGEXP_INSTANCES ~Wait(2)[%newline%]*DisplayStringWait(Myself,2833)~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~Wait(2)[%newline%]*DisplayStringWait(Myself,2833)~ ~SmallWait(40)
-    DisplayStringWait(Myself,2833)~
-			PATCH_PRINT ~Individually Patching %SOURCE_FILE%: Wait(2)	DisplayStringWait(Myself,2833) => SmallWait(40)	DisplayStringWait(Myself,2833)~
-		END
-	END
-BUT_ONLY*/
+//additional delay. Unused, but can be set for languages that have many problems with cutting sounds even in 30 FPS because they are longer than English ones
+/*ACTION_IF ("%LANGUAGE%" STRING_EQUAL_CASE ~pl_PL~) BEGIN
+	OUTER_SET lang_val = 10
+END*/
 
-//Below code will update timers depending on the chosen FPS and should fix like 99% of the issues for English audio
-//only Wait and SmallWait 1 line below and above DisplayStringX actions will be affected, so it should not slow your game in other places
-//the code itself is rather embarrassing as I'm not that good with regexp - feel free to improve it directly on GitHub
-
+//Below code will update timers depending on the chosen FPS and should fix most of the issues for English audio
+//updates only Wait and SmallWait 1 line below DisplayStringX actions, so it shouldn't slow the game in other places
 COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE ~\(.*\)\([%newline%]+.*DisplayString.+[%newline%]+\)\(.*\)~ BEGIN
-			SPRINT string1 ~%MATCH1%~
-			SPRINT string2 ~%MATCH2%~
-			SPRINT string3 ~%MATCH3%~
-			INNER_PATCH_SAVE ~string1~ ~%string1%~ BEGIN
-				REPLACE_EVALUATE ~\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
-					SET time = "%MATCH2%"
-					SPRINT new_MATCH1 "%MATCH1%"
-					PATCH_IF "%MATCH1%" STRING_MATCHES_REGEXP ".*Small$" = 0 BEGIN
-						SET time = ("%time%" * "%value%" / 30)
-						INNER_PATCH_SAVE ~new_MATCH1~ ~%new_MATCH1%~ BEGIN
-							REPLACE_TEXTUALLY ~Small$~ ~~
-						END
-					END ELSE BEGIN
-						SET time = ("%time%" * 15 * "%value%" / 30)
-					END
-					PATCH_IF ("%time%" < 1) BEGIN
-						SET time = 1
-					END
-					PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%Wait(%MATCH2%)%MATCH3% => %new_MATCH1%SmallWait(%time%)%MATCH3%~
-				END
-				~%new_MATCH1%SmallWait(%time%)%MATCH3%~
-			END
-			INNER_PATCH_SAVE ~string3~ ~%string3%~ BEGIN
-				REPLACE_EVALUATE ~\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
-					SET time = "%MATCH2%"
-					SPRINT new_MATCH1 "%MATCH1%"
-					PATCH_IF "%MATCH1%" STRING_MATCHES_REGEXP ".*Small$" = 0 BEGIN
-						SET time = ("%time%" * "%value%" / 30)
-						INNER_PATCH_SAVE ~new_MATCH1~ ~%new_MATCH1%~ BEGIN
-							REPLACE_TEXTUALLY ~Small$~ ~~
-						END
-					END ELSE BEGIN
-						SET time = ("%time%" * 15 * "%value%" / 30)
-					END
-					PATCH_IF ("%time%" < 1) BEGIN
-						SET time = 1
-					END
-					PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%Wait(%MATCH2%)%MATCH3% => %new_MATCH1%SmallWait(%time%)%MATCH3%~
-				END
-				~%new_MATCH1%SmallWait(%time%)%MATCH3%~
-			END
-		END
-		~%string1%%string2%%string3%~
-	END
-BUT_ONLY
-
-//unused (updates only Wait and SmallWait 1 line below DisplayStringX actions, not above)
-/*COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE_EVALUATE ~\(DisplayString.+[%newline%]+\)\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
 			SET time = "%MATCH3%"
 			SPRINT new_MATCH2 "%MATCH2%"
 			PATCH_IF "%MATCH2%" STRING_MATCHES_REGEXP ".*Small$" = 0 BEGIN
 				SET time = ("%time%" * "%value%" / 30)
+				/*PATCH_IF VARIABLE_IS_SET "%lang_val%" BEGIN
+					SET lang_add = ("%time%" / "%lang_val%")
+					SET time = ("%time%" + "%lang_add%")
+				END*/
 				INNER_PATCH_SAVE ~new_MATCH2~ ~%new_MATCH2%~ BEGIN
 					REPLACE_TEXTUALLY ~Small$~ ~~
 				END
 			END ELSE BEGIN
 				SET time = ("%time%" * 15 * "%value%" / 30)
+				/*PATCH_IF VARIABLE_IS_SET "%lang_val%" BEGIN
+					SET lang_add = ("%time%" / "%lang_val%")
+					SET time = ("%time%" + "%lang_add%")
+				END*/
 			END
 			PATCH_IF ("%time%" < 1) BEGIN
 				SET time = 1
 			END
 			PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%%MATCH2%Wait(%MATCH3%)%MATCH4% => %new_MATCH2%SmallWait(%time%)%MATCH4%~
 		END
-		~%new_MATCH2%SmallWait(%time%)~
+		~%MATCH1%%new_MATCH2%SmallWait(%time%)%MATCH4%~
 	END
-BUT_ONLY*/
+BUT_ONLY
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// More bandit scalps                               \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~More bandit scalps~
+//DESIGNATED 12
+REQUIRE_PREDICATE GAME_IS ~bgee eet~ ~This component is not compatible with your game.~
+FORBID_COMPONENT ~Setup-BGTTweak.tp2~ 1400 ~Component already installed via BGT Tweaks~
+
+ACTION_FOR_EACH cre IN britik credus hakt raiken taugos tersus teven vax venkt zal BEGIN
+	COPY_EXISTING ~%cre%.cre~ ~override~
+		READ_LONG 0x2b8 itemslot_off
+		READ_LONG 0x2bc item_off
+		READ_LONG 0x2c0 item_num
+		SET item_found = 0
+		FOR (i = 0; i < %item_num%; i +=1) BEGIN
+			READ_ASCII (%item_off% + %i% * 0x14) item_name
+			PATCH_IF ("%item_name%" STRING_EQUAL_CASE "MISC86") BEGIN
+				FOR (j = 0; j < 37; j += 1) BEGIN
+					READ_SHORT (%itemslot_off% + %j% * 0x2) itemslot_idx
+					PATCH_IF %itemslot_idx% = %i% BEGIN
+						SET item_found = 1
+					END
+				END
+			END
+		END
+		PATCH_IF item_found = 0 BEGIN
+			ADD_CRE_ITEM ~MISC86~ #0 #0 #0 ~UNSTEALABLE~ ~INV~
+		END
+	BUT_ONLY
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Put Sword of Chaos +2 in Sarevok's inventory     \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Put Sword of Chaos +2 in Sarevok's inventory~
+//DESIGNATED 13
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+FORBID_COMPONENT ~Setup-BGTTweak.tp2~ 2700 ~Component already installed via BGT Tweaks~
+
+//check if Sarevok already has the sword
+COPY_EXISTING ~sarevo.cre~ ~override/sarevo.cre~
+	READ_LONG 0x2b8 itemslot_off
+	READ_LONG 0x2bc item_off
+	READ_LONG 0x2c0 item_num
+	SET item_found = 0
+	FOR (i = 0; i < %item_num%; i +=1) BEGIN
+		READ_ASCII (%item_off% + %i% * 0x14) item_name
+		PATCH_IF ("%item_name%" STRING_EQUAL_CASE "SW2H16") BEGIN
+			FOR (j = 0; j < 37; j += 1) BEGIN
+				READ_SHORT (%itemslot_off% + %j% * 0x2) itemslot_idx
+				PATCH_IF %itemslot_idx% = %i% BEGIN
+					SET item_found = 1
+				END
+			END
+		END
+	END
+	PATCH_IF item_found = 0 BEGIN
+		ADD_CRE_ITEM ~SW2H16~ #0 #0 #0 ~UNSTEALABLE~ ~INV~
+	END
+BUT_ONLY
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1103,6 +1117,6 @@ BUT_ONLY*/
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 //BEGIN ~IWD:EE Bard Songs~
-//DESIGNATED 12
-//REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ ~This component is compatible only with EET and BG2:EE.~
+//DESIGNATED 14
+//REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ ~This component is not compatible with your game.~
 

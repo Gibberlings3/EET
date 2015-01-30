@@ -14,6 +14,53 @@ THEN
     //Continue()//1 frame delay
 END
 
+IF
+  Alignment(Player1,LAWFUL_GOOD)
+THEN
+  RESPONSE #100
+    ReputationSet(12)
+    Continue()
+END
+
+IF
+  OR(2)
+    Alignment(Player1,NEUTRAL_GOOD)
+    Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #100
+    ReputationSet(11)
+    Continue()
+END
+
+IF
+  OR(3)
+    Alignment(Player1,LAWFUL_NEUTRAL)
+    Alignment(Player1,NEUTRAL)
+    Alignment(Player1,CHAOTIC_NEUTRAL)
+THEN
+  RESPONSE #100
+    ReputationSet(10)
+    Continue()
+END
+
+IF
+  OR(2)
+    Alignment(Player1,LAWFUL_EVIL)
+    Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #100
+    ReputationSet(9)
+    Continue()
+END
+
+IF
+  Alignment(Player1,CHAOTIC_EVIL)
+THEN
+  RESPONSE #100
+    ReputationSet(8)
+    Continue()
+END
+
 //IF
 //  GlobalLT("K#DaysPassed","GLOBAL",365)
 //THEN

@@ -1,0 +1,117 @@
+IF
+  Delay(5)
+  Global("BPISDEAD","OH9350",0)
+  OR(2)
+  !HPGT(Player1,1)
+  Allegiance(Player1,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player2,1)
+  Allegiance(Player2,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player3,1)
+  Allegiance(Player3,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player4,1)
+  Allegiance(Player4,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player5,1)
+  Allegiance(Player5,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player6,1)
+  Allegiance(Player6,EVILBUTBLUE)
+THEN
+  RESPONSE #100
+    SetGlobal("BPISDEAD","OH9350",1)
+    StartMovie("DEATHAND")
+    GoToStartScreen()
+END
+
+IF
+  HPLT(Player1,2)
+  OR(3)
+  StateCheck(Player1,STATE_CHARMED)
+  StateCheck(Player1,STATE_PANIC)
+  StateCheck(Player1,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player1,MakeUnselectable(5000))
+    ActionOverride(Player1,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player1,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player2,2)
+  OR(3)
+  StateCheck(Player2,STATE_CHARMED)
+  StateCheck(Player2,STATE_PANIC)
+  StateCheck(Player2,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player2,MakeUnselectable(5000))
+    ActionOverride(Player2,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player2,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player3,2)
+  OR(3)
+  StateCheck(Player3,STATE_CHARMED)
+  StateCheck(Player3,STATE_PANIC)
+  StateCheck(Player3,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player3,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player3,MakeUnselectable(5000))
+    ActionOverride(Player3,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player3,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player4,2)
+  OR(3)
+  StateCheck(Player4,STATE_CHARMED)
+  StateCheck(Player4,STATE_PANIC)
+  StateCheck(Player4,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player4,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player4,MakeUnselectable(5000))
+    ActionOverride(Player4,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player4,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player5,2)
+  OR(3)
+  StateCheck(Player5,STATE_CHARMED)
+  StateCheck(Player5,STATE_PANIC)
+  StateCheck(Player5,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player5,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player5,MakeUnselectable(5000))
+    ActionOverride(Player5,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player5,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player6,2)
+  OR(3)
+  StateCheck(Player6,STATE_CHARMED)
+  StateCheck(Player6,STATE_PANIC)
+  StateCheck(Player6,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player6,MakeUnselectable(5000))
+    ActionOverride(Player6,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player6,PlayDeadInterruptible(9999))
+    Continue()
+END

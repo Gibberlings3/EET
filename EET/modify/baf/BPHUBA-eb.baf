@@ -1,0 +1,13 @@
+IF
+	GlobalLT("T3_B5","GLOBAL",1)
+	HitBy([PC],CRUSHING)
+	OR(2)
+	  AreaCheck("OH9310")
+	  AreaCheck("OH9350")
+THEN
+	RESPONSE #100
+		ClearAllActions()
+		StartCutSceneMode()
+		SetGlobal("ResistedBaeloth","GLOBAL",2)
+		StartCutScene("CUTBP05")
+END
