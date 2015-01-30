@@ -400,7 +400,7 @@
 	<li><strong>Edwin</strong>: the same voice actor (Robert Płuszka) plays the role in both games, so there is no need for special treatment. Just added some sounds to BG1 CRE files that were introduced in BG2 (comments on nature, more attack taunts etc.)</li>
 	<li><strong>Imoen</strong>: it's hard to believe but the same voice actress (Anna Dużyńska) played the role in both games. The problem is that in BG1 for whatever stupid reason she used Russian accent and sounds nothing like in BG2. That is why she will now use her BG2 voice set (from later part of game, not those pessimistic lines from Irenicus Dungeon). Remaining original BG1 tracks are replaced with dummy (silent) files.</li>
 	<li><strong>Jaheira</strong>: the same voice actress (Henryka Korzycka) plays the role in both games, but she did MUCH better job in BG2 (compare "For the fallen!" line for example). So her lines remains mostly unchanged, but voices for common actions has been replaced with BG2 ones if they were available.</li>
-	<li><strong>Minsc</strong>: 2 entirely different voice actors play the role (BG1: ?, BG2: Janusz Marcinowicz), and the one in BG1 is nothing like the English voice actor. Simply bland and even worse he is often mispronouncing Boo name :( That is why all sounds are replaced with BG2 ones and remaining BG1 tracks are replaced with dummy (silent) files.</li>
+	<li><strong>Minsc</strong>: 2 entirely different voice actors (or at least that is my assumption - there are no detailed credits in the game) play the role (BG1: ?, BG2: Janusz Marcinowicz), and the one in BG1 is nothing like the English voice actor. Simply bland and even worse he is often mispronouncing Boo name :( That is why all sounds are replaced with BG2 ones and remaining BG1 tracks are replaced with dummy (silent) files.</li>
 	<li><strong>Viconia</strong>: the same voice actress (Gabriela Kownacka) plays the role in both games, so she keeps all of her BG1 voices and receives additional sounds introduced in BG2 (see Edwin)</li>
 </ul>
 <hr />
@@ -453,7 +453,7 @@
 	<li><strong>Disable</strong> (no XP for these actions at all)</li>
 	<li><strong>Custom value</strong> (type in integer percentage value)</li>
 	<li><strong>Use XP values from BG1</strong> (default in EET)</li>
-	<li><strong>Use XP values from BG2</strong> (if you are usinf EET/BGT/Tutu than keep in mind that it's way to high for BG1 portion of the game, but consider installing it after starting BG2)</li>
+	<li><strong>Use XP values from BG2</strong> (if you are using EET/BGT/Tutu than keep in mind that it's way to high for BG1 portion of the game, but consider installing it after starting BG2)</li>
 </ul>
 <hr />
 
@@ -499,12 +499,15 @@
 
 <h3>Adjust FPS and fix audio skipping in cutscenes</h3>
 <p>Compatibility: BG2, IWD, Tutu, BGT, CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
-<p>Seriously who still plays at default 30 FPS these days? I've been playing on higher frame rates even in 1998 and just can't stand sloppy gameplay on default settings. The only problem with adjusting FPS is annoying audio skipping in some cutscenes. This tweak should automatically fix most of such problems in vanilla content (just a guess based on what I've already tested). Of course if you are using non English voices that are longer than original ones (in such cases they are problematic even on 30 FPS) than this tweak may be a little less effective, but you should still notice major improvements. This tweak adjusts globally each Wait and SmallWait BCS action but only 1 line before and/or after DisplayStringX action is used, so it shouldn't really slow down cutscenes other than fixing the audio skipping problem. It also affects mods, but keep in mind that modders are often not following vanilla BG2 coding standards and place Wait delays not directly after the speech action is used, which can't be currently taken into account. This unfortunately is also true for content added by Beamdog, such as Black Pits adventure, where you will still experience audio problem. Available options:</p>
+<p>Seriously who still plays at default 30 FPS these days? I've been playing on higher frame rates even in 1998 and just can't stand sloppy gameplay on default settings. The only problem with adjusting FPS is annoying audio skipping in some cutscenes. This tweak should automatically fix most of such problems in vanilla Bioware content (just a guess based on what I've already tested). Of course if you are using non English voices that are longer than original ones (in such cases they are usually also problematic even on 30 FPS) than this tweak may be a little less effective, but you should still notice major improvements. Available options:</p>
 <p><a href="#" onclick="toggle('Adjust FPS and fix audio skipping in cutscenes'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust FPS and fix audio skipping in cutscenes">
 	<li><strong>60 FPS</strong></li>
 	<li><strong>45 FPS</strong></li>
 	<li><strong>Custom value</strong> (type in integer value up to 60)</li>
+	<div class="spoiler">
+		This tweak adjusts globally each Wait and SmallWait BCS action but only 1 line after DisplayStringX action is used, so it shouldn't really slow down cutscenes other than fixing the audio skipping problem. It also affects mods, but keep in mind that modders are often not following vanilla BG2 coding standards and either depends the delay on animation length or place delay timers not directly after the speech action is used, which currently won't be taken into account. This unfortunately is also true for content added by Beamdog, such as Black Pits adventure, where you will still experience audio problems.
+	</div>
 </ul>
 <hr />
 
