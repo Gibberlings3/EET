@@ -1816,8 +1816,7 @@ ACTION_FOR_EACH "item" IN "%dest_equ1%" "%dest_equ2%" "%dest_equ3%" "%dest_mag1%
 END
 
 COPY_EXISTING ~BPRNG1.ITM~ ~override~
-	SET opcode_to_delete = 208 //Minimum HP
-	LAUNCH_PATCH_MACRO DELETE_ITEM_EQEFFECT
+	LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = "208" END //Minimum HP
 BUT_ONLY
 
 COPY ~EET/base/itm/K#TELBG2.ITM~ ~override~
