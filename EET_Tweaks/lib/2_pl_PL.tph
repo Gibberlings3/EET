@@ -96,7 +96,7 @@ ACTION_FOR_EACH npc IN IMOEN IMOEN1 IMOEN2 IMOEN4 IMOEN6_ BEGIN
 END
 
 // tortures are mentioned in original @30741 string and assigned voice track. It doesn't make sense to use it in BG1 so I edited it
-COPY ~EET_Tweaks/2/pl_PL/IMOEN41_.wav~ ~override~
+COPY ~EET_Tweaks/2/pl_PL/IMOEN/IMOEN41_.wav~ ~override~
 
 // dummy (silent) wavs are used for the remaining voices in BG1 portion of the game (quest/banter relevant ones). In case some mods attaches original voice tracks in dialogue I replaced all of them with dummy files
 ACTION_FOR_EACH voice IN IMOEN01_ IMOEN02_ IMOEN03_ IMOEN04_ IMOEN05_ IMOEN06_ IMOEN07_ IMOEN08_ IMOEN09_ IMOEN10_ IMOEN11_ IMOEN12_ IMOEN13_ IMOEN14_ IMOEN15_ IMOEN16_ IMOEN17_ IMOEN18_ IMOEN19_ IMOEN20_ IMOEN21_ IMOEN22_ IMOEN23_ IMOEN24_ IMOEN25_ IMOEN26_ IMOEN27_ IMOEN28_ IMOEN30_ BEGIN
@@ -167,7 +167,7 @@ END
 ///// Minsc                                            \\\\\
 /////                                                  \\\\\
 
-// 2 entirely different voice actors play the role (BG1: ?, BG2: Janusz Marcinowicz), and the one in BG1 is nothing like the English voice actor. Simply bland and even worse he is often mispronouncing Boo name :( That is why all sounds are replaced with BG2 ones and remaining BG1 tracks are replaced with dummy (silent) files.
+// similar situation to Imoen - same voice actor (Janusz Marcinowicz), awesome BG2 performance, and totally different direction in BG1, where he sounds nothing like the English voice actor or his BG2 performance (I had to listen to his lines over and over to even believe that it is the same voice actor). Simply bland and even worse he is often mispronouncing Boo name in BG1 :( That is why all sounds are replaced with BG2 ones and remaining BG1 tracks are replaced with dummy (silent) files.
 
 // replace cre voice entries
 ACTION_FOR_EACH npc IN MINSC MINSC2 MINSC4 MINSC6 E32 BEGIN
@@ -235,7 +235,7 @@ END
 ///// Viconia                                          \\\\\
 /////                                                  \\\\\
 
-// the same voice actress (Gabriela Kownacka) plays the role in both games, so she keeps all of her BG1 voices and receives additional sounds introduced in BG2 (see Edwin
+// the same voice actress (Gabriela Kownacka) plays the role in both games, so she keeps all of her BG1 voices and receives additional sounds introduced in BG2 (see Edwin)
 
 // replace cre voice entries
 ACTION_FOR_EACH npc IN VICONI VICONI4 VICONI6_ BEGIN
@@ -264,4 +264,9 @@ ACTION_FOR_EACH npc IN VICONI VICONI4 VICONI6_ BEGIN
 	END
 END
 
-//Xzar: BG1 - Roman Holc, BG2 - ?
+/////                                                  \\\\\
+///// Wraith Sarevok                                   \\\\\
+/////                                                  \\\\\
+
+// touched up Sarevok's (Daniel Olbrychski) Hell Trials speech to be more in line with his BG1 performance and his current spiritual appearance. During Hell Trials Sarevok uses the same, fully armoured animation as in BG1, so it didn't make sense that the Wraith had crystal clear voice as in ToB, where he is alive and no longer wears helmet that distorts his voice.
+COPY ~EET_Tweaks/2/pl_PL/HELSAR~ ~override~
