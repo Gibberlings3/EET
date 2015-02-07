@@ -891,7 +891,7 @@ CREATE TABLE options (
 	value string
 );
 INSERT INTO options ROWS (
-	'Game Options',	'3E Thief Sneak Attack',	'1',
+	'Game Options',	'3E Thief Sneak Attack',	'1'
 );
 >>>>>>>>
 	COPY ~EET_Tweaks-inlined/10/Baldur.ini~ ~%USER_DIRECTORY%/Baldur.ini~ EVALUATE_BUFFER
@@ -992,7 +992,7 @@ CREATE TABLE options (
 	value string
 );
 INSERT INTO options ROWS (
-	'Program Options',	'Maximum Frame Rate',	'%value%',
+	'Program Options',	'Maximum Frame Rate',	'%value%'
 );
 >>>>>>>>
 	COPY ~EET_Tweaks-inlined/11/%ini%.ini~ ~%USER_DIRECTORY%/%ini%.ini~ EVALUATE_BUFFER
@@ -1111,12 +1111,53 @@ BUT_ONLY
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
+///// Protagonist can die                              \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Protagonist can die~
+//DESIGNATED 14
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
+	READ_BYTE 0x14 "flags"
+	WRITE_BYTE 0x14 ("%flags%" BOR 0b00010000)
+BUT_ONLY
+
+//Ironman Mode detection scrapped for now
+/*ACTION_IF MOD_IS_INSTALLED ~EET_Tweaks/EET_Tweaks.tp2~ ~15~ BEGIN
+	OUTER_SPRINT save_eval ~SaveGame(0)~
+END ELSE BEGIN
+	OUTER_SPRINT save_eval ~~
+END*/
+
+<<<<<<<< EET_Tweaks-inlined/14/baldur-et.baf
+IF
+  NumInPartyAlive(0)
+THEN
+  RESPONSE #100
+    //%save_eval%
+    StartMovie("DEATHAND")
+    GoToStartScreen()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH script IN BALDUR BALDUR25 BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%script%.BCS~ BEGIN
+		EXTEND_TOP ~%script%.BCS~ ~EET_Tweaks-inlined/14/baldur-et.baf~ EVALUATE_BUFFER
+	END
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
 ///// IWD:EE Bard Songs                                \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 //BEGIN ~IWD:EE Bard Songs~
-//DESIGNATED 14
+//DESIGNATED 
 //REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ ~This component is not compatible with your game.~
 
