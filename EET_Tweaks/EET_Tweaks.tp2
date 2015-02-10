@@ -930,7 +930,7 @@ STRING_SET ~74298~ @6 //Shadowdancer kit description
 
 BEGIN ~Adjust FPS and fix audio skipping in cutscenes~
 //DESIGNATED 11
-REQUIRE_PREDICATE GAME_IS ~soa tob iwd how totlm tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
+REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
@@ -964,14 +964,8 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 	END
 END
 
-ACTION_IF GAME_IS ~iwd how totlm iwdee~ BEGIN
-	OUTER_SPRINT ini ~IWD~
-END ELSE BEGIN
-	OUTER_SPRINT ini ~Baldur~
-END
-
-ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/%ini%.ini~) BEGIN
-	COPY ~%USER_DIRECTORY%/%ini%.ini~ ~%USER_DIRECTORY%~
+ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
+	COPY ~%USER_DIRECTORY%/Baldur.ini~ ~%USER_DIRECTORY%~
 		PATCH_IF ENGINE_IS ~bgee bg2ee iwdee~ BEGIN
 			COUNT_REGEXP_INSTANCES ~'Maximum Frame Rate'~ num_matches
 			PATCH_IF (num_matches > 0) BEGIN
@@ -985,7 +979,7 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/%ini%.ini~) BEGIN
 		END
 	BUT_ONLY
 END ELSE ACTION_IF ENGINE_IS ~bgee bg2ee iwdee~ BEGIN
-<<<<<<<< EET_Tweaks-inlined/11/%ini%.ini
+<<<<<<<< EET_Tweaks-inlined/11/Baldur.ini
 CREATE TABLE options (
 	section string,
 	name string,
@@ -995,7 +989,7 @@ INSERT INTO options ROWS (
 	'Program Options',	'Maximum Frame Rate',	'%value%'
 );
 >>>>>>>>
-	COPY ~EET_Tweaks-inlined/11/%ini%.ini~ ~%USER_DIRECTORY%/%ini%.ini~ EVALUATE_BUFFER
+	COPY ~EET_Tweaks-inlined/11/Baldur.ini~ ~%USER_DIRECTORY%/Baldur.ini~ EVALUATE_BUFFER
 END ELSE BEGIN
 	//create ini file for non EE games
 END

@@ -2,11 +2,6 @@ BACKUP ~EET/backup~
 AUTHOR ~K4thos (swit)~
 VERSION ~beta 0.1~
 README ~EET/help/[%LANGUAGE%]readme.htm~ ~EET/help/[en_US]readme.htm~
-//AUTO_TRA ~EET/lang/%s~//%~
-
-/*ALWAYS
-	INCLUDE ~EET/lib/always.tph~
-END*/
 
 LANGUAGE ~English~
 	~en_US~
@@ -14,14 +9,12 @@ LANGUAGE ~English~
 	~EET/lang/en_US/setup.tra~
 	~EET/lang/en_US/dialog.tra~
 	~EET/lang/en_US/scripts.tra~
-	//~EET/lang/en_US/map_mods_trans.tra~//this file is not meant to be loaded
 LANGUAGE ~Polski (Polish)~
 	~pl_PL~
 	~EET/lang/pl_PL/prompts.tra~
 	~EET/lang/pl_PL/setup.tra~
 	~EET/lang/pl_PL/dialog.tra~
 	~EET/lang/pl_PL/scripts.tra~
-	//~EET/lang/pl_PL/map_mods_trans.tra~
 
 BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~
 DESIGNATED 0
@@ -458,6 +451,10 @@ MKDIR ~%areas_dir%/bgTU00xx~
 	~%areas_dir%/bgAR61xx~
 	~EET/temp/array~
 	~%bgee_dir%/lang/%LANGUAGE%/override~
+	~EET/temp/WAV~
+
+//additional CRE sounds from IWD:EE moved to biff dir (overwritten if needed)
+COPY + ~EET/base/wav~ ~EET/temp/WAV~
 
 ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	PRINT ~~
@@ -465,18 +462,18 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	MKDIR ~EET/temp/%var%~
 	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
-	ACTION_IF (("%var%" STRING_EQUAL_CASE "WAV")=1) BEGIN
-		ACTION_BASH_FOR ~%bgee_dir%/lang/%LANGUAGE%/override~ ~^.+\.%var%$~ BEGIN
-			COPY + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
-		END
-	END
 	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
 		COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
 	END
 	INCLUDE ~EET/lib/prep_%var%.tph~
 END
 
-ACTION_FOR_EACH file IN "ANIMATE.IDS" "GTIMES.IDS" "BGEE.SQL" BEGIN
+//optional sounds stored in language dir
+ACTION_BASH_FOR ~%bgee_dir%/lang/%LANGUAGE%/override~ ~^.+\.WAV$~ BEGIN
+	COPY + ~%BASH_FOR_FILESPEC%~ ~EET/temp/WAV~
+END
+
+ACTION_FOR_EACH file IN "ANIMATE.IDS" "ANISND.IDS" "GTIMES.IDS" "BGEE.SQL" BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
 	END ELSE BEGIN
@@ -633,6 +630,23 @@ BUT_ONLY
 
 MKDIR ~%patch_dir%/CRE_BG2~
 
+////////////////////////
+// Viader's Extended Animations
+////////////////////////
+//0xE240 - 0xE2FF - reserved by Extended Animations
+//0xE330 - 0xE3FF - free
+//0xE440 - 0xE4FF - free
+//0xE530 - 0xE5FF - free
+//0xE620 - 0xE6FF - free
+//0xE730 - 0xE7FF - free
+//0xE850 - 0xE8FF - free
+//0xE920 - 0xE9FF - free
+//0xEA30 - 0xEAFF - free
+//0xEB30 - 0xEBFF - free
+//0xEC30 - 0xECFF - free
+//0xED30 - 0xEDFF - free
+//0xEE20 - 0xEEFF - free
+
 ACTION_FOR_EACH "var" IN IDS TLK 2DA CRE ITM BCS DLG BEGIN
 	INCLUDE ~EET/lib/bg2_%var%.tph~
 END
@@ -775,9 +789,9 @@ COPY + ~EET/temp/Filelist.txt~ ~EET/temp/Filelist.txt~
 				OUTER_SPRINT "prev_directory_name" "%directory_name%"
 			END*/
 			COPY + ~%patch_dir%/%patch_name%~ ~%patch_dir%/%patch_name%~
-			SET checked = 0
-			READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
-			LAUNCH_PATCH_MACRO ~PCU_core_patch~
+				SET checked = 0
+				READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
+				LAUNCH_PATCH_MACRO ~PCU_core_patch~
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//Unrecognised files
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1732,6 +1746,12 @@ COPY_EXISTING ~BGEE.GUI~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// INI                                              \\\\\
+/////                                                  \\\\\
+
+COPY ~EET/base/ini~ ~override~
+
+/////                                                  \\\\\
 ///// ITM                                              \\\\\
 /////                                                  \\\\\
 
@@ -2680,8 +2700,6 @@ ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6a.wav~) BEGIN
 		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6m.wav~
 END
 
-//COPY ~EET/temp/wav~ ~override~
-
 /////                                                  \\\\\
 ///// WBM                                              \\\\\
 /////                                                  \\\\\
@@ -2933,76 +2951,6 @@ MAKE_BIFF ~bgAR59xx~ BEGIN ~%areas_dir%\bgAR59xx~ ~^.*$~ END
 MAKE_BIFF ~bgAR60xx~ BEGIN ~%areas_dir%\bgAR60xx~ ~^.*$~ END
 MAKE_BIFF ~bgAR61xx~ BEGIN ~%areas_dir%\bgAR61xx~ ~^.*$~ END
 MAKE_BIFF ~bgSounds~ BEGIN ~EET/temp/wav~ ~^.*$~ END
-
-/*
-COPY ~%areas_dir%/bgTU00xx~ ~override~
-	~%areas_dir%/bgOH1xxx~ ~override~
-	~%areas_dir%/bgOH2xxx~ ~override~
-	~%areas_dir%/bgOH3xxx~ ~override~
-	~%areas_dir%/bgOH9xxx~ ~override~
-	~%areas_dir%/bgAR00xx~ ~override~
-	~%areas_dir%/bgAR01xx~ ~override~
-	~%areas_dir%/bgAR02xx~ ~override~
-	~%areas_dir%/bgAR03xx~ ~override~
-	~%areas_dir%/bgAR04xx~ ~override~
-	~%areas_dir%/bgAR05xx~ ~override~
-	~%areas_dir%/bgAR06xx~ ~override~
-	~%areas_dir%/bgAR07xx~ ~override~
-	~%areas_dir%/bgAR08xx~ ~override~
-	~%areas_dir%/bgAR09xx~ ~override~
-	~%areas_dir%/bgAR10xx~ ~override~
-	~%areas_dir%/bgAR11xx~ ~override~
-	~%areas_dir%/bgAR12xx~ ~override~
-	~%areas_dir%/bgAR13xx~ ~override~
-	~%areas_dir%/bgAR14xx~ ~override~
-	~%areas_dir%/bgAR15xx~ ~override~
-	~%areas_dir%/bgAR16xx~ ~override~
-	~%areas_dir%/bgAR17xx~ ~override~
-	~%areas_dir%/bgAR18xx~ ~override~
-	~%areas_dir%/bgAR19xx~ ~override~
-	~%areas_dir%/bgAR20xx~ ~override~
-	~%areas_dir%/bgAR21xx~ ~override~
-	~%areas_dir%/bgAR22xx~ ~override~
-	~%areas_dir%/bgAR23xx~ ~override~
-	~%areas_dir%/bgAR24xx~ ~override~
-	~%areas_dir%/bgAR26xx~ ~override~
-	~%areas_dir%/bgAR27xx~ ~override~
-	~%areas_dir%/bgAR28xx~ ~override~
-	~%areas_dir%/bgAR29xx~ ~override~
-	~%areas_dir%/bgAR30xx~ ~override~
-	~%areas_dir%/bgAR31xx~ ~override~
-	~%areas_dir%/bgAR32xx~ ~override~
-	~%areas_dir%/bgAR33xx~ ~override~
-	~%areas_dir%/bgAR34xx~ ~override~
-	~%areas_dir%/bgAR35xx~ ~override~
-	~%areas_dir%/bgAR36xx~ ~override~
-	~%areas_dir%/bgAR37xx~ ~override~
-	~%areas_dir%/bgAR38xx~ ~override~
-	~%areas_dir%/bgAR39xx~ ~override~
-	~%areas_dir%/bgAR40xx~ ~override~
-	~%areas_dir%/bgAR41xx~ ~override~
-	~%areas_dir%/bgAR42xx~ ~override~
-	~%areas_dir%/bgAR43xx~ ~override~
-	~%areas_dir%/bgAR44xx~ ~override~
-	~%areas_dir%/bgAR45xx~ ~override~
-	~%areas_dir%/bgAR46xx~ ~override~
-	~%areas_dir%/bgAR47xx~ ~override~
-	~%areas_dir%/bgAR48xx~ ~override~
-	~%areas_dir%/bgAR49xx~ ~override~
-	~%areas_dir%/bgAR50xx~ ~override~
-	~%areas_dir%/bgAR51xx~ ~override~
-	~%areas_dir%/bgAR52xx~ ~override~
-	~%areas_dir%/bgAR53xx~ ~override~
-	~%areas_dir%/bgAR54xx~ ~override~
-	~%areas_dir%/bgAR55xx~ ~override~
-	~%areas_dir%/bgAR56xx~ ~override~
-	~%areas_dir%/bgAR57xx~ ~override~
-	~%areas_dir%/bgAR58xx~ ~override~
-	~%areas_dir%/bgAR59xx~ ~override~
-	~%areas_dir%/bgAR60xx~ ~override~
-	~%areas_dir%/bgAR61xx~ ~override~
-	~EET/temp/wav~ ~override~
-*/
 
 COPY_EXISTING sw1h01.itm ~override/EET.flag~
 PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as EET~
