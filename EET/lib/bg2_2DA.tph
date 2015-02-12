@@ -1265,25 +1265,12 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_oldNameNewName" BEGIN
 	"BP2" => "BP4"
 	"THEME" => "NEWTHM"
 END
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_oldResNewRes" BEGIN
-	"BC1" => "BC3"
-	"BC2" => "BC4"
-	"BD1" => "BD4"
-	"BD2" => "BD5"
-	"BF1" => "BF3"
-	"BF2" => "BF4"
-	"BP1" => "BP3"
-	"BP2" => "BP4"
-	"theme" => "newthm"
-END
 
 COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	PHP_EACH "table_2DA_oldNameNewName" AS "oldName" => "newName" BEGIN
 		REPLACE_TEXTUALLY ~ %oldName% ~ ~ %newName% ~
-	END
-	PHP_EACH "table_2DA_oldResNewRes" AS "oldRes" => "newRes" BEGIN
-		REPLACE_TEXTUALLY ~ %oldRes%\.MUS~ ~ %newRes%.MUS~
+		REPLACE_TEXTUALLY ~ %oldName%\.MUS~ ~ %newName%.MUS~
 	END
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
@@ -1296,9 +1283,9 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 		READ_2DA_ENTRY cnt 2 3 "col3"
 		SET EVALUATE_BUFFER "dword_mus_source%cnt%" = col1
 		SPRINT ~col3temp~ ~%col3%~
-		PHP_EACH "table_2DA_oldResNewRes" AS "oldRes" => "newRes" BEGIN
-			PATCH_IF (("%col3temp%" STRING_EQUAL_CASE "%newRes%.MUS")=1) BEGIN
-				SPRINT ~col3temp~ ~%oldRes%.MUS~
+		PHP_EACH "table_2DA_oldNameNewName" AS "oldName" => "newName" BEGIN
+			PATCH_IF (("%col3temp%" STRING_EQUAL_CASE "%newName%.MUS")=1) BEGIN
+				SPRINT ~col3temp~ ~%oldName%.MUS~
 			END
 		END
 		INNER_ACTION BEGIN

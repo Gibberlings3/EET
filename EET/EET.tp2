@@ -2761,22 +2761,22 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 			REPLACE_TEXTUALLY ~'Language',[ 	]+'Text',[ 	]+'.*'~ ~'Language',	'Text',	'%LANGUAGE_BG2%'~
 		END
 		DEFINE_ASSOCIATIVE_ARRAY table_EET_ini BEGIN
-			"Game Options" => "Cheats"
-			"Game Options" => "Wild Surge Keys"
-			"Program Options" => "Logging On"
-			"Program Options" => "Debug Mode"
-			"MOVIES" => "WOTC"
-			"MOVIES" => "TSRLOGO"
-			"MOVIES" => "INTRO15F"
-			"MOVIES" => "INFELOGO"
-			"MOVIES" => "CREDITS_"
-			"MOVIES" => "BWDRAGON"
-			"MOVIES" => "BLACKPI_"
-			"MOVIES" => "BILOGO"
-			"MOVIES" => "BG4LOGO"
-			"MOVIES" => "BG2INTRO"
+			"Cheats" => "Game Options"
+			"Wild Surge Keys" => "Game Options"
+			"Logging On" => "Program Options"
+			"Debug Mode" => "Program Options"
+			"WOTC" => "MOVIES"
+			"TSRLOGO" => "MOVIES"
+			"INTRO15F" => "MOVIES"
+			"INFELOGO" => "MOVIES"
+			"CREDITS_" => "MOVIES"
+			"BWDRAGON" => "MOVIES"
+			"BLACKPI_" => "MOVIES"
+			"BILOGO" => "MOVIES"
+			"BG4LOGO" => "MOVIES"
+			"BG2INTRO" => "MOVIES"
 		END
-		PHP_EACH "table_EET_ini" AS "row" => "option" BEGIN
+		PHP_EACH "table_EET_ini" AS "option" => "row" BEGIN
 			COUNT_REGEXP_INSTANCES ~'%option%'~ num_matches
 			PATCH_IF (num_matches = 0) BEGIN
 				REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
