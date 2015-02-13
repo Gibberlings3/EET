@@ -60,7 +60,6 @@ EXTEND_BOTTOM ~FH0614.BCS~ ~EET/modify/baf/FH0614-eb.baf~
 EXTEND_BOTTOM ~FH0615.BCS~ ~EET/modify/baf/FH0615-eb.baf~
 EXTEND_BOTTOM ~FH0616.BCS~ ~EET/modify/baf/FH0616-eb.baf~
 EXTEND_BOTTOM ~FH0700.BCS~ ~EET/modify/baf/FH0700-eb.baf~
-EXTEND_TOP ~FH0705.BCS~ ~EET/modify/baf/FH0705-et.baf~//restored TAVERN movie
 EXTEND_BOTTOM ~FH0800.BCS~ ~EET/modify/baf/FH0800-eb.baf~
 EXTEND_BOTTOM ~FH0900.BCS~ ~EET/modify/baf/FH0900-eb.baf~
 //EXTEND_TOP ~FH0900.BCS~ ~EET/modify/baf/FH0900-et.baf~//Quayle spawn
@@ -147,9 +146,18 @@ ACTION_FOR_EACH ~script~ IN FH0100 FH0200 FH0300 FH0600 FH0700 FH0800 FH1100 FH1
 	EXTEND_BOTTOM ~%script%.BCS~ ~EET/modify/baf/!BGSUNRIS_BGSUNSET.baf~
 END
 
-///////////////////////////////////////////////////////
-//files existing in BG2:EE, use BG:EE version as a base
-///////////////////////////////////////////////////////
+//////////////////////////////
+//movies restoration
+//////////////////////////////
+
+COPY_EXISTING ~FH0705.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		COUNT_REGEXP_INSTANCES ~StartMovie("TAVERN")~ num_matches
+	END
+BUT_ONLY
+ACTION_IF (num_matches = 0) BEGIN
+	EXTEND_TOP ~FH0705.BCS~ ~EET/modify/baf/FH0705-et.baf~
+END
 
 COPY_EXISTING ~FH3300.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -166,6 +174,10 @@ COPY_EXISTING ~FH3300.BCS~ ~override~
 		END
 	END
 BUT_ONLY
+
+///////////////////////////////////////////////////////
+//files existing in BG2:EE, use BG:EE version as a base
+///////////////////////////////////////////////////////
 
 //SHOUT.BCS in BG2:EE v1.2 still outdated AI behaviour that was already improved in BG:EE. Just add shout 57 to BG:EE base to make it also compatible with BG2:EE scripts
 COPY_EXISTING ~SHOUT.BCS~ ~override~

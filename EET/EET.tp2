@@ -17,7 +17,6 @@ LANGUAGE ~Polski (Polish)~
 	~EET/lang/pl_PL/scripts.tra~
 
 BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~
-DESIGNATED 0
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ ~Please install it on BG2:EE engine.~
 FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
 REQUIRE_FILE ~setup-bp-bgt-worldmap.tp2~ ~BP-BGT Worldmap tp2 file not detected. Extract the Worldmap mod without installing it and run this setup again.~
@@ -179,7 +178,6 @@ END
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	COPY + ~EET-inlined/blank.txt~ ~EET/temp/patches.tbl~
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~
 		REPLACE_TEXTUALLY ~^.~ ~~
@@ -195,23 +193,16 @@ ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 			READ_2DA_ENTRY cnt 0 1 "col1"
 			INNER_ACTION BEGIN
-				COPY - ~EET/tbl/compatibility.tbl~ ~EET~
+				COPY - ~EET/tbl/compatibility.tbl~ ~EET/tbl~
 					COUNT_2DA_ROWS 1 "cntrow2"
 					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
 						READ_2DA_ENTRY cnt2 0 1 "compareWith"
 						PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-							READ_2DA_ENTRY cnt2 1 1 "patches"
-							PATCH_IF ("%patches%" = 1) BEGIN
-								INNER_ACTION BEGIN
-									APPEND_OUTER + ~EET/temp/patches.tbl~ ~%col1%~
-								END
-								SET patches = 0
-							END
 							SET allow_mod = 1
 						END
 					END
 					PATCH_IF ("%allow_mod%" = 1) BEGIN
-						PATCH_PRINT ~%col1% BG:EE mod detected~
+						PATCH_PRINT ~%col1% BG:EE component detected~
 						SET allow_mod = 0
 					END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Mm]~ = 0) BEGIN
 						PATCH_WARN ~Warning: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
@@ -655,14 +646,21 @@ END
 ///// Compatibility patches                            \\\\\
 /////                                                  \\\\\
 
-ACTION_IF FILE_EXISTS ~EET/temp/patches.tbl~ BEGIN
-	COPY - ~EET/temp/patches.tbl~ ~EET/temp~
-		COUNT_2DA_ROWS 1 "cntrow"
+ACTION_IF FILE_EXISTS ~EET/temp/WeiDU.log~ BEGIN
+	COPY - ~EET/tbl/compatibility.tbl~ ~EET/tbl~
+		COUNT_2DA_ROWS 2 "cntrow"
 		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-			READ_2DA_ENTRY cnt 0 1 "modname"
-			PATCH_PRINT ~Including %modname% compatibility patches~
-			INNER_ACTION BEGIN
-				INCLUDE ~EET/compat/%modname%/include.tph~
+			READ_2DA_ENTRY cnt 0 2 "col1"
+			READ_2DA_ENTRY cnt 1 2 "col2"
+			PATCH_IF ("%col2%" = 1) BEGIN
+				INNER_ACTION BEGIN
+					COPY - ~EET/temp/WeiDU.log~ ~EET/temp~
+						COUNT_REGEXP_INSTANCES ~^%col1%~ num_matches
+					ACTION_IF (num_matches > 0) BEGIN
+						PRINT ~Including %col1% compatibility patches~
+						INCLUDE ~EET/compat/%col1%/include.tph~
+					END
+				END
 			END
 		END
 END
