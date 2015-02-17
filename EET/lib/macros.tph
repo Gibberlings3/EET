@@ -1239,7 +1239,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 
 		LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
 
-		LAUNCH_PATCH_MACRO ~Allegiance_ANYONE_replace~
+		REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
 
 		SET baf_check += 1
 		SET checked = 1
@@ -1439,7 +1439,7 @@ CO")=1) BEGIN
 
 			LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
 
-			LAUNCH_PATCH_MACRO ~Allegiance_ANYONE_replace~
+			REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
 
 		END
 
@@ -4143,12 +4143,6 @@ DEFINE_PATCH_MACRO ~D_DLG_replace~ BEGIN
 	/* THEN correction is used for the beginning CHAIN */
 	REPLACE_TEXTUALLY ~~~~~\(CHAIN2[ ]+\)%resref_index_source%\([ ]*[^!A-Za-z0-9~"]\)~~~~~ ~\1%resref_index_dest%\2~
 	/* exitFilename for CHAIN2 cannot be corrected using this method */
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~Allegiance_ANYONE_replace~ BEGIN
-	REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//http://forums.gibberlings3.net/index.php?showtopic=12932
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
