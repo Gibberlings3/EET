@@ -686,7 +686,6 @@ ACTION_FOR_EACH ext IN BCS DLG BEGIN
 				END
 			END
 			~ChangeStat(%MATCH1%,XP,%XP_value%,ADD)~
-			REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
 		END
 	BUT_ONLY
 END
@@ -856,7 +855,6 @@ ACTION_FOR_EACH ext IN BCS DLG BEGIN
     AddXPObject(Player4,%XP_value%)
     AddXPObject(Player5,%XP_value%)
     AddXPObject(Player6,%XP_value%)~
-			REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
 		END
 	BUT_ONLY
 END
@@ -1030,7 +1028,6 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
 			PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%%MATCH2%Wait(%MATCH3%)%MATCH4% => %new_MATCH2%SmallWait(%time%)%MATCH4%~
 		END
 		~%MATCH1%%new_MATCH2%SmallWait(%time%)%MATCH4%~
-		REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
 	END
 BUT_ONLY
 
