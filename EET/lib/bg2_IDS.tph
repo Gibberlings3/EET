@@ -369,13 +369,14 @@ COPY + ~EET/temp/array/GTIMES.IDS~ ~EET/temp/array~
 			COPY_EXISTING ~%SOURCE_RES%.IDS~ ~override~
 				COUNT_2DA_ROWS 2 "cntrow2"
 				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 1 2 "compareWith"
 					PATCH_IF ("%SOURCE_RES%" STRING_EQUAL_CASE "ANIMATE") OR ("%SOURCE_RES%" STRING_EQUAL_CASE "ANISND") BEGIN
-						PATCH_IF ("%col2%" STRING_EQUAL_CASE "%compareWith%") OR ("%col1%" <= 0xE2FF) BEGIN
+						READ_2DA_ENTRY cnt2 0 2 "compareWith"
+						PATCH_IF ("%col1%" STRING_EQUAL_CASE "%compareWith%") OR ("%col1%" <= 0xE2FF) BEGIN
 							SET noupdate = 1
 						END
-					END ELSE PATCH_IF (("%SOURCE_RES%" STRING_EQUAL_CASE "GTIMES")=1) BEGIN
-						PATCH_IF (("%col2%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
+					END ELSE PATCH_IF ("%SOURCE_RES%" STRING_EQUAL_CASE "GTIMES") BEGIN
+						READ_2DA_ENTRY cnt2 1 2 "compareWith"
+						PATCH_IF ("%col2%" STRING_EQUAL_CASE "%compareWith%") BEGIN
 							SET noupdate = 1
 						END
 					END
