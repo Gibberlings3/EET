@@ -178,6 +178,7 @@ END
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
+	COPY ~%bgee_dir%/WeiDU.log~ ~override~ //backup this file in case some other mod will need to detect mods installed on BG:EE
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~
 		REPLACE_TEXTUALLY ~^.~ ~~
@@ -456,12 +457,13 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
 		COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
 	END
+	ACTION_IF ~%var%~ STRING_EQUAL_CASE ~WAV~ BEGIN
+		//optional sounds stored in language dir
+		ACTION_BASH_FOR ~%bgee_dir%/lang/%LANGUAGE%/override~ ~^.+\.WAV$~ BEGIN
+			COPY + ~%BASH_FOR_FILESPEC%~ ~EET/temp/WAV~
+		END
+	END
 	INCLUDE ~EET/lib/prep_%var%.tph~
-END
-
-//optional sounds stored in language dir
-ACTION_BASH_FOR ~%bgee_dir%/lang/%LANGUAGE%/override~ ~^.+\.WAV$~ BEGIN
-	COPY + ~%BASH_FOR_FILESPEC%~ ~EET/temp/WAV~
 END
 
 ACTION_FOR_EACH file IN "ANIMATE.IDS" "ANISND.IDS" "GTIMES.IDS" "BGEE.SQL" BEGIN
