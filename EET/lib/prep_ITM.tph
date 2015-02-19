@@ -24,6 +24,14 @@ MOVE + ~%patch_dir%/itm/BAG02.ITM~ ~%patch_dir%/itm/BAG02_.ITM~
 	~%patch_dir%/itm/SW2H07.ITM~ ~%patch_dir%/itm/SW2H07_.ITM~
 	~%patch_dir%/itm/WAND12.ITM~ ~%patch_dir%/itm/WAND12_.ITM~
 
+//Compatibility with ~BG1UB/SETUP-BG1UB.TP2~ #0 #22 // Item Corrections and Restorations
+COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
+	COUNT_REGEXP_INSTANCES ~BG1UB\.TP2. #0 #22 ~ num_matches
+ACTION_IF (num_matches = 0) BEGIN //component not detected
+	DELETE + ~%patch_dir%/itm/AX1H07.ITM~
+	~%patch_dir%/itm/MAGE02.ITM~
+END
+
 DELETE + ~%patch_dir%/itm/ABAZRING.ITM~
 	~%patch_dir%/itm/ABISRED1.ITM~
 	~%patch_dir%/itm/ACIDBL.ITM~
@@ -85,7 +93,6 @@ DELETE + ~%patch_dir%/itm/ABAZRING.ITM~
 	~%patch_dir%/itm/AX1H04.ITM~
 	~%patch_dir%/itm/AX1H05.ITM~
 	~%patch_dir%/itm/AX1H06.ITM~
-	~%patch_dir%/itm/AX1H07.ITM~
 	~%patch_dir%/itm/AX1H16.ITM~
 	~%patch_dir%/itm/AX1H17.ITM~
 	~%patch_dir%/itm/B1-10.ITM~
@@ -570,7 +577,6 @@ DELETE + ~%patch_dir%/itm/ABAZRING.ITM~
 	~%patch_dir%/itm/LIGHT.ITM~
 	~%patch_dir%/itm/LIONSPIR.ITM~
 	~%patch_dir%/itm/MAGE01.ITM~
-	~%patch_dir%/itm/MAGE02.ITM~
 	~%patch_dir%/itm/MAGE03.ITM~
 	~%patch_dir%/itm/MAGE04.ITM~
 	~%patch_dir%/itm/MAGE05.ITM~
