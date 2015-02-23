@@ -195,13 +195,78 @@ INCLUDE ~EET_TWEAKS/lib/2_%LANGUAGE%.tph~ //no point in bloating the main file, 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
+///// Additional BG2:EE SoA XP CAP                     \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Additional BG2:SoA XP CAP~
+//DESIGNATED 3
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+
+OUTER_SET valid_answer = 0
+OUTER_SET button = 0
+OUTER_SPRINT value ~dummy~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
+		OUTER_SET value = "%ARGS_value%"
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 1) BEGIN //2,500,000
+		OUTER_SET value = 2500000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 2) BEGIN //2,950,000
+		OUTER_SET value = 2950000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF ("%button%" = 3) BEGIN //Custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 1) BEGIN
+			PRINT ~Type in the integer value for XP CAP:~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~What value should be used for BG2:EE SoA XP CAP?
+ 1] 2,500,000 - BG2:ToB starting XP for NPC
+ 2] 2,950,000 - BG2 without expansion XP CAP
+ 3] Custom value~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+<<<<<<<< EET_Tweaks-inlined/6/baldur-eb.baf
+IF
+  GlobalLT("ENDOFBG2","GLOBAL",2)
+  XPGT(Player%number%,%value%)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ChangeStat(Player%number%,XP,%value%,SET)
+    Continue()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH number IN 1 2 3 4 5 6 BEGIN
+	EXTEND_BOTTOM ~BALDUR.BCS~ ~EET_Tweaks-inlined/6/baldur-eb.baf~ EVALUATE_BUFFER
+END
+
+PRINT ~XP CAP set to %value%~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
 ///// Adjust BG:EE XP CAP                              \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 BEGIN ~Adjust BG:EE XP CAP~
-//DESIGNATED 3
+//DESIGNATED 4
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
@@ -243,11 +308,15 @@ END
 COPY_EXISTING ~BALDUR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		PATCH_FOR_EACH number IN 1 2 3 4 5 6 BEGIN
-			SPRINT textToReplace ~GlobalLT("ENDOFBG1","GLOBAL",2)[%newline%]*XPGT(Player%number%,[0-9]+)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ChangeStat(Player%number%,XP,[0-9]+,SET)~
+			SPRINT textToReplace ~GlobalLT("ENDOFBG1","GLOBAL",2)[%newline%]*XPGT(Player%number%,[0-9]+)[%newline%]*!AreaCheck("OH8000")[%newline%]*!AreaCheck("OH9310")[%newline%]*Global("OHB_BP2_CAPTURE","GLOBAL",0)[%newline%]*Global("BPINTRO","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ChangeStat(Player%number%,XP,[0-9]+,SET)~
 			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 			PATCH_IF (num_matches > 0) BEGIN
 				REPLACE_TEXTUALLY ~%textToReplace%~ ~GlobalLT("ENDOFBG1","GLOBAL",2)
   XPGT(Player%number%,%value%)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
 THEN
   RESPONSE #100
     ChangeStat(Player%number%,XP,%value%,SET)~
@@ -269,7 +338,7 @@ PRINT ~XP CAP set to %value%~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 BEGIN ~Adjust BG2:EE XP CAP~
-//DESIGNATED 4
+//DESIGNATED 5
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
 OUTER_SET valid_answer = 0
@@ -320,67 +389,6 @@ ACTION_IF ("%value%" < 0) BEGIN
 END ELSE BEGIN
 	PRINT ~XP CAP set to %value%~
 END
-
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////                                                  \\\\\
-///// Additional BG2:EE SoA XP CAP                     \\\\\
-/////                                                  \\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-
-BEGIN ~Additional BG2:SoA XP CAP~
-//DESIGNATED 5
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
-
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
-OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //2,500,000
-		OUTER_SET value = 2500000
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //2,950,000
-		OUTER_SET value = 2950000
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //Custom value
-		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 1) BEGIN
-			PRINT ~Type in the integer value for XP CAP:~
-			ACTION_READLN ~value~
-		END
-		OUTER_SET valid_answer = 1
-	END ELSE BEGIN
-		PRINT ~What value should be used for BG2:EE SoA XP CAP?
- 1] 2,500,000 - BG2:ToB starting XP for NPC
- 2] 2,950,000 - BG2 without expansion XP CAP
- 3] Custom value~
-		ACTION_READLN ~button~
-		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
-			OUTER_SET button = 0
-		END
-	END
-END
-
-<<<<<<<< EET_Tweaks-inlined/6/baldur-eb.baf
-IF
-  GlobalLT("ENDOFBG2","GLOBAL",2)
-  XPGT(Player%number%,%value%)
-THEN
-  RESPONSE #100
-    ChangeStat(Player%number%,XP,%value%,SET)
-    Continue()
-END
->>>>>>>>
-
-ACTION_FOR_EACH number IN 1 2 3 4 5 6 BEGIN
-	EXTEND_BOTTOM ~BALDUR.BCS~ ~EET_Tweaks-inlined/6/baldur-eb.baf~ EVALUATE_BUFFER
-END
-
-PRINT ~XP CAP set to %value%~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1158,3 +1166,94 @@ END
 //DESIGNATED 
 //REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ ~This component is not compatible with your game.~
 
+BEGIN ~Make all traps persistent~
+GROUP ~Optional Tweaks~
+
+COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
+  READ_SHORT 0x5a "#triggers"
+  READ_LONG 0x5c "triggers_offset"
+  READ_LONG 0x70 "containers_offset"
+  READ_SHORT 0x74 "#containers"
+  SET "#read" = "0"
+  FOR (i = %#triggers% ; i ; --i) BEGIN
+    READ_SHORT (%triggers_offset% + 0x20 + (%#read% * 0xc4)) "trigger_type"
+	READ_BYTE (%triggers_offset% + 0x60 + (%#read% * 0xc4)) "flags"
+	READ_SHORT (%triggers_offset% + 0x6c + (%#read% * 0xc4)) "admiral_ackbar"	
+	  PATCH_IF (%trigger_type% = 0 AND %admiral_ackbar% = 1 AND (%flags% BOR 0b00001010) != 0b00001000) THEN BEGIN
+		WRITE_BYTE (%triggers_offset% + 0x60 + (%#read% * 0xc4)) (%flags% BOR 0b00000010)
+		END
+	  SET "#read" += "1"
+	  END
+  SET "#read" = "0"
+  FOR (i = %#containers% ; i ; --i) BEGIN
+    READ_BYTE (%containers_offset% + 0x28 + (%#read% * 0xc0)) "flags"
+	READ_SHORT (%containers_offset% + 0x30 + (%#read% * 0xc0)) "admiral_ackbar"
+	  PATCH_IF (%admiral_ackbar% = 1 AND (%flags% BOR 0b00001000) != 0b00001000) THEN BEGIN
+	    WRITE_BYTE (%containers_offset% + 0x28 + (%#read% * 0xc0)) (%flags% BOR 0b00001000)
+		END
+	  SET "#read" += "1"
+	  END
+	  BUT_ONLY
+
+BEGIN ~Increase detection and removal difficulty by +5~
+SUBCOMPONENT ~Make traps more difficult~
+GROUP ~Optional Tweaks~
+
+COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
+  READ_SHORT 0x5a "#triggers"
+  READ_LONG 0x5c "triggers_offset"
+  READ_LONG 0x70 "containers_offset"
+  READ_SHORT 0x74 "#containers"
+  SET "#read" = "0"
+  FOR (i = %#triggers% ; i ; --i) BEGIN
+    READ_SHORT (%triggers_offset% + 0x20 + (%#read% * 0xc4)) "trigger_type"
+	READ_SHORT (%triggers_offset% + 0x68 + (%#read% * 0xc4)) "trap_detection"
+	READ_SHORT (%triggers_offset% + 0x6a + (%#read% * 0xc4)) "trap_removal"
+	READ_SHORT (%triggers_offset% + 0x6c + (%#read% * 0xc4)) "admiral_ackbar"	
+	  PATCH_IF (%trigger_type% = 0 AND %admiral_ackbar% = 1 AND %trap_detection% > 0 AND %trap_removal% > 0) THEN BEGIN
+		WRITE_SHORT (%triggers_offset% + 0x68 + (%#read% * 0xc4)) (%trap_detection% + 5)
+		WRITE_SHORT (%triggers_offset% + 0x6a + (%#read% * 0xc4)) (%trap_removal% + 5)
+		END
+	  SET "#read" += "1"
+	  END
+  SET "#read" = "0"
+  FOR (i = %#containers% ; i ; --i) BEGIN
+	READ_SHORT (%containers_offset% + 0x2c + (%#read% * 0xc0)) "trap_detection"
+	READ_SHORT (%containers_offset% + 0x2e + (%#read% * 0xc0)) "trap_removal"
+	READ_SHORT (%containers_offset% + 0x30 + (%#read% * 0xc0)) "admiral_ackbar"
+	  PATCH_IF (%admiral_ackbar% = 1 AND %trap_detection% > 0 AND %trap_removal% > 0) THEN BEGIN
+	    WRITE_SHORT (%containers_offset% + 0x2c + (%#read% * 0xc0)) (%trap_detection% + 5)
+		WRITE_SHORT (%containers_offset% + 0x2e + (%#read% * 0xc0)) (%trap_removal% + 5)
+		END
+	  SET "#read" += "1"
+	  END
+	  BUT_ONLY
+
+BEGIN ~Increase lock difficulty by +5~
+SUBCOMPONENT ~Make locks more difficult~
+GROUP ~Optional Tweaks~
+
+COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
+  READ_LONG 0xa4 "#doors"
+  READ_LONG 0xa8 "doors_offset"
+  READ_LONG 0x70 "containers_offset"
+  READ_SHORT 0x74 "#containers"
+  SET "#read" = "0"
+  FOR (i = %#doors% ; i ; --i) BEGIN
+    READ_LONG (%doors_offset% + 0x28 + (%#read% * 0xc8)) "flags"
+	READ_LONG (%doors_offset% + 0x8c + (%#read% * 0xc8)) "difficulty"	
+	  PATCH_IF ((%flags% BOR 0b10100010) = 0b10100010 AND %difficulty% > 0) THEN BEGIN
+		WRITE_LONG (%doors_offset% + 0x8c + (%#read% * 0xc8)) (%difficulty% + 5)
+		END
+	  SET "#read" += "1"
+	  END
+  SET "#read" = "0"
+  FOR (i = %#containers% ; i ; --i) BEGIN
+	READ_SHORT (%containers_offset% + 0x26 + (%#read% * 0xc0)) "difficulty"
+	READ_LONG (%containers_offset% + 0x28 + (%#read% * 0xc0)) "flags"
+	  PATCH_IF ((%flags% BAND 0b00000001) = 0b00000001 AND %difficulty% > 0) THEN BEGIN
+	    WRITE_SHORT (%containers_offset% + 0x26 + (%#read% * 0xc0)) (%difficulty% + 5)
+		END
+	  SET "#read" += "1"
+	  END
+	  BUT_ONLY

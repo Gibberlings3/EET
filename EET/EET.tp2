@@ -1,7 +1,7 @@
 BACKUP ~EET/backup~
 AUTHOR ~K4thos (swit)~
-VERSION ~beta 0.1~
-README ~EET/help/[%LANGUAGE%]readme.htm~ ~EET/help/[en_US]readme.htm~
+VERSION ~beta 0.9~
+README ~EET/docs/[%LANGUAGE%]readme.htm~ ~EET/docs/[en_US]readme.htm~
 
 LANGUAGE ~English~
 	~en_US~
@@ -43,6 +43,8 @@ END*/
 <<<<<<<< EET-inlined/blank.txt
 
 >>>>>>>>
+
+COPY - ~EET-inlined/blank.txt~ ~EET-inlined/blank.baf~
 
 //Nothing done within EET/temp folder is registered for uninstallation (saves hundreds of MB disk space).
 //The whole folder is removed after the installation is complete (saves 1GB+ disk space) unless the debug mode argument is parsed.
@@ -178,17 +180,17 @@ END
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	COPY ~%bgee_dir%/WeiDU.log~ ~override~ //backup this file in case some other mod will need to detect mods installed on BG:EE
+	ACTION_IF (FILE_CONTAINS EVAL ~%bgee_dir%/WeiDU.log~ ~DRIZZTSAGA\.TP2. #[0-9]+ #0 ~) BEGIN
+		FAIL ~You've installed wrong Drizzt Saga component. EET is compatible with BP-BGT Worldmap version (option 2 during Drizzt Saga installation).~
+	END
+	COPY ~%bgee_dir%/WeiDU.log~ ~override~ //store the file in override, so other mods could check if components have been installed on BG:EE
+		REPLACE_TEXTUALLY ~^//.*~ ~~//removes "Recently uninstalled" lines
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~
 		REPLACE_TEXTUALLY ~^.~ ~~
 		REPLACE_TEXTUALLY ~^.*/\(.*.TP2\)~ ~\1~
 		REPLACE_TEXTUALLY ~\.TP2.~ ~~
 		REPLACE_TEXTUALLY ~SETUP-~ ~~
-		COUNT_REGEXP_INSTANCES ~DRIZZTSAGA #3 #0~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			PATCH_FAIL ~You've installed wrong Drizzt Saga component. EET is compatible with BP-BGT Worldmap version (option 2 during Drizzt Saga installation).~
-		END
 		COUNT_2DA_ROWS 3 "cntrow"
 		PATCH_PRINT ~%cntrow% BG:EE mods detected. Checking compatibility with EET...~
 		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -326,7 +328,9 @@ LAF ~HANDLE_CHARSETS~
 	INT_VAR
 	infer_charsets = 0
 	STR_VAR
-	tra_path = "EET/lang"
+	tra_path = EVAL "%tra_path%"
+	iconv_path = "EET/install/win32/iconv"//available as part of the base system on OS X and GNU/Linux
+	default_language = en_US
 	charset_table = charsetsTable
 	convert_array = charsetsConvertArray
 	reload_array = charsetsReloadArray
@@ -656,9 +660,7 @@ ACTION_IF FILE_EXISTS ~EET/temp/WeiDU.log~ BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
 			PATCH_IF ("%col2%" = 1) BEGIN
 				INNER_ACTION BEGIN
-					COPY - ~EET/temp/WeiDU.log~ ~EET/temp~
-						COUNT_REGEXP_INSTANCES ~^%col1%~ num_matches
-					ACTION_IF (num_matches > 0) BEGIN
+					ACTION_IF (FILE_CONTAINS ~EET/temp/WeiDU.log~ EVAL ~^%col1%~) BEGIN
 						PRINT ~Including %col1% compatibility patches~
 						INCLUDE ~EET/compat/%col1%/include.tph~
 					END
@@ -1030,7 +1032,7 @@ END
 //compile scripts
 COMPILE ~%patch_dir%/bcs~
 	~%patch_dir%/bcs_app~
-	~EET/base/baf~
+	~EET/base/compile/baf~
 
 // patching BG:EE scripts
 INCLUDE ~EET/lib/bg1_BCS.tph~
@@ -1590,7 +1592,7 @@ ACTION_PHP_EACH "table_EET_BG1dlgBG2dlg" AS "BG1dlg" => "BG2dlg" BEGIN
 END
 
 COMPILE ~%patch_dir%/dlg~
-	~EET/modify/d~
+	~EET/base/compile/d~
 
 /////                                                  \\\\\
 ///// GAM                                              \\\\\
@@ -1745,7 +1747,7 @@ COPY_EXISTING ~BGEE.GUI~ ~override~
 	REPLACE_TEXTUALLY ~SELECT 450, 20, 120, 16~ ~SELECT 903, 18, 120, 16~ //move build version to the upper right corner
 BUT_ONLY
 
-COPY ~EET/modify/gui~ ~override~
+COPY ~EET/base/gui~ ~override~
 
 /////                                                  \\\\\
 ///// INI                                              \\\\\
@@ -2448,13 +2450,6 @@ COPY ~%patch_dir%/sto~ ~override~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/sto.tph~
 	PATCH_LOG ~%debug%~
 APPEND_OUTER + ~EET/temp/sto.tph~ ~%debug%~
-
-/////                                                  \\\\\
-///// TIS                                              \\\\\
-/////                                                  \\\\\
-
-COPY_LARGE ~EET/temp/tis~ ~override~
-	~EET/base/tis~ ~override~ //remove this line when weidu fix the problem with unbiffing
 
 /////                                                  \\\\\
 ///// VVC                                              \\\\\

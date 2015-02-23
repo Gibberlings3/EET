@@ -1,102 +1,488 @@
-//All additional BG:EE BCS patching is done directly within override folder
+/////                                                  \\\\\
+///// BGSUNRIS/BGSUNSET movies                         \\\\\
+/////                                                  \\\\\
 
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG1BCS_scriptDV" BEGIN
-	"AJANTIS" => "Ajantis"
-	"ALORA" => "Alora"
-	"BRANWEN_" => "Branwen"
-	"CORAN" => "Coran"
-	"EDWIN_" => "Edwin"
-	"DYNAHEIR" => "Dynaheir"
-	"FALDORN_" => "Faldorn"
-	"ELDOTH" => "Eldoth"
-	"GARRICK_" => "Garrick"
-	"IMOEN_" => "Imoen2"
-	"JAHEIRA_" => "Jaheira"
-	"KAGAIN" => "Kagain"
-	"KHALID" => "Khalid"
-	"KIVAN" => "Kivan"
-	"MINSC_" => "Minsc"
-	"MONTARON" => "Montaron"
-	"QUAYLE" => "Quayle"
-	"SAFANA" => "Safana"
-	"SHARTEEL" => "SharTeel"
-	"SKIE_" => "Skie"
-	"TIAX" => "Tiax"
-	"VICONIA_" => "Viconia"
-	"XAN" => "Xan"
-	"XZAR" => "Xzar"
-	"YESLICK" => "Yeslick"
-	"BAELOTH" => "Baeloth"
-	"DORN_" => "Dorn"
-	"NEERA_" => "Neera"
-	"RASAAD_" => "Rasaad"
+<<<<<<<< EET-inlined/BGSUNRIS_BGSUNSET-eb.baf
+IF
+  Time(DUSK_END)
+  !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("BGSUNSET")
+    SetGlobalTimer("K#TimerSunset","GLOBAL",ONE_HOUR)
 END
 
-ACTION_PHP_EACH "table_BG1BCS_scriptDV" AS "script" => "DV" BEGIN
-	OUTER_SET BG_var = 1
-	EXTEND_TOP ~%script%.BCS~ ~EET/modify/baf/!PARTYBGxDestroy.baf~ EVALUATE_BUFFER
-	EXTEND_TOP ~%script%.BCS~ ~EET/modify/baf/!PARTYBGx.baf~ EVALUATE_BUFFER
+IF
+  Time(DAWN_END)
+  !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("BGSUNRIS")
+    SetGlobalTimer("K#TimerSunrise","GLOBAL",ONE_HOUR)
+END
+>>>>>>>>
+
+ACTION_BASH_FOR ~%patch_dir%/are~ ~^.+\.are$~ BEGIN
+	COPY - ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_FILESPEC%~
+		READ_BYTE 0x48 flags
+		PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
+			INNER_ACTION BEGIN
+				EXTEND_BOTTOM ~%BASH_FOR_RES%.BCS~ ~EET-inlined/BGSUNRIS_BGSUNSET-eb.baf~
+				PRINT ~BGSUNRIS/BGSUNSET movies added to %BASH_FOR_RES%.BCS~
+			END
+		END
 END
 
-EXTEND_TOP ~BELT.BCS~ ~EET/modify/baf/BELT-et.baf~
-EXTEND_TOP ~FLAM10.BCS~ ~EET/modify/baf/FLAM10-et.baf~
-EXTEND_BOTTOM ~FH0100.BCS~ ~EET/modify/baf/FH0100-eb.baf~
-EXTEND_BOTTOM ~FH0101.BCS~ ~EET/modify/baf/FH0101-eb.baf~
-//EXTEND_TOP ~FH0102.BCS~ ~EET/modify/baf/FH0102-et.baf~//Skie spawn
-//EXTEND_TOP ~FH0108.BCS~ ~EET/modify/baf/FH0108-et.baf~//create new Belt after Sarevok is dead
-EXTEND_BOTTOM ~FH0112.BCS~ ~EET/modify/baf/FH0112-eb.baf~
-EXTEND_BOTTOM ~FH0114.BCS~ ~EET/modify/baf/FH0114-eb.baf~
-//EXTEND_TOP ~FH0130.BCS~ ~EET/modify/baf/FH0130-et.baf~//Alora spawn
-EXTEND_BOTTOM ~FH0149.BCS~ ~EET/modify/baf/FH0149-eb.baf~
-EXTEND_BOTTOM ~FH0153.BCS~ ~EET/modify/baf/FH0153-eb.baf~
-EXTEND_BOTTOM ~FH0200.BCS~ ~EET/modify/baf/FH0200-eb.baf~
-EXTEND_BOTTOM ~FH0300.BCS~ ~EET/modify/baf/FH0300-eb.baf~
-EXTEND_BOTTOM ~FH0600.BCS~ ~EET/modify/baf/FH0600-eb.baf~
-EXTEND_BOTTOM ~FH0607.BCS~ ~EET/modify/baf/FH0607-eb.baf~
-EXTEND_BOTTOM ~FH0608.BCS~ ~EET/modify/baf/FH0608-eb.baf~
-EXTEND_BOTTOM ~FH0612.BCS~ ~EET/modify/baf/FH0612-eb.baf~
-EXTEND_BOTTOM ~FH0613.BCS~ ~EET/modify/baf/FH0613-eb.baf~
-EXTEND_BOTTOM ~FH0614.BCS~ ~EET/modify/baf/FH0614-eb.baf~
-EXTEND_BOTTOM ~FH0615.BCS~ ~EET/modify/baf/FH0615-eb.baf~
-EXTEND_BOTTOM ~FH0616.BCS~ ~EET/modify/baf/FH0616-eb.baf~
-EXTEND_BOTTOM ~FH0700.BCS~ ~EET/modify/baf/FH0700-eb.baf~
-EXTEND_BOTTOM ~FH0800.BCS~ ~EET/modify/baf/FH0800-eb.baf~
-EXTEND_BOTTOM ~FH0900.BCS~ ~EET/modify/baf/FH0900-eb.baf~
-//EXTEND_TOP ~FH0900.BCS~ ~EET/modify/baf/FH0900-et.baf~//Quayle spawn
-EXTEND_BOTTOM ~FH1100.BCS~ ~EET/modify/baf/FH1100-eb.baf~
-//EXTEND_BOTTOM ~FH1100.BCS~ ~EET/modify/baf/FH1100-et.baf~//Tiax spawn
-EXTEND_BOTTOM ~FH1200.BCS~ ~EET/modify/baf/FH1200-eb.baf~
-EXTEND_BOTTOM ~FH1300.BCS~ ~EET/modify/baf/FH1300-eb.baf~
-//EXTEND_TOP ~FH1400.BCS~ ~EET/modify/baf/FH1400-et.baf~//Ajantis spawn
-//EXTEND_TOP ~FH1600.BCS~ ~EET/modify/baf/FH1600-et.baf~//Eldoth and Faldorn spawn
-//EXTEND_TOP ~FH1804.BCS~ ~EET/modify/baf/FH1804-et.baf~
-//EXTEND_TOP ~FH2200.BCS~ ~EET/modify/baf/FH2200-et.baf~//Coran spawn
-//EXTEND_TOP ~FH2301.BCS~ ~EET/modify/baf/FH2301-et.baf~//Jaheira and Khalid spawn
-//EXTEND_TOP ~FH2400.BCS~ ~EET/modify/baf/FH2400-et.baf~//Viconia spawn
-EXTEND_TOP ~FH2600.BCS~ ~EET/modify/baf/FH2600-et.baf~
-//EXTEND_TOP ~FH2700.BCS~ ~EET/modify/baf/FH2700-et.baf~//Imoen, Xzar, Montaron spawn
-//EXTEND_TOP ~FH3200.BCS~ ~EET/modify/baf/FH3200-et.baf~//Kivan spawn
-//EXTEND_TOP ~FH3300.BCS~ ~EET/modify/baf/FH3300-et.baf~//Garrick spawn
-//EXTEND_TOP ~FH3353.BCS~ ~EET/modify/baf/FH3353-et.baf~//Kagain spawn
-//EXTEND_TOP ~FH3500.BCS~ ~EET/modify/baf/FH3500-et.baf~//Shar-Teel spawn
-//EXTEND_TOP ~FH3600.BCS~ ~EET/modify/baf/FH3600-et.baf~//Safana spawn
-//EXTEND_TOP ~FH4800.BCS~ ~EET/modify/baf/FH4800-et.baf~//Minsc and Edwin spawn
-//EXTEND_BOTTOM ~FH4900.BCS~ ~EET/modify/baf/FH4900-eb.baf~//Branwen spawn
-//EXTEND_BOTTOM ~FH5100.BCS~ ~EET/modify/baf/FH5100-eb.baf~//Dynaheir spwan
-//EXTEND_BOTTOM ~FH5405.BCS~ ~EET/modify/baf/FH5405-eb.baf~//Xan spawn
+/////                                                  \\\\\
+///// Playable NPC Party Flag / Destroy Self           \\\\\
+/////                                                  \\\\\
 
-//////////////////////////////
-//workaround for engine difference (BG2:EE can't run script on 'Unselectable' NPCs, so resurrection in BP1 is broken)
-//////////////////////////////
+<<<<<<<< EET-inlined/PARTYBG1Destroy-et.baf
+IF
+  GlobalGT("ENDOFBG1","GLOBAL",0)
+  Global("%DV%PartyBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
 
-EXTEND_BOTTOM ~BPHUBA.BCS~ ~EET/modify/baf/BPHUBA-eb.baf~
+<<<<<<<< EET-inlined/PARTYBG1-et.baf
+IF
+  Global("%DV%PartyBG1","GLOBAL",0)
+  InParty(Myself)
+THEN
+  RESPONSE #100
+    SetGlobal("%DV%PartyBG1","GLOBAL",1)
+	Continue()
+END
+>>>>>>>>
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_BG1BCS_scriptDV BEGIN
+	AJANTIS => Ajantis
+	ALORA => Alora
+	BRANWEN_ => Branwen
+	CORAN => Coran
+	EDWIN_ => Edwin
+	DYNAHEIR => Dynaheir
+	FALDORN_ => Faldorn
+	ELDOTH => Eldoth
+	GARRICK_ => Garrick
+	IMOEN_ => Imoen2
+	JAHEIRA_ => Jaheira
+	KAGAIN => Kagain
+	KHALID => Khalid
+	KIVAN => Kivan
+	MINSC_ => Minsc
+	MONTARON => Montaron
+	QUAYLE => Quayle
+	SAFANA => Safana
+	SHARTEEL => SharTeel
+	SKIE_ => Skie
+	TIAX => Tiax
+	VICONIA_ => Viconia
+	XAN => Xan
+	XZAR => Xzar
+	YESLICK => Yeslick
+	BAELOTH => Baeloth
+	DORN_ => Dorn
+	NEERA_ => Neera
+	RASAAD_ => Rasaad
+END
+
+ACTION_PHP_EACH table_BG1BCS_scriptDV AS script => DV BEGIN
+	EXTEND_TOP ~%script%.BCS~ ~EET-inlined/PARTYBG1Destroy-et.baf~ EVALUATE_BUFFER
+	EXTEND_TOP ~%script%.BCS~ ~EET-inlined/PARTYBG1-et.baf~ EVALUATE_BUFFER
+END
+
+/////                                                  \\\\\
+///// Non playable NPC Destroy Self                    \\\\\
+/////                                                  \\\\\
+
+//local scripts
+<<<<<<<< EET-inlined/BG1DestroySelf-et.baf
+IF
+  GlobalGT("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH script IN BELT FLAM10 BEGIN
+	EXTEND_TOP ~%script%.BCS~ ~EET-inlined/BG1DestroySelf-et.baf~
+END
+
+//area scripts
+<<<<<<<< EET-inlined/BG1DestroySelfDV-eb.baf
+IF
+  Exists("%DV%")
+  GlobalGT("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride("%DV%",DestroySelf())
+END
+>>>>>>>>
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_BG1BCS2_scriptDV BEGIN
+	//first column used as a workaround because WeiDU expects unique first entires
+	01 , FH0100 => SUGAR
+	02 , FH0101 => BIP
+	03 , FH0101 => Entar
+	04 , FH0112 => SLYTHE
+	05 , FH0112 => Krystin
+	06 , FH0114 => IVANNE
+	07 , FH0149 => PIlmater
+	08 , FH0153 => DENKOD
+	09 , FH0200 => Sorrel
+	//	10 , FH0200 => Bill
+	11 , FH0300 => MAREK//
+	12 , FH0300 => LOTHANDER//
+	13 , FH0600 => HECITO
+	14 , FH0600 => Lothtyran
+	15 , FH0607 => BENJY
+	16 , FH0608 => KENT//
+	17 , FH0608 => Eltan2
+	18 , FH0608 => RASHAD//
+	19 , FH0608 => ELTAN//
+	20 , FH0612 => GREGOR
+	21 , FH0612 => TRALITHAN
+	22 , FH0613 => KALESSIA
+	//23 , FH0613 => EmiTar
+	24 , FH0614 => WIRTHING
+	25 , FH0615 => CYTHAN
+	26 , FH0616 => PANG
+	27 , FH0616 => DHANIAL
+	28 , FH0700 => ADDY
+	29 , FH0800 => HERSCHEL
+	30 , FH0800 => Delthyr
+	31 , FH0800 => Husam2
+	32 , FH0800 => Tamoko
+	33 , FH0900 => Smuggler
+	34 , FH1100 => KAELLA
+	35 , FH1100 => TAMOKO
+	36 , FH1200 => BRENNA
+	37 , FH1200 => JONAVI
+	38 , FH1200 => KOLVAR
+	39 , FH1300 => Alan
+END
+
+ACTION_PHP_EACH table_BG1BCS2_scriptDV AS script => DV BEGIN
+	EXTEND_BOTTOM ~%script_1%.BCS~ ~EET-inlined/BG1DestroySelfDV-eb.baf~ EVALUATE_BUFFER
+END
+
+/////                                                  \\\\\
+///// workaround for engine differences                \\\\\
+/////                                                  \\\\\
+
+//BG2:EE can't run script on 'Unselectable' NPCs, so resurrection in BP1 is broken
+
+//BPHUBA.BCS
+<<<<<<<< EET-inlined/BPHUBA-eb.baf
+IF
+  GlobalLT("T3_B5","GLOBAL",1)
+  HitBy([PC],CRUSHING)
+  OR(2)
+    AreaCheck("OH9310")
+    AreaCheck("OH9350")
+THEN
+  RESPONSE #100
+    ClearAllActions()
+    StartCutSceneMode()
+    SetGlobal("ResistedBaeloth","GLOBAL",2)
+    StartCutScene("CUTBP05")
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~BPHUBA.BCS~ ~EET-inlined/BPHUBA-eb.baf~
+
+//BPPLOT.BCS
+<<<<<<<< EET-inlined/BPPLOT-rbClear.baf
+IF
+  OR(2)
+  SpellCastOnMe([ANYONE],CLERIC_RESURRECTION)
+  SpellCastOnMe([ANYONE],CLERIC_RAISE_DEAD)
+  UnselectableVariableGT(0)
+THEN
+  RESPONSE #100
+    Wait(1)
+    ChangeEnemyAlly(Myself,PC)
+    MakeUnselectable(0)
+    MoveToOffset([0.0])
+    SetSequence(SEQ_AWAKE)
+    Continue()
+END
+
+IF
+  OR(2)
+  AreaCheck("OH9350")
+  AreaCheck("OH9310")
+  Global("BATTLE_COMPLETE","GLOBAL",0)
+  UnselectableVariableGT(0)
+THEN
+  RESPONSE #100
+    PlayDeadInterruptible(9999)
+END
+
+IF
+  Global("BATTLE_COMPLETE","GLOBAL",0)
+  UnselectableVariableGT(0)
+  HPGT(Myself,1)
+THEN
+  RESPONSE #100
+    ApplyDamagePercent(Myself,100,CRUSHING)
+END
+
+IF
+  AreaCheck("OH9360")
+  OR(2)
+  !Allegiance(Myself,PC)
+  UnselectableVariableGT(0)
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,PC)
+    MakeUnselectable(0)
+    Continue()
+END
+
+IF
+  GlobalGT("BATTLE_COMPLETE","GLOBAL",0)
+  !Allegiance(Myself,PC)
+  OR(2)
+  AreaCheck("OH9350")
+  AreaCheck("OH9310")
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,PC)
+    Continue()
+END
+
+IF
+  GlobalGT("BATTLE_COMPLETE","GLOBAL",0)
+  UnselectableVariableGT(0)
+THEN
+  RESPONSE #100
+    Wait(1)
+    MakeUnselectable(0)
+    MoveToOffset([0.0])
+    SetSequence(SEQ_AWAKE)
+    Continue()
+END
+
+IF
+  Global("BATTLE_COMPLETE","GLOBAL",0)
+  GlobalLT("T3_B5","GLOBAL",1)
+  HPLT(Myself,2)
+  OR(10)
+  StateCheck(Myself,STATE_CHARMED)
+  StateCheck(Myself,STATE_BERSERK)
+  StateCheck(Myself,STATE_PANIC)
+  StateCheck(Myself,STATE_STUNNED)
+  StateCheck(Myself,STATE_HELPLESS)
+  StateCheck(Myself,STATE_SILENCED)
+  StateCheck(Myself,STATE_CONFUSED)
+  StateCheck(Myself,STATE_FEEBLEMINDED)
+  StateCheck(Myself,STATE_DISEASED)
+  StateCheck(Myself,STATE_BLIND)
+THEN
+  RESPONSE #100
+    ApplySpellRES("BPDISPEL",Myself)
+    MakeUnselectable(5000)
+    ChangeEnemyAlly(Myself,EVILBUTBLUE)
+    PlayDeadInterruptible(9999)
+END
+
+IF
+  OR(2)
+  AreaCheck("OH9360")
+  !AreaCheckAllegiance(ENEMY)
+  OR(10)
+  StateCheck(Myself,STATE_CHARMED)
+  StateCheck(Myself,STATE_BERSERK)
+  StateCheck(Myself,STATE_PANIC)
+  StateCheck(Myself,STATE_STUNNED)
+  StateCheck(Myself,STATE_HELPLESS)
+  StateCheck(Myself,STATE_SILENCED)
+  StateCheck(Myself,STATE_CONFUSED)
+  StateCheck(Myself,STATE_FEEBLEMINDED)
+  StateCheck(Myself,STATE_DISEASED)
+  StateCheck(Myself,STATE_BLIND)
+THEN
+  RESPONSE #100
+    ApplySpellRES("BPDISPEL",Myself)
+END
+
+IF
+  Global("BATTLE_COMPLETE","GLOBAL",0)
+  GlobalLT("T3_B5","GLOBAL",1)
+  HPLT(Myself,2)
+  UnselectableVariable(0)
+  OR(2)
+  AreaCheck("OH9350")
+  AreaCheck("OH9310")
+THEN
+  RESPONSE #100
+    MakeUnselectable(5000)
+    ChangeEnemyAlly(Myself,EVILBUTBLUE)
+    PlayDeadInterruptible(9999)
+END
+>>>>>>>>
 
 COPY_EXISTING ~BPPLOT.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET/modify/baf/BPPLOT-rbClear.baf~ ~EET/modify/baf/!empty.baf~
+	REPLACE_BCS_BLOCK ~EET-inlined/BPPLOT-rbClear.baf~ ~EET-inlined/blank.baf~
 BUT_ONLY
 
+//OH9310.BCS, OH9350.BCS
+<<<<<<<< EET-inlined/OH9310-rbOld.baf
+IF
+  Delay(5)
+  Global("BPISDEAD","OH9310",0)
+  GlobalLT("T3_B5","GLOBAL",1)
+  OR(2)
+  !HPGT(Player1,1)
+  Allegiance(Player1,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player2,1)
+  Allegiance(Player2,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player3,1)
+  Allegiance(Player3,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player4,1)
+  Allegiance(Player4,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player5,1)
+  Allegiance(Player5,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player6,1)
+  Allegiance(Player6,EVILBUTBLUE)
+THEN
+  RESPONSE #100
+    SetGlobal("BPISDEAD","OH9310",1)
+    StartMovie("DEATHAND")
+    GoToStartScreen()
+END
+
+IF
+  Delay(5)
+  Global("BPISDEAD","OH9310",0)
+  GlobalGT("T3_B5","GLOBAL",0)
+  !HPGT(Player1,0)
+  !HPGT(Player2,0)
+  !HPGT(Player3,0)
+  !HPGT(Player4,0)
+  !HPGT(Player5,0)
+  !HPGT(Player6,0)
+THEN
+  RESPONSE #100
+    SetGlobal("BPISDEAD","OH9310",1)
+    StartMovie("DEATHAND")
+    GoToStartScreen()
+END
+
+IF
+  HPLT(Player1,2)
+  OR(3)
+  StateCheck(Player1,STATE_CHARMED)
+  StateCheck(Player1,STATE_PANIC)
+  StateCheck(Player1,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player1,MakeUnselectable(5000))
+    ActionOverride(Player1,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player1,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player2,2)
+  OR(3)
+  StateCheck(Player2,STATE_CHARMED)
+  StateCheck(Player2,STATE_PANIC)
+  StateCheck(Player2,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player2,MakeUnselectable(5000))
+    ActionOverride(Player2,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player2,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player3,2)
+  OR(3)
+  StateCheck(Player3,STATE_CHARMED)
+  StateCheck(Player3,STATE_PANIC)
+  StateCheck(Player3,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player3,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player3,MakeUnselectable(5000))
+    ActionOverride(Player3,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player3,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player4,2)
+  OR(3)
+  StateCheck(Player4,STATE_CHARMED)
+  StateCheck(Player4,STATE_PANIC)
+  StateCheck(Player4,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player4,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player4,MakeUnselectable(5000))
+    ActionOverride(Player4,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player4,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player5,2)
+  OR(3)
+  StateCheck(Player5,STATE_CHARMED)
+  StateCheck(Player5,STATE_PANIC)
+  StateCheck(Player5,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player5,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player5,MakeUnselectable(5000))
+    ActionOverride(Player5,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player5,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player6,2)
+  OR(3)
+  StateCheck(Player6,STATE_CHARMED)
+  StateCheck(Player6,STATE_PANIC)
+  StateCheck(Player6,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player6,MakeUnselectable(5000))
+    ActionOverride(Player6,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player6,PlayDeadInterruptible(9999))
+    Continue()
+END
+>>>>>>>>
+
+<<<<<<<< EET-inlined/OH93x0-rbNew.baf
+IF
+  NumInPartyAlive(0)
+THEN
+  RESPONSE #100
+    StartMovie("DEATHAND")
+    GoToStartScreen()
+END
+>>>>>>>>
+
 COPY_EXISTING ~OH9310.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET/modify/baf/OH9310-rbOld.baf~ ~EET/modify/baf/OH93x0-rbNew.baf~
+	REPLACE_BCS_BLOCK ~EET-inlined/OH9310-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~\(StateCheck(Player6,STATE_REALLY_DEAD)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal("BATTLE_COMPLETE","GLOBAL",2)[%newline%]*\)SetGlobal("BP_AUTOSAVE","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -111,8 +497,128 @@ COPY_EXISTING ~OH9310.BCS~ ~override~
 	END
 BUT_ONLY
 
+<<<<<<<< EET-inlined/OH9350-rbOld.baf
+IF
+  Delay(5)
+  Global("BPISDEAD","OH9350",0)
+  OR(2)
+  !HPGT(Player1,1)
+  Allegiance(Player1,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player2,1)
+  Allegiance(Player2,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player3,1)
+  Allegiance(Player3,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player4,1)
+  Allegiance(Player4,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player5,1)
+  Allegiance(Player5,EVILBUTBLUE)
+  OR(2)
+  !HPGT(Player6,1)
+  Allegiance(Player6,EVILBUTBLUE)
+THEN
+  RESPONSE #100
+    SetGlobal("BPISDEAD","OH9350",1)
+    StartMovie("DEATHAND")
+    GoToStartScreen()
+END
+
+IF
+  HPLT(Player1,2)
+  OR(3)
+  StateCheck(Player1,STATE_CHARMED)
+  StateCheck(Player1,STATE_PANIC)
+  StateCheck(Player1,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player1,MakeUnselectable(5000))
+    ActionOverride(Player1,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player1,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player2,2)
+  OR(3)
+  StateCheck(Player2,STATE_CHARMED)
+  StateCheck(Player2,STATE_PANIC)
+  StateCheck(Player2,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player2,MakeUnselectable(5000))
+    ActionOverride(Player2,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player2,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player3,2)
+  OR(3)
+  StateCheck(Player3,STATE_CHARMED)
+  StateCheck(Player3,STATE_PANIC)
+  StateCheck(Player3,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player3,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player3,MakeUnselectable(5000))
+    ActionOverride(Player3,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player3,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player4,2)
+  OR(3)
+  StateCheck(Player4,STATE_CHARMED)
+  StateCheck(Player4,STATE_PANIC)
+  StateCheck(Player4,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player4,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player4,MakeUnselectable(5000))
+    ActionOverride(Player4,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player4,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player5,2)
+  OR(3)
+  StateCheck(Player5,STATE_CHARMED)
+  StateCheck(Player5,STATE_PANIC)
+  StateCheck(Player5,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player5,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player5,MakeUnselectable(5000))
+    ActionOverride(Player5,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player5,PlayDeadInterruptible(9999))
+    Continue()
+END
+
+IF
+  HPLT(Player6,2)
+  OR(3)
+  StateCheck(Player6,STATE_CHARMED)
+  StateCheck(Player6,STATE_PANIC)
+  StateCheck(Player6,STATE_BERSERK)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,ApplySpell(Myself,FORCE_DISPEL_MAGIC))
+    ActionOverride(Player6,MakeUnselectable(5000))
+    ActionOverride(Player6,ChangeEnemyAlly(Myself,NOTGOOD))
+    ActionOverride(Player6,PlayDeadInterruptible(9999))
+    Continue()
+END
+>>>>>>>>
+
 COPY_EXISTING ~OH9350.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET/modify/baf/OH9350-rbOld.baf~ ~EET/modify/baf/OH93x0-rbNew.baf~
+	REPLACE_BCS_BLOCK ~EET-inlined/OH9350-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~\(StateCheck(Player6,STATE_REALLY_DEAD)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal("BATTLE_COMPLETE","GLOBAL",2)[%newline%]*SetGlobal("BP_AUTOSAVE","GLOBAL",1)\)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -138,27 +644,30 @@ COPY_EXISTING ~OH9350.BCS~ ~override~
 	END
 BUT_ONLY
 
-//////////////////////////////
-//missing BGSUNRIS/BGSUNSET movies
-//////////////////////////////
+/////                                                  \\\\\
+///// BG:EE movies restoration                         \\\\\
+/////                                                  \\\\\
 
-ACTION_FOR_EACH ~script~ IN FH0100 FH0200 FH0300 FH0600 FH0700 FH0800 FH1100 FH1200 FH1300 BEGIN
-	EXTEND_BOTTOM ~%script%.BCS~ ~EET/modify/baf/!BGSUNRIS_BGSUNSET.baf~
-END
-
-//////////////////////////////
-//movies restoration
-//////////////////////////////
-
+//FH0705.BCS
 COPY_EXISTING ~FH0705.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		COUNT_REGEXP_INSTANCES ~StartMovie("TAVERN")~ num_matches
 	END
 BUT_ONLY
 ACTION_IF (num_matches = 0) BEGIN
-	EXTEND_TOP ~FH0705.BCS~ ~EET/modify/baf/FH0705-et.baf~
+<<<<<<<< EET-inlined/FH0705-et.baf
+IF
+  Global("EnteredElfsong","GLOBAL",0)
+THEN
+  RESPONSE #100
+    StartMovie("TAVERN")
+    SetGlobal("EnteredElfsong","GLOBAL",1)
+END
+>>>>>>>>
+	EXTEND_TOP ~FH0705.BCS~ ~EET-inlined/FH0705-et.baf~
 END
 
+//FH3300.BCS
 COPY_EXISTING ~FH3300.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~SetGlobal("EnteredBeregost","GLOBAL",1)~
@@ -175,9 +684,9 @@ COPY_EXISTING ~FH3300.BCS~ ~override~
 	END
 BUT_ONLY
 
-///////////////////////////////////////////////////////
-//files existing in BG2:EE, use BG:EE version as a base
-///////////////////////////////////////////////////////
+/////                                                  \\\\\
+///// existing in BG2:EE, use BG:EE version as a base  \\\\\
+/////                                                  \\\\\
 
 //SHOUT.BCS in BG2:EE v1.2 still outdated AI behaviour that was already improved in BG:EE. Just add shout 57 to BG:EE base to make it also compatible with BG2:EE scripts
 COPY_EXISTING ~SHOUT.BCS~ ~override~
@@ -280,9 +789,9 @@ IF
 	END
 BUT_ONLY
 
-///////////////////////////////////////////////////////
-//files existing in BG2:EE, replace them if not used
-///////////////////////////////////////////////////////
+/////                                                  \\\\\
+/////existing in BG2:EE, replace them if not used      \\\\\
+/////                                                  \\\\\
 
 /*COPY_EXISTING ~ENDCUT01.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -291,6 +800,7 @@ BUT_ONLY
   ForceSpell(Myself,DRYAD_TELEPORT)~
 	END*/
 
+//FTOWBAZ.BCS, NOBLBAZ.BCS, NOBWBAZ.BCS
 COPY_EXISTING ~FTOWBAZ.BCS~ ~override~
 	~NOBLBAZ.BCS~ ~override~
 	~NOBWBAZ.BCS~ ~override~
@@ -317,6 +827,7 @@ COPY_EXISTING ~FTOWBAZ.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FTOWBEZ.BCS, FTOWNAZ.BCS, MTOWBEZ.BCS, MTOWNAZ.BCS
 COPY_EXISTING ~FTOWBEZ.BCS~ ~override~
 	~FTOWNAZ.BCS~ ~override~
 	~MTOWBEZ.BCS~ ~override~
@@ -334,6 +845,7 @@ COPY_EXISTING ~FTOWBEZ.BCS~ ~override~
 	END
 BUT_ONLY
 
+//KIRINH.BCS
 COPY_EXISTING ~KIRINH.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~ForceSpell(Myself,SUCCUBUS_ETHEREAL)~
@@ -356,6 +868,7 @@ COPY_EXISTING ~KIRINH.BCS~ ~override~
 	END
 BUT_ONLY
 
+//SEMAJ.BCS
 /*COPY_EXISTING ~SEMAJ.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE ~24097~ @24097
@@ -364,6 +877,7 @@ BUT_ONLY
 	END
 BUT_ONLY*/
 
+//SHIP.BCS
 /*COPY_EXISTING ~SHIP.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE ~24016~ @24016
@@ -560,11 +1074,13 @@ BUT_ONLY*/
 //ZOMBIEB.BCS
 //ZORL.BCS
 
-///////////////////////////////////////////////////////
-//added by BG:EE
-///////////////////////////////////////////////////////
+/////                                                  \\\\\
+///// added by BG:EE                                   \\\\\
+/////                                                  \\\\\
 
 //resolve conflict with BG2:EE textscreens
+
+//FH1803.BCS
 COPY_EXISTING ~FH1803.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt5_")~
@@ -579,6 +1095,7 @@ COPY_EXISTING ~FH1803.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH1901.BCS
 COPY_EXISTING ~FH1901.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("CHPTXT4_")~
@@ -593,6 +1110,7 @@ COPY_EXISTING ~FH1901.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH2600.BCS
 COPY_EXISTING ~FH2600.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt0_")~
@@ -607,6 +1125,7 @@ COPY_EXISTING ~FH2600.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH2626.BCS
 COPY_EXISTING ~FH2626.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt7_")~
@@ -621,6 +1140,7 @@ COPY_EXISTING ~FH2626.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH4800.BCS
 COPY_EXISTING ~FH4800.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt2_")~
@@ -635,6 +1155,7 @@ COPY_EXISTING ~FH4800.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH4900.BCS
 COPY_EXISTING ~FH4900.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt2_")~
@@ -649,6 +1170,7 @@ COPY_EXISTING ~FH4900.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH5400.BCS
 COPY_EXISTING ~FH5400.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt2_")~
@@ -663,6 +1185,7 @@ COPY_EXISTING ~FH5400.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH5404.BCS
 COPY_EXISTING ~FH5404.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt3_")~
@@ -677,6 +1200,7 @@ COPY_EXISTING ~FH5404.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH5405.BCS
 COPY_EXISTING ~FH5405.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt3_")~
@@ -691,6 +1215,7 @@ COPY_EXISTING ~FH5405.BCS~ ~override~
 	END
 BUT_ONLY
 
+//CH1CUT04.BCS
 COPY_EXISTING ~CH1CUT04.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt1_")~
@@ -705,6 +1230,7 @@ COPY_EXISTING ~CH1CUT04.BCS~ ~override~
 	END
 BUT_ONLY
 
+//CHASEL3.BCS
 COPY_EXISTING ~CHASEL3.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt1_")~
@@ -719,6 +1245,7 @@ COPY_EXISTING ~CHASEL3.BCS~ ~override~
 	END
 BUT_ONLY
 
+//CUTCKEEP.BCS
 COPY_EXISTING ~CUTCKEEP.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt6_")~
@@ -733,6 +1260,7 @@ COPY_EXISTING ~CUTCKEEP.BCS~ ~override~
 	END
 BUT_ONLY
 
+//DAVCUT01.BCS
 COPY_EXISTING ~DAVCUT01.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt5_")~
@@ -747,6 +1275,7 @@ COPY_EXISTING ~DAVCUT01.BCS~ ~override~
 	END
 BUT_ONLY
 
+//ENDCH4.BCS
 COPY_EXISTING ~ENDCH4.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt5_")~
@@ -762,6 +1291,8 @@ COPY_EXISTING ~ENDCH4.BCS~ ~override~
 BUT_ONLY
 
 //Other
+
+//CH1CUT01.BCS
 COPY_EXISTING ~CH1CUT01.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~SetGlobal("TalkedToGorion","GLOBAL",1)~
@@ -779,6 +1310,7 @@ COPY_EXISTING ~CH1CUT01.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0100.BCS
 COPY_EXISTING ~FH0100.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -793,6 +1325,7 @@ COPY_EXISTING ~FH0100.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0101.BCS
 COPY_EXISTING ~FH0101.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("Bip")~
@@ -807,6 +1340,7 @@ COPY_EXISTING ~FH0101.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0112.BCS
 COPY_EXISTING ~FH0112.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -821,6 +1355,7 @@ COPY_EXISTING ~FH0112.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0114.BCS
 COPY_EXISTING ~FH0114.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -835,6 +1370,7 @@ COPY_EXISTING ~FH0114.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0119.BCS
 COPY_EXISTING ~FH0119.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("Delthyr")~
@@ -849,6 +1385,7 @@ COPY_EXISTING ~FH0119.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0149.BCS
 COPY_EXISTING ~FH0149.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("PIlmater")~
@@ -863,6 +1400,7 @@ COPY_EXISTING ~FH0149.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0153.BCS
 COPY_EXISTING ~FH0153.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("DENKOD")~
@@ -877,6 +1415,7 @@ COPY_EXISTING ~FH0153.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0200.BCS
 COPY_EXISTING ~FH0200.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Capture200","GLOBAL",0)~
@@ -891,6 +1430,7 @@ COPY_EXISTING ~FH0200.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0300.BCS
 COPY_EXISTING ~FH0300.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Capture300","GLOBAL",0)~
@@ -905,6 +1445,7 @@ COPY_EXISTING ~FH0300.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0600.BCS
 COPY_EXISTING ~FH0600.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -919,6 +1460,7 @@ COPY_EXISTING ~FH0600.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0607.BCS
 COPY_EXISTING ~FH0607.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -933,6 +1475,7 @@ COPY_EXISTING ~FH0607.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0608.BCS
 COPY_EXISTING ~FH0608.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -947,6 +1490,7 @@ COPY_EXISTING ~FH0608.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0612.BCS
 COPY_EXISTING ~FH0612.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -961,6 +1505,7 @@ COPY_EXISTING ~FH0612.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0613.BCS
 COPY_EXISTING ~FH0613.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -975,8 +1520,9 @@ COPY_EXISTING ~FH0613.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0614.BCS
 COPY_EXISTING ~FH0614.BCS~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
+	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Global("WirthiSpawn","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
@@ -1000,6 +1546,7 @@ COPY_EXISTING ~FH0614.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0615.BCS
 COPY_EXISTING ~FH0615.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -1014,6 +1561,7 @@ COPY_EXISTING ~FH0615.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0616.BCS
 COPY_EXISTING ~FH0616.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~OnCreation()~
@@ -1028,6 +1576,7 @@ COPY_EXISTING ~FH0616.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0700.BCS
 COPY_EXISTING ~FH0700.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -1042,6 +1591,7 @@ COPY_EXISTING ~FH0700.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0800.BCS
 COPY_EXISTING ~FH0800.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -1056,6 +1606,7 @@ COPY_EXISTING ~FH0800.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH0900.BCS
 COPY_EXISTING ~FH0900.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -1070,6 +1621,7 @@ COPY_EXISTING ~FH0900.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH1100.BCS
 COPY_EXISTING ~FH1100.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Exists("Aldeth")~
@@ -1116,6 +1668,7 @@ COPY_EXISTING ~FH1100.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH1200.BCS
 COPY_EXISTING ~FH1200.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -1130,6 +1683,7 @@ COPY_EXISTING ~FH1200.BCS~ ~override~
 	END
 BUT_ONLY
 
+//FH1300.BCS
 COPY_EXISTING ~FH1300.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -1144,6 +1698,7 @@ COPY_EXISTING ~FH1300.BCS~ ~override~
 	END
 BUT_ONLY
 
+//TU0018.BCS
 COPY_EXISTING ~TU0018.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~SaveGame(0)~

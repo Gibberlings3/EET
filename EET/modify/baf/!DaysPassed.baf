@@ -1,8 +1,0 @@
-IF
-  !GlobalTimerNotExpired("K#DaysTimer","GLOBAL")
-THEN
-  RESPONSE #100
-    IncrementGlobal("K#DaysPassed","GLOBAL",1)
-    SetGlobalTimer("K#DaysTimer","GLOBAL",ONE_DAY)
-    Continue()
-END

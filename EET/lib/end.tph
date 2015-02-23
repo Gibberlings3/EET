@@ -9,9 +9,6 @@ END
 
 ACTION_IF FILE_EXISTS ~bp-bgt_worldmap/lib/original.tpa~ BEGIN
     COPY ~bp-bgt_worldmap/lib/original.tpa~ ~bp-bgt_worldmap/lib~
-        REPLACE_TEXTUALLY ~\(ACTION_IF GAME_IS .tob bgt. BEGIN\)~ ~ACTION_IF GAME_IS %tilde%eet%tilde% BEGIN
-  OUTER_SPRINT fl#area_table %tilde%bp-bgt_worldmap/2da/original_bg2ee_areas.2da%tilde%
-  OUTER_SPRINT fl#link_table %tilde%bp-bgt_worldmap/2da/original_bg2ee_links.2da%tilde%
-END ELSE \1~
+		REPLACE_TEXTUALLY ~GAME_IS %tilde%bg2ee%tilde%~ ~GAME_IS %tilde%bg2ee eet%tilde%~
     BUT_ONLY
 END

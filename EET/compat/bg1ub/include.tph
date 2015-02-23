@@ -1,8 +1,19 @@
-//Compatibility with ~BG1UB/SETUP-BG1UB.TP2~ #0 #22 // Item Corrections and Restorations
-COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
-	COUNT_REGEXP_INSTANCES ~BG1UB\.TP2. #0 #22 ~ num_matches
+//keep in mind that there is also compatybility code in lib/prep_ITM.tph for follwoing resources: AX1H07.ITM, MAGE02.ITM
 
-ACTION_IF (num_matches > 0) BEGIN
+//Compatibility with BG1UB "Creature Corrections" component
+
+ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1UB\.TP2. #[0-9]+ #16 ~) BEGIN
+	COPY_EXISTING ~PLYOGRE.CRE~ ~override~ // Ogre (OGRE animation)
+		PATCH_IF (SOURCE_SIZE > 0x2d4) BEGIN
+			WRITE_BYTE 0x237 1                  // Sex: Male
+			WRITE_BYTE 0x275 4                  // Gender: Neither
+		END
+	BUT_ONLY
+END
+
+//Compatibility with BG1UB "Item Corrections and Restorations" component
+
+ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1UB\.TP2. #[0-9]+ #22 ~) BEGIN
 	COPY_EXISTING ~misc76.itm~ ~override~ // Dream Potion
 		WRITE_EVALUATED_ASCII 0x3a "imisc76"
 		WRITE_EVALUATED_ASCII 0x58 "cpotn13"
@@ -30,19 +41,6 @@ ACTION_IF (num_matches > 0) BEGIN
 				WRITE_ASCII ablOff + 0x4 ~SPIN109~ #8
 				ablOff += 0x28
 			END
-		END
-	BUT_ONLY
-END
-
-//Compatibility with ~BG1UB/SETUP-BG1UB.TP2~ #0 #16 // Creature Corrections
-COPY - ~%bgee_dir%/WeiDU.log~ ~%bgee_dir%~
-	COUNT_REGEXP_INSTANCES ~BG1UB\.TP2. #0 #16 ~ num_matches
-
-ACTION_IF (num_matches > 0) BEGIN
-	COPY_EXISTING ~PLYOGRE.CRE~ ~override~ // Ogre (OGRE animation)
-		PATCH_IF (SOURCE_SIZE > 0x2d4) BEGIN
-			WRITE_BYTE 0x237 1                  // Sex: Male
-			WRITE_BYTE 0x275 4                  // Gender: Neither
 		END
 	BUT_ONLY
 END

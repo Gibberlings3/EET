@@ -1,6 +1,169 @@
-//////////////////////////////
-///// NPCs scripts
-//////////////////////////////
+/////                                                  \\\\\
+///// Remove junk BG1 code from BG2 scripts            \\\\\
+/////                                                  \\\\\
+
+//AR0514.BCS
+<<<<<<<< EET-inlined/AR0514-rbClear.baf
+IF
+  Global("Durtomb","GLOBAL",1)
+  Global("DurTombTele","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("DurTombTele","GLOBAL",1)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0515","",[327.201],E))
+    ActionOverride(Player1,LeaveAreaLUA("AR0515","",[327.201],E))
+    ActionOverride(Player1,SetMasterArea("AR0500"))
+    ActionOverride(Player2,LeaveAreaLUA("AR0515","",[424.243],E))
+    ActionOverride(Player3,LeaveAreaLUA("AR0515","",[472.321],E))
+    ActionOverride(Player4,LeaveAreaLUA("AR0515","",[433.398],E))
+    ActionOverride(Player5,LeaveAreaLUA("AR0515","",[228.409],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0515","",[168.303],E))
+END
+
+IF
+  Global("Viking","GLOBAL",1)
+  Global("VikingTele","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("VikingTele","GLOBAL",1)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0515","",[327.201],E))
+    ActionOverride(Player1,LeaveAreaLUA("AR0515","",[327.201],E))
+    ActionOverride(Player1,SetMasterArea("AR0500"))
+    ActionOverride(Player2,LeaveAreaLUA("AR0515","",[424.243],E))
+    ActionOverride(Player3,LeaveAreaLUA("AR0515","",[472.321],E))
+    ActionOverride(Player4,LeaveAreaLUA("AR0515","",[433.398],E))
+    ActionOverride(Player5,LeaveAreaLUA("AR0515","",[228.409],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0515","",[168.303],E))
+END
+
+IF
+  Global("DurStatue","GLOBAL",1)
+  Global("DurStatueTele","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("DurStatueTele","GLOBAL",1)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0515","",[327.201],E))
+    ActionOverride(Player1,LeaveAreaLUA("AR0515","",[327.201],E))
+    ActionOverride(Player1,SetMasterArea("AR0500"))
+    ActionOverride(Player2,LeaveAreaLUA("AR0515","",[424.243],E))
+    ActionOverride(Player3,LeaveAreaLUA("AR0515","",[472.321],E))
+    ActionOverride(Player4,LeaveAreaLUA("AR0515","",[433.398],E))
+    ActionOverride(Player5,LeaveAreaLUA("AR0515","",[228.409],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0515","",[168.303],E))
+END
+
+IF
+  Global("TeleRoom","GLOBAL",1)
+  OpenState("FinalDoor",FALSE)
+THEN
+  RESPONSE #100
+    OpenDoor("FinalDoor")
+END
+>>>>>>>>
+
+COPY_EXISTING ~AR0514.BCS~ ~override~
+	REPLACE_BCS_BLOCK ~EET-inlined/AR0514-rbClear.baf~ ~EET-inlined/blank.baf~
+BUT_ONLY
+
+//AR2001.BCS
+<<<<<<<< EET-inlined/AR2001-rbClear.baf
+IF
+  Global("Door2012Disabled","GLOBAL",1)
+  Global("Infected","GLOBAL",1)
+THEN
+  RESPONSE #100
+    TriggerActivation("DOOR2012",TRUE)
+    SetGlobal("Door2012Disabled","GLOBAL",0)
+END
+
+IF
+  Global("Door2012Disabled","GLOBAL",0)
+  Global("Infected","GLOBAL",0)
+THEN
+  RESPONSE #100
+    TriggerActivation("DOOR2012",FALSE)
+    SetGlobal("Door2012Disabled","GLOBAL",1)
+END
+
+IF
+  OpenState("DOR2012",FALSE)
+  Global("Infected","GLOBAL",1)
+THEN
+  RESPONSE #100
+    OpenDoor("DOR2012")
+END
+
+IF
+  OpenState("DOR2012",TRUE)
+  Global("Infected","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CloseDoor("DOR2012")
+END
+>>>>>>>>
+
+COPY_EXISTING ~AR2001.BCS~ ~override~
+	REPLACE_BCS_BLOCK ~EET-inlined/AR2001-rbClear.baf~ ~EET-inlined/blank.baf~
+BUT_ONLY
+
+/////                                                  \\\\\
+///// DAYNITE/NITEDAY movies                           \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/DAYNITE_NITEDAY-eb.baf
+IF
+  Time(DUSK_END)
+  !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("DAYNITE_")
+    SetGlobalTimer("K#TimerSunset","GLOBAL",ONE_HOUR)
+END
+
+IF
+  Time(DAWN_END)
+  !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("NITEDAY_")
+    SetGlobalTimer("K#TimerSunrise","GLOBAL",ONE_HOUR)
+END
+>>>>>>>>
+
+COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
+	READ_BYTE 0x48 flags
+	PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
+		INNER_ACTION BEGIN
+			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~EET-inlined/DAYNITE_NITEDAY-eb.baf~
+			PRINT ~DAYNITE/NITEDAY movies added to %SOURCE_RES%.BCS~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
+///// Playable NPC Party Flag / Destroy Self           \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/PARTYBG2Destroy-et.baf
+IF
+  GlobalGT("ENDOFBG2","GLOBAL",0)
+  Global("%DV%PartyBG2","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+
+<<<<<<<< EET-inlined/PARTYBG2-et.baf
+IF
+  Global("%DV%PartyBG2","GLOBAL",0)
+  InParty(Myself)
+THEN
+  RESPONSE #100
+    SetGlobal("%DV%PartyBG2","GLOBAL",1)
+	Continue()
+END
+>>>>>>>>
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2BCS_scriptDV" BEGIN
 	"AERIE" => "Aerie"
@@ -24,7 +187,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2BCS_scriptDV" BEGIN
 	"HEXXAT" => "Hexxat"
 	"NEERA" => "Neera"
 	"RASAAD" => "Rasaad"
-	"WILSON" => "Wilson"//same script in SoA and ToB
+	"WILSON" => "Wilson"
 	/*"AERI25" => "Aerie"
 	"ANOM25" => "Anomen"
 	"CERN25" => "Cernd"
@@ -49,16 +212,15 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2BCS_scriptDV" BEGIN
 END
 
 ACTION_PHP_EACH "table_BG2BCS_scriptDV" AS "script" => "DV" BEGIN
-	OUTER_SET BG_var = 2
 	ACTION_IF (("%script%" STRING_EQUAL_CASE "WILSON")=0) BEGIN
-		EXTEND_TOP ~%script%.BCS~ ~EET/modify/baf/!PARTYBGxDestroy.baf~ EVALUATE_BUFFER
+		EXTEND_TOP ~%script%.BCS~ ~EET-inlined/PARTYBG2Destroy-et.baf~ EVALUATE_BUFFER
 	END
-	EXTEND_TOP ~%script%.BCS~ ~EET/modify/baf/!PARTYBGx.baf~ EVALUATE_BUFFER
+	EXTEND_TOP ~%script%.BCS~ ~EET-inlined/PARTYBG2-et.baf~ EVALUATE_BUFFER
 END
 
-//////////////////////////////
-///// BG:EE version using BG2:EE BCS as a base
-//////////////////////////////
+/////                                                  \\\\\
+///// BG:EE Tanari (BG2:EE version used as a base)     \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~TANARI.BCS~ ~override/TANARI_.BCS~
 	DECOMPILE_AND_PATCH BEGIN
@@ -71,45 +233,153 @@ COPY_EXISTING ~TANARI.BCS~ ~override/TANARI_.BCS~
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
-//BUT_ONLY
 
-//////////////////////////////
-// remove junk code from BG1
-//////////////////////////////
+/////                                                  \\\\\
+///// BALDUR.BCS / BALDUR25.BCS                        \\\\\
+/////                                                  \\\\\
 
-COPY_EXISTING ~AR0514.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET/modify/baf/ar0514-rbClear.baf~ ~EET/modify/baf/!empty.baf~
-BUT_ONLY
+<<<<<<<< EET-inlined/DaysPassed-et.baf
+IF
+  !GlobalTimerNotExpired("K#DaysTimer","GLOBAL")
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#DaysPassed","GLOBAL",1)
+    SetGlobalTimer("K#DaysTimer","GLOBAL",ONE_DAY)
+    Continue()
+END
+>>>>>>>>
 
-COPY_EXISTING ~AR2001.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET/modify/baf/ar2001-rbClear.baf~ ~EET/modify/baf/!empty.baf~
-BUT_ONLY
-
-//////////////////////////////
-//missing DAYNITE/NITEDAY movies
-//////////////////////////////
-
-ACTION_FOR_EACH ~script~ IN AR0020 AR0041 AR0045 AR0046 AR0300 AR0400 AR0500 AR0700 AR0900 AR1000 AR2000 AR2800 BEGIN //removed AR1400 - it doesn't make any sense to play it in Shadow Temple Land
-	EXTEND_BOTTOM ~%script%.BCS~ ~EET/modify/baf/!DAYNITE_NITEDAY.baf~
+<<<<<<<< EET-inlined/BALDUR-eb.baf
+//code from BG:EE
+IF
+  Global("TanariXP","GLOBAL",1)
+  Dead("DeathK")  // ~Demon Knight~
+  Dead("loupgar")  // ~Loup Garou~
+  Global("FinishedExpansion","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("FinishedExpansion","GLOBAL",1)
+    AddJournalEntry(@24117,INFO)
 END
 
-//////////////////////////////
-//BALDUR.BCS
-//////////////////////////////
+IF
+  Global("HasTranzigScroll","GLOBAL",0)
+  PartyHasItem("SCRL2X")  // ~Letter~
+THEN
+  RESPONSE #100
+    SetGlobal("HasTranzigScroll","GLOBAL",1)
+    AddJournalEntry(@31449,QUEST)
+END
 
-EXTEND_TOP ~BALDUR.BCS~ ~EET/modify/baf/!DaysPassed.baf~
-EXTEND_BOTTOM ~BALDUR.BCS~ ~EET/modify/baf/baldur-eb.baf~
+IF
+  InParty("Baeloth")  // ~Baeloth~
+  Global("BaelothJoinedParty","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ReputationInc(-2)
+    SetGlobal("BaelothJoinedParty","GLOBAL",1)
+END
 
-//////////////////////////////
-//BALDUR25.BCS
-//////////////////////////////
+IF
+  !InParty("Baeloth")  // ~Baeloth~
+  !Dead("Baeloth")  // ~Baeloth~
+  Global("BaelothJoinedParty","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ReputationInc(2)
+    SetGlobal("BaelothJoinedParty","GLOBAL",0)
+END
 
-EXTEND_TOP ~BALDUR25.BCS~ ~EET/modify/baf/!DaysPassed.baf~
+// BGEE XP CAP
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  XPGT(Player1,161000)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ChangeStat(Player1,XP,161000,SET)
+    Continue()
+END
 
-//////////////////////////////
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  XPGT(Player2,161000)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ChangeStat(Player2,XP,161000,SET)
+    Continue()
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  XPGT(Player3,161000)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ChangeStat(Player3,XP,161000,SET)
+    Continue()
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  XPGT(Player4,161000)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ChangeStat(Player4,XP,161000,SET)
+    Continue()
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  XPGT(Player5,161000)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ChangeStat(Player5,XP,161000,SET)
+    Continue()
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  XPGT(Player6,161000)
+  !AreaCheck("OH8000")
+  !AreaCheck("OH9310")
+  Global("OHB_BP2_CAPTURE","GLOBAL",0)
+  Global("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ChangeStat(Player6,XP,161000,SET)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~BALDUR.BCS~ ~EET-inlined/BALDUR-eb.baf~
+
+EXTEND_TOP ~BALDUR.BCS~ ~EET-inlined/DaysPassed-et.baf~
+EXTEND_TOP ~BALDUR25.BCS~ ~EET-inlined/DaysPassed-et.baf~
+
+/////                                                  \\\\\
+///// DPLAYER2.BCS / DPLAYER3.BCS                      \\\\\
+/////                                                  \\\\\
+
 //DPLAYER2.BCS
-//////////////////////////////
-
 COPY_EXISTING ~DPLAYER2.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!InParty(Myself)~
@@ -143,14 +413,115 @@ COPY_EXISTING ~DPLAYER2.BCS~ ~override~
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
-EXTEND_TOP ~DPLAYER2.BCS~ ~EET/modify/baf/dplayer2-et.baf~
-EXTEND_BOTTOM ~DPLAYER2.BCS~ ~EET/modify/baf/dplayer2-eb.baf~
-EXTEND_BOTTOM ~DPLAYER2.BCS~ ~EET/modify/baf/!weapons_shattering.baf~
 
-//////////////////////////////
+<<<<<<<< EET-inlined/DPLAYER2-et.baf
+IF
+  GlobalTimerExpired("EndGame","GLOBAL")
+THEN
+  RESPONSE #100
+    Kill(Player1)
+END
+
+IF
+  GlobalTimerExpired("PoisonParty","GLOBAL")
+  GlobalLT("PoisonWarning","GLOBAL",9)
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
+    IncrementGlobal("PoisonWarning","GLOBAL",1)
+    DisplayString(Myself,11833)  // ~You feel very ill, and you have thrown up your previous meal. Your head is fuzzy, and you are confused as to why you are sick. Then you remember what Lothander had told you. You've been poisoned! Lothander wasn't lying after all, and only he has the cure.~
+END
+
+IF
+  GlobalTimerExpired("PoisonParty2","GLOBAL")
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    Kill(Player6)
+    Kill(Player5)
+    Kill(Player4)
+    Kill(Player3)
+    Kill(Player2)
+    Kill(Player1)
+END
+>>>>>>>>
+
+<<<<<<<< EET-inlined/DPLAYER2-eb.baf
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  !InParty(Myself)
+  OR(5)
+  Name("neera",Myself)
+  Name("dorn",Myself)
+  Name("rasaad",Myself)
+  Name("baeloth",Myself)
+  HappinessGT(Myself,-299)
+THEN
+  RESPONSE #100
+    Dialog(Player1)
+    ChangeAIScript("",DEFAULT)
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  !InParty(Myself)
+  !HappinessGT(Myself,-299)
+  !Name("neera",Myself)
+  !Name("dorn",Myself)
+  !Name("rasaad",Myself)
+  !Name("baeloth",Myself)
+THEN
+  RESPONSE #100
+    VerbalConstant(Myself,UNHAPPY_BREAKING_POINT)
+    Wait(5)
+    EscapeArea()
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  !CharName("Imoen2",Myself)
+  BreakingPoint()
+THEN
+  RESPONSE #100
+    VerbalConstant(Myself,UNHAPPY_BREAKING_POINT)
+    Wait(3)
+    EscapeArea()
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  CheckStat(Myself,0,DEX)
+  See("Kiel")  // ~Kiel the Legion Killer~
+THEN
+  RESPONSE #100
+    ActionOverride("Kiel",DestroySelf())
+    LeaveParty()
+    SetDialogue("KielPC")
+    SetGlobal("KielPC","GLOBAL",1)
+    ChangeAIScript("",DEFAULT)
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3")  // ~Mendas~
+  Exists(Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+END
+>>>>>>>>
+
+EXTEND_TOP ~DPLAYER2.BCS~ ~EET-inlined/DPLAYER2-et.baf~
+EXTEND_BOTTOM ~DPLAYER2.BCS~ ~EET-inlined/DPLAYER2-eb.baf~
+
 //DPLAYER3.BCS
-//////////////////////////////
-
 COPY_EXISTING ~DPLAYER3.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("OHN_NEERA_RENC","GLOBAL",1)~
@@ -163,18 +534,238 @@ COPY_EXISTING ~DPLAYER3.BCS~ ~override~
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
-EXTEND_BOTTOM ~DPLAYER3.BCS~ ~EET/modify/baf/dplayer3-eb.baf~
-EXTEND_BOTTOM ~DPLAYER3.BCS~ ~EET/modify/baf/!weapons_shattering.baf~
 
-//////////////////////////////
-//PLAYER1D.BCS
-//////////////////////////////
+<<<<<<<< EET-inlined/DPLAYER3-eb.baf
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3")  // ~Mendas~
+  Exists(Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+END
+>>>>>>>>
 
-EXTEND_TOP ~PLAYER1D.BCS~ ~EET/modify/baf/player1d-et.baf~
+EXTEND_BOTTOM ~DPLAYER3.BCS~ ~EET-inlined/DPLAYER3-eb.baf~
 
-//////////////////////////////
-//Imoen death variable changes
-//////////////////////////////
+//weapons shattering
+<<<<<<<< EET-inlined/weapons_shattering-eb.baf
+IF
+  Global("%var%","LOCALS",1)
+  Global("ENDOFBG1","GLOBAL",0)
+  InParty(Myself)
+  HasItemEquipedReal("%var%",Myself)
+THEN
+  RESPONSE #50
+    DisplayStringHead(Myself,@3000000)
+    SetGlobal("%var%","LOCALS",0)
+    TakeItemReplace("MISC56_","%var%",Myself)
+  RESPONSE #50
+    SetGlobal("%var%","LOCALS",0)
+    Continue()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH var IN AX1H01 BLUN02 BLUN04 BLUN06 DAGG01 DAGG06 DAGG07 HALB01 SPER01 SW1H01 SW1H04 SW1H07 SW1H12 SW1H17 SW1H20 SW1H43 SW1H46 SW1H48 SW2H01 BEGIN
+	EXTEND_BOTTOM ~DPLAYER2.BCS~ ~EET-inlined/weapons_shattering-eb.baf~ EVALUATE_BUFFER
+	EXTEND_BOTTOM ~DPLAYER3.BCS~ ~EET-inlined/weapons_shattering-eb.baf~ EVALUATE_BUFFER
+END
+                  
+/////                                                  \\\\\
+///// PLAYER1D.BCS                                     \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/PLAYER1D-et.baf
+IF
+  GlobalGT("Chapter","GLOBAL",1)
+  Global("BG1DREAM","GLOBAL",0)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT2_")
+    SetGlobal("BG1DREAM","GLOBAL",2)//just like in BG:EE "DREAM" variable starts at 2
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN101") // Cure Light Wounds
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",1)
+  Global("BG1DREAM","GLOBAL",0)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT2_")
+    SetGlobal("BG1DREAM","GLOBAL",2)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN104") // Larloch's Minor Drain
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",2)
+  Global("BG1DREAM","GLOBAL",2)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT3_")
+    SetGlobal("BG1DREAM","GLOBAL",3)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN101") // Cure Light Wounds
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",2)
+  Global("BG1DREAM","GLOBAL",2)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT3_")
+    SetGlobal("BG1DREAM","GLOBAL",3)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN104") // Larloch's Minor Drain
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",3)
+  Global("BG1DREAM","GLOBAL",3)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT4_")
+    SetGlobal("BG1DREAM","GLOBAL",4)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN102") // Slow Poison
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",3)
+  Global("BG1DREAM","GLOBAL",3)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT4_")
+    SetGlobal("BG1DREAM","GLOBAL",4)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN105") // Horror
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",4)
+  Global("BG1DREAM","GLOBAL",4)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT5_")
+    SetGlobal("BG1DREAM","GLOBAL",5)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN102") // Slow Poison
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",4)
+  Global("BG1DREAM","GLOBAL",4)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT5_")
+    SetGlobal("BG1DREAM","GLOBAL",5)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN105") // Horror
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",5)
+  Global("BG1DREAM","GLOBAL",5)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT6_")
+    SetGlobal("BG1DREAM","GLOBAL",6)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN103") // Draw Upon Holy Might
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",5)
+  Global("BG1DREAM","GLOBAL",5)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT6_")
+    SetGlobal("BG1DREAM","GLOBAL",6)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN106") // Vampiric Touch
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",6)
+  Global("BG1DREAM","GLOBAL",6)
+  ReputationGT(Player1,9)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT7_")
+    SetGlobal("BG1DREAM","GLOBAL",7)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN103") // Draw Upon Holy Might
+    RestParty()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",6)
+  Global("BG1DREAM","GLOBAL",6)
+  ReputationLT(Player1,10)
+  Global("ENDOFBG1","GLOBAL",0)
+  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+THEN
+  RESPONSE #100
+    TextScreen("DRMTXT7_")
+    SetGlobal("BG1DREAM","GLOBAL",7)
+    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
+    AddSpecialAbility("SPIN106") // Vampiric Touch
+    RestParty()
+END
+>>>>>>>>
+
+EXTEND_TOP ~PLAYER1D.BCS~ ~EET-inlined/PLAYER1D-et.baf~
+
+/////                                                  \\\\\
+///// Imoen death variable changes                     \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~CLONROOM.BCS~ ~override~
 	~CUT01.BCS~ ~override~
@@ -193,34 +784,156 @@ COPY_EXISTING ~CLONROOM.BCS~ ~override~
 	END
 BUT_ONLY
 
-//////////////////////////////
-//JAHEIRA.BCS Harpers Call spell added if imported from BG1
-//////////////////////////////
+/////                                                  \\\\\
+///// Jaheira Harpers Call spell                       \\\\\
+/////                                                  \\\\\
 
-EXTEND_BOTTOM ~JAHEIRA.BCS~ ~EET/modify/baf/jaheira-eb.baf~
+<<<<<<<< EET-inlined/JAHEIRA-eb.baf
+IF
+  Global("JaheiraHarpersCall","GLOBAL",0)
+  Global("JaheiraPartyBG1","GLOBAL",1)
+  XPGT(Myself,179999)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraHarpersCall","GLOBAL",1)
+    AddSpecialAbility("SPJA01")
+    Continue()
+END
+>>>>>>>>
 
-//////////////////////////////
-//AR1512 - Imoen Spellhold XP adjustment
-//////////////////////////////
+EXTEND_BOTTOM ~JAHEIRA.BCS~ ~EET-inlined/JAHEIRA-eb.baf~
 
-EXTEND_TOP ~AR1512.BCS~ ~EET/modify/baf/ar1512-et.baf~
+/////                                                  \\\\\
+///// AR1512 (Imoen Spellhold XP adjustment)           \\\\\
+/////                                                  \\\\\
 
-//////////////////////////////
-//AR0304 - Edwin adjustment/spawn
-//////////////////////////////
+<<<<<<<< EET-inlined/AR1512-et.baf
+IF
+  Global("ImoenSpawned","GLOBAL",0)//ImoenSpawned variable name kept for BGT compatibility reasons
+  LevelLT(Protagonist,13)
+  XPLT("Imoen2",400000)
+THEN
+  RESPONSE #100
+    ChangeStat("Imoen2",XP,400000,SET)
+    SetGlobal("ImoenSpawned","GLOBAL",1)
+    Continue()
+END
 
-EXTEND_TOP ~AR0304.BCS~ ~EET/modify/baf/ar0304-et.baf~
+IF
+  Global("ImoenSpawned","GLOBAL",0)
+  LevelGT(Protagonist,13)
+  XPLT("Imoen2",1200000)
+THEN
+  RESPONSE #100
+    ChangeStat("Imoen2",XP,1200000,SET)
+    SetGlobal("ImoenSpawned","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
 
-//////////////////////////////
-//AR0602 - Minsc, Jaheira, Imoen adjustment/spawn
-//////////////////////////////
+EXTEND_TOP ~AR1512.BCS~ ~EET-inlined/AR1512-et.baf~
+
+/////                                                  \\\\\
+///// AR0304 (Edwin adjustment/spawn)                  \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/AR0304-et.baf
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ActionOverride("Edwin",DestroyItem("MISC89_")) // Edwin's amulet
+    GiveItemCreate("CLCK14","Edwin",1,0,0) // Adventurer's Robe
+    GiveItemCreate("DAGG01","Edwin",1,0,0) // Dagger
+    GiveItemCreate("EDWINKEY","Edwin",1,0,0) // Mae'Var's Strongbox Key
+    GiveItemCreate("MISC89","Edwin",1,0,0) // Edwin's Amulet
+    SmallWait(10)
+    ActionOverride("Edwin",FillSlot(SLOT_ARMOR))
+    ActionOverride("Edwin",FillSlot(SLOT_WEAPON))
+    ActionOverride("Edwin",FillSlot(SLOT_AMULET))
+    SmallWait(10)
+    GiveItemCreate("STAF01","Edwin",1,0,0) // Quarterstaff
+    ActionOverride("Edwin",EquipMostDamagingMelee())
+    ActionOverride("Edwin",ChangeAIScript("Edwin",OVERRIDE))
+    ActionOverride("Edwin",ChangeAIScript("wtarsgt",GENERAL))
+    ActionOverride("Edwin",ChangeAIScript("dplayer",DEFAULT))
+    ActionOverride("Edwin",ChangeAIScript("K#IMEDW",RACE))
+    ActionOverride("Edwin",SetDialogue("Edwin"))
+    ActionOverride("Edwin",SetNumTimesTalkedTo(0))
+    ReallyForceSpellRES("K#POREDW","Edwin")
+    SetGlobal("EdwinImport","GLOBAL",1)
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  LevelLT(Player1,9)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin7",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  LevelGT(Player1,8)
+  LevelLT(Player1,11)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin9",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  Level(Player1,11)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin11",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  Level(Player1,12)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin12",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+
+IF
+  Global("EdwinImport","GLOBAL",0)
+  Global("EdwinPartyBG1","GLOBAL",0)
+  LevelGT(Player1,12)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin13",[852.340],4)
+    SetGlobal("EdwinImport","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    ActionOverride("Edwin",MakeGlobal())
+END
+>>>>>>>>
+
+EXTEND_TOP ~AR0304.BCS~ ~EET-inlined/AR0304-et.baf~
+
+/////                                                  \\\\\
+///// AR0602 (Minsc, Jaheira, Imoen adjustment/spawn)  \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~AR0602.BCS~ ~override~
-	/*REPLACE_BCS_BLOCK ~EET/modify/baf/ar0602-rbOld.baf~ ~EET/modify/baf/ar0602-rbNew.baf~
-	COUNT_REGEXP_INSTANCES ~SetCursorState(TRUE)[%newline%]*ActionOverride(Player1,SetPlayerSound(Myself,33347,EXISTANCE5))[%newline%]*MoveViewPoint(\[0\.0\],INSTANT)[%newline%]*SmallWait(10)[%newline%]*StartMovie("BG2INTRO")[%newline%]*SetGlobal("ENDOFBG1","GLOBAL",2)~ num_matches
-	PATCH_IF (num_matches = 0) BEGIN
-		PATCH_FAIL ~ERROR: REPLACE_BCS_BLOCK command failed for %SOURCE_FILESPEC%~//yep, no point to continue the installation if the block has not been replaced
-	END*/
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~SetGlobal("NewGame","AR0602",1)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -260,18 +973,433 @@ COPY_EXISTING ~AR0602.BCS~ ~override~
 		END*/
 	END
 BUT_ONLY
-EXTEND_TOP ~AR0602.BCS~ ~EET/modify/baf/ar0602-et.baf~
-EXTEND_BOTTOM ~AR0602.BCS~ ~EET/modify/baf/ar0602-eb.baf~
 
-//////////////////////////////
-//AR0304 - Viconia adjustment/spawn
-//////////////////////////////
+<<<<<<<< EET-inlined/AR0602-et.baf
+IF
+  Global("IHavePants","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHavePants","GLOBAL",2)
+    SetGlobal("BG1Pantaloons","GLOBAL",1)
+    ActionOverride("Picture1",CreateItem("MISC47",0,0,0))
+    Continue()
+END
 
-EXTEND_BOTTOM ~AR1000.BCS~ ~EET/modify/baf/ar1000-eb.baf~
+IF
+  Global("IHaveRing","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveRing","GLOBAL",2)
+    ActionOverride("Shelf1",CreateItem("ring25",0,0,0))
+    Continue()
+END
 
-//////////////////////////////
-//AR0900 - Dorn adjustment/spawn
-//////////////////////////////
+IF
+  Global("IHaveMoonblade","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveMoonblade","GLOBAL",2)
+    ActionOverride("Picture1",CreateItem("sw1h13",0,0,0))
+    Continue()
+END
+
+IF
+  Global("IHaveBalduran","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveBalduran","GLOBAL",2)
+    ActionOverride("Shelf1",CreateItem("HELM07",0,0,0))
+    Continue()
+END
+
+IF
+  Global("IHaveClaw","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveClaw","GLOBAL",2)
+    ActionOverride("Shelf1",CreateItem("MISC72",0,0,0))
+    Continue()
+END
+
+IF
+  Global("IHaveHorn","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveHorn","GLOBAL",2)
+    ActionOverride("Shelf1",CreateItem("MISC73",10,0,0))
+    Continue()
+END
+
+IF
+  Global("IHaveSecond","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveSecond","GLOBAL",2)
+    ActionOverride("Table1",CreateItem("LEAT03",0,0,0))
+    Continue()
+END
+
+IF
+  Global("IHavePlate","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHavePlate","GLOBAL",2)
+    ActionOverride("Table1",CreateItem("PLAT02",0,0,0))
+    Continue()
+END
+
+IF
+  Global("IHaveMissile","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveMissile","GLOBAL",2)
+    ActionOverride("Table1",CreateItem("LEAT06",0,0,0))
+    Continue()
+END
+
+IF
+  Global("IHaveChain","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("IHaveChain","GLOBAL",2)
+    ActionOverride("Table1",CreateItem("CHAN07",0,0,0))
+    Continue()
+END
+
+IF // rest of the import script for Imoen is done via ar0602-eb.baf
+  Global("K#ImoenImport","AR0602",0)
+  Global("Imoen2PartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#ImoenImport","AR0602",1)
+    ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
+    ActionOverride("Imoen2",ChangeAIScript("Imoen",OVERRIDE))
+    ActionOverride("Imoen2",ChangeAIScript("",GENERAL))
+    ActionOverride("Imoen2",ChangeAIScript("wtasight",DEFAULT))
+    //ActionOverride("Imoen2",ChangeAIScript("K#IMIMO",RACE)) //doesn't work when assigned before "NewGame" cutscene
+    ActionOverride("Imoen2",SetDialog("Imoen10"))
+    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    ActionOverride("Imoen2",CreateItem("Imoenhp1",1,0,0))
+    ActionOverride("Imoen2",FillSlot(SLOT_BELT))
+    Continue()
+END
+
+IF
+  Global("ImoenImport","GLOBAL",0)
+  Global("Imoen2PartyBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ImoenImport","GLOBAL",2)
+    CreateCreature("Imoen10",[3198.2837],6) // Imoen
+    SetGlobal("SPRITE_IS_DEADIMOEN2","GLOBAL",0)
+    ActionOverride("Imoen2",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  Global("JaheiraPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraImport","GLOBAL",1)
+    ReallyForceSpellRES("K#PORJAH","Jaheira")
+    ActionOverride("Jaheira",ChangeAIScript("Jaheira",OVERRIDE))
+    ActionOverride("Jaheira",ChangeAIScript("dplayer",DEFAULT))
+    ActionOverride("Jaheira",ChangeAIScript("K#IMJAH",RACE))
+    ActionOverride("Jaheira",SetDialog("Jaheira"))
+    ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  Global("JaheiraPartyBG1","GLOBAL",0)
+  Dead("Jaheira")
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraImport","GLOBAL",2)
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  Global("JaheiraPartyBG1","GLOBAL",0)
+  !Dead("Jaheira")
+  LevelLT(Player1,8)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraImport","GLOBAL",2)
+    CreateCreature("Jaheir7",[3898.2676],6) // Jaheira
+    SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
+    ActionOverride("Jaheira",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  Global("JaheiraPartyBG1","GLOBAL",0)
+  !Dead("Jaheira")
+  LevelGT(Player1,7)
+  LevelLT(Player1,11)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraImport","GLOBAL",2)
+    CreateCreature("Jaheir8",[3898.2676],6) // Jaheira
+    SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
+    ActionOverride("Jaheira",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  Global("JaheiraPartyBG1","GLOBAL",0)
+  !Dead("Jaheira")
+  Level(Player1,11)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraImport","GLOBAL",2)
+    CreateCreature("Jaheir11",[3898.2676],6) // Jaheira
+    SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
+    ActionOverride("Jaheira",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  Global("JaheiraPartyBG1","GLOBAL",0)
+  !Dead("Jaheira")
+  LevelGT(Player1,11)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraImport","GLOBAL",2)
+    CreateCreature("Jaheir12",[3898.2676],6) // Jaheira
+    SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
+    ActionOverride("Jaheira",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",0)
+  Global("MinscPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("MinscImport","GLOBAL",1)
+    ChangeAlignment("Minsc",CHAOTIC_GOOD)
+    ReallyForceSpellRES("K#PORMIN","Minsc")
+    ActionOverride("Minsc",ChangeAIScript("Minsc",OVERRIDE))
+    ActionOverride("Minsc",ChangeAIScript("minscx",GENERAL))
+    ActionOverride("Minsc",ChangeAIScript("dplayer",DEFAULT))
+    ActionOverride("Minsc",ChangeAIScript("K#IMMIN",RACE))
+    ActionOverride("Minsc",SetDialog("Minsca"))
+    ActionOverride("Minsc",SetNumTimesTalkedTo(0))
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",0)
+  Global("MinscPartyBG1","GLOBAL",0)
+  Dead("Minsc")
+THEN
+  RESPONSE #100
+    SetGlobal("MinscImport","GLOBAL",2)
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",0)
+  Global("MinscPartyBG1","GLOBAL",0)
+  !Dead("Minsc")
+  LevelLT(Player1,8)
+THEN
+  RESPONSE #100
+    SetGlobal("MinscImport","GLOBAL",2)
+    CreateCreature("Minsc7",[4029.2759],6) // Minsc
+    SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
+    ActionOverride("Minsc",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",0)
+  Global("MinscPartyBG1","GLOBAL",0)
+  !Dead("Minsc")
+  Level(Player1,8)
+THEN
+  RESPONSE #100
+    SetGlobal("MinscImport","GLOBAL",2)
+    CreateCreature("Minsc8",[4029.2759],6) // Minsc
+    SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
+    ActionOverride("Minsc",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",0)
+  Global("MinscPartyBG1","GLOBAL",0)
+  !Dead("Minsc")
+  Level(Player1,9)
+THEN
+  RESPONSE #100
+    SetGlobal("MinscImport","GLOBAL",2)
+    CreateCreature("Minsc9",[4029.2759],6) // Minsc
+    SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
+    ActionOverride("Minsc",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",0)
+  Global("MinscPartyBG1","GLOBAL",0)
+  !Dead("Minsc")
+  OR(2)
+    Level(Player1,10)
+    Level(Player1,11)
+THEN
+  RESPONSE #100
+    SetGlobal("MinscImport","GLOBAL",2)
+    CreateCreature("Minsc10",[4029.2759],6) // Minsc
+    SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
+    ActionOverride("Minsc",MakeGlobal())
+    Continue()
+END
+
+IF
+  Global("MinscImport","GLOBAL",0)
+  Global("MinscPartyBG1","GLOBAL",0)
+  !Dead("Minsc")
+  LevelGT(Player1,11)
+THEN
+  RESPONSE #100
+    SetGlobal("MinscImport","GLOBAL",2)
+    CreateCreature("Minsc12",[4029.2759],6) // Minsc
+    SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
+    ActionOverride("Minsc",MakeGlobal())
+    Continue()
+END
+>>>>>>>>
+
+<<<<<<<< EET-inlined/AR0602-eb.baf
+IF // for some reason in BG2:EE race script need to be assigned after "NewGame" cutscene, otherwise it won't last
+  Global("ImoenImport","GLOBAL",0)
+  Global("Imoen2PartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ImoenImport","GLOBAL",1)
+    ActionOverride("Imoen2",ChangeAIScript("K#IMIMO",RACE))
+    ActionOverride("Imoen2",SetDialog("IMOENJ"))
+    Continue()
+END
+
+IF
+  Global("K#ImoenImport","AR0602",0)
+  Global("Imoen2PartyBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#ImoenImport","AR0602",1)
+    ActionOverride("Imoen2",SetDialog("IMOENJ")) //Irenicus Dungeon Imoen has IMOEN2 variable now, so the IMOENJ dialogue need to be set manually
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~AR0602.BCS~ ~EET-inlined/AR0602-et.baf~
+EXTEND_BOTTOM ~AR0602.BCS~ ~EET-inlined/AR0602-eb.baf~
+
+/////                                                  \\\\\
+///// AR1000 (Viconia adjustment/spawn)                \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/AR1000-eb.baf
+IF
+  Global("ViconiaImport","GLOBAL",0)
+  Global("ViconiaPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#PORVIC","Viconia")
+    ActionOverride("Viconia",SetDialogue("VICONI"))
+    ActionOverride("Viconia",SetNumTimesTalkedTo(0))
+    ActionOverride("Viconia",ChangeAIScript("Viconia",OVERRIDE))
+    ActionOverride("Viconia",ChangeAIScript("initrg10",CLASS))
+    ActionOverride("Viconia",ChangeAIScript("VICX",GENERAL))
+    ActionOverride("Viconia",ChangeAIScript("vicx",RACE))
+    ActionOverride("Viconia",ChangeAIScript("K#IMVIC",DEFAULT))
+    SetGlobal("ViconiaImport","GLOBAL",1)
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  LevelLT(Player1,8)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI6",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  Level(Player1,8)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI8",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  OR(2)
+    Level(Player1,9)
+    Level(Player1,10)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI9",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  OR(2)
+    Level(Player1,11)
+    Level(Player1,12)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI11",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+
+IF
+  !Dead("Viconia")
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  Global("ViconiaImport","GLOBAL",0)
+  LevelGT(Player1,12)
+THEN
+  RESPONSE #100
+    SetGlobal("ViconiaImport","GLOBAL",1)
+    CreateCreature("VICONI13",[1821.1081],11)
+    SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
+    ActionOverride("Viconia",MakeGlobal())
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~AR1000.BCS~ ~EET-inlined/AR1000-eb.baf~
+
+/////                                                  \\\\\
+///// AR0900 (Dorn adjustment/spawn)                   \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~AR0900.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -335,13 +1463,44 @@ COPY_EXISTING ~AR0900.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_BOTTOM ~AR0900.BCS~ ~EET/modify/baf/ar0900-eb.baf~
 
-//////////////////////////////
-//AR2000, OHR_JOIN - Rasaad spawnpoint script in AR2000
-//////////////////////////////
+<<<<<<<< EET-inlined/AR0900-eb.baf
+IF
+  Global("OHH_DORN_INIT","ar0900",0)
+  Global("DornImport","GLOBAL",0)
+  Global("DornPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    GiveItemCreate("HELM01","DORN",1,0,0) // Helmet
+    GiveItemCreate("PLAT01","DORN",1,0,0) // Plate Mail
+    GiveItemCreate("SW2HD1","DORN",1,0,0) // Two-Handed Sword
+    SmallWait(10)
+    ActionOverride("DORN",FillSlot(SLOT_HELMET))
+    ActionOverride("DORN",FillSlot(SLOT_ARMOR))
+    ActionOverride("DORN",FillSlot(SLOT_WEAPON))
+    SmallWait(10)
+    ActionOverride("DORN",EquipMostDamagingMelee())
+    ActionOverride("DORN",ChangeAIScript("DORN",OVERRIDE))
+    ActionOverride("DORN",ChangeAIScript("",GENERAL))
+    ActionOverride("DORN",ChangeAIScript("",DEFAULT))
+    ActionOverride("DORN",ChangeAIScript("K#IMDOR",RACE))
+    ActionOverride("DORN",SetDialogue("DORN"))
+    ActionOverride("DORN",SetNumTimesTalkedTo(0))
+    //ReallyForceSpellRES("K#PORDOR","DORN")
+    SetGlobal("DornImport","GLOBAL",1)
+    SetGlobal("OHH_DORN_INIT","ar0900",1)
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~AR0900.BCS~ ~EET-inlined/AR0900-eb.baf~
+
+/////                                                  \\\\\
+///// AR2000, OHR_JOIN (Rasaad adjustment/spawn)       \\\\\
+/////                                                  \\\\\
 
 //the CreateCreature("RASAAD8",[1550.1368],S) in AR2000.BCS is used only for OHRCUT01.BCS. Real spawning is done via OHR_JOIN.BCS
+
+//AR2000.BCS
 COPY_EXISTING ~AR2000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HasDLC("Rasaad")~
@@ -355,8 +1514,45 @@ COPY_EXISTING ~AR2000.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_BOTTOM ~AR2000.BCS~ ~EET/modify/baf/ar2000-eb.baf~
 
+<<<<<<<< EET-inlined/AR2000-eb.baf
+IF
+  HasDLC("Rasaad")
+  Global("RasaadPartyBG1","GLOBAL",1)
+  Global("OHR_SPAWN","AR2000",0)
+THEN
+  RESPONSE #100
+    SetGlobal("OHR_SPAWN","AR2000",1)
+    CreateCreature("OHRTREYA",[1600.1435],NNW)
+    CreateCreature("OHRSSM01",[1486.1435],NE)
+END
+
+IF
+  Global("RasaadImport","GLOBAL",0)
+  Global("RasaadPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    GiveItemCreate("RSBRAC","RASAAD",1,0,0) // Glimmering Bands
+    GiveItemCreate("RSBOOT","RASAAD",1,0,0) // Moonlight Walkers
+    SmallWait(10)
+    ActionOverride("RASAAD",FillSlot(SLOT_GAUNTLETS))
+    ActionOverride("RASAAD",FillSlot(SLOT_BOOTS))
+    SmallWait(10)
+    ActionOverride("RASAAD",EquipMostDamagingMelee())
+    ActionOverride("RASAAD",ChangeAIScript("RASAAD",OVERRIDE))
+    ActionOverride("RASAAD",ChangeAIScript("",GENERAL))
+    ActionOverride("RASAAD",ChangeAIScript("WTASIGHT",DEFAULT))
+    ActionOverride("RASAAD",ChangeAIScript("K#IMRAS",RACE))
+    ActionOverride("RASAAD",SetDialogue("RASAAD"))
+    ActionOverride("RASAAD",SetNumTimesTalkedTo(0))
+    //ReallyForceSpellRES("K#PORRAS","RASAAD")
+    SetGlobal("RasaadImport","GLOBAL",1)
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~AR2000.BCS~ ~EET-inlined/AR2000-eb.baf~
+
+//OHR_JOIN.BCS
 COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("OHR_PLOT","GLOBAL",0)~
@@ -431,11 +1627,25 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_BOTTOM ~OHR_JOIN.BCS~ ~EET/modify/baf/ohr_join-eb.baf~
 
-//////////////////////////////
-//AR2800, CUT100A, CUT100B - delay ToB
-//////////////////////////////
+<<<<<<<< EET-inlined/OHR_JOIN-eb.baf
+IF
+  Global("OHR_PLOT","GLOBAL",0)
+  !InMyArea("RASAAD")  // RASAAD
+  !InPartyAllowDead("RASAAD")  // RASAAD
+  !Dead("RASAAD")  // RASAAD
+THEN
+  RESPONSE #100
+    //ActionOverride("RASAAD",MoveBetweenAreas("AR2000",[1550.1368],S))
+    MoveGlobal("AR2000","RASAAD",[1550.1368])
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~OHR_JOIN.BCS~ ~EET-inlined/OHR_JOIN-eb.baf~
+
+/////                                                  \\\\\
+///// AR2800, CUT100A, CUT100B (delay ToB)             \\\\\
+/////                                                  \\\\\
 
 //after Suldanesselar ceremony the party will be moved outside Suldanesselar (to AR2600)
 COPY_EXISTING ~CUT100A.BCS~ ~override~
@@ -448,11 +1658,28 @@ COPY_EXISTING ~CUT100A.BCS~ ~override~
 	END
 
 //entering Suldanesselar again will start ToB expansion
-EXTEND_BOTTOM ~AR2800.BCS~ ~EET/modify/baf/ar2800-eb.baf~
+<<<<<<<< EET-inlined/AR2800-eb.baf
+IF
+  Global("ENDOFBG2","GLOBAL",1)
+THEN
+  RESPONSE #100
+    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
+    FadeToColor([30.0],0)
+    Wait(2)
+    SetGlobal("ENDOFBG2","GLOBAL",2)
+    StartMovie("INTRO")
+    Wait(1)
+    MultiPlayerSync()
+    Wait(1)
+    MoveToExpansion()
+END
+>>>>>>>>
 
-//////////////////////////////
-//AR4000 - ToB starting location (Spirit Heads)
-//////////////////////////////
+EXTEND_BOTTOM ~AR2800.BCS~ ~EET-inlined/AR2800-eb.baf~
+
+/////                                                  \\\\\
+///// AR4000 (ToB starting location - Spirit Heads)    \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~AR4000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -481,57 +1708,109 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 	END
 BUT_ONLY
 
+<<<<<<<< EET-inlined/AR4000-et.baf
+IF
+  Global("TurnDay","AR4000",0)
+  Global("ENDOFBG1","GLOBAL",0) //New Game started in ToB
+THEN
+  RESPONSE #100
+    TakePartyItem("K#TELTUT")
+    DestroyItem("K#TELTUT")
+    TakePartyItem("K#TELBG2")
+    DestroyItem("K#TELBG2")
+    SetGlobal("SPRITE_IS_DEADYoshimo","GLOBAL",1)
+    SetGlobal("AjantisSummoned","GLOBAL",2)
+    SetGlobal("AloraSummoned","GLOBAL",2)
+    SetGlobal("BaelothSummoned","GLOBAL",2)
+    SetGlobal("BranwenSummoned","GLOBAL",2)
+    SetGlobal("CoranSummoned","GLOBAL",2)
+    SetGlobal("DynaheirSummoned","GLOBAL",2)
+    SetGlobal("EldothSummoned","GLOBAL",2)
+    SetGlobal("FaldornSummoned","GLOBAL",2)
+    SetGlobal("GarrickSummoned","GLOBAL",2)
+    SetGlobal("KagainSummoned","GLOBAL",2)
+    SetGlobal("KhalidSummoned","GLOBAL",2)
+    SetGlobal("KivanSummoned","GLOBAL",2)
+    SetGlobal("MontaronSummoned","GLOBAL",2)
+    SetGlobal("QuayleSummoned","GLOBAL",2)
+    SetGlobal("SafanaSummoned","GLOBAL",2)
+    SetGlobal("SharTeelSummoned","GLOBAL",2)
+    SetGlobal("SkieSummoned","GLOBAL",2)
+    SetGlobal("TiaxSummoned","GLOBAL",2)
+    SetGlobal("YeslickSummoned","GLOBAL",2)
+    SetGlobal("XanSummoned","GLOBAL",2)
+    SetGlobal("XzarSummoned","GLOBAL",2)
+    SetGlobal("NEWGAME_TOB","GLOBAL",1) //used to determinate if NPCs not met in BG2 should be spawned
+    Continue()
+END
+>>>>>>>>
+
+<<<<<<<< EET-inlined/AR4000-eb.baf
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%var%Summoned","GLOBAL",0)
+  Global("%DV%PartyBG1","GLOBAL",0)
+  Global("%DV%PartyBG2","GLOBAL",0)
+  !InMyArea("%DV%")
+THEN
+  RESPONSE #100
+    SetGlobal("%var%Summoned","GLOBAL",2)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~AR4000.BCS~ ~EET-inlined/AR4000-et.baf~
+
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2BCS_DVvar" BEGIN
 	//BG2 NPCs
-	"Aerie" => "Aerie"
-	"Minsc" => "Minsc"
-	"Jaheira" => "Jaheira"
-	"Cernd" => "Cernd"
-	"Anomen" => "Anomen"
-	"Edwin" => "Edwin"
-	"HaerDalis" => "HaerDalis"
-	"Imoen2" => "Imoen"
-	"Jan" => "Jan"
-	"Keldorn" => "Keldorn"
-	"Korgan" => "Korgan"
-	"Mazzy" => "Mazzy"
-	"Nalia" => "Nalia"
-	"Valygar" => "Valygar"
-	"Viconia" => "Viconia"
-	"Yoshimo" => "Yoshimo"
-	"Dorn" => "OHD_Dorn"
-	"Hexxat" => "OHH_Hexxat"
-	"Neera" => "OHN_Neera"
-	"Rasaad" => "OHR_Rasaad"
-	"Wilson" => "OHR_Wilson"
+	Aerie => Aerie
+	Minsc => Minsc
+	Jaheira => Jaheira
+	Cernd => Cernd
+	Anomen => Anomen
+	Edwin => Edwin
+	HaerDalis => HaerDalis
+	Imoen2 => Imoen
+	Jan => Jan
+	Keldorn => Keldorn
+	Korgan => Korgan
+	Mazzy => Mazzy
+	Nalia => Nalia
+	Valygar => Valygar
+	Viconia => Viconia
+	Yoshimo => Yoshimo
+	Dorn => OHD_Dorn
+	Hexxat => OHH_Hexxat
+	Neera => OHN_Neera
+	Rasaad => OHR_Rasaad
+	Wilson => OHR_Wilson
 	//BG1 NPCs
-	"Ajantis" => "Ajantis"
-	"Alora" => "Alora"
-	"Baeloth" => "Baeloth"
-	"Branwen" => "Branwen"
-	"Coran" => "Coran"
-	"Dynaheir" => "Dynaheir"
-	"Eldoth" => "Eldoth"
-	"Faldorn" => "Faldorn"
-	"Garrick" => "Garrick"
-	"Kagain" => "Kagain"
-	"Khalid" => "Khalid"
-	"Kivan" => "Kivan"
-	"Montaron" => "Montaron"
-	"Quayle" => "Quayle"
-	"Safana" => "Safana"
-	"SharTeel" => "SharTeel"
-	"Skie" => "Skie"
-	"Tiax" => "Tiax"
-	"Xan" => "Xan"
-	"Xzar" => "Xzar"
-	"Yeslick" => "Yeslick"
+	Ajantis => Ajantis
+	Alora => Alora
+	Baeloth => Baeloth
+	Branwen => Branwen
+	Coran => Coran
+	Dynaheir => Dynaheir
+	Eldoth => Eldoth
+	Faldorn => Faldorn
+	Garrick => Garrick
+	Kagain => Kagain
+	Khalid => Khalid
+	Kivan => Kivan
+	Montaron => Montaron
+	Quayle => Quayle
+	Safana => Safana
+	SharTeel => SharTeel
+	Skie => Skie
+	Tiax => Tiax
+	Xan => Xan
+	Xzar => Xzar
+	Yeslick => Yeslick
 END
 
-EXTEND_TOP ~AR4000.BCS~ ~EET/modify/baf/ar4000-et.baf~
 ACTION_PHP_EACH "table_BG2BCS_DVvar" AS "DV" => "var" BEGIN
 	//disable all NPCs ToB import if the have not been in party
-	EXTEND_BOTTOM ~AR4000.BCS~ ~EET/modify/baf/ar4000-eb.baf~ EVALUATE_BUFFER
+	EXTEND_BOTTOM ~AR4000.BCS~ ~EET-inlined/AR4000-eb.baf~ EVALUATE_BUFFER
 	//remove BG1 party check from NPCs introduced in BG2
 	COPY_EXISTING ~AR4000.BCS~ ~override~
 		PATCH_IF (("%DV%" STRING_EQUAL_CASE "Aerie")=1)
@@ -561,9 +1840,55 @@ ACTION_PHP_EACH "table_BG2BCS_DVvar" AS "DV" => "var" BEGIN
 	BUT_ONLY
 END
 
-//////////////////////////////
-//AR4500 - Pocket Plane
-//////////////////////////////
+/////                                                  \\\\\
+///// AR4500 (Pocket Plane)                            \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/AR4500-eb.baf
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%var%Summoned","GLOBAL",1)
+  Global("%var%SpawnPlane","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CreateVisualEffect("SPPORTAL",[1999.1218])
+    Wait(2)
+    MoveGlobal("AR4500","%DV%",[1999.1218])
+    ActionOverride("%DV%",Face(S))
+	ActionOverride("%DV%",SetNumTimesTalkedTo(0))
+    ActionOverride("%DV%",JoinParty())
+	MoveToExpansion()
+	SetGlobal("%var%Summoned","GLOBAL",-1)
+    //Continue()
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%var%Summoned","GLOBAL",-1)
+  Global("%var%SpawnPlane","GLOBAL",0)
+  XPLT("%DV%",2500000)
+THEN
+  RESPONSE #100
+    ActionOverride("%DV%",ChangeStat(Myself,XP,2500000,SET))
+    Continue()
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%var%Summoned","GLOBAL",-1)
+  Global("%var%SpawnPlane","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride("%DV%",LeaveParty())
+    ActionOverride("%DV%",SetBeenInPartyFlags())
+	ActionOverride("%DV%",ChangeAIScript("%script%",OVERRIDE))
+    ActionOverride("%DV%",SetDialog("%dialog%"))
+    ActionOverride("%DV%",SetGlobal("KickedOut","LOCALS",0))
+    SetGlobal("%var%SpawnPlane","GLOBAL",1)
+	SetGlobal("%var%Summoned","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
 
 <<<<<<<< EET-inlined/K#AR4500.tbl
 Aerie		Aerie		AERI25		AERIE25A
@@ -632,7 +1957,7 @@ COPY - ~EET-inlined/K#AR4500.tbl~ ~EET-inlined/K#AR4500.tbl~
 					END
 				END
 			//import NPC instead of creating ToB version if NPC has been in BG2 party
-			EXTEND_BOTTOM ~AR4500.BCS~ ~EET/modify/baf/ar4500-eb.baf~ EVALUATE_BUFFER
+			EXTEND_BOTTOM ~AR4500.BCS~ ~EET-inlined/AR4500-eb.baf~ EVALUATE_BUFFER
 		END
 	END
 
@@ -641,9 +1966,9 @@ COPY_EXISTING ~AR4500.BCS~ ~override~
 		REPLACE_TEXTUALLY ~.*replaceMe.*~ ~~
 	END
 
-//////////////////////////////
-//CUT205B - Sarevok spawn cutscene
-//////////////////////////////
+/////                                                  \\\\\
+///// CUT205B (Sarevok spawn cutscene)                 \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~CUT205B.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -661,9 +1986,9 @@ COPY_EXISTING ~CUT205B.BCS~ ~override~
 	END
 BUT_ONLY
 
-//////////////////////////////
-//OH6000 - Neera adjustment/spawn
-//////////////////////////////
+/////                                                  \\\\\
+///// OH6000 (Neera adjustment/spawn)                  \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~OH6000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -739,11 +2064,38 @@ COPY_EXISTING ~OH6000.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~OH6000.BCS~ ~EET/modify/baf/oh6000-et.baf~
 
-//////////////////////////////
-//CUT01.BCS - Imoen fluid transition between Irenicus Dungeon and Spellhold 
-//////////////////////////////
+<<<<<<<< EET-inlined/OH6000-et.baf
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  Global("NeeraImport","GLOBAL",0)
+  Global("NeeraPartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    GiveItemCreate("NEBELT01","NEERA",1,0,0) // Adoy's Belt
+    GiveItemCreate("STAFN1","NEERA",1,0,0) // Quarterstaff +2
+    SmallWait(10)
+    ActionOverride("NEERA",FillSlot(SLOT_BELT))
+    ActionOverride("NEERA",FillSlot(SLOT_WEAPON))
+    SmallWait(10)
+    ActionOverride("NEERA",EquipMostDamagingMelee())
+    ActionOverride("NEERA",ChangeAIScript("NEERA",OVERRIDE))
+    ActionOverride("NEERA",ChangeAIScript("",GENERAL))
+    ActionOverride("NEERA",ChangeAIScript("WTARSGT",DEFAULT))
+    ActionOverride("NEERA",ChangeAIScript("K#IMNEE",RACE))
+    ActionOverride("NEERA",SetDialogue("NEERA"))
+    ActionOverride("NEERA",SetNumTimesTalkedTo(0))
+    //ReallyForceSpellRES("K#PORNEE","NEERA")
+    SetGlobal("NeeraImport","GLOBAL",1)
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+END
+>>>>>>>>
+
+EXTEND_TOP ~OH6000.BCS~ ~EET-inlined/OH6000-et.baf~
+
+/////                                                  \\\\\
+///// CUT01 (Imoen fluid transition to Spellhold)      \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~CUT01.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -776,9 +2128,9 @@ COPY_EXISTING ~CUT01.BCS~ ~override~
 	END
 BUT_ONLY
 
-///////////////////////////////////////////////////////
-//Files existing in BG2:EE and BG:EE, also used in BG2:EE
-///////////////////////////////////////////////////////
+/////                                                  \\\\\
+/////existing in BG2:EE and BG:EE, also used in BG2:EE \\\\\
+/////                                                  \\\\\
 
 //different but no changes needed?:
 //CTCK.BCS
@@ -788,6 +2140,7 @@ BUT_ONLY
 //TROLIC01.BCS
 //WTATTWAT.BCS
 
+//AMNISE.BCS
 COPY_EXISTING ~AMNISE.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~NumberOfTimesTalkedTo(0)~
@@ -802,6 +2155,7 @@ COPY_EXISTING ~AMNISE.BCS~ ~override~
 	END
 BUT_ONLY
 
+//ANKHEG.BCS
 COPY_EXISTING ~ANKHEG.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
@@ -814,8 +2168,8 @@ COPY_EXISTING ~ANKHEG.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~ANKHEG.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 
+//BALOR01.BCS
 /*COPY_EXISTING ~BALOR01.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~ForceSpell(LastSeenBy,WIZARD_REMOVE_MAGIC)~
@@ -829,6 +2183,7 @@ EXTEND_TOP ~ANKHEG.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 	END
 BUT_ONLY*/
 
+//BEAR.BCS
 COPY_EXISTING ~BEAR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!See(\[PC\.0\.0\.CLERIC_RANGER\])~
@@ -851,9 +2206,30 @@ COPY_EXISTING ~BEAR.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~BEAR.BCS~ ~EET/modify/baf/bear-et.baf~
-EXTEND_TOP ~BEAR.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 
+<<<<<<<< EET-inlined/BEAR-et.baf
+IF
+  Range([GOODCUTOFF],7)
+  Allegiance(Myself,NEUTRAL)
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  AttackedBy([ANYONE],DEFAULT)
+  Allegiance(Myself,NEUTRAL)
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+>>>>>>>>
+
+EXTEND_TOP ~BEAR.BCS~ ~EET-inlined/BEAR-et.baf~
+
+//CBEAR.BCS
 COPY_EXISTING ~CBEAR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),75)~
@@ -867,11 +2243,43 @@ COPY_EXISTING ~CBEAR.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~CCRAWLER.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-EXTEND_TOP ~CCRAWLER.BCS~ ~EET/modify/baf/ccrawler-et.baf~
+//CCRAWLER.BCS
+<<<<<<<< EET-inlined/CCRAWLER-et.baf
+IF
+  AreaCheck("FH0226")
+  Dead("SewerOgre")  // SewerOgre
+  Allegiance(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,ENEMY)
+END
 
-EXTEND_TOP ~CDRYAD.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
+IF
+  AreaCheck("FH0226")
+  See("SewerOgre")  // SewerOgre
+  !Dead("SewerOgre")  // SewerOgre
+  Allegiance("SewerOgre",NEUTRAL)  // SewerOgre
+  Allegiance(Myself,ENEMY)
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,NEUTRAL)
+END
 
+IF
+  AreaCheck("FH0226")
+  See("SewerOgre")  // SewerOgre
+  !Dead("SewerOgre")  // SewerOgre
+  Allegiance("SewerOgre",ENEMY)  // SewerOgre
+  Allegiance(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    ChangeEnemyAlly(Myself,ENEMY)
+END
+>>>>>>>>
+
+EXTEND_TOP ~CCRAWLER.BCS~ ~EET-inlined/CCRAWLER-et.baf~
+
+//CUTTUTOR.BCS
 COPY_EXISTING ~CUTTUTOR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~EndCutSceneMode()~
@@ -886,6 +2294,7 @@ COPY_EXISTING ~CUTTUTOR.BCS~ ~override~
 	END
 BUT_ONLY
 
+//DEMGLASU.BCS
 COPY_EXISTING ~DEMGLASU.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		/*SPRINT textToReplace ~ForceSpell(LastSeenBy(Myself),WIZARD_REMOVE_MAGIC)~
@@ -909,6 +2318,7 @@ COPY_EXISTING ~DEMGLASU.BCS~ ~override~
 	END
 BUT_ONLY
 
+//DEMNABSU.BCS
 COPY_EXISTING ~DEMNABSU.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~ForceSpell(LastSeenBy(Myself),0)~
@@ -922,6 +2332,7 @@ COPY_EXISTING ~DEMNABSU.BCS~ ~override~
 	END
 BUT_ONLY
 
+//DEMPIT.BCS
 /*COPY_EXISTING ~DEMPIT.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~ReallyForceSpell(LastSeenBy(Myself),WIZARD_REMOVE_MAGIC)~
@@ -935,6 +2346,7 @@ BUT_ONLY
 	END
 BUT_ONLY*/
 
+//DEMPITSU.BCS
 /*COPY_EXISTING ~DEMPITSU.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~ForceSpell(LastSeenBy(Myself),WIZARD_REMOVE_MAGIC)~
@@ -948,6 +2360,7 @@ BUT_ONLY*/
 	END
 BUT_ONLY*/
 
+//DEMSUC.BCS
 COPY_EXISTING ~DEMSUC.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),30)~
@@ -961,8 +2374,7 @@ COPY_EXISTING ~DEMSUC.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~DIREWOLF.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
+//ETTERCAP.BCS
 COPY_EXISTING ~ETTERCAP.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~See(NearestEnemyOf(Myself))[%newline%]THEN~
@@ -977,8 +2389,8 @@ THEN~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~ETTERCAP.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 
+//FIGHTER4.BCS
 COPY_EXISTING ~FIGHTER4.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
@@ -992,6 +2404,7 @@ COPY_EXISTING ~FIGHTER4.BCS~ ~override~
 	END
 BUT_ONLY
 
+//GBASILSK.BCS
 COPY_EXISTING ~GBASILSK.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
@@ -1004,8 +2417,8 @@ COPY_EXISTING ~GBASILSK.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~GBASILSK.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 
+//GENSHY.BCS
 COPY_EXISTING ~GENSHY.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),100)~
@@ -1019,6 +2432,7 @@ COPY_EXISTING ~GENSHY.BCS~ ~override~
 	END
 BUT_ONLY
 
+//GIBBER.BCS
 COPY_EXISTING ~GIBBER.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),75)~
@@ -1031,13 +2445,19 @@ COPY_EXISTING ~GIBBER.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~GIBBER.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 
-EXTEND_TOP ~GNOLLF.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
-EXTEND_TOP ~HAMA.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
-EXTEND_TOP ~HOBGOBF.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
+//INITDLG.BCS, INITDLG2.BCS, INITMAIN.BCS
+<<<<<<<< EET-inlined/INITx-et.baf
+IF
+  See([PC])
+  AttackedBy([GOODCUTOFF],DEFAULT)
+  Allegiance(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    SmallWait(5)
+    Enemy()
+END
+>>>>>>>>
 
 COPY_EXISTING ~INITDLG.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -1052,7 +2472,8 @@ COPY_EXISTING ~INITDLG.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~INITDLG.BCS~ ~EET/modify/baf/initdlg&initdlg2&initmain-et.baf~
+
+EXTEND_TOP ~INITDLG.BCS~ ~EET-inlined/INITx-et.baf~
 
 COPY_EXISTING ~INITDLG2.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -1067,7 +2488,8 @@ COPY_EXISTING ~INITDLG2.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~INITDLG2.BCS~ ~EET/modify/baf/initdlg&initdlg2&initmain-et.baf~
+
+EXTEND_TOP ~INITDLG2.BCS~ ~EET-inlined/INITx-et.baf~
 
 COPY_EXISTING ~INITMAIN.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -1082,10 +2504,10 @@ COPY_EXISTING ~INITMAIN.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~INITMAIN.BCS~ ~EET/modify/baf/initdlg&initdlg2&initmain-et.baf~
 
-EXTEND_TOP ~KOBOLDF.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
+EXTEND_TOP ~INITMAIN.BCS~ ~EET-inlined/INITx-et.baf~
 
+//LBASILSK.BCS
 COPY_EXISTING ~LBASILSK.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
@@ -1098,8 +2520,8 @@ COPY_EXISTING ~LBASILSK.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~LBASILSK.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 
+//MAGE1.BCS
 COPY_EXISTING ~MAGE1.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_ARMOR)~
@@ -1114,8 +2536,10 @@ COPY_EXISTING ~MAGE1.BCS~ ~override~
 	END
 BUT_ONLY
 
+//MAGE2.BCS
 COPY_EXISTING ~MAGE2.BCS~ ~override/BG2MAGE2.BCS~//compatibility with BGT mods, used only by GARRICK.cre in BG2:EE
 
+//MAGE3.BCS
 COPY_EXISTING ~MAGE3.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_GHOST_ARMOR)~
@@ -1130,6 +2554,7 @@ COPY_EXISTING ~MAGE3.BCS~ ~override~
 	END
 BUT_ONLY
 
+//MAGE4.BCS
 COPY_EXISTING ~MAGE4.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
@@ -1145,6 +2570,7 @@ COPY_EXISTING ~MAGE4.BCS~ ~override~
 	END
 BUT_ONLY
 
+//MAGE5.BCS
 COPY_EXISTING ~MAGE5.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
@@ -1159,6 +2585,7 @@ COPY_EXISTING ~MAGE5.BCS~ ~override~
 	END
 BUT_ONLY
 
+//MAGE6.BCS
 COPY_EXISTING ~MAGE6.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_SHADOW_DOOR)~
@@ -1174,6 +2601,7 @@ COPY_EXISTING ~MAGE6.BCS~ ~override~
 	END
 BUT_ONLY
 
+//MAGE7.BCS
 COPY_EXISTING ~MAGE7.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
@@ -1217,6 +2645,7 @@ COPY_EXISTING ~MAGE7.BCS~ ~override~
 	END
 BUT_ONLY
 
+//MAGE8.BCS
 COPY_EXISTING ~MAGE8.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
@@ -1242,6 +2671,7 @@ COPY_EXISTING ~MAGE8.BCS~ ~override~
 	END
 BUT_ONLY
 
+//NISHRU01.BCS
 /*COPY_EXISTING ~NISHRU01.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~SpellCastOnMe(\[ANYONE\],WIZARD_REMOVE_MAGIC)~
@@ -1255,8 +2685,7 @@ BUT_ONLY
 	END
 BUT_ONLY*/
 
-EXTEND_TOP ~OGRE.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
+//PREY.BCS
 COPY_EXISTING ~PREY.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),15)~
@@ -1270,12 +2699,7 @@ COPY_EXISTING ~PREY.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~PRIEST1.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
-EXTEND_TOP ~PRIEST2.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
-EXTEND_TOP ~PRIEST3.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
+//PRIEST4.BCS
 COPY_EXISTING ~PRIEST4.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),15)~
@@ -1288,14 +2712,71 @@ COPY_EXISTING ~PRIEST4.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~PRIEST4.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
 
-EXTEND_TOP ~PRIEST5.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
+//QUASIT01.BCS
+<<<<<<<< EET-inlined/QUASIT01-et.baf
+IF
+  See(NearestEnemyOf(Myself))
+  !GlobalTimerNotExpired("Prep","LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("Prep","LOCALS",1000)
+    ReallyForceSpell(Myself,WIZARD_LUCK)
+    ReallyForceSpell(Myself,WIZARD_SHIELD)
+END
 
-EXTEND_TOP ~PSPIDER.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
+IF
+  See(NearestEnemyOf(Myself))
+  !HasBounceEffects(LastSeenBy(Myself))
+  !GlobalTimerNotExpired("Barrage","LOCALS")
+  RandomNum(2,1)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_MELF_ACID_ARROW)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_DEAFNESS)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_MAGIC_MISSILE)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_LARLOCH_MINOR_DRAIN)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_CHROMATIC_ORB)
+  RESPONSE #100
+    SetGlobalTimer("Barrage","LOCALS",12)
+    ForceSpell(LastSeenBy(Myself),WIZARD_RAY_OF_ENFEEBLEMENT)
+END
 
-EXTEND_TOP ~QUASIT01.BCS~ ~EET/modify/baf/quasit01-et.baf~
+IF
+  See(NearestEnemyOf(Myself))
+  Range(NearestEnemyOf(Myself),10)
+THEN
+  RESPONSE #100
+    AttackOneRound(NearestEnemyOf(Myself))
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+  RESPONSE #100
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+END
 
+IF
+  See(NearestEnemyOf(Myself))
+  !Range(NearestEnemyOf(Myself),10)
+THEN
+  RESPONSE #100
+    AttackOneRound(NearestEnemyOf(Myself))
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+  RESPONSE #50
+    RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)
+END
+>>>>>>>>
+
+EXTEND_TOP ~QUASIT01.BCS~ ~EET-inlined/QUASIT01-et.baf~
+
+//RUNENEMY.BCS
 COPY_EXISTING ~RUNENEMY.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),30)~
@@ -1319,8 +2800,42 @@ COPY_EXISTING ~RUNENEMY.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~RUNENEMY.BCS~ ~EET/modify/baf/runenemy-et.baf~
 
+<<<<<<<< EET-inlined/RUNENEMY-et.baf
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  Detect([PC])
+  See([ENEMY])
+  Gender(Myself,MALE)
+  General(Myself,HUMANOID)
+  !Allegiance(Myself,ENEMY)
+THEN
+  RESPONSE #10
+    PlaySound("EDWIN43_")
+    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
+  RESPONSE #90
+    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  Detect([PC])
+  See([ENEMY])
+  Gender(Myself,FEMALE)
+  General(Myself,HUMANOID)
+  !Allegiance(Myself,ENEMY)
+THEN
+  RESPONSE #10
+    PlaySound("FCHIL05_")
+    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
+  RESPONSE #90
+    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
+END
+>>>>>>>>
+
+EXTEND_TOP ~RUNENEMY.BCS~ ~EET-inlined/RUNENEMY-et.baf~
+
+//SEEENEMY.BCS
 COPY_EXISTING ~SEEENEMY.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Allegiance(Myself,ENEMY)~
@@ -1345,6 +2860,7 @@ COPY_EXISTING ~SEEENEMY.BCS~ ~override~
 	END
 BUT_ONLY
 
+//SHADFI02.BCS
 COPY_EXISTING ~SHADFI02.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~See(NearestEnemyOf(Myself))~
@@ -1359,6 +2875,7 @@ COPY_EXISTING ~SHADFI02.BCS~ ~override~
 	END
 BUT_ONLY
 
+//SIRSPELL.BCS
 COPY_EXISTING ~SIRSPELL.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
@@ -1374,12 +2891,7 @@ COPY_EXISTING ~SIRSPELL.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~WARDOG.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
-EXTEND_TOP ~WDARSGT.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
-EXTEND_TOP ~WDASIGHT.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
+//WDRUNSGT.BCS
 COPY_EXISTING ~WDRUNSGT.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),150)~
@@ -1393,10 +2905,7 @@ COPY_EXISTING ~WDRUNSGT.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~WILDDOG.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
-EXTEND_TOP ~WTARSGT.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-
+//WTASIGHT.BCS
 COPY_EXISTING ~WTASIGHT.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~See(NearestEnemyOf(Myself))~
@@ -1420,9 +2929,20 @@ COPY_EXISTING ~WTASIGHT.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-EXTEND_TOP ~WTASIGHT.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
-EXTEND_BOTTOM ~WTASIGHT.BCS~ ~EET/modify/baf/wtasight-eb.baf~
 
+<<<<<<<< EET-inlined/WTASIGHT-eb.baf
+IF
+  ActionListEmpty()
+  See(NearestEnemyOf(Myself))
+THEN
+  RESPONSE #100
+    MoveToObject(LastSeenBy(Myself))
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~WTASIGHT.BCS~ ~EET-inlined/WTASIGHT-eb.baf~
+
+//WTRUNSGT.BCS
 COPY_EXISTING ~WTRUNSGT.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),150)~
@@ -1444,6 +2964,7 @@ COPY_EXISTING ~WTRUNSGT.BCS~ ~override~
 	END
 BUT_ONLY
 
+//WTRUNWAT.BCS
 COPY_EXISTING ~WTRUNWAT.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),150)~
@@ -1457,6 +2978,19 @@ COPY_EXISTING ~WTRUNWAT.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~WYVERN.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
+/////                                                  \\\\\
+///// STATE_PANIC                                      \\\\\
+/////                                                  \\\\\
 
-EXTEND_TOP ~XVART.BCS~ ~EET/modify/baf/!STATE_PANIC.baf~
+<<<<<<<< EET-inlined/STATE_PANIC-et.baf
+IF
+  StateCheck(Myself,STATE_PANIC)
+THEN
+  RESPONSE #100
+    RandomWalkContinuous()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH script IN ANKHEG BEAR CCRAWLER CDRYAD DIREWOLF ETTERCAP GBASILSK GIBBER GNOLLF HAMA HOBGOBF KOBOLDF LBASILSK OGRE PRIEST1 PRIEST2 PRIEST3 PRIEST4 PRIEST5 PSPIDER WARDOG WDARSGT WDASIGHT WILDDOG WTARSGT WTASIGHT WYVERN XVART BEGIN
+	EXTEND_TOP ~%script%.BCS~ ~EET-inlined/STATE_PANIC-et.baf~
+END
