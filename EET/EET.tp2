@@ -57,7 +57,7 @@ ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT exe ~.exe~
 	OUTER_SPRINT bgee_dir ~C:/Program Files (x86)/BeamDog/Games/00766~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
-	OUTER_SPRINT bash_debug ~ 2>&1|EET\install\win32\mtee.exe EET\temp\bash.debug /A~
+	OUTER_SPRINT bash_debug ~ 2>&1|EET\bin\win32\mtee.exe EET\temp\bash.debug /A~
 	ACTION_IF (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
 		AT_INTERACTIVE_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
 	END
@@ -80,7 +80,7 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 END
 
 ACTION_FOR_EACH tool IN tis2bg2 tileconv BEGIN
-	OUTER_SPRINT EVAL ~%tool%~ ~EET%os_slash%install%os_slash%%WEIDU_OS%%os_slash%%tool%%exe%~
+	OUTER_SPRINT EVAL ~%tool%~ ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%tool%%exe%~
 	PRINT ~%tool% path assigned~
 END
 
@@ -329,7 +329,7 @@ LAF ~HANDLE_CHARSETS~
 	infer_charsets = 0
 	STR_VAR
 	tra_path = EVAL "%tra_path%"
-	iconv_path = "EET/install/win32/iconv"//available as part of the base system on OS X and GNU/Linux
+	iconv_path = "EET/bin/win32/iconv"//available as part of the base system on OS X and GNU/Linux
 	default_language = en_US
 	charset_table = charsetsTable
 	convert_array = charsetsConvertArray
@@ -448,6 +448,7 @@ MKDIR ~%areas_dir%/bgTU00xx~
 	~EET/temp/array~
 	~%bgee_dir%/lang/%LANGUAGE%/override~
 	~EET/temp/WAV~
+	~EET/temp/CHR~
 
 //additional CRE sounds from IWD:EE moved to biff dir (overwritten if needed)
 COPY + ~EET/base/wav~ ~EET/temp/WAV~
@@ -469,6 +470,9 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	END
 	INCLUDE ~EET/lib/prep_%var%.tph~
 END
+
+AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/CHR" --biff-get-rest "^.*\.CHR$"~
+LAM bash_log
 
 ACTION_FOR_EACH file IN "ANIMATE.IDS" "ANISND.IDS" "GTIMES.IDS" "BGEE.SQL" BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
@@ -1515,6 +1519,28 @@ COPY ~EET/base/test/EET_test.baf~ ~scripts/EET_test.bs~
 	COMPILE_BAF_TO_BCS
 
 /////                                                  \\\\\
+///// CHR                                              \\\\\
+/////                                                  \\\\\
+
+//BG2:EE BPARTY01-06.cre files has been converted to chr files, so they can be chosen instead of Black Pits 1 party
+MKDIR ~%USER_DIRECTORY%/characters~
+COPY ~EET/base/chr~ ~%USER_DIRECTORY%/characters~
+
+//BG:EE default CHR files
+COPY ~EET/temp/chr~ ~%USER_DIRECTORY%/characters~
+	READ_LONG offset "StrRef"
+	PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
+		SAY offset ( AT "StrRef" )
+	END
+	FOR (index = 0; index < 99 ; index = index + 1) BEGIN
+		SET "offset" = (0x108 + (0x4 * index))
+		READ_LONG offset "StrRef"
+		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
+			SAY offset ( AT "StrRef" )
+		END
+	END
+
+/////                                                  \\\\\
 ///// CRE                                              \\\\\
 /////                                                  \\\\\
 
@@ -1522,14 +1548,14 @@ OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation
 COPY ~%patch_dir%/cre~ ~override~
 	~%patch_dir%/cre_bg2~ ~override~
 	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0xa4 BEGIN //Long name, Short name (tooltip), Sound (100x0x4)
+	PATCH_FOR_EACH ~offset~ IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
 			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
-	FOR (index=0; index < 99 ; index = index + 1) BEGIN
+	FOR (index = 0; index < 99 ; index = index + 1) BEGIN
 		SET "offset" = (0xa4 + (0x4 * index))
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
@@ -1593,6 +1619,42 @@ END
 
 COMPILE ~%patch_dir%/dlg~
 	~EET/base/compile/d~
+
+/////                                                  \\\\\
+///// EFF                                              \\\\\
+/////                                                  \\\\\
+
+OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
+COPY ~%patch_dir%/eff~ ~override~
+	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
+	READ_LONG 0x10 "opcode"
+	PATCH_IF ("%opcode%" = 103) //Change Name
+	OR ("%opcode%" = 139) //Display String
+	OR ("%opcode%" = 180) //Can't Use Item
+	OR ("%opcode%" = 206) //Protection from Spell
+	OR ("%opcode%" = 253) //Add Map Marker
+	OR ("%opcode%" = 254) //Remove Map Marker
+	OR ("%opcode%" = 267) //Protection from Display Specific String
+	OR ("%opcode%" = 290) BEGIN //Change Title
+		SET "offset" = 0x1c
+		READ_LONG offset "StrRef"
+		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
+			SAY offset ( AT "StrRef" )
+			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+		END
+	END ELSE PATCH_IF ("%opcode%" = 319) BEGIN
+		SET "offset" = 0x48
+		READ_LONG offset "StrRef"
+		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
+			SAY offset ( AT "StrRef" )
+			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+		END
+	END
+COPY + ~EET-inlined/blank.txt~ ~EET/temp/eff.tph~
+	PATCH_LOG ~%debug%~
+APPEND_OUTER + ~EET/temp/eff.tph~ ~%debug%~
+
+COPY ~EET/base/eff~ ~override~
 
 /////                                                  \\\\\
 ///// GAM                                              \\\\\
@@ -1693,51 +1755,6 @@ COPY ~EET/base/BALDUR.GAM~ ~override~
 		END
 	END
 //BUT_ONLY
-
-/////                                                  \\\\\
-///// CHR                                              \\\\\
-/////                                                  \\\\\
-
-//original BG2:EE BPARTY01-06.cre files has been converted to chr files, so they can be chosen instead of Black Pits 1 party
-
-MKDIR ~%USER_DIRECTORY%/characters~
-COPY ~EET/base/chr~ ~%USER_DIRECTORY%/characters~
-
-/////                                                  \\\\\
-///// EFF                                              \\\\\
-/////                                                  \\\\\
-
-OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
-COPY ~%patch_dir%/eff~ ~override~
-	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	READ_LONG 0x10 "opcode"
-	PATCH_IF ("%opcode%" = 103) //Change Name
-	OR ("%opcode%" = 139) //Display String
-	OR ("%opcode%" = 180) //Can't Use Item
-	OR ("%opcode%" = 206) //Protection from Spell
-	OR ("%opcode%" = 253) //Add Map Marker
-	OR ("%opcode%" = 254) //Remove Map Marker
-	OR ("%opcode%" = 267) //Protection from Display Specific String
-	OR ("%opcode%" = 290) BEGIN //Change Title
-		SET "offset" = 0x1c
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END ELSE PATCH_IF ("%opcode%" = 319) BEGIN
-		SET "offset" = 0x48
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
-COPY + ~EET-inlined/blank.txt~ ~EET/temp/eff.tph~
-	PATCH_LOG ~%debug%~
-APPEND_OUTER + ~EET/temp/eff.tph~ ~%debug%~
-
-COPY ~EET/base/eff~ ~override~
 
 /////                                                  \\\\\
 ///// GUI                                              \\\\\
