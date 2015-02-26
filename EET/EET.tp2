@@ -1,7 +1,7 @@
 BACKUP ~EET/backup~
 AUTHOR ~K4thos (swit)~
 VERSION ~beta 0.9~
-README ~EET/docs/[%LANGUAGE%]readme.htm~ ~EET/docs/[en_US]readme.htm~
+//README ~EET/docs/[%LANGUAGE%]readme.htm~ ~EET/docs/[en_US]readme.htm~
 
 LANGUAGE ~English~
 	~en_US~
@@ -3010,8 +3010,8 @@ PRINT ~To install mods without EET argument in GAME_IS command you need to tempo
 
 INCLUDE ~EET/lib/end.tph~ //just in case you need to parse some additional code at the end of installation
 
-ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/readme.html~) BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW %tra_path%/%LANGUAGE%/readme.html~
+ACTION_IF (FILE_EXISTS ~EET/docs/[%LANGUAGE%]readme.htm~) BEGIN
+	AT_INTERACTIVE_EXIT ~VIEW EET/docs/[%LANGUAGE%]readme.htm~
 END ELSE BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW EET/help/readme.html~
+	AT_INTERACTIVE_EXIT ~VIEW EET/docs/[en_US]readme.htm~
 END
