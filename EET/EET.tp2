@@ -102,12 +102,13 @@ OUTER_SET allow_mod = 0
 ///// Include                                          \\\\\
 /////                                                  \\\\\
 
-COPY - ~EET/lib/eet_cpmvars.tpa~ ~EET-inlined/lib/eet_cpmvars.tpa~
-	REPLACE_TEXTUALLY ~\(GAME_IS "\)eet~ ~\1bg2ee~
+COPY - ~EET/other/cpmvars/eet_cpmvars.tpa~ ~EET-inlined/eet_cpmvars.tpa~
+	REPLACE_TEXTUALLY ~\(GAME_IS "\)eet~ ~\1bg2ee~//at this point WeiDU thinks it's still BG2:EE installation
 	REPLACE_TEXTUALLY ~FAIL .*~ ~~
-INCLUDE ~EET-inlined/lib/eet_cpmvars.tpa~
+INCLUDE ~EET-inlined/eet_cpmvars.tpa~
 
 INCLUDE ~EET/lib/macros.tph~
+INCLUDE ~EET/lib/PCU_Dict.tph~
 
 /////                                                  \\\\\
 ///// Get location of BG:EE installation               \\\\\
@@ -279,7 +280,44 @@ END ELSE BEGIN
 END
 
 COPY + ~EET/bgee.tra~ ~EET~
-	PATCH_INCLUDE ~EET/lib/tra_update.tpp~
+	REPLACE_TEXTUALLY ~~~~~\([~"%]\)\[[^~"%]*\][ ]*~~~~~ ~~~~~\1~~~~~ //clear []s at the start of StrRefs//"
+	REPLACE_TEXTUALLY ~\[BLACK\([0-9]\)\([0-9]\)\]~ ~[BLACK\1\2_]~
+	REPLACE_TEXTUALLY ~\[EDWIN\([0-9]\)\([0-9]\)\]~ ~[EDWIN\1\2_]~ //STRING_SET 11618
+	REPLACE_TEXTUALLY ~\[IMOEN\([0-9]\)\([0-9]\)\]~ ~[IMOEN\1\2_]~
+	REPLACE_TEXTUALLY ~\[MINSC\([0-9]\)\([0-9]\)\]~ ~[MINSC\1\2_]~
+	REPLACE_TEXTUALLY ~\[UMBER\([0-9]\)\([0-9]\)\]~ ~[UMBER\1\2_]~
+	FOR( i=1; i<="%resref_wav_total%"; i=i+1 ) BEGIN
+		SPRINT name_source "resref_wav_source%i%"
+		SPRINT name_dest "resref_wav_dest%i%"
+		SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+		SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		REPLACE_TEXTUALLY ~~~~~\(\[\)%resref_index_source%\(\]\)~~~~~ ~\1%resref_index_dest%\2~
+	END
+
+/////                                                  \\\\\
+///// Clear []s at the start of BG2:EE StrRefs         \\\\\
+/////                                                  \\\\\
+
+PRINT ~~
+PRINT ~Clearing []s at the start of BG2:EE StrRefs...~
+
+//not needed for English language, but other TLK files (for example Polish) may have these tags, which result in hundreds of useless TLK entries
+ACTION_IF ((~%LANGUAGE_BG2%~ STRING_EQUAL_CASE ~en_US~)=0) BEGIN
+	MKDIR ~lang/xx_xx~
+	ACTION_FOR_EACH tlk IN dialog dialogf BEGIN
+		ACTION_IF FILE_EXISTS ~lang/%LANGUAGE_BG2%/%tlk%.tlk~ BEGIN
+			COPY + ~lang/%LANGUAGE_BG2%/%tlk%.tlk~ ~lang/xx_xx/dialog.tlk~
+			AT_NOW ~weidu.exe --noautoupdate --no-auto-tp2 --use-lang "xx_xx" --traify-tlk --out "EET/temp/%tlk%.tra"~
+			COPY + ~EET/temp/%tlk%.tra~ ~EET/temp~
+				REPLACE_TEXTUALLY ~~~~~\([~"%]\)\[[^~"%]*\][ ]*~~~~~ ~~~~~\1~~~~~ //"
+			AT_NOW ~weidu.exe --noautoupdate --no-auto-tp2 --use-lang "xx_xx" --make-tlk "test/%tlk%.tra" --tlkout "lang/%LANGUAGE_BG2%/%tlk%.tlk"~
+			DELETE + ~lang/xx_xx/dialog.tlk~
+		END
+	END
+	COPY ~weidu.conf~ ~weidu.conf~
+		SET_2DA_ENTRY 0 2 3 "%LANGUAGE_BG2%"
+	AT_NOW ~rm -rf lang/xx_xx~
+END
 
 /////                                                  \\\\\
 ///// Get a total number of strings in BG:EE TLK       \\\\\
@@ -755,8 +793,6 @@ PRINT ~PCU conversion...~
 /////                                                  \\\\\
 ///// create file list for conversion                  \\\\\
 /////                                                  \\\\\
-
-INCLUDE ~EET/lib/PCU_Dict.tph~
 
 LAUNCH_ACTION_MACRO ~PCU_core_init~
 
@@ -1523,6 +1559,7 @@ COPY ~EET/base/test/EET_test.baf~ ~scripts/EET_test.bs~
 /////                                                  \\\\\
 
 //BG2:EE BPARTY01-06.cre files has been converted to chr files, so they can be chosen instead of Black Pits 1 party
+PRINT ~If you see UNIX error below this line than it's not really an error. No need to report it.~
 MKDIR ~%USER_DIRECTORY%/characters~
 COPY ~EET/base/chr~ ~%USER_DIRECTORY%/characters~
 
