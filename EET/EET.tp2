@@ -1057,7 +1057,6 @@ ACTION_BASH_FOR ~%patch_dir%/bcs_app~ ~.*\.BAF$~ BEGIN
 END
 
 //decompile all bcs
-
 COPY + ~%patch_dir%/bcs~ ~%patch_dir%/bcs~
 	~%patch_dir%/bcs_app~ ~%patch_dir%/bcs_app~
 	DECOMPILE_BCS_TO_BAF
@@ -1074,7 +1073,7 @@ COMPILE ~%patch_dir%/bcs~
 	~%patch_dir%/bcs_app~
 	~EET/base/compile/baf~
 
-// patching BG:EE scripts
+//patching BG:EE scripts
 INCLUDE ~EET/lib/bg1_BCS.tph~
 
 //Combine transition.tbl
@@ -1093,6 +1092,88 @@ END ELSE BEGIN
 		PATCH_IF (FILE_EXISTS ~EET/temp/EET-transition.tbl~) BEGIN
 			APPEND_FILE ~EET/temp/EET-transition.tbl~
 		END
+END
+
+////////////////////////
+// Items shattering
+////////////////////////
+
+<<<<<<<< EET-inlined/shattering.baf
+IF
+  OR(3)
+    GlobalGT("ENDOFBG1","GLOBAL",0)
+    GlobalGT("OHB_BP2_CAPTURE","GLOBAL",0)
+    GlobalGT("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+	DestroySelf()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #%response1%
+	DestroySelf()
+  RESPONSE #%response2%
+	Continue()
+END
+>>>>>>>>
+
+<<<<<<<< EET-inlined/shattering-eb.baf
+IF
+  HasItemEquiped%real%("%SOURCE_RES%",LastSummonerOf(Myself))
+THEN
+  RESPONSE #100
+    DisplayStringHead(LastSummonerOf(Myself),#%string%)
+	ActionOverride(LastSummonerOf(Myself),TransformItem("%SOURCE_RES%","%item_broken%"))
+	DestroySelf()
+END
+>>>>>>>>
+
+//Weapons
+OUTER_SPRINT real ~Real~
+OUTER_SPRINT item_broken ~MISC56_~
+OUTER_SET string = 14158
+OUTER_SET response1 = 50
+OUTER_SET response2 = 50 //0.5% chance
+COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATWE.baf~
+COMPILE ~EET-inlined/K#SHATWE.baf~ EVALUATE_BUFFER
+ACTION_FOR_EACH file IN AX1H01 AX1H04 BLUN02 BLUN04 BLUN06 DAGG01 DAGG06 HALB01 SPER01 SW1H01 SW1H04 SW1H07 SW1H12 SW1H17 SW1H20 SW1H43 SW1H46 SW1H48 SW2H01 BEGIN
+	EXTEND_BOTTOM ~K#SHATWE.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
+END
+OUTER_SPRINT real ~~
+
+//Shields
+OUTER_SPRINT item_broken ~MISC57~
+OUTER_SET string = 14180
+OUTER_SET response1 = 90
+OUTER_SET response2 = 10 //0.1% chance
+COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATSH.baf~
+COMPILE ~EET-inlined/K#SHATSH.baf~ EVALUATE_BUFFER
+ACTION_FOR_EACH file IN SHLD01 SHLD03 SHLD05 SHLD08 SHLD09 SHLD10 SHLD11 SHLD12 SHLD13 SHLD14 SHLD15 SHLD16 SHLD18 BEGIN
+	EXTEND_BOTTOM ~K#SHATSH.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
+END
+
+//Armors
+OUTER_SPRINT item_broken ~MISC58~
+OUTER_SET string = 15817
+OUTER_SET response1 = 90
+OUTER_SET response2 = 10 //0.1% chance
+COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATAR.baf~
+COMPILE ~EET-inlined/K#SHATAR.baf~ EVALUATE_BUFFER
+ACTION_FOR_EACH file IN CHAN01 CHAN04 PLAT01 PLAT04 PLAT07 BEGIN
+	EXTEND_BOTTOM ~K#SHATAR.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
+END
+
+//Helmets
+OUTER_SPRINT item_broken ~MISC59~
+OUTER_SET string = 15818
+OUTER_SET response1 = 95
+OUTER_SET response2 = 5 //0.05% chance
+COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATHE.baf~
+COMPILE ~EET-inlined/K#SHATHE.baf~ EVALUATE_BUFFER
+ACTION_FOR_EACH file IN HELM01 HELM08 HELM09 HELM10 HELM11 HELM12 HELM13 HELM15 HELM22 BEGIN
+	EXTEND_BOTTOM ~K#SHATHE.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
 END
 
 ////////////////////////
@@ -2332,9 +2413,14 @@ COPY ~EET/temp/pro~ ~override~
 ///// SPL                                              \\\\\
 /////                                                  \\\\\
 
-ACTION_FOR_EACH "value" IN 4 6 9 12 24 BEGIN
-	COPY ~EET/base/spl/K#CURE.SPL~ ~override/K#CURE%value%.SPL~
-		WRITE_LONG 0x9e %value%
+ACTION_FOR_EACH var IN 4 6 9 12 24 BEGIN
+	COPY ~EET/base/spl/K#CURE.SPL~ ~override/K#CURE%var%.SPL~
+		WRITE_LONG 0x9e %var%
+END
+
+ACTION_FOR_EACH var IN WE AR SH HE BEGIN
+	COPY ~EET/base/spl/K#SHAT.SPL~ ~override/K#SHAT%var%.SPL~
+		WRITE_ASCIIE 0xae ~K#SHAT%var%~
 END
 
 COPY ~EET/base/spl/SPWI123.SPL~ ~override~

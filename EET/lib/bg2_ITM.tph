@@ -1,1 +1,31 @@
-//empty for now
+/////                                                  \\\\\
+///// Items shattering                                 \\\\\
+/////                                                  \\\\\
+
+//Weapons
+ACTION_FOR_EACH file IN AX1H01 AX1H04 BLUN02 BLUN04 BLUN06 DAGG01 DAGG06 HALB01 SPER01 SW1H01 SW1H04 SW1H07 SW1H12 SW1H17 SW1H20 SW1H43 SW1H46 SW1H48 SW2H01 BEGIN
+	COPY_EXISTING ~%file%.ITM~ ~override~
+		LPF ADD_ITEM_EFFECT INT_VAR opcode = 177 /*Use EFF File*/ target = 1 parameter2 = 2 timing = 1 resist_dispel = 2 power = 4 probability1 = 100 type = 1 STR_VAR resource = "K#SHATWE" END
+	BUT_ONLY
+END
+
+//Shields
+ACTION_FOR_EACH file IN SHLD01 SHLD03 SHLD05 SHLD08 SHLD09 SHLD10 SHLD11 SHLD12 SHLD13 SHLD14 SHLD15 SHLD16 SHLD18 BEGIN
+	COPY_EXISTING ~%file%.ITM~ ~override~
+		LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 timing = 2 probability1 = 100 STR_VAR resource = "K#SHATSH" END
+	BUT_ONLY
+END
+
+//Armors
+ACTION_FOR_EACH file IN CHAN01 CHAN04 PLAT01 PLAT04 PLAT07 BEGIN
+	COPY_EXISTING ~%file%.ITM~ ~override~
+		LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 timing = 2 probability1 = 100 STR_VAR resource = "K#SHATAR" END
+	BUT_ONLY
+END
+
+//Helmets
+ACTION_FOR_EACH file IN HELM01 HELM08 HELM09 HELM10 HELM11 HELM12 HELM13 HELM15 HELM22 BEGIN
+	COPY_EXISTING ~%file%.ITM~ ~override~
+		LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 timing = 2 probability1 = 100 STR_VAR resource = "K#SHATHE" END
+	BUT_ONLY
+END
