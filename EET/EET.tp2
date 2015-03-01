@@ -1138,7 +1138,7 @@ OUTER_SET response1 = 50
 OUTER_SET response2 = 50 //0.5% chance
 COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATWE.baf~
 COMPILE ~EET-inlined/K#SHATWE.baf~ EVALUATE_BUFFER
-ACTION_FOR_EACH item IN AX1H01 AX1H04 BLUN02 BLUN04 BLUN06 DAGG01 DAGG06 HALB01 SPER01 SW1H01 SW1H04 SW1H07 SW1H12 SW1H17 SW1H20 SW1H43 SW1H46 SW1H48 SW2H01 BEGIN
+ACTION_FOR_EACH item IN AX1H01 AX1H04 BLUN02 BLUN04 BLUN06 DAGG01 /*DAGG06*/ HALB01 SPER01 SW1H01 SW1H04 SW1H07 /*SW1H12*/ /*SW1H17*/ SW1H20 SW1H43 SW1H46 SW1H48 SW2H01 BEGIN
 	EXTEND_BOTTOM ~K#SHATWE.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
 END
 OUTER_SPRINT real ~~
@@ -1161,7 +1161,7 @@ OUTER_SET response1 = 90
 OUTER_SET response2 = 10 //0.1% chance
 COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATAR.baf~
 COMPILE ~EET-inlined/K#SHATAR.baf~ EVALUATE_BUFFER
-ACTION_FOR_EACH item IN CHAN01 CHAN04 PLAT01 PLAT04 PLAT07 BEGIN
+ACTION_FOR_EACH item IN CHAN01 CHAN04 PLAT01 PLAT04 BEGIN
 	EXTEND_BOTTOM ~K#SHATAR.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
 END
 
@@ -1172,7 +1172,7 @@ OUTER_SET response1 = 95
 OUTER_SET response2 = 5 //0.05% chance
 COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATHE.baf~
 COMPILE ~EET-inlined/K#SHATHE.baf~ EVALUATE_BUFFER
-ACTION_FOR_EACH item IN HELM01 HELM08 HELM09 HELM10 HELM11 HELM12 HELM13 HELM15 HELM22 BEGIN
+ACTION_FOR_EACH item IN HELM01 HELM08 HELM09 HELM10 HELM11 HELM12 HELM13 HELM15 BEGIN
 	EXTEND_BOTTOM ~K#SHATHE.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
 END
 
@@ -1310,97 +1310,14 @@ COPY_EXISTING - ~EET-transition.tbl~ ~override~
 		END
 	END
 
-//Update transition script with item variables
+//Update transition script with item variables (I need to check on thing with pass time in-game before enabling it)
 <<<<<<<< EET-inlined/K#TELBGT-et6.baf
-IF
-  PartyHasItem("MISC47") // Golden Pantaloons
-  Global("IHavePants","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHavePants","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("ring25") // Koveras' Ring of Protection
-  Global("IHaveRing","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveRing","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("helm07") // Helm of Balduran
-  Global("IHaveBalduran","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveBalduran","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("sw1h13") // Moonblade
-  Global("IHaveMoonblade","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveMoonblade","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("MISC72") // The Claw of Kazgaroth
-  Global("IHaveClaw","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveClaw","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("MISC73") // The Horn of Kazgaroth
-  Global("IHaveHorn","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveHorn","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("LEAT03") // Protector of the Second +2
-  Global("IHaveSecond","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveSecond","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("PLAT02") // Plate Mail +1
-  Global("IHavePlate","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHavePlate","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("LEAT06") // Missile Attraction +2
-  Global("IHaveMissile","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveMissile","GLOBAL",1)
-    Continue()
-END
-
-IF
-  PartyHasItem("CHAN07") // Chain Mail +3
-  Global("IHaveChain","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobal("IHaveChain","GLOBAL",1)
-    Continue()
-END
+//IF
+//  GlobalLT("K#DaysPassed","GLOBAL",365)
+//THEN
+//  RESPONSE #100
+//    AdvanceTime(ONE_MONTH) //this action always interrupts everything, so it should be at the beginning
+//END
 
 IF
   Global("BG1DrizztItem","GLOBAL",0)
@@ -1411,6 +1328,26 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("BG1DrizztItem","GLOBAL",1)
+    Continue()
+END
+
+IF
+  Global("MeetOldenFriends","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,TakeItemListPartyNum("IMPORT02",1))
+    ActionOverride(Player1,TakeItemListPartyNum("IMPORT01",1))
+    ActionOverride(Player1,TakeItemListPartyNum("IMPORT03",1))
+	Continue()
+END
+
+IF
+  Global("MeetOldenFriends","GLOBAL",0)
+  PartyHasItem("MISC47") // Golden Pantaloons
+  !HasItem("MISC47",Player1)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,TakePartyItem("MISC47"))
     Continue()
 END
 >>>>>>>>

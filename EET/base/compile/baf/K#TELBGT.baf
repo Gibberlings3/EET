@@ -1,17 +1,16 @@
 //rest of the script extended top via EET.tp2
-
 IF
   Global("MeetOldenFriends","GLOBAL",0)
 THEN
   RESPONSE #100
-    ActionOverride(Player1,DropInventory())
-    ActionOverride(Player2,DropInventory())
-    ActionOverride(Player3,DropInventory())
-    ActionOverride(Player4,DropInventory())
-    ActionOverride(Player5,DropInventory())
-    ActionOverride(Player6,DropInventory())
+    //ActionOverride(Player1,DropInventory())
+    //ActionOverride(Player2,DropInventory())
+    //ActionOverride(Player3,DropInventory())
+    //ActionOverride(Player4,DropInventory())
+    //ActionOverride(Player5,DropInventory())
+    //ActionOverride(Player6,DropInventory())
     SetGlobal("MeetOldenFriends","GLOBAL",100)//compatibility with BGT mods that use this variable, used to detect if player has finished BG1
-    //Continue()//1 frame delay
+    //Continue() //1 frame delay
 END
 
 IF
@@ -60,13 +59,6 @@ THEN
     ReputationSet(8)
     Continue()
 END
-
-//IF
-//  GlobalLT("K#DaysPassed","GLOBAL",365)
-//THEN
-//  RESPONSE #100
-//    AdvanceTime(ONE_MONTH)
-//END
 
 IF
   True()
