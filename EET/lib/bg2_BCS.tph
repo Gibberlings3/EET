@@ -238,17 +238,6 @@ COPY_EXISTING ~TANARI.BCS~ ~override/TANARI_.BCS~
 ///// BALDUR.BCS / BALDUR25.BCS                        \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/DaysPassed-et.baf
-IF
-  !GlobalTimerNotExpired("K#DaysTimer","GLOBAL")
-THEN
-  RESPONSE #100
-    IncrementGlobal("K#DaysPassed","GLOBAL",1)
-    SetGlobalTimer("K#DaysTimer","GLOBAL",ONE_DAY)
-    Continue()
-END
->>>>>>>>
-
 <<<<<<<< EET-inlined/BALDUR-eb.baf
 //code from BG:EE
 IF
@@ -372,14 +361,44 @@ END
 
 EXTEND_BOTTOM ~BALDUR.BCS~ ~EET-inlined/BALDUR-eb.baf~
 
-EXTEND_TOP ~BALDUR.BCS~ ~EET-inlined/DaysPassed-et.baf~
-EXTEND_TOP ~BALDUR25.BCS~ ~EET-inlined/DaysPassed-et.baf~
+<<<<<<<< EET-inlined/timers-et.baf
+//counts how many REAL hours you have been playing
+IF
+  Global("K#TotalPlayTimeActive","GLOBAL",0)
+THEN
+  RESPONSE #100
+  	SetGlobal("K#TotalPlayTimeActive","GLOBAL",1)
+    RealSetGlobalTimer("K#RealTimerOneHour","GLOBAL",3600)
+    Continue()
+END
+
+IF
+  RealGlobalTimerExpired("K#RealTimerOneHour","GLOBAL")
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#TotalPlayTime","GLOBAL",1)
+    RealSetGlobalTimer("K#RealTimerOneHour","GLOBAL",3600)
+    Continue()
+END
+
+//counts total in-game days passed
+IF
+  !GlobalTimerNotExpired("K#TimerOneDay","GLOBAL")
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#DaysPassed","GLOBAL",1)
+    SetGlobalTimer("K#TimerOneDay","GLOBAL",ONE_DAY)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~BALDUR.BCS~ ~EET-inlined/timers-et.baf~
+EXTEND_TOP ~BALDUR25.BCS~ ~EET-inlined/timers-et.baf~
 
 /////                                                  \\\\\
-///// DPLAYER2.BCS / DPLAYER3.BCS                      \\\\\
+///// DPLAYER2.BCS                                     \\\\\
 /////                                                  \\\\\
 
-//DPLAYER2.BCS
 COPY_EXISTING ~DPLAYER2.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!InParty(Myself)~
@@ -521,7 +540,10 @@ END
 EXTEND_TOP ~DPLAYER2.BCS~ ~EET-inlined/DPLAYER2-et.baf~
 EXTEND_BOTTOM ~DPLAYER2.BCS~ ~EET-inlined/DPLAYER2-eb.baf~
 
-//DPLAYER3.BCS
+/////                                                  \\\\\
+///// DPLAYER3.BCS                                     \\\\\
+/////                                                  \\\\\
+
 COPY_EXISTING ~DPLAYER3.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("OHN_NEERA_RENC","GLOBAL",1)~
@@ -553,30 +575,7 @@ END
 >>>>>>>>
 
 EXTEND_BOTTOM ~DPLAYER3.BCS~ ~EET-inlined/DPLAYER3-eb.baf~
-
-//weapons shattering
-<<<<<<<< EET-inlined/weapons_shattering-eb.baf
-IF
-  Global("%var%","LOCALS",1)
-  Global("ENDOFBG1","GLOBAL",0)
-  InParty(Myself)
-  HasItemEquipedReal("%var%",Myself)
-THEN
-  RESPONSE #50
-    DisplayStringHead(Myself,@3000000)
-    SetGlobal("%var%","LOCALS",0)
-    TakeItemReplace("MISC56_","%var%",Myself)
-  RESPONSE #50
-    SetGlobal("%var%","LOCALS",0)
-    Continue()
-END
->>>>>>>>
-
-ACTION_FOR_EACH var IN AX1H01 BLUN02 BLUN04 BLUN06 DAGG01 DAGG06 DAGG07 HALB01 SPER01 SW1H01 SW1H04 SW1H07 SW1H12 SW1H17 SW1H20 SW1H43 SW1H46 SW1H48 SW2H01 BEGIN
-	EXTEND_BOTTOM ~DPLAYER2.BCS~ ~EET-inlined/weapons_shattering-eb.baf~ EVALUATE_BUFFER
-	EXTEND_BOTTOM ~DPLAYER3.BCS~ ~EET-inlined/weapons_shattering-eb.baf~ EVALUATE_BUFFER
-END
-                  
+             
 /////                                                  \\\\\
 ///// PLAYER1D.BCS                                     \\\\\
 /////                                                  \\\\\
