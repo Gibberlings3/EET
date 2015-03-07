@@ -796,7 +796,7 @@ LAUNCH_ACTION_MACRO ~PCU_core_init~
 
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/Filelist.txt~
 
-ACTION_FOR_EACH "var" IN ARE BCS BCS_APP CRE CRE_BG2 DLG EFF GAM ITM SPL STO VVC WED BEGIN
+ACTION_FOR_EACH "var" IN ARE BCS BCS_APP CRE DLG EFF GAM ITM SPL STO VVC WED BEGIN
 	COPY + ~%patch_dir%/%var%~ ~%patch_dir%/%var%~
 		SPRINT addtolist ~%var%/%SOURCE_FILE%~
 		//TO_LOWER addtolist
