@@ -2685,7 +2685,8 @@ END
 EXTEND_TOP ~QUASIT01.BCS~ ~EET-inlined/QUASIT01-et.baf~
 
 //RUNENEMY.BCS
-COPY_EXISTING ~RUNENEMY.BCS~ ~override~
+//no need to create more conflicts with BG2 mods when not necessary
+/*COPY_EXISTING ~RUNENEMY.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),30)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -2695,65 +2696,21 @@ COPY_EXISTING ~RUNENEMY.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
-
-		SPRINT textToReplace ~IF[%newline%]*Detect(\[PC\])~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Detect([PC])~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
 	END
-BUT_ONLY
-
-<<<<<<<< EET-inlined/RUNENEMY-et.baf
-IF
-  GlobalLT("ENDOFBG1","GLOBAL",2)
-  Detect([PC])
-  See([ENEMY])
-  Gender(Myself,MALE)
-  General(Myself,HUMANOID)
-  !Allegiance(Myself,ENEMY)
-THEN
-  RESPONSE #10
-    PlaySound("EDWIN43_")
-    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
-  RESPONSE #90
-    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
-END
-
-IF
-  GlobalLT("ENDOFBG1","GLOBAL",2)
-  Detect([PC])
-  See([ENEMY])
-  Gender(Myself,FEMALE)
-  General(Myself,HUMANOID)
-  !Allegiance(Myself,ENEMY)
-THEN
-  RESPONSE #10
-    PlaySound("FCHIL05_")
-    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
-  RESPONSE #90
-    RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)
-END
->>>>>>>>
-
-EXTEND_TOP ~RUNENEMY.BCS~ ~EET-inlined/RUNENEMY-et.baf~
+BUT_ONLY*/
 
 //SEEENEMY.BCS
 COPY_EXISTING ~SEEENEMY.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~!Allegiance(Myself,ENEMY)~
+		//no need to create more conflicts with BG2 mods when not necessary
+		/*SPRINT textToReplace ~!Allegiance(Myself,ENEMY)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~!Allegiance(Myself,EVILCUTOFF)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+		END*/
 
 		SPRINT textToReplace ~!Class(LastSeenBy(Myself),FLAMING_FIST)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches

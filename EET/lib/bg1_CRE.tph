@@ -1,4 +1,4 @@
-//done after moving to override folder due to READ_SOUNDSET command
+//done after moving to override folder due to READ_SOUNDSET command issue
 
 /////////////////////////////////////
 // Find Familiar externalization
@@ -28,11 +28,11 @@ ACTION_PHP_EACH "table_BG1CRE_creatureParam1" AS "creature" => "param1" BEGIN
 END
 
 /////////////////////////////////////
-// Qunique items
+// Unique items
 /////////////////////////////////////
 
 // Varscona +2; repacing all references except Ribald's with generic +2 sword
-COPY_EXISTING + ~E34.CRE~ ~override~
+COPY_EXISTING ~E34.CRE~ ~override~
 	//~GREYWO.CRE~ ~override~
 	~VALINO.CRE~ ~override~
 	READ_LONG 0x2bc "itm_off" ELSE 0
@@ -50,12 +50,12 @@ BUT_ONLY
 // Misc fixes
 /////////////////////////////////////
 
-COPY_EXISTING + ~NARRAT.CRE~  ~override~
+COPY_EXISTING ~NARRAT.CRE~ ~override~
 	WRITE_LONG 0x8 0xffffffff
 	WRITE_LONG 0xc 0xffffffff
 BUT_ONLY
 
-COPY_EXISTING + ~NARRAT2.CRE~  ~override~
+COPY_EXISTING ~NARRAT2.CRE~ ~override~
 	WRITE_LONG 0x8 0xffffffff
 	WRITE_LONG 0xc 0xffffffff
 BUT_ONLY
@@ -73,7 +73,7 @@ BUT_ONLY
 //more information: http://forums.gibberlings3.net/index.php?showtopic=15178
 
 //BG1 Edwin
-COPY_EXISTING + ~EDWIN.CRE~ ~override~
+COPY_EXISTING ~EDWIN.CRE~ ~override~
 	~EDWIN2.CRE~ ~override~
 	~EDWIN4.CRE~ ~override~
 	~EDWIN6.CRE~ ~override~
@@ -109,7 +109,7 @@ ACTION_FOR_EACH npc IN ~IMOEN.CRE~ ~IMOEN1.CRE~ BEGIN
 	LAUNCH_ACTION_MACRO EET_WRITE_SSET
 END
 
-COPY_EXISTING + ~IMOEN.CRE~ ~override~
+COPY_EXISTING ~IMOEN.CRE~ ~override~
 	~IMOEN1.CRE~ ~override~
 	~IMOEN2.CRE~ ~override~
 	~IMOEN4.CRE~ ~override~
@@ -144,7 +144,7 @@ COPY_EXISTING + ~IMOEN.CRE~ ~override~
 BUT_ONLY
 
 //BG1 Jaheira
-COPY_EXISTING + ~JAHEIR.CRE~ ~override~
+COPY_EXISTING ~JAHEIR.CRE~ ~override~
 	~JAHEIR2.CRE~ ~override~
 	~JAHEIR4.CRE~ ~override~
 	~JAHEIR6.CRE~ ~override~
@@ -172,7 +172,7 @@ COPY_EXISTING + ~JAHEIR.CRE~ ~override~
 BUT_ONLY
 
 //BG1 Minsc
-COPY_EXISTING + ~MINSC.CRE~ ~override~
+COPY_EXISTING ~MINSC.CRE~ ~override~
 	~MINSC2.CRE~ ~override~
 	~MINSC4.CRE~ ~override~
 	~MINSC6.CRE~ ~override~
@@ -197,7 +197,7 @@ COPY_EXISTING + ~MINSC.CRE~ ~override~
 BUT_ONLY
 
 //BG1 Viconia
-COPY_EXISTING + ~VICONI.CRE~ ~override~
+COPY_EXISTING ~VICONI.CRE~ ~override~
 	~VICONI4.CRE~ ~override~
 	~VICONI6_.CRE~ ~override~
 
@@ -219,7 +219,7 @@ COPY_EXISTING + ~VICONI.CRE~ ~override~
 BUT_ONLY
 
 //Ajantis
-COPY_EXISTING + ~AJANTI.CRE~ ~override~
+COPY_EXISTING ~AJANTI.CRE~ ~override~
 	~AJANTI4.CRE~ ~override~
 	~AJANTI6.CRE~ ~override~
 
@@ -245,7 +245,7 @@ COPY_EXISTING + ~AJANTI.CRE~ ~override~
 BUT_ONLY
 
 //Alora
-COPY_EXISTING + ~ALORA.CRE~ ~override~
+COPY_EXISTING ~ALORA.CRE~ ~override~
 	~ALORA6.CRE~ ~override~
 
 	READ_LONG (0xa4 + 34 * 4) rcomp1 //SELECT_ACTION3: Happy to help!
@@ -270,7 +270,7 @@ COPY_EXISTING + ~ALORA.CRE~ ~override~
 BUT_ONLY
 
 //Branwen
-COPY_EXISTING + ~BRANWE.CRE~ ~override~
+COPY_EXISTING ~BRANWE.CRE~ ~override~
 	~BRANWE5.CRE~ ~override~
 
 	READ_LONG (0xa4 + 41 * 4) insult3 //INTERACTION3: Stay well clear of me, you foul speakin' heretic!
@@ -295,7 +295,7 @@ COPY_EXISTING + ~BRANWE.CRE~ ~override~
 BUT_ONLY
 
 //Coran
-COPY_EXISTING + ~CORAN.CRE~ ~override~
+COPY_EXISTING ~CORAN.CRE~ ~override~
 	~CORAN5.CRE~ ~override~
 
 	READ_LONG (0xa4 + 42 * 4) insult1 //INTERACTION4: If you weren't such a self serving wench... don't think I'd find you half as attractive.
@@ -316,7 +316,7 @@ COPY_EXISTING + ~CORAN.CRE~ ~override~
 BUT_ONLY
 
 //Dynaheir
-COPY_EXISTING + ~DYNAHE.CRE~ ~override~
+COPY_EXISTING ~DYNAHE.CRE~ ~override~
 	~DYNAHE2.CRE~ ~override~
 	~DYNAHE4.CRE~ ~override~
 	~DYNAHE6.CRE~ ~override~
@@ -336,7 +336,7 @@ COPY_EXISTING + ~DYNAHE.CRE~ ~override~
 BUT_ONLY
 
 //Eldoth
-COPY_EXISTING + ~ELDOTH.CRE~ ~override~
+COPY_EXISTING ~ELDOTH.CRE~ ~override~
 	~ELDOTH5.CRE~ ~override~
 
 	READ_LONG (0xa4 + 26 * 4) insult3 //SELECT_COMMON1: You're so dull.
@@ -359,7 +359,7 @@ COPY_EXISTING + ~ELDOTH.CRE~ ~override~
 BUT_ONLY
 
 //Faldorn
-COPY_EXISTING + ~FALDOR.CRE~ ~override~
+COPY_EXISTING ~FALDOR.CRE~ ~override~
 	~FALDOR5.CRE~ ~override~
 
 	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Why must man always despoil...
@@ -377,7 +377,7 @@ COPY_EXISTING + ~FALDOR.CRE~ ~override~
 BUT_ONLY
 
 //Garrick
-COPY_EXISTING + ~GARRIC.CRE~ ~override~
+COPY_EXISTING ~GARRIC.CRE~ ~override~
 	~GARRIC2.CRE~ ~override~
 	~GARRIC4.CRE~ ~override~
 	~GARRIC6.CRE~ ~override~
@@ -400,7 +400,7 @@ COPY_EXISTING + ~GARRIC.CRE~ ~override~
 BUT_ONLY
 
 //Kagain
-COPY_EXISTING + ~KAGAIN.CRE~ ~override~
+COPY_EXISTING ~KAGAIN.CRE~ ~override~
 	~KAGAIN2.CRE~ ~override~
 	~KAGAIN4.CRE~ ~override~
 	~KAGAIN6.CRE~ ~override~
@@ -420,7 +420,7 @@ COPY_EXISTING + ~KAGAIN.CRE~ ~override~
 BUT_ONLY
 
 //Khalid
-COPY_EXISTING + ~KHALID.CRE~ ~override~
+COPY_EXISTING ~KHALID.CRE~ ~override~
 	~KHALID2.CRE~ ~override~
 	~KHALID4.CRE~ ~override~
 	~KHALID6.CRE~ ~override~
@@ -447,7 +447,7 @@ COPY_EXISTING + ~KHALID.CRE~ ~override~
 BUT_ONLY
 
 //Kivan
-COPY_EXISTING + ~KIVAN.CRE~ ~override~
+COPY_EXISTING ~KIVAN.CRE~ ~override~
 	~KIVAN4.CRE~ ~override~
 	~KIVAN6.CRE~ ~override~
 
@@ -467,7 +467,7 @@ COPY_EXISTING + ~KIVAN.CRE~ ~override~
 BUT_ONLY
 
 //Montaron
-COPY_EXISTING + ~MONTAR.CRE~ ~override~
+COPY_EXISTING ~MONTAR.CRE~ ~override~
 	~MONTAR2.CRE~ ~override~
 	~MONTAR4.CRE~ ~override~
 	~MONTAR6.CRE~ ~override~
@@ -490,7 +490,7 @@ COPY_EXISTING + ~MONTAR.CRE~ ~override~
 BUT_ONLY
 
 //Quayle
-COPY_EXISTING + ~QUAYLE_.CRE~ ~override~
+COPY_EXISTING ~QUAYLE_.CRE~ ~override~
 	~QUAYLE4.CRE~ ~override~
 	~QUAYLE6.CRE~ ~override~
 
@@ -512,7 +512,7 @@ COPY_EXISTING + ~QUAYLE_.CRE~ ~override~
 BUT_ONLY
 
 //Safana
-COPY_EXISTING + ~SAFANA.CRE~ ~override~
+COPY_EXISTING ~SAFANA.CRE~ ~override~
 	~SAFANA4.CRE~ ~override~
 	~SAFANA6.CRE~ ~override~
 
@@ -538,7 +538,7 @@ COPY_EXISTING + ~SAFANA.CRE~ ~override~
 BUT_ONLY
 
 //Shar-Teel
-COPY_EXISTING + ~SHARTE.CRE~ ~override~
+COPY_EXISTING ~SHARTE.CRE~ ~override~
 	~SHARTE4.CRE~ ~override~
 	~SHARTE6.CRE~ ~override~
 
@@ -557,7 +557,7 @@ COPY_EXISTING + ~SHARTE.CRE~ ~override~
 BUT_ONLY
 
 //Skie
-COPY_EXISTING + ~SKIE.CRE~ ~override~
+COPY_EXISTING ~SKIE.CRE~ ~override~
 	~SKIE6.CRE~ ~override~
 
 	READ_LONG (0xa4 + 41 * 4) rinsult3 //INTERACTION3: Why do you always have to make fun of me! I hate you! Get away from me!
@@ -580,7 +580,7 @@ COPY_EXISTING + ~SKIE.CRE~ ~override~
 BUT_ONLY
 
 //Tiax
-COPY_EXISTING + ~TIAX.CRE~ ~override~
+COPY_EXISTING ~TIAX.CRE~ ~override~
 	~TIAX4.CRE~ ~override~
 	~TIAX6.CRE~ ~override~
 
@@ -602,7 +602,7 @@ COPY_EXISTING + ~TIAX.CRE~ ~override~
 BUT_ONLY
 
 //Xan
-COPY_EXISTING + ~XAN_.CRE~ ~override~
+COPY_EXISTING ~XAN_.CRE~ ~override~
 	~XAN4.CRE~ ~override~
 	~XAN6.CRE~ ~override~
 
@@ -626,7 +626,7 @@ COPY_EXISTING + ~XAN_.CRE~ ~override~
 BUT_ONLY
 
 //Xzar
-COPY_EXISTING + ~XZAR_.CRE~ ~override~
+COPY_EXISTING ~XZAR_.CRE~ ~override~
 	~XZAR2.CRE~ ~override~
 	~XZAR4.CRE~ ~override~
 	~XZAR6.CRE~ ~override~
@@ -646,7 +646,7 @@ COPY_EXISTING + ~XZAR_.CRE~ ~override~
 BUT_ONLY
 
 //Yeslick
-COPY_EXISTING + ~YESLIC.CRE~ ~override~
+COPY_EXISTING ~YESLIC.CRE~ ~override~
 
 	READ_LONG (0xa4 + 40 * 4) insult2 //INTERACTION2: 'Twould be good if you tithed a few coins now and then. The favor of gods is worth a few gold.
 	READ_LONG (0xa4 + 42 * 4) rinsult3 //INTERACTION4: Friendships last when gold is long gone. Perhaps you should be a little nicer to the group.

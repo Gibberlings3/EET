@@ -43,18 +43,18 @@ END
 COPY_EXISTING ~IMOEN6.CRE~ ~override~
 	~IMOEN10.CRE~ ~override~
 	~IMOENDRM.CRE~ ~override~
-	WRITE_ASCII 0x280 ~Imoen2~ //death variable
+	WRITE_ASCII 0x280 ~Imoen2~ #8 // DV
 BUT_ONLY
 
-COPY_EXISTING ~GARRICK.CRE~ ~override/GARRICK.CRE~
-	WRITE_ASCII 0x250 ~BG2MAGE2~ //class script
+COPY_EXISTING ~GARRICK.CRE~ ~override~
+	WRITE_ASCII 0x250 ~BG2MAGE2~ #8 // Class script
 BUT_ONLY
 
-///////////////////////////////////////////////////////////////////////////
-//	Creature Installation: Modification of existing BG2 files to BG1 format
-///////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////
+// Modification of BG2 files to BG1 format
+/////////////////////////////////////
 
-COPY_EXISTING + ~BEARBL.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~BEARBL.CRE~ ~override~
 	SAY 0xc8 #5618
 	SAY 0xcc #5619
 	SAY 0xdc #5620
@@ -63,7 +63,7 @@ COPY_EXISTING + ~BEARBL.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0xf0 #5624
 	SAY 0x10c #5617
 
-/*COPY_EXISTING + ~BEARBLSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~BEARBLSU.CRE~ ~override~
 	SAY 0xc8 #5618
 	SAY 0xcc #5619
 	SAY 0xdc #5620
@@ -71,10 +71,10 @@ COPY_EXISTING + ~BEARBL.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0xec #5623
 	SAY 0xf0 #5624
 	SAY 0x10c #5617
-	WRITE_ASCII 0x258 ~BEAR~ #8// Race script
-	WRITE_ASCII 0x268 ~WDASIGHT~ #8// Default script*/
+	WRITE_ASCII 0x258 ~BEAR~ #8 // Race script
+	WRITE_ASCII 0x268 ~WDASIGHT~ #8 // Default script*/
 
-COPY_EXISTING + ~BEARBR.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~BEARBR.CRE~ ~override~
 	SAY 0xc8 #5627
 	SAY 0xcc #5628
 	SAY 0xdc #5629
@@ -84,7 +84,7 @@ COPY_EXISTING + ~BEARBR.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5625
 	SAY 0x110 #5626
 
-/*COPY_EXISTING + ~BEARBRSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~BEARBRSU.CRE~ ~override~
 	SAY 0xc8 #5627
 	SAY 0xcc #5628
 	SAY 0xdc #5629
@@ -93,10 +93,10 @@ COPY_EXISTING + ~BEARBR.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0xf0 #5633
 	SAY 0x10c #5625
 	SAY 0x110 #5626
-	WRITE_ASCII 0x258 ~BEAR~ #8// Race script
+	WRITE_ASCII 0x258 ~BEAR~ #8 // Race script
 	WRITE_BYTE 0x270 ~128~ // Enemy-Ally flag*/
 
-/*COPY_EXISTING + ~BEARCASU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~BEARCASU.CRE~ ~override~
 	SAY 0xc8 #5636
 	SAY 0xcc #5637
 	SAY 0xdc #5638
@@ -105,17 +105,17 @@ COPY_EXISTING + ~BEARBR.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0xf0 #5642
 	SAY 0x10c #5634
 	SAY 0x110 #5635
-	WRITE_ASCII 0x258 ~CBEAR~ #8// Race script
-	WRITE_ASCII 0x268 ~WDASIGHT~ #8// Default script*/
+	WRITE_ASCII 0x258 ~CBEAR~ #8 // Race script
+	WRITE_ASCII 0x268 ~WDASIGHT~ #8 // Default script*/
 
-COPY_EXISTING + ~BIRD.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~BIRD.CRE~ ~override~
 	SAY 0x1b8 #20292
 	SAY 0x1bc #20294
 	SAY 0x1c0 #20295
 	SAY 0x1c4 #20312
 	SAY 0x1c8 #20313
 
-COPY_EXISTING + ~CARRIO.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~CARRIO.CRE~ ~override~
 	SAY ~0xc8~ #5874
 	SAY ~0xcc~ #5875
 	SAY ~0xdc~ #5876
@@ -126,7 +126,7 @@ COPY_EXISTING + ~CARRIO.CRE~ ~%patch_dir%/cre_bg2~
 	SAY ~0x110~ #5873
 	SAY ~0x1b8~ #10473
 
-COPY_EXISTING + ~CAT.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~CAT.CRE~ ~override~
 	SAY 0xec #20289
 	SAY 0xf0 #20290
 	SAY 0x10c #20316
@@ -138,9 +138,9 @@ COPY_EXISTING + ~CAT.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x1c8 #20290
 	WRITE_BYTE 0x273 ~175~ // Class flag
 	
-COPY_EXISTING + ~CHARBASE.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~CHARBASE.CRE~ ~override~
 
-COPY_EXISTING + ~CHICKE.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~CHICKE.CRE~ ~override~
 	SAY 0xf0 #20284
 	SAY 0x10c #11737
 	SAY 0x110 #11739
@@ -152,12 +152,12 @@ COPY_EXISTING + ~CHICKE.CRE~ ~%patch_dir%/cre_bg2~
 	WRITE_BYTE 0x273 ~199~ // Class flag
 	WRITE_BYTE 0x275 ~1~ // Gender flag
 
-COPY_EXISTING + ~COW.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~COW.CRE~ ~override~
 	WRITE_BYTE 0x273 ~199~ // Class flag
 
-COPY_EXISTING + ~DIALOGMO.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~DIALOGMO.CRE~ ~override~
 
-/*COPY_EXISTING + ~DOGWASU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~DOGWASU.CRE~ ~override~
 	SAY 0xc8 #5530
 	SAY 0xcc #5531
 	SAY 0xdc #5532
@@ -166,9 +166,9 @@ COPY_EXISTING + ~DIALOGMO.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0xf0 #5536
 	SAY 0x10c #5528
 	SAY 0x110 #5529
-	WRITE_ASCII 0x248 ~WARDOG~ #8// Override script*/
+	WRITE_ASCII 0x248 ~WARDOG~ #8 // Override script*/
 
-/*COPY_EXISTING + ~DOGWISU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~DOGWISU.CRE~ ~override~
 	SAY 0xc8 #5521
 	SAY 0xcc #5522
 	SAY 0xdc #5523
@@ -177,18 +177,18 @@ COPY_EXISTING + ~DIALOGMO.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0xf0 #5527
 	SAY 0x10c #5519
 	SAY 0x110 #5520
-	WRITE_ASCII 0x248 ~WILDDOG~ #8// Override script*/
+	WRITE_ASCII 0x248 ~WILDDOG~ #8 // Override script*/
 
-//COPY_EXISTING + ~DRUNK2.CRE~ ~%patch_dir%/cre_bg2~
+//COPY_EXISTING ~DRUNK2.CRE~ ~override~
 //no need to change, not used in BG1, used in BG2
 
-COPY_EXISTING + ~EAGLE.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~EAGLE.CRE~ ~override~
 	SAY 0x1b8 #20291
 	SAY 0x1bc #20291
 	SAY 0x1c0 #20291
 	SAY 0x1c4 #20291
 
-/*COPY_EXISTING + ~GHOULSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~GHOULSU.CRE~ ~override~
 	SAY 0xc8 #5646
 	SAY 0xcc #5652
 	SAY 0xdc #5653
@@ -198,7 +198,7 @@ COPY_EXISTING + ~EAGLE.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5654
 	SAY 0x110 #5142*/
 
-/*COPY_EXISTING + ~GIBBERSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~GIBBERSU.CRE~ ~override~
 	SAY 0xc8 #5503
 	SAY 0xcc #5504
 	SAY 0xdc #5505
@@ -208,16 +208,16 @@ COPY_EXISTING + ~EAGLE.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5501
 	SAY 0x110 #5502*/
 
-/*COPY_EXISTING + ~GNOLLSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~GNOLLSU.CRE~ ~override~
 	SAY 0xc8 #5512
 	SAY 0xcc #5513
 	SAY 0xec #5517
 	SAY 0xf0 #5518
 	SAY 0x10c #5510
 	SAY 0x110 #5511
-	WRITE_ASCII 0x258 ~GNOLLF~ #8// Race script*/
+	WRITE_ASCII 0x258 ~GNOLLF~ #8 // Race script*/
 
-/*COPY_EXISTING + ~HOBGOBSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~HOBGOBSU.CRE~ ~override~
 	SAY 0xc8 #5137
 	SAY 0xcc #5138
 	SAY 0xec #5499
@@ -225,11 +225,11 @@ COPY_EXISTING + ~EAGLE.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5135
 	SAY 0x110 #5136
 	SAY 0x1b8 #10483
-	WRITE_ASCII 0x258 ~HOBGOBA~ #8// Race script*/
+	WRITE_ASCII 0x258 ~HOBGOBA~ #8 // Race script*/
 
-COPY_EXISTING + ~HORSE.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~HORSE.CRE~ ~override~
 
-COPY_EXISTING + ~JELLMU.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~JELLMU.CRE~ ~override~
 	SAY 0xc8 #5956
 	SAY 0xcc #5957
 	SAY 0xdc #5958
@@ -239,7 +239,7 @@ COPY_EXISTING + ~JELLMU.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5954
 	SAY 0x110 #5955
 
-COPY_EXISTING + ~JELLOC.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~JELLOC.CRE~ ~override~
 	SAY 0xc8 #5956
 	SAY 0xcc #5957
 	SAY 0xdc #5958
@@ -249,7 +249,7 @@ COPY_EXISTING + ~JELLOC.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5954
 	SAY 0x110 #5955
 
-/*COPY_EXISTING + ~KOBOLDSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~KOBOLDSU.CRE~ ~override~
 	SAY 0xc8 #4995
 	SAY 0xcc #4996
 	SAY 0xec #5480
@@ -257,7 +257,7 @@ COPY_EXISTING + ~JELLOC.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #4993
 	SAY 0x130 #4994*/
 
-/*COPY_EXISTING + ~OGREGRSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~OGREGRSU.CRE~ ~override~
 	SAY 0xc8 #5163
 	SAY 0xcc #5164
 	SAY 0xdc #5867
@@ -267,7 +267,7 @@ COPY_EXISTING + ~JELLOC.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5161
 	SAY 0x130 #5162*/
 
-COPY_EXISTING + ~PLYFLIND.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~PLYFLIND.CRE~ ~override~
 	SAY 0xc8 #5511
 	SAY 0xcc #5510
 	SAY 0xec #5517
@@ -276,7 +276,7 @@ COPY_EXISTING + ~PLYFLIND.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x110 #5511
 	SAY 0x1b8 #11566
 
-COPY_EXISTING + ~PLYOGRE.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~PLYOGRE.CRE~ ~override~
 	SAY 0xc8 #5148
 	SAY 0xcc #5149
 	SAY 0xec #5855
@@ -285,7 +285,7 @@ COPY_EXISTING + ~PLYOGRE.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x110 #5851
 	SAY 0x1b8 #10484
 
-COPY_EXISTING + ~PLYSPID.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~PLYSPID.CRE~ ~override~
 	SAY 0xc8 #5921
 	SAY 0xcc #5922
 	SAY 0xdc #5923
@@ -296,7 +296,7 @@ COPY_EXISTING + ~PLYSPID.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x110 #5920
 	SAY 0x1b8 #10489
 
-COPY_EXISTING + ~PLYWOLF.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~PLYWOLF.CRE~ ~override~
 	SAY 0xc8 #5601
 	SAY 0xcc #5602
 	SAY 0xdc #5576
@@ -306,17 +306,17 @@ COPY_EXISTING + ~PLYWOLF.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5599
 	SAY 0x110 #5600
 
-COPY_EXISTING + ~RAT.CRE~ ~%patch_dir%/cre_bg2~
+//COPY_EXISTING ~RAT.CRE~ ~override~//no changes needed
 
-COPY_EXISTING + ~SEAGUL.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SEAGUL.CRE~ ~override~
 	SAY 0x1b8 #20288
 	SAY 0x1bc #20288
 	SAY 0x1c0 #20288
 	SAY 0x1c4 #20288
 
-COPY_EXISTING + ~SKELDED.CRE~ ~%patch_dir%/cre_bg2~
+//COPY_EXISTING ~SKELDED.CRE~ ~override~//no changes needed
 
-COPY_EXISTING + ~SKELE2.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SKELE2.CRE~ ~override~
 	SAY 0xc8 #5539
 	SAY 0xcc #5540
 	SAY 0xdc #5541
@@ -327,7 +327,7 @@ COPY_EXISTING + ~SKELE2.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5537
 	SAY 0x110 #5538
 
-COPY_EXISTING + ~SKELSU01.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SKELSU01.CRE~ ~override~
 	SAY 0xc8 #5140
 	SAY 0xcc #5548
 	SAY 0xdc #5549
@@ -338,7 +338,7 @@ COPY_EXISTING + ~SKELSU01.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5546
 	SAY 0x110 #5547
 
-COPY_EXISTING + ~SKELSU07.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SKELSU07.CRE~ ~override~
 	SAY 0xc8 #5140
 	SAY 0xcc #5548
 	SAY 0xdc #5549
@@ -349,7 +349,7 @@ COPY_EXISTING + ~SKELSU07.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5546
 	SAY 0x110 #5547
 
-COPY_EXISTING + ~SKELSU11.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SKELSU11.CRE~ ~override~
 	SAY 0xc8 #5140
 	SAY 0xcc #5548
 	SAY 0xdc #5549
@@ -360,7 +360,7 @@ COPY_EXISTING + ~SKELSU11.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5546
 	SAY 0x110 #5547
 
-COPY_EXISTING + ~SLEEPDW.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SLEEPDW.CRE~ ~override~
 	//WRITE_BYTE 0x2c 27 //metal
 	//WRITE_BYTE 0x2d 41 //minor
 	//WRITE_BYTE 0x2e 45 //major
@@ -378,7 +378,7 @@ COPY_EXISTING + ~SLEEPDW.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x1c0 #11858
 	SAY 0x1c4 #11858
 
-COPY_EXISTING + ~SLEEPFH.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SLEEPFH.CRE~ ~override~
 	//WRITE_BYTE 0x2c 30 //metal
 	//WRITE_BYTE 0x2d 39 //minor
 	//WRITE_BYTE 0x2e 49 //major
@@ -391,7 +391,7 @@ COPY_EXISTING + ~SLEEPFH.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x110 #16196
 	SAY 0x114 #16198
 
-COPY_EXISTING + ~SLEEPMH.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SLEEPMH.CRE~ ~override~
 	//WRITE_BYTE 0x2c 30 //metal
 	//WRITE_BYTE 0x2d 23 //minor
 	//WRITE_BYTE 0x2e 42 //major
@@ -403,17 +403,17 @@ COPY_EXISTING + ~SLEEPMH.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x110 #16197
 	SAY 0x114 #16193
 
-COPY_EXISTING + ~SQUIRL.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SQUIRL.CRE~ ~override~
 	SAY 0x1b8 #20285
 	SAY 0x1bc #20286
 	SAY 0x1c0 #20320
 
-COPY_EXISTING + ~SQUIRR.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~SQUIRR.CRE~ ~override~
 	SAY 0x1b8 #20285
 	SAY 0x1bc #20286
 	SAY 0x1c0 #20320
 
-/*COPY_EXISTING + ~TASLOISU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~TASLOISU.CRE~ ~override~
 	SAY 0xc8 #5484
 	SAY 0xcc #5485
 	SAY 0xdc #5486
@@ -423,7 +423,7 @@ COPY_EXISTING + ~SQUIRR.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5482
 	SAY 0x110 #5483*/
 
-COPY_EXISTING + ~WOLFCHAR.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~WOLFCHAR.CRE~ ~override~
 	SAY 0xc8 #5601
 	SAY 0xcc #5602
 	SAY 0xdc #5576
@@ -433,7 +433,7 @@ COPY_EXISTING + ~WOLFCHAR.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5599
 	SAY 0x110 #5600
 
-COPY_EXISTING + ~WOLFDI.CRE~ ~%patch_dir%/cre_bg2~
+COPY_EXISTING ~WOLFDI.CRE~ ~override~
 	SAY 0xc8 #5574
 	SAY 0xcc #5575
 	SAY 0xdc #5576
@@ -443,7 +443,7 @@ COPY_EXISTING + ~WOLFDI.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5572
 	SAY 0x110 #5573
 
-/*COPY_EXISTING + ~WOLFDISU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~WOLFDISU.CRE~ ~override~
 	SAY 0xc8 #5574
 	SAY 0xcc #5575
 	SAY 0xdc #5576
@@ -453,7 +453,7 @@ COPY_EXISTING + ~WOLFDI.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5572
 	SAY 0x110 #5573*/
 
-/*COPY_EXISTING + ~WOLFSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~WOLFSU.CRE~ ~override~
 	SAY 0xc8 #5556
 	SAY 0xcc #5557
 	SAY 0xdc #5558
@@ -463,7 +463,7 @@ COPY_EXISTING + ~WOLFDI.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5554
 	SAY 0x110 #5555*/
 
-/*COPY_EXISTING + ~WORGSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~WORGSU.CRE~ ~override~
 	SAY 0xc8 #5565
 	SAY 0xcc #5566
 	SAY 0xdc #5567
@@ -473,7 +473,7 @@ COPY_EXISTING + ~WOLFDI.CRE~ ~%patch_dir%/cre_bg2~
 	SAY 0x10c #5563
 	SAY 0x110 #5564*/
 
-/*COPY_EXISTING + ~XVARTSU.CRE~ ~%patch_dir%/cre_bg2~
+/*COPY_EXISTING ~XVARTSU.CRE~ ~override~
 	SAY 0xc8 #5133
 	SAY 0xcc #5134
 	SAY 0xdc #5491

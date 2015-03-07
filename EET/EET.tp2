@@ -667,8 +667,6 @@ BUT_ONLY
 ///// Patching each group of BG2:EE resources          \\\\\
 /////                                                  \\\\\
 
-MKDIR ~%patch_dir%/CRE_BG2~
-
 ////////////////////////
 // Viader's Extended Animations
 ////////////////////////
@@ -1134,8 +1132,8 @@ END
 OUTER_SPRINT real ~Real~
 OUTER_SPRINT item_broken ~MISC56_~
 OUTER_SET string = 14158
-OUTER_SET response1 = 50
-OUTER_SET response2 = 50 //0.5% chance
+OUTER_SET response1 = 95
+OUTER_SET response2 = 5 //0.5% chance
 COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATWE.baf~
 COMPILE ~EET-inlined/K#SHATWE.baf~ EVALUATE_BUFFER
 ACTION_FOR_EACH item IN AX1H01 AX1H04 BLUN02 BLUN04 BLUN06 DAGG01 /*DAGG06*/ HALB01 SPER01 SW1H01 SW1H04 SW1H07 /*SW1H12*/ /*SW1H17*/ SW1H20 SW1H43 SW1H46 SW1H48 SW2H01 BEGIN
@@ -1146,8 +1144,8 @@ OUTER_SPRINT real ~~
 //Shields
 OUTER_SPRINT item_broken ~MISC57~
 OUTER_SET string = 14180
-OUTER_SET response1 = 90
-OUTER_SET response2 = 10 //0.1% chance
+OUTER_SET response1 = 98
+OUTER_SET response2 = 2 //0.2% chance
 COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATSH.baf~
 COMPILE ~EET-inlined/K#SHATSH.baf~ EVALUATE_BUFFER
 ACTION_FOR_EACH item IN SHLD01 SHLD03 SHLD05 SHLD08 SHLD09 SHLD10 SHLD11 SHLD12 SHLD13 SHLD14 SHLD15 SHLD16 SHLD18 BEGIN
@@ -1157,8 +1155,8 @@ END
 //Armors
 OUTER_SPRINT item_broken ~MISC58~
 OUTER_SET string = 15817
-OUTER_SET response1 = 90
-OUTER_SET response2 = 10 //0.1% chance
+OUTER_SET response1 = 98
+OUTER_SET response2 = 2 //0.2% chance
 COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATAR.baf~
 COMPILE ~EET-inlined/K#SHATAR.baf~ EVALUATE_BUFFER
 ACTION_FOR_EACH item IN CHAN01 CHAN04 PLAT01 PLAT04 BEGIN
@@ -1168,8 +1166,8 @@ END
 //Helmets
 OUTER_SPRINT item_broken ~MISC59~
 OUTER_SET string = 15818
-OUTER_SET response1 = 95
-OUTER_SET response2 = 5 //0.05% chance
+OUTER_SET response1 = 99
+OUTER_SET response2 = 1 //0.1% chance
 COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATHE.baf~
 COMPILE ~EET-inlined/K#SHATHE.baf~ EVALUATE_BUFFER
 ACTION_FOR_EACH item IN HELM01 HELM08 HELM09 HELM10 HELM11 HELM12 HELM13 HELM15 BEGIN
@@ -1601,7 +1599,6 @@ COPY ~EET/temp/chr~ ~%USER_DIRECTORY%/characters~
 
 OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
 COPY ~%patch_dir%/cre~ ~override~
-	~%patch_dir%/cre_bg2~ ~override~
 	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	PATCH_FOR_EACH ~offset~ IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
 		READ_LONG offset "StrRef"
