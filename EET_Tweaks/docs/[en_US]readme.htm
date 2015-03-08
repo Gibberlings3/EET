@@ -379,7 +379,7 @@
 
 <h3>Teleport spell</h3>
 <p>Compatibility: EET</p>
-<p>Leftover from the earlier version of EET that didn't have native worldmap support for going back to BG1 areas after starting BG2. Teleport is still a nice and lore friendly feature, so it's now part of this tweak pack. Learning this spell will allow your party fast travel to areas that you have previously visited. Additionally modders can use this spell for easier mod debugging by typing in the console: SetGlobal("K#DebugMode","GLOBAL",1) which will enable teleportation to all areas regardless if you visited them. The spell itself will be added to your inventory after finishing Shadows of Amn portion of the game. You can also spawn it via console: CreateItem("K#TELSPL",1)</p>
+<p>Leftover from the earlier version of EET that didn't have native worldmap support for going back to BG1 areas after starting BG2. Teleport is still a nice and lore friendly feature, so it's now part of this tweak pack. Learning this spell will allow your party fast travel to areas that you have previously visited. Additionally modders can use this spell for easier mod debugging by typing in the console: SetGlobal("K#DebugMode","GLOBAL",1) which will enable teleportation to all areas regardless if you visited them. The spell itself can be bought from Lazarus in ToB after completing his quest (the one with Lazarus' Teleport Scroll). You can also spawn it via console: CreateItem("K#TELSPL",1)</p>
 <hr />
 
 <h3>Consistent NPC appearance</h3>
@@ -424,8 +424,8 @@
 <ul class="vlisthide" id="Adjust BG:EE XP CAP">
 	<li><strong> 89,000</strong> (BG2:EE starting XP)</li>
 	<li><strong>161,000</strong> (BG:EE XP CAP - default)</li>
-	<li><strong>Custom value</strong> (type in integer value)</li>
 	<li><strong>Disable XP CAP</strong> (sets XP CAP to 100,000,000)</li>
+	<li><strong>Custom value</strong> (type in integer value)</li>
 </ul>
 <hr />
 
@@ -436,8 +436,8 @@
 <ul class="vlisthide" id="Adjust BG2:EE XP CAP">
 	<li><strong>2,950,000</strong> (BG2 without expansion XP CAP)</li>
 	<li><strong>8,000,000</strong> (BG2:EE XP CAP - default)</li>
-	<li><strong>Custom value</strong> (type in integer value)</li>
 	<li><strong>Disable XP CAP</strong></li>
+	<li><strong>Custom value</strong> (type in integer value)</li>
 </ul>
 <hr />
 
@@ -446,15 +446,11 @@
 <p>Adjust XP rewards for disarming Traps, learning Spells and Lockpicking via editing XPBONUS.2DA. Available options:</p>
 <p><a href="#" onclick="toggle('Adjust XP for Traps, Spells and Lockpicking'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust XP for Traps, Spells and Lockpicking">
-	<li><strong>Increase to 150%</strong></li>
-	<li><strong>Decrease to 75%</strong></li>
-	<li><strong>Decrease to 50%</strong></li>
-	<li><strong>Decrease to 25%</strong></li>
-	<li><strong>Decrease to 10%</strong></li>
-	<li><strong>Disable</strong> (no XP for these actions at all)</li>
-	<li><strong>Custom value</strong> (type in integer percentage value)</li>
 	<li><strong>Use XP values from BG1</strong> (default in EET)</li>
 	<li><strong>Use XP values from BG2</strong> (if you are using EET/BGT/Tutu than keep in mind that it's way to high for BG1 portion of the game, but consider installing it after starting BG2)</li>
+	<li><strong>Vanilla friendly progressive</strong> (with default XP CAP your thief and mage will earn the same XP rewards as in BG1. Later in the game rewards increases progressively to end up on BG2:ToB values when your thief reaches maximum level and about half of the maximum XP for level 9th spells)</li>
+	<li><strong>Disable XP for disarming traps, lockpicking, spell learning</strong> (pen and paper accurate)</li>
+	<li><strong>Custom value</strong> (type in integer percentage value)</li>
 </ul>
 <hr />
 
@@ -527,6 +523,67 @@
 <p>Adds a flag to all areas in game to prevent Game Over screen when protagonist dies, but other party members are still alive (also affects mods).</p>
 <hr />
 
+<h3>Disable item shattering for enemies</h3>
+<p>Compatibility: EET</p>
+<p>Non party creatures in vanilla BG:EE couldn't shatter their items. EET offers the opposite by default, which I think adds to immersion. This component allows you to disable item shattering functionality for non party members.</p>
+<hr />
+
+<h3>Adjust BG1 weapon shattering chance</h3>
+<p>Compatibility: EET</p>
+<p>Adjust or disable chance for shattering after hitting with non-magical weapon in BG1 portion of the game. Default EET chance for weapon shattering is lower than in BG1, but shields, armours and helmets can also brake, so in the end there is still the same overall chance for shattering an item (1% by default when you combine all these chances). Available options:</p>
+<p><a href="#" onclick="toggle('Adjust BG1 weapon shattering chance'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust BG1 weapon shattering chance">
+	<li><strong>1%</strong> (default in BG1)</li>
+	<li><strong>0.5%</strong> (default in EET)</li>
+	<li><strong>0.2%</strong></li>
+	<li><strong>0.1%</strong></li>
+	<li><strong>Disable</strong> (weapons can't shatter)</li>
+	<li><strong>Custom value</strong> (type in integer value from 0 to 100 - it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)</li>
+</ul>
+<hr />
+
+<h3>Adjust BG1 shield shattering chance</h3>
+<p>Compatibility: EET</p>
+<p>As above but for being hit while wearing a non-magical shield in BG1 portion of the game. Available options:</p>
+<p><a href="#" onclick="toggle('Adjust BG1 shield shattering chance'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust BG1 shield shattering chance">
+	<li><strong>1%</strong></li>
+	<li><strong>0.5%</strong></li>
+	<li><strong>0.2%</strong> (default in EET)</li>
+	<li><strong>0.1%</strong></li>
+	<li><strong>Disable</strong> (shields can't shatter)</li>
+	<li><strong>Custom value</strong> (type in integer value from 0 to 100 - it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)</li>
+</ul>
+<hr />
+
+<h3>Adjust BG1 armor shattering chance</h3>
+<p>Compatibility: EET</p>
+<p>As above but for being hit while wearing a non-magical armor in BG1 portion of the game. Available options:</p>
+<p><a href="#" onclick="toggle('Adjust BG1 armor shattering chance'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust BG1 armor shattering chance">
+	<li><strong>1%</strong></li>
+	<li><strong>0.5%</strong></li>
+	<li><strong>0.2%</strong> (default in EET)</li>
+	<li><strong>0.1%</strong></li>
+	<li><strong>Disable</strong> (armours can't shatter)</li>
+	<li><strong>Custom value</strong> (type in integer value from 0 to 100 - it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)</li>
+</ul>
+<hr />
+
+<h3>Adjust BG1 helmets shattering chance</h3>
+<p>Compatibility: EET</p>
+<p>As above but for being hit while wearing a non-magical helmet in BG1 portion of the game. Available options:</p>
+<p><a href="#" onclick="toggle('Adjust BG1 helmet shattering chance'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust BG1 helmet shattering chance">
+	<li><strong>1%</strong></li>
+	<li><strong>0.5%</strong></li>
+	<li><strong>0.2%</strong></li>
+	<li><strong>0.1%</strong> (default in EET)</li>
+	<li><strong>Disable</strong> (helmets can't shatter)</li>
+	<li><strong>Custom value</strong> (type in integer value from 0 to 100 - it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)</li>
+</ul>
+<hr />
+
 <address><span class="footer">EETT > Introduction</span> ·<a href="#top">BACK TO TOP</a></address>
 </div>
 <!-- ================== I n s t a l l a t i o n ================== --><a id="installation" name="installation"></a>
@@ -537,7 +594,7 @@
 <h3>Compatibility and install order</h3>
 
 <p>This mod should be installed at the end, after any mod that alters CRE, BCS, DLG, ITM, SPL, EFF files. You can safely keep it as the last mod in your load order, which will allow you to install/uninstall/re-install components during play through, without risking breaking other mods.</p>
-<p>You don't need to worry about components installation order - weidu is smart enough to reinstall previous components if needed. For example you can install 'Party XP for quests distributed individually' before or after installing 'Adjust XP for quests' component. The outcome will be the same.
+<p>You don't need to worry about components installation order - weidu is smart enough to reinstall previous components if needed. For example you can install 'Party XP for quests distributed individually' before or after installing 'Adjust XP for quests' component. The outcome will be the same.</p>
 <p>If you are going to use XP related components than you should not install 'Ding0 Experience Fixer' (DEF JAM), as it does the same thing, but compared to this mod is less precise, flexible and doesn't cover mod related SPL, ITM, EFF files and new ChangeStat action added by EE engine (at least the version v6 that was the most recent one when I was writing this readme).</p>
 <hr />
 
@@ -591,14 +648,17 @@
 			11 - install Adjust FPS and fix audio skipping in cutscenes<br />
 			12 - install More bandit scalps<br />
 			13 - install Put Sword of Chaos +2 in Sarevok's inventory<br />
-			14 - install Protagonist can die</p>
+			14 - install Protagonist can die<br />
+			15 - install Disable item shattering for enemies<br />
+			16 - install Adjust BG1 weapon shattering chance<br />
+			17 - install Adjust BG1 shield shattering chance<br />
+			18 - install Adjust BG1 armor shattering chance<br />
+			19 - install Adjust BG1 helmet shattering chance</p>
 			</td>
 		</tr>
 		<tr>
 			<td><em>[options]</em></td>
-			<td>Some components allows you to choose options during installation. If this is the case than you can skip the prompt and choose them here by typing number of the component followed by '-' and the value.<br />
-			Component 1 (Consistent NPC appearance) uses 0 for BG1 base and 1 for BG2 base.<br />
-			The value that you send to all other components with options (3, 4, 5, 6, 7, 8, 11) works the same way as if you had type in the value during installation prompt via 'Custom value' option.</td>
+			<td>Some components allows you to choose options during installation. If this is the case than you can skip the prompt and choose them here by typing number of the component followed by '-' and the value that represents the chosen option and followed by another '-' and the value, if the chosen option expects exact value typed in via keyboard.<br /></td>
 		</tr>
 	</tbody>
 </table>
@@ -607,10 +667,10 @@
 <p>Example:</p>
 
 <div class="important">
-<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 --skip-at-view --language 0 --args-list "1-1" "3-2500000" "4-161000" "5-10000000" "6-25" "7-10" "8-120" "11-60"</p>
+<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 --skip-at-view --language 0 --args-list "1-1" "3-2" "4-4-200000" "5-4-10000000" "6-3" "7-5" "8-7-120" "11-1" "16-4" "17-4" "18-4" "19-4"</p>
 </div>
 
-<p>This construction installs all components of this mod using the English language and following settings: BG2 used as a base for join-able NPCs; additional BG2:SoA XP CAP set to 2,500,000; BG:EE XP CAP set to 161,000; BG2:EE XP CAP set to 10,000,000; XP rewards for Traps, Spells and Lockpicking decreased to 25%; XP rewards for killing monsters decreased to 10%; XP rewards for quests increased to 120%; FPS set to 60 frames per second.</p>
+<p>This construction installs all components of this mod using the English language and following settings: BG2 used as a base for join-able NPCs (option 1); additional BG2:SoA XP CAP set to 2,950,000 (option 2); BG:EE XP CAP set to 200,000 (option 4 followed by custom value); BG2:EE XP CAP set to 10,000,000 (option 4 followed by custom value); XP rewards for Traps, Spells and Lockpicking based on progressive table (option 3); XP rewards for killing monsters decreased to 10% (option 5); XP rewards for quests increased to 120% (option 7 followed by custom value); FPS set to 60 frames per second (option 1); all item types with shatter chance set to 0.1% (option 4).</p>
 
 <address><span class="footer">EETT > Installation and Uninstallation</span> ·<a href="#top">BACK TO TOP</a></address>
 </div>

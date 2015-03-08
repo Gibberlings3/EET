@@ -137,6 +137,9 @@ COPY ~EET_Tweaks/0/K#TELSPL.ITM~ ~override~
 	SAY 0xc @2000000
 	SAY 0x54 @2000001
 
+COPY_EXISTING ~25Spell.sto~ ~override~
+	ADD_STORE_ITEM "K#TELSPL" #1 #0 #0 ~IDENTIFIED~ #2
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -149,17 +152,11 @@ BEGIN ~Consistent NPC appearance~
 //DESIGNATED 1
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET option = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //BG:EE
+	ACTION_IF (button = 1) BEGIN //BG:EE
 		OUTER_SET option = 0
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //BG2:EE
+	END ELSE ACTION_IF (button = 2) BEGIN //BG2:EE
 		OUTER_SET option = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
@@ -204,21 +201,14 @@ BEGIN ~Additional BG2:SoA XP CAP~
 //DESIGNATED 3
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //2,500,000
+	ACTION_IF (button = 1) BEGIN //2,500,000
 		OUTER_SET value = 2500000
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //2,950,000
+	END ELSE ACTION_IF (button = 2) BEGIN //2,950,000
 		OUTER_SET value = 2950000
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //Custom value
+	END ELSE ACTION_IF (button = 3) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 1) BEGIN
 			PRINT ~Type in the integer value for XP CAP:~
 			ACTION_READLN ~value~
@@ -269,35 +259,28 @@ BEGIN ~Adjust BG:EE XP CAP~
 //DESIGNATED 4
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //89,000
+	ACTION_IF (button = 1) BEGIN //89,000
 		OUTER_SET value = 89000
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //161,000
+	END ELSE ACTION_IF (button = 2) BEGIN //161,000
 		OUTER_SET value = 161000
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //Custom value
+	END ELSE ACTION_IF (button = 3) BEGIN //Disable
+		OUTER_SET value = 100000000
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 4) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 1) BEGIN
 			PRINT ~Type in the integer value for XP CAP:~
 			ACTION_READLN ~value~
 		END
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 4) BEGIN //Disable
-		OUTER_SET value = 100000000
-		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~What value should be used for BG:EE XP CAP?
  1]  89,000 - BG2:EE starting XP
  2] 161,000 - BG:EE XP CAP (default)
- 3] Custom value
- 4] Disable XP CAP (set to 100,000,000)~
+ 3] Disable XP CAP (set to 100,000,000)
+ 4] Custom value~
 		ACTION_READLN ~button~
 		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
 			OUTER_SET button = 0
@@ -341,35 +324,28 @@ BEGIN ~Adjust BG2:EE XP CAP~
 //DESIGNATED 5
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //2,950,000
+	ACTION_IF (button = 1) BEGIN //2,950,000
 		OUTER_SET value = 2950000
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //8,000,000
+	END ELSE ACTION_IF (button = 2) BEGIN //8,000,000
 		OUTER_SET value = 8000000
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //Custom value
+	END ELSE ACTION_IF (button = 3) BEGIN //Disable
+		OUTER_SET value = "-1"
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 4) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 10) BEGIN
 			PRINT ~Type in the integer value for XP CAP:~
 			ACTION_READLN ~value~
 		END
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 4) BEGIN //Disable
-		OUTER_SET value = "-1"
-		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~What value should be used for BG2:EE SoA XP CAP?
  1] 2,950,000 - BG2 without expansion XP CAP
  2] 8,000,000 - BG2:EE XP CAP (default)
- 3] Custom value
- 4] Disable XP CAP~
+ 3] Disable XP CAP
+ 4] Custom value~
 		ACTION_READLN ~button~
 		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
 			OUTER_SET button = 0
@@ -402,59 +378,38 @@ BEGIN ~Adjust XP for Traps, Spells and Lockpicking~
 //DESIGNATED 6
 REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
+	ACTION_IF (button = 1) BEGIN //BG1 (default)
+		OUTER_SPRINT DISARM_TRAP ~DISARM_TRAP   10   10   10   10   10   17   17   17   17   17   27   27   27   27   27   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32~
+		OUTER_SPRINT PICK_LOCK   ~PICK_LOCK     25   25   25   25   25   40   40   40   40   40   95   95   95   95   95   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15~
+		OUTER_SPRINT LEARN_SPELL ~LEARN_SPELL   10   20   30   40   50   60   70   80   90   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0~
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //150%
-		OUTER_SET value = 150
+	END ELSE ACTION_IF (button = 2) BEGIN //BG2
+		OUTER_SPRINT DISARM_TRAP ~DISARM_TRAP   1000 1000 1000 1000 1000 1750 1750 1750 1750 1750 2750 2750 2750 2750 2750 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250~
+		OUTER_SPRINT PICK_LOCK   ~PICK_LOCK     250  250  250  250  250  400  400  400  400  400  950  950  950  950  950  1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550~
+		OUTER_SPRINT LEARN_SPELL ~LEARN_SPELL   1000 2000 3000 4000 5000 6000 7000 8000 9000 0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0~
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //75%
-		OUTER_SET value = 75
+	END ELSE ACTION_IF (button = 3) BEGIN //Vanilla friendly progressive
+		OUTER_SPRINT DISARM_TRAP ~DISARM_TRAP   10   10   10   10   10   17   17   17   17   17   300  350  450  550  650  750  850  950  1050 1150 1250 1350 1450 1550 1650 1750 1850 1950 2050 2150 2250 2450 2550 2650 2750 2850 2950 3050 3150 3250~
+		OUTER_SPRINT PICK_LOCK   ~PICK_LOCK     25   25   25   25   25   40   40   40   40   40   100  150  200  250  300  350  400  450  500  550  600  650  700  750  800  850  900  950  1000 1050 1100 1150 1200 1250 1300 1350 1400 1450 1500 1550~
+		OUTER_SPRINT LEARN_SPELL ~LEARN_SPELL   10   20   30   40   250  500  1000 2000 4000 0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0~
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //50%
-		OUTER_SET value = 50
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 4) BEGIN //25%
-		OUTER_SET value = 25
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 5) BEGIN //10%
-		OUTER_SET value = 10
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 6) BEGIN //0%
+	END ELSE ACTION_IF (button = 4) BEGIN //Disable
 		OUTER_SET value = 0
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 7) BEGIN //Custom value
+	END ELSE ACTION_IF (button = 5) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) BEGIN
 			PRINT ~Type in the integer percentage value:~
 			ACTION_READLN ~value~
 		END
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 8) BEGIN //BG1 (default)
-		OUTER_SPRINT DISARM_TRAP ~DISARM_TRAP   10   10   10   10   10   17   17   17   17   17   27   27   27   27   27   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32~
-		OUTER_SPRINT PICK_LOCK   ~PICK_LOCK     25   25   25   25   25   40   40   40   40   40   95   95   95   95   95   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15   15~
-		OUTER_SPRINT LEARN_SPELL ~LEARN_SPELL   10   20   30   40   50   60   70   80   90   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0~
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 9) BEGIN //BG2
-		OUTER_SPRINT DISARM_TRAP ~DISARM_TRAP   1000 1000 1000 1000 1000 1750 1750 1750 1750 1750 2750 2750 2750 2750 2750 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250 3250~
-		OUTER_SPRINT PICK_LOCK   ~PICK_LOCK     250  250  250  250  250  400  400  400  400  400  950  950  950  950  950  1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550 1550~
-		OUTER_SPRINT LEARN_SPELL ~LEARN_SPELL   1000 2000 3000 4000 5000 6000 7000 8000 9000 0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0~
-		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~How would you like to do adjust XP for Disarming Traps, Lockpicking and Spell learning?
- 1] Increase to 150%
- 2] Decrease to 75%
- 3] Decrease to 50%
- 4] Decrease to 25%
- 5] Decrease to 10%
- 6] Disable XP for disarming traps, lockpicking, spell learning
- 7] Custom value
- 8] Use XP values from BG1:EE (default)
- 9] Use XP values from BG2:EE~//%~
+ 1] Use XP values from BG1 (default)
+ 2] Use XP values from BG2
+ 3] Vanilla friendly progressive
+ 4] Disable XP for disarming traps, lockpicking, spell learning
+ 5] Custom value~
 		ACTION_READLN ~button~
 		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
 			OUTER_SET button = 0
@@ -463,7 +418,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 END
 
 COPY_EXISTING ~XPBONUS.2DA~ ~override~
-	PATCH_IF ("%button%" <= 7) BEGIN
+	PATCH_IF (button >= 4) BEGIN
 		COUNT_2DA_COLS "cntcol"
 		COUNT_2DA_ROWS "%cntcol%" "cntrows"
 		FOR (cnt = 0; cnt < "%cntrows%"; cnt = cnt + 1) BEGIN
@@ -498,33 +453,26 @@ BEGIN ~Adjust XP for killing creatures~
 //DESIGNATED 7
 REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //150%
+	ACTION_IF (button = 1) BEGIN //150%
 		OUTER_SET value = 150
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //75%
+	END ELSE ACTION_IF (button = 2) BEGIN //75%
 		OUTER_SET value = 75
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //50%
+	END ELSE ACTION_IF (button = 3) BEGIN //50%
 		OUTER_SET value = 50
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 4) BEGIN //25%
+	END ELSE ACTION_IF (button = 4) BEGIN //25%
 		OUTER_SET value = 25
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 5) BEGIN //10%
+	END ELSE ACTION_IF (button = 5) BEGIN //10%
 		OUTER_SET value = 10
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 6) BEGIN //0%
+	END ELSE ACTION_IF (button = 6) BEGIN //Disable
 		OUTER_SET value = 0
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 7) BEGIN //Custom value
+	END ELSE ACTION_IF (button = 7) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) BEGIN
 			PRINT ~Type in the integer percentage value:~
 			ACTION_READLN ~value~
@@ -576,33 +524,26 @@ BEGIN ~Adjust XP for quests~
 //DESIGNATED 8
 REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //150%
+	ACTION_IF (button = 1) BEGIN //150%
 		OUTER_SET value = 150
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //75%
+	END ELSE ACTION_IF (button = 2) BEGIN //75%
 		OUTER_SET value = 75
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //50%
+	END ELSE ACTION_IF (button = 3) BEGIN //50%
 		OUTER_SET value = 50
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 4) BEGIN //25%
+	END ELSE ACTION_IF (button = 4) BEGIN //25%
 		OUTER_SET value = 25
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 5) BEGIN //10%
+	END ELSE ACTION_IF (button = 5) BEGIN //10%
 		OUTER_SET value = 10
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 6) BEGIN //0%
+	END ELSE ACTION_IF (button = 6) BEGIN //Disable
 		OUTER_SET value = 0
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 7) BEGIN //Custom value
+	END ELSE ACTION_IF (button = 7) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) BEGIN
 			PRINT ~Type in the integer percentage value:~
 			ACTION_READLN ~value~
@@ -942,21 +883,14 @@ BEGIN ~Adjust FPS and fix audio skipping in cutscenes~
 //DESIGNATED 11
 REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_SPRINT value ~dummy~
-
 OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF ("%ARGS_component%" = "%COMPONENT_NUMBER%") BEGIN
-		OUTER_SET value = "%ARGS_value%"
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 1) BEGIN //60
+	ACTION_IF (button = 1) BEGIN //60
 		OUTER_SET value = 60
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 2) BEGIN //45
+	END ELSE ACTION_IF (button = 2) BEGIN //45
 		OUTER_SET value = 45
 		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF ("%button%" = 3) BEGIN //Custom value
+	END ELSE ACTION_IF (button = 3) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% <= 30) OR (%value% > 60) BEGIN
 			PRINT ~Type in the FPS vakue (30+ up to 60):~
 			ACTION_READLN ~value~
@@ -1154,3 +1088,307 @@ ACTION_FOR_EACH script IN BALDUR BALDUR25 BEGIN
 	END
 END
 
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Disable item shattering for enemies              \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust BG1 weapon shattering~
+//DESIGNATED 15
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+
+<<<<<<<< EET_Tweaks-inlined/15/K#SHAT-et.baf
+IF
+  !InParty(LastSummonerOf(Myself))
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH file IN K#SHATWE K#SHATSH K#SHATAR K#SHATHE BEGIN
+	EXTEND_TOP ~%file%.BCS~ ~EET_Tweaks-inlined/15/K#SHAT-et.baf~
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Adjust BG1 weapon shattering chance              \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust BG1 weapon shattering~
+//DESIGNATED 16
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF (button = 1) BEGIN //1%
+		OUTER_SET value = 10
+		OUTER_SET response = 90
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 2) BEGIN //0.5%
+		OUTER_SET value = 5
+		OUTER_SET response = 95
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 3) BEGIN //0.2%
+		OUTER_SET value = 2
+		OUTER_SET response = 98
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 4) BEGIN //0.1%
+		OUTER_SET value = 1
+		OUTER_SET response = 99
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 5) BEGIN //Disable
+		OUTER_SET value = 0
+		OUTER_SET response = 100
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET response = (100 - value)
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~Adjust shattering chance:
+ 1] 1% (default BG1 value)
+ 2] 0.5% (default EET value)
+ 3] 0.2%
+ 4] 0.1%
+ 5] Disable weapon shattering
+ 6] Custom value~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+COPY_EXISTING ~K#SHATWE.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
+				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
+			END ELSE BEGIN
+				PATCH_PRINT ~No changes needed. Shattering chance already set to (%value% / 10)~
+			END
+		END
+		~RESPONSE #%response%
+    DestroySelf()
+  RESPONSE #%value%~
+	END
+BUT_ONLY
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Adjust BG1 shield shattering chance              \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust BG1 shield shattering~
+//DESIGNATED 17
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF (button = 1) BEGIN //1%
+		OUTER_SET value = 10
+		OUTER_SET response = 90
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 2) BEGIN //0.5%
+		OUTER_SET value = 5
+		OUTER_SET response = 95
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 3) BEGIN //0.2%
+		OUTER_SET value = 2
+		OUTER_SET response = 98
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 4) BEGIN //0.1%
+		OUTER_SET value = 1
+		OUTER_SET response = 99
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 5) BEGIN //Disable
+		OUTER_SET value = 0
+		OUTER_SET response = 100
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET response = (100 - value)
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~Adjust shattering chance:
+ 1] 1%
+ 2] 0.5%
+ 3] 0.2% (default EET value)
+ 4] 0.1%
+ 5] Disable shield shattering
+ 6] Custom value~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+COPY_EXISTING ~K#SHATSH.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
+				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
+			END ELSE BEGIN
+				PATCH_PRINT ~No changes needed. Shattering chance already set to (%value% / 10)~
+			END
+		END
+		~RESPONSE #%response%
+    DestroySelf()
+  RESPONSE #%value%~
+	END
+BUT_ONLY
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Adjust BG1 armor shattering chance               \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust BG1 armor shattering~
+//DESIGNATED 18
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF (button = 1) BEGIN //1%
+		OUTER_SET value = 10
+		OUTER_SET response = 90
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 2) BEGIN //0.5%
+		OUTER_SET value = 5
+		OUTER_SET response = 95
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 3) BEGIN //0.2%
+		OUTER_SET value = 2
+		OUTER_SET response = 98
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 4) BEGIN //0.1%
+		OUTER_SET value = 1
+		OUTER_SET response = 99
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 5) BEGIN //Disable
+		OUTER_SET value = 0
+		OUTER_SET response = 100
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET response = (100 - value)
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~Adjust shattering chance:
+ 1] 1%
+ 2] 0.5%
+ 3] 0.2% (default EET value)
+ 4] 0.1%
+ 5] Disable armor shattering
+ 6] Custom value~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+COPY_EXISTING ~K#SHATAR.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
+				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
+			END ELSE BEGIN
+				PATCH_PRINT ~No changes needed. Shattering chance already set to (%value% / 10)~
+			END
+		END
+		~RESPONSE #%response%
+    DestroySelf()
+  RESPONSE #%value%~
+	END
+BUT_ONLY
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Adjust BG1 helmet shattering chance              \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Adjust BG1 helmet shattering~
+//DESIGNATED 19
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF (button = 1) BEGIN //1%
+		OUTER_SET value = 10
+		OUTER_SET response = 90
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 2) BEGIN //0.5%
+		OUTER_SET value = 5
+		OUTER_SET response = 95
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 3) BEGIN //0.2%
+		OUTER_SET value = 2
+		OUTER_SET response = 98
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 4) BEGIN //0.1%
+		OUTER_SET value = 1
+		OUTER_SET response = 99
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 5) BEGIN //Disable
+		OUTER_SET value = 0
+		OUTER_SET response = 100
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
+		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			ACTION_READLN ~value~
+		END
+		OUTER_SET response = (100 - value)
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT ~Adjust shattering chance:
+ 1] 1%
+ 2] 0.5%
+ 3] 0.2%
+ 4] 0.1% (default EET value)
+ 5] Disable helmet shattering
+ 6] Custom value~
+		ACTION_READLN ~button~
+		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+COPY_EXISTING ~K#SHATHE.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
+				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
+			END ELSE BEGIN
+				PATCH_PRINT ~No changes needed. Shattering chance already set to (%value% / 10)~
+			END
+		END
+		~RESPONSE #%response%
+    DestroySelf()
+  RESPONSE #%value%~
+	END
+BUT_ONLY
