@@ -1404,12 +1404,15 @@ COPY_EXISTING - ~EET-transition.tbl~ ~override~
 
 //Update transition script with item variables (I need to check on thing with pass time in-game before enabling it)
 <<<<<<<< EET-inlined/K#TELBGT-et6.baf
-//IF
-//  GlobalLT("K#DaysPassed","GLOBAL",365)
-//THEN
-//  RESPONSE #100
-//    AdvanceTime(ONE_MONTH) //this action always interrupts everything, so it should be at the beginning
-//END
+IF
+  Global("K#AdvanceTimeOneMonth","LOCALS",0)
+  //GlobalLT("K#DaysPassed","GLOBAL",365)
+THEN
+  RESPONSE #100
+    SetGlobal("K#AdvanceTimeOneMonth","LOCALS",1)
+    AdvanceTime(ONE_MONTH)
+    Continue()
+END
 
 IF
   Global("BG1DrizztItem","GLOBAL",0)
@@ -1590,6 +1593,15 @@ COPY + ~EET/temp/splautop_ref.2da~ ~EET/temp~
 //BUT_ONLY
 
 <<<<<<<< EET-inlined/K#TELBG2-et2.baf
+IF
+  Global("K#AdvanceTimeOneYear","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#AdvanceTimeOneYear","LOCALS",1)
+    AdvanceTime(ONE_YEAR)
+    Continue()
+END
+
 IF
   Global("K#GenSplState","GLOBAL",0)
   Class(Player1,MAGE_ALL)

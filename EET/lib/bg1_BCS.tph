@@ -685,6 +685,32 @@ COPY_EXISTING ~FH3300.BCS~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// Skip to tutorial/BG2                             \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/FH2600-et.baf
+IF
+  Global("Chapter","GLOBAL",-1)
+  !PartyHasItem("K#TELTUT")
+THEN
+    RESPONSE #100
+    GiveItemCreate("K#TELTUT",Player1,1,1,0)
+    Continue()
+END
+
+IF
+  Global("Chapter","GLOBAL",-1)
+  !PartyHasItem("K#TELBG2")
+THEN
+    RESPONSE #100
+    GiveItemCreate("K#TELBG2",Player1,1,1,0)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~FH2600.BCS~ ~EET-inlined/FH2600-et.baf~
+
+/////                                                  \\\\\
 ///// existing in BG2:EE, use BG:EE version as a base  \\\\\
 /////                                                  \\\\\
 
