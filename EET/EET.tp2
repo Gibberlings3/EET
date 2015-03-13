@@ -2444,7 +2444,7 @@ COPY ~%bgee_dir%/music/bp2/bp2a1.acm~ ~music/bp4/bp4a1.acm~
 	~%bgee_dir%/music/bp2/bp2h3.acm~ ~music/bp4/bp4h3.acm~
 	~%bgee_dir%/music/bp2/bp2xa1.acm~ ~music/bp4/bp4xa1.acm~
 	~%bgee_dir%/music/bp2/bp2z1.acm~ ~music/bp4/bp4z1.acm~
-	
+
 COPY ~%bgee_dir%/music/theme/themea.acm~ ~music/newthm/newthma.acm~
 
 /////                                                  \\\\\
@@ -2452,6 +2452,12 @@ COPY ~%bgee_dir%/music/theme/themea.acm~ ~music/newthm/newthma.acm~
 /////                                                  \\\\\
 
 COPY ~EET/temp/pro~ ~override~
+
+/////                                                  \\\\\
+///// PVRZ                                             \\\\\
+/////                                                  \\\\\
+
+COPY_LARGE ~EET/temp/pvrz~ ~override~
 
 /////                                                  \\\\\
 ///// SPL                                              \\\\\
@@ -2636,6 +2642,12 @@ COPY + ~EET-inlined/blank.txt~ ~EET/temp/sto.tph~
 APPEND_OUTER + ~EET/temp/sto.tph~ ~%debug%~
 
 /////                                                  \\\\\
+///// TIS                                              \\\\\
+/////                                                  \\\\\
+
+COPY_LARGE ~EET/temp/tis~ ~override~
+
+/////                                                  \\\\\
 ///// VVC                                              \\\\\
 /////                                                  \\\\\
 
@@ -2689,196 +2701,37 @@ END ELSE ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/mainf03.wav~)
 	END
 END
 
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female1m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml1m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female2m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml2m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female3m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml3m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female4m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml4m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female5m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml5m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Female6m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml6m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male1m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale1m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male2m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale2m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male3m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale3m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male4m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale4m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male5m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale5m.wav~
-END
-
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6a.wav~) BEGIN
-	COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6a.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6b.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6c.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6d.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6e.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6f.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6g.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6h.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6i.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6j.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6k.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6l.wav~
-		~%bgee_dir%/lang/%LANGUAGE%/sounds/Male6m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale6m.wav~
+OUTER_FOR (cnt = 1; cnt <= 6; cnt = cnt + 1) BEGIN
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%a.wav~) BEGIN
+		COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%a.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%b.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%c.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%d.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%e.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%f.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%g.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%h.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%i.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%j.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%k.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%l.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Female%cnt%m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGFeml%cnt%m.wav~
+	END
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%a.wav~) BEGIN
+		COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%a.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%a.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%b.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%b.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%c.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%c.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%d.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%d.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%e.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%e.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%f.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%f.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%g.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%g.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%h.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%h.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%i.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%i.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%j.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%j.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%k.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%k.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%l.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%l.wav~
+			~%bgee_dir%/lang/%LANGUAGE%/sounds/Male%cnt%m.wav~ ~lang/%LANGUAGE_BG2%/sounds/BGMale%cnt%m.wav~
+	END
 END
 
 /////                                                  \\\\\
