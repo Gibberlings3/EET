@@ -1661,7 +1661,7 @@ EXTEND_TOP ~K#TELBG2.BCS~ ~EET-inlined/K#TELBG2-et2.baf~
 //MKDIR ~%USER_DIRECTORY%/portraits~
 //MOVE ~EET/temp/bmp/^MANLEY.*\.BMP$~ ~%USER_DIRECTORY%/portraits~
 
-COPY ~EET/base/bmp~ ~override~
+COPY ~EET/base/palette~ ~override~
 	~EET/temp/bmp~ ~override~
 
 /////                                                  \\\\\
@@ -1921,7 +1921,17 @@ COPY_EXISTING ~BGEE.GUI~ ~override~
 	REPLACE_TEXTUALLY ~SELECT 450, 20, 120, 16~ ~SELECT 903, 18, 120, 16~ //move build version to the upper right corner
 BUT_ONLY
 
-COPY ~EET/base/gui~ ~override~
+COPY_LARGE ~EET/base/gui/DLCP1.bmp~ ~override~
+	~EET/base/gui/DLCV1.bmp~ ~override~
+	~EET/base/gui/BIGLOGO.BAM~ ~override~
+	~EET/base/gui/TITLE.BAM~ ~override~
+	~EET/base/gui/MOS0500.PVRZ~ ~override~
+	~EET/base/gui/MOS0501.PVRZ~ ~override~
+
+ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mos$~ BEGIN
+	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_FILE%" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
+END
+LAM bash_log
 
 /////                                                  \\\\\
 ///// INI                                              \\\\\
@@ -2023,11 +2033,6 @@ COPY ~EET/base/itm/K#TELBG2.ITM~ ~override~
 /////                                                  \\\\\
 ///// MOS                                              \\\\\
 /////                                                  \\\\\
-
-ACTION_BASH_FOR ~EET/base/mos~ ~^.+\.mos$~ BEGIN
-	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_FILE%" "EET%os_slash%base%os_slash%mos%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
-END
-LAM bash_log
 
 COPY_LARGE ~EET/temp/mos~ ~override~
 
@@ -3127,7 +3132,7 @@ MAKE_BIFF ~bgAR59xx~ BEGIN ~%areas_dir%/bgAR59xx~ ~^.*$~ END
 MAKE_BIFF ~bgAR60xx~ BEGIN ~%areas_dir%/bgAR60xx~ ~^.*$~ END
 MAKE_BIFF ~bgAR61xx~ BEGIN ~%areas_dir%/bgAR61xx~ ~^.*$~ END
 MAKE_BIFF ~bgSounds~ BEGIN ~EET/temp/wav~ ~^.*$~ END
-MAKE_BIFF ~bgIWDbam~ BEGIN ~EET/base/bam~ ~^.*$~ END
+MAKE_BIFF ~bgIWDbam~ BEGIN ~EET/base/animation~ ~^.*$~ END
 
 COPY_EXISTING sw1h01.itm ~override/EET.flag~
 PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as EET~
