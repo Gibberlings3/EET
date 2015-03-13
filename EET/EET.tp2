@@ -1568,16 +1568,15 @@ END
 OUTER_SPRINT ~spl_kit~ ~WILDMAGE~
 ACTION_PHP_EACH "table_EET_IDprimschool" AS "spl_id" => "spl_primschool" BEGIN
 	ACTION_IF (FILE_EXISTS_IN_GAME ~%spl_id%.SPL~) BEGIN
-		COPY_EXISTING + ~%spl_id%.SPL~ ~override~
+		COPY_EXISTING - ~%spl_id%.SPL~ ~override~
 			READ_STRREF 0x8 "spl_name"
 			READ_LONG 0x34 "spl_lvl" ELSE 0
-		BUT_ONLY
 		EXTEND_TOP ~K#TELBG2.BCS~ ~EET-inlined/K#TELBG2-et.baf~ EVALUATE_BUFFER
 		OUTER_SPRINT ~spl_list~ ~%spl_list%%WNL%%spl_id%.SPL	%spl_name%	%spl_lvl%	%spl_primschool%#(Wildmage)	none~
 	END
 END
 
-COPY_EXISTING + ~K#TELBG2.BCS~ ~override~
+COPY_EXISTING ~K#TELBG2.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE_TEXTUALLY ~!Kit(Player1,0)~ ~~
 		REPLACE_TEXTUALLY ~!Kit(Player1,WILDMAGE)~ ~Kit(Player1,WILDMAGE)~
@@ -2472,7 +2471,7 @@ COPY ~EET/base/spl/K#REMBHA.SPL~ ~override~
 OUTER_FOR (lvl = 1; lvl <= 4; lvl = lvl + 1) BEGIN
 	OUTER_FOR (cnt = 1; cnt <= 9; cnt = cnt + 1) BEGIN
 		ACTION_IF (FILE_EXISTS_IN_GAME ~SPWI%lvl%0%cnt%.SPL~) BEGIN
-			COPY_EXISTING + ~K#REMSPL.SPL~ ~override~
+			COPY_EXISTING ~K#REMSPL.SPL~ ~override~
 				LPF ADD_SPELL_EFFECT
 					INT_VAR
 					opcode        = 172 // remove spell
@@ -2488,7 +2487,7 @@ OUTER_FOR (lvl = 1; lvl <= 4; lvl = lvl + 1) BEGIN
 	END
 	OUTER_FOR (cnt = 10; cnt <= 25; cnt = cnt + 1) BEGIN
 		ACTION_IF (FILE_EXISTS_IN_GAME ~SPWI%lvl%%cnt%.SPL~) BEGIN
-			COPY_EXISTING + ~K#REMSPL.SPL~ ~override~
+			COPY_EXISTING ~K#REMSPL.SPL~ ~override~
 				LPF ADD_SPELL_EFFECT
 					INT_VAR
 					opcode        = 172 // remove spell

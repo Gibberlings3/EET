@@ -18,7 +18,7 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DEFINE_ACTION_MACRO EET_WRITE_SSET BEGIN //Workaround for regexp glitch in Gort's WRITE_SOUNDSET
-	COPY_EXISTING + ~%npc%~ ~override~
+	COPY_EXISTING ~%npc%~ ~override~
 		PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
 			FOR (j1 = 0; j1 < 100; j1 += 1) BEGIN
 				READ_LONG (0xa4 + j1 * 4) srf
