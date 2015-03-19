@@ -302,7 +302,7 @@ PRINT ~~
 PRINT ~Clearing []s at the start of BG2:EE StrRefs...~
 
 //not needed for English language, but other TLK files (for example Polish) may have these tags, which result in hundreds of useless TLK entries
-ACTION_IF ((~%LANGUAGE_BG2%~ STRING_EQUAL_CASE ~en_US~)=0) BEGIN
+ACTION_IF (~%LANGUAGE_BG2%~ STRING_EQUAL_CASE ~pl_PL~) BEGIN
 	MKDIR ~lang/xx_xx~
 	ACTION_FOR_EACH tlk IN dialog dialogf BEGIN
 		ACTION_IF FILE_EXISTS ~lang/%LANGUAGE_BG2%/%tlk%.tlk~ BEGIN
@@ -1687,10 +1687,6 @@ COPY ~EET/base/chr~ ~%USER_DIRECTORY%/characters~
 
 //BG:EE default CHR files
 COPY ~EET/temp/chr~ ~%USER_DIRECTORY%/characters~
-	READ_LONG offset "StrRef"
-	PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-		SAY offset ( AT "StrRef" )
-	END
 	FOR (index = 0; index < 99 ; index = index + 1) BEGIN
 		SET "offset" = (0x108 + (0x4 * index))
 		READ_LONG offset "StrRef"
