@@ -714,7 +714,7 @@ EXTEND_TOP ~FH2600.BCS~ ~EET-inlined/FH2600-et.baf~
 ///// existing in BG2:EE, use BG:EE version as a base  \\\\\
 /////                                                  \\\\\
 
-//SHOUT.BCS in BG2:EE v1.2 still outdated AI behaviour that was already improved in BG:EE. Just add shout 57 to BG:EE base to make it also compatible with BG2:EE scripts
+//SHOUT.BCS in BG2:EE v1.3 still has outdated AI behaviour that is improved in BG:EE. Just add shout 57 to BG:EE base to make it also compatible with BG2:EE scripts
 COPY_EXISTING ~SHOUT.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Enemy()[%newline%]*MoveToObject(LastHeardBy(Myself))~
@@ -1103,220 +1103,6 @@ BUT_ONLY*/
 /////                                                  \\\\\
 ///// added by BG:EE                                   \\\\\
 /////                                                  \\\\\
-
-//resolve conflict with BG2:EE textscreens
-
-//FH1803.BCS
-COPY_EXISTING ~FH1803.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt5_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt5_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH1901.BCS
-COPY_EXISTING ~FH1901.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("CHPTXT4_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("CHPTXT4_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH2600.BCS
-COPY_EXISTING ~FH2600.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt0_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#REMBHA",Player1)
-    IncrementChapter("Chptxt0_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH2626.BCS
-COPY_EXISTING ~FH2626.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt7_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt7_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH4800.BCS
-COPY_EXISTING ~FH4800.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt2_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt2_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH4900.BCS
-COPY_EXISTING ~FH4900.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt2_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt2_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH5400.BCS
-COPY_EXISTING ~FH5400.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt2_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt2_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH5404.BCS
-COPY_EXISTING ~FH5404.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt3_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt3_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//FH5405.BCS
-COPY_EXISTING ~FH5405.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt3_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt3_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//CH1CUT04.BCS
-COPY_EXISTING ~CH1CUT04.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt1_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt1_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//CHASEL3.BCS
-COPY_EXISTING ~CHASEL3.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt1_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt1_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//CUTCKEEP.BCS
-COPY_EXISTING ~CUTCKEEP.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt6_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt6_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//DAVCUT01.BCS
-COPY_EXISTING ~DAVCUT01.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt5_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt5_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//ENDCH4.BCS
-COPY_EXISTING ~ENDCH4.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("Chptxt5_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("Chptxt5_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//Other
 
 //CH1CUT01.BCS
 COPY_EXISTING ~CH1CUT01.BCS~ ~override~
@@ -1717,6 +1503,21 @@ COPY_EXISTING ~FH1300.BCS~ ~override~
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",0)
   Global("Chapter","GLOBAL",7)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+//FH2600.BCS
+COPY_EXISTING ~FH2600.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~IncrementChapter("Chptxt0_")~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#REMBHA",Player1)
+    IncrementChapter("Chptxt0_")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
