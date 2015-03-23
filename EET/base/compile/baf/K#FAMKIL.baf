@@ -1,0 +1,373 @@
+IF
+  Global("K#FAMID","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG6",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("fampsd",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",11)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG12",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("fampsd",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",21)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("fampsd",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG6",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famfair",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",12)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG12",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famfair",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",22)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famfair",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",3)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG6",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famfer",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",13)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG12",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famfer",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",23)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famfer",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",4)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG6",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famrab",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",14)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG12",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famrab",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",24)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famrab",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",5)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG6",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famcat",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",15)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG12",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famcat",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",25)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famcat",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",6)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-4,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG4",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famimp",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",16)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-9,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG9",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famimp",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",26)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famimp",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",7)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG6",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famdust",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",17)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG12",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famdust",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",27)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famdust",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",8)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG6",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famquas",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",18)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG12",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famquas",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  Global("K#FAMID","GLOBAL",28)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,Recoil())
+    ChangeStat(Player1,CON,-1,ADD)
+    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
+    ActionOverride(Player1,ApplySpellRES("K#DMG24",Myself))
+    ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
+    ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
+    ActionOverride("famquas",RemoveFamiliar())
+    SetGlobal("K#FAMID","GLOBAL",0)
+    DestroySelf()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    DestroySelf()
+END

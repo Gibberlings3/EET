@@ -1,39 +1,4 @@
 /////////////////////////////////////
-// Find Familiar externalization
-/////////////////////////////////////
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2CRE_creatureParam1" BEGIN
-	"FAMCAT" => "-12"
-	"FAMDUST" => "-12"
-	"FAMFAIR" => "-12"
-	"FAMFER" => "-12"
-	"FAMIMP" => "-9"
-	"FAMPSD" => "-12"
-	"FAMQUAS" => "-12"
-	"FAMRAB" => "-12"
-	"FAMCAT25" => "-24"
-	"FAMDUS25" => "-24"
-	"FAMFAI25" => "-24"
-	"FAMFER25" => "-24"
-	"FAMIMP25" => "-24"
-	"FAMPSD25" => "-24"
-	"FAMQUA25" => "-24"
-	"FAMRAB25" => "-24"
-END
-
-ACTION_PHP_EACH "table_BG2CRE_creatureParam1" AS "creature" => "param1" BEGIN
-	COPY_EXISTING ~%creature%.CRE~ ~override~
-		LPF ~ADD_CRE_EFFECT~
-			INT_VAR
-			opcode = 195          // Type: Drain HP on death (195)
-			parameter1 = %param1% // Parameter 1 (HP amount)
-			timing = 9            // Timing mode: Instant/Permanent
-			probability1 = 100    // Probability 1: 100
-		END
-	BUT_ONLY
-END
-
-/////////////////////////////////////
 // Modification of BG2 only creatures
 /////////////////////////////////////
 

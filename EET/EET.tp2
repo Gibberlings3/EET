@@ -1277,7 +1277,7 @@ THEN
 END
 
 IF
-//  NotStateCheck(LastSummonerOf(Myself),) //no way to check drunk state? In vanilla BG1 weapons break almost every hit when character is drunk
+  //CheckStatLT(LastSummonerOf(Myself),1,INTOXICATION)//In vanilla BG1 weapons break almost every hit when character is drunk, need to check stat value before enabling it
   True()
 THEN
   RESPONSE #%response1%
@@ -1800,6 +1800,13 @@ COPY ~EET/base/cre~ ~override~
 
 // patching BG:EE cre files
 INCLUDE ~EET/lib/bg1_cre.tph~
+
+// Find Familiar externalization
+ACTION_FOR_EACH creature IN FAMCAT_ FAMDUST_ FAMFAIR_ FAMFER_ FAMIMP_ FAMPSD_ FAMQUAS_ FAMRAB_ FAMCAT FAMDUST FAMFAIR FAMFER FAMIMP FAMPSD FAMQUAS FAMRAB FAMCAT25 FAMDUS25 FAMFAI25 FAMFER25 FAMIMP25 FAMPSD25 FAMQUA25 FAMRAB25 BEGIN
+	COPY_EXISTING ~%creature%.CRE~ ~override~
+		LPF ADD_CRE_EFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ parameter2 = 16 /*Target dies*/ STR_VAR resource = "K#FAMKIL" END
+	BUT_ONLY
+END
 
 /////                                                  \\\\\
 ///// DLG                                              \\\\\
@@ -2527,22 +2534,28 @@ COPY_LARGE ~EET/temp/pvrz~ ~override~
 ///// SPL                                              \\\\\
 /////                                                  \\\\\
 
+//Find Familiar related spells
+COPY ~EET/base/spl/SPWI123.SPL~ ~override~
+	~EET/base/spl/SPCL342.SPL~ ~override~
+	~EET/base/spl/K#FAMKIL.SPL~ ~override~
+
 ACTION_FOR_EACH var IN 4 6 9 12 24 BEGIN
 	COPY ~EET/base/spl/K#CURE.SPL~ ~override/K#CURE%var%.SPL~
-		WRITE_LONG 0x9e %var%
+		WRITE_LONG 0x9e "%var%"
+	COPY ~EET/base/spl/K#DMG.SPL~ ~override/K#DMG%var%.SPL~
+		WRITE_LONG 0x9e "%var%"
 END
 
+//item shattering related spells
 ACTION_FOR_EACH var IN AR SH HE BEGIN
 	COPY ~EET/base/spl/K#SHAT.SPL~ ~override/K#SHAT%var%.SPL~
 		WRITE_ASCIIE 0xae ~K#SHAT%var%~ #8
 END
 
-COPY ~EET/base/spl/SPWI123.SPL~ ~override~
-	~EET/base/spl/SPCL342.SPL~ ~override~
-
+//auto spell removing
 COPY ~EET/base/spl/K#REMBHA.SPL~ ~override~
 	~EET/base/spl/K#REMSPL.SPL~ ~override~
-	
+
 OUTER_FOR (lvl = 1; lvl <= 4; lvl = lvl + 1) BEGIN
 	OUTER_FOR (cnt = 1; cnt <= 9; cnt = cnt + 1) BEGIN
 		ACTION_IF (FILE_EXISTS_IN_GAME ~SPWI%lvl%0%cnt%.SPL~) BEGIN
@@ -2585,7 +2598,7 @@ COPY ~EET/base/spl/K#DEATH.SPL~ ~override~
 	~EET/base/spl/K#LIVE.SPL~ ~override~
 	~EET/base/spl/K#SILENC.SPL~ ~override~
 
-//Assign BG2 portraits on transition
+//assign BG2 portraits on transition
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_portraitID" BEGIN
 	"NEDWIN" => "EDW"
 	"NIMOEN" => "IMO"

@@ -1,33 +1,6 @@
 //done after moving to override folder due to READ_SOUNDSET command issue
 
 /////////////////////////////////////
-// Find Familiar externalization
-/////////////////////////////////////
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG1CRE_creatureParam1" BEGIN
-	"FAMCAT_" => "-6"
-	"FAMDUST_" => "-6"
-	"FAMFAIR_" => "-6"
-	"FAMFER_" => "-6"
-	"FAMIMP_" => "-4"
-	"FAMPSD_" => "-6"
-	"FAMQUAS_" => "-6"
-	"FAMRAB_" => "-6"
-END
-
-ACTION_PHP_EACH "table_BG1CRE_creatureParam1" AS "creature" => "param1" BEGIN
-	COPY_EXISTING ~%creature%.CRE~ ~override~
-		LPF ~ADD_CRE_EFFECT~
-			INT_VAR
-			opcode = 195          // Type: Drain HP on death (195)
-			parameter1 = %param1% // Parameter 1 (HP amount)
-			timing = 9            // Timing mode: Instant/Permanent
-			probability1 = 100    // Probability 1: 100
-		END
-	BUT_ONLY
-END
-
-/////////////////////////////////////
 // Unique items
 /////////////////////////////////////
 
