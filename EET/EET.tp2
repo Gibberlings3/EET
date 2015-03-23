@@ -2542,8 +2542,9 @@ COPY ~EET/base/spl/SPWI123.SPL~ ~override~
 ACTION_FOR_EACH var IN 4 6 9 12 24 BEGIN
 	COPY ~EET/base/spl/K#CURE.SPL~ ~override/K#CURE%var%.SPL~
 		WRITE_LONG 0x9e "%var%"
-	COPY ~EET/base/spl/K#DMG.SPL~ ~override/K#DMG%var%.SPL~
-		WRITE_LONG 0x9e "%var%"
+	OUTER_SET value = var * 1.5
+	COPY ~EET/base/spl/K#DMG.SPL~ ~override/K#DMG%value%.SPL~
+		WRITE_LONG 0x9e "%value%"
 END
 
 //item shattering related spells
