@@ -3,14 +3,19 @@
 ////////////////////////
 
 COPY_EXISTING ~ACTION.IDS~ ~override~
-	REPLACE_TEXTUALLY ~AddJournalEntry(I:Entry~  ~AddJournalEntry(I:StrRef~
+	//REPLACE_TEXTUALLY ~AddJournalEntry(I:Entry~  ~AddJournalEntry(I:StrRef~
+	REPLACE_TEXTUALLY ~UseItemPoint(S:Item,P:Target\*,I:Ability\*)~ ~UseItemPoint(S:Item,P:Point*,I:Ability*)~
+	REPLACE_TEXTUALLY ~UseItemPointSlot(P:Target\*,I:Slot\*)~ ~UseItemPointSlot(P:Point*,I:Slot*SLOTS,I:Ability*)~
+	REPLACE_TEXTUALLY ~StartMusic(I:Slot\*,I:Flags\*MFLAGS)~ ~StartMusic(I:Slot*MUSIC,I:Flags*MFLAGS)~
+	REPLACE_TEXTUALLY ~StaticSequence(O:Object\*,I:Sequence\*)~ ~StaticSequence(O:Object*,I:Sequence*seq)~
+	REPLACE_TEXTUALLY ~SetGlobalRandom(S:Variable\*,S:Area\*,I:Count\*,I:Size\*)~ ~SetGlobalRandom(S:Name*,S:Area*,I:Count*,I:Size*)~
 BUT_ONLY
 
 APPEND ~ACTION.IDS~ ~34 UseItemSlotAbility(O:Target*,I:Slot*SLOTS,I:Ability*)~             UNLESS ~34 UseItemSlotAbility(~
-APPEND ~ACTION.IDS~ ~75 SetNoWaitX(I:SetReset*BOOLEAN)~                                    UNLESS ~75 SetNoWaitX(~
 APPEND ~ACTION.IDS~ ~230 RestPartyEx(I:Gold*,I:HpBonus*,I:DisableMovie*BOOLEAN)~           UNLESS ~230 RestPartyEx(~
 APPEND ~ACTION.IDS~ ~280 DestroyAllFragileEquipment(I:Type*ITEMFLAG)~                      UNLESS ~280 DestroyAllFragileEquipment(~
 APPEND ~ACTION.IDS~ ~308 AddMapNoteColor(P:Position*,I:StringRef*,I:Color*Mapnotes)~       UNLESS ~308 AddMapNoteColor(~
+APPEND ~ACTION.IDS~ ~366 GameOver(I:StrRef*)~                                              UNLESS ~366 GameOver(I:StrRef*)~
 APPEND ~ACTION.IDS~ ~367 SetWorldmap(S:Worlmap*)~                                          UNLESS ~367 SetWorldmap(~
 APPEND ~ACTION.IDS~ ~368 WaitRandom(I:MinTime*,I:MaxTime*)~                                UNLESS ~368 WaitRandom(~
 APPEND ~ACTION.IDS~ ~369 StartRandomTimer(I:TimerID*,I:MinTime*,I:MaxTime*)~               UNLESS ~369 StartRandomTimer(~
@@ -19,6 +24,7 @@ APPEND ~ACTION.IDS~ ~371 ResetMorale(I:Failure*BOOLEAN, I:Level*)~              
 APPEND ~ACTION.IDS~ ~372 MoveToCampaignX(S:Campaign*)~                                     UNLESS ~372 MoveToCampaignX(~
 APPEND ~ACTION.IDS~ ~373 AddWorldmapAreaFlagX(S:Area*,I:Type*WMPFLAG)~                     UNLESS ~373 AddWorldmapAreaFlagX(~
 APPEND ~ACTION.IDS~ ~374 RemoveWorldmapAreaFlagX(S:Area*,I:Type*WMPFLAG)~                  UNLESS ~374 RemoveWorldmapAreaFlagX(~
+APPEND ~ACTION.IDS~ ~375 SetNoWaitX(I:SetReset*BOOLEAN)~                                   UNLESS ~375 SetNoWaitX(~
 APPEND ~ACTION.IDS~ ~376 DisplayStringNoNameDlg(O:Object*,I:StrRef*)~                      UNLESS ~376 DisplayStringNoNameDlg(~
 APPEND ~ACTION.IDS~ ~377 SetGlobalTimerRandomX(S:Name*,S:Area*,I:Min*GTimes,I:Max*GTimes)~ UNLESS ~377 SetGlobalTimerRandomX(~
 APPEND ~ACTION.IDS~ ~378 ExportParty(S:Name*)~                                             UNLESS ~378 ExportParty(~

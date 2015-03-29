@@ -79,7 +79,7 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 	END
 END
 
-ACTION_FOR_EACH tool IN tis2bg2 tileconv BEGIN
+ACTION_FOR_EACH tool IN tis2bg2 mosunpack BEGIN
 	OUTER_SPRINT EVAL ~%tool%~ ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%tool%%exe%~
 	PRINT ~%tool% path assigned~
 END
@@ -302,7 +302,7 @@ PRINT ~~
 PRINT ~Clearing []s at the start of BG2:EE StrRefs...~
 
 //not needed for English language, but other TLK files (for example Polish) may have these tags, which result in hundreds of useless TLK entries
-ACTION_IF (~%LANGUAGE_BG2%~ STRING_EQUAL_CASE ~pl_PL~) BEGIN
+/*ACTION_IF (~%LANGUAGE_BG2%~ STRING_EQUAL_CASE ~pl_PL~) BEGIN
 	MKDIR ~lang/xx_xx~
 	ACTION_FOR_EACH tlk IN dialog dialogf BEGIN
 		ACTION_IF FILE_EXISTS ~lang/%LANGUAGE_BG2%/%tlk%.tlk~ BEGIN
@@ -321,7 +321,7 @@ ACTION_IF (~%LANGUAGE_BG2%~ STRING_EQUAL_CASE ~pl_PL~) BEGIN
 	END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 		AT_NOW ~rm -rf lang/xx_xx~
 	END
-END
+END*/
 
 /////                                                  \\\\\
 ///// Get a total number of strings in BG:EE TLK       \\\\\
@@ -2007,8 +2007,8 @@ COPY_LARGE ~EET/base/gui/DLCP1.bmp~ ~override~
 	~EET/base/gui/MOS0500.PVRZ~ ~override~
 	~EET/base/gui/MOS0501.PVRZ~ ~override~
 
-ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mos$~ BEGIN
-	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_FILE%" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
+ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.moz$~ BEGIN
+	AT_NOW ~%mosunpack% -s -f -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
 END
 LAM bash_log
 
