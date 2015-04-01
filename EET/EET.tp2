@@ -9,12 +9,14 @@ LANGUAGE ~English~
 	~EET/lang/en_US/setup.tra~
 	~EET/lang/en_US/dialog.tra~
 	~EET/lang/en_US/scripts.tra~
+	~EET/lang/en_US/2da.tra~
 LANGUAGE ~Polski (Polish)~
 	~pl_PL~
 	~EET/lang/pl_PL/prompts.tra~
 	~EET/lang/pl_PL/setup.tra~
 	~EET/lang/pl_PL/dialog.tra~
 	~EET/lang/pl_PL/scripts.tra~
+	~EET/lang/pl_PL/2da.tra~
 
 BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ ~Please install it on BG2:EE engine.~
@@ -53,9 +55,7 @@ COPY + ~EET-inlined/blank.txt~ ~EET/temp/uninstall.flag~
 
 ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
-	OUTER_SPRINT os_directory ~~
 	OUTER_SPRINT exe ~.exe~
-	OUTER_SPRINT bgee_dir ~C:/Program Files (x86)/BeamDog/Games/00766~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
 	OUTER_SPRINT bash_debug ~ 2>&1|EET\bin\win32\mtee.exe EET\temp\bash.debug /A~
 	ACTION_IF (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
@@ -66,10 +66,8 @@ ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	END
 END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 	OUTER_SPRINT os_slash ~/~
-	OUTER_SPRINT os_directory ~./~
 	OUTER_SPRINT exe ~~
-	OUTER_SPRINT bgee_dir ~Applications/Baldur\'s\ Gate-EE/Game\ Data/00777/Baldur\'s\ Gate\ -\ Enhanced\ Edition.app/Contents/Resources~
-	OUTER_SPRINT WEIDU_EXECUTABLE ~EET/weidu~
+	OUTER_SPRINT WEIDU_EXECUTABLE ~./EET/weidu~
 	OUTER_SPRINT bash_debug ~ 2>>EET/temp/bash.debug | tee -a EET/temp/bash.debug~
 	ACTION_IF (FILE_EXISTS ~EET/temp/uninstall.flag~) BEGIN
 		AT_INTERACTIVE_UNINSTALL ~rm -rf EET/temp~
@@ -121,13 +119,37 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Pp]~ = 0) BEGIN
 END ELSE ACTION_IF (FILE_EXISTS ~EET/bgee_dir.txt~) BEGIN
 	COPY - ~EET/bgee_dir.txt~ ~EET~
 		READ_ASCII 0x0 bgee_dir (%SOURCE_SIZE%)
-		SET first_prompt = 1
-	PRINT ~%bgee_dir% directory assigned via EET/bgee_dir.txt~
-END ELSE ACTION_IF (FILE_EXISTS ~%bgee_dir%/data/v2017.bif~) BEGIN
 	OUTER_SET first_prompt = 1
-	PRINT ~%bgee_dir% directory assigned in default Beamdog launcher BG:EE location~
-END ELSE BEGIN
-	OUTER_SET first_prompt = 0
+	PRINT ~%bgee_dir% directory assigned via EET/bgee_dir.txt~
+END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+<<<<<<<< EET-inlined/programfiles.bat
+echo %%var%%>EET/temp/%var%.txt
+>>>>>>>>
+	ACTION_FOR_EACH var IN ~programfiles~ ~programfiles(x86)~ ~ProgramW6432~ BEGIN
+		COPY + ~EET-inlined/programfiles.bat~ ~EET/temp~ EVALUATE_BUFFER
+		AT_NOW ~EET/temp/programfiles.bat~
+		COPY - ~EET/temp/%var%.txt~ ~EET/temp~//for some reason the same file can't be used for all 3 vars
+			READ_ASCII 0x0 dir (%SOURCE_SIZE%)
+		OUTER_INNER_PATCH_SAVE dir ~%dir%~ BEGIN
+			REPLACE_TEXTUALLY ~%WNL%~ ~~//needed due to newline added by windows > command
+		END
+		PRINT ~%var% = %dir%~
+		ACTION_FOR_EACH dir2 IN ~/BeamDog/Games/00766~ ~/Baldur's Gate Enhanced Edition/Data/00766~ BEGIN
+			ACTION_IF (FILE_EXISTS ~%dir%%dir2%/data/v2017.bif~) AND (first_prompt = 0) BEGIN
+				OUTER_SPRINT bgee_dir ~%dir%%dir2%~
+				OUTER_SET first_prompt = 1
+				PRINT ~%bgee_dir% directory assigned to default dir~
+			END
+		END
+	END
+END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
+	ACTION_FOR_EACH dir IN ~%quote%/Applications/Baldur's Gate - Enhanced Edition/Game Data/00777/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%%tilde%/Library/Application Support/Steam/SteamApps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ BEGIN
+		ACTION_IF (FILE_EXISTS ~%dir%/data/v2017.bif~) AND (first_prompt = 0) BEGIN
+			OUTER_SPRINT bgee_dir ~%dir%~
+			OUTER_SET first_prompt = 1
+			PRINT ~%bgee_dir% directory assigned to default dir~
+		END
+	END
 END
 
 ACTION_IF (auto_install = 0) BEGIN
@@ -175,6 +197,10 @@ Example: C:\Program Files (x86)\BeamDog\Games\00766~
 %bgee_dir%~
 	END
 END
+
+<<<<<<<< EET-inlined/bgee_dir.txt
+%bgee_dir%>>>>>>>>
+COPY ~EET-inlined/bgee_dir.txt~ ~EET_Tweaks/bgee_dir.txt~ EVALUATE_BUFFER
 
 /////                                                  \\\\\
 ///// Detect mods installed on BG:EE                   \\\\\
@@ -273,7 +299,7 @@ PRINT ~~
 PRINT ~Extracting texts for translation from BG:EE...~
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGEcase%/dialog.tlk~ BEGIN
-	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --out "EET/bgee.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --out "EET/bgee.tra"~
 	LAM bash_log
 END ELSE BEGIN
 	FAIL ~TLK for language: %LANGUAGEcase% not found in %bgee_dir%~
@@ -307,10 +333,10 @@ PRINT ~Clearing []s at the start of BG2:EE StrRefs...~
 	ACTION_FOR_EACH tlk IN dialog dialogf BEGIN
 		ACTION_IF FILE_EXISTS ~lang/%LANGUAGE_BG2%/%tlk%.tlk~ BEGIN
 			COPY + ~lang/%LANGUAGE_BG2%/%tlk%.tlk~ ~lang/xx_xx/dialog.tlk~
-			AT_NOW ~weidu.exe --noautoupdate --no-auto-tp2 --use-lang "xx_xx" --traify-tlk --out "EET/temp/%tlk%.tra"~
+			AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --use-lang "xx_xx" --traify-tlk --out "EET/temp/%tlk%.tra"~
 			COPY + ~EET/temp/%tlk%.tra~ ~EET/temp~
 				REPLACE_TEXTUALLY ~~~~~\([~"%]\)\[[^~"%]*\][ ]*~~~~~ ~~~~~\1~~~~~ //"
-			AT_NOW ~weidu.exe --noautoupdate --no-auto-tp2 --use-lang "xx_xx" --make-tlk "EET/temp/%tlk%.tra" --tlkout "lang/%LANGUAGE_BG2%/%tlk%.tlk"~
+			AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --use-lang "xx_xx" --make-tlk "EET/temp/%tlk%.tra" --tlkout "lang/%LANGUAGE_BG2%/%tlk%.tlk"~
 			DELETE + ~lang/xx_xx/dialog.tlk~
 		END
 	END
@@ -364,8 +390,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY charsetsTable BEGIN
 	//"zh_cn" => ""
 END
 
-ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN dialog scripts END
-ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog scripts END
+ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN dialog scripts 2da END
+ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog scripts 2da END
 LAF ~HANDLE_CHARSETS~
 	INT_VAR
 	infer_charsets = 0
@@ -401,7 +427,7 @@ ACTION_FOR_EACH "var" IN ARE BCS CRE DLG EFF ITM SPL STO VVC WED BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
-	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/%var%~
@@ -413,7 +439,7 @@ MKDIR ~%patch_dir%/GAM~
 ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/BALDUR.GAM~) BEGIN
 	COPY + ~%bgee_dir%/override/BALDUR.GAM~ ~%patch_dir%/GAM~
 END ELSE BEGIN
-	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/GAM" --biff-get-rest "BALDUR.GAM"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/GAM" --biff-get-rest "BALDUR.GAM"~
 	LAM bash_log
 END
 
@@ -499,7 +525,7 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~EET/temp/%var%~
-	AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
 		COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
@@ -513,14 +539,14 @@ ACTION_FOR_EACH "var" IN 2DA BAM BMP PRO PVRZ MOS TIS WAV BEGIN
 	INCLUDE ~EET/lib/prep_%var%.tph~
 END
 
-AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/CHR" --biff-get-rest "^.*\.CHR$"~
+AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/CHR" --biff-get-rest "^.*\.CHR$"~
 LAM bash_log
 
 ACTION_FOR_EACH file IN "ANIMATE.IDS" "ANISND.IDS" "GTIMES.IDS" "BGEE.SQL" BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
 	END ELSE BEGIN
-		AT_NOW ~%os_directory%%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/array" --biff-get-rest "%file%"~
+		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/array" --biff-get-rest "%file%"~
 		LAM bash_log
 	END
 END
@@ -535,6 +561,50 @@ END
 
 PRINT ~~
 PRINT ~BG2:EE files patching...~
+
+/////                                                  \\\\\
+///// Soundsets GUI names                              \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_nameString" BEGIN
+	~FEMALE4~ => ~4000024~
+	~FEMALE3~ => ~4000023~
+	~FEMALE2~ => ~4000022~
+	~FEMALE1~ => ~4000021~
+	~FEMALE~ => ~4000020~
+	~MALE5~ => ~4000019~
+	~MALE4~ => ~4000018~
+	~MALE3~ => ~4000017~
+	~MALE2~ => ~4000016~
+	~MALE1~ => ~4000015~
+	~MALE~ => ~4000014~
+	~BGFeml6~ => ~4000013~
+	~BGFeml5~ => ~4000012~
+	~BGFeml4~ => ~4000011~
+	~BGFeml3~ => ~4000010~
+	~BGFeml2~ => ~4000009~
+	~BGFeml1~ => ~4000008~
+	~BGFeml0~ => ~4000007~
+	~BGMale6~ => ~4000006~
+	~BGMale5~ => ~4000005~
+	~BGMale4~ => ~4000004~
+	~BGMale3~ => ~4000003~
+	~BGMale2~ => ~4000002~
+	~BGMale1~ => ~4000001~
+	~BGMale0~ => ~4000000~
+END
+
+APPEND ~BGEE.SQL~ ~
+INSERT INTO filenames_stringrefs ROWS (
+);~ UNLESS ~filenames_stringrefs~
+
+ACTION_PHP_EACH "table_EET_nameString" AS "name" => "string" BEGIN
+	COPY_EXISTING ~BGEE.SQL~ ~override~
+		REPLACE_TEXTUALLY ~\(INSERT INTO filenames_stringrefs ROWS (\)~ ~\1
+	'%name%', 999%string%, 2,~
+		REPLACE ~999%string%~ ( AT "string" )
+	BUT_ONLY
+END
 
 /////                                                  \\\\\
 ///// DLC                                              \\\\\
@@ -1769,6 +1839,14 @@ COPY ~EET/temp/chr~ ~%USER_DIRECTORY%/characters~
 			SAY offset ( AT "StrRef" )
 		END
 	END
+
+/////                                                  \\\\\
+///// CHU                                              \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~GUICHAP.CHU~ ~override~
+	WRITE_ASCII 0x28 ~GUICHP1B~ #8
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// CRE                                              \\\\\

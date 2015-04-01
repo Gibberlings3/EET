@@ -1405,6 +1405,7 @@ BEGIN ~Disable hostile reaction after charm~
 //DESIGNATED 20
 REQUIRE_PREDICATE GAME_IS ~soa tob tutu tutu_totsc bgt ca iwd_in_bg2 bgee bg2ee iwdee eet~ ~This component is not compatible with your game.~
 FORBID_COMPONENT ~Setup-BGTTweak.tp2~ 2300 ~Component already installed via BGT Tweaks~
+FORBID_COMPONENT ~stratagems/setup-stratagems.tp2~ 0 ~Component not compatible with one of installed mods. Check the readme file.~
 
 COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
 	~^.+\.spl$~ ~override~
@@ -1497,7 +1498,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 	END
 END
 
-<<<<<<<< EET_Tweaks-inlined/K#FAMSUM-et.baf
+<<<<<<<< EET_Tweaks-inlined/21/K#FAMSUM-et.baf
 IF
   GlobalTimerNotExpired("K#TimerFamiliar","GLOBAL")
 THEN
@@ -1515,7 +1516,7 @@ COPY_EXISTING ~K#FAMKIL.BCS~ ~override~
 			REPLACE_TEXTUALLY ~ChangeStat(Player1,CON,-1,ADD)~ ~ActionOverride(Player1,ApplySpellRES("K#FAMCON",Myself))~
 			INNER_ACTION BEGIN
 				COPY ~EET_Tweaks/21/K#FAMCON.SPL~ ~override~
-				EXTEND_TOP ~K#FAMSUM.BCS~ ~EET_Tweaks-inlined/K#FAMSUM-et.baf~
+				EXTEND_TOP ~K#FAMSUM.BCS~ ~EET_Tweaks-inlined/21/K#FAMSUM-et.baf~
 			END
 		END ELSE PATCH_IF (option = 1) BEGIN //Constitution loss for 1 week
 			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~~
@@ -1532,7 +1533,7 @@ COPY_EXISTING ~K#FAMKIL.BCS~ ~override~
 			INNER_ACTION BEGIN
 				COPY ~EET_Tweaks/21/K#FAMCON.SPL~ ~override~
 					WRITE_LONG 0xa8 ~%value%~
-				EXTEND_TOP ~K#FAMSUM.BCS~ ~EET_Tweaks-inlined/K#FAMSUM-et.baf~
+				EXTEND_TOP ~K#FAMSUM.BCS~ ~EET_Tweaks-inlined/21/K#FAMSUM-et.baf~
 			END
 		END ELSE PATCH_IF (option = 4) BEGIN //Option 2 custom time
 			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~~
@@ -1544,3 +1545,449 @@ COPY_EXISTING ~K#FAMKIL.BCS~ ~override~
 		END
 	END
 BUT_ONLY
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Reserved slot for future tweak                   \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Reserved slot for future tweak~
+//DESIGNATED 22
+REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+DEPRECATED ~Nothing to see here for now~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// IWD:EE soundsets                                 \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~IWD:EE soundsets~
+//DESIGNATED 23
+REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ ~This component is not compatible with your game.~
+
+INCLUDE ~EET_Tweaks/lib/23-24.tph~
+
+ACTION_IF FILE_EXISTS ~%iwdee_dir%/weidu.conf~ BEGIN
+	COPY - ~%iwdee_dir%/weidu.conf~ ~%iwdee_dir%/weidu.conf~
+		READ_2DA_ENTRY 0 2 3 "LANGUAGE_IWDEE"
+END
+
+ACTION_IF (FILE_EXISTS ~%iwdee_dir%/lang/%LANGUAGE%/sounds/FEMALE1_.wav~) BEGIN
+	OUTER_SPRINT LANGUAGE_IWDEE ~%LANGUAGE%~
+END ELSE ACTION_IF (VARIABLE_IS_SET ~LANGUAGE_IWDEE~) AND (FILE_EXISTS ~%iwdee_dir%/lang/%LANGUAGE_IWDEE%/sounds/FEMALE1_.wav~) BEGIN
+	//dummy check
+END ELSE BEGIN
+	OUTER_SPRINT LANGUAGE_IWDEE ~en_us~
+END
+
+PRINT ~LANGUAGE_IWDEE = %LANGUAGE_IWDEE%~
+
+COPY - ~weidu.conf~ ~weidu.conf~
+	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
+PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
+
+/////                                                  \\\\\
+///// Extraction of TLK from IWD:EE                    \\\\\
+/////                                                  \\\\\
+
+PRINT ~~
+PRINT ~Extracting texts for translation from IWD:EE...~
+
+ACTION_IF FILE_EXISTS ~%iwdee_dir%/lang/%LANGUAGE_IWDEE%/dialog.tlk~ BEGIN
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --game "%iwdee_dir%" --use-lang "%LANGUAGE_IWDEE%" --traify-tlk --out "EET_Tweaks/iwdee.tra"~
+END ELSE BEGIN
+	FAIL ~TLK for language: %LANGUAGE_IWDEE% not found in %iwdee_dir%~
+END
+
+LOAD_TRA ~EET_Tweaks/iwdee.tra~
+
+/////                                                  \\\\\
+///// Copy Soundsets                                   \\\\\
+/////                                                  \\\\\
+
+MKDIR ~lang/%LANGUAGE_BG2%/sounds~
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EETT_oldNameNewName" BEGIN
+	~FEMALE1~ , ~40380~ => ~IWFeml1~
+	~FEMALE2~ , ~40381~ => ~IWFeml2~
+	~FEMALE3~ , ~40382~ => ~IWFeml3~
+	~FFIGHT1~ , ~40375~ => ~FFight1~
+	~FFIGHT2~ , ~40376~ => ~FFight2~
+	~FFIGHT3~ , ~40377~ => ~FFight3~
+	~FFIGHT4~ , ~40378~ => ~FFight4~
+	~FFIGHT5~ , ~40379~ => ~FFight5~
+	~FMAGE1~ , ~40383~ => ~FMage1~
+	~FMAGE2~ , ~40384~ => ~FMage2~
+	~FMAGE3~ , ~40385~ => ~FMage3~
+	~FMAGE4~ , ~40386~ => ~FMage4~
+	~FMAGE5~ , ~40387~ => ~FMage5~
+	~FTHIEF1~ , ~40388~ => ~FThief1~
+	~FTHIEF2~ , ~40389~ => ~FThief2~
+	~MALE1~ , ~40390~ => ~IWMale1~
+	~MALE2~ , ~40391~ => ~IWMale2~
+	~MALE3~ , ~40392~ => ~IWMale3~
+	~MFIGHT1~ , ~40393~ => ~MFight1~
+	~MFIGHT2~ , ~40394~ => ~MFight2~
+	~MFIGHT3~ , ~40395~ => ~MFight3~
+	~MFIGHT4~ , ~40396~ => ~MFight4~
+	~MFIGHT5~ , ~40397~ => ~MFight5~
+	~MMAGE1~ , ~40398~ => ~MMage1~
+	~MMAGE2~ , ~40399~ => ~MMage2~
+	~MMAGE3~ , ~40400~ => ~MMage3~
+	~MMAGE4~ , ~40401~ => ~MMage4~
+	~MMAGE5~ , ~40402~ => ~MMage5~
+	~MTHIEF1~ , ~40403~ => ~MThief1~
+	~MTHIEF2~ , ~40404~ => ~MThief2~
+END
+
+APPEND ~BGEE.SQL~ ~
+INSERT INTO filenames_stringrefs ROWS (
+);~ UNLESS ~filenames_stringrefs~
+
+ACTION_PHP_EACH "table_EETT_oldNameNewName" AS "oldName" => "newName" BEGIN
+	ACTION_BASH_FOR ~%iwdee_dir%/lang/%LANGUAGE_IWDEE%/sounds~ ~^%oldName%.+\.WAV$~ BEGIN
+		OUTER_SPRINT filename ~%BASH_FOR_RES%~
+		OUTER_INNER_PATCH_SAVE ~filename~ ~%filename%~ BEGIN
+			REPLACE_TEXTUALLY ~%oldName%~ ~%newName%~
+		END
+		COPY ~%BASH_FOR_FILESPEC%~ ~lang/%LANGUAGE_BG2%/sounds/%filename%.WAV~
+	END
+	COPY_EXISTING ~BGEE.SQL~ ~override~
+		REPLACE_TEXTUALLY ~\(INSERT INTO filenames_stringrefs ROWS (\)~ ~\1
+	'%newName%', 999%oldName_1%, 2,~
+		REPLACE ~999%oldName_1%~ ( AT "oldName_1" )
+	BUT_ONLY
+END
+
+/////                                                  \\\\\
+///// Subtitles                                        \\\\\
+/////                                                  \\\\\
+
+ACTION_IF (FILE_EXISTS ~%iwdee_dir%/override/CHARSND.2DA~) BEGIN
+	COPY ~%iwdee_dir%/override/CHARSND.2DA~ ~EET_Tweaks~
+END ELSE BEGIN
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --game "%iwdee_dir%" --out "EET_Tweaks/temp" --biff-get-rest "CHARSND.2DA"~
+END
+
+<<<<<<<< EET_Tweaks-inlined/23/CHARSND.txt
+%index2%
+>>>>>>>>
+
+COPY - ~EET_Tweaks/temp/CHARSND.2DA~ ~EET_Tweaks~
+	COUNT_2DA_COLS "cntcol"
+	COUNT_2DA_ROWS (cntcol - 1) "cntrow"
+	READ_2DA_ENTRIES_NOW table_charsnd (cntcol - 1)
+	INNER_ACTION BEGIN
+		COPY_EXISTING ~CHARSND.2DA~ ~override~
+			PRETTY_PRINT_2DA
+			COUNT_2DA_COLS "cntcol2"
+			COUNT_2DA_ROWS cntcol2 "cntrow2"
+			FOR (cnt1 = 0 ; cnt1 < cntcol2 - 1 ; cnt1 = cnt1 + 1) BEGIN
+				INNER_ACTION BEGIN
+					COPY - ~EET_Tweaks-inlined/23/CHARSND.txt~ ~EET_Tweaks-inlined/23/CHARSND.txt~
+						REPLACE_TEXTUALLY ~\(index2.+\)~ ~\1 -1~
+				END
+			END
+		BUT_ONLY
+		OUTER_FOR (cnt2 = 2 ; cnt2 < cntcol - 1 ; cnt2 = cnt2 + 1) BEGIN
+			COPY_EXISTING ~CHARSND.2DA~ ~override~//need to be copied each time to reload data for FILE_CONTAINS_EVALUATED
+				READ_2DA_ENTRY_FORMER table_charsnd 0 cnt2 "name"
+				PHP_EACH "table_EETT_oldNameNewName" AS "oldName" => "newName" BEGIN
+					PATCH_IF ~%name%~ STRING_EQUAL_CASE ~%oldName%~ BEGIN
+						SPRINT name ~%newName%~
+					END
+				END
+				PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~CHARSND.2DA~ ~^%name%~)) BEGIN
+					PATCH_PRINT ~Patching CHARSND.2DA: %name% subtitles~
+					REPLACE_TEXTUALLY ~^\([ ]+MALE .+\)$~ ~\1 %name%~
+					FOR (cnt3 = 0 ; cnt3 < cntrow2 ; cnt3 = cnt3 + 1) BEGIN
+						READ_2DA_ENTRY cnt3 0 cntcol2 "index1"
+						PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~EET_Tweaks/temp/CHARSND.2DA~ ~^%index1%~)) BEGIN
+							REPLACE_TEXTUALLY ~^\(%index1% .+\)$~ ~\1 -1~
+						END
+					END
+					FOR (cnt4 = 1; cnt4 < cntrow ; cnt4 = cnt4 + 1) BEGIN
+						READ_2DA_ENTRY_FORMER table_charsnd cnt4 0 "index2"
+						READ_2DA_ENTRY_FORMER table_charsnd cnt4 (cnt2 + 1) "string"
+						PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~CHARSND.2DA~ ~^%index2%~)) BEGIN
+							APPEND_FILE ~EET_Tweaks-inlined/23/CHARSND.txt~ EVALUATE_BUFFER
+						END
+						PATCH_IF (string > 0) BEGIN
+							REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 999%string%~
+							REPLACE ~999%string%~ ( AT "string" )
+						END ELSE BEGIN
+							REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 %string%~
+						END
+					END
+				END
+			BUT_ONLY
+		END
+		COPY_EXISTING ~CHARSND.2DA~ ~override~
+			PRETTY_PRINT_2DA
+		BUT_ONLY
+	END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// IWD:EE portraits                                 \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~IWD:EE portraits~
+//DESIGNATED 24
+REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ ~This component is not compatible with your game.~
+
+INCLUDE ~EET_Tweaks/lib/23-24.tph~
+
+MKDIR ~EET_Tweaks/temp/bmp~
+
+ACTION_FOR_EACH file IN DMC_ DMF2_ DMF_ DMT_ EMC_ EMF2_ EMF_ EMT_ EMW_ GMT_ GMW_ HAMF_ HAMT_ HEMF_ HEMT_ HEMW_ HMB2_ HMB_ HMC2_ HMC3_ HMC4_ HMC_ HMF2_ HMF3_ HMF4_ HMF5_ HMF6_ HMF7_ HMF_ HMW2_ HMW3_ HMW4_ HMW_ 2MBAR1_ 2MHUM1_ 2MORC1_ DFF_ EFC_ EFF_ EFW2_ EFW_ GFW_ HAFF_ HAFT_ HEFB_ HEFC_ HEFF_ HEFW_ HFD_ HFF2_ HFF_ HFT2_ HFT_ HFW2_ HFW3_ HFW_ 2FBAR1_ 2FHUM4_ 2FORC1_ BEGIN
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --game "%iwdee_dir%" --out "EET_Tweaks/temp/bmp" --biff-get-rest "^%file%.\.bmp$"~
+END
+
+ACTION_BASH_FOR ~EET_Tweaks/temp/bmp~ ~^.+\.bmp$~ BEGIN
+	OUTER_SPRINT filename ~%BASH_FOR_RES%~
+	/*OUTER_INNER_PATCH_SAVE filename "%filename%" BEGIN
+		REPLACE_TEXTUALLY "_G$" "_L"
+	END*/
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%filename%.BMP~ BEGIN
+		COPY ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BMP~ ~override/%filename%.BMP~
+	END ELSE BEGIN
+		WARN ~%filename%.BMP already exists in game. Possible conflict with added portrait.~
+	END
+END
+
+APPEND ~bgee.sql~ ~
+INSERT INTO portraits ROWS
+(
+	'DMC_', 1,
+	'DMF2_', 1,
+	'DMF_', 1,
+	'DMT_', 1,
+	'EMC_', 1,
+	'EMF2_', 1,
+	'EMF_', 1,
+	'EMT_', 1,
+	'EMW_', 1,
+	'GMT_', 1,
+	'GMW_', 1,
+	'HAMF_', 1,
+	'HAMT_', 1,
+	'HEMF_', 1,
+	'HEMT_', 1,
+	'HEMW_', 1,
+	'HMB2_', 1,
+	'HMB_', 1,
+	'HMC2_', 1,
+	'HMC3_', 1,
+	'HMC4_', 1,
+	'HMC_', 1,
+	'HMF2_', 1,
+	'HMF3_', 1,
+	'HMF4_', 1,
+	'HMF5_', 1,
+	'HMF6_', 1,
+	'HMF7_', 1,
+	'HMF_', 1,
+	'HMW2_', 1,
+	'HMW3_', 1,
+	'HMW4_', 1,
+	'HMW_', 1,
+    '2MBAR1_', 1,
+    '2MHUM1_', 1,
+    '2MORC1_', 1,
+	'DFF_', 2,
+	'EFC_', 2,
+	'EFF_', 2,
+	'EFW2_', 2,
+	'EFW_', 2,
+	'GFW_', 2,
+	'HAFF_', 2,
+	'HAFT_', 2,
+	'HEFB_', 2,
+	'HEFC_', 2,
+	'HEFF_', 2,
+	'HEFW_', 2,
+	'HFD_', 2,
+	'HFF2_', 2,
+	'HFF_', 2,
+	'HFT2_', 2,
+	'HFT_', 2,
+	'HFW2_', 2,
+	'HFW3_', 2,
+	'HFW_', 2,
+	'2FBAR1_', 2,
+	'2FHUM4_', 2,
+	'2FORC1_', 2,
+);~
+BUT_ONLY
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Components below are not finished                \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Ironman Mode                                     \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Ironman Mode~
+//DESIGNATED 100
+REQUIRE_PREDICATE GAME_IS ~bg2ee iwdee eet~ ~This component is not compatible with your game.~
+DEPRECATED ~This component is currently broken:
+http://forum.baldursgate.com/discussion/40487/opcode-338-disable-rest-or-save-seems-to-be-partially-broken~
+
+LOAD_TRA ~EET_Tweaks/lang/%LANGUAGE%/100.tra~
+
+<<<<<<<< EET_Tweaks-inlined/100/dplayer3-et.baf
+IF
+  HotKey(Q)
+  !Detect(NearestEnemyOf(Myself))
+THEN
+  RESPONSE #100
+    SaveGame(1)
+    GoToStartScreen()
+END
+
+/*IF
+  HotKey(Z)
+  !Detect(NearestEnemyOf(Myself))
+THEN
+  RESPONSE #100
+    RestParty()
+END*/
+>>>>>>>>
+EXTEND_TOP ~DPLAYER3.BCS~ ~EET_Tweaks-inlined/100/dplayer3-et.baf~
+
+//alternative for spell - area flag patching
+/*COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
+	READ_BYTE 0x14 "flags"
+	PATCH_IF ("%flags%" BAND 0b00000001) BEGIN
+		SPRINT are_sprint ~%are_sprint%%WNL%  !AreaCheck("%SOURCE_RES%")~
+		SET are_set = 1
+	END
+BUT_ONLY
+
+ACTION_IF (%are_set% = 1) BEGIN
+	PRINT ~Areas with 'no sleep' flag:%WNL%%are_sprint%~
+	COPY - ~EET_Tweaks-inlined/100/dplayer3-et.baf~ ~EET_Tweaks-inlined/100/dplayer3-et.baf~
+		REPLACE_TEXTUALLY ~\(!Detect(NearestEnemyOf(Myself))\)~ ~\1%are_sprint%~
+END
+
+//add 'no save' flag to all ARE files
+COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
+	READ_BYTE 0x14 "flags"
+	WRITE_BYTE 0x14 ("%flags%" BOR 0b00000001)
+BUT_ONLY
+
+//remove 'no sleep' flag for shops
+COPY_EXISTING_REGEXP GLOB ~^.+\.dlg$~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE ~\(StartStore.*\)~ BEGIN
+			PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%~
+		END
+		~RemoveAreaFlag(NOSAVE)%WNL%%MATCH1%~
+	END
+BUT_ONLY
+*/
+
+//copy Ironman Mode spell
+COPY ~EET_Tweaks/100/K#IRONM.SPL~ ~override~
+	SAY 0x9e @0 //In 'Ironman Mode' you can save your progress by pressing 'Q' key.
+
+//update global scripts
+ACTION_FOR_EACH script IN BALDUR BALDUR25 BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%script%.BCS~ BEGIN
+		ACTION_IF NOT MOD_IS_INSTALLED ~EET_Tweaks/EET_Tweaks.tp2~ ~14~ BEGIN
+<<<<<<<< EET_Tweaks-inlined/100/baldur-et.baf
+IF
+  Global("K#IRONMAN","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#IRONMAN","GLOBAL",1)
+	ActionOverride(Player1,ApplySpellRES("K#IRONM",Myself))
+    Continue()
+END
+
+IF
+  GlobalGT("K#IRONMAN","GLOBAL",1)
+THEN
+  RESPONSE #100
+	ActionOverride(Player1,RemoveSpellRES("K#IRONM"))
+    Continue()
+END
+
+IF
+  HPLT(Player1,1)
+THEN
+  RESPONSE #100
+    SaveGame(1)
+    StartMovie("DEATHAND")
+    GoToStartScreen()
+END
+>>>>>>>>
+			EXTEND_TOP ~%script%.BCS~ ~EET_Tweaks-inlined/100/baldur-et.baf~
+		END ELSE BEGIN
+			COPY ~%script%.BCS~ ~override~
+				DECOMPILE_AND_PATCH BEGIN
+					REPLACE_TEXTUALLY ~\(NumInPartyAlive(0)[%newline%]+THEN[%newline%]+RESPONSE #100\)~ ~\1
+    SaveGame(0)~
+				END
+			BUT_ONLY
+		END
+	END
+END
+
+//update ini file
+ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
+	COPY ~%USER_DIRECTORY%/Baldur.ini~ ~%USER_DIRECTORY%~
+		COUNT_REGEXP_INSTANCES ~'Difficulty Level'~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_EVALUATE ~\('Difficulty Level',[ 	]+\)'\([0-9]+\)'~ BEGIN
+				SET "value" = "%MATCH2%"
+				PATCH_IF ("%value%" < 3) BEGIN
+					SET value = 3
+				END
+			END
+			~%MATCH1%'%value%'~
+		END ELSE BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+		'Game Options',	'Difficulty Level',	'3',~
+		END
+		COUNT_REGEXP_INSTANCES ~'Maximum HP'~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~\('Maximum HP',[ 	]+\)'[0-9]+'~ ~\1'0'~
+		END ELSE BEGIN
+			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
+		'Game Options',	'Maximum HP',	'0',~
+		END
+	BUT_ONLY
+END ELSE BEGIN
+<<<<<<<< EET_Tweaks-inlined/100/Baldur.ini
+CREATE TABLE options (
+	section string,
+	name string,
+	value string
+);
+INSERT INTO options ROWS (
+	'Game Options',	'Difficulty Level',	'3',
+	'Game Options',	'Maximum HP',	'0'
+);
+>>>>>>>>
+	COPY ~EET_Tweaks-inlined/100/Baldur.ini~ ~%USER_DIRECTORY%/Baldur.ini~
+END

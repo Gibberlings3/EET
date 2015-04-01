@@ -491,7 +491,7 @@
 
 <h3>3E Thief Sneak Attack</h3>
 <p>Compatibility: BG2:EE, EET</p>
-<p>Enables 3E Thief Sneak Attack mechanics known from IWD in BG2:EE. It works exactly the same as in IWD:EE and replaces Backstabbing.</p>
+<p>Enables Thief sneak attack/crippling strike mechanics known from IWD and 3rd edition of pen-and-paper Dungeon & Dragons ruleset. It works exactly the same as in IWD:EE and replaces Backstabbing.</p>
 <hr />
 
 <h3>Adjust FPS and fix audio skipping in cutscenes</h3>
@@ -514,7 +514,8 @@
 <hr />
 
 <h3>Put Sword of Chaos +2 in Sarevok's inventory</h3>
-<p>Compatibility: EET (BGT version available in <em>BGT Tweaks</em> mod). No conflicts with <a href="http://www.shsforums.net/files/file/1110-sarevok-related-tweaks/">Sarevok related tweaks</a> (load order doesn't matter)</p>
+<p>Compatibility: EET (BGT version available in <em>BGT Tweaks</em> mod)<br />
+Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-related-tweaks/">Sarevok related tweaks</a> (load order doesn't matter)</p>
 <p>This component allows you to pick up Sarevok's Sword of Chaos +2 after he is slain.</p>
 <hr />
 
@@ -585,8 +586,9 @@
 <hr />
 
 <h3>Disable hostile reaction after charm</h3>
-<p>Compatibility: BG2, Tutu, BGT (BGT version also available in <em>BGT Tweaks</em> mod), CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET</p>
-<p>Simple tweak ported from BGT Tweaks. Changes the 'Charm Specific Creature' effect in all ITM, SPL and EFF files to disable hostile reaction after Charm/Dire Charm effect ends (also affects mods). It's possible that some creatures will remain hostile, but in such case it won't be a result of charm spell usage, but custom AI scripts that control their behaviour.</p>
+<p>Compatibility: BG2, Tutu, BGT (BGT version also available in <em>BGT Tweaks</em> mod), CA, IWD-in-BG2, BG:EE, BG2:EE, IWD:EE, EET<br />
+Not compatible with <a href="http://www.shsforums.net/topic/57999-bgt-tweaks-disable-hostile-reaction-after-charm-component-no-longer-works">SCS v3 'Smarter general AI' component</a></p>
+<p>Simple tweak ported from BGT Tweaks. Changes the 'Charm Specific Creature' effect in all ITM, SPL and EFF files to disable hostile reaction after Charm/Dire Charm effect ends (also affects mods). It's possible that some creatures will remain hostile, but in such case it won't be a result of charm spell usage, but custom AI scripts that control creature behaviour.</p>
 <hr />
 
 <h3>Adjust familiar death consequences</h3>
@@ -594,13 +596,92 @@
 <p>Normally when your familiar is killed summoner looses 1 Constitution point permanently. This tweak allows you to change this behaviour. Familiars in EET are completely unhardcoded, so adjusting such things is very simple. Available options:</p>
 <p><a href="#" onclick="toggle('Adjust familiar death consequences'); return false;">Unhide/Collapse details</a></p>
 <ul class="vlisthide" id="Adjust familiar death consequences">
-	<li><strong>Constitution loss for 1 week + blocked familiar summoning for 1 week</strong> (after this time Constitution stat will return to previous value and you will be able to once again use summon familiar spell)</li>
+	<li><strong>Constitution loss for 1 week + blocked familiar summoning for 1 week</strong> (after this time Constitution stat will return to previous value and you will be able to once again use 'Summon familiar' spell)</li>
 	<li><strong>Constitution loss for 1 week</strong> (toned down version of above)</li>
 	<li><strong>Disable Constitution loss</strong> (this one can definitely be considered a cheat)</li>
 	<li><strong>Option 1 custom time</strong> (works the same as first option, but you type in how many days penalties lasts)</li>
-	<li><strong>Option 2 custom time</strong> (as above, but for second option)</li>
+	<li><strong>Option 2 custom time</strong> (as above, but for the second option)</li>
 </ul></p>
 <hr />
+<!--
+<h3>Adjust summon familiar selection</h3>
+<p>Compatibility: EET</p>
+<p>In vanilla game familiars are picked after Protagonist's Alignment. This tweak allows you to change it in following ways:</p>
+<p><a href="#" onclick="toggle('Adjust familiar selection'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Adjust familiar selection">
+	<li><strong>Choose any familiar</strong> (choice is no longer dependent on Protagonist's Alignment at all)</li>
+	<li><strong>Choose from the pool of 3 restricted to closest Alignment</strong> (for example Chaotic Good character will be able to pick up familiars normally assigned to Neutral Good, Chaotic Good and Lawful Neutral Alignments)</li>
+	<li><strong>Choose from the pool of 3 restricted to general Alignment</strong> (for example if you have one of the Evil Alignments than you are restricted only to familiars normally assigned to Lawful Evil, Neutral Evil and Chaotic Evil Alignments)</li>
+</ul></p>
+<hr />
+-->
+<h3>IWD:EE portraits</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<div class="important">
+<p>Requires IWD:EE to be present on your computer during installation</p>
+</div>
+<p>Copies and integrates with GUI all 59 portraits from IWD:EE.</p>
+<hr />
+
+<h3>IWD:EE soundsets</h3>
+<p>Compatibility: BG2:EE, EET
+<div class="important">
+<p>Requires IWD:EE to be present on your computer during installation</p>
+</div>
+<p>Imports all 30 soundsets from IWD:EE right into your BG2:EE / EET game. It covers not only media files, but also in-game subtitles (translation taken directly from IWD:EE dialog.tlk) and integrating it with GUI menu.</p>
+<hr />
+<!--
+<h3>IWD:EE kits</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>Implements 2 new playable Cleric kits kits introduced in IWD:EE - Priest of Tyr (also known from Dorn's questline in BG2:EE) and Priest of Tempus. Keep in mind that EE GUI is limited to 9 kits per class and with these 2 you end up with a total of 6 Cleric kits. If you already used up all slots via other mods than you won't even be able to see these ones in the selection menu. If you find the lack of kit selection GUI scrolling unacceptable (it's a feature available for vanilla BG2 via ToBEX) than make your voice heard on <a href="http://forum.baldursgate.com/categories/feature-requests">Beamdog forum</a>.</p>
+<hr />
+
+<h3>IWD:EE Cleric spells</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>This tweak implements Cleric spells from IWD:EE. Keep in mind that even though enemies also have these spells they can't really cast them without customized AI scripts, which is beyond of the scope for this project. That's why, unless some other mod makes a good use of them, they can be considered unbalancing. Another problem is limited amount of spell slots that are available in Cleric/Druid/Mage spellbooks. Unlike vanilla BG2 with ToBEX, EE engine is limited in this department, so you will end up with spells that are not available, if you are using other mods with custom ones. You can try to request feature parity with ToBEX on <a href="http://forum.baldursgate.com/categories/feature-requests">Beamdog forum</a>.</p>
+<hr />
+
+<h3>IWD:EE Druid spells</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>As above but for Druids.</p>
+<hr />
+
+<h3>IWD:EE Wizard spells</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>As above but for Wizards.</p>
+<hr />
+
+<h3>IWD:EE Bard songs</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>As above but for Bards.</p>
+<hr />
+
+<h3>IWD:EE racial enemies</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>No comment needed besides the fact that without mods that expands bestiaries with IWD variants, some of these enemies () can't be met in vanilla game. Still can be considered a good choice from role-playing character background perspective.</p>
+<hr />
+
+<h3>2-handed Axes</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>New item type introduced in IWD. This tweak adds these Axes to vanilla stores and swaps 1 out of every 5 enemies that use 1-handed Axe (normal, +1, +2, +3 variants) in game to use 2-handed version instead, but only if an enemy doesn't have second weapon or shield equipped (also affects mods).</p>
+<hr />
+
+<h3>Disable High Level Abilities</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>An option to disable HLAS for player's party as it is done in IWD:EE.</p>
+<hr />
+-->
+<h3>Ironman Mode</h3>
+<p>Compatibility: BG2:EE, IWD:EE, EET</p>
+<div class="important">
+<p>Due to <a href="http://forum.baldursgate.com/discussion/40487/opcode-338-disable-rest-or-save-seems-to-be-partially-broken">engine bug</a> this tweak is not currently available, although early version is already present within the tp2 code and awaits for Beamdog move. Component has been mentioned here to increase awareness about the issue and show that it's actually worth fixing.</p>
+<hr />
+<p>Not recommended for first-time players!</p>
+</div>
+<p>Ironman Mode known from The Temple of Elemental Evil and more recently - from Pillars of Eternity where it is called <a href="http://pillarsofeternity.gamepedia.com/Mode?cookieSetup=true">Trial of Iron</a>. In this mode the player has one save game that persists for the entire campaign or until player's character dies (or whole party if you also install "Protagonist can die" component). The only way to save the game is by using quick save key (Q), which will also end the current session and move you to main menu. Being defeated results in the save file being overwritten. This tweak will also change current difficulty level to "Core Rules" if it is set lower and disable "Max HP per level" in ini file if it is enabled. Everything else is just like a normal game. In other words it's a famous no-reload challenge. If you are going to try it consider sharing your experience <a href="http://forum.baldursgate.com/categories/challenges-and-playthroughs">here</a>.</p>
+<hr />
+
+<p>Also take a look at the mod called <a href="http://www.shsforums.net/files/file/1091-isandirs-portrait-pack/">Isandir's Portrait Pack</a> which adds beautiful portraits made by <a href="http://isandir.com/">Isandir</a> in a style similar to vanilla BG1 portraits and few in BG2 style. The mod also swaps BG2 NPC portraits with Ust Natha themed ones during Underdark questline. Both components would probably end up in this pack if it would be available back then.</p>
 
 <address><span class="footer">EETT > Introduction</span> ·<a href="#top">BACK TO TOP</a></address>
 </div>
@@ -611,10 +692,10 @@
 
 <h3>Compatibility and install order</h3>
 
-<p>This mod should be installed at the end, after any mod that alters CRE, BCS, DLG, ITM, SPL, EFF files. You can safely keep it as the last mod in your load order, which will allow you to install/uninstall/re-install components during play through, without risking breaking other mods.</p>
+<p>This mod should be installed at the end, after any mod that alters CRE, BCS, DLG, ITM, SPL, EFF files. You can safely keep it as the last mod in your load order (even after Widescreen and BP-BGT Worldmap), which will allow you to install/uninstall/re-install components during play through, without risking breaking other mods.</p>
 <p>You don't need to worry about components installation order - weidu is smart enough to reinstall previous components if needed. For example you can install 'Party XP for quests distributed individually' before or after installing 'Adjust XP for quests' component. The outcome will be the same.</p>
-<p>If you are going to use XP related components than you should not install 'Ding0 Experience Fixer' (DEF JAM), as it does the same thing, but compared to this mod is less precise, flexible and doesn't cover mod related SPL, ITM, EFF files and new ChangeStat action added by EE engine (at least the version v6 that was the most recent one when I was writing this readme).</p>
-<p>If in component compatibility section it is mentioned that the same functionality is available elsewhere and you have it installed already, than installer will skip these components.</p>
+<p>If you are going to use XP related components than you should avoid installing <a href=">"http://www.pocketplane.net/mambo/index.php?option=content&task=blogcategory&id=110&Itemid=83">Ding0 Experience Fixer (DEF JAM)</a>, as it does the same thing, but compared to this mod is less precise, flexible and doesn't cover mod related SPL, ITM, EFF files and new ChangeStat action added by EE engine (at least the version v6 that was the most recent one when I was writing this readme).</p>
+<p>Don't forget to read compatibility section in the description of each component you want to install. If it is mentioned there that the same functionality is available elsewhere and you have conflicting mod installed already than installer will skip these components.</p>
 <hr />
 
 <h3>Installation</h3>
@@ -635,7 +716,7 @@
 <p>Instead of directly running the executable go to the command line, navigate to your installation directory, and execute setup-EET_Tweaks.exe using the construction below. Alternatively, place the construction in a batch file or the 'Run...' dialog in the Start menu.</p>
 
 <div class="important">
-<p>setup-EET_Tweaks.exe --force-install-list <em>[number]</em> --skip-at-view --language <em>X</em> --args-list <em>[options]</em></p>
+<p>setup-EET_Tweaks.exe --force-install-list <em>[number]</em> --skip-at-view --language <em>X</em> --args-list <em>[options]</em> <em>[path]</em></p>
 </div>
 
 <p>Parameters:</p>
@@ -674,12 +755,24 @@
 			18 - install Adjust BG1 armor shattering chance<br />
 			19 - install Adjust BG1 helmet shattering chance<br />
 			20 - install Disable hostile reaction after charm<br />
-			21 - install Adjust familiar death consequences</p>
+			21 - install Adjust familiar death consequences<br />
+			//22 - reserved slot<br />
+			23 - install IWD:EE portraits<br />
+			24 - install IWD:EE soundsets</p>
 			</td>
 		</tr>
 		<tr>
 			<td><em>[options]</em></td>
-			<td>Some components allows you to choose options during installation. If this is the case than you can skip the prompt and choose them here by typing number of the component followed by '-' and the value that represents the chosen option and followed by another '-' and the value, if the chosen option expects exact value typed in via keyboard.<br /></td>
+			<td>
+				<p>Some components allows you to choose options during installation. If this is the case than you can skip the prompt and choose them here by typing number of the component followed by '-' and the value that represents the chosen option and followed by another '-' and the value, if the chosen option expects exact value typed in via keyboard.</p>
+				<p>p or P - informs WeiDU that pre-define full path to the Icewind Dale: Enhanced Edition directory is provided; if the path is invalid, setup will prompt for a valid path. Used only by components 23 and 24. Should the last argument in order, followed by <em>[path]</em>.</p>
+			</td>
+		</tr>
+		<tr>
+			<td><em>[path]</em></td>
+			<td>
+				<p>Full path, in quotes, to your Icewind Dale: Enhanced Edition installation directory, used in conjunction with p or P in <em>[options]</em></p>
+			</td>
 		</tr>
 	</tbody>
 </table>
@@ -688,10 +781,10 @@
 <p>Example:</p>
 
 <div class="important">
-<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 --skip-at-view --language 0 --args-list "1-1" "3-2" "4-4-200000" "5-4-10000000" "6-3" "7-5" "8-7-120" "11-1" "16-4" "17-4" "18-4" "19-4" "21-2"</p>
+<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 --skip-at-view --language 0 --args-list "1-1" "3-2" "4-4-200000" "5-4-10000000" "6-3" "7-5" "8-7-120" "11-1" "16-4" "17-4" "18-4" "19-4" "21-2" p "C:\Program Files (x86)\BeamDog\Games\00798"</p>
 </div>
 
-<p>This construction installs all components of this mod using the English language and following settings: BG2 used as a base for join-able NPCs (option 1); additional BG2:SoA XP CAP set to 2,950,000 (option 2); BG:EE XP CAP set to 200,000 (option 4 followed by custom value); BG2:EE XP CAP set to 10,000,000 (option 4 followed by custom value); XP rewards for Traps, Spells and Lockpicking based on progressive table (option 3); XP rewards for killing monsters decreased to 10% (option 5); XP rewards for quests increased to 120% (option 7 followed by custom value); FPS set to 60 frames per second (option 1); all item types with shatter chance set to 0.1% (option 4); Constitution loss for 1 week after familiar is dead (option 2).</p>
+<p>This construction installs all components of this mod using the English language, predefined IWD:EE directory, and following settings: BG2 used as a base for join-able NPCs; additional BG2:SoA XP CAP set to 2,950,000; BG:EE XP CAP set to custom value - 200,000; BG2:EE XP CAP set to custom value - 10,000,000; XP rewards for Traps, Spells and Lockpicking based on progressive table; XP rewards for killing monsters decreased to 10%; XP rewards for quests increased to custom value - 120%; FPS set to 60 frames per second; all item types with shatter chance set to 0.1%; Constitution loss for 1 week after familiar is dead.</p>
 
 <address><span class="footer">EETT > Installation and Uninstallation</span> ·<a href="#top">BACK TO TOP</a></address>
 </div>

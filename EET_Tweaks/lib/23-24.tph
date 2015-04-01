@@ -1,0 +1,94 @@
+/////                                                  \\\\\
+///// Get location of IWD:EE installation              \\\\\
+/////                                                  \\\\\
+
+OUTER_SET valid_dir = 0
+OUTER_SET first_prompt = 0
+
+ACTION_IF (VARIABLE_IS_SET EVAL ~iwdee_dir~) AND (auto_install = 1) BEGIN
+	PRINT ~%iwdee_dir% directory assigned via auto install batch command~
+END ELSE ACTION_IF (FILE_EXISTS ~EET_Tweaks/iwdee_dir.txt~) BEGIN
+	COPY - ~EET_Tweaks/iwdee_dir.txt~ ~EET~
+		READ_ASCII 0x0 iwdee_dir (%SOURCE_SIZE%)
+	OUTER_SET first_prompt = 1
+	PRINT ~%iwdee_dir% directory assigned via EET_Tweaks/iwdee_dir.txt~
+END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+<<<<<<<< EET_Tweaks-inlined/programfiles.bat
+echo %%var%%>EET_Tweaks/temp/%var%.txt
+>>>>>>>>
+	ACTION_FOR_EACH var IN ~programfiles~ ~programfiles(x86)~ ~ProgramW6432~ BEGIN
+		COPY + ~EET_Tweaks-inlined/programfiles.bat~ ~EET_Tweaks/temp~ EVALUATE_BUFFER
+		AT_NOW ~EET_Tweaks/temp/programfiles.bat~
+		COPY - ~EET_Tweaks/temp/%var%.txt~ ~EET_Tweaks/temp~//for some reason the same file can't be used for all 3 vars
+			READ_ASCII 0x0 dir (%SOURCE_SIZE%)
+		OUTER_INNER_PATCH_SAVE dir ~%dir%~ BEGIN
+			REPLACE_TEXTUALLY ~%WNL%~ ~~//needed due to newline added by windows > command
+		END
+		PRINT ~%var% = %dir%~
+		ACTION_FOR_EACH dir2 IN ~/BeamDog/Games/00798~ ~/Icewind Dale Enhanced Edition/Data/00798~ BEGIN
+			ACTION_IF (FILE_EXISTS ~%dir%%dir2%/data/IWDEE.bif~) AND (first_prompt = 0) BEGIN
+				OUTER_SPRINT iwdee_dir ~%dir%%dir2%~
+				OUTER_SET first_prompt = 1
+				PRINT ~%iwdee_dir% directory assigned to default dir~
+			END
+		END
+	END
+END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
+	ACTION_FOR_EACH dir IN ~/Applications/Icewind\ Dale\ -\ Enhanced\ Edition/Game\ Data/00799/IcewindDale.app/Contents/Resources~ ~/Applications/IcewindDale.app/Contents/Resources~ ~%tilde%/Library/Application\ Support/Steam/SteamApps/common/Icewind\ Dale\ Enhanced\ Edition/IcewindDale.app/Contents/Resources~ ~Applications/Icewind\ Dale\ Enhanced\ Edition.app/Contents/Resources/game/IcewindDale.app/Contents/Resources~ BEGIN
+		ACTION_IF (FILE_EXISTS ~%dir%/data/IWDEE.bif~) AND (first_prompt = 0) BEGIN
+			OUTER_SPRINT iwdee_dir ~%dir%~
+			OUTER_SET first_prompt = 1
+			PRINT ~%iwdee_dir% directory assigned to default dir~
+		END
+	END
+END
+
+ACTION_IF (auto_install = 0) BEGIN
+	ACTION_IF (first_prompt = 1) BEGIN
+		OUTER_SPRINT iwdee_prompt ~a~
+		OUTER_WHILE (~%iwdee_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
+			PRINT ~Detected IWD:EE directory as %iwdee_dir%.
+Is this correct? [Y]es or [N]o~
+			ACTION_READLN ~iwdee_prompt~
+		END
+		ACTION_IF ((~%iwdee_prompt%~ STRING_EQUAL_CASE ~y~)=0) BEGIN
+			OUTER_SET first_prompt = 0
+		END
+	END
+	ACTION_IF (first_prompt = 0) BEGIN
+		PRINT ~~
+		PRINT ~Enter the full path to your IWD:EE installation then press Enter.
+Example: C:\Program Files (x86)\BeamDog\Games\00798~
+		ACTION_READLN ~iwdee_dir~
+	END
+END
+
+OUTER_WHILE (valid_dir = 0) BEGIN
+	OUTER_INNER_PATCH_SAVE ~iwdee_dir~ ~%iwdee_dir%~ BEGIN
+		PATCH_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN //Win32
+			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
+			REPLACE_TEXTUALLY ~\~ ~/~ //change slashes
+			REPLACE_TEXTUALLY ~[\\/]*$~ ~~ //remove terminal slashes
+		END ELSE PATCH_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
+			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
+			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
+			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes//*/
+		END
+	END
+	ACTION_IF NOT (FILE_EXISTS ~%iwdee_dir%/data/IWDEE.bif~) BEGIN
+		PRINT ~~
+		PRINT ~Invalid IWD:EE directory, or incorrect IWD:EE installation.
+It is safe to abort this installation by closing this window or pressing Ctrl+C.~
+		PRINT ~Enter the full path to your IWD:EE installation then press Enter.
+Example: C:\Program Files (x86)\BeamDog\Games\00798~
+		ACTION_READLN ~iwdee_dir~
+	END ELSE BEGIN
+		OUTER_SET valid_dir = 1
+		PRINT ~IWD:EE directory used for this installation:
+%iwdee_dir%~
+	END
+END
+
+<<<<<<<< EET_Tweaks-inlined/iwdee_dir.txt
+%iwdee_dir%>>>>>>>>
+COPY ~EET_Tweaks-inlined/iwdee_dir.txt~ ~EET_Tweaks/iwdee_dir.txt~ EVALUATE_BUFFER

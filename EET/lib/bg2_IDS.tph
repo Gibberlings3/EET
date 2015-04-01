@@ -1,6 +1,6 @@
-////////////////////////
-// ACTION.IDS
-////////////////////////
+/////                                                  \\\\\
+///// ACTION.IDS                                       \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~ACTION.IDS~ ~override~
 	//REPLACE_TEXTUALLY ~AddJournalEntry(I:Entry~  ~AddJournalEntry(I:StrRef~
@@ -29,9 +29,9 @@ APPEND ~ACTION.IDS~ ~376 DisplayStringNoNameDlg(O:Object*,I:StrRef*)~           
 APPEND ~ACTION.IDS~ ~377 SetGlobalTimerRandomX(S:Name*,S:Area*,I:Min*GTimes,I:Max*GTimes)~ UNLESS ~377 SetGlobalTimerRandomX(~
 APPEND ~ACTION.IDS~ ~378 ExportParty(S:Name*)~                                             UNLESS ~378 ExportParty(~
 
-////////////////////////
-// ANIMATE.IDS
-////////////////////////
+/////                                                  \\\\\
+///// ANIMATE.IDS                                      \\\\\
+/////                                                  \\\\\
 
 /*
 //resume IWD:EE entries (already present in BG2:EE, but with IWD:EE names)
@@ -172,32 +172,32 @@ APPEND ~ANIMATE.IDS~ ~0xE28C DRAGON_WHITE_YOUNG~       UNLESS ~0xE28C DRAGON_WHI
 APPEND ~ANIMATE.IDS~ ~0xE28D TROLL_SPECTRAL~           UNLESS ~0xE28D TROLL_SPECTRAL~
 APPEND ~ANIMATE.IDS~ ~0xEF91 DONOT_USE2~               UNLESS ~0xEF91 DONOT_USE2~
 
-////////////////////////
-// ANISND.IDS
-////////////////////////
+/////                                                  \\\\\
+///// ANISND.IDS                                       \\\\\
+/////                                                  \\\\\
 
 //EET uses INI files instead of 2DA for both BG and IWD animation offsets. INI files take precedence over 2DA, so nothing need to be added (other than auto import from BG:EE present later in this file)
 //IWD:EE has 2DA entries for all new animation offsets, but assigned 2DA files don't exists there, so it's useless either way
 
-////////////////////////
-// AREAFLAG.IDS
-////////////////////////
+/////                                                  \\\\\
+///// AREAFLAG.IDS                                     \\\\\
+/////                                                  \\\\\
 
 APPEND ~AREAFLAG.IDS~ ~3  DEADMAGICZONE~ UNLESS ~DEADMAGICZONE~
 APPEND ~AREAFLAG.IDS~ ~4  DREAMAREA~     UNLESS ~DREAMAREA~
 APPEND ~AREAFLAG.IDS~ ~5  PLAYER1CANDIE~ UNLESS ~PLAYER1CANDIE~
 
-////////////////////////
-// CLASS.IDS
-////////////////////////
+/////                                                  \\\\\
+///// CLASS.IDS                                        \\\\\
+/////                                                  \\\\\
 
 APPEND ~CLASS.IDS~ ~211 CANDLEKEEP_WATCHER~ UNLESS ~CANDLEKEEP_WATCHER~
 APPEND ~CLASS.IDS~ ~212 AMNISH_SOLDIER~     UNLESS ~AMNISH_SOLDIER~
 APPEND ~CLASS.IDS~ ~213 TOWN_GUARD~         UNLESS ~TOWN_GUARD~
 
-////////////////////////
-// GTIMES.IDS
-////////////////////////
+/////                                                  \\\\\
+///// GTIMES.IDS                                       \\\\\
+/////                                                  \\\\\
 
 APPEND ~GTIMES.IDS~  ~144000 TWENTY_DAYS~     UNLESS ~TWENTY_DAYS~
 APPEND ~GTIMES.IDS~  ~158400 TWENTYTWO_DAYS~  UNLESS ~TWENTYTWO_DAYS~
@@ -276,18 +276,18 @@ APPEND ~GTIMES.IDS~ ~540 NINE_TURNS~    UNLESS ~NINE_TURNS~
 APPEND ~GTIMES.IDS~ ~600 TEN_TURNS~     UNLESS ~TEN_TURNS~
 APPEND ~GTIMES.IDS~ ~900 FIFTEEN_TURNS~ UNLESS ~FIFTEEN_TURNS~
 
-////////////////////////
-// SNDSLOT.IDS
-////////////////////////
+/////                                                  \\\\\
+///// SNDSLOT.IDS                                      \\\\\
+/////                                                  \\\\\
 
 APPEND ~SNDSLOT.IDS~ ~44 INSULT1~ UNLESS ~ INSULT1~
 APPEND ~SNDSLOT.IDS~ ~45 INSULT2~ UNLESS ~ INSULT2~
 APPEND ~SNDSLOT.IDS~ ~46 INSULT3~ UNLESS ~ INSULT3~
 APPEND ~SNDSLOT.IDS~ ~74 BIO~     UNLESS ~ BIO~
 
-////////////////////////
-// SOUNDOFF.IDS
-////////////////////////
+/////                                                  \\\\\
+///// SOUNDOFF.IDS                                     \\\\\
+/////                                                  \\\\\
 
 APPEND ~SOUNDOFF.IDS~ ~9 BATTLE_CRY1~              UNLESS ~BATTLE_CRY1~
 APPEND ~SOUNDOFF.IDS~ ~10 BATTLE_CRY2~             UNLESS ~BATTLE_CRY2~
@@ -346,9 +346,9 @@ APPEND ~SOUNDOFF.IDS~ ~72 SET_A_TRAP~              UNLESS ~SET_A_TRAP~
 APPEND ~SOUNDOFF.IDS~ ~73 EXISTANCE4~              UNLESS ~EXISTANCE4~
 APPEND ~SOUNDOFF.IDS~ ~74 BIO~                     UNLESS ~ BIO~
 
-////////////////////////
-// TRIGGER.IDS
-////////////////////////
+/////                                                  \\\\\
+///// TRIGGER.IDS                                      \\\\\
+/////                                                  \\\\\
 
 APPEND ~TRIGGER.IDS~ ~0x00A1 SpellCastOnMeRES(S:Spell*,O:Caster*)~
               UNLESS ~0x00A1 SpellCastOnMeRES(S:Spell\*,O:Caster\*)~
@@ -359,9 +359,9 @@ APPEND ~TRIGGER.IDS~ ~0x00A6 SpellCastPriestRES(S:Spell*,O:Object*)~
 APPEND ~TRIGGER.IDS~ ~0x00A7 SpellCastInnateRES(S:Spell*,O:Object*)~
               UNLESS ~0x00A7 SpellCastInnateRES(S:Spell\*,O:Object\*)~
 
-////////////////////////
-// Auto update
-////////////////////////
+/////                                                  \\\\\
+///// Auto update                                      \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/GTIMES.IDS~ ~EET/temp/array~
 	~EET/temp/array/ANIMATE.IDS~ ~EET/temp/array~
@@ -394,9 +394,9 @@ COPY + ~EET/temp/array/GTIMES.IDS~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// IWD:EE
-////////////////////////
+/////                                                  \\\\\
+///// IWD:EE                                           \\\\\
+/////                                                  \\\\\
 
 APPEND ~ACTSLEEP.IDS~ ~330 AddAreaType(I:Type*AREATYPE)~                                   UNLESS ~330 AddAreaType(~
 APPEND ~ACTSLEEP.IDS~ ~331 RemoveAreaType(I:Type*AREATYPE)~                                UNLESS ~331 RemoveAreaType(~

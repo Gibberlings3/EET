@@ -1,272 +1,85 @@
-////////////////////////
-// CHARSND.2DA
-////////////////////////
+/////                                                  \\\\\
+///// CHARSND.2DA                                      \\\\\
+/////                                                  \\\\\
 
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGFEML1 19062 19066 19070 19074 19078 19082 19086 19091 19096 19101 19106 -1 -1 -1 -1 19111 19116 19062 19062 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGFEML1~
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGFEML2 19063 19067 19071 19075 19079 19083 19087 19093 19097 19102 19107 -1 -1 -1 -1 19112 19117 19063 19063 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGFEML2~
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGFEML3 19064 19068 19072 19076 19080 19084 19088 19092 19098 19103 19108 -1 -1 -1 -1 19113 19118 19064 19064 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGFEML3~
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGMALE1 18198 12368 12389 12509 18189 18190 18191 18192 18193 18194 18195 -1 -1 -1 -1 18196 18197 18198 18198 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGMALE1~
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGMALE2 19054 19055 19056 19057 19058 19059 19060 19089 19094 19099 19104 -1 -1 -1 -1 19109 19114 19054 19054 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGMALE2~
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGMALE3 19061 19065 19069 19073 19077 19081 19085 19090 19095 19100 19105 -1 -1 -1 -1 19110 19115 19061 19061 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGMALE3~
-
-//BG1 default sound strings (resref already reserved by BG2:EE)
-
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @16235
-	READ_LONG 0x0 s_01
-	SAY 0x0 @16236
-	READ_LONG 0x0 s_02
-	SAY 0x0 @16237
-	READ_LONG 0x0 s_03
-	SAY 0x0 @16238
-	READ_LONG 0x0 s_04
-	SAY 0x0 @16239
-	READ_LONG 0x0 s_05
-	SAY 0x0 @16240
-	READ_LONG 0x0 s_06
-	SAY 0x0 @16241
-	READ_LONG 0x0 s_07
-	SAY 0x0 @16242
-	READ_LONG 0x0 s_08
-	SAY 0x0 @16243
-	READ_LONG 0x0 s_09
-	SAY 0x0 @16244
-	READ_LONG 0x0 s_10
-	SAY 0x0 @16245
-	READ_LONG 0x0 s_11
-	SAY 0x0 @16246
-	READ_LONG 0x0 s_12
-	SAY 0x0 @16247
-	READ_LONG 0x0 s_13
-	SAY 0x0 @25427
-	READ_LONG 0x0 s_14
-	SAY 0x0 @25429
-	READ_LONG 0x0 s_15
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_oldNameNewName1" BEGIN
+	~FEMALE~ => ~BGFEML0~
+	~MALE~ => ~BGMALE0~
+	~FEMALE1~ => ~BGFEML1~
+	~FEMALE2~ => ~BGFEML2~
+	~FEMALE3~ => ~BGFEML3~
+	~FEMALE4~ => ~BGFEML4~
+	~FEMALE5~ => ~BGFEML5~
+	~FEMALE6~ => ~BGFEML6~
+	~MALE1~ => ~BGMALE1~
+	~MALE2~ => ~BGMALE2~
+	~MALE3~ => ~BGMALE3~
+	~MALE4~ => ~BGMALE4~
+	~MALE5~ => ~BGMALE5~
+	~MALE6~ => ~BGMALE6~
 END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGMALE0 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_14% %s_15% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGMALE0~
 
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @16248
-	READ_LONG 0x0 s_01
-	SAY 0x0 @16249
-	READ_LONG 0x0 s_02
-	SAY 0x0 @16250
-	READ_LONG 0x0 s_03
-	SAY 0x0 @16251
-	READ_LONG 0x0 s_04
-	SAY 0x0 @16252
-	READ_LONG 0x0 s_05
-	SAY 0x0 @16253
-	READ_LONG 0x0 s_06
-	SAY 0x0 @16254
-	READ_LONG 0x0 s_07
-	SAY 0x0 @16255
-	READ_LONG 0x0 s_08
-	SAY 0x0 @16256
-	READ_LONG 0x0 s_09
-	SAY 0x0 @16257
-	READ_LONG 0x0 s_10
-	SAY 0x0 @16258
-	READ_LONG 0x0 s_11
-	SAY 0x0 @16259
-	READ_LONG 0x0 s_12
-	SAY 0x0 @16260
-	READ_LONG 0x0 s_13
-	SAY 0x0 @25428
-	READ_LONG 0x0 s_14
-	SAY 0x0 @25430
-	READ_LONG 0x0 s_15
-END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGFEML0 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_14% %s_15% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGFEML0~
+<<<<<<<< EET-inlined/CHARSND.txt
+%index2%
+>>>>>>>>
 
-//BG:EE DLC sound strings (resref already reserved by BG2:EE)
+COPY - ~EET/temp/array/CHARSND.2DA~ ~EET/temp/array~
+	COUNT_2DA_COLS "cntcol"
+	COUNT_2DA_ROWS (cntcol - 1) "cntrow"
+	READ_2DA_ENTRIES_NOW table_charsnd (cntcol - 1)
+	INNER_ACTION BEGIN
+		COPY_EXISTING ~CHARSND.2DA~ ~override~
+			PRETTY_PRINT_2DA
+			COUNT_2DA_COLS "cntcol2"
+			COUNT_2DA_ROWS cntcol2 "cntrow2"
+			FOR (cnt1 = 0 ; cnt1 < cntcol2 - 1 ; cnt1 = cnt1 + 1) BEGIN
+				INNER_ACTION BEGIN
+					COPY - ~EET-inlined/CHARSND.txt~ ~EET-inlined/CHARSND.txt~
+						REPLACE_TEXTUALLY ~\(index2.+\)~ ~\1 -1~
+				END
+			END
+		BUT_ONLY
+		OUTER_FOR (cnt2 = 0 ; cnt2 < cntcol - 1 ; cnt2 = cnt2 + 1) BEGIN
+			COPY_EXISTING ~CHARSND.2DA~ ~override~//need to be copied each time to reload data for FILE_CONTAINS_EVALUATED
+				READ_2DA_ENTRY_FORMER table_charsnd 0 cnt2 "name"
+				PHP_EACH "table_2DA_oldNameNewName1" AS "oldName" => "newName" BEGIN
+					PATCH_IF ~%name%~ STRING_EQUAL_CASE ~%oldName%~ BEGIN
+						SPRINT name ~%newName%~
+					END
+				END
+				PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~CHARSND.2DA~ ~^%name%~)) BEGIN
+					PATCH_PRINT ~Patching CHARSND.2DA: %name% subtitles~
+					REPLACE_TEXTUALLY ~^\([ ]+MALE .+\)$~ ~\1 %name%~
+					FOR (cnt3 = 0 ; cnt3 < cntrow2 ; cnt3 = cnt3 + 1) BEGIN
+						READ_2DA_ENTRY cnt3 0 cntcol2 "index1"
+						PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~EET/temp/array/CHARSND.2DA~ ~^%index1%~)) BEGIN
+							REPLACE_TEXTUALLY ~^\(%index1% .+\)$~ ~\1 -1~
+						END
+					END
+					FOR (cnt4 = 1; cnt4 < cntrow ; cnt4 = cnt4 + 1) BEGIN
+						READ_2DA_ENTRY_FORMER table_charsnd cnt4 0 "index2"
+						READ_2DA_ENTRY_FORMER table_charsnd cnt4 (cnt2 + 1) "string"
+						PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~CHARSND.2DA~ ~^%index2%~)) BEGIN
+							APPEND_FILE ~EET-inlined/CHARSND.txt~ EVALUATE_BUFFER
+						END
+						PATCH_IF (string > 0) BEGIN
+							REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 999%string%~
+							REPLACE ~999%string%~ ( AT "string" )
+						END ELSE BEGIN
+							REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 %string%~
+						END
+					END
+				END
+			BUT_ONLY
+		END
+		COPY_EXISTING ~CHARSND.2DA~ ~override~
+			PRETTY_PRINT_2DA
+		BUT_ONLY
+	END
 
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @31619
-	READ_LONG 0x0 s_01
-	SAY 0x0 @31620
-	READ_LONG 0x0 s_02
-	SAY 0x0 @31621
-	READ_LONG 0x0 s_03
-	SAY 0x0 @31622
-	READ_LONG 0x0 s_04
-	SAY 0x0 @31623
-	READ_LONG 0x0 s_05
-	SAY 0x0 @31624
-	READ_LONG 0x0 s_06
-	SAY 0x0 @31625
-	READ_LONG 0x0 s_07
-	SAY 0x0 @31626
-	READ_LONG 0x0 s_08
-	SAY 0x0 @31627
-	READ_LONG 0x0 s_09
-	SAY 0x0 @31628
-	READ_LONG 0x0 s_10
-	SAY 0x0 @31629
-	READ_LONG 0x0 s_11
-	SAY 0x0 @31630
-	READ_LONG 0x0 s_12
-	SAY 0x0 @31631
-	READ_LONG 0x0 s_13
-END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGFEML4 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_01% %s_01% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGFEML4~
-
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @31632
-	READ_LONG 0x0 s_01
-	SAY 0x0 @31633
-	READ_LONG 0x0 s_02
-	SAY 0x0 @31634
-	READ_LONG 0x0 s_03
-	SAY 0x0 @31635
-	READ_LONG 0x0 s_04
-	SAY 0x0 @31636
-	READ_LONG 0x0 s_05
-	SAY 0x0 @31637
-	READ_LONG 0x0 s_06
-	SAY 0x0 @31638
-	READ_LONG 0x0 s_07
-	SAY 0x0 @31639
-	READ_LONG 0x0 s_08
-	SAY 0x0 @31640
-	READ_LONG 0x0 s_09
-	SAY 0x0 @31641
-	READ_LONG 0x0 s_10
-	SAY 0x0 @31642
-	READ_LONG 0x0 s_11
-	SAY 0x0 @31643
-	READ_LONG 0x0 s_12
-	SAY 0x0 @31644
-	READ_LONG 0x0 s_13
-END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGFEML5 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_01% %s_01% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGFEML5~
-
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @31645
-	READ_LONG 0x0 s_01
-	SAY 0x0 @31646
-	READ_LONG 0x0 s_02
-	SAY 0x0 @31647
-	READ_LONG 0x0 s_03
-	SAY 0x0 @31648
-	READ_LONG 0x0 s_04
-	SAY 0x0 @31649
-	READ_LONG 0x0 s_05
-	SAY 0x0 @31650
-	READ_LONG 0x0 s_06
-	SAY 0x0 @31651
-	READ_LONG 0x0 s_07
-	SAY 0x0 @31652
-	READ_LONG 0x0 s_08
-	SAY 0x0 @31653
-	READ_LONG 0x0 s_09
-	SAY 0x0 @31654
-	READ_LONG 0x0 s_10
-	SAY 0x0 @31655
-	READ_LONG 0x0 s_11
-	SAY 0x0 @31656
-	READ_LONG 0x0 s_12
-	SAY 0x0 @31657
-	READ_LONG 0x0 s_13
-END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGFEML6 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_01% %s_01% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGFEML6~
-
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @31658
-	READ_LONG 0x0 s_01
-	SAY 0x0 @31659
-	READ_LONG 0x0 s_02
-	SAY 0x0 @31660
-	READ_LONG 0x0 s_03
-	SAY 0x0 @31661
-	READ_LONG 0x0 s_04
-	SAY 0x0 @31662
-	READ_LONG 0x0 s_05
-	SAY 0x0 @31663
-	READ_LONG 0x0 s_06
-	SAY 0x0 @31664
-	READ_LONG 0x0 s_07
-	SAY 0x0 @31665
-	READ_LONG 0x0 s_08
-	SAY 0x0 @31666
-	READ_LONG 0x0 s_09
-	SAY 0x0 @31667
-	READ_LONG 0x0 s_10
-	SAY 0x0 @31668
-	READ_LONG 0x0 s_11
-	SAY 0x0 @31669
-	READ_LONG 0x0 s_12
-	SAY 0x0 @31670
-	READ_LONG 0x0 s_13
-END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGMALE4 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_01% %s_01% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGMALE4~
-
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @31671
-	READ_LONG 0x0 s_01
-	SAY 0x0 @31672
-	READ_LONG 0x0 s_02
-	SAY 0x0 @31673
-	READ_LONG 0x0 s_03
-	SAY 0x0 @31674
-	READ_LONG 0x0 s_04
-	SAY 0x0 @31675
-	READ_LONG 0x0 s_05
-	SAY 0x0 @31676
-	READ_LONG 0x0 s_06
-	SAY 0x0 @31677
-	READ_LONG 0x0 s_07
-	SAY 0x0 @31678
-	READ_LONG 0x0 s_08
-	SAY 0x0 @31679
-	READ_LONG 0x0 s_09
-	SAY 0x0 @31680
-	READ_LONG 0x0 s_10
-	SAY 0x0 @31681
-	READ_LONG 0x0 s_11
-	SAY 0x0 @31682
-	READ_LONG 0x0 s_12
-	SAY 0x0 @31683
-	READ_LONG 0x0 s_13
-END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGMALE5 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_01% %s_01% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGMALE5~
-
-OUTER_INNER_PATCH "patch_2DA" BEGIN
-	SAY 0x0 @31684
-	READ_LONG 0x0 s_01
-	SAY 0x0 @31685
-	READ_LONG 0x0 s_02
-	SAY 0x0 @31686
-	READ_LONG 0x0 s_03
-	SAY 0x0 @31687
-	READ_LONG 0x0 s_04
-	SAY 0x0 @31688
-	READ_LONG 0x0 s_05
-	SAY 0x0 @31689
-	READ_LONG 0x0 s_06
-	SAY 0x0 @31690
-	READ_LONG 0x0 s_07
-	SAY 0x0 @31691
-	READ_LONG 0x0 s_08
-	SAY 0x0 @31692
-	READ_LONG 0x0 s_09
-	SAY 0x0 @31693
-	READ_LONG 0x0 s_10
-	SAY 0x0 @31694
-	READ_LONG 0x0 s_11
-	SAY 0x0 @31695
-	READ_LONG 0x0 s_12
-	SAY 0x0 @31696
-	READ_LONG 0x0 s_13
-END
-APPEND_COL ~CHARSND.2DA~ ~$ $ BGMALE6 %s_01% %s_02% %s_03% %s_04% %s_05% %s_06% %s_07% %s_08% %s_09% %s_10% %s_11% -1 -1 -1 -1 %s_12% %s_13% %s_01% %s_01% -1 -1 -1 -1 -1 -1 -1 -1 -1 -1~ UNLESS ~BGMALE6~
-
-COPY_EXISTING ~CHARSND.2DA~ ~override~
-	PRETTY_PRINT_2DA
-
-////////////////////////
-// CLASTEXT.2DA
-////////////////////////
+/////                                                  \\\\\
+///// CLASTEXT.2DA                                     \\\\\
+/////                                                  \\\\\
 
 //BG2->BG1 biography update
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_classString" BEGIN
@@ -426,9 +239,9 @@ COPY + ~EET/temp/array/CLASTEXT.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// ENTRIES.2DA
-////////////////////////
+/////                                                  \\\\\
+///// ENTRIES.2DA                                      \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/ENTRIES.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -463,9 +276,9 @@ COPY + ~EET/temp/array/ENTRIES.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// EXTANIM.2DA
-////////////////////////
+/////                                                  \\\\\
+///// EXTANIM.2DA                                      \\\\\
+/////                                                  \\\\\
 
 //Ice Wind Dale: Enhanced Edition
 /*APPEND ~EXTANIM.2DA~ ~57920 0 1 0 0 NONE 0 47 0 0 NONE NONE NONE 10 3 MANI NONE 0 0 NONE~ UNLESS ~57920~
@@ -530,9 +343,9 @@ COPY + ~EET/temp/array/EXTANIM.2DA~ ~EET/temp/array~
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// EXTSPEED.2DA
-////////////////////////
+/////                                                  \\\\\
+///// EXTSPEED.2DA                                     \\\\\
+/////                                                  \\\\\
 
 //Ice Wind Dale: Enhanced Edition
 APPEND ~EXTSPEED.2DA~ ~57920 8~ UNLESS ~57920~
@@ -596,9 +409,9 @@ COPY + ~EET/temp/array/EXTSPEED.2DA~ ~EET/temp/array~
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// HATERACE.2DA
-////////////////////////
+/////                                                  \\\\\
+///// HATERACE.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/HATERACE.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -638,9 +451,9 @@ COPY + ~EET/temp/array/HATERACE.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// INTERDIA.2DA
-////////////////////////
+/////                                                  \\\\\
+///// INTERDIA.2DA                                     \\\\\
+/////                                                  \\\\\
 
 APPEND_OUTER + ~EET/temp/array/INTERDIA.2DA~ ~dummy dummy dummy~
 COPY + ~EET/temp/array/INTERDIA.2DA~ ~EET/temp/array~
@@ -673,9 +486,9 @@ COPY + ~EET/temp/array/INTERDIA.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// ITEM_USE.2DA
-////////////////////////
+/////                                                  \\\\\
+///// ITEM_USE.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/ITEM_USE.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -710,9 +523,9 @@ COPY + ~EET/temp/array/ITEM_USE.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// ITEMANIM.2DA
-////////////////////////
+/////                                                  \\\\\
+///// ITEMANIM.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/ITEMANIM.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -739,9 +552,9 @@ COPY + ~EET/temp/array/ITEMANIM.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// ITEMDIAL.2DA
-////////////////////////
+/////                                                  \\\\\
+///// ITEMDIAL.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/ITEMDIAL.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -775,9 +588,9 @@ COPY + ~EET/temp/array/ITEMDIAL.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// ITEMEXCL.2DA
-////////////////////////
+/////                                                  \\\\\
+///// ITEMEXCL.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/ITEMEXCL.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -804,9 +617,9 @@ COPY + ~EET/temp/array/ITEMEXCL.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// NPCLEVEL.2DA
-////////////////////////
+/////                                                  \\\\\
+///// NPCLEVEL.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~NPCLEVEL.2DA~ ~override~
 	PRETTY_PRINT_2DA
@@ -858,9 +671,9 @@ COPY + ~EET/temp/array/NPCLEVEL.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// NPCLVL25.2DA
-////////////////////////
+/////                                                  \\\\\
+///// NPCLVL25.2DA                                     \\\\\
+/////                                                  \\\\\
 
 // NPCs joining level 25+ PCs would be at their minimum level, not max
 COPY_EXISTING ~NPCLVL25.2DA~ ~override~
@@ -907,9 +720,9 @@ COPY + ~EET/temp/array/NPCLVL25.2DA~ ~EET/temp/array~
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// MASTAREA.2DA
-////////////////////////
+/////                                                  \\\\\
+///// MASTAREA.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/MASTAREA.2DA~ ~EET/temp/array~
 	PATCH_FOR_EACH area IN 0100 0200 0300 0400 0500 0511 0512 0513 0514 0515 0516 0600 0700 0800 0900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2626 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 5100 5200 5300 5400 5500 226 225 224 123 125 146 1801 1802 1803 1804 2615 2619 2304 2305 2306 2608 2609 2610 2611 2612 2613 2614 5506 5401 5402 5403 5404 5405 BEGIN
@@ -939,9 +752,9 @@ COPY + ~EET/temp/array/MASTAREA.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// MONSUM01-07.2DA
-////////////////////////
+/////                                                  \\\\\
+///// MONSUM01-07.2DA                                  \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/MONSUM01.2DA~ ~EET/temp/array~
 	~EET/temp/array/MONSUM02.2DA~ ~EET/temp/array~
@@ -975,9 +788,9 @@ COPY + ~EET/temp/array/MONSUM01.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// MOVIDESC.2DA
-////////////////////////
+/////                                                  \\\\\
+///// MOVIDESC.2DA                                     \\\\\
+/////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_movieString" BEGIN
 	"BEREGOST"	=>	"19659"
@@ -1074,9 +887,9 @@ COPY + ~EET/temp/array/MOVIDESC.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// MSECTYPE.2DA
-////////////////////////
+/////                                                  \\\\\
+///// MSECTYPE.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/MSECTYPE.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -1110,9 +923,9 @@ COPY + ~EET/temp/array/MSECTYPE.2DA~ ~EET/temp/array~
 COPY_EXISTING ~MSECTYPE.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// PDIALOG.2DA
-////////////////////////
+/////                                                  \\\\\
+///// PDIALOG.2DA                                      \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~PDIALOG.2DA~ ~override~
 	REPLACE_TEXTUALLY ~^XAN~  ~TTXAN~
@@ -1158,9 +971,9 @@ COPY + ~EET/temp/array/PDIALOG.2DA~ ~EET/temp/array~
 COPY_EXISTING ~PDIALOG.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// PORTRAIT.2DA
-////////////////////////
+/////                                                  \\\\\
+///// PORTRAIT.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/PORTRAIT.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -1187,9 +1000,9 @@ COPY + ~EET/temp/array/PORTRAIT.2DA~ ~EET/temp/array~
 COPY_EXISTING ~PORTRAIT.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// RACETEXT.2DA
-////////////////////////
+/////                                                  \\\\\
+///// RACETEXT.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~RACETEXT.2DA~ ~override~
 	REPLACE ~31709~ @31709
@@ -1244,16 +1057,16 @@ COPY + ~EET/temp/array/RACETEXT.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// SONGLIST.2DA
-////////////////////////
+/////                                                  \\\\\
+///// SONGLIST.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~SONGLIST.2DA~ ~override~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "last_entry"
 	PATCH_PRINT ~last song number = %last_entry%~
 
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_oldNameNewName" BEGIN
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_oldNameNewName2" BEGIN
 	"BC1" => "BC3"
 	"BC2" => "BC4"
 	"BD1" => "BD4"
@@ -1267,7 +1080,7 @@ END
 
 COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
-	PHP_EACH "table_2DA_oldNameNewName" AS "oldName" => "newName" BEGIN
+	PHP_EACH "table_2DA_oldNameNewName2" AS "oldName" => "newName" BEGIN
 		REPLACE_TEXTUALLY ~ %oldName% ~ ~ %newName% ~
 		REPLACE_TEXTUALLY ~ %oldName%\.MUS~ ~ %newName%.MUS~
 	END
@@ -1282,7 +1095,7 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 		READ_2DA_ENTRY cnt 2 3 "col3"
 		SET EVALUATE_BUFFER "dword_mus_source%cnt%" = col1
 		SPRINT ~col3temp~ ~%col3%~
-		PHP_EACH "table_2DA_oldNameNewName" AS "oldName" => "newName" BEGIN
+		PHP_EACH "table_2DA_oldNameNewName2" AS "oldName" => "newName" BEGIN
 			PATCH_IF (("%col3temp%" STRING_EQUAL_CASE "%newName%.MUS")=1) BEGIN
 				SPRINT ~col3temp~ ~%oldName%.MUS~
 			END
@@ -1321,9 +1134,9 @@ PRINT ~%log%~
 COPY_EXISTING ~SONGLIST.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// SPAWNGRP.2DA
-////////////////////////
+/////                                                  \\\\\
+///// SPAWNGRP.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/SPAWNGRP.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -1352,9 +1165,9 @@ COPY + ~EET/temp/array/SPAWNGRP.2DA~ ~EET/temp/array~
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// SNDRESRF.2DA
-////////////////////////
+/////                                                  \\\\\
+///// SNDRESRF.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/SNDRESRF.2DA~ ~EET/temp/array~
 	PATCH_FOR_EACH area IN 0100 0200 0300 0400 0500 0511 0512 0513 0514 0515 0516 0600 0700 0800 0900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2626 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000 5100 5200 5300 5400 5500 226 225 224 123 125 146 1801 1802 1803 1804 2615 2619 2304 2305 2306 2608 2609 2610 2611 2612 2613 2614 5506 5401 5402 5403 5404 5405 BEGIN
@@ -1384,9 +1197,9 @@ COPY + ~EET/temp/array/SNDRESRF.2DA~ ~EET/temp/array~
 		END
 	END
 
-////////////////////////
-// SPELDESC.2DA
-////////////////////////
+/////                                                  \\\\\
+///// SPELDESC.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY + ~EET/temp/array/SPELDESC.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
@@ -1420,18 +1233,18 @@ COPY + ~EET/temp/array/SPELDESC.2DA~ ~EET/temp/array~
 COPY_EXISTING ~SPELDESC.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// STRTGOLD.2DA
-////////////////////////
+/////                                                  \\\\\
+///// STRTGOLD.2DA                                     \\\\\
+/////                                                  \\\\\
 
 APPEND ~STRTGOLD.2DA~ ~SORCERER                4       1       1           10~ UNLESS ~SORCERER~
 APPEND ~STRTGOLD.2DA~ ~MONK                    4       1       1           10~ UNLESS ~MONK~
 COPY_EXISTING ~STRTGOLD.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
-////////////////////////
-// STARTARE.2DA
-////////////////////////
+/////                                                  \\\\\
+///// STARTARE.2DA                                     \\\\\
+/////                                                  \\\\\
 
 //APPEND ~STARTARE.2DA~ ~START_MP_XP             2500000~ UNLESS ~START_MP_XP~
 //APPEND ~STARTARE.2DA~ ~START_MP_XP_CAP         8000000~ UNLESS ~START_MP_XP_CAP~
@@ -1462,9 +1275,9 @@ COPY_EXISTING ~STARTARE.2DA~ ~override~
 	END
 //BUT_ONLY
 
-////////////////////////
-// STARTPOS.2DA
-////////////////////////
+/////                                                  \\\\\
+///// STARTPOS.2DA                                     \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~STARTPOS.2DA~ ~override~
 	SET_2DA_ENTRY 1 1 6 ~1110~//3741
@@ -1508,9 +1321,9 @@ COPY_EXISTING ~STARTBP.2DA~ ~override~
 //BUT_ONLY
 */
 
-////////////////////////
-// TBPPARTY.2DA
-////////////////////////
+/////                                                  \\\\\
+///// TBPPARTY.2DA                                     \\\\\
+/////                                                  \\\\\
 
 //replace default Black Pits party
 COPY_EXISTING ~TBPPARTY.2DA~ ~override~
@@ -1522,9 +1335,9 @@ COPY_EXISTING ~TBPPARTY.2DA~ ~override~
 	REPLACE_TEXTUALLY ~BPARTY06~ ~BPARTY12~
 BUT_ONLY
 
-////////////////////////
-// XPBONUS.2DA
-////////////////////////
+/////                                                  \\\\\
+///// XPBONUS.2DA                                      \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~XPBONUS.2DA~ ~override~
 	REPLACE_TEXTUALLY ~DISARM_TRAP.+$~ ~DISARM_TRAP   10   10   10   10   10   17   17   17   17   17   27   27   27   27   27   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32   32~
@@ -1533,9 +1346,9 @@ COPY_EXISTING ~XPBONUS.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-////////////////////////
-// YEARS.2DA
-////////////////////////
+/////                                                  \\\\\
+///// YEARS.2DA                                        \\\\\
+/////                                                  \\\\\
 
 COPY_EXISTING ~YEARS.2DA~ ~override~
 	SET_2DA_ENTRY 4 1 1 ~1368~//1369
