@@ -685,7 +685,7 @@ COPY_EXISTING ~FH3300.BCS~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
-///// Skip to tutorial/BG2                             \\\\\
+///// Skip to tutorial/BG2, starting weapon            \\\\\
 /////                                                  \\\\\
 
 <<<<<<<< EET-inlined/FH2600-et.baf
@@ -704,6 +704,72 @@ IF
 THEN
     RESPONSE #100
     GiveItemCreate("K#TELBG2",Player1,1,1,0)
+    Continue()
+END
+
+//STWEAPON.2DA that exists in BG:EE doesn't seem to work in BG2:EE
+IF
+  Global("Chapter","GLOBAL",-1)
+  !HasItem("STAF01",Player1)
+  !Class(Player1,MONK)
+THEN
+    RESPONSE #100
+    GiveItemCreate("STAF01",Player1,1,1,0)
+    Continue()
+END
+
+IF
+  Global("Chapter","GLOBAL",-1)
+  InPartyAllowDead(Player2)
+  !HasItem("STAF01",Player2)
+  !Class(Player2,MONK)
+THEN
+    RESPONSE #100
+    GiveItemCreate("STAF01",Player2,1,1,0)
+    Continue()
+END
+
+IF
+  Global("Chapter","GLOBAL",-1)
+  InPartyAllowDead(Player3)
+  !HasItem("STAF01",Player3)
+  !Class(Player3,MONK)
+THEN
+    RESPONSE #100
+    GiveItemCreate("STAF01",Player3,1,1,0)
+    Continue()
+END
+
+IF
+  Global("Chapter","GLOBAL",-1)
+  InPartyAllowDead(Player4)
+  !HasItem("STAF01",Player4)
+  !Class(Player4,MONK)
+THEN
+    RESPONSE #100
+    GiveItemCreate("STAF01",Player4,1,1,0)
+    Continue()
+END
+
+IF
+  Global("Chapter","GLOBAL",-1)
+  InPartyAllowDead(Player5)
+  !HasItem("STAF01",Player5)
+  !Class(Player5,MONK)
+THEN
+    RESPONSE #100
+    GiveItemCreate("STAF01",Player5,1,1,0)
+    Continue()
+END
+
+IF
+  Global("Chapter","GLOBAL",-1)
+  InPartyAllowDead(Player6)
+  !HasItem("STAF01",Player6)
+  !Class(Player6,MONK)
+THEN
+    RESPONSE #100
+    GiveItemCreate("STAF01",Player6,1,1,0)
     Continue()
 END
 >>>>>>>>
