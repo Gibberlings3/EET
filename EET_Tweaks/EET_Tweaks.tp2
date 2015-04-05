@@ -1096,12 +1096,14 @@ END*/
 
 <<<<<<<< EET_Tweaks-inlined/14/baldur-et.baf
 IF
-  NumInPartyAlive(0)
+  OR(3)
+    NumInPartyAlive(0)
+    StateCheck(Player1,STATE_EXPLODING_DEATH)
+    StateCheck(Player1,STATE_FROZEN_DEATH)
 THEN
   RESPONSE #100
-    //%save_eval%
-    StartMovie("DEATHAND")
-    GameOver(19377)
+	//%save_eval%
+    GameOver(19377) // Twoja główna postać została zabita. Musisz zacząć grę od nowa.
 END
 >>>>>>>>
 
