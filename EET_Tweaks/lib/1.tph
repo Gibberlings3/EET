@@ -22,15 +22,15 @@ DEFINE_ACTION_MACRO EET_WRITE_APPEARANCE BEGIN
 	ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 		COPY_EXISTING ~%npc%.CRE~ ~override~
 			PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
-				WRITE_ASCIIE 0x34 "%small%"  // Small portrait
-				WRITE_ASCIIE 0x3c "%medium%" // Medium portrait
-				WRITE_BYTE 0x2c "%metal%"    // Metal color
-				WRITE_BYTE 0x2d "%minor%"    // Minor color
-				WRITE_BYTE 0x2e "%major%"    // Major color
-				WRITE_BYTE 0x2f "%skin%"     // Skin color
-				WRITE_BYTE 0x30 "%leather%"  // Leather color
-				WRITE_BYTE 0x31 "%armor%"    // Armor color
-				WRITE_BYTE 0x32 "%hair%"     // Hair color
+				WRITE_ASCIIE 0x34 "%small%" #8  // Small portrait
+				WRITE_ASCIIE 0x3c "%medium%" #8 // Medium portrait
+				WRITE_BYTE 0x2c "%metal%"       // Metal color
+				WRITE_BYTE 0x2d "%minor%"       // Minor color
+				WRITE_BYTE 0x2e "%major%"       // Major color
+				WRITE_BYTE 0x2f "%skin%"        // Skin color
+				WRITE_BYTE 0x30 "%leather%"     // Leather color
+				WRITE_BYTE 0x31 "%armor%"       // Armor color
+				WRITE_BYTE 0x32 "%hair%"        // Hair color
 			END
 		BUT_ONLY
 	END
@@ -41,9 +41,9 @@ END
 /////                                                  \\\\\
 
 //Edwin
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~EDWIN~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~EDWIN7~
 END
 
@@ -57,9 +57,9 @@ ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 END
 
 //Imoen
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~IMOEN~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~IMOEN6~
 END
 
@@ -73,9 +73,9 @@ ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 END
 
 //Jaheira
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~JAHEIR~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~JAHEIR7~
 END
 
@@ -89,9 +89,9 @@ ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 END
 
 //Minsc
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~MINSC~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~MINSC7~
 END
 
@@ -105,9 +105,9 @@ ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 END
 
 //Viconia
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~VICONI~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~VICONI6~
 END
 
@@ -121,9 +121,9 @@ ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 END
 
 //Dorn
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~DORN~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~DORN8~
 END
 
@@ -137,9 +137,9 @@ ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 END
 
 //Neera
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~NEERA~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~NEERA8~
 END
 
@@ -153,9 +153,9 @@ ACTION_IF (FILE_EXISTS_IN_GAME ~%npc%.CRE~) BEGIN
 END
 
 //Rasaad
-ACTION_IF option = 0 BEGIN
+ACTION_IF button = 1 BEGIN
 	OUTER_SPRINT npc ~RASAAD~
-END ELSE ACTION_IF option = 1 BEGIN
+END ELSE ACTION_IF button = 2 BEGIN
 	OUTER_SPRINT npc ~RASAAD8~
 END
 

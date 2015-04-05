@@ -140,6 +140,8 @@ COPY ~EET_Tweaks/0/K#TELSPL.ITM~ ~override~
 COPY_EXISTING ~25Spell.sto~ ~override~
 	ADD_STORE_ITEM "K#TELSPL" #1 #0 #0 ~IDENTIFIED~ #2
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -154,10 +156,8 @@ REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game
 
 OUTER_WHILE (valid_answer = 0) BEGIN
 	ACTION_IF (button = 1) BEGIN //BG:EE
-		OUTER_SET option = 0
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button = 2) BEGIN //BG2:EE
-		OUTER_SET option = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Which game should be used as a portraits and colours base for NPCs that are joinable in both BG:EE and BG2:EE?
@@ -171,6 +171,8 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 END
 
 INCLUDE ~EET_TWEAKS/lib/1.tph~
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -188,6 +190,8 @@ REQUIRE_PREDICATE ("%LANGUAGE%" STRING_EQUAL_CASE ~pl_PL~) ~This component is on
 LOAD_TRA ~EET_Tweaks/lang/%LANGUAGE%/2.tra~
 
 INCLUDE ~EET_TWEAKS/lib/2_%LANGUAGE%.tph~ //no point in bloating the main file, especially if there will be more languages added in future
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -213,6 +217,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 			PRINT ~Type in the integer value for XP CAP:~
 			ACTION_READLN ~value~
 		END
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~What value should be used for BG2:EE SoA XP CAP?
@@ -245,7 +250,7 @@ ACTION_FOR_EACH number IN 1 2 3 4 5 6 BEGIN
 	EXTEND_BOTTOM ~BALDUR.BCS~ ~EET_Tweaks-inlined/6/baldur-eb.baf~ EVALUATE_BUFFER
 END
 
-PRINT ~XP CAP set to %value%~
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -274,6 +279,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 			PRINT ~Type in the integer value for XP CAP:~
 			ACTION_READLN ~value~
 		END
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~What value should be used for BG:EE XP CAP?
@@ -310,7 +316,7 @@ THEN
 	END
 BUT_ONLY
 
-PRINT ~XP CAP set to %value%~
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -339,6 +345,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 			PRINT ~Type in the integer value for XP CAP:~
 			ACTION_READLN ~value~
 		END
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~What value should be used for BG2:EE SoA XP CAP?
@@ -360,11 +367,7 @@ COPY_EXISTING ~STARTARE.2DA~ ~override~
 	REPLACE_TEXTUALLY ~START_XP_CAP[ 	]+[-0-9]+~ ~%value%~ EVALUATE_BUFFER
 	BUT_ONLY
 
-ACTION_IF ("%value%" < 0) BEGIN
-	PRINT ~XP CAP has been disabled~
-END ELSE BEGIN
-	PRINT ~XP CAP set to %value%~
-END
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -402,6 +405,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 			PRINT ~Type in the integer percentage value:~
 			ACTION_READLN ~value~
 		END
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~How would you like to do adjust XP for Disarming Traps, Lockpicking and Spell learning?
@@ -441,6 +445,8 @@ COPY_EXISTING ~XPBONUS.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -477,6 +483,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 			PRINT ~Type in the integer percentage value:~
 			ACTION_READLN ~value~
 		END
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Adjust XP for killing creatures:
@@ -511,6 +518,8 @@ COPY_EXISTING_REGEXP GLOB ~.+\.CRE~ ~override~
 		END
 	END
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -548,6 +557,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 			PRINT ~Type in the integer percentage value:~
 			ACTION_READLN ~value~
 		END
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Adjust XP for quests:
@@ -747,6 +757,8 @@ COPY_EXISTING_REGEXP GLOB ~.+\.EFF~ ~override~
 	END
 BUT_ONLY
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -810,6 +822,8 @@ ACTION_FOR_EACH ext IN BCS DLG BEGIN
 	BUT_ONLY
 END
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -871,6 +885,8 @@ STRING_SET ~74298~ @6 //Shadowdancer kit description
 //74095 //Backstab Octuple Damage
 //74096 //Backstab Nonuple Damage
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -895,6 +911,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 			PRINT ~Type in the FPS vakue (30+ up to 60):~
 			ACTION_READLN ~value~
 		END
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Choose Maximum Frame Rate:
@@ -976,6 +993,8 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
 	END
 BUT_ONLY
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -1012,6 +1031,8 @@ ACTION_FOR_EACH cre IN britik credus hakt raiken taugos tersus teven vax venkt z
 	BUT_ONLY
 END
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -1046,6 +1067,8 @@ COPY_EXISTING ~sarevo.cre~ ~override/sarevo.cre~
 		ADD_CRE_ITEM ~SW2H16~ #0 #0 #0 ~UNSTEALABLE~ ~INV~
 	END
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1088,6 +1111,8 @@ ACTION_FOR_EACH script IN BALDUR BALDUR25 BEGIN
 	END
 END
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -1096,7 +1121,7 @@ END
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN ~Adjust BG1 weapon shattering~
+BEGIN ~Disable item shattering for enemies~
 //DESIGNATED 15
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
@@ -1112,6 +1137,8 @@ END
 ACTION_FOR_EACH file IN K#SHATWE K#SHATSH K#SHATAR K#SHATHE BEGIN
 	EXTEND_TOP ~%file%.BCS~ ~EET_Tweaks-inlined/15/K#SHAT-et.baf~
 END
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1148,10 +1175,11 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
-			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, for example: 1 = 0.1%, and 100 = 10%)~
 			ACTION_READLN ~value~
 		END
 		OUTER_SET response = (100 - value)
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Adjust shattering chance:
@@ -1182,6 +1210,8 @@ COPY_EXISTING ~K#SHATWE.BCS~ ~override~
   RESPONSE #%value%~
 	END
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1218,10 +1248,11 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
-			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, for example: 1 = 0.1%, and 100 = 10%)~
 			ACTION_READLN ~value~
 		END
 		OUTER_SET response = (100 - value)
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Adjust shattering chance:
@@ -1252,6 +1283,8 @@ COPY_EXISTING ~K#SHATSH.BCS~ ~override~
   RESPONSE #%value%~
 	END
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1288,10 +1321,11 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
-			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, for example: 1 = 0.1%, and 100 = 10%)~
 			ACTION_READLN ~value~
 		END
 		OUTER_SET response = (100 - value)
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Adjust shattering chance:
@@ -1322,6 +1356,8 @@ COPY_EXISTING ~K#SHATAR.BCS~ ~override~
   RESPONSE #%value%~
 	END
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1358,10 +1394,11 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button = 6) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) OR (%value% > 100) BEGIN
-			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, so for example 1 = 0.1%, and 100 = 10%)~
+			PRINT ~Type in the integer value from 0 to 100 (it will be divided by 10, for example: 1 = 0.1%, and 100 = 10%)~
 			ACTION_READLN ~value~
 		END
 		OUTER_SET response = (100 - value)
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Adjust shattering chance:
@@ -1392,6 +1429,8 @@ COPY_EXISTING ~K#SHATHE.BCS~ ~override~
   RESPONSE #%value%~
 	END
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1449,6 +1488,8 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.eff$~ ~override~
 	END
 BUT_ONLY
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -1463,25 +1504,18 @@ REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game
 
 OUTER_WHILE (valid_answer = 0) BEGIN
 	ACTION_IF (button = 1) BEGIN //Constitution loss for 1 week + blocked familiar summoning for 1 week
-		OUTER_SET option = 0
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button = 2) BEGIN //Constitution loss for 1 week
-		OUTER_SET option = 1
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button = 3) BEGIN //Disable Constitution loss
-		OUTER_SET option = 2
 		OUTER_SET valid_answer = 1
 	END ELSE ACTION_IF (button > 3) AND (button < 6) BEGIN //Custom value
 		OUTER_WHILE NOT (IS_AN_INT %value%) OR (%value% < 0) BEGIN
 			PRINT ~Type in the integer value that represents how many days should penalties last~
 			ACTION_READLN ~value~
 		END
-		ACTION_IF (button = 4) BEGIN
-			OUTER_SET option = 3
-		END ELSE BEGIN
-			OUTER_SET option = 4
-		END
-		OUTER_SET value = (value * 7200)//7200 = 1 day
+		OUTER_SET time = (value * 7200)//7200 = 1 day
+		OUTER_SET logCustom = 1
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Adjust familiar death consequences (permanent 1 point Constitution loss by default):
@@ -1510,40 +1544,42 @@ END
 
 COPY_EXISTING ~K#FAMKIL.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		PATCH_IF (option = 0) BEGIN //Constitution loss for 1 week + blocked familiar summoning for 1 week
+		PATCH_IF (button = 1) BEGIN //Constitution loss for 1 week + blocked familiar summoning for 1 week
 			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~SetGlobalTimer("K#TimerFamiliar","GLOBAL",50400)~
 			REPLACE_TEXTUALLY ~ChangeStat(Player1,CON,-1,ADD)~ ~ActionOverride(Player1,ApplySpellRES("K#FAMCON",Myself))~
 			INNER_ACTION BEGIN
 				COPY ~EET_Tweaks/21/K#FAMCON.SPL~ ~override~
 				EXTEND_TOP ~K#FAMSUM.BCS~ ~EET_Tweaks-inlined/21/K#FAMSUM-et.baf~
 			END
-		END ELSE PATCH_IF (option = 1) BEGIN //Constitution loss for 1 week
+		END ELSE PATCH_IF (button = 2) BEGIN //Constitution loss for 1 week
 			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~~
 			REPLACE_TEXTUALLY ~ChangeStat(Player1,CON,-1,ADD)~ ~ActionOverride(Player1,ApplySpellRES("K#FAMCON",Myself))~
 			INNER_ACTION BEGIN
 				COPY ~EET_Tweaks/21/K#FAMCON.SPL~ ~override~
 			END
-		END ELSE PATCH_IF (option = 2) BEGIN //Disable Constitution loss
+		END ELSE PATCH_IF (button = 3) BEGIN //Disable Constitution loss
 			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~~
 			REPLACE_TEXTUALLY ~ChangeStat(Player1,CON,-1,ADD)~ ~~
-		END ELSE PATCH_IF (option = 3) BEGIN //Option 1 custom time
-			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~SetGlobalTimer("K#TimerFamiliar","GLOBAL",%value%)~
+		END ELSE PATCH_IF (button = 4) BEGIN //Option 1 custom time
+			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~SetGlobalTimer("K#TimerFamiliar","GLOBAL",%time%)~
 			REPLACE_TEXTUALLY ~ChangeStat(Player1,CON,-1,ADD)~ ~ActionOverride(Player1,ApplySpellRES("K#FAMCON",Myself))~
 			INNER_ACTION BEGIN
 				COPY ~EET_Tweaks/21/K#FAMCON.SPL~ ~override~
-					WRITE_LONG 0xa8 ~%value%~
+					WRITE_LONG 0xa8 ~%time%~
 				EXTEND_TOP ~K#FAMSUM.BCS~ ~EET_Tweaks-inlined/21/K#FAMSUM-et.baf~
 			END
-		END ELSE PATCH_IF (option = 4) BEGIN //Option 2 custom time
+		END ELSE PATCH_IF (button = 5) BEGIN //Option 2 custom time
 			REPLACE_TEXTUALLY ~ActionOverride(Player1,DisplayString(Myself,21004))~ ~~
 			REPLACE_TEXTUALLY ~ChangeStat(Player1,CON,-1,ADD)~ ~ActionOverride(Player1,ApplySpellRES("K#FAMCON",Myself))~
 			INNER_ACTION BEGIN
 				COPY ~EET_Tweaks/21/K#FAMCON.SPL~ ~override~
-					WRITE_LONG 0xa8 ~%value%~
+					WRITE_LONG 0xa8 ~%time%~
 			END
 		END
 	END
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1557,6 +1593,8 @@ BEGIN ~Reserved slot for future tweak~
 //DESIGNATED 22
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 DEPRECATED ~Nothing to see here for now~
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1732,6 +1770,8 @@ COPY - ~EET_Tweaks/temp/CHARSND.2DA~ ~EET_Tweaks~
 		BUT_ONLY
 	END
 
+LAM ~EET_Tweaks.log~
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -1828,6 +1868,8 @@ INSERT INTO portraits ROWS
 	'2FORC1_', 2,
 );~
 BUT_ONLY
+
+LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1990,3 +2032,5 @@ INSERT INTO options ROWS (
 >>>>>>>>
 	COPY ~EET_Tweaks-inlined/100/Baldur.ini~ ~%USER_DIRECTORY%/Baldur.ini~
 END
+
+LAM ~EET_Tweaks.log~

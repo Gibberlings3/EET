@@ -1,5 +1,5 @@
 /////                                                  \\\\\
-///// Common variables                                 \\\\\
+///// Initialise installation                          \\\\\
 /////                                                  \\\\\
 
 MKDIR ~EET_Tweaks/temp~
@@ -13,6 +13,8 @@ OUTER_SPRINT tra_path ~EET_Tweaks/lang~
 OUTER_SET valid_answer = 0
 OUTER_SET button = 0
 OUTER_SPRINT value ~dummy~
+OUTER_SPRINT logOption ~~
+OUTER_SPRINT logCustom ~~
 
 ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
@@ -27,6 +29,9 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 	AT_INTERACTIVE_UNINSTALL ~rm -rf EET_Tweaks/temp~
 	AT_INTERACTIVE_EXIT ~rm -rf EET_Tweaks/temp~
 END
+
+<<<<<<<< EET_Tweaks-inlined/blank.txt
+>>>>>>>>
 
 /////                                                  \\\\\
 ///// Check --args-list                                \\\\\
@@ -104,4 +109,23 @@ LAF ~HANDLE_CHARSETS~
 	charset_table = charsetsTable
 	convert_array = charsetsConvertArray
 	//reload_array = charsetsReloadArray
+END
+
+/////                                                  \\\\\
+///// macros                                           \\\\\
+/////                                                  \\\\\
+
+DEFINE_ACTION_MACRO ~EET_Tweaks.log~ BEGIN
+	ACTION_IF (button > 0) BEGIN
+		OUTER_SPRINT logOption ~, option: %button%~
+	END
+	ACTION_IF (IS_AN_INT value) AND (IS_AN_INT logCustom) BEGIN
+		OUTER_SPRINT logCustom ~, custom value: %value%~
+	END
+	OUTER_SPRINT log ~Component %COMPONENT_NUMBER%%logOption%%logCustom%~
+	PRINT ~%log%~
+	ACTION_IF NOT FILE_EXISTS ~EET_Tweaks/EET_Tweaks.log~ BEGIN
+		COPY ~EET_Tweaks-inlined/blank.txt~ ~EET_Tweaks/EET_Tweaks.log~
+	END
+	APPEND_OUTER ~EET_Tweaks/EET_Tweaks.log~ ~%log%~
 END

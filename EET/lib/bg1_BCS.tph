@@ -710,66 +710,84 @@ END
 //STWEAPON.2DA that exists in BG:EE doesn't seem to work in BG2:EE
 IF
   Global("Chapter","GLOBAL",-1)
-  !HasItem("STAF01",Player1)
+  !HasItem("staf01",Player1)
+  !HasItemSlot(Player1,SLOT_WEAPON)
   !Class(Player1,MONK)
 THEN
-    RESPONSE #100
-    GiveItemCreate("STAF01",Player1,1,1,0)
+  RESPONSE #100
+    GiveItemCreate("staf01",Player1,1,1,0)
+    ActionOverride(Player1,FillSlot(SLOT_WEAPON))
+    ActionOverride(Player1,EquipMostDamagingMelee())
     Continue()
 END
 
 IF
   Global("Chapter","GLOBAL",-1)
   InPartyAllowDead(Player2)
-  !HasItem("STAF01",Player2)
+  !HasItem("staf01",Player2)
+  !HasItemSlot(Player2,SLOT_WEAPON)
   !Class(Player2,MONK)
 THEN
-    RESPONSE #100
-    GiveItemCreate("STAF01",Player2,1,1,0)
+  RESPONSE #100
+    GiveItemCreate("staf01",Player2,1,1,0)
+    ActionOverride(Player2,FillSlot(SLOT_WEAPON))
+    ActionOverride(Player2,EquipMostDamagingMelee())
     Continue()
 END
 
 IF
   Global("Chapter","GLOBAL",-1)
   InPartyAllowDead(Player3)
-  !HasItem("STAF01",Player3)
+  !HasItem("staf01",Player3)
+  !HasItemSlot(Player3,SLOT_WEAPON)
   !Class(Player3,MONK)
 THEN
-    RESPONSE #100
-    GiveItemCreate("STAF01",Player3,1,1,0)
+  RESPONSE #100
+    GiveItemCreate("staf01",Player3,1,1,0)
+    ActionOverride(Player3,FillSlot(SLOT_WEAPON))
+    ActionOverride(Player3,EquipMostDamagingMelee())
     Continue()
 END
 
 IF
   Global("Chapter","GLOBAL",-1)
   InPartyAllowDead(Player4)
-  !HasItem("STAF01",Player4)
+  !HasItem("staf01",Player4)
+  !HasItemSlot(Player4,SLOT_WEAPON)
   !Class(Player4,MONK)
 THEN
-    RESPONSE #100
-    GiveItemCreate("STAF01",Player4,1,1,0)
+  RESPONSE #100
+    GiveItemCreate("staf01",Player4,1,1,0)
+    ActionOverride(Player4,FillSlot(SLOT_WEAPON))
+    ActionOverride(Player4,EquipMostDamagingMelee())
     Continue()
 END
 
 IF
   Global("Chapter","GLOBAL",-1)
   InPartyAllowDead(Player5)
-  !HasItem("STAF01",Player5)
+  !HasItem("staf01",Player5)
+  !HasItemSlot(Player5,SLOT_WEAPON)
   !Class(Player5,MONK)
 THEN
-    RESPONSE #100
-    GiveItemCreate("STAF01",Player5,1,1,0)
+  RESPONSE #100
+    GiveItemCreate("staf01",Player5,1,1,0)
+    ActionOverride(Player5,FillSlot(SLOT_WEAPON))
+    ActionOverride(Player5,EquipMostDamagingMelee())
     Continue()
 END
 
 IF
   Global("Chapter","GLOBAL",-1)
   InPartyAllowDead(Player6)
-  !HasItem("STAF01",Player6)
+  !HasItem("staf01",Player6)
+  !HasItemSlot(Player6,SLOT_WEAPON)
   !Class(Player6,MONK)
 THEN
-    RESPONSE #100
-    GiveItemCreate("STAF01",Player6,1,1,0)
+  RESPONSE #100
+    GiveItemCreate("staf01",Player6,1,1,0)
+    ActionOverride(Player6,FillSlot(SLOT_WEAPON))
+    ActionOverride(Player6,EquipMostDamagingMelee())
     Continue()
 END
 >>>>>>>>
