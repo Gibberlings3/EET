@@ -2740,6 +2740,20 @@ COPY_EXISTING ~SHADFI02.BCS~ ~override~
 	END
 BUT_ONLY
 
+//SHOUT.BCS
+<<<<<<<< EET-inlined/SHOUT-et.baf
+IF
+  OR(2)
+    StateCheck(Myself,STATE_STONE_DEATH)
+    StateCheck(Myself,STATE_FROZEN_DEATH)
+THEN
+  RESPONSE #100
+    SmallWait(5)
+END
+>>>>>>>>
+
+EXTEND_TOP ~SHOUT.BCS~ ~EET-inlined/SHOUT-et.baf~
+
 //SIRSPELL.BCS
 COPY_EXISTING ~SIRSPELL.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
