@@ -1099,6 +1099,16 @@ PRINT ~~
 PRINT ~BG:EE files patching and installation...~
 
 /////                                                  \\\\\
+///// Dummy mod files                                  \\\\\
+/////                                                  \\\\\
+
+ACTION_FOR_EACH var IN g3 000 UB xxx BEGIN
+	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
+		COPY ~%BASH_FOR_FILESPEC%~ ~override~
+	END
+END
+
+/////                                                  \\\\\
 ///// 2DA                                              \\\\\
 /////                                                  \\\\\
 
@@ -2687,8 +2697,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_portraitID" BEGIN
 END
 ACTION_PHP_EACH "table_EET_portraitID" AS "portrait" => "ID" BEGIN
 	COPY ~EET/base/spl/K#PORTR.SPL~ ~override/K#POR%ID%.SPL~
-	WRITE_EVALUATED_ASCII ~0xae~ ~%portrait%S~ #8 // Small portrait
-	WRITE_EVALUATED_ASCII ~0xde~ ~%portrait%M~ #8 // Medium portrait
+	WRITE_ASCIIE ~0xae~ ~%portrait%S~ #8 // Small portrait
+	WRITE_ASCIIE ~0xde~ ~%portrait%M~ #8 // Medium portrait
 END
 
 //ADD_SPELL "%patch_dir%/spl/SPCL101.SPL" 4 1 "DARK_GIFT"//appends also to spell selection screen during character generation which should not be the case

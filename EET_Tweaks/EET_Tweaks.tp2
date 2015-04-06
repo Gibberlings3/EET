@@ -161,8 +161,8 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 		OUTER_SET valid_answer = 1
 	END ELSE BEGIN
 		PRINT ~Which game should be used as a portraits and colours base for NPCs that are joinable in both BG:EE and BG2:EE?
- 1] BG:EE
- 2] BG2:EE~
+ 1] BG1
+ 2] BG2~
 		ACTION_READLN ~button~
 		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
 			OUTER_SET button = 0
@@ -196,12 +196,12 @@ LAM ~EET_Tweaks.log~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// Additional BG2:EE SoA XP CAP                     \\\\\
+///// Additional XP CAP for SoA portion of the game    \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN ~Additional BG2:SoA XP CAP~
+BEGIN ~Additional XP CAP for SoA portion of the game~
 //DESIGNATED 3
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
@@ -255,12 +255,12 @@ LAM ~EET_Tweaks.log~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// Adjust BG:EE XP CAP                              \\\\\
+///// Adjust XP CAP for BG1 portion of the game        \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN ~Adjust BG:EE XP CAP~
+BEGIN ~Adjust XP CAP for BG1 portion of the game~
 //DESIGNATED 4
 REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
 
@@ -321,14 +321,15 @@ LAM ~EET_Tweaks.log~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// Adjust BG2:EE XP CAP                             \\\\\
+///// Adjust total XP CAP                              \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN ~Adjust BG2:EE XP CAP~
+BEGIN ~Adjust total XP CAP~
 //DESIGNATED 5
-REQUIRE_PREDICATE GAME_IS ~eet~ ~This component is not compatible with your game.~
+REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ ~This component is not compatible with your game.~
+FORBID_COMPONENT ~bg2_tweaks/setup-bg2_tweaks.tp2~ 2090 2091 2092 ~Component already installed via BG2 Tweaks~
 
 OUTER_WHILE (valid_answer = 0) BEGIN
 	ACTION_IF (button = 1) BEGIN //2,950,000
@@ -1103,7 +1104,7 @@ IF
 THEN
   RESPONSE #100
 	//%save_eval%
-    GameOver(19377) // Twoja główna postać została zabita. Musisz zacząć grę od nowa.
+    GameOver(19377)
 END
 >>>>>>>>
 
