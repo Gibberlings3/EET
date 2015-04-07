@@ -1357,8 +1357,7 @@ THEN
 END
 
 IF
-  //CheckStatLT(LastSummonerOf(Myself),1,INTOXICATION)//In vanilla BG1 weapons break almost every hit when character is drunk, need to check stat value before enabling it
-  True()
+  CheckStatLT(LastSummonerOf(Myself),50,INTOXICATION)//In vanilla BG1 weapons break almost every hit when character is drunk
 THEN
   RESPONSE #%response1%
 	DestroySelf()
