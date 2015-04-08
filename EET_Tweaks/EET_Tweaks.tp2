@@ -1632,9 +1632,7 @@ COPY - ~weidu.conf~ ~weidu.conf~
 	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
 PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
-/////                                                  \\\\\
-///// Extraction of TLK from IWD:EE                    \\\\\
-/////                                                  \\\\\
+//extraction of TLK from IWD:EE
 
 PRINT ~~
 PRINT ~Extracting texts for translation from IWD:EE...~
@@ -1647,9 +1645,7 @@ END
 
 LOAD_TRA ~EET_Tweaks/iwdee.tra~
 
-/////                                                  \\\\\
-///// Copy Soundsets                                   \\\\\
-/////                                                  \\\\\
+//copy soundsets
 
 MKDIR ~lang/%LANGUAGE_BG2%/sounds~
 
@@ -1705,9 +1701,7 @@ ACTION_PHP_EACH "table_EETT_oldNameNewName" AS "oldName" => "newName" BEGIN
 	BUT_ONLY
 END
 
-/////                                                  \\\\\
-///// Subtitles                                        \\\\\
-/////                                                  \\\\\
+//subtitles
 
 ACTION_IF (FILE_EXISTS ~%iwdee_dir%/override/CHARSND.2DA~) BEGIN
 	COPY ~%iwdee_dir%/override/CHARSND.2DA~ ~EET_Tweaks~

@@ -207,11 +207,11 @@ COPY ~EET-inlined/bgee_dir.txt~ ~EET/bgee_dir.txt~ EVALUATE_BUFFER
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	ACTION_IF (FILE_CONTAINS EVAL ~%bgee_dir%/WeiDU.log~ ~DRIZZTSAGA\.TP2. #[0-9]+ #0 ~) BEGIN
-		FAIL ~You've installed wrong Drizzt Saga component. EET is compatible with BP-BGT Worldmap version (option 2 during Drizzt Saga installation).~
-	END
 	COPY ~%bgee_dir%/WeiDU.log~ ~override~ //store the file in override, so other mods could check if components have been installed on BG:EE
 		REPLACE_TEXTUALLY ~^//.*~ ~~//removes "Recently uninstalled" lines
+	ACTION_IF (FILE_CONTAINS ~override/WeiDU.log~ ~DRIZZTSAGA\.TP2. #[0-9]+ #0 ~) BEGIN
+		FAIL ~You've installed wrong Drizzt Saga component. EET is compatible with BP-BGT Worldmap version (option 2 during Drizzt Saga installation).~
+	END
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~
 		REPLACE_TEXTUALLY ~^.~ ~~
