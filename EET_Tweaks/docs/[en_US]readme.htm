@@ -629,12 +629,22 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 </div>
 <p>Imports all 30 soundsets from IWD:EE right into your BG2:EE / EET game. It covers not only media files, but also in-game subtitles (translation taken directly from IWD:EE dialog.tlk) and integrating it with GUI menu.</p>
 <hr />
-<!--
-<h3>IWD:EE kits</h3>
+
+<h3>Add Priest of Tyr kit for Priests</h3>
 <p>Compatibility: BG:EE, BG2:EE, EET
-<p>Implements 2 new playable Cleric kits kits introduced in IWD:EE - Priest of Tyr (also known from Dorn's questline in BG2:EE) and Priest of Tempus. Keep in mind that EE GUI is limited to 9 kits per class and with these 2 you end up with a total of 6 Cleric kits. If you already used up all slots via other mods than you won't even be able to see these ones in the selection menu. If you find the lack of kit selection GUI scrolling unacceptable (it's a feature available for vanilla BG2 via ToBEX) than make your voice heard on <a href="http://forum.baldursgate.com/categories/feature-requests">Beamdog forum</a>.</p>
+<p>Implements playable Priest of Tyr kit from IWD:EE (also present in BG2:EE Dorn's questline).<p>
 <hr />
 
+<h3>Add Priest of Tempus kit for Priests</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>Implements playable Priest of Tempus kit from IWD:EE.<p>
+<hr />
+
+<h3>Add racial enemies from IWD</h3>
+<p>Compatibility: BG:EE, BG2:EE, EET
+<p>Ranger racial enemies: Cadaverous undead, Giant, Goblin, Lizard men, Orc, Salamander, Spectral undead, Spider, Troll, Umber hulk, Yuan-ti. If any of these is already on the list than only description will be updated to use the more detailed one from IWD:EE.</p>
+<hr />
+<!--
 <h3>IWD:EE Cleric spells</h3>
 <p>Compatibility: BG:EE, BG2:EE, EET
 <p>This tweak implements Cleric spells from IWD:EE. Keep in mind that even though enemies also have these spells they can't really cast them without customized AI scripts, which is beyond of the scope for this project. That's why, unless some other mod makes a good use of them, they can be considered unbalancing. Another problem is limited amount of spell slots that are available in Cleric/Druid/Mage spellbooks. Unlike vanilla BG2 with ToBEX, EE engine is limited in this department, so you will end up with spells that are not available, if you are using other mods with custom ones. You can try to request feature parity with ToBEX on <a href="http://forum.baldursgate.com/categories/feature-requests">Beamdog forum</a>.</p>
@@ -653,11 +663,6 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 <h3>IWD:EE Bard songs</h3>
 <p>Compatibility: BG:EE, BG2:EE, EET
 <p>As above but for Bards.</p>
-<hr />
-
-<h3>IWD:EE racial enemies</h3>
-<p>Compatibility: BG:EE, BG2:EE, EET
-<p>No comment needed besides the fact that without mods that expands bestiaries with IWD variants, some of these enemies () can't be met in vanilla game. Still can be considered a good choice from role-playing character background perspective.</p>
 <hr />
 
 <h3>2-handed Axes</h3>
@@ -757,7 +762,10 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 			21 - install Adjust familiar death consequences<br />
 			//22 - reserved slot<br />
 			23 - install IWD:EE portraits<br />
-			24 - install IWD:EE soundsets</p>
+			24 - install IWD:EE soundsets<br />
+			25 - Add Priest of Tyr kit for Priests<br />
+			26 - Add Priest of Tyr kit for Priests<br />
+			27 - Add racial enemies from IWD</p>
 			</td>
 		</tr>
 		<tr>
@@ -780,7 +788,7 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 <p>Example:</p>
 
 <div class="important">
-<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 --skip-at-view --language 0 --args-list "1-1" "3-2" "4-4-200000" "5-4-10000000" "6-3" "7-5" "8-7-120" "11-1" "16-4" "17-4" "18-4" "19-4" "21-2" p "C:\Program Files (x86)\BeamDog\Games\00798"</p>
+<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 25 26 27 --skip-at-view --language 0 --args-list "1-2" "3-2" "4-4-200000" "5-4-10000000" "6-3" "7-5" "8-7-120" "11-1" "16-4" "17-4" "18-4" "19-4" "21-2" p "C:\Program Files (x86)\BeamDog\Games\00798"</p>
 </div>
 
 <p>This construction installs all components of this mod using the English language, predefined IWD:EE directory, and following settings: BG2 used as a base for join-able NPCs; additional BG2:SoA XP CAP set to 2,950,000; BG:EE XP CAP set to custom value - 200,000; BG2:EE XP CAP set to custom value - 10,000,000; XP rewards for Traps, Spells and Lockpicking based on progressive table; XP rewards for killing monsters decreased to 10%; XP rewards for quests increased to custom value - 120%; FPS set to 60 frames per second; all item types with shatter chance set to 0.1%; Constitution loss for 1 week after familiar is dead.</p>

@@ -373,35 +373,35 @@ PRINT ~StrRef_cutoff = %StrRef_cutoff%~
 ///// HANDLE_CHARSETS                                  \\\\\
 /////                                                  \\\\\
 
-ACTION_DEFINE_ASSOCIATIVE_ARRAY charsetsTable BEGIN
-	"cs_cz" => "CP1250"
-	"de_de" => "CP1252"
-	"en_us" => "CP1252"
-	"es_es" => "CP1252"
-	"fr_fr" => "CP1252"
-	"it_it" => "CP1252"
-	"ja_jp" => "CP932"
-	"ko_kr" => "CP949"
-	"pl_pl" => "CP1250"
-	//"pt_br" => ""
-	"ru_ru" => "CP1251"
-	//"tr_tr" => ""
-	//"uk_ua" => ""
-	//"zh_cn" => ""
-END
-
-ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN dialog scripts 2da END
-ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog scripts 2da END
-LAF ~HANDLE_CHARSETS~
-	INT_VAR
-	infer_charsets = 0
-	STR_VAR
-	tra_path = EVAL "%tra_path%"
-	iconv_path = "EET/bin/win32/iconv"//available as part of the base system on OS X and GNU/Linux
-	//default_language = en_US
-	charset_table = charsetsTable
-	convert_array = charsetsConvertArray
-	reload_array = charsetsReloadArray
+ACTION_IF NOT ~%LANGUAGE%~ STRING_EQUAL_CASE ~en_US~ BEGIN
+	ACTION_DEFINE_ASSOCIATIVE_ARRAY charsetsTable BEGIN
+		"cs_cz" => "CP1250"
+		"de_de" => "CP1252"
+		"en_us" => "CP1252"
+		"es_es" => "CP1252"
+		"fr_fr" => "CP1252"
+		"it_it" => "CP1252"
+		"ja_jp" => "CP932"
+		"ko_kr" => "CP949"
+		"pl_pl" => "CP1250"
+		//"pt_br" => ""
+		"ru_ru" => "CP1251"
+		//"tr_tr" => ""
+		//"uk_ua" => ""
+		//"zh_cn" => ""
+	END
+	ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN dialog scripts 2da END
+	ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog scripts 2da END
+	LAF ~HANDLE_CHARSETS~
+		INT_VAR
+		infer_charsets = 0
+		STR_VAR
+		tra_path = EVAL "%tra_path%"
+		iconv_path = "EET/bin/win32/iconv"//available as part of the base system on OS X and GNU/Linux
+		charset_table = charsetsTable
+		convert_array = charsetsConvertArray
+		reload_array = charsetsReloadArray
+	END
 END
 
 LOAD_TRA ~EET/bgee.tra~
@@ -1042,7 +1042,6 @@ ACTION_FOR_EACH "var" IN ARE BCS BCS_APP CRE DLG EFF GAM ITM SPL STO VVC WED BEG
 		INNER_ACTION BEGIN
 			APPEND_OUTER + ~EET/temp/Filelist.txt~ ~%addtolist%~
 		END
-	//BUT_ONLY
 END
 
 COPY + ~EET/temp/Filelist.txt~ ~EET/temp/Filelist.txt~
@@ -1083,7 +1082,6 @@ COPY + ~EET/temp/Filelist.txt~ ~EET/temp/Filelist.txt~
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		END
 	END
-//BUT_ONLY
 
 LAUNCH_ACTION_MACRO ~PCU_core_complete~
 
@@ -1137,25 +1135,27 @@ END
 ACTION_PHP_EACH "table_EET_nameMos" AS "name" => "mos" BEGIN
 	COPY + ~EET/temp/2da/%name%.2DA~ ~EET/temp/2da~
 		SET_2DA_ENTRY 1 0 0 ~%mos%~
-	//BUT_ONLY
 END
 
 COPY + ~EET/temp/2da/BPEND.2DA~ ~EET/temp/2da~
 	REPLACE ~31809~ @31809
 	PRETTY_PRINT_2DA
-//BUT_ONLY
 
 COPY + ~EET/temp/2da/TOSCST.2DA~ ~EET/temp/2da~
 	REPLACE ~24112~ @24112
 	PRETTY_PRINT_2DA
-//BUT_ONLY
 
 COPY + ~EET/temp/2da/TOSCEND.2DA~ ~EET/temp/2da~
 	REPLACE ~24117~ @24117
 	PRETTY_PRINT_2DA
-//BUT_ONLY
 
 COPY ~EET/temp/2da~ ~override~
+
+ACTION_BASH_FOR ~EET/base/2da~ ~.*\.2DA$~ BEGIN
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%BASH_FOR_FILE%~ BEGIN
+		COPY ~%BASH_FOR_FILESPEC%~ ~override~
+	END
+END
 
 /////                                                  \\\\\
 ///// ARE                                              \\\\\
@@ -1744,7 +1744,6 @@ COPY + ~EET/temp/splautop_ref.2da~ ~EET/temp~
 	REPLACE_TEXTUALLY ~ ~ ~#~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~#~ ~ ~
-//BUT_ONLY
 
 <<<<<<<< EET-inlined/K#TELBG2-et2.baf
 IF
@@ -2077,7 +2076,6 @@ COPY ~EET/base/BALDUR.GAM~ ~override~
 			WRITE_LONG 0x78 "%US2_offset%"
 		END
 	END
-//BUT_ONLY
 
 /////                                                  \\\\\
 ///// GUI                                              \\\\\
@@ -2089,15 +2087,31 @@ BUT_ONLY
 
 COPY_LARGE ~EET/base/gui/DLCP1.bmp~ ~override~
 	~EET/base/gui/DLCV1.bmp~ ~override~
-	~EET/base/gui/BIGLOGO.BAM~ ~override~
-	~EET/base/gui/TITLE.BAM~ ~override~
-	~EET/base/gui/MOS0500.PVRZ~ ~override~
-	~EET/base/gui/MOS0501.PVRZ~ ~override~
 
 ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mos$~ BEGIN
 	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_FILE%" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
 END
 LAM bash_log
+
+OUTER_SET mos_index = 499
+ACTION_FOR_EACH file IN ~BIGLOGO~ ~TITLE~ BEGIN
+	OUTER_SET mos_index = mos_index + 1
+	COPY ~EET/base/gui/%file%.BAM~ ~override~
+		LPF ~UPDATE_PVRZ_INDICES~
+			RET
+			original_base_index
+			new_base_index
+		END
+	ACTION_IF (original_base_index >= 0 AND new_base_index >= 0) BEGIN
+		LAF ~INSTALL_PVRZ~
+			INT_VAR
+			original_base_index = original_base_index
+			new_base_index      = new_base_index
+			STR_VAR
+			source_file         = EVAL ~EET/base/gui/MOS0%mos_index%.PVRZ~
+		END
+	END
+END
 
 /////                                                  \\\\\
 ///// INI                                              \\\\\

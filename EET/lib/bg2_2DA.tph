@@ -458,7 +458,7 @@ COPY + ~EET/temp/array/HATERACE.2DA~ ~EET/temp/array~
 APPEND_OUTER + ~EET/temp/array/INTERDIA.2DA~ ~dummy dummy dummy~
 COPY + ~EET/temp/array/INTERDIA.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^\([^ ]+[ ]+[^ ]+\)$~ ~\1 ***~
+	REPLACE_TEXTUALLY ~^\([^ ]+[ ]+\)\([^ ]+\)$~ ~\1\2 \2~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -631,93 +631,26 @@ COPY_EXISTING ~NPCLEVEL.2DA~ ~override~
 	REPLACE_TEXTUALLY ~^RASAAD.*~ ~~
 	REPLACE_TEXTUALLY ~^DORN.*~ ~~
 	REPLACE_TEXTUALLY ~^NEERA.*~ ~~
-	PRETTY_PRINT_2DA
-
-COPY + ~EET/temp/array/NPCLEVEL.2DA~ ~EET/temp/array~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^\([A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+\)\([%TAB% ]+[A-Za-z0-9*]+\)~
-    ~\1\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2~ // extends individual lines
-	REPLACE_TEXTUALLY ~\(2[%TAB% ]+3[%TAB% ]+4[%TAB% ]+5[%TAB% ]+6[%TAB% ]+7[%TAB% ]+8[%TAB% ]+9[%TAB% ]+10[%TAB% ]+11[%TAB% ]+12[%TAB% ]+13[%TAB% ]+14[%TAB% ]+15[%TAB% ]+16[%TAB% ]+17[%TAB% ]+18[%TAB% ]+19\)\([%TAB% ]+\)20~
-    ~\1\220\221\222\223\224\225\226\227\228\229\230\231\232\233\234\235\236\237\238\239\240~ // extends header row
-UNLESS ~21[%TAB% ]+22[%TAB% ]+23[%TAB% ]+24[%TAB% ]+25[%TAB% ]+26[%TAB% ]+27[%TAB% ]+28[%TAB% ]+29[%TAB% ]+30[%TAB% ]+31[%TAB% ]+32[%TAB% ]+33[%TAB% ]+34[%TAB% ]+35[%TAB% ]+36[%TAB% ]+37[%TAB% ]+38[%TAB% ]+39[%TAB% ]+40~
+	COUNT_2DA_COLS cntcol
 BUT_ONLY
 
-COPY + ~EET/temp/array/NPCLEVEL.2DA~ ~EET/temp/array~
+COPY ~EET/temp/array/NPCLEVEL.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~2DA[%TAB% ]+V1.0[%newline%]+.+[%newline%]+2 .+$~ ~~
 	REPLACE_TEXTUALLY ~^Imoen ~ ~Imoen2 ~
 	REPLACE_TEXTUALLY ~Imoen6~ ~Imoen6_~
 	REPLACE_TEXTUALLY ~Viconi6~ ~Viconi6_~
-	COUNT_2DA_ROWS 40 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		FOR (i = 1; i < 40; i = i + 1) BEGIN
-			READ_2DA_ENTRY cnt (i - 1) 40 "col%i%"
-		END
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 40 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 40 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% %col11% %col12% %col13% %col14% %col15% %col16% %col17% %col18% %col19% %col20% %col21% %col22% %col23% %col24% %col25% %col26% %col27% %col28% %col29% %col30% %col31% %col32% %col33% %col34% %col35% %col36% %col37% %col38% %col39% %col40%~
-				PRINT ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% %col11% %col12% %col13% %col14% %col15% %col16% %col17% %col18% %col19% %col20% %col21% %col22% %col23% %col24% %col25% %col26% %col27% %col28% %col29% %col30% %col31% %col32% %col33% %col34% %col35% %col36% %col37% %col38% %col39% %col40% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-			END
+	REPLACE_TEXTUALLY ~^\([A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+\).*$~ ~\1~ // trim individual lines above level 20
+	COUNT_2DA_ROWS 20 cntrow
+	FOR (cnt = 0; cnt < cntrow; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 20 "col1"
+		FOR (cnt2 = 0; cnt2 < cntcol - 20; cnt2 = cnt2 + 1) BEGIN
+			REPLACE_TEXTUALLY ~\(^%col1% .+ \([^%newline%]+\)$\)~ ~\1 \2~
 		END
 	END
 
-/////                                                  \\\\\
-///// NPCLVL25.2DA                                     \\\\\
-/////                                                  \\\\\
-
-// NPCs joining level 25+ PCs would be at their minimum level, not max
-COPY_EXISTING ~NPCLVL25.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^\([A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+\)\([%TAB% ]+[A-Za-z0-9*]+\)~
-	~\1\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2~ // extends individual lines
-	REPLACE_TEXTUALLY ~\(2[%TAB% ]+3[%TAB% ]+4[%TAB% ]+5[%TAB% ]+6[%TAB% ]+7[%TAB% ]+8[%TAB% ]+9[%TAB% ]+10[%TAB% ]+11[%TAB% ]+12[%TAB% ]+13[%TAB% ]+14[%TAB% ]+15[%TAB% ]+16[%TAB% ]+17[%TAB% ]+18[%TAB% ]+19[%TAB% ]+20[%TAB% ]+21[%TAB% ]+22[%TAB% ]+23\)\([%TAB% ]+\)24~
-	~\1\224\225\226\227\228\229\230\231\232\233\234\235\236\237\238\239\240~ // extends header row
-UNLESS ~25[%TAB% ]+26[%TAB% ]+27[%TAB% ]+28[%TAB% ]+29[%TAB% ]+30[%TAB% ]+31[%TAB% ]+32[%TAB% ]+33[%TAB% ]+34[%TAB% ]+35[%TAB% ]+36[%TAB% ]+37[%TAB% ]+38[%TAB% ]+39[%TAB% ]+40~
-BUT_ONLY
-
-COPY + ~EET/temp/array/NPCLVL25.2DA~ ~EET/temp/array~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^\([A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+[%TAB% ]+[A-Za-z0-9*]+\)\([%TAB% ]+[A-Za-z0-9*]+\)~
-	~\1\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2~ // extends individual lines
-	REPLACE_TEXTUALLY ~\(2[%TAB% ]+3[%TAB% ]+4[%TAB% ]+5[%TAB% ]+6[%TAB% ]+7[%TAB% ]+8[%TAB% ]+9[%TAB% ]+10[%TAB% ]+11[%TAB% ]+12[%TAB% ]+13[%TAB% ]+14[%TAB% ]+15[%TAB% ]+16[%TAB% ]+17[%TAB% ]+18[%TAB% ]+19[%TAB% ]+20[%TAB% ]+21[%TAB% ]+22[%TAB% ]+23\)\([%TAB% ]+\)24~
-	~\1\224\225\226\227\228\229\230\231\232\233\234\235\236\237\238\239\240~ // extends header row
-UNLESS ~25[%TAB% ]+26[%TAB% ]+27[%TAB% ]+28[%TAB% ]+29[%TAB% ]+30[%TAB% ]+31[%TAB% ]+32[%TAB% ]+33[%TAB% ]+34[%TAB% ]+35[%TAB% ]+36[%TAB% ]+37[%TAB% ]+38[%TAB% ]+39[%TAB% ]+40~
-BUT_ONLY
-
-COPY + ~EET/temp/array/NPCLVL25.2DA~ ~EET/temp/array~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 40 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		FOR (i = 1; i < 40; i = i + 1) BEGIN
-			READ_2DA_ENTRY cnt (i - 1) 40 "col%i%"
-		END
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 40 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 40 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% %col11% %col12% %col13% %col14% %col15% %col16% %col17% %col18% %col19% %col20% %col21% %col22% %col23% %col24% %col25% %col26% %col27% %col28% %col29% %col30% %col31% %col32% %col33% %col34% %col35% %col36% %col37% %col38% %col39% %col40%~
-				PRINT ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% %col11% %col12% %col13% %col14% %col15% %col16% %col17% %col18% %col19% %col20% %col21% %col22% %col23% %col24% %col25% %col26% %col27% %col28% %col29% %col30% %col31% %col32% %col33% %col34% %col35% %col36% %col37% %col38% %col39% %col40% appended to %SOURCE_FILESPEC%~
-			END
-		END
-	END
-COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+COPY_EXISTING ~NPCLEVEL.2DA~ ~override~
+	APPEND_FILE ~EET/temp/array/NPCLEVEL.2DA~
 	PRETTY_PRINT_2DA
 
 /////                                                  \\\\\
@@ -1273,7 +1206,6 @@ COPY_EXISTING ~STARTARE.2DA~ ~override~
 			END
 		END
 	END
-//BUT_ONLY
 
 /////                                                  \\\\\
 ///// STARTPOS.2DA                                     \\\\\
@@ -1318,7 +1250,6 @@ COPY_EXISTING ~STARTBP.2DA~ ~override~
 			END
 		END
 	END
-//BUT_ONLY
 */
 
 /////                                                  \\\\\

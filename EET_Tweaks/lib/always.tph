@@ -82,33 +82,32 @@ END
 ///// HANDLE_CHARSETS                                  \\\\\
 /////                                                  \\\\\
 
-ACTION_DEFINE_ASSOCIATIVE_ARRAY charsetsTable BEGIN
-	"cs_cz" => "CP1250"
-	"de_de" => "CP1252"
-	"en_us" => "CP1252"
-	"es_es" => "CP1252"
-	"fr_fr" => "CP1252"
-	"it_it" => "CP1252"
-	"ja_jp" => "CP932"
-	"ko_kr" => "CP949"
-	"pl_pl" => "CP1250"
-	//"pt_br" => ""
-	"ru_ru" => "CP1251"
-	//"tr_tr" => ""
-	//"uk_ua" => ""
-	//"zh_cn" => ""
-END
-ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN 0 2 10 100 areas END
-//ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN 0 2 10 100 END
-LAF ~HANDLE_CHARSETS~
-	INT_VAR
-	infer_charsets = 0
-	STR_VAR
-	tra_path = "EET_Tweaks/lang"
-	//default_language = en_US
-	charset_table = charsetsTable
-	convert_array = charsetsConvertArray
-	//reload_array = charsetsReloadArray
+ACTION_IF NOT ~%LANGUAGE%~ STRING_EQUAL_CASE ~en_US~ BEGIN
+	ACTION_DEFINE_ASSOCIATIVE_ARRAY charsetsTable BEGIN
+		"cs_cz" => "CP1250"
+		"de_de" => "CP1252"
+		"en_us" => "CP1252"
+		"es_es" => "CP1252"
+		"fr_fr" => "CP1252"
+		"it_it" => "CP1252"
+		"ja_jp" => "CP932"
+		"ko_kr" => "CP949"
+		"pl_pl" => "CP1250"
+		//"pt_br" => ""
+		"ru_ru" => "CP1251"
+		//"tr_tr" => ""
+		//"uk_ua" => ""
+		//"zh_cn" => ""
+	END
+	ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN 0 2 10 25 26 27 100 areas END
+	LAF ~HANDLE_CHARSETS~
+		INT_VAR
+		infer_charsets = 0
+		STR_VAR
+		tra_path = "EET_Tweaks/lang"
+		charset_table = charsetsTable
+		convert_array = charsetsConvertArray
+	END
 END
 
 /////                                                  \\\\\
