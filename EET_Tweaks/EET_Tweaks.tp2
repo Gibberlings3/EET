@@ -615,7 +615,7 @@ BUT_ONLY
 ACTION_FOR_EACH ext IN BCS DLG BEGIN
 	COPY_EXISTING_REGEXP GLOB ~.+\.%ext%~ ~override~
 		DECOMPILE_AND_PATCH BEGIN
-			REPLACE_EVALUATE ~AddexperienceParty(\([1-9][0-9]*\))~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~AddexperienceParty(\([1-9][0-9]*\))~ BEGIN
 				SET "XP_value" = "%MATCH1%"
 				PATCH_IF ("%XP_value%" > 0) BEGIN
 					SET XP_value = ("%XP_value%" * "%value%" / 100)
@@ -626,7 +626,7 @@ ACTION_FOR_EACH ext IN BCS DLG BEGIN
 				END
 			END
 			~AddexperienceParty(%XP_value%)~
-			REPLACE_EVALUATE ~AddXPObject(\(.*\),\([1-9][0-9]*\))~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~AddXPObject(\(.*\),\([1-9][0-9]*\))~ BEGIN
 				SET "XP_value" = "%MATCH2%"
 				PATCH_IF ("%XP_value%" > 0) BEGIN
 					SET XP_value = ("%XP_value%" * "%value%" / 100)
@@ -637,7 +637,7 @@ ACTION_FOR_EACH ext IN BCS DLG BEGIN
 				END
 			END
 			~AddXPObject(%MATCH1%,%XP_value%)~
-			REPLACE_EVALUATE ~ChangeStat(\(.*\),XP,\([1-9][0-9]*\),ADD)~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~ChangeStat(\(.*\),XP,\([1-9][0-9]*\),ADD)~ BEGIN
 				SET "XP_value" = "%MATCH2%"
 				PATCH_IF ("%XP_value%" > 0) BEGIN
 					SET XP_value = ("%XP_value%" * "%value%" / 100)
@@ -804,7 +804,7 @@ BUT_ONLY
 ACTION_FOR_EACH ext IN BCS DLG BEGIN
 	COPY_EXISTING_REGEXP GLOB ~.+\.%ext%~ ~override~
 		DECOMPILE_AND_PATCH BEGIN
-			REPLACE_EVALUATE ~AddexperienceParty(\([1-9][0-9]*\))~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~AddexperienceParty(\([1-9][0-9]*\))~ BEGIN
 				SET "XP_value" = "%MATCH1%"
 				PATCH_IF ("%XP_value%" > 0) BEGIN
 					SET XP_value = ("%XP_value%" / 6)
@@ -971,7 +971,7 @@ END*/
 //updates only Wait and SmallWait 1 line below DisplayStringX actions, so it shouldn't slow the game in other places
 COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE ~\(DisplayString.+[%newline%]+\)\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayString.+[%newline%]+\)\(.*\)Wait(\([0-9]+\))\(.*\)~ BEGIN
 			SET time = "%MATCH3%"
 			SPRINT new_MATCH2 "%MATCH2%"
 			PATCH_IF "%MATCH2%" STRING_MATCHES_REGEXP ".*Small$" = 0 BEGIN
@@ -1207,7 +1207,7 @@ END
 
 COPY_EXISTING ~K#SHATWE.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
 			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
 				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
 			END ELSE BEGIN
@@ -1280,7 +1280,7 @@ END
 
 COPY_EXISTING ~K#SHATSH.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
 			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
 				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
 			END ELSE BEGIN
@@ -1353,7 +1353,7 @@ END
 
 COPY_EXISTING ~K#SHATAR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
 			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
 				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
 			END ELSE BEGIN
@@ -1426,7 +1426,7 @@ END
 
 COPY_EXISTING ~K#SHATHE.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~RESPONSE #\([0-9]+\)[%newline%]*DestroySelf()[%newline%]*RESPONSE #\([0-9]+\)~ BEGIN
 			PATCH_IF ("%MATCH1%" != "%value%") BEGIN
 				PATCH_PRINT ~Patching %SOURCE_FILE%: Shattering chance = (%MATCH1% / 10) => (%value% / 10)~
 			END ELSE BEGIN
@@ -2254,6 +2254,110 @@ LAM ~EET_Tweaks.log~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
+///// Remove junk from global scripts                  \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Remove junk from global scripts~
+//DESIGNATED 28
+REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ ~This component is not compatible with your game.~
+
+<<<<<<<< EET_Tweaks-inlined/K#DROWIT-et.baf
+IF
+  HasItem("%MATCH1%",%MATCH2%)
+THEN
+  RESPONSE #100
+    TakeItemReplace("DWDUST","%MATCH1%",%MATCH2%)
+END
+>>>>>>>>
+
+COPY - ~EET_Tweaks-inlined/blank.txt~ ~EET_Tweaks-inlined/blank.baf~
+
+COMPILE ~EET_Tweaks/%COMPONENT_NUMBER%/K#HLYSYM.baf~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#DROWIT.baf~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#LILARC.baf~
+
+COPY_EXISTING ~BALDUR.BCS~ ~override~
+	~BALDUR25.BCS~ ~override~
+	REPLACE_BCS_BLOCK ~EET_Tweaks/%COMPONENT_NUMBER%/HolySymbols.baf~ ~EET_Tweaks-inlined/blank.baf~
+	REPLACE_BCS_BLOCK ~EET_Tweaks/%COMPONENT_NUMBER%/Lilarcor.baf~ ~EET_Tweaks-inlined/blank.baf~
+	PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~BALDUR~ BEGIN
+		//Unused test script blocks
+		REPLACE_BCS_BLOCK ~EET_Tweaks/%COMPONENT_NUMBER%/Unused.baf~ ~EET_Tweaks-inlined/blank.baf~
+		//Malchior Harpell´s appearance
+		PATCH_IF FILE_EXISTS_IN_GAME ~cdt03160.g3~ BEGIN //BG2 Tweaks "Keep Drizzt's Loot, Disable Malchor Harpell" component detected
+			REPLACE_BCS_BLOCK ~EET_Tweaks/%COMPONENT_NUMBER%/compat/bg2tweaks/Harpell.baf~ ~EET_Tweaks-inlined/blank.baf~
+		END ELSE BEGIN
+			REPLACE_BCS_BLOCK ~EET_Tweaks/%COMPONENT_NUMBER%/Harpell.baf~ ~EET_Tweaks-inlined/blank.baf~
+		END
+	END ELSE BEGIN
+		//Unused Familiar script blocks with wrong DV
+		REPLACE_BCS_BLOCK ~EET_Tweaks/%COMPONENT_NUMBER%/Familiar.baf~ ~EET_Tweaks-inlined/blank.baf~
+	END
+	DECOMPILE_AND_PATCH BEGIN
+		//Lilarcor (talking sword)
+		COUNT_REGEXP_INSTANCES ~DisplayStringHeadOwner("sw2h14",20580)~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			PATCH_WARN ~Warning: DisplayStringHeadOwner("sw2h14",20580) still found in %SOURCE_FILESPEC% after patching. Some other mod may have changed Lilarcor script blocks. Consider uninstalling this component if you can't analyse it yourself and/or send %SOURCE_FILESPEC% and weidu.log to me.~
+		END
+		//Cleric's Holy Symbols
+		PATCH_FOR_EACH match IN BELT14 BELT13 BELT12 BEGIN
+			COUNT_REGEXP_INSTANCES ~TransformItem("CDHLYSYM","%match%")~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				PATCH_WARN ~Warning: %match% still found %num_matches% times in %SOURCE_FILESPEC% after patching. Some other mod may have changed Cleric's Holy Symbols script blocks. Consider uninstalling this component if you can't analyse it yourself and/or send %SOURCE_FILESPEC% and weidu.log to me.~
+			END
+		END
+		PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~BALDUR25~ BEGIN
+			//Drow items changing to dust on surface
+			SPRINT textToReplace ~IF[%newline%]*Global("oh_drow_items_safe","GLOBAL",0)[%newline%]*HasItem("\(.+\)",\(Player.\))[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*TakeItemReplace("DWDUST",".+",Player.)[%newline%]*END~
+			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+			PATCH_PRINT ~Patching: %num_matches% matches wiped out from %SOURCE_FILESPEC%~
+			PATCH_IF (num_matches < 84) BEGIN
+				PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC% at least 84 times. Some other mod may have changed these blocks. Consider uninstalling this component if you can't analyse it yourself and/or send %SOURCE_FILESPEC% and weidu.log to me.~
+			END
+			REPLACE_EVALUATE CASE_INSENSITIVE ~%textToReplace%~ BEGIN
+				INNER_ACTION BEGIN
+					EXTEND_TOP ~K#DROWIT.BCS~ ~EET_Tweaks-inlined/K#DROWIT-et.baf~ EVALUATE_BUFFER
+				END
+			END ~~
+		END
+	END
+BUT_ONLY
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~SetGlobal("oh_drow_items_safe","GLOBAL",0)~ BEGIN
+			PATCH_PRINT ~Drow items invisible creature spawning added to %SOURCE_FILESPEC%~
+		END ~SetGlobal("oh_drow_items_safe","GLOBAL",0)
+    CreateCreatureObject("K#DROWIT",Player1,0,0,0)~
+		REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
+	END
+BUT_ONLY
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~cdt03160.g3~ BEGIN //BG2 Tweaks "Keep Drizzt's Loot, Disable Malchor Harpell" component not detected
+	EXTEND_BOTTOM ~AR0800.BCS~ ~EET_Tweaks/%COMPONENT_NUMBER%/Harpell.baf~
+END
+
+COPY_EXISTING ~CDHLYSYM.SPL~ ~override~
+	LPF ADD_SPELL_EFFECT INT_VAR opcode = 177 /*Use EFF File*/ target = 1 power = 4 parameter1 = 0 parameter2 = 2 timing = 1 resist_dispel = 2 STR_VAR resource = "K#HLYSYM" END
+BUT_ONLY
+
+COPY_EXISTING ~SW2H14.ITM~ ~override~
+	LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 272 /*Use EFF file on condition*/ target = 1 parameter1 = 6 parameter2 = 3 timing = 2 STR_VAR resource = "K#LILARC" END
+BUT_ONLY
+
+COPY ~EET_Tweaks/%COMPONENT_NUMBER%/K#HLYSYM.CRE~ ~override~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#HLYSYM.EFF~ ~override~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#DROWIT.CRE~ ~override~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#DROWIT.EFF~ ~override~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#DROWIT.SPL~ ~override~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#LILARC.CRE~ ~override~
+	~EET_Tweaks/%COMPONENT_NUMBER%/K#LILARC.EFF~ ~override~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
 ///// Components below are not finished                \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -2319,7 +2423,7 @@ BUT_ONLY
 //remove 'no sleep' flag for shops
 COPY_EXISTING_REGEXP GLOB ~^.+\.dlg$~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE ~\(StartStore.*\)~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartStore.*\)~ BEGIN
 			PATCH_PRINT ~Patching %SOURCE_FILE%: %MATCH1%~
 		END
 		~RemoveAreaFlag(NOSAVE)%WNL%%MATCH1%~
@@ -2379,7 +2483,7 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 	COPY ~%USER_DIRECTORY%/Baldur.ini~ ~%USER_DIRECTORY%~
 		COUNT_REGEXP_INSTANCES ~'Difficulty Level'~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_EVALUATE ~\('Difficulty Level',[ 	]+\)'\([0-9]+\)'~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\('Difficulty Level',[ 	]+\)'\([0-9]+\)'~ BEGIN
 				SET "value" = "%MATCH2%"
 				PATCH_IF ("%value%" < 3) BEGIN
 					SET value = 3

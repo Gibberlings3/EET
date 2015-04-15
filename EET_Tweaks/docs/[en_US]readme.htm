@@ -644,37 +644,21 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 <p>Compatibility: BG:EE, BG2:EE, EET
 <p>Ranger racial enemies: Cadaverous undead, Giant, Goblin, Lizard men, Orc, Salamander, Spectral undead, Spider, Troll, Umber hulk, Yuan-ti. If any of these is already on the list than only description will be updated to use the more detailed one from IWD:EE.</p>
 <hr />
-<!--
-<h3>IWD:EE Cleric spells</h3>
-<p>Compatibility: BG:EE, BG2:EE, EET
-<p>This tweak implements Cleric spells from IWD:EE. Keep in mind that even though enemies also have these spells they can't really cast them without customized AI scripts, which is beyond of the scope for this project. That's why, unless some other mod makes a good use of them, they can be considered unbalancing. Another problem is limited amount of spell slots that are available in Cleric/Druid/Mage spellbooks. Unlike vanilla BG2 with ToBEX, EE engine is limited in this department, so you will end up with spells that are not available, if you are using other mods with custom ones. You can try to request feature parity with ToBEX on <a href="http://forum.baldursgate.com/categories/feature-requests">Beamdog forum</a>.</p>
+
+<h3>Remove junk from global scripts</h3>
+<p>Compatibility: BG2:EE, EET
+<p>Both Bioware and Beamdog script coding lefts a lot to be desired performance wise when it comes to handling global scripts stuff (code that is working constantly for the entire game). This tweak aims to remove things from BALDUR.BCS and BALDUR25.BCS that can be achieved locally, which in the end should result in better in-game performance.</p>
+<p><a href="#" onclick="toggle('Sane coding'); return false;">Unhide/Collapse details</a></p>
+<ul class="vlisthide" id="Sane coding">
+	<li><strong>Cleric's Holy Symbols</strong> - this is probably the worst offender. As far as I know <em>HasItem</em> action is one of the most demanding one in the engine. In order to give Cleric a Holy Symbol at level 25 (something that will be done like once or twice in the late BG2 portion of the game) there are 18 blocks with this action that are parsed at the same frame during entire game, whenever global script is in use. Whatever was the reason for this (looks like a thing adopted from G3 BG2 Fixpack) the implementation is just silly. This tweak changes CDHLYSYM.SPL to spawn an invisible creature with local script attached that will do exactly the same thing.</li>
+	<li><strong>Lilarcor (talking sword)</strong> - another situation where demanding actions are used without a good reason. Fortunately with a timer delay, but still talking weapons in global script are a known factor for FPS drops in IE games. Lilarcor has now new item effect added that will spawn invisible creature whenever it's time to speak something. I hope that other modders will consider using similar implementation in future for thier talking weapons, instead of following Bioware steps and bloating global scripts.</li>
+	<li><strong>Unused test script blocks</strong> - BALDUR.BCS contains some leftover code from testing period that can be wiped out without any effect on game.</li>
+	<li><strong>Unused Familiar script blocks with wrong DV</strong> - BALDUR25.BCS refers to Familiar's Death Variables that don't exists in game, so it can be safely removed.</li>
+	<li><strong>Drow items changing to dust on surface</strong> - not so demanding for the engine thanks to the GetGlobal trigger, but still silly when you consider that the same variable is checked 84 times in the same frame (even more if you are using mods that adds more drow items) for the whole ToB portion of the game (only present in BALDUR25.BCS). This tweak will again spawn an invisible creature with local script, this time in all areas that sets <em>oh_drow_items_safe</em> variable to 0 (also affects mods).</li>
+	<li><strong>Malchior Harpell´s appearance</strong> - moved the spawning from BALDUR.BCS to AR0800.BCS. It's possible to dodge him completely if you don't enter Graveyard (first possible place where you can meet him) with Drizzt's equipment, but I think that's still better than playing the game with 8 useless PartyHasItem checks. The way this has been coded (<a href="https://forum.baldursgate.com/discussion/30392/melchor-harpell-way-to-rip-me-out-of-my-immersion/p1">constantly respawning encounter</a>) is silly either way, so not much loss. I would call it improvement actually. No conflicts with <em>BG2 Tweaks - Keep Drizzt's Loot, Disable Malchor Harpell</em> component.</li>
+</ul></p>
 <hr />
 
-<h3>IWD:EE Druid spells</h3>
-<p>Compatibility: BG:EE, BG2:EE, EET
-<p>As above but for Druids.</p>
-<hr />
-
-<h3>IWD:EE Wizard spells</h3>
-<p>Compatibility: BG:EE, BG2:EE, EET
-<p>As above but for Wizards.</p>
-<hr />
-
-<h3>IWD:EE Bard songs</h3>
-<p>Compatibility: BG:EE, BG2:EE, EET
-<p>As above but for Bards.</p>
-<hr />
-
-<h3>2-handed Axes</h3>
-<p>Compatibility: BG:EE, BG2:EE, EET
-<p>New item type introduced in IWD. This tweak adds these Axes to vanilla stores and swaps 1 out of every 5 enemies that use 1-handed Axe (normal, +1, +2, +3 variants) in game to use 2-handed version instead, but only if an enemy doesn't have second weapon or shield equipped (also affects mods).</p>
-<hr />
-
-<h3>Disable High Level Abilities</h3>
-<p>Compatibility: BG:EE, BG2:EE, EET
-<p>An option to disable HLAS for player's party as it is done in IWD:EE.</p>
-<hr />
--->
 <h3>Ironman Mode</h3>
 <p>Compatibility: BG2:EE, IWD:EE, EET</p>
 <div class="important">
