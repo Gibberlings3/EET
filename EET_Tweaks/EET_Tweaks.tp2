@@ -2375,6 +2375,44 @@ LAM ~EET_Tweaks.log~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
+///// Restore TotSC textscreens                        \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN ~Restore TotSC textscreens~
+//DESIGNATED 29
+REQUIRE_PREDICATE GAME_IS ~bgee eet~ ~This component is not compatible with your game.~
+
+<<<<<<<< EET_Tweaks-inlined/%COMPONENT_NUMBER%/AR1000-et.baf
+IF
+  Global("MissionPackSave","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("MissionPackSave","GLOBAL",1)
+    TextScreen("toscst")
+	Continue()
+END
+>>>>>>>>
+
+COPY_EXISTING ~BALDUR.BCS~ ~override~
+	REPLACE_TEXTUALLY ~\(SetGlobal("FinishedExpansion","GLOBAL",1)\)~ ~\1
+    TextScreen("toscend")~
+BUT_ONLY
+
+ACTION_IF GAME_IS ~bgee~ BEGIN
+	EXTEND_TOP ~AR1000.BCS~ ~EET_Tweaks-inlined/%COMPONENT_NUMBER%/AR1000-et.baf~
+	COPY_EXISTING ~TOSCST.2DA~ ~override~
+		REPLACE_TEXTUALLY ~\(REPUTATION[	 ]+-1[	 ]+\)\([0-9]+\)~ ~\1 24105~
+		PRETTY_PRINT_2DA
+	BUT_ONLY
+END ELSE BEGIN
+	EXTEND_TOP ~FH1000.BCS~ ~EET_Tweaks-inlined/%COMPONENT_NUMBER%/FH1000-et.baf~
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
 ///// Components below are not finished                \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\

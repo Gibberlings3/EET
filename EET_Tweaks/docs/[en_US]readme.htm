@@ -656,8 +656,13 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 	<li><strong>Unused Familiar script blocks with wrong DV</strong> - BALDUR25.BCS has references to not existing familiar Death Variables which can be safely removed.</li>
 	<li><strong>Drow items changing to dust on surface</strong> - not so demanding for the engine thanks to the GetGlobal trigger, but still controversial when you consider that the same variable is checked 84 times in the same frame (even more if you are using mods that adds additional drow items) for the whole ToB portion of the game (only present in BALDUR25.BCS). This tweak will again spawn an invisible creature with local script, this time in all areas that sets <em>oh_drow_items_safe</em> variable to 0 (also affects mods).</li>
 	<li><strong>Malchior Harpell´s appearance</strong> - moved the spawning method from BALDUR.BCS to AR0800.BCS. Due to this change it's possible to evade Harpell completely if you don't enter Athkatla Graveyard District (first place where you can meet him) with Drizzt's equipment, but I think that's still better than playing the game with 8 useless PartyHasItem checks. The way this has been coded (<a href="https://forum.baldursgate.com/discussion/30392/melchor-harpell-way-to-rip-me-out-of-my-immersion/p1">constantly respawning encounter</a>) is silly either way, so not much loss. I would call it improvement actually. No conflicts with <em>BG2 Tweaks - Keep Drizzt's Loot, Disable Malchor Harpell</em> component.</li>
-	<li><strong>Leftover BG:EE ARE scripts code</strong> - this is unrelated to global scripts, but still worth cleaning. In 2 cases (AR0514.BCS, AR2001.BCS) leftovers can be harmful for BG2 portion of the game because there is junk BG:EE code in scripts attached to existing areas. That is why this component fixes it via REPLACE_BCS_BLOCK. Additionally there are 33 harmless ARE scripts leftover that don't have corresponding area files (they exist only in BG:EE) - these are also cleaned to make working with Near Infinity tool faster and more reliable (no false reports when searching for resources in scripts). Ideally it would be officially handled by Beamdog via patch, but until it happens this tweak will do the job.</li>
+	<li><strong>Leftover BG:EE ARE scripts code</strong> - this is unrelated to global scripts, but still worth cleaning. In 2 cases (AR0514.BCS, AR2001.BCS) leftovers can be harmful for BG2 portion of the game because there is junk BG:EE code in scripts attached to existing areas. That is why this component fixes it via REPLACE_BCS_BLOCK. Additionally there are 33 harmless ARE scripts leftover that don't have corresponding area files (they exist only in BG:EE) - these are also cleaned to make working with Near Infinity tool faster and more reliable (no false reports when searching for resources in scripts). Ideally, it would be officially handled by Beamdog <a href="http://forum.baldursgate.com/discussion/39661/junk-data-from-bg1-scripts-in-bg2-wrong-script-attached-to-are">via patch</a>, but until it happens this tweak will do the job.</li>
 </ul></p>
+<hr />
+
+<h3>Restore TotSC textscreens</h3>
+<p>Compatibility: BG:EE, EET
+<p>In BG:EE starting and ending textscreens introduced in Baldur's Gate: Tales of the Sword Coast official expansion has not been implemented. This components allows you to restore them.</p>
 <hr />
 
 <h3>Ironman Mode</h3>
@@ -751,7 +756,8 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 			25 - Add Priest of Tyr kit for Priests<br />
 			26 - Add Priest of Tyr kit for Priests<br />
 			27 - Add racial enemies from IWD<br />
-			28 - Remove junk from global scripts</p>
+			28 - Remove junk from global scripts<br />
+			29 - Restore TotSC textscreens</p>
 			</td>
 		</tr>
 		<tr>
@@ -774,7 +780,7 @@ Fully compatible with <a href="http://www.shsforums.net/files/file/1110-sarevok-
 <p>Example:</p>
 
 <div class="important">
-<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 25 26 27 28 --skip-at-view --language 0 --args-list "1-2" "3-2" "4-4-200000" "5-4-10000000" "6-3" "7-5" "8-7-120" "11-1" "16-4" "17-4" "18-4" "19-4" "21-2" p "C:\Program Files (x86)\BeamDog\Games\00798"</p>
+<p>setup-EET_Tweaks.exe --force-install-list 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 23 24 25 26 27 28 29 --skip-at-view --language 0 --args-list "1-2" "3-2" "4-4-200000" "5-4-10000000" "6-3" "7-5" "8-7-120" "11-1" "16-4" "17-4" "18-4" "19-4" "21-2" p "C:\Program Files (x86)\BeamDog\Games\00798"</p>
 </div>
 
 <p>This construction installs all components of this mod using the English language, predefined IWD:EE directory, and following settings: BG2 used as a base for join-able NPCs; additional BG2:SoA XP CAP set to 2,950,000; BG:EE XP CAP set to custom value - 200,000; BG2:EE XP CAP set to custom value - 10,000,000; XP rewards for Traps, Spells and Lockpicking based on progressive table; XP rewards for killing monsters decreased to 10%; XP rewards for quests increased to custom value - 120%; FPS set to 60 frames per second; all item types with shatter chance set to 0.1%; Constitution loss for 1 week after familiar is dead.</p>
