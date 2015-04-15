@@ -2355,6 +2355,21 @@ COPY ~EET_Tweaks/%COMPONENT_NUMBER%/K#HLYSYM.CRE~ ~override~
 	~EET_Tweaks/%COMPONENT_NUMBER%/K#LILARC.CRE~ ~override~
 	~EET_Tweaks/%COMPONENT_NUMBER%/K#LILARC.EFF~ ~override~
 
+//Leftover BG:EE ARE scripts code
+ACTION_FOR_EACH file IN AR0100 AR0101 AR0103 AR0106 AR0108 AR0111 AR0112 AR0114 AR0115 AR0119 AR0121 AR0123 AR0125 AR0128 AR0130 AR0137 AR0138 AR0145 AR0146 AR0149 AR0153 AR0608 AR0612 AR1803 AR2301 AR2609 AR2611 AR2626 AR3300 AR3304 AR3352 AR5400 AR5405 BEGIN
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%file%.ARE~ BEGIN //just to be sure that other mod didn't add these areas
+		COPY - ~EET_Tweaks-inlined/blank.txt~ ~EET_Tweaks-inlined/%file%.baf~
+		COMPILE ~EET_Tweaks-inlined/%file%.baf~
+	END
+END
+
+//Leftover BG:EE ARE scripts code used in scripts that are also used in BG2:EE
+ACTION_FOR_EACH file IN AR0514 AR2001 BEGIN
+	COPY_EXISTING ~%file%.BCS~ ~override~
+		REPLACE_BCS_BLOCK ~EET_Tweaks/%COMPONENT_NUMBER%/%file%.baf~ ~EET_Tweaks-inlined/blank.baf~
+	BUT_ONLY
+END
+
 LAM ~EET_Tweaks.log~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
