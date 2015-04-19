@@ -43,7 +43,6 @@ END*/
 
 //create dummy file with UTF-8 without BOM encoding - used many times during installation
 <<<<<<<< EET-inlined/blank.txt
-
 >>>>>>>>
 
 COPY - ~EET-inlined/blank.txt~ ~EET-inlined/blank.baf~
@@ -107,6 +106,7 @@ INCLUDE ~EET-inlined/eet_cpmvars.tpa~
 
 INCLUDE ~EET/lib/macros.tph~
 INCLUDE ~EET/lib/PCU_Dict.tph~
+INCLUDE ~EET/lib/strings.tph~
 
 /////                                                  \\\\\
 ///// Get location of BG:EE installation               \\\\\
@@ -350,7 +350,7 @@ PRINT ~Clearing []s at the start of BG2:EE StrRefs...~
 END*/
 
 /////                                                  \\\\\
-///// Get a total number of strings in BG:EE TLK       \\\\\
+///// Get total number of strings in BG:EE TLK         \\\\\
 /////                                                  \\\\\
 
 COPY - ~EET/bgee.tra~ ~EET-inlined~
@@ -1208,12 +1208,12 @@ BUT_ONLY
 OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
 COPY ~%patch_dir%/are~ ~override~
 	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	//Regions (triggers)
-	READ_SHORT 0x5a "info_num" ELSE 0
-	READ_LONG 0x5c "info_off" ELSE 0
-	PATCH_FOR_EACH ~add_off~ IN 0x64 0xb8 BEGIN //Information text (for info points), Name
-		FOR (index=0; index < info_num ; index = index + 1) BEGIN
-			SET "offset" = (info_off + add_off + (0xc4 * index))
+	//Info points, trigger points, and exit (regions/triggers)
+	READ_LONG 0x5c "info_off"
+	READ_SHORT 0x5a "info_cnt"
+	FOR (cnt=0; cnt<"%info_cnt%"; cnt=cnt+1) BEGIN
+		PATCH_FOR_EACH ~add_off~ IN 0x64 0xb8 BEGIN
+			SET offset = ("%info_off%"+0xc4*cnt+"%add_off%") //Information text (for info points), Name
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
@@ -1222,10 +1222,10 @@ COPY ~%patch_dir%/are~ ~override~
 		END
 	END
 	//Containers
-	READ_LONG 0x70 "cont_off"
-	READ_SHORT 0x74 "cont_num"
-	FOR (index=0; index < cont_num ; index = index + 1) BEGIN
-		SET "offset" = (cont_off + 0x84 + (0xc0 * index)) //Lockpick string
+	READ_LONG 0x70 "contain_off"
+	READ_SHORT 0x74 "contain_cnt"
+	FOR (cnt=0; cnt<"%contain_cnt%"; cnt=cnt+1) BEGIN
+		SET offset = ("%contain_off%"+0xc0*cnt+0x84) //Lockpick string
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
@@ -1233,11 +1233,11 @@ COPY ~%patch_dir%/are~ ~override~
 		END
 	END
 	//Doors
-	READ_LONG 0xa4 "door_num"
 	READ_LONG 0xa8 "door_off"
-	PATCH_FOR_EACH ~add_off~ IN 0x98 0xb4 BEGIN //Lockpick string, Dialog speaker name
-		FOR (index=0; index < door_num ; index = index + 1) BEGIN
-			SET "offset" = (door_off + add_off + (0xc8 * index))
+	READ_SHORT 0xa4 "door_cnt"
+	FOR (cnt=0; cnt<"%door_cnt%"; cnt=cnt+1) BEGIN
+		PATCH_FOR_EACH ~add_off~ IN 0x98 0xb4 BEGIN
+			SET offset = ("%door_off%"+0xc8*cnt+"%add_off%") //Lockpick string, Dialog speaker name
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
@@ -1247,9 +1247,9 @@ COPY ~%patch_dir%/are~ ~override~
 	END
 	//Automap Notes
 	READ_LONG 0xc4 "note_off"
-	READ_LONG 0xc8 "note_num"
-	FOR (index=0; index < note_num ; index = index + 1) BEGIN
-		SET "offset" = (note_off + 0x4 + (0x34 * index)) //Note text
+	READ_LONG 0xc8 "note_cnt"
+	FOR (cnt=0; cnt<"%note_cnt%"; cnt=cnt+1) BEGIN
+		SET offset = ("%note_off%"+0x34*cnt+0x4) //Note text
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
@@ -1258,8 +1258,8 @@ COPY ~%patch_dir%/are~ ~override~
 	END
 	//Rest Interruptions
 	READ_LONG 0xc0 "rest_off"
-	FOR (index=0; index < 10 ; index = index + 1) BEGIN
-		SET "offset" = (rest_off + 0x20 + (0x4 * index)) //Interruption explantion text (10*0x4)
+	FOR (cnt=0; cnt<10; cnt=cnt+1) BEGIN
+		SET offset = ("%rest_off%"+0x4*cnt+0x20) //Interruption explantion text (10*0x4)
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
@@ -1744,6 +1744,7 @@ COPY + ~EET/temp/splautop_ref.2da~ ~EET/temp~
 	REPLACE_TEXTUALLY ~ ~ ~#~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~#~ ~ ~
+	PATCH_LOG ~%spl_list%~
 
 <<<<<<<< EET-inlined/K#TELBG2-et2.baf
 IF
@@ -1822,9 +1823,7 @@ COPY ~EET/base/palette~ ~override~
 ///// BS                                               \\\\\
 /////                                                  \\\\\
 
-// BS (replace .bs files with newer version available in BG:EE, check in future if it is still needed)
-
-COPY ~%bgee_dir%/scripts~ ~scripts~
+COPY ~%bgee_dir%/scripts/ohfight1.bs~ ~scripts~
 
 COPY ~EET/base/test/EET_test.baf~ ~scripts/EET_test.bs~
 	COMPILE_BAF_TO_BCS
@@ -1870,12 +1869,59 @@ COPY ~%patch_dir%/cre~ ~override~
 			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
-	FOR (index = 0; index < 99 ; index = index + 1) BEGIN
-		SET "offset" = (0xa4 + (0x4 * index))
+	FOR (cnt=0; cnt<99; cnt=cnt+1) BEGIN
+		SET offset = (0xa4+0x4*cnt)
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
 			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+		END
+	END
+	READ_LONG 0x2c4 "fx_off"
+	READ_LONG 0x2c8 "fx_cnt"
+	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+		READ_LONG ("%fx_off%"+0x108*cnt+0x8) "fx_type"
+		PATCH_IF ("%fx_type%" = 103) //Change Name
+		OR ("%fx_type%" = 139) //Display String
+		OR ("%fx_type%" = 180) //Can't Use Item
+		OR ("%fx_type%" = 206) //Protection from Spell
+		OR ("%fx_type%" = 253) //Add Map Marker
+		OR ("%fx_type%" = 254) //Remove Map Marker
+		OR ("%fx_type%" = 267) //Protection from Display Specific String
+		OR ("%fx_type%" = 290) //Change Title
+		OR ("%fx_type%" = 330) //Float text
+		OR ("%fx_type%" = 338) //Disable rest or save
+		BEGIN
+			SET offset = ("%fx_off%"+0x108*cnt+0x14)
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
+				SET str_updated = 0
+				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
+						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
+							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+								//SAY offset ( AT "StrRef" )
+								SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%strNew%"
+								SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+							END
+							SET str_updated = 1
+						END
+					END
+				END
+				PATCH_IF (str_updated = 0) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+				END
+			END
+		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+			SET offset = ("%fx_off%"+0x108*cnt+0x40)
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+			END
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/cre.tph~
@@ -1949,27 +1995,47 @@ COMPILE ~%patch_dir%/dlg~
 OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
 COPY ~%patch_dir%/eff~ ~override~
 	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	READ_LONG 0x10 "opcode"
-	PATCH_IF ("%opcode%" = 103) //Change Name
-	OR ("%opcode%" = 139) //Display String
-	OR ("%opcode%" = 180) //Can't Use Item
-	OR ("%opcode%" = 206) //Protection from Spell
-	OR ("%opcode%" = 253) //Add Map Marker
-	OR ("%opcode%" = 254) //Remove Map Marker
-	OR ("%opcode%" = 267) //Protection from Display Specific String
-	OR ("%opcode%" = 290) BEGIN //Change Title
-		SET "offset" = 0x1c
+	READ_LONG 0x10 "fx_type"
+	PATCH_IF ("%fx_type%" = 103) //Change Name
+	OR ("%fx_type%" = 139) //Display String
+	OR ("%fx_type%" = 180) //Can't Use Item
+	OR ("%fx_type%" = 206) //Protection from Spell
+	OR ("%fx_type%" = 253) //Add Map Marker
+	OR ("%fx_type%" = 254) //Remove Map Marker
+	OR ("%fx_type%" = 267) //Protection from Display Specific String
+	OR ("%fx_type%" = 290) //Change Title
+	OR ("%fx_type%" = 330) //Float text
+	OR ("%fx_type%" = 338) //Disable rest or save
+	BEGIN
+		SET offset = 0x1c
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SET str_updated = 0
+			PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+				PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
+					PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
+						PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+							//SAY offset ( AT "StrRef" )
+							SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+						END ELSE BEGIN
+							WRITE_LONG offset "%strNew%"
+							SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+						END
+						SET str_updated = 1
+					END
+				END
+			END
+			PATCH_IF (str_updated = 0) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+			END
 		END
-	END ELSE PATCH_IF ("%opcode%" = 319) BEGIN
-		SET "offset" = 0x48
+	END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+		SET offset = 0x48
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/eff.tph~
@@ -1985,18 +2051,17 @@ COPY ~EET/base/eff~ ~override~
 OUTER_SPRINT ~gam~ ~2DA%WNL%dummy%WNL%CRE_NAME ORIENTATION AREA X Y~
 COPY + ~%patch_dir%/gam/BALDUR.GAM~ ~%patch_dir%/gam~
 	READ_LONG 0x30 npcs_off
-	READ_LONG 0x34 npcs_num
-	SET "idx" = 0
-	WHILE ("%idx%" < "%npcs_num%") BEGIN
-		SET offset = npcs_off + (idx * 0x160)
+	READ_LONG 0x34 npcs_cnt
+	FOR (cnt=0; cnt<"%npcs_cnt%"; cnt=cnt+1) BEGIN
+		SET offset = ("%npcs_off%"+0x160*cnt)
 		READ_ASCII offset + 0xc "cre_name"
 		READ_LONG offset + 0x14 "cre_orient"
 		READ_ASCII offset + 0x18 "area_name"
 		READ_SHORT offset + 0x20 "loc_x"
 		READ_SHORT offset + 0x22 "loc_y"
-		SET "idx" = "%idx%" + 1
-		SPRINT ~gam~ ~%gam%%WNL%%idx% %cre_name% %cre_orient% %area_name% %loc_x% %loc_y%~
+		SPRINT ~gam~ ~%gam%%WNL%%cnt% %cre_name% %cre_orient% %area_name% %loc_x% %loc_y%~
 	END
+	PATCH_LOG ~%gam%~
 
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/gam.2da~
 APPEND_OUTER + ~EET/temp/gam.2da~ ~%gam%~
@@ -2012,20 +2077,19 @@ COPY ~EET/base/BALDUR.GAM~ ~override~
 	READ_LONG 0x20 "PC_offset"
 	READ_LONG 0x28 "US_offset"
 	READ_LONG 0x30 "npcs_off"
-	READ_LONG 0x34 "npcs_num"
+	READ_LONG 0x34 "npcs_cnt"
 	READ_LONG 0x38 "glob_offset"
 	READ_LONG 0x50 "jrnl_offset"
 	READ_LONG 0x68 "famil_offset"
 	READ_LONG 0x6c "locat_offset"
 	READ_LONG 0x78 "US2_offset"
 
-	SET "idx" = 0
-	WHILE ("%idx%" < "%GAM_count%") BEGIN
-		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "idx" 1 "cre_name"
-		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "idx" 2 "cre_orient"
-		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "idx" 3 "area_name"
-		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "idx" 4 "loc_x"
-		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "idx" 5 "loc_y"
+	FOR (cnt=0; cnt<"%GAM_count%"; cnt=cnt+1) BEGIN
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 1 "cre_name"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 2 "cre_orient"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 3 "area_name"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 4 "loc_x"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 5 "loc_y"
 
 		INSERT_BYTES "%npcs_off%" 0x160
 		WRITE_ASCIIE ("%npcs_off%" + 0x0c) "%cre_name%" #8
@@ -2039,40 +2103,39 @@ COPY ~EET/base/BALDUR.GAM~ ~override~
 		WRITE_SHORT ("%npcs_off%" + 0xb4) 0xffff
 		WRITE_SHORT ("%npcs_off%" + 0xb6) 0xffff
 		WRITE_SHORT ("%npcs_off%" + 0xb8) 0xffff	  
-		SET "idx" = "%idx%" + 1
 	END
 
-	PATCH_IF ("%idx%" > 0) BEGIN	
-		SET "delta" = 0x160 * "%idx%"
-		SET "npcs_num" = "%npcs_num%" + "%idx%"
-		WRITE_LONG 0x34 "%npcs_num%"
+	PATCH_IF ("%cnt%" > 0) BEGIN	
+		SET delta = 0x160 * cnt
+		SET npcs_cnt = npcs_cnt + cnt
+		WRITE_LONG 0x34 "%npcs_cnt%"
 
 		PATCH_IF ("%PC_offset%">="%npcs_off%") BEGIN
-			"PC_offset"="%PC_offset%"+"%delta%"
+			SET PC_offset = PC_offset + delta
 			WRITE_LONG 0x20 "%PC_offset%"
 		END
 		PATCH_IF ("%US_offset%">="%npcs_off%") BEGIN
-			"US_offset"="%US_offset%"+"%delta%"
+			SET US_offset = US_offset + delta
 			WRITE_LONG 0x28 "%US_offset%"
 		END
 		PATCH_IF ("%glob_offset%">="%npcs_off%") BEGIN
-			"glob_offset"="%glob_offset%"+"%delta%"
+			SET glob_offset = glob_offset + delta
 			WRITE_LONG 0x38 "%glob_offset%"
 		END
 		PATCH_IF ("%jrnl_offset%">="%npcs_off%") BEGIN
-			"jrnl_offset"="%jrnl_offset%"+"%delta%"
+			SET jrnl_offset = jrnl_offset + delta
 			WRITE_LONG 0x50 "%jrnl_offset%"
 		END
 		PATCH_IF ("%famil_offset%">="%npcs_off%") BEGIN
-			"famil_offset"="%famil_offset%"+"%delta%"
+			SET famil_offset = famil_offset + delta
 			WRITE_LONG 0x68 "%famil_offset%"
 		END
 		PATCH_IF ("%locat_offset%">="%npcs_off%") BEGIN
-			"locat_offset"="%locat_offset%"+"%delta%"
+			SET locat_offset = locat_offset + delta
 			WRITE_LONG 0x6c "%locat_offset%"
 		END
 		PATCH_IF ("%US2_offset%">="%npcs_off%") BEGIN
-			"US2_offset"="%US2_offset%"+"%delta%"
+			SET US2_offset = US2_offset + delta
 			WRITE_LONG 0x78 "%US2_offset%"
 		END
 	END
@@ -2133,61 +2196,56 @@ COPY ~%patch_dir%/itm~ ~override~
 			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
-	READ_LONG 0x64 "abil_off" ELSE 0
-	READ_SHORT 0x68 "abil_num" ELSE 0
-	READ_LONG 0x6a "fx_off" ELSE 0
-	FOR (index = 0 ; index < abil_num ; index = index + 1) BEGIN
-		READ_SHORT ("%abil_off%" + 0x1e + (0x38 * "%index%")) "abil_fx_num"
-		READ_SHORT ("%abil_off%" + 0x20 + (0x38 * "%index%")) "abil_fx_idx"
-		FOR (index2 = 0 ; index2 < abil_fx_num ; index2 = index2 + 1) BEGIN
-			READ_SHORT ("%fx_off%" + (0x30 * ("%abil_fx_idx%" + "%index2%"))) "opcode"
-			PATCH_IF ("%opcode%" = 103) //Change Name
-			OR ("%opcode%" = 139) //Display String
-			OR ("%opcode%" = 180) //Can't Use Item
-			OR ("%opcode%" = 206) //Protection from Spell
-			OR ("%opcode%" = 253) //Add Map Marker
-			OR ("%opcode%" = 254) //Remove Map Marker
-			OR ("%opcode%" = 267) //Protection from Display Specific String
-			OR ("%opcode%" = 290) BEGIN //Change Title
-				SET "offset" = ("%fx_off%" + 0x4 + (0x30 * ("%abil_fx_idx%" + "%index2%")))
-				READ_LONG offset "StrRef"
-				PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
-				END
-			END ELSE PATCH_IF ("%opcode%" = 319) BEGIN
-				SET "offset" = ("%fx_off%" + 0x2c + (0x30 * ("%abil_fx_idx%" + "%index2%")))
-				READ_LONG offset "StrRef"
-				PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
-				END
-			END
-		END
+	READ_LONG 0x64 "abil_off"
+	READ_SHORT 0x68 "abil_cnt"
+	READ_LONG 0x6a "fx_off"
+	READ_SHORT 0x70 "fx_cnt"
+	FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+		READ_SHORT ("%abil_off%"+0x38*cnt+0x1e) "fx_num"
+		SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
 	END
-	READ_SHORT 0x70 "fx_num" ELSE 0
-	FOR (index3 = 0 ; index3 < fx_num ; index3 = index3 + 1) BEGIN
-		READ_SHORT ("%fx_off%" + (0x30 * "%index3%")) "opcode"
-		PATCH_IF ("%opcode%" = 103) //Change Name
-		OR ("%opcode%" = 139) //Display String
-		OR ("%opcode%" = 180) //Can't Use Item
-		OR ("%opcode%" = 206) //Protection from Spell
-		OR ("%opcode%" = 253) //Add Map Marker
-		OR ("%opcode%" = 254) //Remove Map Marker
-		OR ("%opcode%" = 267) //Protection from Display Specific String
-		OR ("%opcode%" = 290) BEGIN //Change Title
-			SET "offset" = ("%fx_off%" + 0x4 + (0x30 * "%index3%"))
+	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+		READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
+		PATCH_IF ("%fx_type%" = 103) //Change Name
+		OR ("%fx_type%" = 139) //Display String
+		OR ("%fx_type%" = 180) //Can't Use Item
+		OR ("%fx_type%" = 206) //Protection from Spell
+		OR ("%fx_type%" = 253) //Add Map Marker
+		OR ("%fx_type%" = 254) //Remove Map Marker
+		OR ("%fx_type%" = 267) //Protection from Display Specific String
+		OR ("%fx_type%" = 290) //Change Title
+		OR ("%fx_type%" = 330) //Float text
+		OR ("%fx_type%" = 338) //Disable rest or save
+		BEGIN
+			SET offset = ("%fx_off%"+0x30*cnt+0x4)
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+				SET str_updated = 0
+				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
+						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
+							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+								//SAY offset ( AT "StrRef" )
+								SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%strNew%"
+								SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+							END
+							SET str_updated = 1
+						END
+					END
+				END
+				PATCH_IF (str_updated = 0) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+				END
 			END
-		END ELSE PATCH_IF ("%opcode%" = 319) BEGIN
-			SET "offset" = ("%fx_off%" + 0x2c + (0x30 * "%index3%"))
+		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+			SET offset = ("%fx_off%"+0x30*cnt+0x2c)
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 			END
 		END
 	END
@@ -2731,61 +2789,56 @@ COPY ~%patch_dir%/spl~ ~override~
 			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
-	READ_LONG 0x64 "abil_off" ELSE 0
-	READ_SHORT 0x68 "abil_num" ELSE 0
-	READ_LONG 0x6a "fx_off" ELSE 0
-	FOR (index = 0 ; index < abil_num ; index = index + 1) BEGIN
-		READ_SHORT ("%abil_off%" + 0x1e + (0x28 * "%index%")) "abil_fx_num"
-		READ_SHORT ("%abil_off%" + 0x20 + (0x28 * "%index%")) "abil_fx_idx"
-		FOR (index2 = 0 ; index2 < abil_fx_num ; index2 = index2 + 1) BEGIN
-			READ_SHORT ("%fx_off%" + (0x30 * ("%abil_fx_idx%" + "%index2%"))) "opcode"
-			PATCH_IF ("%opcode%" = 103) //Change Name
-			OR ("%opcode%" = 139) //Display String
-			OR ("%opcode%" = 180) //Can't Use Item
-			OR ("%opcode%" = 206) //Protection from Spell
-			OR ("%opcode%" = 253) //Add Map Marker
-			OR ("%opcode%" = 254) //Remove Map Marker
-			OR ("%opcode%" = 267) //Protection from Display Specific String
-			OR ("%opcode%" = 290) BEGIN //Change Title
-				SET "offset" = ("%fx_off%" + 0x4 + (0x30 * ("%abil_fx_idx%" + "%index2%")))
-				READ_LONG offset "StrRef"
-				PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
-				END
-			END ELSE PATCH_IF ("%opcode%" = 319) BEGIN
-				SET "offset" = ("%fx_off%" + 0x2c + (0x30 * ("%abil_fx_idx%" + "%index2%")))
-				READ_LONG offset "StrRef"
-				PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
-				END
-			END
-		END
+	READ_LONG 0x64 "abil_off"
+	READ_SHORT 0x68 "abil_cnt"
+	READ_LONG 0x6a "fx_off"
+	READ_SHORT 0x70 "fx_cnt"
+	FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+		READ_SHORT ("%abil_off%"+0x28*cnt+0x1e) "fx_num"
+		SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
 	END
-	READ_SHORT 0x70 "fx_num" ELSE 0
-	FOR (index3 = 0 ; index3 < fx_num ; index3 = index3 + 1) BEGIN
-		READ_SHORT ("%fx_off%" + (0x30 * "%index3%")) "opcode"
-		PATCH_IF ("%opcode%" = 103) //Change Name
-		OR ("%opcode%" = 139) //Display String
-		OR ("%opcode%" = 180) //Can't Use Item
-		OR ("%opcode%" = 206) //Protection from Spell
-		OR ("%opcode%" = 253) //Add Map Marker
-		OR ("%opcode%" = 254) //Remove Map Marker
-		OR ("%opcode%" = 267) //Protection from Display Specific String
-		OR ("%opcode%" = 290) BEGIN //Change Title
-			SET "offset" = ("%fx_off%" + 0x4 + (0x30 * "%index3%"))
+	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+		READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
+		PATCH_IF ("%fx_type%" = 103) //Change Name
+		OR ("%fx_type%" = 139) //Display String
+		OR ("%fx_type%" = 180) //Can't Use Item
+		OR ("%fx_type%" = 206) //Protection from Spell
+		OR ("%fx_type%" = 253) //Add Map Marker
+		OR ("%fx_type%" = 254) //Remove Map Marker
+		OR ("%fx_type%" = 267) //Protection from Display Specific String
+		OR ("%fx_type%" = 290) //Change Title
+		OR ("%fx_type%" = 330) //Float text
+		OR ("%fx_type%" = 338) //Disable rest or save
+		BEGIN
+			SET offset = ("%fx_off%"+0x30*cnt+0x4)
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+				SET str_updated = 0
+				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
+						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
+							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+								//SAY offset ( AT "StrRef" )
+								SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%strNew%"
+								SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+							END
+							SET str_updated = 1
+						END
+					END
+				END
+				PATCH_IF (str_updated = 0) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+				END
 			END
-		END ELSE PATCH_IF ("%opcode%" = 319) BEGIN
-			SET "offset" = ("%fx_off%" + 0x2c + (0x30 * "%index3%"))
+		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+			SET offset = ("%fx_off%"+0x30*cnt+0x2c)
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 			END
 		END
 	END
@@ -2800,16 +2853,16 @@ APPEND_OUTER + ~EET/temp/spl.tph~ ~%debug%~
 OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
 COPY ~%patch_dir%/sto~ ~override~
 	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	SET "offset" = 0xc //Name
+	SET offset = 0xc //Name
 	READ_LONG offset "StrRef"
 	PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 		SAY offset ( AT "StrRef" )
 		SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
 	END
-	READ_LONG 0x4c "drink_off" ELSE 0
-	READ_SHORT 0x50 "drink_num" ELSE 0
-	FOR (index=0; index < drink_num ; index = index + 1) BEGIN
-		SET "offset" = (drink_off + 0x8 + (0x14 * index)) //Drink name
+	READ_LONG 0x4c "drink_off"
+	READ_SHORT 0x50 "drink_cnt"
+	FOR (cnt=0; cnt<"%drink_cnt%"; cnt=cnt+1) BEGIN
+		SET offset = ("%drink_off%"+0x14*cnt+0x8) //Drink name
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
@@ -2929,14 +2982,14 @@ END ELSE BEGIN
 END
 
 //renamed to bypass hardcoded day/niteday movies when area has 'city' and 'extended nights' flags day/night movies are now triggered via area scripts
-ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/DAYNITE.wbm~)
+//currently disabled due to bug in Multiplayer mode, probably related to this: http://forum.baldursgate.com/discussion/comment/191406
+/*ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/DAYNITE.wbm~)
 AND (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/NITEDAY.wbm~) BEGIN
-	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/DAYNITE.wbm~ ~lang/%LANGUAGE_BG2%/movies/DAYNITE_.wbm~
-	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/NITEDAY.wbm~ ~lang/%LANGUAGE_BG2%/movies/NITEDAY_.wbm~
-END ELSE BEGIN
-	COPY_LARGE ~movies/DAYNITE.wbm~ ~lang/%LANGUAGE_BG2%/movies/DAYNITE_.wbm~
-	COPY_LARGE ~movies/NITEDAY.wbm~ ~lang/%LANGUAGE_BG2%/movies/NITEDAY_.wbm~
+	MOVE ~lang/%LANGUAGE_BG2%/movies/DAYNITE.wbm~ ~lang/%LANGUAGE_BG2%/movies/DAYNITE_.wbm~
+	MOVE ~lang/%LANGUAGE_BG2%/movies/NITEDAY.wbm~ ~lang/%LANGUAGE_BG2%/movies/NITEDAY_.wbm~
 END
+MOVE ~movies/DAYNITE.wbm~ ~movies/DAYNITE_.wbm~
+MOVE ~movies/NITEDAY.wbm~ ~movies/NITEDAY_.wbm~*/
 
 //copy movies from BG:EE
 

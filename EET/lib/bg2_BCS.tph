@@ -2,7 +2,8 @@
 ///// DAYNITE/NITEDAY movies                           \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/DAYNITE_NITEDAY-eb.baf
+//currently disabled due to bug in Multiplayer mode, probably related to this: http://forum.baldursgate.com/discussion/comment/191406
+/*<<<<<<<< EET-inlined/DAYNITE_NITEDAY-eb.baf
 IF
   Time(DUSK_END)
   !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
@@ -30,7 +31,7 @@ COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 			PRINT ~DAYNITE/NITEDAY movies added to %SOURCE_RES%.BCS~
 		END
 	END
-BUT_ONLY
+BUT_ONLY*/
 
 /////                                                  \\\\\
 ///// Playable NPC Party Flag / Destroy Self           \\\\\
@@ -2577,19 +2578,20 @@ END
 EXTEND_TOP ~QUASIT01.BCS~ ~EET-inlined/QUASIT01-et.baf~
 
 //RUNENEMY.BCS
-//no need to create more conflicts with BG2 mods when not necessary
-/*COPY_EXISTING ~RUNENEMY.BCS~ ~override~
+//needed due to "multiplayer cloning bug": http://forum.baldursgate.com/discussion/10389/bug-random-commoners-appear-final-fight-thief-maze-werewolf-island/p1
+//Beamdog simply changed RunAwayFrom action to RunAwayFromNoLeaveArea to "fix" this issue
+COPY_EXISTING ~RUNENEMY.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),30)~
+		SPRINT textToReplace ~RunAwayFrom(~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastSeenBy(Myself),30)~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
-BUT_ONLY*/
+BUT_ONLY
 
 //SEEENEMY.BCS
 COPY_EXISTING ~SEEENEMY.BCS~ ~override~
