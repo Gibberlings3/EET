@@ -799,13 +799,6 @@ EXTEND_TOP ~FH2600.BCS~ ~EET-inlined/FH2600-et.baf~
 /////existing in BG2:EE, replace them if not used      \\\\\
 /////                                                  \\\\\
 
-/*COPY_EXISTING ~ENDCUT01.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~ForceSpell("Sarevok",DRYAD_TELEPORT)[%newline%]*ForcfeSpell(Myself,DRYAD_TELEPORT)~ ~ForceSpell("Sarevok",DRYAD_TELEPORT)
-  SetGlobal("SarevokBehavior","GLOBAL",1)
-  ForceSpell(Myself,DRYAD_TELEPORT)~
-	END*/
-
 //FTOWBAZ.BCS, NOBLBAZ.BCS, NOBWBAZ.BCS
 COPY_EXISTING ~FTOWBAZ.BCS~ ~override~
 	~NOBLBAZ.BCS~ ~override~
@@ -844,29 +837,6 @@ COPY_EXISTING ~FTOWBEZ.BCS~ ~override~
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~GlobalLT("ENDOFBG1","GLOBAL",2)
   GlobalGT("Chapter","GLOBAL",2)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//KIRINH.BCS
-COPY_EXISTING ~KIRINH.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ForceSpell(Myself,SUCCUBUS_ETHEREAL)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpellRES("SPWI927_",Myself)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~ForceSpell(\[PC\.0\.0\.0\.0\.MALE\],SUCCUBUS_CHARM_MALE)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpellRES("SPWI930_",[PC.0.0.0.0.MALE])~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~

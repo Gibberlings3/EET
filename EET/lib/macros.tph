@@ -973,7 +973,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 				SPRINT dword_index_dest EVALUATE_BUFFER ~%%name_dest%%~
 				PATCH_IF ("%dword_mus%" = "%dword_index_source%") AND ("%dword_mus%" > 0) BEGIN
 					WRITE_LONG offset "%dword_index_dest%"
-					SPRINT str ~Patching %SOURCE_FILESPEC%: mus = %dword_index_source% => %dword_index_dest% -~
+					SPRINT str ~Patching %SOURCE_FILESPEC%: MUSIC = %dword_index_source% => %dword_index_dest% -~
 					SPRINTF str ~%s %x~ ("%str%" offset)
 					PATCH_PRINT ~%str%~
 				END
@@ -1194,6 +1194,14 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 			LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
 		END
 
+		FOR (i=1; i<="%resref_splName_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_splName_source%i%"
+			SPRINT name_dest "resref_splName_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
+		END
+
 		FOR (i=1; i<="%resref_sto_total%"; i=i+1) BEGIN
 			SPRINT name_source "resref_sto_source%i%"
 			SPRINT name_dest "resref_sto_dest%i%"
@@ -1384,6 +1392,14 @@ CO") BEGIN
 				SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 				SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
 				LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
+			END
+
+			FOR (i=1; i<="%resref_splName_total%"; i=i+1) BEGIN
+				SPRINT name_source "resref_splName_source%i%"
+				SPRINT name_dest "resref_splName_dest%i%"
+				SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+				SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+				LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
 			END
 
 			FOR (i=1; i<="%resref_sto_total%"; i=i+1) BEGIN
@@ -2075,6 +2091,14 @@ CO") BEGIN
 			LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
 		END
 
+		FOR (i=1; i<="%resref_splName_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_splName_source%i%"
+			SPRINT name_dest "resref_splName_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
+		END
+
 		FOR (i=1; i<="%resref_sto_total%"; i=i+1) BEGIN
 			SPRINT name_source "resref_sto_source%i%"
 			SPRINT name_dest "resref_sto_dest%i%"
@@ -2300,6 +2324,14 @@ CO") BEGIN
 				SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 				SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
 				LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
+			END
+
+			FOR (i=1; i<="%resref_splName_total%"; i=i+1) BEGIN
+				SPRINT name_source "resref_splName_source%i%"
+				SPRINT name_dest "resref_splName_dest%i%"
+				SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+				SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+				LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
 			END
 
 			FOR (i=1; i<="%resref_sto_total%"; i=i+1) BEGIN
@@ -4406,23 +4438,34 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DEFINE_PATCH_MACRO ~BAF_SPL_replace~ BEGIN
-	//TRIGGER.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(HaveSpellRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - HaveSpellRES~ END ~\1%resref_index_dest%\2~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*SpellRES\)("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1%~ END ~\1("%resref_index_dest%"~ //HaveSpellRES, RemoveSpellRES, SpellRES, ForceSpellRES, ApplySpellRES, ReallyForceSpellRES
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastRES("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCastRES~ END ~SpellCastRES("%resref_index_dest%"~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastOnMeRES("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCastOnMeRES~ END ~SpellCastOnMeRES("%resref_index_dest%"~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastPriestRES("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCastPriestRES~ END ~SpellCastPriestRES("%resref_index_dest%"~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastInnateRES("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCastInnateRES~ END ~SpellCastInnateRES("%resref_index_dest%"~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*SpellPointRES\)("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1%~ END ~\1("%resref_index_dest%"~ //SpellPointRES, ForceSpellPointRES, ReallyForceSpellPointRES
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+NoDecRES\)("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1%~ END ~\1("%resref_index_dest%"~ //SpellNoDecRES, SpellPointNoDecRES
+	REPLACE_EVALUATE CASE_INSENSITIVE ~ReallyForceSpellDeadRES("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ReallyForceSpellDeadRES~ END ~ReallyForceSpellDeadRES("%resref_index_dest%"~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~AddSpecialAbility("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - AddSpecialAbility~ END ~AddSpecialAbility("%resref_index_dest%"~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellRangeRES("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellRangeRES~ END ~ForceSpellRangeRES("%resref_index_dest%"~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellPointRangeRES("%resref_index_source%"~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellPointRangeRES~ END ~ForceSpellPointRangeRES("%resref_index_dest%"~
+END
 
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AddSpecialAbility("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - AddSpecialAbility~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellPointRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellPointRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellPointRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellPointRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ApplySpellRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ApplySpellRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpellRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ReallyForceSpellRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellNoDecRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellNoDecRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellPointNoDecRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellPointNoDecRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpellDeadRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ReallyForceSpellDeadRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellRangeRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellRangeRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellPointRangeRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellPointRangeRES~ END ~\1%resref_index_dest%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpellPointRES("\)%resref_index_source%\("\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ReallyForceSpellPointRES~ END ~\1%resref_index_dest%\2~
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO ~BAF_SPLname_replace~ BEGIN
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+Spell\)(%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("%resref_index_dest%")~ //HaveSpell, RemoveSpell
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCast(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCast -> SpellCastRES~ END ~SpellCastRES("%resref_index_dest%",\1)~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastOnMe(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCastOnMe -> SpellCastOnMeRES~ END ~SpellCastOnMeRES("%resref_index_dest%",\1)~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastPriest(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCastPriest -> SpellCastPriestRES~ END ~SpellCastPriestRES("%resref_index_dest%",\1)~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastInnate(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - SpellCastInnate -> SpellCastInnateRES~ END ~SpellCastInnateRES("%resref_index_dest%",\1)~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~HaveSpellParty(%resref_index_source%)~ BEGIN PATCH_WARN ~Can't replace %resref_index_source% => %resref_index_dest%. There is no HaveSpellParty equivalent trigger that accepts RES reference. %SOURCE_FILESPEC% needs manual changes with HaveSpellRES and NextTriggerObject.~ END ~HaveSpellParty("%resref_index_source%")~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Spell\)(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("%resref_index_dest%",\2)~ //Spell, ForceSpell, ApplySpell, ReallyForceSpell
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*SpellPoint\)(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("%resref_index_dest%",\2)~ //SpellPoint, ForceSpellPoint, ReallyForceSpellPoint
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+NoDec\)(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("%resref_index_dest%",\2)~ //SpellNoDec, SpellPointNoDec
+	REPLACE_EVALUATE CASE_INSENSITIVE ~ReallyForceSpellDead(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ReallyForceSpellDead -> ReallyForceSpellDeadRES~ END ~ReallyForceSpellDeadRES("%resref_index_dest%",\1)~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellRange(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellRange -> ForceSpellRangeRES~ END ~ForceSpellRangeRES("%resref_index_dest%",\1)~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellPointRange(\([^,]+\),%resref_index_source%)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellPointRange -> ForceSpellPointRangeRES~ END ~ForceSpellPointRangeRES("%resref_index_dest%",\1)~
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
