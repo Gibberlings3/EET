@@ -1970,20 +1970,6 @@ COPY_EXISTING ~ANKHEG.BCS~ ~override~
 	END
 BUT_ONLY
 
-//BALOR01.BCS
-/*COPY_EXISTING ~BALOR01.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ForceSpell(LastSeenBy,WIZARD_REMOVE_MAGIC)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpell(LastSeenBy,WIZARD_DISPEL_MAGIC)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY*/
-
 //BEAR.BCS
 COPY_EXISTING ~BEAR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -2098,15 +2084,6 @@ BUT_ONLY
 //DEMGLASU.BCS
 COPY_EXISTING ~DEMGLASU.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		/*SPRINT textToReplace ~ForceSpell(LastSeenBy(Myself),WIZARD_REMOVE_MAGIC)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpell(LastSeenBy(Myself),WIZARD_DISPEL_MAGIC)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
-
 		SPRINT textToReplace ~See(\[ANYONE\])~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
@@ -2132,34 +2109,6 @@ COPY_EXISTING ~DEMNABSU.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-
-//DEMPIT.BCS
-/*COPY_EXISTING ~DEMPIT.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ReallyForceSpell(LastSeenBy(Myself),WIZARD_REMOVE_MAGIC)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpell(LastSeenBy(Myself),WIZARD_DISPEL_MAGIC)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY*/
-
-//DEMPITSU.BCS
-/*COPY_EXISTING ~DEMPITSU.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ForceSpell(LastSeenBy(Myself),WIZARD_REMOVE_MAGIC)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpell(LastSeenBy(Myself),WIZARD_DISPEL_MAGIC)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY*/
 
 //DEMSUC.BCS
 COPY_EXISTING ~DEMSUC.BCS~ ~override~
@@ -2434,15 +2383,6 @@ COPY_EXISTING ~MAGE7.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
-
-		/*SPRINT textToReplace ~Spell(NearestEnemyOf(Myself),WIZARD_REMOVE_MAGIC)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Spell(NearestEnemyOf(Myself),WIZARD_DISPEL_MAGIC)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
 	END
 BUT_ONLY
 
@@ -2471,20 +2411,6 @@ COPY_EXISTING ~MAGE8.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-
-//NISHRU01.BCS
-/*COPY_EXISTING ~NISHRU01.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SpellCastOnMe(\[ANYONE\],WIZARD_REMOVE_MAGIC)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SpellCastOnMe([ANYONE],WIZARD_DISPEL_MAGIC)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY*/
 
 //PREY.BCS
 COPY_EXISTING ~PREY.BCS~ ~override~
