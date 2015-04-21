@@ -1570,15 +1570,11 @@ THEN
 END
 
 IF
-  Global("BG1DrizztItem","GLOBAL",0)
-  OR(3)
-    PartyHasItem("CHAN06") // Mithral Chain Mail +4
-    PartyHasItem("SW1H15") // Icingdeath +3
-    PartyHasItem("SW1H16") // Twinkle +3
+  Global("MeetOldenFriends","GLOBAL",0)
+  PartyHasItem("MISC47") // Golden Pantaloons
 THEN
   RESPONSE #100
-    SetGlobal("BG1DrizztItem","GLOBAL",1)
-    Continue()
+    ActionOverride("K#TELBGT",TakePartyItem("MISC47"))
 END
 
 IF
@@ -1592,12 +1588,14 @@ THEN
 END
 
 IF
-  Global("MeetOldenFriends","GLOBAL",0)
-  PartyHasItem("MISC47") // Golden Pantaloons
-  !HasItem("MISC47",Player1)
+  Global("BG1DrizztItem","GLOBAL",0)
+  OR(3)
+    PartyHasItem("CHAN06") // Mithral Chain Mail +4
+    PartyHasItem("SW1H15") // Icingdeath +3
+    PartyHasItem("SW1H16") // Twinkle +3
 THEN
   RESPONSE #100
-    ActionOverride(Player1,TakePartyItem("MISC47"))
+    SetGlobal("BG1DrizztItem","GLOBAL",1)
     Continue()
 END
 >>>>>>>>

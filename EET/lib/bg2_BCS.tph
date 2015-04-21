@@ -850,19 +850,6 @@ COPY_EXISTING ~AR0602.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
-
-		/*script hangs even if all 3 variables are set, probably the same problem as black screen at the start of ToB on 1.2 patch, check later if it has been fixed
-		SPRINT textToReplace ~Global("TakeImportItems","AR0602",0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("TakeImportItems","AR0602",0)
-  Global("MinscImport","GLOBAL",2)
-  Global("JaheiraImport","GLOBAL",2)
-  Global("ImoenImport","GLOBAL",2)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
 	END
 BUT_ONLY
 
