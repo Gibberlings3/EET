@@ -127,45 +127,45 @@ END
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_BG1BCS2_scriptDV BEGIN
 	//first column used as a workaround because WeiDU expects unique first entires
-	01 , FH0100 => SUGAR
-	02 , FH0101 => BIP
-	03 , FH0101 => Entar
-	04 , FH0112 => SLYTHE
-	05 , FH0112 => Krystin
-	06 , FH0114 => IVANNE
-	07 , FH0149 => PIlmater
-	08 , FH0153 => DENKOD
-	09 , FH0200 => Sorrel
-	//	10 , FH0200 => Bill
-	11 , FH0300 => MAREK//
-	12 , FH0300 => LOTHANDER//
-	13 , FH0600 => HECITO
-	14 , FH0600 => Lothtyran
-	15 , FH0607 => BENJY
-	16 , FH0608 => KENT//
-	17 , FH0608 => Eltan2
-	18 , FH0608 => RASHAD//
-	19 , FH0608 => ELTAN//
-	20 , FH0612 => GREGOR
-	21 , FH0612 => TRALITHAN
-	22 , FH0613 => KALESSIA
-	//23 , FH0613 => EmiTar
-	24 , FH0614 => WIRTHING
-	25 , FH0615 => CYTHAN
-	26 , FH0616 => PANG
-	27 , FH0616 => DHANIAL
-	28 , FH0700 => ADDY
-	29 , FH0800 => HERSCHEL
-	30 , FH0800 => Delthyr
-	31 , FH0800 => Husam2
-	32 , FH0800 => Tamoko
-	33 , FH0900 => Smuggler
-	34 , FH1100 => KAELLA
-	35 , FH1100 => TAMOKO
-	36 , FH1200 => BRENNA
-	37 , FH1200 => JONAVI
-	38 , FH1200 => KOLVAR
-	39 , FH1300 => Alan
+	01 , BG0100 => SUGAR
+	02 , BG0101 => BIP
+	03 , BG0101 => Entar
+	04 , BG0112 => SLYTHE
+	05 , BG0112 => Krystin
+	06 , BG0114 => IVANNE
+	07 , BG0149 => PIlmater
+	08 , BG0153 => DENKOD
+	09 , BG0200 => Sorrel
+	//	10 , BG0200 => Bill
+	11 , BG0300 => MAREK//
+	12 , BG0300 => LOTHANDER//
+	13 , BG0600 => HECITO
+	14 , BG0600 => Lothtyran
+	15 , BG0607 => BENJY
+	16 , BG0608 => KENT//
+	17 , BG0608 => Eltan2
+	18 , BG0608 => RASHAD//
+	19 , BG0608 => ELTAN//
+	20 , BG0612 => GREGOR
+	21 , BG0612 => TRALITHAN
+	22 , BG0613 => KALESSIA
+	//23 , BG0613 => EmiTar
+	24 , BG0614 => WIRTHING
+	25 , BG0615 => CYTHAN
+	26 , BG0616 => PANG
+	27 , BG0616 => DHANIAL
+	28 , BG0700 => ADDY
+	29 , BG0800 => HERSCHEL
+	30 , BG0800 => Delthyr
+	31 , BG0800 => Husam2
+	32 , BG0800 => Tamoko
+	33 , BG0900 => Smuggler
+	34 , BG1100 => KAELLA
+	35 , BG1100 => TAMOKO
+	36 , BG1200 => BRENNA
+	37 , BG1200 => JONAVI
+	38 , BG1200 => KOLVAR
+	39 , BG1300 => Alan
 END
 
 ACTION_PHP_EACH table_BG1BCS2_scriptDV AS script => DV BEGIN
@@ -649,14 +649,14 @@ BUT_ONLY
 ///// BG:EE movies restoration                         \\\\\
 /////                                                  \\\\\
 
-//FH0705.BCS
-COPY_EXISTING ~FH0705.BCS~ ~override~
+//BG0705.BCS
+COPY_EXISTING ~BG0705.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		COUNT_REGEXP_INSTANCES ~StartMovie("TAVERN")~ num_matches
 	END
 BUT_ONLY
 ACTION_IF (num_matches = 0) BEGIN
-<<<<<<<< EET-inlined/FH0705-et.baf
+<<<<<<<< EET-inlined/BG0705-et.baf
 IF
   Global("EnteredElfsong","GLOBAL",0)
 THEN
@@ -665,11 +665,11 @@ THEN
     SetGlobal("EnteredElfsong","GLOBAL",1)
 END
 >>>>>>>>
-	EXTEND_TOP ~FH0705.BCS~ ~EET-inlined/FH0705-et.baf~
+	EXTEND_TOP ~BG0705.BCS~ ~EET-inlined/BG0705-et.baf~
 END
 
-//FH3300.BCS
-COPY_EXISTING ~FH3300.BCS~ ~override~
+//BG3300.BCS
+COPY_EXISTING ~BG3300.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~SetGlobal("EnteredBeregost","GLOBAL",1)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -689,7 +689,7 @@ BUT_ONLY
 ///// Skip to tutorial/BG2, starting weapon            \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/FH2600-et.baf
+<<<<<<<< EET-inlined/BG2600-et.baf
 IF
   Global("Chapter","GLOBAL",-1)
   !PartyHasItem("K#TELTUT")
@@ -793,7 +793,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~FH2600.BCS~ ~EET-inlined/FH2600-et.baf~
+EXTEND_TOP ~BG2600.BCS~ ~EET-inlined/BG2600-et.baf~
 
 /////                                                  \\\\\
 /////existing in BG2:EE, replace them if not used      \\\\\
@@ -1072,8 +1072,8 @@ COPY_EXISTING ~CH1CUT01.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0100.BCS
-COPY_EXISTING ~FH0100.BCS~ ~override~
+//BG0100.BCS
+COPY_EXISTING ~BG0100.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1087,8 +1087,8 @@ COPY_EXISTING ~FH0100.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0101.BCS
-COPY_EXISTING ~FH0101.BCS~ ~override~
+//BG0101.BCS
+COPY_EXISTING ~BG0101.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("Bip")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1102,8 +1102,8 @@ COPY_EXISTING ~FH0101.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0112.BCS
-COPY_EXISTING ~FH0112.BCS~ ~override~
+//BG0112.BCS
+COPY_EXISTING ~BG0112.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1117,8 +1117,8 @@ COPY_EXISTING ~FH0112.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0114.BCS
-COPY_EXISTING ~FH0114.BCS~ ~override~
+//BG0114.BCS
+COPY_EXISTING ~BG0114.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1132,8 +1132,8 @@ COPY_EXISTING ~FH0114.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0119.BCS
-COPY_EXISTING ~FH0119.BCS~ ~override~
+//BG0119.BCS
+COPY_EXISTING ~BG0119.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("Delthyr")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1147,8 +1147,8 @@ COPY_EXISTING ~FH0119.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0149.BCS
-COPY_EXISTING ~FH0149.BCS~ ~override~
+//BG0149.BCS
+COPY_EXISTING ~BG0149.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("PIlmater")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1162,8 +1162,8 @@ COPY_EXISTING ~FH0149.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0153.BCS
-COPY_EXISTING ~FH0153.BCS~ ~override~
+//BG0153.BCS
+COPY_EXISTING ~BG0153.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~!Exists("DENKOD")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1177,8 +1177,8 @@ COPY_EXISTING ~FH0153.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0200.BCS
-COPY_EXISTING ~FH0200.BCS~ ~override~
+//BG0200.BCS
+COPY_EXISTING ~BG0200.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Capture200","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1192,8 +1192,8 @@ COPY_EXISTING ~FH0200.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0300.BCS
-COPY_EXISTING ~FH0300.BCS~ ~override~
+//BG0300.BCS
+COPY_EXISTING ~BG0300.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Capture300","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1207,8 +1207,8 @@ COPY_EXISTING ~FH0300.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0600.BCS
-COPY_EXISTING ~FH0600.BCS~ ~override~
+//BG0600.BCS
+COPY_EXISTING ~BG0600.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1222,8 +1222,8 @@ COPY_EXISTING ~FH0600.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0607.BCS
-COPY_EXISTING ~FH0607.BCS~ ~override~
+//BG0607.BCS
+COPY_EXISTING ~BG0607.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1237,8 +1237,8 @@ COPY_EXISTING ~FH0607.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0608.BCS
-COPY_EXISTING ~FH0608.BCS~ ~override~
+//BG0608.BCS
+COPY_EXISTING ~BG0608.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1252,8 +1252,8 @@ COPY_EXISTING ~FH0608.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0612.BCS
-COPY_EXISTING ~FH0612.BCS~ ~override~
+//BG0612.BCS
+COPY_EXISTING ~BG0612.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1267,8 +1267,8 @@ COPY_EXISTING ~FH0612.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0613.BCS
-COPY_EXISTING ~FH0613.BCS~ ~override~
+//BG0613.BCS
+COPY_EXISTING ~BG0613.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1282,8 +1282,8 @@ COPY_EXISTING ~FH0613.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0614.BCS
-COPY_EXISTING ~FH0614.BCS~ ~override~
+//BG0614.BCS
+COPY_EXISTING ~BG0614.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Global("WirthiSpawn","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1296,11 +1296,11 @@ COPY_EXISTING ~FH0614.BCS~ ~override~
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
-		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Global("removemerchants","FH0614",0)~
+		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Global("removemerchants","BG0614",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~GlobalGT("Chapter","GLOBAL",6)
-  Global("removemerchants","FH0614",0)~
+  Global("removemerchants","BG0614",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1308,8 +1308,8 @@ COPY_EXISTING ~FH0614.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0615.BCS
-COPY_EXISTING ~FH0615.BCS~ ~override~
+//BG0615.BCS
+COPY_EXISTING ~BG0615.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1323,8 +1323,8 @@ COPY_EXISTING ~FH0615.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0616.BCS
-COPY_EXISTING ~FH0616.BCS~ ~override~
+//BG0616.BCS
+COPY_EXISTING ~BG0616.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~OnCreation()~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1338,8 +1338,8 @@ COPY_EXISTING ~FH0616.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0700.BCS
-COPY_EXISTING ~FH0700.BCS~ ~override~
+//BG0700.BCS
+COPY_EXISTING ~BG0700.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1353,8 +1353,8 @@ COPY_EXISTING ~FH0700.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0800.BCS
-COPY_EXISTING ~FH0800.BCS~ ~override~
+//BG0800.BCS
+COPY_EXISTING ~BG0800.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1368,8 +1368,8 @@ COPY_EXISTING ~FH0800.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH0900.BCS
-COPY_EXISTING ~FH0900.BCS~ ~override~
+//BG0900.BCS
+COPY_EXISTING ~BG0900.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1383,8 +1383,8 @@ COPY_EXISTING ~FH0900.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH1100.BCS
-COPY_EXISTING ~FH1100.BCS~ ~override~
+//BG1100.BCS
+COPY_EXISTING ~BG1100.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Exists("Aldeth")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1430,8 +1430,8 @@ COPY_EXISTING ~FH1100.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH1200.BCS
-COPY_EXISTING ~FH1200.BCS~ ~override~
+//BG1200.BCS
+COPY_EXISTING ~BG1200.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1445,8 +1445,8 @@ COPY_EXISTING ~FH1200.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH1300.BCS
-COPY_EXISTING ~FH1300.BCS~ ~override~
+//BG1300.BCS
+COPY_EXISTING ~BG1300.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1460,8 +1460,8 @@ COPY_EXISTING ~FH1300.BCS~ ~override~
 	END
 BUT_ONLY
 
-//FH2600.BCS
-COPY_EXISTING ~FH2600.BCS~ ~override~
+//BG2600.BCS
+COPY_EXISTING ~BG2600.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("Chptxt0_")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1492,12 +1492,12 @@ BUT_ONLY
 //ENDGAME
 
 //Temple of Bhaal (game finale)
-COPY_EXISTING ~FH0125.BCS~ ~override~
+COPY_EXISTING ~BG0125.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~GoToStartScreen()~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("StartCredits","FH0125",3)
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("StartCredits","BG0125",3)
     ActionOverride(Player1,ApplySpellRES("K#FREEA",Myself))
     CreateCreatureObjectOffScreen("K#TELBGT",Player1,0,0,0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~

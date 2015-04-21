@@ -1486,7 +1486,7 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 		SPRINT textToReplace ~SetGlobal("FORCETOBPARTYMOVE4000","GLOBAL",1)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RevealAreaOnMap("FH0000")
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~RevealAreaOnMap("BG0000")
     RevealAreaOnMap("AR4000")
     SetGlobal("FORCETOBPARTYMOVE4000","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
@@ -2020,7 +2020,7 @@ BUT_ONLY
 //CCRAWLER.BCS
 <<<<<<<< EET-inlined/CCRAWLER-et.baf
 IF
-  AreaCheck("FH0226")
+  AreaCheck("BG0226")
   Dead("SewerOgre")  // SewerOgre
   Allegiance(Myself,NEUTRAL)
 THEN
@@ -2029,7 +2029,7 @@ THEN
 END
 
 IF
-  AreaCheck("FH0226")
+  AreaCheck("BG0226")
   See("SewerOgre")  // SewerOgre
   !Dead("SewerOgre")  // SewerOgre
   Allegiance("SewerOgre",NEUTRAL)  // SewerOgre
@@ -2040,7 +2040,7 @@ THEN
 END
 
 IF
-  AreaCheck("FH0226")
+  AreaCheck("BG0226")
   See("SewerOgre")  // SewerOgre
   !Dead("SewerOgre")  // SewerOgre
   Allegiance("SewerOgre",ENEMY)  // SewerOgre
