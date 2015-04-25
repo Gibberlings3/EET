@@ -56,9 +56,6 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	/* BGT-only shutdown of D and BAF after BG1 content */
 	OUTER_SPRINT ~BGT_VAR~ ~~
 
-	/* file mapping for bgee */
-	//OUTER_SPRINT ~bgee~ ~~
-
 	/* DVs are the same for Tutu/BGT, except for Imoen */
 	OUTER_SPRINT "IMOEN_DV" "imoen"
 
@@ -74,7 +71,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SET xanpstate3 = 1
 	OUTER_SET xanpstate4 = 0
 
-	//BGT Dialogues always appended, zero for Tutu and BG:EE
+	//BGT Dialogues always appended, zero for Tutu
 	OUTER_SET BGTBEDWINState0 = 0
 	OUTER_SET BGTBJAHEIState0 = 0
 	OUTER_SET BGTBMINSCState0 = 0
@@ -92,17 +89,17 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SET BGTVICONJState0 = 0
 	OUTER_SET BGTVICONPState0 = 0
 
-	//Never Ending Journey 2 compatibility appending, zero for Tutu and BG:EE
+	//Never Ending Journey 2 compatibility appending, zero for Tutu
 	OUTER_SET BGTXANState0 = 0
 
-	//The Darkest Day compatibility appending, zero for Tutu and BG:EE
+	//The Darkest Day compatibility appending, zero for Tutu
 	OUTER_SET BGTKAGAIPState0 = 0
 	OUTER_SET BGTKIVANPState0 = 0
 	OUTER_SET BGTSHARTPState0 = 0
 	OUTER_SET BGTXZARPState0 = 0
 	OUTER_SET BGTYESLIPState0 = 0
 
-	//Tortured Souls compatibility appending, zero for Tutu and BG:EE
+	//Tortured Souls compatibility appending, zero for Tutu
 	OUTER_SET BGTBCORANState0 = 0
 	OUTER_SET BGTCORANState0 = 0
 	OUTER_SET BGTCORANJState0 = 0
@@ -110,7 +107,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SET BGTDYNAHJState0 = 0
 	OUTER_SET BGTDYNAHPState0 = 0
 
-	/* Set Post Dialogue Files for BG:EE */
+	/* Set Post Dialogue Files */
 	OUTER_SPRINT "AJANTIS_POST" "AJANTP"
 	OUTER_SPRINT "ALORA_POST" "ALORAP"
 	OUTER_SPRINT "BRANWEN_POST" "BRANWP"
@@ -137,7 +134,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "XZAR_POST" "XZARP"
 	OUTER_SPRINT "YESLICK_POST" "YESLIP"
 
-	/* Set BanterFiles for BG:EE */
+	/* Set Banter Files */
 	OUTER_SPRINT "AJANTIS_BANTER" "BAJANT"
 	OUTER_SPRINT "ALORA_BANTER" "BALORA"
 	OUTER_SPRINT "BRANWEN_BANTER" "BBRANW"
@@ -164,7 +161,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "XZAR_BANTER" "BXZAR"
 	OUTER_SPRINT "YESLICK_BANTER" "BYESLI"
 
-	/* Set Joined Dialogue Files for BG:EE */
+	/* Joined Dialogue Files */
 	OUTER_SPRINT "AJANTIS_JOINED" "AJANTJ"
 	OUTER_SPRINT "ALORA_JOINED" "ALORAJ"
 	OUTER_SPRINT "BRANWEN_JOINED" "BRANWJ"
@@ -191,7 +188,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "XZAR_JOINED" "XZARJ"
 	OUTER_SPRINT "YESLICK_JOINED" "YESLIJ"
 
-	/* Chapters for BG:EE */
+	/* Chapters */
 	OUTER_SPRINT "tutu_prologue" "0"
 	OUTER_SPRINT "tutu_prologue_reset" "0"
 	OUTER_SPRINT "tutu_chapter_1" "1"
@@ -202,9 +199,9 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "tutu_chapter_6" "6"
 	OUTER_SPRINT "tutu_chapter_7" "7"
 
-	/* NPC Override script compilation for BG:EE */
-	OUTER_SPRINT "ALORA_BCS" "ALORA"
+	/* NPC override script compilation */
 	OUTER_SPRINT "AJANTIS_BCS" "AJANTIS"
+	OUTER_SPRINT "ALORA_BCS" "ALORA"
 	OUTER_SPRINT "BRANWEN_BCS" "BRANWEN"
 	OUTER_SPRINT "CORAN_BCS" "CORAN"
 	OUTER_SPRINT "DYNAHEIR_BCS" "DYNAHEIR"
@@ -229,7 +226,12 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "XZAR_BCS" "XZAR"
 	OUTER_SPRINT "YESLICK_BCS" "YESLICK"
 
-	/* BG:EE Areas */
+	/* BG:EE NPC override script compilation */
+	OUTER_SPRINT "DORN_BCS" "DORN"
+	OUTER_SPRINT "NEERA_BCS" "NEERA"
+	OUTER_SPRINT "RASAAD_BCS" "RASAAD"
+
+	/* Areas */
 	OUTER_SPRINT "NBaldursGate_TempleofHelm" "AR0002"
 	OUTER_SPRINT "NBaldursGate_BherensHouse_L1" "AR0004"
 	OUTER_SPRINT "NBaldursGate_BherensHouse_L2" "AR0005"
@@ -276,8 +278,8 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "SWBaldursGate_MerchantLeague_L1" "AR0127"
 	OUTER_SPRINT "SWBaldursGate_MerchantLeague_L2" "AR0128"
 	OUTER_SPRINT "SWBaldursGate_MerchantLeague_L3" "AR0129"
-	OUTER_SPRINT "WBaldursGate_HalloARonders" "AR0130"
-	OUTER_SPRINT "WBaldursGate_HighHouseoARonders" "AR0131"
+	OUTER_SPRINT "WBaldursGate_HallofWonders" "AR0130"
+	OUTER_SPRINT "WBaldursGate_HighHouseofWonders" "AR0131"
 	OUTER_SPRINT "WBaldursGate_LadysHouse" "AR0132"
 	OUTER_SPRINT "BaldursGate_DocksLowLantern_D1" "AR0133"
 	OUTER_SPRINT "BaldursGate_DocksLowLantern_D2" "AR0134"
@@ -480,7 +482,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "FriendlyArmInn_L1" "AR2301"
 	OUTER_SPRINT "FriendlyArmInn_L2" "AR2302"
 	OUTER_SPRINT "FriendlyArmInn_L3" "AR2303"
-	OUTER_SPRINT "FriendlyArmInn_TempleoARisdom" "AR2304"
+	OUTER_SPRINT "FriendlyArmInn_TempleofWisdom" "AR2304"
 	OUTER_SPRINT "FriendlyArmInn_House" "AR2305"
 	OUTER_SPRINT "FriendlyArmInn_JoiasHouse" "AR2306"
 	OUTER_SPRINT "Peldvale" "AR2400"
@@ -665,7 +667,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "Encounter_Forest2" "AR6001"
 	OUTER_SPRINT "Encounter_Road" "AR6100"
 
-	/* BG:EE TOTSC Areas; BGT requires it, but separation needed for Tutu */
+	/* TOTSC Areas; BGT requires it, but separation needed for Tutu */
 	OUTER_SPRINT "Farmlands" "AR0400"
 	OUTER_SPRINT "FarmlandsFarmhouse" "AR0401"
 	OUTER_SPRINT "DurlagsTower" "AR0500"
@@ -764,8 +766,8 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "SWBaldursGate_MerchantLeague_L1_BCS" "AR0127"
 	OUTER_SPRINT "SWBaldursGate_MerchantLeague_L2_BCS" "AR0128"
 	OUTER_SPRINT "SWBaldursGate_MerchantLeague_L3_BCS" "AR0129"
-	OUTER_SPRINT "WBaldursGate_HalloARonders_BCS" "AR0130"
-	OUTER_SPRINT "WBaldursGate_HighHouseoARonders_BCS" "AR0131"
+	OUTER_SPRINT "WBaldursGate_HallofWonders_BCS" "AR0130"
+	OUTER_SPRINT "WBaldursGate_HighHouseofWonders_BCS" "AR0131"
 	OUTER_SPRINT "WBaldursGate_LadysHouse_BCS" "AR0132"
 	OUTER_SPRINT "BaldursGate_DocksLowLantern_D1_BCS" "AR0133"
 	OUTER_SPRINT "BaldursGate_DocksLowLantern_D2_BCS" "AR0134"
@@ -968,7 +970,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "FriendlyArmInn_L1_BCS" "AR2301"
 	OUTER_SPRINT "FriendlyArmInn_L2_BCS" "AR2302"
 	OUTER_SPRINT "FriendlyArmInn_L3_BCS" "AR2303"
-	OUTER_SPRINT "FriendlyArmInn_TempleoARisdom_BCS" "AR2304"
+	OUTER_SPRINT "FriendlyArmInn_TempleofWisdom_BCS" "AR2304"
 	OUTER_SPRINT "FriendlyArmInn_House_BCS" "AR2305"
 	OUTER_SPRINT "FriendlyArmInn_JoiasHouse_BCS" "AR2306"
 	OUTER_SPRINT "Peldvale_BCS" "AR2400"
@@ -1153,7 +1155,7 @@ ACTION_IF GAME_IS ~bgee~ THEN BEGIN
 	OUTER_SPRINT "Encounter_Forest2_BCS" "AR6001"
 	OUTER_SPRINT "Encounter_Road_BCS" "AR6100"
 
-	/* BG:EE TOTSC Areas scripts */
+	/* TOTSC Areas scripts */
 	OUTER_SPRINT "Farmlands_BCS" "AR0400"
 	OUTER_SPRINT "FarmlandsFarmhouse_BCS" "AR0401"
 	OUTER_SPRINT "DurlagsTower_BCS" "AR0500"

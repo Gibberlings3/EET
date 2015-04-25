@@ -56,9 +56,6 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	/* BGT-only shutdown of D and BAF after BG1 content */
 	OUTER_SPRINT ~BGT_VAR~ ~!Global("endofbg1","GLOBAL",2)~
 
-	/* file mapping for bgee */
-	OUTER_SPRINT ~bgee~ ~~
-
 	/* DVs are the same for Tutu/BGT, except for Imoen */
 	OUTER_SPRINT "IMOEN_DV" "imoen2"
 
@@ -75,43 +72,43 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SET xanpstate4 = 4
 
 	ACTION_IF FILE_EXISTS ~BGT/Compat/BG1NPC/FluidStates.tpa~ THEN BEGIN
-	 INCLUDE ~BGT/Compat/BG1NPC/FluidStates.tpa~  // BGT1.06 and higher
+		INCLUDE ~BGT/Compat/BG1NPC/FluidStates.tpa~ // BGT1.06 and higher
 	END ELSE BEGIN // BGT1.05 and lower
-	 //BGT Dialogues always appended
-	 OUTER_SET BGTBEDWINState0 = 106
-	 OUTER_SET BGTBJAHEIState0 = 461
-	 OUTER_SET BGTBMINSCState0 = 99
-	 OUTER_SET BGTBVICONState0 = 575
-	 OUTER_SET BGTEDWINState0 = 74
-	 OUTER_SET BGTEDWINJState0 = 188
-	 OUTER_SET BGTEDWINPState0 = 9
-	 OUTER_SET BGTIMOENJState0 = 111
-	 OUTER_SET BGTIMOEN2State0 = 26
-	 OUTER_SET BGTIMOENPState0 = 16
-	 OUTER_SET BGTJAHEIJState0 = 531
-	 OUTER_SET BGTJAHEIPState0 = 74
-	 OUTER_SET BGTMINSCJState0 = 241
-	 OUTER_SET BGTMINSCPState0 = 10
-	 OUTER_SET BGTVICONJState0 = 183
-	 OUTER_SET BGTVICONPState0 = 14
+		//BGT Dialogues always appended
+		OUTER_SET BGTBEDWINState0 = 106
+		OUTER_SET BGTBJAHEIState0 = 461
+		OUTER_SET BGTBMINSCState0 = 99
+		OUTER_SET BGTBVICONState0 = 575
+		OUTER_SET BGTEDWINState0 = 74
+		OUTER_SET BGTEDWINJState0 = 188
+		OUTER_SET BGTEDWINPState0 = 9
+		OUTER_SET BGTIMOENJState0 = 111
+		OUTER_SET BGTIMOEN2State0 = 26
+		OUTER_SET BGTIMOENPState0 = 16
+		OUTER_SET BGTJAHEIJState0 = 531
+		OUTER_SET BGTJAHEIPState0 = 74
+		OUTER_SET BGTMINSCJState0 = 241
+		OUTER_SET BGTMINSCPState0 = 10
+		OUTER_SET BGTVICONJState0 = 183
+		OUTER_SET BGTVICONPState0 = 14
 
-	 //Never Ending Journey 2 compatibility appending
-	 OUTER_SET BGTXANState0 = 0
+		//Never Ending Journey 2 compatibility appending
+		OUTER_SET BGTXANState0 = 0
 
-	 //The Darkest Day compatibility appending
-	 OUTER_SET BGTKAGAIPState0 = 0
-	 OUTER_SET BGTKIVANPState0 = 0
-	 OUTER_SET BGTSHARTPState0 = 0
-	 OUTER_SET BGTXZARPState0 = 0
-	 OUTER_SET BGTYESLIPState0 = 0
+		//The Darkest Day compatibility appending
+		OUTER_SET BGTKAGAIPState0 = 0
+		OUTER_SET BGTKIVANPState0 = 0
+		OUTER_SET BGTSHARTPState0 = 0
+		OUTER_SET BGTXZARPState0 = 0
+		OUTER_SET BGTYESLIPState0 = 0
 
-	 //Tortured Souls compatibility appending
-	 OUTER_SET BGTBCORANState0 = 0
-	 OUTER_SET BGTCORANState0 = 0
-	 OUTER_SET BGTCORANJState0 = 0
-	 OUTER_SET BGTCORANPState0 = 0
-	 OUTER_SET BGTDYNAHJState0 = 0
-	 OUTER_SET BGTDYNAHPState0 = 0
+		//Tortured Souls compatibility appending
+		OUTER_SET BGTBCORANState0 = 0
+		OUTER_SET BGTCORANState0 = 0
+		OUTER_SET BGTCORANJState0 = 0
+		OUTER_SET BGTCORANPState0 = 0
+		OUTER_SET BGTDYNAHJState0 = 0
+		OUTER_SET BGTDYNAHPState0 = 0
 	END
 
 	/* Set Post Dialogue Files */
@@ -141,7 +138,7 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "XZAR_POST" "XZARP"
 	OUTER_SPRINT "YESLICK_POST" "YESLIP"
 
-	/* Set BGT BanterFiles */
+	/* Set Banter Files */
 	OUTER_SPRINT "AJANTIS_BANTER" "BAJANT"
 	OUTER_SPRINT "ALORA_BANTER" "BALORA"
 	OUTER_SPRINT "BRANWEN_BANTER" "BBRANW"
@@ -168,7 +165,7 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "XZAR_BANTER" "BXZAR"
 	OUTER_SPRINT "YESLICK_BANTER" "BYESLI"
 
-	/* Set BGT Joined Dialogue Files */
+	/* Joined Dialogue Files */
 	OUTER_SPRINT "AJANTIS_JOINED" "AJANTJ"
 	OUTER_SPRINT "ALORA_JOINED" "ALORAJ"
 	OUTER_SPRINT "BRANWEN_JOINED" "BRANWJ"
@@ -195,8 +192,8 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "XZAR_JOINED" "XZARJ"
 	OUTER_SPRINT "YESLICK_JOINED" "YESLIJ"
 
-	/* BGT Chapters */
-	OUTER_SPRINT "tutu_prologue"  "1"
+	/* Chapters */
+	OUTER_SPRINT "tutu_prologue" "1"
 	OUTER_SPRINT "tutu_prologue_reset" "1"
 	OUTER_SPRINT "tutu_chapter_1" "2"
 	OUTER_SPRINT "tutu_chapter_2" "3"
@@ -206,9 +203,9 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "tutu_chapter_6" "7"
 	OUTER_SPRINT "tutu_chapter_7" "8"
 
-	/* BGT NPC override script compilation */
-	OUTER_SPRINT "ALORA_BCS" "ALORA"
+	/* NPC override script compilation */
 	OUTER_SPRINT "AJANTIS_BCS" "AJANTIS"
+	OUTER_SPRINT "ALORA_BCS" "ALORA"
 	OUTER_SPRINT "BRANWEN_BCS" "BGBRANW"
 	OUTER_SPRINT "CORAN_BCS" "CORAN"
 	OUTER_SPRINT "DYNAHEIR_BCS" "DYNAHEIR"
@@ -233,7 +230,12 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "XZAR_BCS" "XZAR"
 	OUTER_SPRINT "YESLICK_BCS" "YESLICK"
 
-	/* BGT Areas */
+	/* BG:EE NPC override script compilation */
+	OUTER_SPRINT "DORN_BCS" "DORN"
+	OUTER_SPRINT "NEERA_BCS" "NEERA"
+	OUTER_SPRINT "RASAAD_BCS" "RASAAD"
+
+	/* Areas */
 	OUTER_SPRINT "NBaldursGate_TempleofHelm" "ARA002"
 	OUTER_SPRINT "NBaldursGate_BherensHouse_L1" "ARA004"
 	OUTER_SPRINT "NBaldursGate_BherensHouse_L2" "ARA005"
@@ -669,18 +671,7 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "Encounter_Forest2" "AR5301"
 	OUTER_SPRINT "Encounter_Road" "AR5400"
 
-	/* BGT TOTSC Areas; BGT requires it, but separation needed for Tutu */
-	OUTER_SPRINT "UlgothsBeard" "ARU000"
-	OUTER_SPRINT "UlgothsBeard_Inn" "ARU001"
-	OUTER_SPRINT "UlgothsBeard_DemonsChamber" "ARU002"
-	OUTER_SPRINT "UlgothsBeard_Storehouse" "ARU003"
-	OUTER_SPRINT "UlgothsBeard_MendasHouse" "ARU004"
-	OUTER_SPRINT "UlgothsBeard_TherellasHouse" "ARU005"
-	OUTER_SPRINT "UlgothsBeard_House2" "ARU006"
-	OUTER_SPRINT "UlgothsBeard_House1" "ARU007"
-	OUTER_SPRINT "IceIsland" "ARU008"
-	OUTER_SPRINT "IceIslandMaze_L1" "ARU009"
-	OUTER_SPRINT "IceIslandMaze_L2" "ARU010"
+	/* TOTSC Areas; BGT requires it, but separation needed for Tutu */
 	OUTER_SPRINT "Farmlands" "AR7500"
 	OUTER_SPRINT "FarmlandsFarmhouse" "AR7501"
 	OUTER_SPRINT "DurlagsTower" "ARD000"
@@ -719,6 +710,17 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "IsleofBalduranS_StoreHut4" "ARW010"
 	OUTER_SPRINT "IsleofBalduranS_StoreHut3" "ARW011"
 	OUTER_SPRINT "WerewolfCaverns" "ARW012"
+	OUTER_SPRINT "UlgothsBeard" "ARU000"
+	OUTER_SPRINT "UlgothsBeard_Inn" "ARU001"
+	OUTER_SPRINT "UlgothsBeard_DemonsChamber" "ARU002"
+	OUTER_SPRINT "UlgothsBeard_Storehouse" "ARU003"
+	OUTER_SPRINT "UlgothsBeard_MendasHouse" "ARU004"
+	OUTER_SPRINT "UlgothsBeard_TherellasHouse" "ARU005"
+	OUTER_SPRINT "UlgothsBeard_House2" "ARU006"
+	OUTER_SPRINT "UlgothsBeard_House1" "ARU007"
+	OUTER_SPRINT "IceIsland" "ARU008"
+	OUTER_SPRINT "IceIslandMaze_L1" "ARU009"
+	OUTER_SPRINT "IceIslandMaze_L2" "ARU010"
 
 	/* AREA_SCRIPTS (full list using the same var names as areas, with added _BCS at the end)*/
 	//these variables are not needed for BG:EE, BGT, EET, but for some reason Tutu doesn't use the same names as areas, so they must be assigned
@@ -1157,18 +1159,7 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "Encounter_Forest2_BCS" "AR5301"
 	OUTER_SPRINT "Encounter_Road_BCS" "AR5400"
 
-	/* BGT TOTSC Areas scripts */
-	OUTER_SPRINT "UlgothsBeard_BCS" "ARU000"
-	OUTER_SPRINT "UlgothsBeard_Inn_BCS" "ARU001"
-	OUTER_SPRINT "UlgothsBeard_DemonsChamber_BCS" "ARU002"
-	OUTER_SPRINT "UlgothsBeard_Storehouse_BCS" "ARU003"
-	OUTER_SPRINT "UlgothsBeard_MendasHouse_BCS" "ARU004"
-	OUTER_SPRINT "UlgothsBeard_TherellasHouse_BCS" "ARU005"
-	OUTER_SPRINT "UlgothsBeard_House2_BCS" "ARU006"
-	OUTER_SPRINT "UlgothsBeard_House1_BCS" "ARU007"
-	OUTER_SPRINT "IceIsland_BCS" "ARU008"
-	OUTER_SPRINT "IceIslandMaze_L1_BCS" "ARU009"
-	OUTER_SPRINT "IceIslandMaze_L2_BCS" "ARU010"
+	/* TOTSC Areas scripts */
 	OUTER_SPRINT "Farmlands_BCS" "AR7500"
 	OUTER_SPRINT "FarmlandsFarmhouse_BCS" "AR7501"
 	OUTER_SPRINT "DurlagsTower_BCS" "ARD000"
@@ -1207,6 +1198,17 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "IsleofBalduranS_StoreHut4_BCS" "ARW010"
 	OUTER_SPRINT "IsleofBalduranS_StoreHut3_BCS" "ARW011"
 	OUTER_SPRINT "WerewolfCaverns_BCS" "ARW012"
+	OUTER_SPRINT "UlgothsBeard_BCS" "ARU000"
+	OUTER_SPRINT "UlgothsBeard_Inn_BCS" "ARU001"
+	OUTER_SPRINT "UlgothsBeard_DemonsChamber_BCS" "ARU002"
+	OUTER_SPRINT "UlgothsBeard_Storehouse_BCS" "ARU003"
+	OUTER_SPRINT "UlgothsBeard_MendasHouse_BCS" "ARU004"
+	OUTER_SPRINT "UlgothsBeard_TherellasHouse_BCS" "ARU005"
+	OUTER_SPRINT "UlgothsBeard_House2_BCS" "ARU006"
+	OUTER_SPRINT "UlgothsBeard_House1_BCS" "ARU007"
+	OUTER_SPRINT "IceIsland_BCS" "ARU008"
+	OUTER_SPRINT "IceIslandMaze_L1_BCS" "ARU009"
+	OUTER_SPRINT "IceIslandMaze_L2_BCS" "ARU010"
 
 	/* AREA_SCRIPTS (different var names used by BG1 NPC Project) */
 	OUTER_SPRINT "BelchingDragonTavern_BCS" "AR3709"

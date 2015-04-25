@@ -56,9 +56,6 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	/* BGT-only shutdown of D and BAF after BG1 content */
 	OUTER_SPRINT ~BGT_VAR~ ~~
 
-	/* file mapping for bgee */
-	OUTER_SPRINT ~bgee~ ~~
-
 	/* DVs are the same for Tutu/BGT, except for Imoen */
 	OUTER_SPRINT "IMOEN_DV" "imoen"
 
@@ -137,7 +134,7 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	OUTER_SPRINT "XZAR_POST" "_XZARP"
 	OUTER_SPRINT "YESLICK_POST" "_YESLIP"
 
-	/* Set Tutu BanterFiles */
+	/* Set Banter Files */
 	OUTER_SPRINT "AJANTIS_BANTER" "_BAJANT"
 	OUTER_SPRINT "ALORA_BANTER" "_BALORA"
 	OUTER_SPRINT "BRANWEN_BANTER" "_BBRANW"
@@ -164,7 +161,7 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	OUTER_SPRINT "XZAR_BANTER" "_BXZAR"
 	OUTER_SPRINT "YESLICK_BANTER" "_BYESLI"
 
-	/* Set Tutu Joined Dialogue Files */
+	/* Joined Dialogue Files */
 	OUTER_SPRINT "AJANTIS_JOINED" "_AJANTJ"
 	OUTER_SPRINT "ALORA_JOINED" "_ALORAJ"
 	OUTER_SPRINT "BRANWEN_JOINED" "_BRANWJ"
@@ -191,7 +188,7 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	OUTER_SPRINT "XZAR_JOINED" "_XZARJ"
 	OUTER_SPRINT "YESLICK_JOINED" "_YESLIJ"
 
-	/* Tutu Chapters */
+	/* Chapters */
 	OUTER_SPRINT "tutu_prologue" "1"
 	OUTER_SPRINT "tutu_prologue_reset" "0"
 	OUTER_SPRINT "tutu_chapter_1" "1"
@@ -202,7 +199,7 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	OUTER_SPRINT "tutu_chapter_6" "6"
 	OUTER_SPRINT "tutu_chapter_7" "7"
 
-	/* Tutu NPC override script compilation */
+	/* NPC override script compilation */
 	OUTER_SPRINT "AJANTIS_BCS" "_AJANTIS"
 	OUTER_SPRINT "ALORA_BCS" "_ALORA"
 	OUTER_SPRINT "BRANWEN_BCS" "_BRANWE"
@@ -229,7 +226,12 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	OUTER_SPRINT "XZAR_BCS" "_XZAR"
 	OUTER_SPRINT "YESLICK_BCS" "_YESLICK"
 
-	/* Tutu Areas */
+	/* BG:EE NPC override script compilation */
+	OUTER_SPRINT "DORN_BCS" "DORN"
+	OUTER_SPRINT "NEERA_BCS" "NEERA"
+	OUTER_SPRINT "RASAAD_BCS" "RASAAD"
+
+	/* Areas */
 	OUTER_SPRINT "NBaldursGate_TempleofHelm" "FW0002"
 	OUTER_SPRINT "NBaldursGate_BherensHouse_L1" "FW0004"
 	OUTER_SPRINT "NBaldursGate_BherensHouse_L2" "FW0005"
@@ -665,7 +667,7 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	OUTER_SPRINT "Encounter_Forest2" "FW6001"
 	OUTER_SPRINT "Encounter_Road" "FW6100"
 
-	/* Tutu TOTSC Areas; BGT requires it, but separation needed for Tutu */
+	/* TOTSC Areas; BGT requires it, but separation needed for Tutu */
 	OUTER_SPRINT "Farmlands" "FW0400"
 	OUTER_SPRINT "FarmlandsFarmhouse" "FW0401"
 	OUTER_SPRINT "DurlagsTower" "FW0500"
@@ -1153,7 +1155,7 @@ ACTION_IF GAME_IS ~tutu~ THEN BEGIN
 	OUTER_SPRINT "Encounter_Forest2_BCS" "_AR6001"
 	OUTER_SPRINT "Encounter_Road_BCS" "_AR6100"
 
-	/* Tutu TOTSC Areas scripts */
+	/* TOTSC Areas scripts */
 	OUTER_SPRINT "Farmlands_BCS" "_AR0400"
 	OUTER_SPRINT "FarmlandsFarmhouse_BCS" "_AR0401"
 	OUTER_SPRINT "DurlagsTower_BCS" "_AR0500"

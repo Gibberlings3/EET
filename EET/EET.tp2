@@ -1427,23 +1427,45 @@ END
 // K#TELBGT.BCS
 ////////////////////////
 
-// Update transition script for NPC without MoveBetweenAreas
+//NPCs outside party
 <<<<<<<< EET-inlined/K#TELBGT-et.baf
 IF
+  Global("K#DoOnce%DV%","LOCALS",0)
+  Global("%DV%PartyBG1","GLOBAL",1)
+  !InPartyAllowDead("%DV%")
+  !InMyArea("%DV%")
+THEN
+  RESPONSE #100
+    //MoveGlobal("BG0125","%DV%",[1000.1000])
+	MoveGlobalObjectOffScreen("%DV%",Player1)
+    Continue()
+END
+>>>>>>>>
+
+//NPCs in party
+<<<<<<<< EET-inlined/K#TELBGT-et2.baf
+IF
+  Global("K#DoOnce%DV%","LOCALS",0)
   Global("%DV%PartyBG1","GLOBAL",1)
   InPartyAllowDead("%DV%")
 THEN
   RESPONSE #100
+    //MoveGlobal("BG0125","%DV%",[1000.1000])
+    //MoveGlobalObjectOffScreen("%DV%",Player1)
     ActionOverride("%DV%",LeaveParty())
 	ActionOverride("%DV%",SetGlobal("KickedOut","LOCALS",0))
     Continue()
 END
 >>>>>>>>
-<<<<<<<< EET-inlined/K#TELBGT-et2.baf
+
+//NPCs without MoveBetweenAreas transition
+<<<<<<<< EET-inlined/K#TELBGT-et3.baf
 IF
+  Global("K#DoOnce%DV%","LOCALS",0)
   Global("%DV%PartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
+    SetGlobal("K#DoOnce%DV%","LOCALS",1)
     ActionOverride("%DV%",DropInventory())
     ActionOverride("%DV%",DestroySelf())
     Continue()
@@ -1455,7 +1477,7 @@ COPY - ~EET/temp/array/PDIALOG.2DA~ ~EET-inlined~
 	FOR (cnt = 0; cnt < ("%cntrow%" - 1) ; cnt = cnt + 1) BEGIN //-1 due to dummy entry set via bg2_2DA.tph at the end
 		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 8 "DV"
-		PATCH_PRINT ~Transition LeaveParty() added for %DV%~
+		PATCH_PRINT ~Adding BG2 transition code for %DV%~
 		INNER_ACTION BEGIN
 			COPY_EXISTING - ~EET-transition.tbl~ ~override~
 				COUNT_2DA_ROWS 3 "cntrow2"
@@ -1465,34 +1487,42 @@ COPY - ~EET/temp/array/PDIALOG.2DA~ ~EET-inlined~
 						SET noupdate = 1
 					END
 				END
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+			ACTION_IF ("%noupdate%" = 0) BEGIN //only if no full transition is available
+				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et3.baf~ EVALUATE_BUFFER
 				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et2.baf~ EVALUATE_BUFFER
 				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et.baf~ EVALUATE_BUFFER
 			END
 		END
 	END
 
-// Update transition script for NPC with MoveBetweenAreas
-<<<<<<<< EET-inlined/K#TELBGT-et3.baf
+//here goes EET-inlined/K#TELBGT-et.baf
+
+//NPCs that should be resurrected if possible
+<<<<<<<< EET-inlined/K#TELBGT-et4.baf
 IF
+  Global("K#DoOnce%DV%Res","LOCALS",0)
   Global("%DV%PartyBG1","GLOBAL",1)
-  !Dead("%DV%")
+  Dead("%DV%")
   NotStateCheck("%DV%",STATE_EXPLODING_DEATH)
   NotStateCheck("%DV%",STATE_STONE_DEATH)
   NotStateCheck("%DV%",STATE_FROZEN_DEATH)
-  NotStateCheck("%DV%",STATE_REALLY_DEAD)
+  //NotStateCheck("%DV%",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
-    ActionOverride("%DV%",DropInventory())
-    ActionOverride("%DV%",ApplySpellRES("K#DISPEL",Myself))
-    ActionOverride("%DV%",ChangeAIScript("",DEFAULT))
-	ActionOverride("%DV%",ChangeEnemyAlly(Myself,NEUTRAL))
-    ActionOverride("%DV%",MoveBetweenAreas(%location%))
-    Continue()
+    SetGlobal("K#DoOnce%DV%Res","LOCALS",1)
+    ActionOverride("%DV%",ApplySpellRES("K#LIVE",Myself))
+    SetGlobal("SPRITE_IS_DEAD%DV%","GLOBAL",0)
+	ActionOverride("%DV%",SetGlobal("KickedOut","LOCALS",0))
+    //Continue() //1 frame delay
 END
 >>>>>>>>
-<<<<<<<< EET-inlined/K#TELBGT-et4.baf
+
+//here goes EET-inlined/K#TELBGT-et2.baf
+
+//NPCs with MoveBetweenAreas (still dead)
+<<<<<<<< EET-inlined/K#TELBGT-et5.baf
 IF
+  Global("K#DoOnce%DV%","LOCALS",0)
   Global("%DV%PartyBG1","GLOBAL",1)
   OR(5)
     Dead("%DV%")
@@ -1502,43 +1532,36 @@ IF
     StateCheck("%DV%",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    SetGlobal("K#DoOnce%DV%","LOCALS",1)
     SetGlobal("%DV%PartyBG1","GLOBAL",0)
     ActionOverride("%DV%",DropInventory())
     ActionOverride("%DV%",DestroySelf())
     Continue()
 END
 >>>>>>>>
-<<<<<<<< EET-inlined/K#TELBGT-et5.baf
+
+//NPCs with MoveBetweenAreas transition (not dead)
+<<<<<<<< EET-inlined/K#TELBGT-et6.baf
 IF
+  Global("K#DoOnce%DV%","LOCALS",0)
   Global("%DV%PartyBG1","GLOBAL",1)
-  Dead("%DV%")
+  !Dead("%DV%")
   NotStateCheck("%DV%",STATE_EXPLODING_DEATH)
   NotStateCheck("%DV%",STATE_STONE_DEATH)
   NotStateCheck("%DV%",STATE_FROZEN_DEATH)
-  //NotStateCheck("%DV%",STATE_REALLY_DEAD)
+  NotStateCheck("%DV%",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
-    ActionOverride("%DV%",ApplySpellRES("K#LIVE",Myself))
-    SetGlobal("SPRITE_IS_DEAD%DV%","GLOBAL",0)
-    Continue()
-END
-
-IF
-  Global("%DV%PartyBG1","GLOBAL",1)
-  Dead("%DV%")
-  OR(3)
-    StateCheck("%DV%",STATE_EXPLODING_DEATH)
-    StateCheck("%DV%",STATE_STONE_DEATH)
-    StateCheck("%DV%",STATE_FROZEN_DEATH)
-    //StateCheck("%DV%",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    SetGlobal("%DV%PartyBG1","GLOBAL",0)
+    SetGlobal("K#DoOnce%DV%","LOCALS",1)
     ActionOverride("%DV%",DropInventory())
-    ActionOverride("%DV%",DestroySelf())
+    ActionOverride("%DV%",ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride("%DV%",ChangeAIScript("",DEFAULT))
+	ActionOverride("%DV%",ChangeEnemyAlly(Myself,NEUTRAL))
+    ActionOverride("%DV%",MoveBetweenAreas(%location%))
     Continue()
 END
 >>>>>>>>
+
 COPY_EXISTING - ~EET-transition.tbl~ ~override~
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%" ; cnt = cnt + 1) BEGIN
@@ -1547,44 +1570,35 @@ COPY_EXISTING - ~EET-transition.tbl~ ~override~
 		READ_2DA_ENTRY cnt 2 3 "resurrect"
 		PATCH_PRINT ~Transition added for %DV% to area: %location% - resurrection: %resurrect%~
 		INNER_ACTION BEGIN
-			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et3.baf~ EVALUATE_BUFFER
-			ACTION_IF ("%resurrect%" = 0) BEGIN
+			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et6.baf~ EVALUATE_BUFFER
+			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et5.baf~ EVALUATE_BUFFER
+			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et2.baf~ EVALUATE_BUFFER
+			//ACTION_IF ("%resurrect%" = 1) BEGIN
 				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et4.baf~ EVALUATE_BUFFER
-			END ELSE BEGIN
-				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et5.baf~ EVALUATE_BUFFER
-			END
+			//END
 			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et.baf~ EVALUATE_BUFFER
 		END
 	END
 
-//Update transition script with item variables (I need to check on thing with pass time in-game before enabling it)
-<<<<<<<< EET-inlined/K#TELBGT-et6.baf
-IF
-  Global("K#AdvanceTimeOneMonth","LOCALS",0)
-  //GlobalLT("K#DaysPassed","GLOBAL",365)
-THEN
-  RESPONSE #100
-    SetGlobal("K#AdvanceTimeOneMonth","LOCALS",1)
-    AdvanceTime(ONE_MONTH)
-    Continue()
-END
-
+//time pass and item variables
+<<<<<<<< EET-inlined/K#TELBGT-et7.baf
 IF
   Global("MeetOldenFriends","GLOBAL",0)
   PartyHasItem("MISC47") // Golden Pantaloons
 THEN
   RESPONSE #100
-    ActionOverride("K#TELBGT",TakePartyItem("MISC47"))
+    ActionOverride("K#TELBGT",TakePartyItem("MISC47")) // Golden Pantaloons
 END
 
 IF
-  Global("MeetOldenFriends","GLOBAL",0)
+  Global("K#DoOnceItemList","LOCALS",0)
 THEN
   RESPONSE #100
-    ActionOverride(Player1,TakeItemListPartyNum("IMPORT02",1))
-    ActionOverride(Player1,TakeItemListPartyNum("IMPORT01",1))
-    ActionOverride(Player1,TakeItemListPartyNum("IMPORT03",1))
-	Continue()
+	SetGlobal("K#DoOnceItemList","LOCALS",1)
+    ActionOverride(Myself,TakeItemListPartyNum("IMPORT02",1))
+    ActionOverride(Myself,TakeItemListPartyNum("IMPORT01",1))
+    ActionOverride(Myself,TakeItemListPartyNum("IMPORT03",1))
+    Continue()
 END
 
 IF
@@ -1598,10 +1612,21 @@ THEN
     SetGlobal("BG1DrizztItem","GLOBAL",1)
     Continue()
 END
->>>>>>>>
-EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et6.baf~
 
-// Update transition script with EraseJournalEntry (reading from BGEE.SQL)
+IF
+  Global("K#AdvanceTimeOneMonth","LOCALS",0)
+  //GlobalLT("K#DaysPassed","GLOBAL",365)
+THEN
+  RESPONSE #100
+    SetGlobal("K#AdvanceTimeOneMonth","LOCALS",1)
+    AdvanceTime(ONE_MONTH)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et7.baf~
+
+//EraseJournalEntry
 COPY_EXISTING ~K#TELBGT.BCS~ ~override~
 	DECOMPILE_BCS_TO_BAF //saves time with patching
 COPY - ~EET/temp/array/BGEE.SQL~ ~EET/temp/array~
@@ -3216,6 +3241,75 @@ MAKE_BIFF ~bgAR60xx~ BEGIN ~%areas_dir%/bgAR60xx~ ~^.*$~ END
 MAKE_BIFF ~bgAR61xx~ BEGIN ~%areas_dir%/bgAR61xx~ ~^.*$~ END
 MAKE_BIFF ~bgSounds~ BEGIN ~EET/temp/wav~ ~^.*$~ END
 MAKE_BIFF ~bgIWDbam~ BEGIN ~EET/base/animation~ ~^.*$~ END
+
+/*COPY ~%areas_dir%/bgTU00xx~ ~override~
+	~%areas_dir%/bgOH1xxx~ ~override~
+	~%areas_dir%/bgOH2xxx~ ~override~
+	~%areas_dir%/bgOH3xxx~ ~override~
+	~%areas_dir%/bgOH9xxx~ ~override~
+	~%areas_dir%/bgAR00xx~ ~override~
+	~%areas_dir%/bgAR01xx~ ~override~
+	~%areas_dir%/bgAR02xx~ ~override~
+	~%areas_dir%/bgAR03xx~ ~override~
+	~%areas_dir%/bgAR04xx~ ~override~
+	~%areas_dir%/bgAR05xx~ ~override~
+	~%areas_dir%/bgAR06xx~ ~override~
+	~%areas_dir%/bgAR07xx~ ~override~
+	~%areas_dir%/bgAR08xx~ ~override~
+	~%areas_dir%/bgAR09xx~ ~override~
+	~%areas_dir%/bgAR10xx~ ~override~
+	~%areas_dir%/bgAR11xx~ ~override~
+	~%areas_dir%/bgAR12xx~ ~override~
+	~%areas_dir%/bgAR13xx~ ~override~
+	~%areas_dir%/bgAR14xx~ ~override~
+	~%areas_dir%/bgAR15xx~ ~override~
+	~%areas_dir%/bgAR16xx~ ~override~
+	~%areas_dir%/bgAR17xx~ ~override~
+	~%areas_dir%/bgAR18xx~ ~override~
+	~%areas_dir%/bgAR19xx~ ~override~
+	~%areas_dir%/bgAR20xx~ ~override~
+	~%areas_dir%/bgAR21xx~ ~override~
+	~%areas_dir%/bgAR22xx~ ~override~
+	~%areas_dir%/bgAR23xx~ ~override~
+	~%areas_dir%/bgAR24xx~ ~override~
+	~%areas_dir%/bgAR26xx~ ~override~
+	~%areas_dir%/bgAR27xx~ ~override~
+	~%areas_dir%/bgAR28xx~ ~override~
+	~%areas_dir%/bgAR29xx~ ~override~
+	~%areas_dir%/bgAR30xx~ ~override~
+	~%areas_dir%/bgAR31xx~ ~override~
+	~%areas_dir%/bgAR32xx~ ~override~
+	~%areas_dir%/bgAR33xx~ ~override~
+	~%areas_dir%/bgAR34xx~ ~override~
+	~%areas_dir%/bgAR35xx~ ~override~
+	~%areas_dir%/bgAR36xx~ ~override~
+	~%areas_dir%/bgAR37xx~ ~override~
+	~%areas_dir%/bgAR38xx~ ~override~
+	~%areas_dir%/bgAR39xx~ ~override~
+	~%areas_dir%/bgAR40xx~ ~override~
+	~%areas_dir%/bgAR41xx~ ~override~
+	~%areas_dir%/bgAR42xx~ ~override~
+	~%areas_dir%/bgAR43xx~ ~override~
+	~%areas_dir%/bgAR44xx~ ~override~
+	~%areas_dir%/bgAR45xx~ ~override~
+	~%areas_dir%/bgAR46xx~ ~override~
+	~%areas_dir%/bgAR47xx~ ~override~
+	~%areas_dir%/bgAR48xx~ ~override~
+	~%areas_dir%/bgAR49xx~ ~override~
+	~%areas_dir%/bgAR50xx~ ~override~
+	~%areas_dir%/bgAR51xx~ ~override~
+	~%areas_dir%/bgAR52xx~ ~override~
+	~%areas_dir%/bgAR53xx~ ~override~
+	~%areas_dir%/bgAR54xx~ ~override~
+	~%areas_dir%/bgAR55xx~ ~override~
+	~%areas_dir%/bgAR56xx~ ~override~
+	~%areas_dir%/bgAR57xx~ ~override~
+	~%areas_dir%/bgAR58xx~ ~override~
+	~%areas_dir%/bgAR59xx~ ~override~
+	~%areas_dir%/bgAR60xx~ ~override~
+	~%areas_dir%/bgAR61xx~ ~override~
+	~EET/temp/wav~ ~override~
+	~EET/base/animation~ ~override~*/
 
 COPY_EXISTING sw1h01.itm ~override/EET.flag~
 PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as EET~
