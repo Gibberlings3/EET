@@ -21,7 +21,6 @@ LANGUAGE ~Polski (Polish)~
 BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ ~Please install it on BG2:EE engine.~
 FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
-REQUIRE_FILE ~setup-bp-bgt-worldmap.tp2~ ~BP-BGT Worldmap tp2 file not detected. Extract the Worldmap mod without installing it and run this setup again.~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -3242,7 +3241,7 @@ MAKE_BIFF ~bgAR61xx~ BEGIN ~%areas_dir%/bgAR61xx~ ~^.*$~ END
 MAKE_BIFF ~bgSounds~ BEGIN ~EET/temp/wav~ ~^.*$~ END
 MAKE_BIFF ~bgIWDbam~ BEGIN ~EET/base/animation~ ~^.*$~ END
 
-/*COPY ~%areas_dir%/bgTU00xx~ ~override~
+/*COPY_LARGE ~%areas_dir%/bgTU00xx~ ~override~
 	~%areas_dir%/bgOH1xxx~ ~override~
 	~%areas_dir%/bgOH2xxx~ ~override~
 	~%areas_dir%/bgOH3xxx~ ~override~
@@ -3314,8 +3313,6 @@ MAKE_BIFF ~bgIWDbam~ BEGIN ~EET/base/animation~ ~^.*$~ END
 COPY_EXISTING sw1h01.itm ~override/EET.flag~
 PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as EET~
 PRINT ~To install mods without EET argument in GAME_IS command you need to temporarily move it away from override directory~
-
-INCLUDE ~EET/lib/end.tph~ //just in case you need to parse some additional code at the end of installation
 
 ACTION_IF (FILE_EXISTS ~EET/docs/[%LANGUAGE%]readme.htm~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW EET/docs/[%LANGUAGE%]readme.htm~
