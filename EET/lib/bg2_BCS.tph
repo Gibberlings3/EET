@@ -54,7 +54,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("%DV%PartyBG2","GLOBAL",1)
-	Continue()
+    Continue()
 END
 >>>>>>>>
 
@@ -260,7 +260,7 @@ IF
   Global("K#TotalPlayTimeActive","GLOBAL",0)
 THEN
   RESPONSE #100
-  	SetGlobal("K#TotalPlayTimeActive","GLOBAL",1)
+    SetGlobal("K#TotalPlayTimeActive","GLOBAL",1)
     RealSetGlobalTimer("K#RealTimerOneHour","GLOBAL",3600)
     Continue()
 END
@@ -764,9 +764,8 @@ IF
 THEN
   RESPONSE #100
     CreateCreature("Edwin7",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
-    ActionOverride("Edwin",MakeGlobal())
+    SetGlobal("EdwinImport","GLOBAL",1)
 END
 
 IF
@@ -777,9 +776,8 @@ IF
 THEN
   RESPONSE #100
     CreateCreature("Edwin9",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
-    ActionOverride("Edwin",MakeGlobal())
+    SetGlobal("EdwinImport","GLOBAL",1)
 END
 
 IF
@@ -789,9 +787,8 @@ IF
 THEN
   RESPONSE #100
     CreateCreature("Edwin11",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
-    ActionOverride("Edwin",MakeGlobal())
+    SetGlobal("EdwinImport","GLOBAL",1)
 END
 
 IF
@@ -801,9 +798,8 @@ IF
 THEN
   RESPONSE #100
     CreateCreature("Edwin12",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
-    ActionOverride("Edwin",MakeGlobal())
+    SetGlobal("EdwinImport","GLOBAL",1)
 END
 
 IF
@@ -813,9 +809,8 @@ IF
 THEN
   RESPONSE #100
     CreateCreature("Edwin13",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
-    ActionOverride("Edwin",MakeGlobal())
+    SetGlobal("EdwinImport","GLOBAL",1)
 END
 >>>>>>>>
 
@@ -859,16 +854,18 @@ IF // rest of the import script for Imoen is done via AR0602-eb.baf
   Global("Imoen2PartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
-    SetGlobal("K#ImoenImport","AR0602",1)
     ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
+    ActionOverride("Imoen2",CreateItem("Imoenhp1",1,0,0))
+    //SmallWait(10)
+    ActionOverride("Imoen2",FillSlot(SLOT_BELT))
+    //SmallWait(10)
     ActionOverride("Imoen2",ChangeAIScript("Imoen",OVERRIDE))
     ActionOverride("Imoen2",ChangeAIScript("",GENERAL))
     ActionOverride("Imoen2",ChangeAIScript("wtasight",DEFAULT))
     //ActionOverride("Imoen2",ChangeAIScript("K#IMIMO",RACE)) //doesn't work when assigned before "NewGame" cutscene
     ActionOverride("Imoen2",SetDialog("Imoen10"))
     ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
-    ActionOverride("Imoen2",CreateItem("Imoenhp1",1,0,0))
-    ActionOverride("Imoen2",FillSlot(SLOT_BELT))
+    SetGlobal("K#ImoenImport","AR0602",1)
     Continue()
 END
 
@@ -877,10 +874,9 @@ IF
   Global("Imoen2PartyBG1","GLOBAL",0)
 THEN
   RESPONSE #100
-    SetGlobal("ImoenImport","GLOBAL",2)
     CreateCreature("Imoen10",[3198.2837],6) // Imoen
     SetGlobal("SPRITE_IS_DEADIMOEN2","GLOBAL",0)
-    ActionOverride("Imoen2",MakeGlobal())
+    SetGlobal("ImoenImport","GLOBAL",1)
     Continue()
 END
 
@@ -889,13 +885,13 @@ IF
   Global("JaheiraPartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
-    SetGlobal("JaheiraImport","GLOBAL",1)
     ReallyForceSpellRES("K#PORJAH","Jaheira")
     ActionOverride("Jaheira",ChangeAIScript("Jaheira",OVERRIDE))
     ActionOverride("Jaheira",ChangeAIScript("dplayer",DEFAULT))
     ActionOverride("Jaheira",ChangeAIScript("K#IMJAH",RACE))
     ActionOverride("Jaheira",SetDialog("Jaheira"))
     ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
+    SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
 END
 
@@ -905,7 +901,7 @@ IF
   Dead("Jaheira")
 THEN
   RESPONSE #100
-    SetGlobal("JaheiraImport","GLOBAL",2)
+    SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
 END
 
@@ -916,10 +912,9 @@ IF
   LevelLT(Player1,8)
 THEN
   RESPONSE #100
-    SetGlobal("JaheiraImport","GLOBAL",2)
     CreateCreature("Jaheir7",[3898.2676],6) // Jaheira
     SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
-    ActionOverride("Jaheira",MakeGlobal())
+    SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
 END
 
@@ -931,10 +926,9 @@ IF
   LevelLT(Player1,11)
 THEN
   RESPONSE #100
-    SetGlobal("JaheiraImport","GLOBAL",2)
     CreateCreature("Jaheir8",[3898.2676],6) // Jaheira
     SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
-    ActionOverride("Jaheira",MakeGlobal())
+    SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
 END
 
@@ -945,10 +939,9 @@ IF
   Level(Player1,11)
 THEN
   RESPONSE #100
-    SetGlobal("JaheiraImport","GLOBAL",2)
     CreateCreature("Jaheir11",[3898.2676],6) // Jaheira
     SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
-    ActionOverride("Jaheira",MakeGlobal())
+    SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
 END
 
@@ -959,10 +952,9 @@ IF
   LevelGT(Player1,11)
 THEN
   RESPONSE #100
-    SetGlobal("JaheiraImport","GLOBAL",2)
     CreateCreature("Jaheir12",[3898.2676],6) // Jaheira
     SetGlobal("SPRITE_IS_DEADJAHEIRA","GLOBAL",0)
-    ActionOverride("Jaheira",MakeGlobal())
+    SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
 END
 
@@ -971,7 +963,6 @@ IF
   Global("MinscPartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
-    SetGlobal("MinscImport","GLOBAL",1)
     ChangeAlignment("Minsc",CHAOTIC_GOOD)
     ReallyForceSpellRES("K#PORMIN","Minsc")
     ActionOverride("Minsc",ChangeAIScript("Minsc",OVERRIDE))
@@ -980,6 +971,7 @@ THEN
     ActionOverride("Minsc",ChangeAIScript("K#IMMIN",RACE))
     ActionOverride("Minsc",SetDialog("Minsca"))
     ActionOverride("Minsc",SetNumTimesTalkedTo(0))
+    SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
 
@@ -989,7 +981,7 @@ IF
   Dead("Minsc")
 THEN
   RESPONSE #100
-    SetGlobal("MinscImport","GLOBAL",2)
+    SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
 
@@ -1000,10 +992,9 @@ IF
   LevelLT(Player1,8)
 THEN
   RESPONSE #100
-    SetGlobal("MinscImport","GLOBAL",2)
     CreateCreature("Minsc7",[4029.2759],6) // Minsc
     SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
-    ActionOverride("Minsc",MakeGlobal())
+    SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
 
@@ -1014,10 +1005,9 @@ IF
   Level(Player1,8)
 THEN
   RESPONSE #100
-    SetGlobal("MinscImport","GLOBAL",2)
     CreateCreature("Minsc8",[4029.2759],6) // Minsc
     SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
-    ActionOverride("Minsc",MakeGlobal())
+    SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
 
@@ -1028,10 +1018,9 @@ IF
   Level(Player1,9)
 THEN
   RESPONSE #100
-    SetGlobal("MinscImport","GLOBAL",2)
     CreateCreature("Minsc9",[4029.2759],6) // Minsc
     SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
-    ActionOverride("Minsc",MakeGlobal())
+    SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
 
@@ -1044,10 +1033,9 @@ IF
     Level(Player1,11)
 THEN
   RESPONSE #100
-    SetGlobal("MinscImport","GLOBAL",2)
     CreateCreature("Minsc10",[4029.2759],6) // Minsc
     SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
-    ActionOverride("Minsc",MakeGlobal())
+    SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
 
@@ -1058,10 +1046,9 @@ IF
   LevelGT(Player1,11)
 THEN
   RESPONSE #100
-    SetGlobal("MinscImport","GLOBAL",2)
     CreateCreature("Minsc12",[4029.2759],6) // Minsc
     SetGlobal("SPRITE_IS_DEADMINSC","GLOBAL",0)
-    ActionOverride("Minsc",MakeGlobal())
+    SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
 >>>>>>>>
@@ -1072,9 +1059,9 @@ IF // for some reason in BG2:EE race script need to be assigned after "NewGame" 
   Global("Imoen2PartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
-    SetGlobal("ImoenImport","GLOBAL",1)
     ActionOverride("Imoen2",ChangeAIScript("K#IMIMO",RACE))
     ActionOverride("Imoen2",SetDialog("IMOENJ"))
+    SetGlobal("ImoenImport","GLOBAL",1)
     Continue()
 END
 
@@ -1103,83 +1090,78 @@ IF
 THEN
   RESPONSE #100
     ReallyForceSpellRES("K#PORVIC","Viconia")
-    ActionOverride("Viconia",SetDialogue("VICONI"))
-    ActionOverride("Viconia",SetNumTimesTalkedTo(0))
     ActionOverride("Viconia",ChangeAIScript("Viconia",OVERRIDE))
     ActionOverride("Viconia",ChangeAIScript("initrg10",CLASS))
     ActionOverride("Viconia",ChangeAIScript("VICX",GENERAL))
     ActionOverride("Viconia",ChangeAIScript("vicx",RACE))
     ActionOverride("Viconia",ChangeAIScript("K#IMVIC",DEFAULT))
+    ActionOverride("Viconia",SetDialogue("VICONI"))
+    ActionOverride("Viconia",SetNumTimesTalkedTo(0))
     SetGlobal("ViconiaImport","GLOBAL",1)
 END
 
 IF
-  !Dead("Viconia")
-  Global("ViconiaPartyBG1","GLOBAL",0)
   Global("ViconiaImport","GLOBAL",0)
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  !Dead("Viconia")
   LevelLT(Player1,8)
 THEN
   RESPONSE #100
-    SetGlobal("ViconiaImport","GLOBAL",1)
     CreateCreature("VICONI6",[1821.1081],11)
     SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
-    ActionOverride("Viconia",MakeGlobal())
+    SetGlobal("ViconiaImport","GLOBAL",1)
 END
 
 IF
-  !Dead("Viconia")
-  Global("ViconiaPartyBG1","GLOBAL",0)
   Global("ViconiaImport","GLOBAL",0)
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  !Dead("Viconia")
   Level(Player1,8)
 THEN
   RESPONSE #100
-    SetGlobal("ViconiaImport","GLOBAL",1)
     CreateCreature("VICONI8",[1821.1081],11)
     SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
-    ActionOverride("Viconia",MakeGlobal())
+    SetGlobal("ViconiaImport","GLOBAL",1)
 END
 
 IF
-  !Dead("Viconia")
-  Global("ViconiaPartyBG1","GLOBAL",0)
   Global("ViconiaImport","GLOBAL",0)
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  !Dead("Viconia")
   OR(2)
     Level(Player1,9)
     Level(Player1,10)
 THEN
   RESPONSE #100
-    SetGlobal("ViconiaImport","GLOBAL",1)
     CreateCreature("VICONI9",[1821.1081],11)
     SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
-    ActionOverride("Viconia",MakeGlobal())
+    SetGlobal("ViconiaImport","GLOBAL",1)
 END
 
 IF
-  !Dead("Viconia")
-  Global("ViconiaPartyBG1","GLOBAL",0)
   Global("ViconiaImport","GLOBAL",0)
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  !Dead("Viconia")
   OR(2)
     Level(Player1,11)
     Level(Player1,12)
 THEN
   RESPONSE #100
-    SetGlobal("ViconiaImport","GLOBAL",1)
     CreateCreature("VICONI11",[1821.1081],11)
     SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
-    ActionOverride("Viconia",MakeGlobal())
+    SetGlobal("ViconiaImport","GLOBAL",1)
 END
 
 IF
-  !Dead("Viconia")
-  Global("ViconiaPartyBG1","GLOBAL",0)
   Global("ViconiaImport","GLOBAL",0)
+  Global("ViconiaPartyBG1","GLOBAL",0)
+  !Dead("Viconia")
   LevelGT(Player1,12)
 THEN
   RESPONSE #100
-    SetGlobal("ViconiaImport","GLOBAL",1)
     CreateCreature("VICONI13",[1821.1081],11)
     SetGlobal("SPRITE_IS_DEADVICONIA","GLOBAL",0)
-    ActionOverride("Viconia",MakeGlobal())
+    SetGlobal("ViconiaImport","GLOBAL",1)
 END
 >>>>>>>>
 
@@ -1206,9 +1188,8 @@ COPY_EXISTING ~AR0900.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN8",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADDORN","GLOBAL",0)
-    ActionOverride("DORN",MakeGlobal())~
+    SetGlobal("DornImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1218,9 +1199,8 @@ COPY_EXISTING ~AR0900.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN9",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADDORN","GLOBAL",0)
-    ActionOverride("DORN",MakeGlobal())~
+    SetGlobal("DornImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1230,9 +1210,8 @@ COPY_EXISTING ~AR0900.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN10",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADDORN","GLOBAL",0)
-    ActionOverride("DORN",MakeGlobal())~
+    SetGlobal("DornImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1242,9 +1221,8 @@ COPY_EXISTING ~AR0900.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN12",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADDORN","GLOBAL",0)
-    ActionOverride("DORN",MakeGlobal())~
+    SetGlobal("DornImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1358,9 +1336,8 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD8",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADRASAAD","GLOBAL",0)
-    ActionOverride("RASAAD",MakeGlobal())~
+    SetGlobal("RasaadImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1370,9 +1347,8 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD9",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADRASAAD","GLOBAL",0)
-    ActionOverride("RASAAD",MakeGlobal())~
+    SetGlobal("RasaadImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1382,9 +1358,8 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD10",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADRASAAD","GLOBAL",0)
-    ActionOverride("RASAAD",MakeGlobal())~
+    SetGlobal("RasaadImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1394,9 +1369,8 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD11",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADRASAAD","GLOBAL",0)
-    ActionOverride("RASAAD",MakeGlobal())~
+    SetGlobal("RasaadImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1406,9 +1380,8 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD13",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADRASAAD","GLOBAL",0)
-    ActionOverride("RASAAD",MakeGlobal())~
+    SetGlobal("RasaadImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1643,10 +1616,10 @@ THEN
     Wait(2)
     MoveGlobal("AR4500","%DV%",[1999.1218])
     ActionOverride("%DV%",Face(S))
-	ActionOverride("%DV%",SetNumTimesTalkedTo(0))
+    ActionOverride("%DV%",SetNumTimesTalkedTo(0))
     ActionOverride("%DV%",JoinParty())
-	MoveToExpansion()
-	SetGlobal("%var%Summoned","GLOBAL",-1)
+    MoveToExpansion()
+    SetGlobal("%var%Summoned","GLOBAL",-1)
     //Continue()
 END
 
@@ -1669,11 +1642,11 @@ THEN
   RESPONSE #100
     ActionOverride("%DV%",LeaveParty())
     ActionOverride("%DV%",SetBeenInPartyFlags())
-	ActionOverride("%DV%",ChangeAIScript("%script%",OVERRIDE))
+    ActionOverride("%DV%",ChangeAIScript("%script%",OVERRIDE))
     ActionOverride("%DV%",SetDialog("%dialog%"))
     ActionOverride("%DV%",SetGlobal("KickedOut","LOCALS",0))
     SetGlobal("%var%SpawnPlane","GLOBAL",1)
-	SetGlobal("%var%Summoned","GLOBAL",1)
+    SetGlobal("%var%Summoned","GLOBAL",1)
     Continue()
 END
 >>>>>>>>
@@ -1765,7 +1738,6 @@ COPY_EXISTING ~CUT205B.BCS~ ~override~
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("Sarevok",[1986.1145],S)
     SetGlobal("SPRITE_IS_DEADSAREVOK","GLOBAL",0)
-	ActionOverride("Sarevok",MakeGlobal())
     ActionOverride("Sarevok",SetNumTimesTalkedTo(0))~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
@@ -1795,9 +1767,8 @@ COPY_EXISTING ~OH6000.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA8",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADNEERA","GLOBAL",0)
-    ActionOverride("NEERA",MakeGlobal())~
+    SetGlobal("NeeraImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1807,9 +1778,8 @@ COPY_EXISTING ~OH6000.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA10",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADNEERA","GLOBAL",0)
-    ActionOverride("NEERA",MakeGlobal())~
+    SetGlobal("NeeraImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1819,9 +1789,8 @@ COPY_EXISTING ~OH6000.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA11",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADNEERA","GLOBAL",0)
-    ActionOverride("NEERA",MakeGlobal())~
+    SetGlobal("NeeraImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1831,9 +1800,8 @@ COPY_EXISTING ~OH6000.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA12",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADNEERA","GLOBAL",0)
-    ActionOverride("NEERA",MakeGlobal())~
+    SetGlobal("NeeraImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1843,9 +1811,8 @@ COPY_EXISTING ~OH6000.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA13",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADNEERA","GLOBAL",0)
-    ActionOverride("NEERA",MakeGlobal())~
+    SetGlobal("NeeraImport","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
