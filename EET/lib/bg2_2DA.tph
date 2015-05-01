@@ -1042,7 +1042,7 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 						READ_2DA_ENTRY cnt2 2 3 "compareCol3"
 						PATCH_IF (("%col3%" STRING_EQUAL_CASE "%compareCol3%")=1) BEGIN
 							SET EVALUATE_BUFFER "dword_mus_dest%cnt%" = compareCol1
-							SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt%= %col1% dword_mus_dest%cnt%= %compareCol1%~
+							SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt% = %col1% ; dword_mus_dest%cnt% = %compareCol1%~
 							PATCH_PRINT ~%col3% referenced in SONGLIST.2DA already exists within the file~
 							SET cnt2 = cntrow2
 							SET noupdate = 1
@@ -1050,19 +1050,20 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 					END
 				ACTION_IF ("%noupdate%" = 0) BEGIN
 					OUTER_SET EVALUATE_BUFFER "dword_mus_dest%cnt%" = last_entry
-					OUTER_SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt%= %col1% dword_mus_dest%cnt%= %last_entry%~
+					OUTER_SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt% = %col1% ; dword_mus_dest%cnt% = %last_entry%~
 					APPEND ~SONGLIST.2DA~ ~%last_entry% %col2% %col3%~
 					PRINT ~Appended %last_entry% %col2% %col3% music reference~
 					OUTER_SET last_entry = last_entry + 1
 				END
 			END ELSE BEGIN
 				OUTER_SET EVALUATE_BUFFER "dword_mus_dest%cnt%" = 0
-				OUTER_SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt%= %col1% dword_mus_dest%cnt%= 0~
+				OUTER_SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt% = %col1% ; dword_mus_dest%cnt% = 0~
 				PRINT ~%col3% referenced in SONGLIST.2DA does not exist~
 			END
 		END
 	END
 PRINT ~%log%~
+PRINT ~dword_mus_total = %dword_mus_total%~
 COPY_EXISTING ~SONGLIST.2DA~ ~override~
 	PRETTY_PRINT_2DA
 
@@ -1225,7 +1226,8 @@ COPY_EXISTING ~STARTPOS.2DA~ ~override~
 	SET_2DA_ENTRY 2 6 6 ~490~//2479
 	PRETTY_PRINT_2DA
 
-/*//MP and tutorial entries are skipped
+/*
+//MP and tutorial entries are skipped
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_2DA_entryValue_startbp" BEGIN
 	"START_AREA" => "OH9310"
 	"START_XPOS" => "1080"
@@ -1255,6 +1257,7 @@ COPY_EXISTING ~STARTBP.2DA~ ~override~
 ///// TBPPARTY.2DA                                     \\\\\
 /////                                                  \\\\\
 
+/*
 //replace default Black Pits party
 COPY_EXISTING ~TBPPARTY.2DA~ ~override~
 	REPLACE_TEXTUALLY ~BPARTY01~ ~BPARTY07~
@@ -1264,6 +1267,7 @@ COPY_EXISTING ~TBPPARTY.2DA~ ~override~
 	REPLACE_TEXTUALLY ~BPARTY05~ ~BPARTY11~
 	REPLACE_TEXTUALLY ~BPARTY06~ ~BPARTY12~
 BUT_ONLY
+*/
 
 /////                                                  \\\\\
 ///// XPBONUS.2DA                                      \\\\\

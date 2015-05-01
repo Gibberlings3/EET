@@ -33,3 +33,11 @@ ACTION_FOR_EACH item IN HELM01 HELM08 HELM09 HELM10 HELM11 HELM12 HELM13 HELM15 
 		LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 timing = 2 probability1 = 100 STR_VAR resource = "K#SHATHE" END
 	BUT_ONLY
 END
+
+/////                                                  \\\\\
+///// Other                                            \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~MISC86.ITM~ ~override~
+	WRITE_SHORT 0x1c 39 //changes Bandit Scalp itemtype to Tattoos (39)
+BUT_ONLY

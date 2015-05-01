@@ -583,14 +583,14 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_nameString" BEGIN
 	~BGFeml3~ => ~4000010~
 	~BGFeml2~ => ~4000009~
 	~BGFeml1~ => ~4000008~
-	~BGFeml0~ => ~4000007~
+	~BGMainF~ => ~4000007~
 	~BGMale6~ => ~4000006~
 	~BGMale5~ => ~4000005~
 	~BGMale4~ => ~4000004~
 	~BGMale3~ => ~4000003~
 	~BGMale2~ => ~4000002~
 	~BGMale1~ => ~4000001~
-	~BGMale0~ => ~4000000~
+	~BGMainM~ => ~4000000~
 END
 
 APPEND ~BGEE.SQL~ ~
@@ -2943,41 +2943,40 @@ COPY ~%patch_dir%/vvc~ ~override~
 MKDIR ~lang/%LANGUAGE_BG2%/sounds~
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_oldNameNewName" BEGIN
-	"MAINF03" => "BGFeml0a"
-	"MAINF08" => "BGFeml0b"
-	"MAINF09" => "BGFeml0c"
-	"MAINF10" => "BGFeml0d"
-	"MAINF11" => "BGFeml0e"
-	"MAINF17" => "BGFeml0f"
-	"MAINF18" => "BGFeml0g"
-	"MAINF19" => "BGFeml0h"
-	"MAINF20" => "BGFeml0i"
-	"MAINF21" => "BGFeml0j"
-	"MAINF22" => "BGFeml0k"
-	"MAINF38" => "BGFeml0l"
-	"MAINF39" => "BGFeml0m"
-	"MAINM03" => "BGMale0a"
-	"MAINM08" => "BGMale0b"
-	"MAINM09" => "BGMale0c"
-	"MAINM10" => "BGMale0d"
-	"MAINM11" => "BGMale0e"
-	"MAINM17" => "BGMale0f"
-	"MAINM18" => "BGMale0g"
-	"MAINM19" => "BGMale0h"
-	"MAINM20" => "BGMale0i"
-	"MAINM21" => "BGMale0j"
-	"MAINM22" => "BGMale0k"
-	"MAINM38" => "BGMale0l"
-	"MAINM39" => "BGMale0m"
+	"MAINF03" => "BGMainFa"
+	"MAINF08" => "BGMainFb"
+	"MAINF09" => "BGMainFc"
+	"MAINF10" => "BGMainFd"
+	"MAINF11" => "BGMainFe"
+	"MAINF17" => "BGMainFf"
+	"MAINF18" => "BGMainFg"
+	"MAINF19" => "BGMainFh"
+	"MAINF20" => "BGMainFi"
+	"MAINF21" => "BGMainFj"
+	"MAINF22" => "BGMainFk"
+	"MAINF38" => "BGMainFl"
+	"MAINF39" => "BGMainFm"
+	"MAINM03" => "BGMainMa"
+	"MAINM08" => "BGMainMb"
+	"MAINM09" => "BGMainMc"
+	"MAINM10" => "BGMainMd"
+	"MAINM11" => "BGMainMe"
+	"MAINM17" => "BGMainMf"
+	"MAINM18" => "BGMainMg"
+	"MAINM19" => "BGMainMh"
+	"MAINM20" => "BGMainMi"
+	"MAINM21" => "BGMainMj"
+	"MAINM22" => "BGMainMk"
+	"MAINM38" => "BGMainMl"
+	"MAINM39" => "BGMainMm"
 END
 ACTION_IF (FILE_EXISTS ~EET/temp/wav/mainf03.wav~) BEGIN
 	ACTION_PHP_EACH "table_EET_oldNameNewName" AS "oldName" => "newName" BEGIN
-		MOVE + ~EET/temp/wav/%oldName%.wav~ ~EET/temp/wav/%newName%.wav~
-		COPY ~EET/temp/wav/%newName%.wav~ ~lang/%LANGUAGE_BG2%/sounds~
+		COPY ~EET/temp/wav/%oldName%.wav~ ~lang/%LANGUAGE_BG2%/sounds/%newName%.wav~
 	END
 END ELSE ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/sounds/mainf03.wav~) BEGIN
 	ACTION_PHP_EACH "table_EET_oldNameNewName" AS "oldName" => "newName" BEGIN
-		MOVE ~%bgee_dir%/lang/%LANGUAGE%/sounds/%oldName%.wav~ ~lang/%LANGUAGE_BG2%/sounds/%newName%.wav~
+		COPY ~%bgee_dir%/lang/%LANGUAGE%/sounds/%oldName%.wav~ ~lang/%LANGUAGE_BG2%/sounds/%newName%.wav~
 	END
 END
 
