@@ -1026,63 +1026,89 @@ END
 PRINT ~~
 PRINT ~PCU conversion...~
 
-/////                                                  \\\\\
-///// create file list for conversion                  \\\\\
-/////                                                  \\\\\
+//FOR variables
+OUTER_SET count = 0
+OUTER_SET cntrow = 0
+OUTER_SET cnt = 0
+OUTER_SET cntare = 0
+OUTER_SET cntcre = 0
+OUTER_SET cntwav = 0
 
-LAUNCH_ACTION_MACRO ~PCU_core_init~
+//reporting variables
+OUTER_SET are_check = 0
+OUTER_SET baf_check = 0
+OUTER_SET bcs_check = 0
+OUTER_SET cre_check = 0
+OUTER_SET d_check = 0
+OUTER_SET dlg_check = 0
+OUTER_SET eff_check = 0
+OUTER_SET gam_check = 0
+OUTER_SET itm_check = 0
+OUTER_SET spl_check = 0
+OUTER_SET sto_check = 0
+OUTER_SET tra_check = 0
+OUTER_SET tp2_check = 0
+OUTER_SET vvc_check = 0
+OUTER_SET wed_check = 0
+OUTER_SET wmp_check = 0
+OUTER_SET ignore_check = 0
+OUTER_SET ren_check = 0
 
+//create file list for conversion
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/Filelist.txt~
-
 ACTION_FOR_EACH "var" IN ARE BCS BCS_APP CRE DLG EFF GAM ITM SPL STO VVC WED BEGIN
-	COPY + ~%patch_dir%/%var%~ ~%patch_dir%/%var%~
-		SPRINT addtolist ~%var%/%SOURCE_FILE%~
-		//TO_LOWER addtolist
-		INNER_ACTION BEGIN
-			APPEND_OUTER + ~EET/temp/Filelist.txt~ ~%addtolist%~
-		END
+	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+\.%var%$~ BEGIN
+		APPEND_OUTER + ~EET/temp/Filelist.txt~ ~%var%/%BASH_FOR_FILE%~
+	END
 END
 
-COPY + ~EET/temp/Filelist.txt~ ~EET/temp/Filelist.txt~
-	REPLACE_TEXTUALLY ~\\~ ~/~
-	REPLACE_TEXTUALLY ~ ~ ~?~
-
-/////                                                  \\\\\
-///// start conversion                                 \\\\\
-/////                                                  \\\\\
-
+//conversion
 PRINT ~Please be patient during the conversion process. This may take some time...~
 
-COPY + ~EET/temp/Filelist.txt~ ~EET/temp/Filelist.txt~
-	COUNT_2DA_ROWS 1 "cntrow" //count every single row
+COPY + ~EET/temp/Filelist.txt~ ~EET/temp~
+	REPLACE_TEXTUALLY ~ ~ ~?~
+	COUNT_2DA_ROWS 1 "cntrow"
 	PATCH_PRINT ~%cntrow% entries parsed, commencing patching...~
 	FOR (count = 0; count < "%cntrow%"; count = count + 1) BEGIN
 		SET cntcurrent = "%count%" + 1
-		LAUNCH_PATCH_MACRO ~PCU_core_init2~
-		//copy the file, and patch
+		READ_2DA_ENTRY "%count%" 0 1 "patch_name"
+		INNER_PATCH "%patch_name%" BEGIN
+			REPLACE_TEXTUALLY ~\?~ ~ ~
+		END
 		INNER_ACTION BEGIN
-			/*ACTION_IF ("%directory_length%" != 0) AND ("%create_directory%" = 1) BEGIN
-				MKDIR ~%patch_dir%/%directory_name%~
-				OUTER_SPRINT "prev_directory_name" "%directory_name%"
-			END*/
 			COPY + ~%patch_dir%/%patch_name%~ ~%patch_dir%/%patch_name%~
 				SET checked = 0
 				READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
 				LAUNCH_PATCH_MACRO ~PCU_core_patch~
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//Unrecognised files
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			ACTION_IF ("%checked%" = 0) BEGIN
 				OUTER_SET ignore_check = "%ignore_check%" + 1
 				PRINT ~%cntcurrent%/%cntrow% Ignoring %patch_name%...~
 			END
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//Complete INNER_PATCH and FOR commands during reading of Filelist.txt
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		END
 	END
 
-LAUNCH_ACTION_MACRO ~PCU_core_complete~
+PRINT ~Conversion complete. Statistics:
+ARE %are_check%
+BAF %baf_check%
+BCS %bcs_check%
+CRE %cre_check%
+D	%d_check%
+DLG %dlg_check%
+EFF %eff_check%
+GAM %gam_check%
+ITM %itm_check%
+SPL %spl_check%
+STO %sto_check%
+TP* %tp2_check%
+TRA %tra_check%
+VVC %vvc_check%
+WED %wed_check%
+WMP %wmp_check%
+
+%ignore_check% files ignored.
+%ren_check% files renamed.~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\

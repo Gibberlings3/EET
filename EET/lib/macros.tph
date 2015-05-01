@@ -64,142 +64,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_ACTION_MACRO ~PCU_core_init~ BEGIN
-
-	<<<<<<<< Tempfile
-a>>>>>>>>
-
-	//FOR variables
-	OUTER_SET count = 0
-	OUTER_SET cntrow = 0
-	OUTER_SET cnt = 0
-	OUTER_SET cntare = 0
-	OUTER_SET cntcre = 0
-	OUTER_SET cntwav = 0
-
-	//reporting variables
-	OUTER_SET are_check = 0
-	OUTER_SET baf_check = 0
-	OUTER_SET bcs_check = 0
-	OUTER_SET cre_check = 0
-	OUTER_SET d_check = 0
-	OUTER_SET dlg_check = 0
-	OUTER_SET eff_check = 0
-	OUTER_SET gam_check = 0
-	OUTER_SET itm_check = 0
-	OUTER_SET spl_check = 0
-	OUTER_SET sto_check = 0
-	OUTER_SET tra_check = 0
-	OUTER_SET tp2_check = 0
-	OUTER_SET vvc_check = 0
-	OUTER_SET wed_check = 0
-	OUTER_SET wmp_check = 0
-	OUTER_SET ignore_check = 0
-	OUTER_SET ren_check = 0
-
-	//parsing variables
-	//OUTER_SET create_directory = 0
-	//OUTER_SET first_directory = 0
-	//OUTER_SPRINT prev_directory_name ""
-
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~PCU_core_init2~ BEGIN
-	SET detected = 0
-	SET byteoff = 0
-	SET detectbytes = 0
-	READ_2DA_ENTRY "%count%" 0 1 "patch_name"
-	INNER_PATCH "%patch_name%" BEGIN
-		REPLACE_TEXTUALLY ~\?~ ~ ~
-
-		//determine the full path of the resource
-		SET bytes = 0
-		FOR ( byteoff=0; byteoff<999; byteoff+=1) BEGIN
-			READ_BYTE "%byteoff%" "detectbytes" ELSE 999
-			PATCH_IF NOT ("%detectbytes%" = 999) BEGIN
-				SET bytes = "%byteoff%" + 1
-			END
-			PATCH_IF ("%detectbytes%" = 999) BEGIN
-				READ_ASCII 0x0 "patch_name" ("%bytes%")
-				SET byteoff = 999
-			END
-		END
-
-		//determine the extension on the resource
-		SET bytes = 0
-		FOR ( byteoff=0; byteoff<999; byteoff+=1) BEGIN
-			READ_BYTE "%byteoff%" "detectbytes" ELSE 999
-			PATCH_IF NOT ("%detectbytes%" = 999) BEGIN
-				SET bytes = "%byteoff%" + 1
-			END
-			PATCH_IF ("%detectbytes%" = 999) BEGIN
-				SPRINT "extension_name" ""
-				FOR ( byteoff="%bytes%";byteoff>0; byteoff="%byteoff%"-1) BEGIN
-					READ_BYTE ("%byteoff%" - 1) "character"
-					PATCH_IF ( "%character%" = 0x2e) BEGIN //checks for the '.' character
-						READ_ASCII (("%byteoff%"-1)+1) "extension_name" ("%bytes%" - "%byteoff%")
-						SET byteoff = 0
-					END
-				END
-				SET byteoff = 999
-			END
-		END
-
-		//determine the length of the file name
-		SET bytes = 0
-		SET file_length = 0
-		FOR ( byteoff=0; byteoff<999; byteoff+=1) BEGIN
-			READ_BYTE "%byteoff%" "detectbytes" ELSE 999
-			PATCH_IF NOT ("%detectbytes%" = 999) BEGIN
-				SET bytes = "%byteoff%" + 1
-			END
-			PATCH_IF ("%detectbytes%" = 999) BEGIN
-				FOR ( byteoff="%bytes%";byteoff>0; byteoff="%byteoff%"-1) BEGIN
-					READ_BYTE ("%byteoff%" - 1) "character"
-					PATCH_IF ( "%character%" = 0x2f) BEGIN //checks for the '/' character
-						SET file_length = ("%bytes%" - "%byteoff%")
-						SET byteoff = 0
-					END
-				END
-				PATCH_IF ("%file_length%"=0) BEGIN
-					SET file_length = "%bytes%"
-				END
-				SET byteoff = 999
-			END
-		END
-
-		//determine the directory path of the resource
-		SET bytes = 0
-		FOR ( byteoff=0; byteoff<999; byteoff+=1) BEGIN
-			READ_BYTE "%byteoff%" "detectbytes" ELSE 999
-			PATCH_IF ("%detectbytes%" = 0x2f) BEGIN //checks for the '/' character
-				SET bytes = ("%byteoff%" + 1) - 1
-			END
-			PATCH_IF ("%detectbytes%" = 999) BEGIN
-				READ_ASCII 0x0 "directory_name" ("%bytes%")
-				SPRINT "directory_name" "%directory_name%" //MKDIR doesn't like ascString so convert to String
-				SET directory_length = "%bytes%"
-				SET byteoff = 999
-			END
-		END
-
-		//determine if detected directory path is the same as the previous entry
-		/*PATCH_IF ("%first_directory%" = 1) AND ("%prev_directory_name%" STRING_EQUAL_CASE "%directory_name%") BEGIN
-			SET create_directory = 0
-		END
-		ELSE BEGIN
-			SET create_directory = 1
-		END
-		SET first_directory = 1*/
-
-	END
-
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,11 +219,6 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 				WRITE_ASCIIE 0x94 "%resref_index_dest%" #8
 				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - 0x94~
 			END
-		END
-		READ_ASCII 0x94 "resref_bcs" (1)
-		PATCH_IF ("%resref_bcs%" STRING_EQUAL_CASE "_") BEGIN
-			DELETE_BYTES 0x94 0x1
-			INSERT_BYTES (0x94+0x7) 0x1
 		END
 
 		///////////////////////
@@ -733,11 +592,6 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 					PATCH_PRINT ~%str%~
 				END
 			END
-			READ_ASCII ("%contain_off%"+0xc4*cnt+0x48) "resref_bcs" (1)
-			PATCH_IF ("%resref_bcs%" STRING_EQUAL_CASE "_") BEGIN
-				DELETE_BYTES offset 0x1
-				INSERT_BYTES ("%offset%"+0x7) 0x1
-			END
 
 			//0x58 creature CRE resref
 			SET offset = ("%contain_off%"+0xc0*cnt+0x58)
@@ -769,11 +623,6 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 					SPRINTF str ~%s %x~ ("%str%" offset)
 					PATCH_PRINT ~%str%~
 				END
-			END
-			READ_ASCII ("%contain_off%"+0xc4*cnt+0x78) "resref_itm" (1)
-			PATCH_IF ("%resref_itm%" STRING_EQUAL_CASE "_") BEGIN
-				DELETE_BYTES offset 0x1
-				INSERT_BYTES ("%offset%"+0x7) 0x1
 			END
 
 		END
@@ -1137,7 +986,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"%resref_index_dest%~
 		END
 
-		//"_" prepended resrefs
+		//other resrefs
 		FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
 			SPRINT name_source "resref_bam_source%i%"
 			SPRINT name_dest "resref_bam_dest%i%"
@@ -1337,7 +1186,7 @@ CO") BEGIN
 				REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"%resref_index_dest%~
 			END
 
-			//"_" prepended resrefs
+			//other resrefs
 			FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
 				SPRINT name_source "resref_bam_source%i%"
 				SPRINT name_dest "resref_bam_dest%i%"
@@ -2033,7 +1882,7 @@ CO") BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"%resref_index_dest%~
 		END
 
-		//"_" prepended resrefs
+		//other resrefs
 		FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
 			SPRINT name_source "resref_bam_source%i%"
 			SPRINT name_dest "resref_bam_dest%i%"
@@ -2183,12 +2032,6 @@ CO") BEGIN
 				END
 			END
 
-			READ_ASCII offset "resref_dlg" (1)
-			PATCH_IF ("%resref_dlg%" STRING_EQUAL_CASE "_") BEGIN
-				DELETE_BYTES offset 0x1
-				INSERT_BYTES ("%offset%"+0x7) 0x1
-			END
-
 		END
 
 		DECOMPILE_AND_PATCH BEGIN
@@ -2268,7 +2111,7 @@ CO") BEGIN
 				REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"%resref_index_dest%~
 			END
 
-			//"_" prepended resrefs
+			//other resrefs
 			FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
 				SPRINT name_source "resref_bam_source%i%"
 				SPRINT name_dest "resref_bam_dest%i%"
@@ -3406,7 +3249,7 @@ CO") BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"%resref_index_dest%~
 		END
 
-		//"_" prepended resrefs
+		//other resrefs
 		FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
 			SPRINT name_source "resref_bam_source%i%"
 			SPRINT name_dest "resref_bam_dest%i%"
@@ -3853,185 +3696,6 @@ CO") BEGIN
 		SET checked = 1
 
 	END
-
-END
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*DEFINE_ACTION_MACRO ~full_patch~ BEGIN
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//Renaming of files
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	COPY + ~%patch_dir%/%patch_name%~ ~%patch_dir%/%patch_name%~
-		SPRINT source "%SOURCE_FILE%"
-		SPRINT source_dir "%SOURCE_DIRECTORY%"
-		SPRINT target_dir "%DEST_DIRECTORY%"
-		INNER_ACTION BEGIN
-			COPY - ~Tempfile~ ~Tempfile~
-				INSERT_BYTES 0x0 ("%file_length%" - 1)
-				WRITE_ASCIIE 0x0 "%source%"
-
-				FOR (i=1; i<="%resref_are_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_are_source%i%"
-					SPRINT name_dest "resref_are_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.ARE\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(HT\.BMP\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(LM\.BMP\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(SR\.BMP\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.WED\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_bam_source%i%"
-					SPRINT name_dest "resref_bam_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.BAM\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_bcs_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_bcs_source%i%"
-					SPRINT name_dest "resref_bcs_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.BCS\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.BAF\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_cre_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_cre_source%i%"
-					SPRINT name_dest "resref_cre_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.CRE\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_dlg_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_dlg_source%i%"
-					SPRINT name_dest "resref_dlg_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.D\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.DLG\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_itm_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_itm_source%i%"
-					SPRINT name_dest "resref_itm_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.ITM\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_mos_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_mos_source%i%"
-					SPRINT name_dest "resref_mos_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.MOS\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_mve_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_mve_source%i%"
-					SPRINT name_dest "resref_mve_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.MVE\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_spl_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_spl_source%i%"
-					SPRINT name_dest "resref_spl_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.SPL\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_sto_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_sto_source%i%"
-					SPRINT name_dest "resref_sto_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.STO\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_tis_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_tis_source%i%"
-					SPRINT name_dest "resref_tis_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.TIS\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.TIZ\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				FOR (i=1; i<="%resref_wav_total%"; i=i+1) BEGIN
-					SPRINT name_source "resref_wav_source%i%"
-					SPRINT name_dest "resref_wav_dest%i%"
-					SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-					SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\(\.WAV\)~ BEGIN PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - full_patch~ END ~%resref_index_dest%\1~
-				END
-
-				//determine target file name
-				SET bytes = 0
-				FOR ( byteoff=0; byteoff<999; byteoff+=1) BEGIN
-					READ_BYTE "%byteoff%" "detectbytes" ELSE 999
-					PATCH_IF NOT ("%detectbytes%" = 999) BEGIN
-						SET bytes = "%byteoff%" + 1
-					END
-					PATCH_IF ("%detectbytes%" = 999) BEGIN
-						READ_ASCII 0x0 "target" ("%bytes%")
-						SET byteoff = 999
-					END
-				END
-
-				DELETE_BYTES 0x0 ("%bytes%" - 1)
-
-				PATCH_IF (("%source%" STRING_COMPARE "%target%")!=0) BEGIN
-					PATCH_IF ("%checked%" = 0) BEGIN
-						PATCH_PRINT ~%cntcurrent%/%cntrow% Renaming %source% to %target%...~
-					END ELSE BEGIN
-						PATCH_PRINT ~Renaming %source% to %target%...~
-					END
-					INNER_ACTION BEGIN
-						COPY + ~%source_dir%/%source%~ ~%target_dir%/%target%~
-						APPEND ~Rename.txt~ ~%source_dir%/%source%~
-					END
-					SET ren_check += 1
-					SET checked = 1
-				END
-		END
-END*/
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_ACTION_MACRO ~PCU_core_complete~ BEGIN
-
-//COPY + ~override/Rename.txt~ ~override/Rename.txt~
-//REPLACE_TEXTUALLY ~/~ ~\\~ //to make compatible with DOS commands
-
-	/*PATCH_*/PRINT ~Conversion complete. Statistics:
-ARE %are_check%
-BAF %baf_check%
-BCS %bcs_check%
-CRE %cre_check%
-D	%d_check%
-DLG %dlg_check%
-EFF %eff_check%
-GAM %gam_check%
-ITM %itm_check%
-SPL %spl_check%
-STO %sto_check%
-TP* %tp2_check%
-TRA %tra_check%
-VVC %vvc_check%
-WED %wed_check%
-WMP %wmp_check%
-
-%ignore_check% files ignored.
-%ren_check% files renamed.~
 
 END
 
