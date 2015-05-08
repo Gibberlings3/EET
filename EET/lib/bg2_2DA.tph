@@ -1019,7 +1019,8 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	SET dword_mus_total = cntrow - 1
-	SPRINT ~log~ ~dword_mus_total= %dword_mus_total%~
+	SPRINT ~log~ ~~
+	SPRINT ~log2~ ~~
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 3 "col1"
@@ -1042,7 +1043,8 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 						READ_2DA_ENTRY cnt2 2 3 "compareCol3"
 						PATCH_IF (("%col3%" STRING_EQUAL_CASE "%compareCol3%")=1) BEGIN
 							SET EVALUATE_BUFFER "dword_mus_dest%cnt%" = compareCol1
-							SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt% = %col1% ; dword_mus_dest%cnt% = %compareCol1%~
+							SPRINT ~log~ ~%log%%LNL%OUTER_SET dword_mus_source%cnt% = %col1% %slash%%slash%%col2%~
+							SPRINT ~log2~ ~%log2%%LNL%OUTER_SET dword_mus_dest%cnt% = %compareCol1% %slash%%slash%%col2%~
 							PATCH_PRINT ~%col3% referenced in SONGLIST.2DA already exists within the file~
 							SET cnt2 = cntrow2
 							SET noupdate = 1
@@ -1050,7 +1052,8 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 					END
 				ACTION_IF ("%noupdate%" = 0) BEGIN
 					OUTER_SET EVALUATE_BUFFER "dword_mus_dest%cnt%" = last_entry
-					OUTER_SPRINT ~log~ ~%log%%WNL%%col2%: dword_mus_source%cnt% = %col1% ; dword_mus_dest%cnt% = %last_entry%~
+					OUTER_SPRINT ~log~ ~%log%%LNL%OUTER_SET dword_mus_source%cnt% = %col1% %slash%%slash%%col2%~
+					OUTER_SPRINT ~log2~ ~%log2%%LNL%OUTER_SET dword_mus_dest%cnt% = %last_entry% %slash%%slash%%col2%~
 					APPEND ~SONGLIST.2DA~ ~%last_entry% %col2% %col3%~
 					PRINT ~Appended %last_entry% %col2% %col3% music reference~
 					OUTER_SET last_entry = last_entry + 1
@@ -1062,8 +1065,7 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 			END
 		END
 	END
-PRINT ~%log%~
-PRINT ~dword_mus_total = %dword_mus_total%~
+PRINT ~%log%%LNL%%log2%%WNL%OUTER_SET dword_mus_total = %dword_mus_total%%LNL%~
 COPY_EXISTING ~SONGLIST.2DA~ ~override~
 	PRETTY_PRINT_2DA
 

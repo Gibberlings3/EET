@@ -993,7 +993,7 @@ BUT_ONLY
 ///// Resolve BG:EE <-> BG2:EE dialogue conflicts      \\\\\
 /////                                                  \\\\\
 
-ACTION_FOR_EACH "dialogue" IN BDORN BEDWIN BIMOEN2 BJAHEIR BMINSC BNEERA BRASAAD BVICONI DORNP DORNJ EDWINP EDWINJ IMOEN2P IMOEN2J JAHEIRAP JAHEIRAJ MINSCP MINSCJ NEERAP NEERAJ RASAADP RASAADJ VICONIP VICONIJ BEGIN
+ACTION_FOR_EACH "dialogue" IN BDORN BEDWIN BIMOEN2 BJAHEIR BMINSC BNEERA BRASAAD BVICONI DORNP EDWINP IMOEN2P JAHEIRAP MINSCP NEERAP RASAADP VICONIP BEGIN
 	//BG2:EE files
 	COPY_EXISTING ~%dialogue%.DLG~ ~override~
 		DECOMPILE_AND_PATCH BEGIN
@@ -1057,7 +1057,7 @@ OUTER_SET ren_check = 0
 //create file list for conversion
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/Filelist.txt~
 ACTION_FOR_EACH "var" IN ARE BCS BCS_APP CRE DLG EFF GAM ITM SPL STO VVC WED BEGIN
-	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+\.%var%$~ BEGIN
+	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		APPEND_OUTER + ~EET/temp/Filelist.txt~ ~%var%/%BASH_FOR_FILE%~
 	END
 END
@@ -1094,7 +1094,7 @@ ARE %are_check%
 BAF %baf_check%
 BCS %bcs_check%
 CRE %cre_check%
-D	%d_check%
+D   %d_check%
 DLG %dlg_check%
 EFF %eff_check%
 GAM %gam_check%
@@ -1230,9 +1230,9 @@ COPY + ~%patch_dir%/are~ ~%patch_dir%/are~
 BUT_ONLY
 
 // Area traification and installation
-OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
+OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
 COPY ~%patch_dir%/are~ ~override~
-	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
+	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	//Info points, trigger points, and exit (regions/triggers)
 	READ_LONG 0x5c "info_off"
 	READ_SHORT 0x5a "info_cnt"
@@ -1242,7 +1242,7 @@ COPY ~%patch_dir%/are~ ~override~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 			END
 		END
 	END
@@ -1254,7 +1254,7 @@ COPY ~%patch_dir%/are~ ~override~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 	//Doors
@@ -1266,7 +1266,7 @@ COPY ~%patch_dir%/are~ ~override~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 			END
 		END
 	END
@@ -1278,7 +1278,7 @@ COPY ~%patch_dir%/are~ ~override~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 	//Rest Interruptions
@@ -1288,16 +1288,14 @@ COPY ~%patch_dir%/are~ ~override~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/are.tph~
-	PATCH_LOG ~%debug%~
-APPEND_OUTER + ~EET/temp/are.tph~ ~%debug%~
+	PATCH_LOG ~%log%~
+APPEND_OUTER + ~EET/temp/are.tph~ ~%log%~
 
 COPY ~EET/base/are~ ~override~
-
-COPY_EXISTING ~OH1000.ARE~ ~override/BG0000.ARE~ // dummy area used as a link between BG2 and BG1 areas
 
 /////                                                  \\\\\
 ///// BAM                                              \\\\\
@@ -1907,14 +1905,14 @@ BUT_ONLY
 ///// CRE                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
+OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
 COPY ~%patch_dir%/cre~ ~override~
-	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
+	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	PATCH_FOR_EACH ~offset~ IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 	FOR (cnt=0; cnt<99; cnt=cnt+1) BEGIN
@@ -1922,7 +1920,7 @@ COPY ~%patch_dir%/cre~ ~override~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 	READ_LONG 0x2c4 "fx_off"
@@ -1949,10 +1947,10 @@ COPY ~%patch_dir%/cre~ ~override~
 						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
 							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
 								//SAY offset ( AT "StrRef" )
-								SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END ELSE BEGIN
 								WRITE_LONG offset "%strNew%"
-								SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+								SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END
 							SET str_updated = 1
 						END
@@ -1960,7 +1958,7 @@ COPY ~%patch_dir%/cre~ ~override~
 				END
 				PATCH_IF (str_updated = 0) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+					SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 				END
 			END
 		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -1968,13 +1966,13 @@ COPY ~%patch_dir%/cre~ ~override~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 			END
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/cre.tph~
-	PATCH_LOG ~%debug%~
-APPEND_OUTER + ~EET/temp/cre.tph~ ~%debug%~
+	PATCH_LOG ~%log%~
+APPEND_OUTER + ~EET/temp/cre.tph~ ~%log%~
 
 COPY ~EET/base/cre~ ~override~
 
@@ -2009,21 +2007,13 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_BG1dlgBG2dlg" BEGIN
 	"BRASAAD" => "BRASAAD"
 	"BVICON" => "BVICONI"
 	"DORNP" => "DORNP"
-	"DORNJ" => "DORNJ"
 	"EDWINP" => "EDWINP"
-	"EDWINJ" => "EDWINJ"
 	"IMOENP" => "IMOEN2P"
-	"IMOEN2" => "IMOEN2J"
 	"JAHEIP" => "JAHEIRAP"
-	"JAHEIJ" => "JAHEIRAJ"
 	"MINSCP" => "MINSCP"
-	"MINSCJ" => "MINSCJ"
 	"NEERAP" => "NEERAP"
-	"NEERAJ" => "NEERAJ"
 	"RASAADP" => "RASAADP"
-	"RASAADJ" => "RASAADJ"
 	"VICONP" => "VICONIP"
-	"VICONJ" => "VICONIJ"
 END
 ACTION_PHP_EACH "table_EET_BG1dlgBG2dlg" AS "BG1dlg" => "BG2dlg" BEGIN
 	ACTION_IF (FILE_EXISTS_IN_GAME ~%BG2dlg%.DLG~) BEGIN
@@ -2040,9 +2030,9 @@ COMPILE ~%patch_dir%/dlg~
 ///// EFF                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
+OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
 COPY ~%patch_dir%/eff~ ~override~
-	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
+	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	READ_LONG 0x10 "fx_type"
 	PATCH_IF ("%fx_type%" = 103) //Change Name
 	OR ("%fx_type%" = 139) //Display String
@@ -2064,10 +2054,10 @@ COPY ~%patch_dir%/eff~ ~override~
 					PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
 						PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
 							//SAY offset ( AT "StrRef" )
-							SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+							SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 						END ELSE BEGIN
 							WRITE_LONG offset "%strNew%"
-							SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+							SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
 						END
 						SET str_updated = 1
 					END
@@ -2075,7 +2065,7 @@ COPY ~%patch_dir%/eff~ ~override~
 			END
 			PATCH_IF (str_updated = 0) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 			END
 		END
 	END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -2083,12 +2073,12 @@ COPY ~%patch_dir%/eff~ ~override~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/eff.tph~
-	PATCH_LOG ~%debug%~
-APPEND_OUTER + ~EET/temp/eff.tph~ ~%debug%~
+	PATCH_LOG ~%log%~
+APPEND_OUTER + ~EET/temp/eff.tph~ ~%log%~
 
 COPY ~EET/base/eff~ ~override~
 
@@ -2234,14 +2224,14 @@ COPY ~EET/base/ini~ ~override~
 ///// ITM                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
+OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
 COPY ~%patch_dir%/itm~ ~override~
-	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
+	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 	READ_LONG 0x64 "abil_off"
@@ -2274,10 +2264,10 @@ COPY ~%patch_dir%/itm~ ~override~
 						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
 							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
 								//SAY offset ( AT "StrRef" )
-								SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END ELSE BEGIN
 								WRITE_LONG offset "%strNew%"
-								SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+								SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END
 							SET str_updated = 1
 						END
@@ -2285,7 +2275,7 @@ COPY ~%patch_dir%/itm~ ~override~
 				END
 				PATCH_IF (str_updated = 0) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+					SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 				END
 			END
 		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -2293,13 +2283,13 @@ COPY ~%patch_dir%/itm~ ~override~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 			END
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/itm.tph~
-	PATCH_LOG ~%debug%~
-APPEND_OUTER + ~EET/temp/itm.tph~ ~%debug%~
+	PATCH_LOG ~%log%~
+APPEND_OUTER + ~EET/temp/itm.tph~ ~%log%~
 
 COPY_EXISTING ~BPRNG1.ITM~ ~override~
 	LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = "208" END //Minimum HP
@@ -2827,14 +2817,14 @@ APPEND ~SPELL.IDS~ ~4101 DARK_GIFT~ UNLESS ~DARK_GIFT~
 END
 APPEND ~add_spell.IDS~ ~4101 DARK_GIFT~ UNLESS ~DARK_GIFT~//information for the weidu unistall*/
 
-OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
+OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
 COPY ~%patch_dir%/spl~ ~override~
-	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
+	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 	READ_LONG 0x64 "abil_off"
@@ -2867,10 +2857,10 @@ COPY ~%patch_dir%/spl~ ~override~
 						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
 							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
 								//SAY offset ( AT "StrRef" )
-								SPRINT ~debug~ ~%debug%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
+								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END ELSE BEGIN
 								WRITE_LONG offset "%strNew%"
-								SPRINT ~debug~ ~%debug%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
+								SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END
 							SET str_updated = 1
 						END
@@ -2878,7 +2868,7 @@ COPY ~%patch_dir%/spl~ ~override~
 				END
 				PATCH_IF (str_updated = 0) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+					SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 				END
 			END
 		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -2886,26 +2876,26 @@ COPY ~%patch_dir%/spl~ ~override~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
+				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
 			END
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/spl.tph~
-	PATCH_LOG ~%debug%~
-APPEND_OUTER + ~EET/temp/spl.tph~ ~%debug%~
+	PATCH_LOG ~%log%~
+APPEND_OUTER + ~EET/temp/spl.tph~ ~%log%~
 
 /////                                                  \\\\\
 ///// STO                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~debug~ ~%slash%%slash%Debug file generated during EET installation~
+OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
 COPY ~%patch_dir%/sto~ ~override~
-	SPRINT ~debug~ ~%debug%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
+	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	SET offset = 0xc //Name
 	READ_LONG offset "StrRef"
 	PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 		SAY offset ( AT "StrRef" )
-		SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+		SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 	END
 	READ_LONG 0x4c "drink_off"
 	READ_SHORT 0x50 "drink_cnt"
@@ -2914,12 +2904,12 @@ COPY ~%patch_dir%/sto~ ~override~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~debug~ ~%debug%%WNL%  SAY %offset% @%StrRef%~
+			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
 		END
 	END
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/sto.tph~
-	PATCH_LOG ~%debug%~
-APPEND_OUTER + ~EET/temp/sto.tph~ ~%debug%~
+	PATCH_LOG ~%log%~
+APPEND_OUTER + ~EET/temp/sto.tph~ ~%log%~
 
 /////                                                  \\\\\
 ///// TIS                                              \\\\\

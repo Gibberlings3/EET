@@ -226,22 +226,10 @@ COPY_EXISTING ~FATESP.DLG~ ~override~
 	COMPILE_D_TO_DLG
 
 /////                                                  \\\\\
-///// DMREST.DLG                                       \\\\\
-/////                                                  \\\\\
-
-COPY_EXISTING ~DMREST.DLG~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~ActionOverride(LastTalkedToBy,Rest())~ ~ActionOverride(LastTalkedToBy,Rest())
-CreateVisualEffectObject("sphealin",LastTalkedToBy)~
-		REPLACE_TEXTUALLY ~ApplySpell(LastTalkedToBy,RESTORE_FULL_HEALTH)~ ~ApplySpell(LastTalkedToBy,RESTORE_FULL_HEALTH)
-CreateVisualEffectObject("sphealin",LastTalkedToBy)~
-	END
-
-/////                                                  \\\\\
 ///// IMOEN10.DLG                                      \\\\\
 /////                                                  \\\\\
 
-//Minsc and Jaheira are just northeast of us, trapped in cells sorta like yours. We should free them and then find some gear.
+//check if Minsc and Jaheira are really in the AR0602
 COPY_EXISTING ~IMOEN10.DLG~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE_TEXTUALLY ~~~~~\(IF ~\)\(~ THEN REPLY #61011 GOTO 27\)~~~~~ ~\1InMyArea("Jaheira") InMyArea("Minsc")\2~

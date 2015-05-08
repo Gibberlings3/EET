@@ -696,28 +696,19 @@ END
 EXTEND_BOTTOM ~JAHEIRA.BCS~ ~EET-inlined/JAHEIRA-eb.baf~
 
 /////                                                  \\\\\
-///// AR1512 (Imoen Spellhold XP adjustment)           \\\\\
+///// AR1512 (Imoen Spellhold adjustment)              \\\\\
 /////                                                  \\\\\
 
 <<<<<<<< EET-inlined/AR1512-et.baf
 IF
-  Global("ImoenSpawned","GLOBAL",0)//ImoenSpawned variable name kept for BGT compatibility reasons
-  LevelLT(Protagonist,13)
-  XPLT("Imoen2",400000)
+  Global("ImoenSpawned","GLOBAL",0) //ImoenSpawned variable name kept for BGT compatibility reasons
 THEN
   RESPONSE #100
-    ChangeStat("Imoen2",XP,400000,SET)
-    SetGlobal("ImoenSpawned","GLOBAL",1)
-    Continue()
-END
-
-IF
-  Global("ImoenSpawned","GLOBAL",0)
-  LevelGT(Protagonist,13)
-  XPLT("Imoen2",1200000)
-THEN
-  RESPONSE #100
-    ChangeStat("Imoen2",XP,1200000,SET)
+    ActionOverride("Imoen2",DestroyItem("IMOENHP1"))
+    ActionOverride("Imoen2",ChangeAIScript("IMOEN2",OVERRIDE))
+    ActionOverride("Imoen2",ChangeAIScript("K#IMIM2",RACE))
+    ActionOverride("Imoen2",SetDialogue("IMOEN2"))
+    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
     SetGlobal("ImoenSpawned","GLOBAL",1)
     Continue()
 END
@@ -747,9 +738,10 @@ THEN
     SmallWait(10)
     GiveItemCreate("STAF01","Edwin",1,0,0) // Quarterstaff
     ActionOverride("Edwin",EquipMostDamagingMelee())
-    ActionOverride("Edwin",ChangeAIScript("Edwin",OVERRIDE))
-    ActionOverride("Edwin",ChangeAIScript("wtarsgt",GENERAL))
-    ActionOverride("Edwin",ChangeAIScript("dplayer",DEFAULT))
+    ActionOverride("Edwin",ChangeAIScript("EDWIN",OVERRIDE))
+	ActionOverride("Edwin",ChangeAIScript("",CLASS))
+    ActionOverride("Edwin",ChangeAIScript("WTARSGT",GENERAL))
+    ActionOverride("Edwin",ChangeAIScript("DPLAYER",DEFAULT))
     ActionOverride("Edwin",ChangeAIScript("K#IMEDW",RACE))
     ActionOverride("Edwin",SetDialogue("Edwin"))
     ActionOverride("Edwin",SetNumTimesTalkedTo(0))
@@ -854,17 +846,18 @@ IF // rest of the import script for Imoen is done via AR0602-eb.baf
   Global("Imoen2PartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
-    ActionOverride("Imoen2",CreateItem("Imoenhp1",1,0,0))
+    ActionOverride("Imoen2",CreateItem("IMOENHP1",1,0,0))
     //SmallWait(10)
     ActionOverride("Imoen2",FillSlot(SLOT_BELT))
     //SmallWait(10)
-    ActionOverride("Imoen2",ChangeAIScript("Imoen",OVERRIDE))
+    ActionOverride("Imoen2",ChangeAIScript("IMOEN",OVERRIDE))
+    ActionOverride("Imoen2",ChangeAIScript("NPCMAGE1",CLASS))
     ActionOverride("Imoen2",ChangeAIScript("",GENERAL))
-    ActionOverride("Imoen2",ChangeAIScript("wtasight",DEFAULT))
+    ActionOverride("Imoen2",ChangeAIScript("WTASIGHT",DEFAULT))
     //ActionOverride("Imoen2",ChangeAIScript("K#IMIMO",RACE)) //doesn't work when assigned before "NewGame" cutscene
-    ActionOverride("Imoen2",SetDialog("Imoen10"))
+    ActionOverride("Imoen2",SetDialog("IMOEN10"))
     ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    ReallyForceSpellRES("K#PORIMO","Imoen2")
     SetGlobal("K#ImoenImport","AR0602",1)
     Continue()
 END
@@ -885,12 +878,14 @@ IF
   Global("JaheiraPartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#PORJAH","Jaheira")
-    ActionOverride("Jaheira",ChangeAIScript("Jaheira",OVERRIDE))
-    ActionOverride("Jaheira",ChangeAIScript("dplayer",DEFAULT))
+    ActionOverride("Jaheira",ChangeAIScript("JAHEIRA",OVERRIDE))
+    ActionOverride("Jaheira",ChangeAIScript("SHOUT",CLASS))
+    ActionOverride("Jaheira",ChangeAIScript("",GENERAL))
+    ActionOverride("Jaheira",ChangeAIScript("WTARSGT",DEFAULT))
     ActionOverride("Jaheira",ChangeAIScript("K#IMJAH",RACE))
     ActionOverride("Jaheira",SetDialog("Jaheira"))
     ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
+    ReallyForceSpellRES("K#PORJAH","Jaheira")
     SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
 END
@@ -964,13 +959,14 @@ IF
 THEN
   RESPONSE #100
     ChangeAlignment("Minsc",CHAOTIC_GOOD)
-    ReallyForceSpellRES("K#PORMIN","Minsc")
-    ActionOverride("Minsc",ChangeAIScript("Minsc",OVERRIDE))
-    ActionOverride("Minsc",ChangeAIScript("minscx",GENERAL))
-    ActionOverride("Minsc",ChangeAIScript("dplayer",DEFAULT))
+    ActionOverride("Minsc",ChangeAIScript("MINSC",OVERRIDE))
+    ActionOverride("Minsc",ChangeAIScript("",CLASS))
+    ActionOverride("Minsc",ChangeAIScript("MINSCX",GENERAL))
+    ActionOverride("Minsc",ChangeAIScript("DPLAYER",DEFAULT))
     ActionOverride("Minsc",ChangeAIScript("K#IMMIN",RACE))
     ActionOverride("Minsc",SetDialog("Minsca"))
     ActionOverride("Minsc",SetNumTimesTalkedTo(0))
+    ReallyForceSpellRES("K#PORMIN","Minsc")
     SetGlobal("MinscImport","GLOBAL",1)
     Continue()
 END
@@ -1089,14 +1085,14 @@ IF
   Global("ViconiaPartyBG1","GLOBAL",1)
 THEN
   RESPONSE #100
-    ReallyForceSpellRES("K#PORVIC","Viconia")
-    ActionOverride("Viconia",ChangeAIScript("Viconia",OVERRIDE))
-    ActionOverride("Viconia",ChangeAIScript("initrg10",CLASS))
-    ActionOverride("Viconia",ChangeAIScript("VICX",GENERAL))
-    ActionOverride("Viconia",ChangeAIScript("vicx",RACE))
-    ActionOverride("Viconia",ChangeAIScript("K#IMVIC",DEFAULT))
+    ActionOverride("Viconia",ChangeAIScript("VICONIA",OVERRIDE))
+    ActionOverride("Viconia",ChangeAIScript("INITRG10",CLASS))
+    ActionOverride("Viconia",ChangeAIScript("WTASIGHT",GENERAL))
+    ActionOverride("Viconia",ChangeAIScript("DPLAYER",DEFAULT))
+    ActionOverride("Viconia",ChangeAIScript("K#IMVIC",RACE))
     ActionOverride("Viconia",SetDialogue("VICONI"))
     ActionOverride("Viconia",SetNumTimesTalkedTo(0))
+    ReallyForceSpellRES("K#PORVIC","Viconia")
     SetGlobal("ViconiaImport","GLOBAL",1)
 END
 
@@ -1247,6 +1243,7 @@ THEN
     SmallWait(10)
     ActionOverride("DORN",EquipMostDamagingMelee())
     ActionOverride("DORN",ChangeAIScript("DORN",OVERRIDE))
+    ActionOverride("DORN",ChangeAIScript("",CLASS))
     ActionOverride("DORN",ChangeAIScript("",GENERAL))
     ActionOverride("DORN",ChangeAIScript("",DEFAULT))
     ActionOverride("DORN",ChangeAIScript("K#IMDOR",RACE))
@@ -1306,6 +1303,7 @@ THEN
     SmallWait(10)
     ActionOverride("RASAAD",EquipMostDamagingMelee())
     ActionOverride("RASAAD",ChangeAIScript("RASAAD",OVERRIDE))
+    ActionOverride("RASAAD",ChangeAIScript("",CLASS))
     ActionOverride("RASAAD",ChangeAIScript("",GENERAL))
     ActionOverride("RASAAD",ChangeAIScript("WTASIGHT",DEFAULT))
     ActionOverride("RASAAD",ChangeAIScript("K#IMRAS",RACE))
@@ -1405,38 +1403,23 @@ END
 EXTEND_BOTTOM ~OHR_JOIN.BCS~ ~EET-inlined/OHR_JOIN-eb.baf~
 
 /////                                                  \\\\\
-///// AR2800, CUT100A, CUT100B (delay ToB)             \\\\\
+///// AR2800 (Suldanesselar)                           \\\\\
 /////                                                  \\\\\
 
-//after Suldanesselar ceremony the party will be moved outside Suldanesselar (to AR2600)
-COPY_EXISTING ~CUT100A.BCS~ ~override~
-	~CUT100B.BCS~ ~override~
+COPY_EXISTING ~AR2800.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~StartMovie("INTRO")~ ~~
-		REPLACE_TEXTUALLY ~MoveToExpansion()~ ~~
-		REPLACE_TEXTUALLY ~EndCutSceneMode()~ ~EndCutSceneMode()
-    StartCutScene("K#CUTSUL")~
+		SPRINT textToReplace ~IncrementChapter("")[%newline%]*TextScreen("SCRTXT08")~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
+    TextScreen("SCRTXT08")
+    RevealAreaOnMap("BG0000")~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 	END
-
-//entering Suldanesselar again will start ToB expansion
-<<<<<<<< EET-inlined/AR2800-eb.baf
-IF
-  Global("ENDOFBG2","GLOBAL",1)
-THEN
-  RESPONSE #100
-    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
-    FadeToColor([30.0],0)
-    Wait(2)
-    SetGlobal("ENDOFBG2","GLOBAL",2)
-    StartMovie("INTRO")
-    Wait(1)
-    MultiPlayerSync()
-    Wait(1)
-    MoveToExpansion()
-END
->>>>>>>>
-
-EXTEND_BOTTOM ~AR2800.BCS~ ~EET-inlined/AR2800-eb.baf~
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// AR4000 (ToB starting location - Spirit Heads)    \\\\\
@@ -1450,7 +1433,8 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("TurnDay","AR4000",1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("ENDOFBG2","GLOBAL",2)
-    SetWorldmap("WORLDMAP")~
+    SetWorldmap("WORLDMAP")
+    CreateCreatureObject("K#FAMREM",Player1,0,0,0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1835,6 +1819,7 @@ THEN
     SmallWait(10)
     ActionOverride("NEERA",EquipMostDamagingMelee())
     ActionOverride("NEERA",ChangeAIScript("NEERA",OVERRIDE))
+    ActionOverride("NEERA",ChangeAIScript("",CLASS))
     ActionOverride("NEERA",ChangeAIScript("",GENERAL))
     ActionOverride("NEERA",ChangeAIScript("WTARSGT",DEFAULT))
     ActionOverride("NEERA",ChangeAIScript("K#IMNEE",RACE))
@@ -1854,28 +1839,19 @@ EXTEND_TOP ~OH6000.BCS~ ~EET-inlined/OH6000-et.baf~
 
 COPY_EXISTING ~CUT01.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ActionOverride("Imoen2",SetDialogue(""))~
+		/*SPRINT textToReplace ~ActionOverride("Imoen2",SetDialogue(""))~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("Imoen2",SetDialogue("IMOEN2"))~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+		END*/
 
 		SPRINT textToReplace ~ActionOverride("Imoen2",DestroySelf())~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("Imoen2",ChangeAIScript("",DEFAULT))
-    ActionOverride("Imoen2",DestroyItem("IMOENHP1"))
-    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
-    ActionOverride("Imoen2",ChangeAIScript("IMOEN2",OVERRIDE))
-    ActionOverride("Imoen2",SetPlayerSound(Myself,30759,MORALE))
-    ActionOverride("Imoen2",SetPlayerSound(Myself,30760,BORED))
-    ActionOverride("Imoen2",SetPlayerSound(Myself,30761,BATTLE_CRY2))
-    ActionOverride("Imoen2",SetPlayerSound(Myself,30762,BATTLE_CRY3))
-    ActionOverride("Imoen2",SetPlayerSound(Myself,30764,HURT))
-    ActionOverride("Imoen2",MoveGlobal("AR1512",Myself,[1857.1520]))~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~MoveGlobal("AR1512","Imoen2",[1857.1520])~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
