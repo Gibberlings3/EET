@@ -2,5 +2,27 @@ IF
   OnCreation()
 THEN
   RESPONSE #100
+    Explore()
+    PlaySound("error10")
+    //DisplayStringNoName(Player1,16493) // You have been waylaid by enemies and must defend yourself!
+    CreateCreature("HOBGOBA",[710.478],S)
+    CreateCreature("HOBGOBA",[569.592],S)
+    CreateCreature("HOBGOBA",[884.525],S)
+    CreateCreature("HOBGOBA",[824.684],S)
+    CreateCreature("HOBGOBA",[341.319],S)
+    CreateCreature("HOBGOBA",[523.251],S)
+    ActionOverride(Player1,JumpToPoint([553.452]))
+    ActionOverride(Player2,JumpToPoint([587.441]))
+    ActionOverride(Player3,JumpToPoint([568.414]))
+    ActionOverride(Player4,JumpToPoint([598.396]))
+    ActionOverride(Player5,JumpToPoint([555.378]))
+    ActionOverride(Player6,JumpToPoint([582.352]))
+    SmallWait(2)
+    ActionOverride(Player1,Face(SSE))
+    ActionOverride(Player2,Face(SSE))
+    ActionOverride(Player3,Face(SSE))
+    ActionOverride(Player4,Face(SSE))
+    ActionOverride(Player5,Face(SSE))
+    ActionOverride(Player6,Face(SSE))
     HideAreaOnMap("BG0000")
 END

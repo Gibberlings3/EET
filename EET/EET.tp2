@@ -993,7 +993,7 @@ BUT_ONLY
 ///// Resolve BG:EE <-> BG2:EE dialogue conflicts      \\\\\
 /////                                                  \\\\\
 
-ACTION_FOR_EACH "dialogue" IN BDORN BEDWIN BIMOEN2 BJAHEIR BMINSC BNEERA BRASAAD BVICONI DORNP EDWINP IMOEN2P JAHEIRAP MINSCP NEERAP RASAADP VICONIP BEGIN
+ACTION_FOR_EACH "dialogue" IN BDORN BEDWIN BIMOEN2 BJAHEIR BMINSC BNEERA BRASAAD BVICONI BEGIN
 	//BG2:EE files
 	COPY_EXISTING ~%dialogue%.DLG~ ~override~
 		DECOMPILE_AND_PATCH BEGIN
@@ -1295,7 +1295,8 @@ COPY + ~EET-inlined/blank.txt~ ~EET/temp/are.tph~
 	PATCH_LOG ~%log%~
 APPEND_OUTER + ~EET/temp/are.tph~ ~%log%~
 
-COPY ~EET/base/are~ ~override~
+COPY_EXISTING ~OH1000.ARE~ ~override/BG0000.ARE~
+	WRITE_ASCII 0x94 ~BG0000~ #8
 
 /////                                                  \\\\\
 ///// BAM                                              \\\\\
@@ -2006,14 +2007,6 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_BG1dlgBG2dlg" BEGIN
 	"BNEERA" => "BNEERA"
 	"BRASAAD" => "BRASAAD"
 	"BVICON" => "BVICONI"
-	"DORNP" => "DORNP"
-	"EDWINP" => "EDWINP"
-	"IMOENP" => "IMOEN2P"
-	"JAHEIP" => "JAHEIRAP"
-	"MINSCP" => "MINSCP"
-	"NEERAP" => "NEERAP"
-	"RASAADP" => "RASAADP"
-	"VICONP" => "VICONIP"
 END
 ACTION_PHP_EACH "table_EET_BG1dlgBG2dlg" AS "BG1dlg" => "BG2dlg" BEGIN
 	ACTION_IF (FILE_EXISTS_IN_GAME ~%BG2dlg%.DLG~) BEGIN

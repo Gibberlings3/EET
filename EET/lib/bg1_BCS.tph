@@ -59,7 +59,7 @@ THEN
 END
 >>>>>>>>
 
-<<<<<<<< EET-inlined/JOIN_DIALOG_FILE-et.baf
+<<<<<<<< EET-inlined/DIALOG_FILE-et.baf
 IF
   Joins(Myself)
 THEN
@@ -67,38 +67,46 @@ THEN
     SetDialog("%res_1%")
     Continue()
 END
+
+IF
+  Leaves(Myself)
+THEN
+  RESPONSE #100
+    SetDialog("%res_2%")
+    Continue()
+END
 >>>>>>>>
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_BG1BCS_resDV BEGIN
-	AJANTIS , default => Ajantis
-	ALORA , default => Alora
-	BRANWEN_, default => Branwen
-	CORAN , default => Coran
-	EDWIN_ , EDWINJ_ => Edwin
-	DYNAHEIR , default => Dynaheir
-	FALDORN_ , default => Faldorn
-	ELDOTH , default => Eldoth
-	GARRICK_ , default => Garrick
-	IMOEN_ , IMOEN2_ => Imoen2
-	JAHEIRA_ , JAHEIJ => Jaheira
-	KAGAIN , default => Kagain
-	KHALID , default => Khalid
-	KIVAN , default => Kivan
-	MINSC_ , MINSCJ_ => Minsc
-	MONTARON , default => Montaron
-	QUAYLE , default => Quayle
-	SAFANA , default => Safana
-	SHARTEEL , default => SharTeel
-	SKIE_ , default => Skie
-	TIAX , default => Tiax
-	VICONIA_ , VICONJ => Viconia
-	XAN , default => Xan
-	XZAR , default => Xzar
-	YESLICK , default => Yeslick
-	BAELOTH , default => Baeloth
-	DORN_ , DORNJ_ => Dorn
-	NEERA_ , NEERAJ_ => Neera
-	RASAAD_ , RASAADJ_ => Rasaad
+	AJANTIS , default , default => Ajantis
+	ALORA , default , default => Alora
+	BRANWEN_, default , default => Branwen
+	CORAN , default , default => Coran
+	EDWIN_ , EDWINJ_ , EDWINP_ => Edwin
+	DYNAHEIR , default , default => Dynaheir
+	FALDORN_ , default , default => Faldorn
+	ELDOTH , default , default => Eldoth
+	GARRICK_ , default , default => Garrick
+	IMOEN_ , IMOEN2_ , IMOENP_ => Imoen2
+	JAHEIRA_ , JAHEIJ , JAHEIP => Jaheira
+	KAGAIN , default , default => Kagain
+	KHALID , default , default => Khalid
+	KIVAN , default , default => Kivan
+	MINSC_ , MINSCJ_ , MINSCP_ => Minsc
+	MONTARON , default , default => Montaron
+	QUAYLE , default , default => Quayle
+	SAFANA , default , default => Safana
+	SHARTEEL , default , default => SharTeel
+	SKIE_ , default , default => Skie
+	TIAX , default , default => Tiax
+	VICONIA_ , VICONJ , VICONP => Viconia
+	XAN , default , default => Xan
+	XZAR , default , default => Xzar
+	YESLICK , default , default => Yeslick
+	BAELOTH , default , default => Baeloth
+	DORN_ , DORNJ_ , DORNP_ => Dorn
+	NEERA_ , NEERAJ_ , NEERAP_ => Neera
+	RASAAD_ , RASAADJ_ , RASAADP_ => Rasaad
 END
 
 ACTION_PHP_EACH table_BG1BCS_resDV AS res => DV BEGIN
@@ -106,7 +114,7 @@ ACTION_PHP_EACH table_BG1BCS_resDV AS res => DV BEGIN
 	EXTEND_TOP ~%res%.BCS~ ~EET-inlined/PARTYBG1-et.baf~ EVALUATE_BUFFER
 	ACTION_IF ~%res_1%~ STRING_EQUAL_CASE ~default~ BEGIN
 	END ELSE BEGIN
-		EXTEND_TOP ~%res%.BCS~ ~EET-inlined/JOIN_DIALOG_FILE-et.baf~ EVALUATE_BUFFER
+		EXTEND_TOP ~%res%.BCS~ ~EET-inlined/DIALOG_FILE-et.baf~ EVALUATE_BUFFER
 	END
 END
 
@@ -810,6 +818,22 @@ END
 EXTEND_TOP ~BG2600.BCS~ ~EET-inlined/BG2600-et.baf~
 
 /////                                                  \\\\\
+///// Dummy BG1->BG2 link area encounter               \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/BG5400-et.baf
+IF
+  Global("K#BG0000","BG5400",0)
+THEN
+  RESPONSE #100
+    ForceRandomEncounter("BG0000")
+    SetGlobal("K#BG0000","BG5400",1)
+END
+>>>>>>>>
+
+EXTEND_TOP ~BG5400.BCS~ ~EET-inlined/BG5400-et.baf~
+
+/////                                                  \\\\\
 /////existing in BG2:EE, replace them if not used      \\\\\
 /////                                                  \\\\\
 
@@ -1483,21 +1507,6 @@ COPY_EXISTING ~BG2600.BCS~ ~override~
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#REMBHA",Player1)
     IncrementChapter("CHPTXT0_")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//BG5400.BCS
-COPY_EXISTING ~BG5400.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("CHPTXT2_")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceRandomEncounter("BG0000")
-    IncrementChapter("CHPTXT2_")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
