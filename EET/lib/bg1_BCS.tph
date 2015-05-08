@@ -61,18 +61,22 @@ END
 
 <<<<<<<< EET-inlined/DIALOG_FILE-et.baf
 IF
-  Joins(Myself)
+  Global("K#PDIALOG","LOCALS",0)
+  InPartyAllowDead(Myself)
 THEN
   RESPONSE #100
     SetDialog("%res_1%")
+    SetGlobal("K#PDIALOG","LOCALS",1)
     Continue()
 END
 
 IF
-  Leaves(Myself)
+  Global("K#PDIALOG","LOCALS",1)
+  !InPartyAllowDead(Myself)
 THEN
   RESPONSE #100
     SetDialog("%res_2%")
+    SetGlobal("K#PDIALOG","LOCALS",0)
     Continue()
 END
 >>>>>>>>

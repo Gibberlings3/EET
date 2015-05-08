@@ -696,6 +696,34 @@ END
 EXTEND_BOTTOM ~JAHEIRA.BCS~ ~EET-inlined/JAHEIRA-eb.baf~
 
 /////                                                  \\\\\
+///// Imoen Irenicus Dungeon script                    \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/IMOEN-et.baf
+IF
+  Global("K#PDIALOG","LOCALS",0)
+  InPartyAllowDead(Myself)
+THEN
+  RESPONSE #100
+    SetDialog("IMOENJ")
+    SetGlobal("K#PDIALOG","LOCALS",1)
+    Continue()
+END
+
+IF
+  Global("K#PDIALOG","LOCALS",1)
+  !InPartyAllowDead(Myself)
+THEN
+  RESPONSE #100
+    SetDialog("IMOENP")
+    SetGlobal("K#PDIALOG","LOCALS",0)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~IMOEN.BCS~ ~EET-inlined/IMOEN-et.baf~
+
+/////                                                  \\\\\
 ///// AR1512 (Imoen Spellhold adjustment)              \\\\\
 /////                                                  \\\\\
 
@@ -709,6 +737,8 @@ THEN
     ActionOverride("Imoen2",ChangeAIScript("K#IMIM2",RACE))
     ActionOverride("Imoen2",SetDialogue("IMOEN2"))
     ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    ActionOverride("Imoen2",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
     SetGlobal("ImoenSpawned","GLOBAL",1)
     Continue()
 END
@@ -745,6 +775,8 @@ THEN
     ActionOverride("Edwin",ChangeAIScript("K#IMEDW",RACE))
     ActionOverride("Edwin",SetDialogue("Edwin"))
     ActionOverride("Edwin",SetNumTimesTalkedTo(0))
+    ActionOverride("Edwin",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("Edwin",SetGlobal("KickedOut","LOCALS",0))
     ReallyForceSpellRES("K#POREDW","Edwin")
     SetGlobal("EdwinImport","GLOBAL",1)
 END
@@ -857,6 +889,8 @@ THEN
     //ActionOverride("Imoen2",ChangeAIScript("K#IMIMO",RACE)) //doesn't work when assigned before "NewGame" cutscene
     ActionOverride("Imoen2",SetDialog("IMOEN10"))
     ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    ActionOverride("Imoen2",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
     ReallyForceSpellRES("K#PORIMO","Imoen2")
     SetGlobal("K#ImoenImport","AR0602",1)
     Continue()
@@ -885,6 +919,8 @@ THEN
     ActionOverride("Jaheira",ChangeAIScript("K#IMJAH",RACE))
     ActionOverride("Jaheira",SetDialog("Jaheira"))
     ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
+    ActionOverride("Jaheira",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("Jaheira",SetGlobal("KickedOut","LOCALS",0))
     ReallyForceSpellRES("K#PORJAH","Jaheira")
     SetGlobal("JaheiraImport","GLOBAL",1)
     Continue()
@@ -966,6 +1002,8 @@ THEN
     ActionOverride("Minsc",ChangeAIScript("K#IMMIN",RACE))
     ActionOverride("Minsc",SetDialog("Minsca"))
     ActionOverride("Minsc",SetNumTimesTalkedTo(0))
+    ActionOverride("Minsc",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("Minsc",SetGlobal("KickedOut","LOCALS",0))
     ReallyForceSpellRES("K#PORMIN","Minsc")
     SetGlobal("MinscImport","GLOBAL",1)
     Continue()
@@ -1092,6 +1130,8 @@ THEN
     ActionOverride("Viconia",ChangeAIScript("K#IMVIC",RACE))
     ActionOverride("Viconia",SetDialogue("VICONI"))
     ActionOverride("Viconia",SetNumTimesTalkedTo(0))
+    ActionOverride("Viconia",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("Viconia",SetGlobal("KickedOut","LOCALS",0))
     ReallyForceSpellRES("K#PORVIC","Viconia")
     SetGlobal("ViconiaImport","GLOBAL",1)
 END
@@ -1249,6 +1289,8 @@ THEN
     ActionOverride("DORN",ChangeAIScript("K#IMDOR",RACE))
     ActionOverride("DORN",SetDialogue("DORN"))
     ActionOverride("DORN",SetNumTimesTalkedTo(0))
+    ActionOverride("DORN",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("DORN",SetGlobal("KickedOut","LOCALS",0))
     //ReallyForceSpellRES("K#PORDOR","DORN")
     SetGlobal("DornImport","GLOBAL",1)
     SetGlobal("OHH_DORN_INIT","ar0900",1)
@@ -1309,6 +1351,8 @@ THEN
     ActionOverride("RASAAD",ChangeAIScript("K#IMRAS",RACE))
     ActionOverride("RASAAD",SetDialogue("RASAAD"))
     ActionOverride("RASAAD",SetNumTimesTalkedTo(0))
+    ActionOverride("RASAAD",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("RASAAD",SetGlobal("KickedOut","LOCALS",0))
     //ReallyForceSpellRES("K#PORRAS","RASAAD")
     SetGlobal("RasaadImport","GLOBAL",1)
 END
@@ -1825,6 +1869,8 @@ THEN
     ActionOverride("NEERA",ChangeAIScript("K#IMNEE",RACE))
     ActionOverride("NEERA",SetDialogue("NEERA"))
     ActionOverride("NEERA",SetNumTimesTalkedTo(0))
+    ActionOverride("NEERA",SetGlobal("K#PDIALOG","LOCALS",0))
+    ActionOverride("NEERA",SetGlobal("KickedOut","LOCALS",0))
     //ReallyForceSpellRES("K#PORNEE","NEERA")
     SetGlobal("NeeraImport","GLOBAL",1)
     SetGlobal("OHN_PLOT","GLOBAL",1)
