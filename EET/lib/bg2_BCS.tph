@@ -715,9 +715,13 @@ IF
   !InPartyAllowDead(Myself)
 THEN
   RESPONSE #100
-    SetDialog("IMOENP")
+    //SetDialog("IMOENP") //for some reason doesn't work
+    //SetInterrupt(FALSE)
+    //DialogInterrupt(FALSE)
+    MoveToObject(Player1)
+    StartDialog("ImoenP",Player1)
     SetGlobal("K#PDIALOG","LOCALS",0)
-    Continue()
+    //Continue()
 END
 >>>>>>>>
 
