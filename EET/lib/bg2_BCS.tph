@@ -711,17 +711,14 @@ THEN
 END
 
 IF
-  Global("K#PDIALOG","LOCALS",1)
+  //Global("K#PDIALOG","LOCALS",1) //for some reason doesn't work, IMOEN2P is always set first
   !InPartyAllowDead(Myself)
+  ActionListEmpty()
 THEN
   RESPONSE #100
-    //SetDialog("IMOENP") //for some reason doesn't work
-    //SetInterrupt(FALSE)
-    //DialogInterrupt(FALSE)
-    MoveToObject(Player1)
-    StartDialog("ImoenP",Player1)
+    SetDialog("IMOENP")
     SetGlobal("K#PDIALOG","LOCALS",0)
-    //Continue()
+    Continue()
 END
 >>>>>>>>
 

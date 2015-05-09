@@ -234,3 +234,13 @@ COPY_EXISTING ~IMOEN10.DLG~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE_TEXTUALLY ~~~~~\(IF ~\)\(~ THEN REPLY #61011 GOTO 27\)~~~~~ ~\1InMyArea("Jaheira") InMyArea("Minsc")\2~
 	END
+
+/////                                                  \\\\\
+///// IMOEN2P.DLG                                      \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< EET-inlined/IMOEN2P.d
+ADD_STATE_TRIGGER ~IMOEN2P~ 3 ~!Global("Chapter","GLOBAL",1)~ 4 7
+>>>>>>>>
+
+COMPILE ~EET-inlined/IMOEN2P.d~
