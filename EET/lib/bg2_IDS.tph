@@ -277,6 +277,34 @@ APPEND ~GTIMES.IDS~ ~600 TEN_TURNS~     UNLESS ~TEN_TURNS~
 APPEND ~GTIMES.IDS~ ~900 FIFTEEN_TURNS~ UNLESS ~FIFTEEN_TURNS~
 
 /////                                                  \\\\\
+///// KIT.IDS                                          \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~KIT.IDS~ ~override~
+	COUNT_2DA_ROWS 2 "cntrow"
+	READ_2DA_ENTRY (cntrow - 1) 0 2 "ids_index"
+	SET ids_index = ids_index + 1
+	SPRINTF ids_index_sprint ~%x~ (ids_index) //%~
+	PATCH_PRINT ~ids_index = %ids_index_sprint%~
+BUT_ONLY
+
+COPY - ~EET/temp/array/KIT.IDS~ ~EET/temp/array~
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 1; cnt < cntrow; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 1 2 "name"
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~KIT.IDS~ ~ %name%~)) BEGIN
+			PATCH_PRINT ~Patching KIT.IDS: %name%~
+			INNER_ACTION BEGIN
+				APPEND ~%SOURCE_RES%.IDS~ ~%ids_index_sprint% %name%~
+				PRINT ~%ids_index_sprint% %name% appended to %SOURCE_FILE%~
+			END
+			SET ids_index = ids_index + 1
+			SPRINTF ids_index_sprint ~%x~ (ids_index) //%~
+			PATCH_PRINT ~ids_index = %ids_index_sprint%~
+		END
+	END
+
+/////                                                  \\\\\
 ///// SNDSLOT.IDS                                      \\\\\
 /////                                                  \\\\\
 

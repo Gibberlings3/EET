@@ -1,0 +1,100 @@
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//Constraints for how the worldmap links should be indexed (thanks to Taimon)
+/////////////////////////////////////////////////////////////////////////////
+//1. The indices of the area links should follow the order N <= E <= S <= W
+//2. The index at N of area n should be >= the index at W of area (n - 1)
+//3. The index at W plus the number of links at W of the LAST area in the wmp should equal the total number of links in the wmp
+/////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////
+//Start constructing the worldmap
+////////////////////////////////////////
+COPY_EXISTING worldmap.wmp override
+  READ_LONG 0xc mo
+  READ_LONG mo + 0x24 ao
+  READ_LONG mo + 0x28 lo
+  ////////////////////////////////////////
+  //Add new areas
+  ////////////////////////////////////////
+  ip = ao
+  na = 0
+  PHP_EACH fl#CONTENT AS content => _ BEGIN
+    INSERT_BYTES   ip        0xf0
+      WRITE_ASCIIE ip        $fl#SHORT("%content%") #8 //it has worked thus far
+      WRITE_ASCIIE ip + 0x8  "%content%" #8              //so why not?
+      WRITE_ASCIIE ip + 0x10 $fl#LONG("%content%") #32
+      WRITE_LONG   ip + 0x30 $fl#FLAGS("%content%")
+      WRITE_LONG   ip + 0x34 $fl#BAM("%content%")
+      WRITE_LONG   ip + 0x38 $fl#XCOR("%content%")
+      WRITE_LONG   ip + 0x3c $fl#YCOR("%content%")
+      PATCH_IF VARIABLE_IS_SET $fl#NAME("%content%") AND $fl#NAME("%content%") STR_CMP "" BEGIN
+        SPRINT string $fl#NAME("%content%")
+        SAY_EVALUATED ip + 0x40 "%string%"
+      END ELSE BEGIN
+        WRITE_LONG    ip + 0x40 "-1"
+      END
+      PATCH_IF VARIABLE_IS_SET $fl#TOOL("%content%") AND $fl#TOOL("%content%") STR_CMP "" BEGIN
+        SPRINT string $fl#TOOL("%content%")
+        SAY_EVALUATED ip + 0x44 "%string%"
+      END ELSE BEGIN
+        WRITE_LONG    ip + 0x44 "-1"
+      END
+      PATCH_IF VARIABLE_IS_SET $fl#LOAD("%content%") BEGIN
+        WRITE_ASCIIE ip + 0x48 $fl#LOAD("%content%") #8
+      END
+    SET $index1("%content%") = na
+    ip += 0xf0
+    lo += 0xf0
+    ++na
+  END
+  WRITE_LONG mo + 0x20 na
+  WRITE_LONG mo + 0x28 lo
+  ////////////////////////////////////////
+  //Add new links
+  ////////////////////////////////////////
+  nl = 0
+  ip = lo
+  FOR (i=0;i<na;++i) BEGIN
+    READ_ASCII ao + 0xf0*i area
+    TO_LOWER area
+    PATCH_FOR_EACH j IN 0 3 2 1 BEGIN
+      num = 0
+      WRITE_LONG ao + 0xf0*i + 0x50 + 0x8*j nl
+      PHP_EACH "fl#INDEX_%j%" AS entry => _ BEGIN
+        PATCH_IF "%entry_0%" STRING_EQUAL_CASE "%area%" AND VARIABLE_IS_SET $index1("%entry_1%") BEGIN
+          SPRINT src_are "%entry_0%"
+          SPRINT target_are "%entry_1%"
+          INSERT_BYTES   ip        0xd8
+            WRITE_LONG   ip        $index1("%target_are%")
+            PATCH_IF VARIABLE_IS_SET $fl#ENTRY("%src_are%" "%j%" "%target_are%") BEGIN
+              WRITE_ASCIIE ip + 0x4  $fl#ENTRY("%src_are%" "%j%" "%target_are%") #32
+            END
+            WRITE_LONG   ip + 0x24 $fl#TIME("%src_are%" "%j%" "%target_are%")
+            WRITE_LONG   ip + 0x28 $fl#DEF("%src_are%" "%j%" "%target_are%")
+            PATCH_IF VARIABLE_IS_SET $fl#ENC1("%src_are%" "%j%" "%target_are%") BEGIN
+              WRITE_ASCIIE ip + 0x2c $fl#ENC1("%src_are%" "%j%" "%target_are%") #8
+            END
+            PATCH_IF VARIABLE_IS_SET $fl#ENC2("%src_are%" "%j%" "%target_are%") BEGIN
+              WRITE_ASCIIE ip + 0x34 $fl#ENC2("%src_are%" "%j%" "%target_are%") #8
+            END
+            PATCH_IF VARIABLE_IS_SET $fl#ENC3("%src_are%" "%j%" "%target_are%") BEGIN
+              WRITE_ASCIIE ip + 0x3c $fl#ENC3("%src_are%" "%j%" "%target_are%") #8
+            END
+            PATCH_IF VARIABLE_IS_SET $fl#ENC4("%src_are%" "%j%" "%target_are%") BEGIN
+              WRITE_ASCIIE ip + 0x44 $fl#ENC4("%src_are%" "%j%" "%target_are%") #8
+            END
+            PATCH_IF VARIABLE_IS_SET $fl#ENC5("%src_are%" "%j%" "%target_are%") BEGIN
+              WRITE_ASCIIE ip + 0x4c $fl#ENC5("%src_are%" "%j%" "%target_are%") #8
+            END
+            WRITE_LONG   ip + 0x54 $fl#PROB("%src_are%" "%j%" "%target_are%")
+          ++num
+          ++nl
+          ip += 0xd8
+        END
+      END
+      WRITE_LONG ao + 0xf0*i + 0x54 + 0x8*j num
+    END
+  END
+  WRITE_LONG mo + 0x2c nl
+BUT_ONLY

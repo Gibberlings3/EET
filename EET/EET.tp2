@@ -422,7 +422,7 @@ PRINT ~Extract BG:EE resources...~
 
 MKDIR ~%patch_dir%/BCS_APP~
 
-ACTION_FOR_EACH "var" IN ARE BCS CRE DLG EFF ITM SPL STO VVC WED BEGIN
+ACTION_FOR_EACH var IN ARE BCS CRE DLG EFF ITM SPL STO VVC WED BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
@@ -434,12 +434,13 @@ ACTION_FOR_EACH "var" IN ARE BCS CRE DLG EFF ITM SPL STO VVC WED BEGIN
 	INCLUDE ~EET/lib/prep_%var%.tph~
 END
 
-MKDIR ~%patch_dir%/GAM~
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/BALDUR.GAM~) BEGIN
-	COPY + ~%bgee_dir%/override/BALDUR.GAM~ ~%patch_dir%/GAM~
-END ELSE BEGIN
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/GAM" --biff-get-rest "BALDUR.GAM"~
-	LAM bash_log
+ACTION_FOR_EACH file IN BALDUR.GAM WORLDMAP.WMP BEGIN
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
+		COPY + ~%bgee_dir%/override/%file%~ ~%patch_dir%~
+	END ELSE BEGIN
+		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%" --biff-get-rest "%file%"~
+		LAM bash_log
+	END
 END
 
 /////                                                  \\\\\
@@ -541,7 +542,7 @@ END
 AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/CHR" --biff-get-rest "^.*\.CHR$"~
 LAM bash_log
 
-ACTION_FOR_EACH file IN "ANIMATE.IDS" "ANISND.IDS" "GTIMES.IDS" "BGEE.SQL" BEGIN
+ACTION_FOR_EACH file IN "ANIMATE.IDS" "ANISND.IDS" "GTIMES.IDS" "KIT.IDS" "BGEE.SQL" BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
 	END ELSE BEGIN
@@ -1056,7 +1057,7 @@ OUTER_SET ren_check = 0
 
 //create file list for conversion
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/Filelist.txt~
-ACTION_FOR_EACH "var" IN ARE BCS BCS_APP CRE DLG EFF GAM ITM SPL STO VVC WED BEGIN
+ACTION_FOR_EACH "var" IN ARE BCS BCS_APP CRE DLG EFF ITM SPL STO VVC WED "" BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		APPEND_OUTER + ~EET/temp/Filelist.txt~ ~%var%/%BASH_FOR_FILE%~
 	END
@@ -1072,7 +1073,7 @@ COPY + ~EET/temp/Filelist.txt~ ~EET/temp~
 	FOR (count = 0; count < "%cntrow%"; count = count + 1) BEGIN
 		SET cntcurrent = "%count%" + 1
 		READ_2DA_ENTRY "%count%" 0 1 "patch_name"
-		INNER_PATCH "%patch_name%" BEGIN
+		INNER_PATCH_SAVE ~patch_name~ ~%patch_name%~ BEGIN
 			REPLACE_TEXTUALLY ~\?~ ~ ~
 		END
 		INNER_ACTION BEGIN
@@ -1175,12 +1176,6 @@ COPY + ~EET/temp/2da/TOSCEND.2DA~ ~EET/temp/2da~
 	PRETTY_PRINT_2DA
 
 COPY ~EET/temp/2da~ ~override~
-
-ACTION_BASH_FOR ~EET/base/2da~ ~.*\.2DA$~ BEGIN
-	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%BASH_FOR_FILE%~ BEGIN
-		COPY ~%BASH_FOR_FILESPEC%~ ~override~
-	END
-END
 
 /////                                                  \\\\\
 ///// ARE                                              \\\\\
@@ -1943,8 +1938,8 @@ COPY ~%patch_dir%/cre~ ~override~
 				SET str_updated = 0
 				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
 					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
-							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 								//SAY offset ( AT "StrRef" )
 								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END ELSE BEGIN
@@ -2042,8 +2037,8 @@ COPY ~%patch_dir%/eff~ ~override~
 			SET str_updated = 0
 			PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
 				PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-					PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
-						PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+					PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+						PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 							//SAY offset ( AT "StrRef" )
 							SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 						END ELSE BEGIN
@@ -2078,7 +2073,7 @@ COPY ~EET/base/eff~ ~override~
 /////                                                  \\\\\
 
 OUTER_SPRINT ~gam~ ~2DA%WNL%dummy%WNL%CRE_NAME ORIENTATION AREA X Y~
-COPY + ~%patch_dir%/gam/BALDUR.GAM~ ~%patch_dir%/gam~
+COPY + ~%patch_dir%/BALDUR.GAM~ ~%patch_dir%~
 	READ_LONG 0x30 npcs_off
 	READ_LONG 0x34 npcs_cnt
 	FOR (cnt=0; cnt<"%npcs_cnt%"; cnt=cnt+1) BEGIN
@@ -2180,28 +2175,25 @@ BUT_ONLY
 COPY_LARGE ~EET/base/gui/DLCP1.bmp~ ~override~
 	~EET/base/gui/DLCV1.bmp~ ~override~
 
-ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mos$~ BEGIN
-	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_FILE%" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
+ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mbc$~ BEGIN
+	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%mos%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
 END
 LAM bash_log
 
-OUTER_SET mos_index = 499
-ACTION_FOR_EACH file IN ~BIGLOGO~ ~TITLE~ BEGIN
-	OUTER_SET mos_index = mos_index + 1
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_bamIndex" BEGIN
+	"BIGLOGO" => "0500"
+	"TITLE" => "0501"
+	"bpbgtmap" => "100"
+END
+ACTION_PHP_EACH "table_EET_bamIndex" AS "file" => "index" BEGIN
 	COPY ~EET/base/gui/%file%.BAM~ ~override~
-		LPF ~UPDATE_PVRZ_INDICES~
-			RET
-			original_base_index
-			new_base_index
+		LPF ~UPDATE_PVRZ_INDICES~ RET original_base_index new_base_index END
+	ACTION_IF original_base_index >= 0 AND new_base_index >= 0 BEGIN
+		ACTION_BASH_FOR ~EET/base/gui~ ~mos%index%.*\.pvrz~ BEGIN
+			LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%BASH_FOR_FILESPEC%~ END
 		END
-	ACTION_IF (original_base_index >= 0 AND new_base_index >= 0) BEGIN
-		LAF ~INSTALL_PVRZ~
-			INT_VAR
-			original_base_index = original_base_index
-			new_base_index      = new_base_index
-			STR_VAR
-			source_file         = EVAL ~EET/base/gui/MOS0%mos_index%.PVRZ~
-		END
+	END ELSE BEGIN
+		WARN ~Couldn't install PVRZ files~
 	END
 END
 
@@ -2252,8 +2244,8 @@ COPY ~%patch_dir%/itm~ ~override~
 				SET str_updated = 0
 				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
 					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
-							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 								//SAY offset ( AT "StrRef" )
 								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END ELSE BEGIN
@@ -2845,8 +2837,8 @@ COPY ~%patch_dir%/spl~ ~override~
 				SET str_updated = 0
 				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
 					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-						PATCH_IF (StrRef = "%strOld_1%") AND (str_updated = 0) BEGIN
-							PATCH_IF ("%strOld_1%" = "%strNew%") BEGIN
+						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 								//SAY offset ( AT "StrRef" )
 								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
 							END ELSE BEGIN
@@ -3115,59 +3107,145 @@ COPY ~%patch_dir%/wed~ ~override~
 ///// WMP                                              \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_areas.tbl~)
-AND (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_links.tbl~) BEGIN
-	COPY + ~%bgee_dir%/Worldmap/map_mods_areas.tbl~ ~EET/temp~
-	COPY + ~%bgee_dir%/Worldmap/map_mods_links.tbl~ ~EET/temp~
-		FOR (i=1; i<="%resref_are_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_are_source%i%"
-			SPRINT name_dest "resref_are_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_TEXTUALLY ~%resref_index_source%~ ~%resref_index_dest%~
-		END
-END
-
 MKDIR ~Worldmap~
 
-ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_areas.tbl~) BEGIN
-	COPY ~Worldmap/map_mods_areas.tbl~ ~Worldmap~
-		APPEND_FILE ~EET/tbl/map_mods_areas.tbl~
-		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/map_mods_areas.tbl~
-		END
-END ELSE BEGIN
-    COPY ~EET/tbl/map_mods_areas.tbl~ ~Worldmap~
-		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/map_mods_areas.tbl~
-		END
+COPY_EXISTING ~xnewarea.2da~ ~override~
+	REPLACE_TEXTUALLY CASE_INSENSITIVE ~^.*ar3000.*$~ ~~
+IF ~ar3000~
+BUT_ONLY
+
+//icons_array
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "wmp_bg2_icons_array" BEGIN
+	OH4000 , 29 => 106
+	OH4100 , 32 => 108
+	OH5100 , 34 => 110
+	OH6000 , 33 => 109
+	OH6100 , 31 => 107
+	OH6200 , 31 => 107
 END
 
-ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_links.tbl~) BEGIN
-	COPY ~Worldmap/map_mods_links.tbl~ ~Worldmap~
-		APPEND_FILE ~EET/tbl/map_mods_links.tbl~
-		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_links.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/map_mods_links.tbl~
-		END
-END ELSE BEGIN
-    COPY ~EET/tbl/map_mods_links.tbl~ ~Worldmap~
-		PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_links.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/map_mods_links.tbl~
-		END
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "wmp_tob_icons_array" BEGIN
+	AR4000 , 6 => 91
+	AR3000 , 5 => 90
+	AR5000 , 8 => 93
+	AR5500 , 14 => 99
+	AR5203 , 7 => 92
+	AR5202 , 9 => 94
+	AR5200 , 10 => 95
+	AR6300 , 15 => 100
+	AR6400 , 13 => 98
+	AR6000 , 16 => 101
+	AR6100 , 12 => 97
+	OH4200 , 18 => 111
+	OH6400 , 11 => 96
 END
 
-ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_trans.tbl~) BEGIN
-	COPY ~Worldmap/map_mods_trans.tra~ ~Worldmap~
-		APPEND_FILE ~%tra_path%/%LANGUAGE%/map_mods_trans.tra~
-		PATCH_IF (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_trans.tra~) BEGIN
-			APPEND_FILE ~%bgee_dir%/Worldmap/map_mods_trans.tra~
-		END
-END ELSE BEGIN
-    COPY ~%tra_path%/%LANGUAGE%/map_mods_trans.tra~ ~Worldmap~
-		PATCH_IF (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_trans.tra~) BEGIN
-			APPEND_FILE ~%bgee_dir%/Worldmap/map_mods_trans.tra~
-		END
+ACTION_DEFINE_ASSOCIATIVE_ARRAY "wmp_bg2_2da_links_array" BEGIN
+	AR3000 => XL3000
 END
+
+//dump wmp
+COPY - ~%patch_dir%/worldmap.wmp~ ~%patch_dir%~
+	LPF ~dump_wmp~
+	INT_VAR
+		skip_areas = 1
+	STR_VAR
+		output_links = "EET/temp/map_bgee_links.tbl"
+	END
+
+COPY_EXISTING - ~worldmap.wmp~ ~override~
+	LPF ~dump_wmp~
+	INT_VAR
+		move_y = 952
+		compare_bams = 1
+	STR_VAR
+		2da_links_array = "wmp_bg2_2da_links_array"
+		icons_array = "wmp_bg2_icons_array"
+		output_areas = "EET/temp/map_bg2_areas.tbl"
+		output_links = "EET/temp/map_bg2_links.tbl"
+		output_strings = "EET/temp/map_bg2_trans.tra"
+	END
+
+COPY_EXISTING - ~worldm25.wmp~ ~override~
+	LPF ~dump_wmp~
+	INT_VAR
+		move_x = 893
+		move_y = 1680
+		compare_bams = 1
+	STR_VAR
+		icons_array = "wmp_tob_icons_array"
+		output_areas = "EET/temp/map_tob_areas.tbl"
+		output_links = "EET/temp/map_tob_links.tbl"
+		output_strings = "EET/temp/map_tob_trans.tra"
+	END
+
+//merge worldmap files
+COPY + ~EET/tbl/map_mods_areas.tbl~ ~EET/temp/map_bgee_areas.tbl~
+	~EET/lang/%LANGUAGE%/map_mods_trans.tra~ ~EET/temp/map_bgee_trans.tra~
+COPY + ~EET/temp/map_bgee_links.tbl~ ~EET/temp~
+	APPEND_FILE ~EET/tbl/map_mods_links.tbl~
+
+ACTION_FOR_EACH file IN areas.tbl links.tbl trans.tra BEGIN
+	//BP-BGT Worldmap
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_%file%~) BEGIN
+		COPY + ~%bgee_dir%/Worldmap/map_mods_%file%~ ~EET/temp~
+			FOR (i=1; i<="%resref_are_total%"; i=i+1) BEGIN
+				SPRINT name_source "resref_are_source%i%"
+				SPRINT name_dest "resref_are_dest%i%"
+				SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+				SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+				REPLACE_TEXTUALLY ~%resref_index_source%~ ~%resref_index_dest%~
+			END
+	END
+	ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_%file%~) BEGIN
+		COPY ~Worldmap/map_mods_%file%~ ~Worldmap~
+			APPEND_FILE ~EET/temp/map_bgee_%file%~
+			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%.tbl~) BEGIN
+				APPEND_FILE ~EET/temp/map_mods_%file%.tbl~
+			END
+	END ELSE BEGIN
+		COPY ~EET/temp/map_bgee_%file%~ ~Worldmap/map_mods_%file%~
+			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%.tbl~) BEGIN
+				APPEND_FILE ~EET/temp/map_mods_%file%.tbl~
+			END
+	END
+	//EET worldmap
+	ACTION_IF (~%file%~ STRING_EQUAL_CASE ~areas.tbl~) BEGIN
+		COPY + ~EET/tbl/map_bgee_areas.tbl~ ~EET/temp/map_eet_areas.tbl~
+			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
+				APPEND_FILE ~EET/temp/map_mods_areas.tbl~
+			END
+			APPEND_FILE ~EET/temp/map_bg2_areas.tbl~
+			APPEND_FILE ~EET/temp/map_tob_areas.tbl~
+	END ELSE BEGIN
+		COPY + ~Worldmap/map_mods_%file%~ ~EET/temp/map_eet_%file%~
+			APPEND_FILE ~EET/temp/map_bg2_%file%~
+			APPEND_FILE ~EET/temp/map_tob_%file%~
+	END
+END
+
+COPY - ~EET/temp/map_eet_areas.tbl~ ~EET/temp~
+	LPF fix_table END
+	LPM read_area_array_from_2da
+
+COPY - ~EET/temp/map_eet_links.tbl~ ~EET/temp~
+    LPF fix_table END
+    LPM read_link_array_from_2da
+
+COPY - ~EET/temp/map_eet_trans.tra~ ~EET/temp~
+    LPF fix_table END
+    LPM read_trans_array_from_2da
+
+LAM merge_in_translations
+
+INCLUDE ~EET/lib/build_worldmap.tpa~
+
+COPY_EXISTING ~worldmap.wmp~ ~override~
+	READ_LONG 0xc wmap_off
+	WRITE_ASCII wmap_off ~WORLDMAP~ #8
+	WRITE_LONG wmap_off + 0x8 ~1550~
+	WRITE_LONG wmap_off + 0xc ~2160~
+	WRITE_ASCII wmap_off + 0x30 ~bpbgtmap~ #8
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
