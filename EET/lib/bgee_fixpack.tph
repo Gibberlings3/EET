@@ -1,0 +1,10 @@
+//here goes fixes for BG:EE content not covered by Beamdog yet
+
+// http://forums.beamdog.com/discussion/41778/undeddam-eff-is-bugged
+// SW1H79.ITM need to be fixed to work with BG2 UNDEDDAM.EFF, otherwise it will do damage to owner
+
+COPY_EXISTING ~SW1H79.ITM~ ~override~
+	LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = "177" END //Use EFF File
+	LPF ADD_ITEM_EFFECT INT_VAR opcode = 177 /*Use EFF File*/ target = 2 timing = 1 parameter1 = 4 parameter2 = 3 probability1 = 100 type = 1 STR_VAR resource = "UNDEDDAM" END
+	LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 177 /*Use EFF File*/ target = 1 timing = 2 parameter1 = 0 parameter2 = 2 probability1 = 100 STR_VAR resource = "UNDEDHIT" END
+BUT_ONLY

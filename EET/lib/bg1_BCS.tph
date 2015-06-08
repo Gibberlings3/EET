@@ -356,7 +356,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~BPPLOT.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET-inlined/BPPLOT-rbClear.baf~ ~EET-inlined/blank.baf~
+	REPLACE_BCS_BLOCK ~EET-inlined/BPPLOT-rbClear.baf~ ~EET-inlined/blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/BPPLOT-rbClear.baf in %SOURCE_FILE%.~ END
 BUT_ONLY
 
 //OH9310.BCS, OH9350.BCS
@@ -509,7 +509,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~OH9310.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET-inlined/OH9310-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~
+	REPLACE_BCS_BLOCK ~EET-inlined/OH9310-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/OH9310-rbOld.baf in %SOURCE_FILE%.~ END
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~\(StateCheck(Player6,STATE_REALLY_DEAD)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal("BATTLE_COMPLETE","GLOBAL",2)[%newline%]*\)SetGlobal("BP_AUTOSAVE","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -645,7 +645,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~OH9350.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET-inlined/OH9350-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~
+	REPLACE_BCS_BLOCK ~EET-inlined/OH9350-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/OH9350-rbOld.baf in %SOURCE_FILE%.~ END
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~\(StateCheck(Player6,STATE_REALLY_DEAD)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal("BATTLE_COMPLETE","GLOBAL",2)[%newline%]*SetGlobal("BP_AUTOSAVE","GLOBAL",1)\)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches

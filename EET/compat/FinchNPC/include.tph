@@ -1,0 +1,5 @@
+COPY_EXISTING ~misc3p.itm~ ~override/misc3p.itm~
+	READ_LONG 0x64 er_ability_offset
+	WRITE_ASCII %er_ability_offset%+4 ~IMISC3P~ #8
+
+DELETE + ~%patch_dir%/itm/misc3p.itm~

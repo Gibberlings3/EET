@@ -1,0 +1,18 @@
+/* Ensures that Gavin won't leave the party because of reputation */
+COPY_EXISTING ~dplayer2.bcs~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~BreakingPoint()~ ~BreakingPoint()
+  !CharName("Gavin",Myself)~
+	END
+BUT_ONLY
+
+/* Getting rid of the occupants of the quest area */
+COPY_EXISTING ~SLEEPMH.CRE~ ~override~
+	WRITE_ASCII 0x248 ~SLEEPMH~ #8 // override
+	WRITE_ASCII 0x280 ~SLEEPMH~ #32 //DV
+BUT_ONLY
+
+COPY_EXISTING ~SLEEPFH.CRE~ ~override~
+	WRITE_ASCII 0x248 ~SLEEPFH~ #8 // override
+	WRITE_ASCII 0x280 ~SLEEPFH~ #32 //DV
+BUT_ONLY

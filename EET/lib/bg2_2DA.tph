@@ -1501,6 +1501,52 @@ BUT_ONLY
 */
 
 /////                                                  \\\\\
+///// TOOLTIP.2DA                                     \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~TOOLTIP.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~$~ ~ ~
+
+INCLUDE ~EET/lib/tooltip.tpa~
+
+COPY - ~EET/temp/array/TOOLTIP.2DA~ ~EET/temp/array~
+	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~$~ ~ ~
+	COUNT_2DA_ROWS 3 "cntrow"
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		SET update = 0
+		SPRINT strings ~~
+		READ_2DA_ENTRY cnt 0 3 "name"
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~TOOLTIP.2DA~ ~^%name%[ ]~)) BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~^[0-9]+[ ]+%name%\([ ]+.+\)$~ BEGIN
+				SPRINT match ~%MATCH1%~
+				INNER_PATCH_SAVE match ~%match%~ BEGIN
+					REPLACE_EVALUATE CASE_INSENSITIVE ~[ ]\([0-9]+\)[ ]+~ BEGIN
+						PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~TOOLTIP.2DA~ ~[ ]%MATCH1%[ ]~)) BEGIN
+							SPRINT strings ~%strings% @%MATCH1% ~
+						END ELSE BEGIN
+							SPRINT strings ~%strings% %MATCH1% ~
+						END
+						SET update = 1
+					END
+					~~
+				END
+			END
+			~~
+		END
+		PATCH_IF (update = 1) BEGIN
+			INNER_PATCH_SAVE strings ~%strings%~ BEGIN
+				REPLACE_TEXTUALLY ~ $~ ~~
+			END
+			PATCH_PRINT ~Patching TOOLTIP.2DA: %name% %strings%~
+			INNER_ACTION BEGIN
+				LAF ~ADD_ITEM_TOOLTIPS~ STR_VAR item = EVAL ~%name%~ tooltips = EVAL ~%strings%~ END
+			END
+		END
+	END
+
+/////                                                  \\\\\
 ///// XPBONUS.2DA                                      \\\\\
 /////                                                  \\\\\
 

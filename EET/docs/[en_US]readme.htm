@@ -519,7 +519,7 @@
 </ul>
 
 <div class="important" pbzloc="315">
-<p pbzloc="324">I'd like to change how the above works to get rid of Black Pits from the main menu and use the slot for Baldur's Gate 2 instead. Unfortunately worldmap GUI button is disabled when the BP game is started and as far as I know it can be changed only via exe patching. If someone is interested in helping out with this task than please contact me.</p>
+<p pbzloc="324">I'd like to change how the above works to get rid of Black Pits from the main menu and use the slot for Baldur's Gate 2 instead. Unfortunately worldmap GUI button is disabled when the BP game is started and as far as I know it can be changed only via exe patching. If someone is interested in helping out with this task than please <a href="http://www.shsforums.net/user/6375-k4thos/">contact me</a>.</p>
 </div>
 
 <a id="FAQ2" name="FAQ2"></a>
@@ -560,17 +560,31 @@
 		<th class="tg">EET</th>
 	  </tr>
 	  <tr>
-		<td class="tg">Resource naming</td>
+		<td class="tg">Resource naming and conventions</td>
 		<td class="tg">BGT has a radical system of renaming the BG1 areas. The area prefix is still "AR", but the numbers have no bearing on the original BG1 area numbers. This is because BG1 area numbers conflict with those in BG2, and maintaining 'compatibility', the numbers need to changed. As an example, Candlekeep is AR2600 in BG1 but AR0015 in BGT. For another, AR4400 in BG1 is AR3300 in BGT. Area .BCS, .BMP, .MOS, .TIS, and .WED files follow the same naming convention as the .ARE files.<br>
 		<br>
-		For other resources, BGT keeps the original BG1 resource name as strictly as possible. However, the progressive nature of BGT takes into account incompatibilities with modifications founded and completed before the BGT-WeiDU revolution. For example, the modification 'Never,Ending Journey' uses IMOEN6.CRE, and so BGT compensates in this specific,case by renaming IMOEN6.CRE to IMOEN61.CRE. This is an unusual case,,and only a few others are present. Typically, BGT will prefix with "BG". For example, other 'Never Ending Journey' incompatibility, is WOLF.CRE, which BGT renames to BGWOLF.CRE.</td>
+		For other resources, BGT keeps the original BG1 resource name as strictly as possible. However, the progressive nature of BGT takes into account incompatibilities with modifications founded and completed before the BGT-WeiDU revolution. For example, the modification 'Never,Ending Journey' uses IMOEN6.CRE, and so BGT compensates in this specific, case by renaming IMOEN6.CRE to IMOEN61.CRE. This is an unusual case, and only a few others are present. Typically, BGT will prefix with "BG". For example, other 'Never Ending Journey' incompatibility, is WOLF.CRE, which BGT renames to BGWOLF.CRE. Due to 2 characters prefix there are instances where filenames had to be changed to fit in 8 characters limit (no common convention, usually by dropping 1 or 2 letters)<br>
+		<br>
+		BGT makes some technical changes to how the BG1 portion of the game operates within BG2:<br>
+		1. NPCs joinable in BG1 that also exists in BG2 (Edwin, Imoen, Jaheira, Minsc, Viconia) shares the same JOIN, POST and BANTER dialogue files. BGT appends BG1 dialogues at the end of BG2 files with additional variables to prevent incorrect text to show up (also forces mods to do the same).<br>
+		2. BG1 chapters has different numbers than in vanilla BG1 (Prologue is considered as Chapter 1 instead of 0, so chapter globals are incremented by one relative to the actual chapter number)<br>
+		3. BGT for some reason changes all BG1 entrances and most door names instead of living them as they were in BG1, which results in area incompatibility between platforms<br>
+		4. to make BGT compatible with mega-mods Ascension64 decided to make some controversial changes (for example changed Dynaheir <em>Death Variable</em>)
+		</td>
 		<td class="tg">EET has a straightforward system of renaming the BG1 areas. The numbers are untouched, but the prefix "AR" is changed to "BG". This maintains the consistency and validity of BG1 area references from a number of public documents, including walkthroughs, travel maps, and the like. Therefore, these documents can be referred to for an area number guide to EET, except that the prefix change from "AR" to "BG" must be considered when, for example, using the CLUAConsole, or when developing BG1 modifications. Area related files, all use the same naming guidelines as the .ARE files.<br>
 		<br>
-		Like BGT, EET keeps the original BG1 non area resource name as strictly as possible. There is no point in changing the name if both BG:EE and BG2:EE share the same resources. For conflicting resources BG1 ones have suffix with the underscore (_) to make them unique. Since the engine only supports 8.3 filenames, 8-character resources from BG1 have their last character replaced by the underscore character, or have "0" character removed if replacing the last character would result in overlapping resource names.</td>
+		Like BGT, EET keeps the original BG1 non area resource name as strictly as possible. There is no point in changing the name if both BG:EE and BG2:EE share the same resources. For conflicting resources BG1 ones have suffix with the underscore (_) to make them unique. Since the engine only supports 8.3 filenames, 8-character resources from BG1 have their last character replaced by the underscore character (only 2 files: endcrdit.wbm => endcrdi_.wbm, blackpit.wbm => blackpi_.wbm), or have "0" character removed if replacing the last character would result in overlapping resource names (skelwa02.cre => skelwa2_.cre, skelwa03.cre => skelwa3_.cre, also used for random item tables that looks the same as in vanilla BG:EE but with dropped 0).<br>
+		<br>
+		On technical level EET aims to stay as close as possible to BG:EE:<br>
+		1. BG:EE JOIN (file that has all NPC normal dialogues) and POST (conversation when NPC is leaving the party) dialogue files for joinable NPCs uses standard EET renaming convention (underscore suffix) to prevent conflicts with BG2 files. This approach allows modders to write/edit NPC dialogues without worrying about conflicts between games and eliminates a problem with finding correct dialogue block numbers within the file. Only BANTER dialogues are appended (engine limitation).<br>
+		2. EET uses the same chapter numbers as BG1/BG:EE<br>
+		3. Entrances and Door names unchanged<br>
+		4. EET makes changes to BG:EE files only to prevent conflicts with BG2:EE, not to force them on modders just because some megamod author didn't bother to use community standard prefixes...
+		</td>
 	  </tr>
 	  <tr>
 		<td class="tg">BG1->SoA transition</td>
-		<td class="tg">The BGT transition is a compulsory core component, and the nature of it can be considered the minimal-extended type. After killing Sarevok, the final movie displays but the credits do not show and force the player back to the main menu. Instead, the game continues and a string is displayed suggesting the player should go to the Duchal Palace. There, they will meet Belt. Interestingly, if Belt was killed during Sarevok's foibled coronation, Belt still appears for the transition. Belt conjures up a cover story, revised by seanas, about continuing tensions between Baldur's Gate and Amn and asks the player to deliver a message to the Council of Six. The details are sketchy, but Belt teleports the players to an undisclosed location near Amn. There, a cutscene is only shown, where Shadow Thieves led by Mae'Var ambush the players and take them to Irenicus' dungeon. This cutscene also serves as the vehicle through which many journal entries are removed, items are checked for importation, and NPC transitions are made, if applicable. When in Irenicus' dungeon, the Shadows of Amn introduction movie is played, then Shadows of Amn proper commences.<br></td>
+		<td class="tg">The BGT transition is a compulsory core component, and the nature of it can be considered the minimal-extended type. After killing Sarevok, the final movie displays but the credits do not show and force the player back to the main menu. Instead, the game continues and a string is displayed suggesting the player should go to the Duchal Palace. There, they will meet Belt. Interestingly, if Belt was killed during Sarevok's foible coronation, Belt still appears for the transition. Belt conjures up a cover story about continuing tensions between Baldur's Gate and Amn and asks the player to deliver a message to the Council of Six. The details are sketchy, but Belt teleports the players to an undisclosed location near Amn. There, a cutscene is only shown, where Shadow Thieves led by Mae'Var ambush the players and take them to Irenicus' dungeon. This cutscene also serves as the vehicle through which many journal entries are removed, items are checked for importation, and NPC transitions are made, if applicable. When in Irenicus' dungeon, the Shadows of Amn introduction movie is played, then Shadows of Amn proper commences.<br></td>
 		<td class="tg">There's nothing that I could write here from the story standpoint. For now EET transition to BG2 starts right after the final BG1 battle. In future, this part of the game will be expanded to fully merge in upcoming <a href="http://forums.beamdog.com/discussion/40963/the-adventure-y-swords-not-words-only-facts">Adventure Y</a>, official expansion made by Beamdog and approved by Wizards of the Coas, so hopefully a quality content that will expand upon "leaving Baldur's Gate under circumstances much darker than anyone would have believed" quote from BG2 intro. As for the technical differences, EET transition script is not limited to the party members like in BGT. For example if you had Jaheira and Khalid any time during your game, and then dumped them some way down the road, Jaheira will still transition to BG2 portion of the game (missing XP from the BG2 version counterpart will be added, so you don't need to worry about it). If NPC dies then you won't find him/her in BG2 (except Imoen and Edwin - these 2 are required due to the plot).</td>
 	  </tr>
 	  <tr>
@@ -599,20 +613,22 @@
 	  </tr>
 	  <tr>
 		<td class="tg">Other<br></td>
-		<td class="tg">1. Weapons shattering as in BG1. Similar functionality to EET can be achieved via BGT Tweaks mod, although in more demanding and not mod friendly way (via expanding local scripts attached to all creatures in game).<br>
-		2. Familiars as in BG2 (same ones in both BG1 and BG2).<br>
-		3. BG2 portion of the game can be started from the main menu (SoA button replaces tutorial).<br>
-		4. Tutorial not available.<br>
-		5. Built in support for mega-mods (TDD, SOS, TS, CtB, RoT, NEJ).<br>
-		6. Built in worldmap that covers vanilla BG1, TotSC and BG2 areas. ToB as a separate map (vanilla one). Optional support for BP-BGT Worldmap.<br>
-		7. <a href="http://www.shsforums.net/files/file/67-baldurs-gate-trilogy-tweak-pack-11/">BGT Tweaks</a>.<br></td>
-		<td class="tg">1. <a href="#FAQ2">Altered shattering system</a> to make it mod friendly, more efficient performance wise, expanded to cover additional items types and affect everyone on the Swoard Coast during BG1 portion of the game.<br>
-		2. Familiars in BG1 portion of the game uses files from BG:EE, which are far weaker than their equivalents that can be summoned once you reach BG2 and ToB.<br>
-		3. In order to start BG2 portion of the game without completing BG1 you need to start a new game and read a book that will be added to your inventory (engine limitation).<br>
-		4. As above - tutorial can be optionally started via one of the books that you will receive at the start of Candlekeep prologue.<br>
-		5. Built in support for BG:EE mods. Support for mega-mods will be added if needed once such mods become available for BG2:EE (although not via renaming conflicting vanilla BG:EE files as BGT does. I think it's not optimal to create more headaches for modders when the same outcome can be achieved via editing the mods itself).<br>
-		6. All games and expansions (BG1, TotSC, BG2, ToB, Adventure Y) takes place at the same worldmap. Optional support for BP-BGT Worldmap and new external worldmaps (engine feature).<br>
-		7. <a href="">EET Tweaks</a>.<br></td>
+		<td class="tg">1. BG2 engine.<br>
+		2. Weapons shattering as in BG1. Similar functionality to EET can be achieved via BGT Tweaks mod, although in more demanding and not mod friendly way (via expanding local scripts attached to all creatures in game).<br>
+		3. Familiars as in BG2, vanilla hardcoded implementation (same ones in both BG1 and BG2).<br>
+		4. BG2 portion of the game can be started from the main menu (SoA button replaces tutorial).<br>
+		5. Tutorial not available.<br>
+		6. Built in support for mega-mods (TDD, SOS, TS, CtB, RoT, NEJ).<br>
+		7. Built in worldmap that covers vanilla BG1 (map scaled down), TotSC and BG2 areas. ToB as a separate map (vanilla one). Optional support for BP-BGT Worldmap.<br>
+		8. <a href="http://www.shsforums.net/files/file/67-baldurs-gate-trilogy-tweak-pack-11/">BGT Tweaks</a>.<br></td>
+		<td class="tg">1. BG2:EE engine (enhanced modding possibilities like unhardcoded animation support,  <a href="http://gibberlings3.net/forums/index.php?showtopic=27181">ini spawns</a>, <a href="http://gibberlings3.net/forums/index.php?showtopic=27199">unlimited random loot</a> and much more.<br>
+		2. <a href="#FAQ2">Altered shattering system</a> to make it mod friendly, more efficient performance wise, expanded to cover additional items types and affect everyone on the Swoard Coast during BG1 portion of the game.<br>
+		3. Familiars in BG1 portion of the game uses files from BG:EE, which are far weaker than their equivalents that can be summoned once you reach BG2 and ToB.<br>
+		4. In order to start BG2 portion of the game without completing BG1 you need to start a new game and read a book that will be added to your inventory (engine limitation).<br>
+		5. As above - tutorial can be optionally started via one of the books that you will receive at the start of Candlekeep prologue.<br>
+		6. Built in support for BG:EE mods. Support for mega-mods will be added if needed once such mods become available for BG2:EE (although not via renaming conflicting vanilla BG:EE files as BGT does. I think it's not optimal to create more headaches for modders when the same outcome can be achieved via editing the mods itself).<br>
+		7. All games and expansions (BG1, TotSC, BG2, ToB, Adventure Y) takes place at the same worldmap (vanilla map sizes combined into 1 worldmap in BG2 style). Optional support for BP-BGT Worldmap and new external worldmaps (engine feature).<br>
+		8. <a href="">EET Tweaks</a>.<br></td>
 	  </tr>
 	</table>
 	<br />
@@ -636,9 +652,15 @@
 		<li><a href="http://forum.baldursgate.com/discussion/15959/mod-twas-a-slow-boat-from-kara-tur-queststorenew-items-release-90/p1">T'was a Slow Boat from Kara-Tur</a> Release .90</li>
 		<li><a href="http://forum.baldursgate.com/discussion/39422/bg1npc-v21-and-bg1npc-music-pack-v6/p1">The BG1 NPC Project</a> Version 21</li>
 		<li><a href="http://forum.baldursgate.com/discussion/39422/bg1npc-v21-and-bg1npc-music-pack-v6/p1">The BG1 NPC Project Music Pack</a> Version 6</li>
+		<li><a href="http://forums.beamdog.com/discussion/comment/610198">Indira NPC for BG1 Tutu</a> v12.0 BETA 2</li>
 		<li><a href="http://www.gibberlings3.net/murneth/">Mur'Neth NPC mod</a> for Baldur's Gate Tutu or Baldur's Gate Trilogy-WeiDU: v11</li>
+		<li><a href="http://forum.baldursgate.com/discussion/17042/mod-xans-friendship-for-bgee-is-available/p1">Xan's friendship path for BG1</a> Version 9</li>
+		<li><a href="http://forum.baldursgate.com/discussion/39423/corans-bg-extended-friendship-talks-v4/p1">Coran's BG Extended Friendship Talks</a> for Tutu, BGT, and BGEE Version 4</li>
+		<li><a href="http://forums.beamdog.com/discussion/33019/finch-v4-0-beta-7-for-tutu-bg-ee-and-bgt/p1">Finch NPC mod</a> for Tutu, BGT and BG:EE v4.0 BETA 7</li>
+		<li><a href="http://www.gibberlings3.net/gavin/">Gavin NPC mod </a> for Tutu, BGT-WeiDU, BG:EE v9</li>
 		<li><a href="http://forum.baldursgate.com/discussion/14092/mod-valerie-npc-for-bgee-bgt-tutu/p1">Valerie NPC Mod</a> for BG1 Tutu: v1.1</li>
 		<li><a href="http://forum.baldursgate.com/discussion/14158/mod-isra-npc-for-bgee-bgt-tutu-released/p1">Isra NPC Mod</a> for BG:EE, BGT and TuTu Version: 2.1</li>
+		<li><a href="http://www.gibberlings3.net/garrick/">Garrick's Infatuation</a> for BG Version b0925</li>
 		<li><a href="http://forum.baldursgate.com/discussion/29207/vynd-drow-assassin-npc-now-available-for-bg-ee-tutu-and-trilogy/p1">Vynd NPC Mod</a> for BGTutu, BGT and BG:EE Version 1</li>
 		<li><a href="http://www.gibberlings3.net/bg_romanticencounters">Baldur's Gate Romantic Encounters Modification</a> Version 1.3</li>
 		<li><a href="http://forums.beamdog.com/discussion/38254/bg1-unfinished-business-v14-beta-with-bgee-compatibility-updated-2015-02-28">BG1 Unfinished Business</a> Version 14 [BETA]</li>
@@ -680,7 +702,7 @@
 
 <p><strong>Why would I even want to visit them again?</strong></p>
 
-<p>Now, that's a good question... Maybe it's just me, but I've never accepted BGT as a true seamless experience because the game still felt to me like 3 completely separate ones with BG1->BG2 transition added on top of it. Even if there is nothing new to do there right now, other than finishing some missed quests, and collecting items, the feeling that you can travel everywhere may be valuable for some players. Other than this EET creates opportunities for modders to create new adventures and surprises designed for higher level parties that for example visits Baldur's Gate city in late BG2 or during ToB portion of the game. Also thanks to the enhancements made to EE engine it's now possible to create custom spawns for high level parties without tons of code or conflicts, which may prove useful for hypothetical mods that could try to make old places interesting for returning parties. In other words it can treated as a playground for modders to add new stuff to the game. If someone will take advantage of these new possibilities remains to be seen.</p>
+<p>Now, that's a good question... Maybe it's just me, but I've never accepted BGT as a true seamless experience because the game still felt to me like 3 completely separate ones with BG1->BG2 transition added on top of it. Even if there is nothing new to do there right now, other than finishing some missed quests, and collecting items, the feeling that you can travel everywhere may be valuable for some players. Other than this EET creates opportunities for modders to create new adventures and surprises designed for higher level parties that for example visits Baldur's Gate city in late BG2 or during ToB portion of the game. Also thanks to the enhancements made to EE engine it's now possible to create <a href="http://gibberlings3.net/forums/index.php?showtopic=27181">custom spawns</a> for high level parties without tons of code or conflicts, which may prove useful for hypothetical mods that could try to make old places interesting for returning parties. In other words it can be treated as a playground for modders to add new stuff to the game. If someone will take advantage of these new possibilities remains to be seen.</p>
 
 <address><span class="footer">EET > FAQ</span> ·<a href="#top">BACK TO TOP</a></address>
 </div>
@@ -746,11 +768,12 @@
 	<li>Many thanks to Argent77 for Near Infinity development, TileConv compressor and for advices regarding PVRZ files</li>
 	<li>Many thanks to Ascension64 whose work on BGT-WeiDU inspired this mod. Also for code examples and PCU conversion macros that were adopted to EET.</li>
 	<li>Many thanks to Bardez who created the original Baldur's Gate Trilogy</li>
-	<li>Many thanks to Beamdog for creating Enhanced Edition of Infinity Engine games</li>
+	<li>Many thanks to Beamdog for creating Enhanced Editions of Infinity Engine games</li>
 	<li>Many thanks to Bioware and Black Isle Studios for creating Baldur's Gate series</li>
 	<li>Many thanks to Crevs Daak for GitHub contribution to the project</li>
 	<li>Many thanks to dex909 for worldmap art</li>
 	<li>Many thanks to Fouinto for beta testing</li>
+	<li>Many thanks to Mike1072 for tooltip.2da patching code</li>
 	<li>Many thanks to Pecca (Renegade) for permission to use his GUI resources</li>
 	<li>Many thanks to Sam. for converting BG1 movies to HD</li>
 	<li>Many thanks to Spellhold Studios for HTML template and for hosting my mods</li>

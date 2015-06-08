@@ -1,0 +1,380 @@
+BACKUP ~PCU_custom/backup~
+AUTHOR ~K4thos (swit)~
+VERSION ~beta 0.1~
+
+BEGIN ~PCU_custom~
+NO_LOG_RECORD
+
+OUTER_SPRINT option ~~
+OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 4) || (option < 1) BEGIN
+	PRINT ~Choose conversion platform:
+ 1. BG:EE -> EET
+ 2. EET -> BG:EE
+ 3. BGT -> EET
+ 4. any platform -> EET cpmvars (baf/bcs/d/dlg/tbl/tp2/tph/tpp only)~
+	ACTION_READLN option
+END
+
+OUTER_SPRINT type ~~
+ACTION_IF (option < 4) BEGIN
+	OUTER_WHILE NOT (IS_AN_INT %type%) || (type > 2) || (type < 1) BEGIN
+		PRINT ~Choose conversion type:
+ 1. full convertion
+ 2. only patch files
+ 3. only rename files~
+		ACTION_READLN type
+	END
+END ELSE BEGIN
+	OUTER_SET type = 1
+	OUTER_SPRINT platform ~~
+	OUTER_WHILE NOT (IS_AN_INT %platform%) || (platform > 4) || (platform < 1) BEGIN
+		PRINT ~Choose which platform should be converted to cpmvars:
+ 1. BG:EE
+ 2. EET
+ 3. BGT
+ 4. Tutu~
+		ACTION_READLN platform
+	END
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// PCU conversion                                   \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+PRINT ~~
+PRINT ~PCU conversion...~
+
+<<<<<<<< PCU_custom-inlined/blank.txt
+>>>>>>>>
+
+OUTER_SPRINT slash ~/~
+
+INCLUDE ~PCU_custom/lib/macros.tph~
+
+ACTION_IF (option = 1) BEGIN //BG:EE -> EET
+	INCLUDE ~PCU_custom/lib/PCU_Dict_bgee-eet.tph~
+END ELSE ACTION_IF (option = 2) BEGIN //EET -> BG:EE
+	INCLUDE ~PCU_custom/lib/PCU_Dict_eet-bgee.tph~
+END ELSE ACTION_IF (option = 3) BEGIN //BGT -> EET
+	INCLUDE ~PCU_custom/lib/PCU_Dict_bgt-eet.tph~
+END ELSE ACTION_IF (option = 4) BEGIN //any platform -> cpmvars
+	INCLUDE ~PCU_custom/lib/PCU_Dict_cpmvars.tph~
+END
+
+//FOR variables
+OUTER_SET count = 0
+OUTER_SET cntrow = 0
+OUTER_SET cnt = 0
+OUTER_SET cntare = 0
+OUTER_SET cntcre = 0
+OUTER_SET cntwav = 0
+
+//reporting variables
+OUTER_SET are_check = 0
+OUTER_SET baf_check = 0
+OUTER_SET bcs_check = 0
+OUTER_SET cre_check = 0
+OUTER_SET d_check = 0
+OUTER_SET dlg_check = 0
+OUTER_SET eff_check = 0
+OUTER_SET gam_check = 0
+OUTER_SET itm_check = 0
+OUTER_SET spl_check = 0
+OUTER_SET sto_check = 0
+OUTER_SET tra_check = 0
+OUTER_SET tp2_check = 0
+OUTER_SET vvc_check = 0
+OUTER_SET wed_check = 0
+OUTER_SET wmp_check = 0
+OUTER_SET tbl_check = 0
+OUTER_SET ignore_check = 0
+OUTER_SET ren_check = 0
+
+//create file list for conversion
+AT_NOW ~PCU_custom/MakeList.bat~
+
+MKDIR ~PCU_custom/Output~
+
+COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
+	SPRINT list_input ~	~
+	SET number = 0
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^Input[/\\]+\(.+\)$~ BEGIN
+		SET number = number + 1
+		PATCH_IF (number = 1) BEGIN
+			SPRINT list_number ~%number%~
+		END ELSE BEGIN
+			SPRINT list_number ~%list_number%
+%number%~
+		END
+		SPRINT list_input ~%list_input%%MATCH1%	~
+	END
+	~~
+
+/*COPY ~PCU_custom-inlined/blank.txt~ ~PCU_custom/Filelist.txt~
+
+OUTER_SPRINT list_input ~	~
+OUTER_SET number = 0
+ACTION_BASH_FOR ~PCU_custom/input~ ~^.+$~ BEGIN
+	OUTER_SET number = number + 1
+	ACTION_IF (number = 1) BEGIN
+		OUTER_SPRINT list_number ~%number%~
+	END ELSE BEGIN
+		OUTER_SPRINT list_number ~%list_number%
+%number%~
+	END
+	OUTER_SPRINT list_input ~%list_input%%BASH_FOR_FILE%	~
+END*/
+
+OUTER_PATCH_SAVE ~list_input~ ~%list_input%~ BEGIN
+	REPLACE_TEXTUALLY ~ ~ ~?~
+	REPLACE_TEXTUALLY ~\\~ ~/~
+END
+
+OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
+	PATCH_IF (option != 4) AND (type != 2) BEGIN
+		FOR (i=1; i<="%resref_2da_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_2da_source%i%"
+			SPRINT name_dest "resref_2da_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.2DA\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_are_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_are_source%i%"
+			SPRINT name_dest "resref_are_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.ARE\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(HT\.BMP\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(LM\.BMP\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(SR\.BMP\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(LN\.BMP\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_bam_source%i%"
+			SPRINT name_dest "resref_bam_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BAM\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_bmp_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_bmp_source%i%"
+			SPRINT name_dest "resref_bmp_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BMP\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_bcs_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_bcs_source%i%"
+			SPRINT name_dest "resref_bcs_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BCS\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BAF\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_cre_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_cre_source%i%"
+			SPRINT name_dest "resref_cre_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.CRE\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_dlg_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_dlg_source%i%"
+			SPRINT name_dest "resref_dlg_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.D\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.DLG\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_eff_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_eff_source%i%"
+			SPRINT name_dest "resref_eff_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.EFF\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_itm_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_itm_source%i%"
+			SPRINT name_dest "resref_itm_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.ITM\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_mos_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_mos_source%i%"
+			SPRINT name_dest "resref_mos_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.MOS\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_mve_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_mve_source%i%"
+			SPRINT name_dest "resref_mve_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.MVE\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WBM\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_spl_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_spl_source%i%"
+			SPRINT name_dest "resref_spl_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.SPL\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_sto_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_sto_source%i%"
+			SPRINT name_dest "resref_sto_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.STO\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_tis_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_tis_source%i%"
+			SPRINT name_dest "resref_tis_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.TIS\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.TIZ\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.MOS\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WED\)~ ~\1%resref_index_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_wav_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_wav_source%i%"
+			SPRINT name_dest "resref_wav_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WAV\)~ ~\1%resref_index_dest%\2~
+		END
+	END
+END
+
+COPY + ~PCU_custom-inlined/blank.txt~ ~PCU_custom/Filelist.txt~
+APPEND_OUTER + ~PCU_custom/Filelist.txt~ ~%list_number%~
+APPEND_COL_OUTER + ~PCU_custom/Filelist.txt~ ~%list_input%~
+APPEND_COL_OUTER + ~PCU_custom/Filelist.txt~ ~%list_output%~
+
+//conversion
+PRINT ~Please be patient during the conversion process. This may take some time...~
+
+MKDIR ~PCU_custom/Output~
+COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
+	REPLACE_TEXTUALLY ~ ~ ~	~ //just for easier importing to spreadsheet if needed
+	COUNT_2DA_ROWS 3 "cntrow" //count every single row
+	PATCH_PRINT ~%cntrow% entries parsed, commencing patching...~
+	FOR (count = 0; count < "%cntrow%"; count = count + 1) BEGIN
+		SET cntcurrent = "%count%" + 1
+		READ_2DA_ENTRY "%count%" 1 3 "patch_name"
+		READ_2DA_ENTRY "%count%" 2 3 "patch_output"
+		INNER_PATCH_SAVE ~patch_name~ ~%patch_name%~ BEGIN
+			REPLACE_TEXTUALLY ~\?~ ~ ~
+		END
+		INNER_PATCH_SAVE ~patch_ext~ ~%patch_name%~ BEGIN
+			REPLACE_TEXTUALLY ~^.+\.~ ~~
+		END
+		INNER_PATCH_SAVE ~patch_output~ ~%patch_output%~ BEGIN
+			REPLACE_TEXTUALLY ~\?~ ~ ~
+		END
+		INNER_PATCH_SAVE ~patch_dir~ ~%patch_output%~ BEGIN
+			REPLACE_TEXTUALLY ~[^/]+$~ ~~
+		END
+		SET checked = 0
+		SET updated = 0
+		PATCH_IF ((~%patch_name%~ STRING_EQUAL_CASE ~%patch_output%~)=0) BEGIN
+			PATCH_PRINT ~Renaming %patch_name% to %patch_output%...~
+			SET updated = 1
+			SET ren_check = ren_check + 1
+		END
+		PATCH_SILENT
+		INNER_ACTION BEGIN
+			ACTION_IF ~%patch_ext%~ STRING_EQUAL_CASE ~2DA~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~BAM~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~BMP~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~MOS~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~MVE~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~TIS~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~TIZ~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~WAV~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~WBM~ BEGIN
+				ACTION_IF ("%updated%" = 1) BEGIN
+					MKDIR ~PCU_custom/Output/%patch_dir%~
+					COPY_LARGE ~PCU_custom/input/%patch_name%~ ~PCU_custom/output/%patch_output%~
+				END
+			END ELSE BEGIN
+				COPY - ~PCU_custom/input/%patch_name%~ ~PCU_custom_inlined/output/%patch_output%~
+					PATCH_IF (type < 3) BEGIN
+						READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
+						LAUNCH_PATCH_MACRO ~PCU_core_patch~
+					END
+			END
+			ACTION_IF ("%checked%" = 0) BEGIN
+				OUTER_SET ignore_check = ignore_check + 1
+				PRINT ~%cntcurrent%/%cntrow% Ignoring patching %patch_name%...~
+			END ELSE ACTION_IF ("%updated%" = 1) BEGIN
+				MKDIR ~PCU_custom/Output/%patch_dir%~
+				COPY ~PCU_custom_inlined/output/%patch_output%~ ~PCU_custom/output/%patch_output%~
+			END
+		END
+		PATCH_VERBOSE
+	END
+
+PRINT ~Conversion complete. Statistics:
+ARE %are_check%
+BAF %baf_check%
+BCS %bcs_check%
+CRE %cre_check%
+D   %d_check%
+DLG %dlg_check%
+EFF %eff_check%
+GAM %gam_check%
+ITM %itm_check%
+SPL %spl_check%
+STO %sto_check%
+TP* %tp2_check%
+TRA %tra_check%
+VVC %vvc_check%
+WED %wed_check%
+WMP %wmp_check%
+TBL %tbl_check%
+
+%ignore_check% files patching ignored.
+%ren_check% files renamed.~
+
+AT_NOW ~copy SETUP-PCU_CUSTOM.DEBUG PCU_custom/Output/SETUP-PCU_CUSTOM.DEBUG~ //file is blank when copied within weidu
+
+OUTER_SPRINT log ~~
+COPY + ~PCU_custom/Output/SETUP-PCU_CUSTOM.DEBUG~ ~PCU_custom/Output~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Patching PCU_custom.+\)$~ BEGIN
+		SPRINT log ~%log%%MATCH1%%LNL%~
+	END
+	~~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Renaming .+\)$~ BEGIN
+		SPRINT log ~%log%%MATCH1%%LNL%~
+	END
+	~~
+
+COPY + ~PCU_custom-inlined/blank.txt~ ~PCU_custom/Output/Changes.txt~
+APPEND_OUTER + ~PCU_custom/Output/Changes.txt~ ~%log%~
+
+ACTION_IF FILE_EXISTS ~PCU_custom/Output/Changes.txt~ BEGIN
+	AT_INTERACTIVE_EXIT ~VIEW PCU_custom/Output/Changes.txt~
+END

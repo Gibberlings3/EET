@@ -76,6 +76,36 @@ END
 		DayNight(MIDNIGHT)
 		StartCutScene("X#DYDEAD")~
 		END
-		REPLACE_BCS_BLOCK ~EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf~ ~EET-inlined/blank.baf~
+		REPLACE_BCS_BLOCK ~EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf~ ~EET-inlined/blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf in %SOURCE_FILE%.~ END
 	BUT_ONLY
 END
+
+//delete files existing in BG2:EE
+DELETE + ~%patch_dir%/itm/brac25.itm~
+	~%patch_dir%/itm/dagg11.itm~
+	~%patch_dir%/itm/dragred1.itm~
+	~%patch_dir%/itm/dragring.itm~
+	~%patch_dir%/itm/dragsil1.itm~
+	~EET/temp/wav/imppp04.wav~
+	~EET/temp/wav/IRENIC01.wav~
+	~EET/temp/wav/IRENIC03.wav~
+	~EET/temp/wav/IRENIC04.wav~
+	~EET/temp/wav/IRENIC05.wav~
+	~EET/temp/wav/IRENIC06.wav~
+	~EET/temp/wav/itemharp.wav~
+	~%patch_dir%/itm/minhp20.itm~
+	~%patch_dir%/itm/misc3m.itm~
+	~%patch_dir%/itm/misc3n.itm~
+	~%patch_dir%/itm/misc3o.itm~
+	~%patch_dir%/dlg/PLAYER1.dlg~
+	~%patch_dir%/itm/plot05d.itm~
+	~%patch_dir%/itm/sahbolt.itm~
+	~EET/temp/bmp/sarevoks.bmp~
+	~%patch_dir%/itm/scrl8i.itm~
+	~%patch_dir%/itm/scrl9h.itm~
+	~%patch_dir%/itm/seeinvis.itm~
+	~%patch_dir%/itm/vamp.itm~
+	~%patch_dir%/itm/vamp1.itm~
+	~%patch_dir%/itm/vamp2.itm~
+	~%patch_dir%/itm/vamp3.itm~
+	~%patch_dir%/itm/vampreg2.itm~

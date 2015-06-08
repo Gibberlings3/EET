@@ -856,7 +856,7 @@ COPY + ~EET/temp/array/RNDEQUIP.2DA~ ~EET/temp/array~
 		SET_2DA_ENTRY cnt 0 1 ~%item%%value%_~
 		SET resref_itm_total = resref_itm_total + 1
 		SPRINT EVAL "resref_itm_source%resref_itm_total%" "%item%0%value%"
-		SPRINT EVAL "resref_itm_dest%resref_itm_total%" "%item%%value%_"		
+		SPRINT EVAL "resref_itm_dest%resref_itm_total%" "%item%%value%_"
 		INNER_ACTION BEGIN
 			ACTION_IF NOT FILE_EXISTS_IN_GAME ~%item%%value%_.ITM~ BEGIN
 				COPY_EXISTING ~RNDTRE01.ITM~ ~override/%item%%value%_.ITM~
@@ -3246,6 +3246,12 @@ COPY_EXISTING ~worldmap.wmp~ ~override~
 	WRITE_LONG wmap_off + 0x8 ~1550~
 	WRITE_LONG wmap_off + 0xc ~2160~
 	WRITE_ASCII wmap_off + 0x30 ~bpbgtmap~ #8
+
+/////                                                  \\\\\
+///// Fixpack                                          \\\\\
+/////                                                  \\\\\
+
+INCLUDE ~EET/lib/bgee_fixpack.tph~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\

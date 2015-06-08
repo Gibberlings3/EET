@@ -1,0 +1,76 @@
+OUTER_INNER_PATCH ~1~ BEGIN
+  WRITE_BYTE 0 0x09
+  READ_ASCII 0 tab (1)  // 0x09, tab
+  WRITE_BYTE 0 0x0d
+  READ_ASCII 0 mnl (1)  // 0x0d, Mac
+END
+
+DEFINE_PATCH_FUNCTION ~TRA2STR~ // given tra reference, returns string
+  STR_VAR tra = ~~ // e.g. ~@123~
+  RET str
+BEGIN
+  PATCH_IF ((~%tra%~ STRING_MATCHES_REGEXP ~@-?[0-9]+~) == 0) BEGIN
+    INNER_ACTION BEGIN
+      <<<<<<<< .../inlined/mi_tra2str.tph
+        OUTER_SPRINT str %tra%
+      >>>>>>>>
+      COPY - ~.../inlined/mi_tra2str.tph~ ~.../inlined/mi_tra2str.tph~
+        EVALUATE_BUFFER
+      REINCLUDE ~.../inlined/mi_tra2str.tph~
+    END
+  END
+  ELSE BEGIN
+    TEXT_SPRINT str ~%tra%~
+  END
+END
+
+DEFINE_ACTION_FUNCTION ~ADD_ITEM_TOOLTIPS~
+  STR_VAR item = ~~     // e.g. ~sw1h01~
+          tooltips = ~~ // e.g. ~@123 @124 6620~, takes combination of tra refs and strrefs for as many abilities as you need to specify
+BEGIN
+  ACTION_IF (STRING_LENGTH ~%item%~ > 0) BEGIN
+    // generate our row to add to tooltip.2da
+    OUTER_TEXT_SPRINT row ~%item%~
+    OUTER_PATCH ~ %tooltips%~ BEGIN // extract our tooltips from the tooltips string
+      REPLACE_EVALUATE ~[ %tab%]+\(@?-?[0-9]+\)~ BEGIN
+        PATCH_IF ((~%MATCH1%~ STRING_MATCHES_REGEXP ~@-?[0-9]+~) == 0) BEGIN // tra ref
+          // look up string for given tra reference
+          LAUNCH_PATCH_FUNCTION ~TRA2STR~ STR_VAR tra = EVALUATE_BUFFER ~%MATCH1%~ RET str = str END
+          // use REPLACE to get a strref for our new string
+          INNER_PATCH ~0~ BEGIN
+            REPLACE ~0~ ~%str%~
+            READ_2DA_ENTRY 0 0 1 strref
+          END
+          TEXT_SPRINT row ~%row% %strref%~ // add to our row
+        END
+        ELSE BEGIN // strref
+          TEXT_SPRINT row ~%row% %MATCH1%~ // add to our row
+        END
+      END ~~
+    END
+    
+    COPY_EXISTING ~tooltip.2da~ ~override~
+      REPLACE_TEXTUALLY ~^[ %tab%]*%item%[ %tab%].*~ ~~ // remove previous row for this item if it exists
+      COUNT_2DA_ROWS 1 num_rows
+      INSERT_2DA_ROW num_rows 1 ~%row%~ // insert our row at the end
+      
+      // ensure all rows have -1 entries in unused columns
+      REPLACE_TEXTUALLY ~^[ %tab%]*0?[ %tab%]*1[ %tab%]+2[ %tab%]+3.*~ ~~ // remove column labels for now
+      COUNT_2DA_COLS num_cols
+      TEXT_SPRINT entries ~~
+      TEXT_SPRINT col_labels ~~
+      FOR (i = 1; i < (num_cols - 1); i += 1) BEGIN // for each number of columns less than there should be
+        TEXT_SPRINT entries ~%entries%[ %tab%]+[0-9-]+~ // generate regexp to detect this many columns
+        TEXT_SPRINT empties ~~
+        FOR (j = (num_cols - 1); j > i; j -= 1) BEGIN // generate -1 entries for the number of missing columns
+          TEXT_SPRINT empties ~%empties% -1~
+        END
+        REPLACE_TEXTUALLY ~^\([ %tab%]*[^ %tab%]+%entries%\)[ %tab%]*[%mnl%]?$~ ~\1%empties%~ // add -1 entries to all rows with this many missing columns
+        TEXT_SPRINT col_labels ~%col_labels% %i%~ // generate fresh column labels
+      END
+      INSERT_2DA_ROW 2 1 ~%col_labels% %i%~ // re-add column labels, with last entry where i == (num_cols - 1)
+      PRETTY_PRINT_2DA
+      REPLACE_TEXTUALLY ~2DA +~ ~2DA ~
+    
+  END
+END

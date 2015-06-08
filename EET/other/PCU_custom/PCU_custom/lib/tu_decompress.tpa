@@ -1,0 +1,27 @@
+DEFINE_PATCH_MACRO tu_decompress BEGIN
+	LOCAL_SPRINT type ~~
+	LOCAL_SET size=BUFFER_LENGTH
+	LOCAL_SET ln=LONG_AT 4
+	READ_ASCII 3 type (1)
+	PATCH_IF ~%type%~ STRING_EQUAL ~C~ BEGIN //only touch compressed files
+		READ_ASCII 0 type (4)
+		PATCH_MATCH ~%type%~ WITH
+		~BAMC~ BEGIN
+			PATCH_IF NOT ENGINE_IS ~soa tob iwd2~ BEGIN //these engines support compressed bams
+				READ_LONG 8 ln
+				DECOMPRESS_REPLACE_FILE 12 %size%-12 ln
+			END
+		END
+		~BMPC~ BEGIN //uncompressed header is BM
+			DECOMPRESS_INTO_FILE 8 %size%-8 ln 2 %size%
+		END
+		~AREC~  BEGIN
+			DECOMPRESS_INTO_FILE 8 %size%-8 ln 4 %size%
+			WRITE_ASCII 3 ~A~ #1
+		END
+		DEFAULT
+			DECOMPRESS_INTO_FILE 8 %size%-8 ln 4 %size%
+			WRITE_ASCII 3 ~ ~ #1
+		END
+	END
+END //macro
