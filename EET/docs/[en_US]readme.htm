@@ -382,7 +382,7 @@
 <p>EET requires the following:</p>
 
 <div class="important" pbzloc="321">
-<p pbzloc="323">The BG2:EE installation (patch v1.3 is required) must be a "clean" installation; no modifications whatsoever should be installed on it.</p>
+<p pbzloc="323">The BG2:EE installation (patch v1.3 is required) should be a "clean" installation. Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
 </div>
 
 <div class="important" pbzloc="315">
@@ -390,7 +390,7 @@
 </div>
 
 <div class="important" pbzloc="318">
-<p>At least 3.0 GB of free disk space for the installation process (after installation is complete the size is optimized). For virtual memory purposes, at least 4.0 GB of free disk space is recommended during installation. Once the installation is complete EET modification occupies at least 1.7 GB of disk space (depending on the amount of mods installed on BG:EE, before EET is installed on BG2:EE).</p>
+<p>At least GB of free disk space for the installation process (after installation is complete the size is optimized). For virtual memory purposes, at least GB of free disk space is recommended during installation. Once the installation is complete EET modification occupies at least GB of disk space (depending on the amount of mods installed on BG:EE, before EET is installed on BG2:EE).</p>
 </div>
 
 <div class="important" pbzloc="315">
@@ -459,9 +459,13 @@
 
 			<p>m or M - suppress failed installation message that normally shows up if BG:EE installation contains mods not listed on EET BG:EE mods compatibility list (not recommended unless you really know what you are doing).</p>
 
-			<p>d or D - keep EET installation files (at least 1GB) after the installation is complete (for debug purposes only, they are not necessary to uninstall/reinstall the mod)</p>
+			<p>d or D - keep EET installation files (at least 3.2GB) after the installation is complete (for debug purposes only, they are not necessary to uninstall/reinstall the mod)</p>
 			
 			<p>p or P - pre-define the full path to the Baldur's Gate: Enhanced Edition directory; if the path is invalid, setup will prompt for a valid path</p>
+			
+			<p>q or Q followed by number from 0 to 9 (without whitespace) - allows you to change TIS conversion quality from default 0 up to 9. Not necessary as direct comparisons in zoomed images didn't present any quality loss of the TIS file. Values higher than 0 may slow down the installation process significantly</p>
+			
+			<p>j or J followed by number from 0 to 16 (without whitespace) - another tile2ee tool setting. It allows to change default 0 value (auto-detect) up to 16. The number represents amount of "jobs" that this tool will perform at once during conversion (multi-tasking). It's recommended to keep the value at default - this way tool will automatically detect suggested amount of jobs depending on number of cores and threads of your CPU.</p>
 			</td>
 		</tr>
 		<tr>
@@ -475,10 +479,10 @@
 <p>Example:</p>
 
 <div class="important">
-<p>Setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list 1p "C:\Program Files (x86)\BeamDog\Games\00766"</p>
+<p>Setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list 1q0j0p "C:\Program Files (x86)\BeamDog\Games\00766"</p>
 </div>
 
-<p>This construction installs EET with the English language, automatically updates weidu.conf file located in BG:EE directory to use the same language as the one chosen for EET installation (if such unusual situation occurs), and pre-defines the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00766.</p>
+<p>This construction installs EET with the English language, automatically updates weidu.conf file located in BG:EE directory to use the same language as the one chosen for EET installation (if such unusual situation occurs), and pre-defines the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00766. q0 and j0 sets amount of jobs/quality of TIS to default values, so won't change anything (usage showcased here just as an example in case you want to increase them).</p>
 
 <address><span class="footer">EET > Installation and Uninstallation</span> ·<a href="#top">BACK TO TOP</a></address>
 </div>
@@ -599,7 +603,7 @@
 		Thanks to this approach the installation is fast and fluid. According to BGT readme file installation time will depend on the abilities of your system, but as a rough estimate installation may take anywhere from 20 minutes to 1 hour. In my experience these estimates are rather pessimistic. You can expect the installation on mid range laptop to take closer to 10-15 minutes.<br></td>
 		<td class="tg">EET took entirely different conversion method than BGT. Instead of coming with pre-made files, all resources are converted "on the fly", thanks to the great macros created by A64 in his <a href="http://forums.gibberlings3.net/index.php?showtopic=8119">Platform Conversion Utility (PCU)</a>, that have been expanded by me to cover whole game. This approach allows EET to be compatible with changing EE games content (massive differences in each patch released by Beamdog) with little to no changes in EET code. Every resource or reference to resource that need to be renamed, are identified during installation and updated if necessary. Additional benefit of this type of conversion is compatibility with many BG:EE mods (installed on BG:EE previous to installing EET on BG2:EE) without need for modders to adopt code to another platform.<br>
 		<br>
-		The downside of this approach is longer installation time compared to BGT. On mid range laptop (without SSD) it can take 30-40 minutes, and with dialogue heavy mods installed on BG:EE the installation may be even longer.<br></td>
+		The downside of this approach is longer installation time compared to BGT. On mid range laptop (without SSD) it can take 30-40 minutes, and with dialogue heavy mods installed on BG:EE the installation may be even longer. Due to <a href="http://forums.beamdog.com/discussion/34001/graphical-problem-after-importing-areas-from-bg1-ee-to-bg2-ee-water-with-weird-overlay">problem with watter</a> that currently can be fixed only by extracting PVRZ files to TIS, you can add another 10-20 minutes to the installation time, depending on your CPU (this step will be skipped in future if Beamdog decide to add proper BG:EE TIS water support to BG2:EE engine at some point)<br></td>
 	  </tr>
 	  <tr>
 		<td class="tg">Bug-fixes</td>
@@ -765,7 +769,7 @@
 
 <ul>
 	<li>Many thanks to AL|EN for advices and support during EET development</li>
-	<li>Many thanks to Argent77 for Near Infinity development, TileConv compressor and for advices regarding PVRZ files</li>
+	<li>Many thanks to Argent77 for Near Infinity development, TileConv compressor and tile2ee tool</li>
 	<li>Many thanks to Ascension64 whose work on BGT-WeiDU inspired this mod. Also for code examples and PCU conversion macros that were adopted to EET.</li>
 	<li>Many thanks to Bardez who created the original Baldur's Gate Trilogy</li>
 	<li>Many thanks to Beamdog for creating Enhanced Editions of Infinity Engine games</li>
@@ -807,7 +811,7 @@
 <p>Tools distributed with this package are under following open licenses:
 <ul>
 	<li>Oggdec and SoX are available under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a> (oggdec source code is available within the <a href="http://www.xiph.org/downloads/">vorbis-tools</a> package, SoX source code can be found at <a href="http://sox.sourceforge.net/">sourceforge</a>)</li>
-	<li>tileconv is distributed under the terms and conditions of the <a href="http://opensource.org/licenses/MIT">MIT license</a>, source code available at <a href="https://github.com/Argent77/tileconv">GitHub</a></li>
+	<li>tileconv and tile2ee are distributed under the terms and conditions of the <a href="http://opensource.org/licenses/MIT">MIT license</a>, source code available at <a href="https://github.com/Argent77/">GitHub</a></li>
 	<li>WeiDU is distributed under the <a href="http://www.gnu.org/licenses/lgpl-3.0.html">LGPL public license</a>, source code available at <a href="http://www.weidu.org/">weidu.org</a></li>
 </ul>
 
@@ -822,7 +826,7 @@
 
 <p><a href="#" onclick="toggle('1.0'); return false;">Expand/Collapse All</a></p>
 
-<h6><a href="#" onclick="toggle('1.0'); return false;">Version 1.0 (01 Jan 15)</a></h6>
+<h6><a href="#" onclick="toggle('1.0'); return false;">Version 1.0 (01 August 15)</a></h6>
 
 <ul class="vlisthide" id="1.0">
 	<li>First public release</li>

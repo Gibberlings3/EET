@@ -8,3 +8,15 @@ COPY_EXISTING ~SW1H79.ITM~ ~override~
 	LPF ADD_ITEM_EFFECT INT_VAR opcode = 177 /*Use EFF File*/ target = 2 timing = 1 parameter1 = 4 parameter2 = 3 probability1 = 100 type = 1 STR_VAR resource = "UNDEDDAM" END
 	LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 177 /*Use EFF File*/ target = 1 timing = 2 parameter1 = 0 parameter2 = 2 probability1 = 100 STR_VAR resource = "UNDEDHIT" END
 BUT_ONLY
+
+//IMPORT2.2DA in BG2:EE tries to import unique SLNG03.ITM from BG:EE. It points to common sling +3 but the correct item itself already exists in BG2:EE under the SLNG05.ITM name.
+
+//not needed, already converted by PCU patching
+/*COPY_EXISTING ~BG0514.ARE~ ~override~
+	LPF REPLACE_AREA_ITEM STR_VAR old_item = SLNG03 new_item = SLNG05 END
+BUT_ONLY*/
+
+COPY_EXISTING ~IMPORT02.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~ SLNG03$~ ~ SLNG05~
+BUT_ONLY

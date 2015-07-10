@@ -1255,13 +1255,15 @@ OUTER_SET resref_are_total = 484
 ///// Preparing BAM variables                          \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT resref_bam_source1 "ISW1H18"
-OUTER_SPRINT resref_bam_source2 "ISW2H17"
+OUTER_SPRINT resref_bam_source1 "IMISC13"
+OUTER_SPRINT resref_bam_source2 "ISW1H18"
+OUTER_SPRINT resref_bam_source3 "ISW2H17"
 
-OUTER_SPRINT resref_bam_dest1 "ISW1H18_"
-OUTER_SPRINT resref_bam_dest2 "ISW2H17_"
+OUTER_SPRINT resref_bam_dest1 "IMISC13_"
+OUTER_SPRINT resref_bam_dest2 "ISW1H18_"
+OUTER_SPRINT resref_bam_dest3 "ISW2H17_"
 
-OUTER_SET resref_bam_total = 2
+OUTER_SET resref_bam_total = 3
 
 /////                                                  \\\\\
 ///// Preparing BCS variables                          \\\\\
@@ -2560,6 +2562,16 @@ OUTER_SPRINT resref_itm_dest22 "FAMQUAS_"
 OUTER_SPRINT resref_itm_dest23 "FAMRAB_"
 
 OUTER_SET resref_itm_total = 23 //during installation this value is increased with random items that are moved to randtres.2da
+
+//not changed yet, waiting what Beamdog will come up with http://forums.beamdog.com/discussion/39817/fallorains-plate-should-not-be-a-generic-plate-mail-1-and-should-be-unique-in-the-game
+//also http://gibberlings3.net/forums/index.php?showtopic=23896
+//will probably need to write a component via EET_Tweaks that will make these items unique
+//SW1H09
+//PLAT02
+//LEAT07
+//SLNG03 -> SLNG05 //IMPORT2.2DA in BG2:EE tries to import unique SLNG03.ITM from BG:EE. It points to common sling +3 but the correct item itself already exists in BG2:EE under the SLNG05.ITM name
+//SW2H07
+//SW2H08
 
 /////                                                  \\\\\
 ///// Preparing SPL variables                          \\\\\

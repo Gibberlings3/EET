@@ -18,8 +18,8 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 			SPRINT name_dest "resref_are_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - AREA~ END ~\1%resref_index_dest%\2~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - AREA~ END ~%resref_index_dest%\1~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - AREA~ END ~\1deleteMeDummy%resref_index_dest%\2~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~^%resref_index_source%\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - AREA~ END ~deleteMeDummy%resref_index_dest%\1~
 		END
 
 		FOR (i="%resref_exit_8start%"; i<"%resref_exit_6start%"; i=i+1) BEGIN
@@ -27,7 +27,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ENTRY_NAME~ END ~\1%resref_index_dest%\2~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ENTRY_NAME~ END ~\1deleteMeDummy%resref_index_dest%\2~
 		END
 
 		FOR (i="%resref_exit_6start%"; i<"%resref_exit_7start%"; i=i+1) BEGIN
@@ -35,7 +35,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([0-9A-Za-z][0-9A-Za-z]\)\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source%%MATCH2% => %resref_index_dest%%MATCH2% - ENTRY_NAME~ END ~\1%resref_index_dest%\2\3~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([0-9A-Za-z][0-9A-Za-z]\)\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source%%MATCH2% => %resref_index_dest%%MATCH2% - ENTRY_NAME~ END ~\1deleteMeDummy%resref_index_dest%\2\3~
 		END
 
 		FOR (i="%resref_exit_7start%"; i<"%resref_exit_5start%"; i=i+1) BEGIN
@@ -43,7 +43,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([0-9A-Za-z]\)\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source%%MATCH2% => %resref_index_dest%%MATCH2% - ENTRY_NAME~ END ~\1%resref_index_dest%\2\3~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([0-9A-Za-z]\)\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source%%MATCH2% => %resref_index_dest%%MATCH2% - ENTRY_NAME~ END ~\1deleteMeDummy%resref_index_dest%\2\3~
 		END
 
 		FOR (i="%resref_exit_5start%"; i<="%resref_exit_total%"; i=i+1) BEGIN
@@ -51,8 +51,10 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([0-9A-Za-z][0-9A-Za-z][0-9A-Za-z]\)\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source%%MATCH2% => %resref_index_dest%%MATCH2% - ENTRY_NAME~ END ~\1%resref_index_dest%\2\3~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ 	]+\)%resref_index_source%\([0-9A-Za-z][0-9A-Za-z][0-9A-Za-z]\)\([ 	]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source%%MATCH2% => %resref_index_dest%%MATCH2% - ENTRY_NAME~ END ~\1deleteMeDummy%resref_index_dest%\2\3~
 		END
+
+		REPLACE_TEXTUALLY ~deleteMeDummy~ ~~
 
 		SET tbl_check += 1
 		SET checked = 1
@@ -62,7 +64,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//GAM patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.GAM$")=0) AND (option != 4) BEGIN
+	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.GAM$")=0) AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching gam version 1.1 file %patch_name%...~
 
@@ -122,7 +124,7 @@ DEFINE_PATCH_MACRO ~PCU_core_patch~ BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//ARE patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "AREAV1.0") AND (SOURCE_SIZE > 0x11b) AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "AREAV1.0") AND (SOURCE_SIZE > 0x11b) AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching area version 1.0 file %patch_name%...~
 
@@ -1382,7 +1384,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CRE patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ AND (option != 5) BEGIN
 
 		//Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
 		LPF ~FJ_CRE_VALIDITY~ RET vl=valid END
@@ -2352,7 +2354,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//EFF patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "EFF V2.0") AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "EFF V2.0") AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching effect version 2.0 file %patch_name%...~
 
@@ -2613,7 +2615,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//ITM patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "ITM V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "ITM V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching item version 1.0 file %patch_name%...~
 
@@ -2918,7 +2920,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//SPL patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SPL V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SPL V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching spell version 1.0 file %patch_name%...~
 
@@ -3190,7 +3192,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//STO patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "STORV1.0") AND (SOURCE_SIZE > 0x9b) AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "STORV1.0") AND (SOURCE_SIZE > 0x9b) AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching store version 1.0 file %patch_name%...~
 
@@ -3312,7 +3314,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//TRA patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TRA$")=0) AND (option != 4) BEGIN
+	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TRA$")=0) AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching WeiDU translation file %patch_name%...~
 
@@ -3344,10 +3346,10 @@ CO") BEGIN
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
 			LAUNCH_PATCH_MACRO ~BAF_ARE_replace~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ ~"/\\]+\)%resref_index_source%\(\.ARE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ARE~ END ~\1%resref_index_dest%\2~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%resref_index_source%\(\.ARE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ARE~ END ~%resref_index_dest%\1~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([~"]+\)%resref_index_source%\(["~]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ARE~ END ~\1%resref_index_dest%\2~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ /]+\)%resref_index_source%\([^!A-Za-z0-9@#$\%&\*()\[\]|`~"':;\?\\/\.>,%resref_index_source% => %resref_index_dest% - =+-_ ]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: <ARE~ END ~\1%resref_index_dest%\2~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ ~"/\\]+\)%resref_index_source%\(\.ARE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ARE~ END ~\1deleteMeDummy%resref_index_dest%\2~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%resref_index_source%\(\.ARE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ARE~ END ~deleteMeDummy%resref_index_dest%\1~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([~"]+\)%resref_index_source%\(["~]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ARE~ END ~\1deleteMeDummy%resref_index_dest%\2~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ /]+\)%resref_index_source%\([^!A-Za-z0-9@#$\%&\*()\[\]|`~"':;\?\\/\.>,%resref_index_source% => %resref_index_dest% - =+-_ ]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: <ARE~ END ~\1deleteMeDummy%resref_index_dest%\2~
 		END
 
 		//door names
@@ -3356,7 +3358,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_door_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		FOR (i="%resref_door_6start%"; i<"%resref_door_7start%"; i=i+1) BEGIN
@@ -3364,7 +3366,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_door_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		FOR (i="%resref_door_7start%"; i<"%resref_door_5start%"; i=i+1) BEGIN
@@ -3372,7 +3374,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_door_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		FOR (i="%resref_door_5start%"; i<="%resref_door_total%"; i=i+1) BEGIN
@@ -3380,7 +3382,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_door_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - door~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		//entrance names
@@ -3389,7 +3391,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		FOR (i="%resref_exit_6start%"; i<"%resref_exit_7start%"; i=i+1) BEGIN
@@ -3397,7 +3399,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		FOR (i="%resref_exit_7start%"; i<"%resref_exit_5start%"; i=i+1) BEGIN
@@ -3405,7 +3407,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		FOR (i="%resref_exit_5start%"; i<="%resref_exit_total%"; i=i+1) BEGIN
@@ -3413,7 +3415,7 @@ CO") BEGIN
 			SPRINT name_dest "resref_exit_dest%i%"
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~"%resref_index_source%~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~"deleteMeDummy%resref_index_dest%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(["~]\)%resref_index_source%~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - entrance~ END ~~~~~\1deleteMeDummy%resref_index_dest%~~~~~
 		END
 
 		REPLACE_TEXTUALLY ~deleteMeDummy~ ~~
@@ -3536,7 +3538,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//VVC patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VVC V1.0") AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VVC V1.0") AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching VVC version 1.0 file %patch_name%...~
 
@@ -3612,7 +3614,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//WED patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WED V1.3") AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WED V1.3") AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching WED version 1.3 file %patch_name%...~
 
@@ -3650,7 +3652,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//WMP patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WMAPV1.0") AND (option != 4) BEGIN
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WMAPV1.0") AND (option != 5) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching worldmap version 1.0 file %patch_name%...~
 
@@ -4453,7 +4455,7 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DEFINE_PATCH_MACRO ~BAF_CHAPTER_replace~ BEGIN
-	PATCH_IF (option >= 3) BEGIN
+	PATCH_IF (option = 3) OR (option = 5) BEGIN
 		REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN
 			PATCH_IF (option = 3) BEGIN //BGT -> EET

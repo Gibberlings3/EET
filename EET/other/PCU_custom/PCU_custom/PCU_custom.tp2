@@ -6,18 +6,19 @@ BEGIN ~PCU_custom~
 NO_LOG_RECORD
 
 OUTER_SPRINT option ~~
-OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 4) || (option < 1) BEGIN
+OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 5) || (option < 1) BEGIN
 	PRINT ~Choose conversion platform:
  1. BG:EE -> EET
  2. EET -> BG:EE
  3. BGT -> EET
- 4. any platform -> EET cpmvars (baf/bcs/d/dlg/tbl/tp2/tph/tpp only)~
+ 4. custom
+ 5. any platform -> EET cpmvars (baf/bcs/d/dlg/tbl/tp2/tph/tpp only)~
 	ACTION_READLN option
 END
 
 OUTER_SPRINT type ~~
-ACTION_IF (option < 4) BEGIN
-	OUTER_WHILE NOT (IS_AN_INT %type%) || (type > 2) || (type < 1) BEGIN
+ACTION_IF (option < 5) BEGIN
+	OUTER_WHILE NOT (IS_AN_INT %type%) || (type > 3) || (type < 1) BEGIN
 		PRINT ~Choose conversion type:
  1. full convertion
  2. only patch files
@@ -61,7 +62,9 @@ END ELSE ACTION_IF (option = 2) BEGIN //EET -> BG:EE
 	INCLUDE ~PCU_custom/lib/PCU_Dict_eet-bgee.tph~
 END ELSE ACTION_IF (option = 3) BEGIN //BGT -> EET
 	INCLUDE ~PCU_custom/lib/PCU_Dict_bgt-eet.tph~
-END ELSE ACTION_IF (option = 4) BEGIN //any platform -> cpmvars
+END ELSE ACTION_IF (option = 4) BEGIN // custom
+	INCLUDE ~PCU_custom/lib/PCU_Dict_custom.tph~
+END ELSE BEGIN //any platform -> cpmvars
 	INCLUDE ~PCU_custom/lib/PCU_Dict_cpmvars.tph~
 END
 
@@ -135,7 +138,7 @@ OUTER_PATCH_SAVE ~list_input~ ~%list_input%~ BEGIN
 END
 
 OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
-	PATCH_IF (option != 4) AND (type != 2) BEGIN
+	PATCH_IF (option != 5) AND (type != 2) BEGIN
 		FOR (i=1; i<="%resref_2da_total%"; i=i+1) BEGIN
 			SPRINT name_source "resref_2da_source%i%"
 			SPRINT name_dest "resref_2da_dest%i%"
