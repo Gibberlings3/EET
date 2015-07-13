@@ -1,7 +1,7 @@
 COPY + ~%patch_dir%/itm/CMBRQ04.ITM~ ~%patch_dir%/itm~
 	WRITE_ASCII 0x3a ~IBRAC24#~ #8
 
-COPY ~EET/compat/DarkHorizonsBGee/Ibrac24.bam~ ~override/Ibrac24#.bam~
+COPY ~EET/compat/DarkHorizonsBGee/Ibrac24.bam~ ~%biff_dir%/Ibrac24#.bam~
 
 //these items has wrong Ability Effect index numbering, which may lead to out of bound reading (100% in CMSTQ04.ITM case)
 ACTION_BASH_FOR ~EET/compat/DarkHorizonsBGee~ ~.*.itm~ BEGIN

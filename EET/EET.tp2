@@ -223,8 +223,11 @@ COPY ~EET-inlined/bgee_dir.txt~ ~EET/bgee_dir.txt~ EVALUATE_BUFFER
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 	COPY ~%bgee_dir%/WeiDU.log~ ~override~ //store the file in override, so other mods could check if components have been installed on BG:EE
 		REPLACE_TEXTUALLY ~^//.*~ ~~//removes "Recently uninstalled" lines
+	ACTION_IF (FILE_CONTAINS ~override/WeiDU.log~ ~SETUP-SOA\.TP2. #[0-9]+ #0 ~) BEGIN
+		FAIL ~You've installed wrong Stone of Askavar component. EET is compatible with BP-BGT Worldmap version (option 2 during installation).~
+	END
 	ACTION_IF (FILE_CONTAINS ~override/WeiDU.log~ ~DRIZZTSAGA\.TP2. #[0-9]+ #0 ~) BEGIN
-		FAIL ~You've installed wrong Drizzt Saga component. EET is compatible with BP-BGT Worldmap version (option 2 during Drizzt Saga installation).~
+		FAIL ~You've installed wrong Drizzt Saga component. EET is compatible with BP-BGT Worldmap version (option 2 during installation).~
 	END
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~
@@ -490,7 +493,7 @@ ACTION_BASH_FOR ~%biff_dir%/v2/tis~ ~^.+\.tis$~ BEGIN
 END
 
 /////                                                  \\\\\
-///// tis2bg2 conversion                                \\\\\
+///// tis2bg2 conversion                               \\\\\
 /////                                                  \\\\\
 
 ACTION_FOR_EACH var IN bmp mos wed BEGIN
@@ -508,8 +511,6 @@ COPY + ~EET/base/palette~ ~%biff_dir%~
 
 COPY + ~%tis2bg2%~ ~%biff_dir%~
 OUTER_SPRINT tis2bg2 ~EET%os_slash%temp%os_slash%biff%os_slash%tis2bg2%exe%~
-
-MKDIR ~%biff_dir%/eetMis0~
 
 //alternative way to convert files, currently disabled
 /*ACTION_FOR_EACH dir IN AR00 AR01 AR02 AR03 AR04 AR05 AR06 AR07 AR08 AR09 AR10 AR11 AR12 AR13 AR14 AR15 AR16 AR17 AR18 AR19 AR20 AR21 AR22 AR23 AR24 AR26 AR27 AR28 AR29 AR30 AR31 AR32 AR33 AR34 AR35 AR36 AR37 AR38 AR39 AR40 AR41 AR42 AR43 AR44 AR45 AR46 AR47 AR48 AR49 AR50 AR51 AR52 AR53 AR54 AR55 AR56 AR57 AR58 AR59 AR60 AR61 OH2 OH3 OH9 TU00 BEGIN
@@ -549,10 +550,20 @@ MOVE + ~%biff_dir%/OH3000N.BMP~ ~%biff_dir%/eetOH3~
 	~%biff_dir%/AR0506AC.TIS~ ~%biff_dir%/eetAR05/BG0506AC.TIS~
 	~%biff_dir%/AR0506AO.TIS~ ~%biff_dir%/eetAR05/BG0506AO.TIS~
 
+MKDIR ~%biff_dir%/eetMis0~
+OUTER_SET currentTotal = 0
+OUTER_SET currentFile = 0
+
 ACTION_BASH_FOR ~%biff_dir%~ ~^.+\.tis$~ BEGIN
 	ACTION_IF FILE_EXISTS ~%biff_dir%/%BASH_FOR_RES%.wed~ BEGIN
-		PRINT ~tis2bg2 conversion: %BASH_FOR_RES% => eetMis0/%BASH_FOR_RES%~
-		AT_NOW ~%tis2bg2% -d -h -l -s "%BASH_FOR_RES%" "eetMis0%os_slash%%BASH_FOR_RES%"~
+		ACTION_IF ( BASH_FOR_SIZE + currentTotal > 30000000 /* 30M */ && currentTotal > 0 ) BEGIN
+			OUTER_SET currentFile = currentFile + 1
+			OUTER_SET currentTotal = 0
+			MKDIR ~EET/temp/biff/eetMis%currentFile%~
+		END
+		PRINT ~tis2bg2 conversion: %BASH_FOR_RES% => eetMis%currentFile%/%BASH_FOR_RES%~
+		AT_NOW ~%tis2bg2% -d -h -l -s "%BASH_FOR_RES%" "eetMis%currentFile%%os_slash%%BASH_FOR_RES%"~
+		OUTER_SET currentTotal = currentTotal + BASH_FOR_SIZE
 	END
 END
 
@@ -3275,9 +3286,6 @@ ACTION_FOR_EACH file IN areas.tbl links.tbl trans.tra BEGIN
 	//EET worldmap
 	ACTION_IF (~%file%~ STRING_EQUAL_CASE ~areas.tbl~) BEGIN
 		COPY + ~EET/tbl/map_bgee_areas.tbl~ ~EET/temp/map_eet_areas.tbl~
-			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_areas.tbl~) BEGIN
-				APPEND_FILE ~EET/temp/map_mods_areas.tbl~
-			END
 			APPEND_FILE ~EET/temp/map_bg2_areas.tbl~
 			APPEND_FILE ~EET/temp/map_tob_areas.tbl~
 	END ELSE BEGIN
@@ -3391,9 +3399,14 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Bb]~ = 1) BEGIN //b not dected i
 	MAKE_BIFF ~eetWAV~ BEGIN ~EET/temp/wav~ ~^.*$~ END
 	MAKE_BIFF ~eetBAM~ BEGIN ~EET/temp/bam~ ~^.*$~ END
 	MAKE_BIFF ~eetIWD~ BEGIN ~EET/base/animation~ ~^.*$~ END
-	OUTER_SET currentTotal = 0
-	OUTER_SET currentFile = 0
+	//OUTER_SET currentTotal = 0
+	//OUTER_SET currentFile = 0
 	//MKDIR ~EET/temp/biff/eetMis0~ //already created
+	OUTER_SET biff_temp = currentFile
+	OUTER_WHILE (biff_temp > 0) BEGIN
+		OUTER_SET biff_temp = biff_temp - 1
+		MAKE_BIFF ~eetMis%biff_temp%~ BEGIN ~EET/temp/biff/eetMis%biff_temp%~ ~^.*$~ END
+	END
 	ACTION_BASH_FOR ~EET/temp/biff~ ~^.*$~ BEGIN
 		ACTION_IF ( BASH_FOR_SIZE + currentTotal > 30000000 /* 30M */ && currentTotal > 0 ) BEGIN
 			MAKE_BIFF ~eetMis%currentFile%~ BEGIN ~EET/temp/biff/eetMis%currentFile%~ ~^.*$~ END
@@ -3477,8 +3490,13 @@ END ELSE BEGIN
 		~EET/temp/wav~ ~override~
 		~EET/temp/bam~ ~override~
 		~EET/base/animation~ ~override~
-		~EET/temp/biff/eetMis0~ ~override~
 		~EET/temp/biff~ ~override~
+		~EET/temp/biff/eetMis0~ ~override~
+	OUTER_SET biff_temp = currentFile
+	OUTER_WHILE (biff_temp > 0) BEGIN
+		COPY_LARGE ~EET/temp/biff/eetMis%biff_temp%~ ~override~
+		OUTER_SET biff_temp = biff_temp - 1
+	END
 END
 
 /////                                                  \\\\\

@@ -33,8 +33,7 @@ ACTION_FOR_EACH file IN BG1 BG2 BEGIN
 		READ_2DA_ENTRIES_NOW read 1
 		COUNT_2DA_ROWS 1 cntrow
 		PATCH_PRINT ~%cntrow% lines in filelist%file%.txt~
-	ACTION_BASH_FOR ~override~ ~^.+$~ BEGIN
-		COPY ~%BASH_FOR_FILESPEC%~ ~override~
+		PATCH_BASH_FOR ~override~ ~^.+$~ BEGIN
 			FOR (cnt = 0; cnt < cntrow; cnt = cnt + 1) BEGIN
 				READ_2DA_ENTRY_FORMER read cnt 0 "name"
 				PATCH_IF (("%BASH_FOR_FILE%" STRING_EQUAL_CASE "%name%")=1) BEGIN
@@ -43,8 +42,7 @@ ACTION_FOR_EACH file IN BG1 BG2 BEGIN
 					SET cnt = cntrow
 				END
 			END
-		BUT_ONLY
-	END
+		END
 END
 
 COPY + ~blank.txt~ ~BGEE_to_EET_mod_checker/list.txt~
