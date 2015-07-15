@@ -717,7 +717,7 @@ BUT_ONLY
 
 <<<<<<<< EET-inlined/BG2600-et.baf
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   !PartyHasItem("K#TELTUT")
 THEN
     RESPONSE #100
@@ -726,7 +726,7 @@ THEN
 END
 
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   !PartyHasItem("K#TELBG2")
 THEN
     RESPONSE #100
@@ -736,7 +736,7 @@ END
 
 //STWEAPON.2DA that exists in BG:EE doesn't seem to work in BG2:EE
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   !HasItem("staf01",Player1)
   !HasItemSlot(Player1,SLOT_WEAPON)
   !Class(Player1,MONK)
@@ -749,7 +749,7 @@ THEN
 END
 
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   InPartyAllowDead(Player2)
   !HasItem("staf01",Player2)
   !HasItemSlot(Player2,SLOT_WEAPON)
@@ -763,7 +763,7 @@ THEN
 END
 
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   InPartyAllowDead(Player3)
   !HasItem("staf01",Player3)
   !HasItemSlot(Player3,SLOT_WEAPON)
@@ -777,7 +777,7 @@ THEN
 END
 
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   InPartyAllowDead(Player4)
   !HasItem("staf01",Player4)
   !HasItemSlot(Player4,SLOT_WEAPON)
@@ -791,7 +791,7 @@ THEN
 END
 
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   InPartyAllowDead(Player5)
   !HasItem("staf01",Player5)
   !HasItemSlot(Player5,SLOT_WEAPON)
@@ -805,7 +805,7 @@ THEN
 END
 
 IF
-  Global("Chapter","GLOBAL",-1)
+  Global("K#NewGame","BG2600",0)
   InPartyAllowDead(Player6)
   !HasItem("staf01",Player6)
   !HasItemSlot(Player6,SLOT_WEAPON)
@@ -815,6 +815,15 @@ THEN
     GiveItemCreate("staf01",Player6,1,1,0)
     ActionOverride(Player6,FillSlot(SLOT_WEAPON))
     ActionOverride(Player6,EquipMostDamagingMelee())
+    Continue()
+END
+
+IF
+  Global("K#NewGame","BG2600",0)
+THEN
+  RESPONSE #100
+    CreateCreatureObject("K#BIO",Player1,0,0,0)
+	SetGlobal("K#NewGame","BG2600",1)
     Continue()
 END
 >>>>>>>>

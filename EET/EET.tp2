@@ -1026,9 +1026,30 @@ END
 //0xED30 - 0xEDFF - free
 //0xEE20 - 0xEEFF - free
 
-ACTION_FOR_EACH "var" IN IDS TLK 2DA CRE ITM BCS DLG BEGIN
+ACTION_FOR_EACH var IN IDS TLK 2DA CRE ITM BCS DLG BEGIN
 	INCLUDE ~EET/lib/bg2_%var%.tph~
 END
+
+/////                                                  \\\\\
+///// Dynamic biography                                \\\\\
+/////                                                  \\\\\
+
+OUTER_SET bio = 0
+COPY ~EET/base/compile/baf/K#BIO.baf~ ~EET/base/compile/baf~
+	PATCH_FOR_EACH clastext IN ~%bio15881%~ /*FIGHTER_ALL*/ ~15888~ /*RANGER_ALL*/ ~15887~ /*PALADIN_ALL*/ ~15884~ /*CLERIC_ALL*/ ~15885~ /*DRUID_ALL*/ ~%bio15882%~ /*MAGE_ALL*/ ~15883~ /*THIEF_ALL*/ ~15886~ /*BARD_ALL*/ ~15884~ /*MONK*/ ~15889~ /*multi class*/ BEGIN
+		PATCH_FOR_EACH racetext IN ~15895~ /*HUMAN*/ ~15891~ /*ELF*/ ~15892~ /*HALF_ELF*/ ~15890~ /*DWARF*/ ~15893~ /*HALFLING*/ ~15894~ /*GNOME*/ ~%bio31709%~ /*HALF_ORC*/ BEGIN
+			GET_STRREF ~%clastext%~ bio_clas
+			GET_STRREF ~%racetext%~ bio_race
+			SET strref = RESOLVE_STR_REF ("%bio_clas%
+
+%bio_race%")
+			SET bio = bio + 1
+			REPLACE_TEXTUALLY ~,K#%bio%,~ ~,%strref%,~
+		END
+	END
+	GET_STRREF 33347 bio_bg2
+STRING_SET ~33347~ ~~
+STRING_SET ~15881~ ~%bio_bg2%~
 
 /////                                                  \\\\\
 ///// Compatibility patches                            \\\\\
