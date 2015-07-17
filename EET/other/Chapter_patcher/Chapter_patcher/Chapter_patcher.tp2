@@ -1,0 +1,179 @@
+BACKUP ~Chapter_patcher/backup~
+AUTHOR ~K4thos (swit)~
+VERSION ~beta 0.1~
+
+BEGIN ~Chapter_patcher for BG2 mods~
+NO_LOG_RECORD
+
+ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+<<<<<<<< Chapter_patcher-inlined/MakeList.bat
+@echo off
+cd Chapter_patcher
+
+IF NOT EXIST "Filelist.txt" GOTO NODELETE
+call deldir Output
+del Filelist.txt
+
+:NODELETE
+::create filelist
+xcopy Input\*.* /E /L >> Filelist.txt
+>>>>>>>>
+
+<<<<<<<< Chapter_patcher-inlined/deldir.bat
+VER |find /i "Windows 95" > NUL
+IF NOT ERRORLEVEL 1 GOTO OLDDEL
+
+VER |find /i "Windows 98" > NUL
+IF NOT ERRORLEVEL 1 GOTO OLDDEL
+
+VER |find /i "Windows Millennium" > NUL
+IF NOT ERRORLEVEL 1 GOTO OLDDEL
+
+VER | find "NT" > nul
+IF %errorlevel% EQU 0 GOTO OLDDEL
+
+VER | find "XP" > nul
+IF %errorlevel% EQU 0 GOTO NEWDEL
+
+VER | find "2000" > nul
+IF %errorlevel% EQU 0 GOTO NEWDEL
+
+:NEWDEL
+rd /s /q %1
+GOTO ENDDEL
+
+:OLDDEL
+deltree /y %1
+GOTO ENDDEL
+
+:ENDDEL
+>>>>>>>>
+	COPY ~Chapter_patcher-inlined/MakeList.bat~ ~Chapter_patcher~
+		~Chapter_patcher-inlined/deldir.bat~ ~Chapter_patcher~
+	AT_NOW ~CALL Chapter_patcher\MakeList.bat~
+END ELSE BEGIN
+	AT_NOW ~rm -rf Chapter_patcher/Output~
+	//add MAC/Linux MakeList code here
+END
+
+OUTER_SPRINT platformMATCH1 "AUTO_EVAL_STRINGS
+
+ALWAYS
+	ACTION_IF GAME_IS ~eet~ BEGIN
+		OUTER_SET bg2_chapter = 14
+	END ELSE BEGIN
+		OUTER_SET bg2_chapter = 0
+	END
+	OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+		OUTER_SET bg2_chapter = bg2_chapter + 1
+		OUTER_SPRINT name_source ~bg2_chapter_%i%~
+		OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+	END
+"
+
+OUTER_SET cntcurrent = 0
+OUTER_SET ignore_cnt = 0
+OUTER_SET patch_cnt = 0
+
+COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	COUNT_REGEXP_INSTANCES "^Input[/\\]+" cntrow
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^Input[/\\]+\(.+\)$~ BEGIN
+		SET cntcurrent = cntcurrent + 1
+		INNER_PATCH_SAVE ~patch_name~ ~%MATCH1%~ BEGIN
+			REPLACE_TEXTUALLY ~\\~ ~/~
+		END
+		INNER_PATCH_SAVE ~patch_ext~ ~%patch_name%~ BEGIN
+			REPLACE_TEXTUALLY ~^.+\.~ ~~
+		END
+		INNER_PATCH_SAVE ~patch_dir~ ~%patch_name%~ BEGIN
+			REPLACE_TEXTUALLY ~[^/]+$~ ~~
+		END
+		//PATCH_PRINT ~patch_name = %patch_name%; ;patch_dir = %patch_dir%; patch_ext = %patch_ext%~
+		SET patched = 0
+		INNER_ACTION BEGIN
+			ACTION_IF ~%patch_ext%~ STRING_EQUAL_CASE ~BAF~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~D~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~TP2~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~TPH~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
+				COPY - ~Chapter_patcher/Input/%patch_name%~ ~Chapter_patcher_inlined/Output/%patch_name%~
+					REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+						PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %MATCH1%%MATCH2%) => %MATCH1%%bg2_chapter_%MATCH2%%)~
+						SET patched = 1
+					END
+					~\1%bg2_chapter_%MATCH2%%)~
+					REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
+			END
+			ACTION_IF ("%patched%" = 0) BEGIN
+				OUTER_SET ignore_cnt = ignore_cnt + 1
+				PRINT ~%cntcurrent%/%cntrow% Ignoring patching: %patch_name%...~
+			END ELSE BEGIN
+				MKDIR ~Chapter_patcher/Output/%patch_dir%~
+				COPY ~Chapter_patcher_inlined/Output/%patch_name%~ ~Chapter_patcher/Output/%patch_name%~
+				OUTER_SET patch_cnt = patch_cnt + 1
+			END
+		END
+	END
+	~%MATCH1%~
+	PATCH_IF (patch_cnt > 0) BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~^\(.+\.tp2\)$~ BEGIN
+			INNER_PATCH_SAVE ~patch_name~ ~%MATCH1%~ BEGIN
+				REPLACE_TEXTUALLY ~\\~ ~/~
+			END
+			SET var_patch = 0
+			INNER_ACTION BEGIN
+				ACTION_IF NOT FILE_EXISTS ~Chapter_patcher/Output/%MATCH1%~ BEGIN
+					COPY ~Chapter_patcher/Input/%MATCH1%~ ~Chapter_patcher/Output/%MATCH1%~
+					OUTER_SET patch_cnt = patch_cnt + 1
+					OUTER_SET ignore_cnt = ignore_cnt - 1
+				END
+				COPY ~Chapter_patcher/Output/%MATCH1%~ ~Chapter_patcher/Output~
+					REPLACE_TEXTUALLY ~AUTO_EVAL_STRINGS~ ~~
+					COUNT_REGEXP_INSTANCES ~^[ 	]*ALWAYS[ 	]*.*[ 	]*$~ num_matches
+					PATCH_IF (num_matches > 0) BEGIN
+						REPLACE_EVALUATE CASE_SENSITIVE ~\(^[ 	]*ALWAYS\)~ BEGIN
+							PATCH_IF (var_patch = 0) BEGIN
+								SPRINT MATCH1 ~%platformMATCH1%~
+								SET var_patch = 1
+								PATCH_PRINT ~Patching %patch_name%: ALWAYS command expanded
+%MATCH1%~
+							END
+						END
+						~%MATCH1%~
+					END ELSE BEGIN
+						REPLACE_EVALUATE CASE_SENSITIVE ~^\([ 	]*LANGUAGE\)~ BEGIN
+							PATCH_IF (var_patch = 0) BEGIN
+								SPRINT MATCH1 ~%platformMATCH1%END
+
+%MATCH1%~
+								SET var_patch = 1
+								PATCH_PRINT ~Patching %patch_name%: ALWAYS command added
+%MATCH1%~
+							END
+						END
+						~%MATCH1%~
+						PATCH_IF (var_patch = 0) BEGIN
+							REPLACE_EVALUATE CASE_SENSITIVE ~^\([ 	]*BEGIN\)~ BEGIN
+								PATCH_IF (var_patch = 0) BEGIN
+									SPRINT MATCH1 ~%platformMATCH1%END
+
+%MATCH1%~
+									SET var_patch = 1
+									PATCH_PRINT ~Patching %patch_name%: ALWAYS command added
+%MATCH1%~
+								END
+							END
+							~%MATCH1%~
+						END
+					END
+				BUT_ONLY
+			END
+		END
+		~%MATCH1%~
+	END
+
+PRINT ~Conversion complete. Statistics:
+%patch_cnt% files patched.
+%ignore_cnt% files ignored.~

@@ -3530,6 +3530,9 @@ CO") BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(\[\)%resref_index_source%\(\]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - WAV~ END ~\1%resref_index_dest%\2~
 		END
 //%~
+
+		LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
+
 		SET tp2_check += 1
 		SET checked = 1
 
