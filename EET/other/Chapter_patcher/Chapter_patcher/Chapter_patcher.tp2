@@ -52,8 +52,13 @@ GOTO ENDDEL
 		~Chapter_patcher-inlined/deldir.bat~ ~Chapter_patcher~
 	AT_NOW ~CALL Chapter_patcher\MakeList.bat~
 END ELSE BEGIN
-	AT_NOW ~rm -rf Chapter_patcher/Output~
-	//add MAC/Linux MakeList code here
+	ACTION_IF FILE_EXISTS "FileList.txt" BEGIN
+		AT_NOW ~rm -rf Chapter_patcher/Output~
+	END
+	AT_NOW ~echo `ls Chapter_patcher/Input/` >Chapter_patcher/FileList.txt~
+	COPY "Chapter_patcher/FileList.txt" Chapter_patcher
+		REPLACE_TEXTUALLY " " ~%LNL%~ // breaks on files with a space
+	BUT_ONLY
 END
 
 OUTER_SPRINT platformMATCH1 "AUTO_EVAL_STRINGS
