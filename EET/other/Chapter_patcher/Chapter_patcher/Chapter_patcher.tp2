@@ -56,8 +56,8 @@ END ELSE BEGIN
 		AT_NOW ~rm -rf Chapter_patcher/Output~
 	END
 	AT_NOW ~echo `ls Chapter_patcher/Input/` >Chapter_patcher/FileList.txt~
-	COPY "Chapter_patcher/FileList.txt" Chapter_patcher
-		REPLACE_TEXTUALLY " " ~%LNL%~ // breaks on files with a space
+	COPY ~Chapter_patcher/FileList.txt~ ~Chapter_patcher~
+		REPLACE_TEXTUALLY ~ ~ ~%LNL%~ // breaks on files with a space
 	BUT_ONLY
 END
 
@@ -84,6 +84,7 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
 	COUNT_REGEXP_INSTANCES "^Input[/\\]+" cntrow
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^Input[/\\]+\(.+\)$~ BEGIN
+		SPRINT replaced ~%MATCH1%~
 		SET cntcurrent = cntcurrent + 1
 		INNER_PATCH_SAVE ~patch_name~ ~%MATCH1%~ BEGIN
 			REPLACE_TEXTUALLY ~\\~ ~/~
@@ -111,7 +112,7 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 					~\1%bg2_chapter_%MATCH2%%)~
 					REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
 			END
-			ACTION_IF ("%patched%" = 0) BEGIN
+			ACTION_IF (patched = 0) BEGIN
 				OUTER_SET ignore_cnt = ignore_cnt + 1
 				PRINT ~%cntcurrent%/%cntrow% Ignoring patching: %patch_name%...~
 			END ELSE BEGIN
@@ -121,9 +122,10 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 			END
 		END
 	END
-	~%MATCH1%~
+	~%replaced%~
 	PATCH_IF (patch_cnt > 0) BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~^\(.+\.tp2\)$~ BEGIN
+			SPRINT replaced ~%MATCH1%~
 			INNER_PATCH_SAVE ~patch_name~ ~%MATCH1%~ BEGIN
 				REPLACE_TEXTUALLY ~\\~ ~/~
 			END
@@ -134,7 +136,7 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 					OUTER_SET patch_cnt = patch_cnt + 1
 					OUTER_SET ignore_cnt = ignore_cnt - 1
 				END
-				COPY ~Chapter_patcher/Output/%MATCH1%~ ~Chapter_patcher/Output~
+				COPY ~Chapter_patcher/Output/%MATCH1%~ ~Chapter_patcher/Output/%MATCH1%~
 					REPLACE_TEXTUALLY ~AUTO_EVAL_STRINGS~ ~~
 					COUNT_REGEXP_INSTANCES ~^[ 	]*ALWAYS[ 	]*.*[ 	]*$~ num_matches
 					PATCH_IF (num_matches > 0) BEGIN
@@ -176,7 +178,7 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 				BUT_ONLY
 			END
 		END
-		~%MATCH1%~
+		~%replaced%~
 	END
 
 PRINT ~Conversion complete. Statistics:
