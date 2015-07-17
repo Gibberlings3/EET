@@ -367,7 +367,7 @@ COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
 				~%patch_ext%~ STRING_EQUAL_CASE ~TIZ~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~WAV~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~WBM~ BEGIN
-				ACTION_IF ("%updated%" = 1) BEGIN
+				ACTION_IF (updated = 1) BEGIN
 					MKDIR ~PCU_custom/Output/%patch_dir%~
 					COPY_LARGE ~PCU_custom/input/%patch_name%~ ~PCU_custom/output/%patch_output%~
 				END
@@ -378,7 +378,7 @@ COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
 						LAUNCH_PATCH_MACRO ~PCU_core_patch~
 					END
 			END
-			ACTION_IF ("%checked%" = 0) BEGIN
+			ACTION_IF (checked = 0) BEGIN
 				OUTER_SET ignore_check = ignore_check + 1
 				PRINT ~%cntcurrent%/%cntrow% Ignoring patching %patch_name%...~
 			END ELSE ACTION_IF ("%updated%" = 1) BEGIN

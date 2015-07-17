@@ -5,6 +5,9 @@ VERSION ~beta 0.1~
 BEGIN ~Chapter_patcher for BG2 mods~
 NO_LOG_RECORD
 
+<<<<<<<< Chapter_patcher-inlined/blank.txt
+>>>>>>>>
+
 ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 <<<<<<<< Chapter_patcher-inlined/MakeList.bat
 @echo off
@@ -79,6 +82,7 @@ ALWAYS
 OUTER_SET cntcurrent = 0
 OUTER_SET ignore_cnt = 0
 OUTER_SET patch_cnt = 0
+OUTER_SPRINT log ~~
 
 COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
@@ -106,7 +110,12 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 				COPY - ~Chapter_patcher/Input/%patch_name%~ ~Chapter_patcher_inlined/Output/%patch_name%~
 					REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
 					REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
-						PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %MATCH1%%MATCH2%) => %MATCH1%%bg2_chapter_%MATCH2%%)~
+						PATCH_IF (patched = 0) BEGIN
+							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
+						END
+						SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2%) => %MATCH1%%bg2_chapter_%MATCH2%%)~
+						SPRINT log ~%log%%log_temp%%LNL%~
+						PATCH_PRINT ~%log_temp%~
 						SET patched = 1
 					END
 					~\1%bg2_chapter_%MATCH2%%)~
@@ -144,32 +153,31 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 							PATCH_IF (var_patch = 0) BEGIN
 								SPRINT MATCH1 ~%platformMATCH1%~
 								SET var_patch = 1
-								PATCH_PRINT ~Patching %patch_name%: ALWAYS command expanded
-%MATCH1%~
+								SPRINT log_temp ~Patching %patch_name%: ALWAYS command expanded%LNL%%MATCH1%~
+								SPRINT log ~%log%%log_temp%%LNL%~
+								PATCH_PRINT ~%log_temp%~
 							END
 						END
 						~%MATCH1%~
 					END ELSE BEGIN
 						REPLACE_EVALUATE CASE_SENSITIVE ~^\([ 	]*LANGUAGE\)~ BEGIN
 							PATCH_IF (var_patch = 0) BEGIN
-								SPRINT MATCH1 ~%platformMATCH1%END
-
-%MATCH1%~
+								SPRINT MATCH1 ~%platformMATCH1%END%LNL%%LNL%%MATCH1%~
 								SET var_patch = 1
-								PATCH_PRINT ~Patching %patch_name%: ALWAYS command added
-%MATCH1%~
+								SPRINT log_temp ~Patching %patch_name%: ALWAYS command added%LNL%%MATCH1%~
+								SPRINT log ~%log%%log_temp%%LNL%~
+								PATCH_PRINT ~%log_temp%~
 							END
 						END
 						~%MATCH1%~
 						PATCH_IF (var_patch = 0) BEGIN
 							REPLACE_EVALUATE CASE_SENSITIVE ~^\([ 	]*BEGIN\)~ BEGIN
 								PATCH_IF (var_patch = 0) BEGIN
-									SPRINT MATCH1 ~%platformMATCH1%END
-
-%MATCH1%~
+									SPRINT MATCH1 ~%platformMATCH1%END%LNL%%LNL%%MATCH1%~
 									SET var_patch = 1
-									PATCH_PRINT ~Patching %patch_name%: ALWAYS command added
-%MATCH1%~
+									SPRINT log_temp ~Patching %patch_name%: ALWAYS command added%LNL%%MATCH1%~
+									SPRINT log ~%log%%log_temp%%LNL%~
+									PATCH_PRINT ~%log_temp%~
 								END
 							END
 							~%MATCH1%~
@@ -184,3 +192,10 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 PRINT ~Conversion complete. Statistics:
 %patch_cnt% files patched.
 %ignore_cnt% files ignored.~
+
+COPY + ~Chapter_patcher-inlined/blank.txt~ ~Chapter_patcher/Output/Changes.txt~
+APPEND_OUTER + ~Chapter_patcher/Output/Changes.txt~ ~%log%~
+
+ACTION_IF FILE_EXISTS ~Chapter_patcher/Output/Changes.txt~ BEGIN
+	AT_INTERACTIVE_EXIT ~VIEW Chapter_patcher/Output/Changes.txt~
+END
