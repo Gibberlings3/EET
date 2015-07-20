@@ -2,6 +2,99 @@
 //BEGIN Macros
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+DEFINE_ACTION_FUNCTION ~textscreen_music~
+	INT_VAR
+		mus_fadeEnd = 0
+		mus_delayEnd = 0
+		mus_volumeInt = 1
+		mus_volumeFloat = 0
+		spe_delayStart = 0
+		spe_volumeInt = 1
+		spe_volumeFloat = 0
+	STR_VAR
+		sox = EVAL "EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%sox_%os_slash%sox%exe%"
+		snd2acm = EVAL "EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%snd2acm%exe%"
+		temp_dir = EVAL "EET%os_slash%temp"
+		input_spe_array = ""
+		input_mus = ""
+		output = ""
+	BEGIN
+	AT_NOW ~%sox% --i -D %input_mus% >%temp_dir%\length.txt~
+	OUTER_SPRINT input_spe ~~
+	ACTION_PHP_EACH "%input_spe_array%" AS index => file BEGIN
+		OUTER_SPRINT input_spe ~%input_spe% %file%~
+		AT_NOW ~%sox% --i -D %file% >>%temp_dir%\length.txt~
+	END
+	COPY - ~%temp_dir%/length.txt~ ~.../length.txt~
+		SET mus_int = 0
+		REPLACE_EVALUATE CASE_INSENSITIVE ~^\([0-9]+\).\([0-9]+\)~ BEGIN
+			PATCH_IF (mus_int = 0) BEGIN
+				SET mus_int = MATCH1
+				SET mus_float = MATCH2
+				SET spe_int = 0
+				SET spe_float = 0
+				PATCH_PRINT ~mus_int = %mus_int%, mus_float = %mus_float%~
+			END ELSE BEGIN
+				SET spe_int = spe_int + MATCH1
+				SET spe_float = spe_float + MATCH2
+			END
+		END ~~
+		WHILE ( spe_float > 1000000 ) BEGIN
+			SET spe_int = spe_int + 1
+			SET spe_float = spe_float - 1000000
+		END
+		PATCH_PRINT ~spe_int = %spe_int%, spe_float = %spe_float%~
+		SET trim_int = mus_int - spe_int - mus_fadeEnd - mus_delayEnd - spe_delayStart
+		SET trim_float = mus_float - spe_float
+		PATCH_IF ( trim_float < 0 ) BEGIN
+			SET trim_float = 1000000 + trim_float
+			SET trim_int = trim_int - 1
+		END
+	ACTION_IF (trim_int > 0 ) BEGIN
+		OUTER_SPRINT trim_mus ~%sox% %input_mus% %temp_dir%\input_mus.wav fade 0 -%trim_int%.%trim_float% %mus_fadeEnd%~ //Parameter 1 is '0' so there is no fade in. Parameter 2 removes the last %trim_int%.%trim_float% seconds Parameter 3 uses a %mus_fadeEnd% fade
+		PRINT ~trim_int = %trim_int%, trim_float = %trim_float%~
+	END ELSE BEGIN
+		OUTER_SPRINT trim_mus ~~
+		PRINT ~mus file not trimmed~
+		COPY_LARGE + ~%input_mus%~ ~%temp_dir%/input_mus.wav~
+	END
+<<<<<<<< .../sox.bat
+%trim_mus%
+%sox% %input_spe% %temp_dir%\out_speech.wav channels 1 rate 22050 vol %spe_volumeInt%.%spe_volumeFloat%
+%sox% %temp_dir%\input_mus.wav %temp_dir%\out_mus.wav channels 1 rate 22050 vol %mus_volumeInt%.%mus_volumeFloat%
+%sox% -m %temp_dir%\out_mus.wav "|%sox% %temp_dir%\out_speech.wav -p pad %spe_delayStart%" %output%
+%snd2acm% -wav %output% %output%.acm
+>>>>>>>>
+	COPY + ~.../sox.bat~ ~%temp_dir%~ EVALUATE_BUFFER
+	AT_NOW ~CALL %temp_dir%%os_slash%sox.bat~
+	OUTER_INNER_PATCH_SAVE output_dir ~%output%~ BEGIN
+		REPLACE_TEXTUALLY ~\\~ ~/~
+		REPLACE_TEXTUALLY ~/[^/]+$~ ~~
+	END
+	OUTER_INNER_PATCH_SAVE output_file ~%output%~ BEGIN
+		REPLACE_TEXTUALLY ~\\~ ~/~
+		REPLACE_TEXTUALLY ~^.*/~ ~~
+	END
+	PRINT ~output_dir = %output_dir%, output_file = %output_file%~
+	ACTION_BASH_FOR ~%output_dir%~ ~^%output_file%$~ BEGIN 
+		OUTER_SET wavsize = BASH_FOR_SIZE + 8
+	END
+	COPY ~EET/base/dummy.wavc~ ~EET/base/dummy.wavc~ //Read the constant in wavc header
+		READ_ASCII 0x10 wavcheader (12)
+	BUT_ONLY
+	COPY + ~%output_dir%/%output_file%.acm~ ~%output_dir%/%output_file%~
+		SET acmsize = SOURCE_SIZE
+		PATCH_PRINT ~wavsize = %wavsize%, acmsize = %acmsize%~
+		INSERT_BYTES 0x0 28 //WAVC header size
+		WRITE_ASCII 0x0 ~WAVCV1.0~ #8
+		WRITE_LONG 0x8 wavsize //Uncompressed size: get this from the source WAV before compressing to ACM
+		WRITE_LONG 0xc acmsize //Compressed size
+		WRITE_EVALUATED_ASCII 0x10 ~%wavcheader%~ #12
+	DELETE + ~%output_dir%/%output_file%.acm~
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 DEFINE_ACTION_MACRO ~bash_log~ BEGIN //whenever this macro is invoked, it moves the contents of EET/temp/bash.debug to the real log.
 	LOCAL_SET ln=0
 	LOCAL_SPRINT log ~~

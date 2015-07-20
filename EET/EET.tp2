@@ -1052,6 +1052,124 @@ STRING_SET ~33347~ ~~
 STRING_SET ~15881~ ~%bio_bg2%~
 
 /////                                                  \\\\\
+///// Textscreen music                                 \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../chapter.2da
+2DA V1.0
+%bam%
+                        0           1
+SWITCH                  DEFAULT     DEFAULT
+DEFAULT                 %title%     %text%
+DWARF                   0           0
+ELF                     0           0
+HALFELF                 0           0
+HALFLING                0           0
+GNOME                   0           0
+HUMAN                   0           0
+MAGE                    0           0
+FIGHTER                 0           0
+CLERIC                  0           0
+THIEF                   0           0
+BARD                    0           0
+PALADIN                 0           0
+FIGHTER_MAGE            0           0
+FIGHTER_CLERIC          0           0
+FIGHTER_THIEF           0           0
+FIGHTER_MAGE_THIEF      0           0
+DRUID                   0           0
+RANGER                  0           0
+MAGE_THIEF              0           0
+CLERIC_MAGE             0           0
+CLERIC_THIEF            0           0
+FIGHTER_DRUID           0           0
+FIGHTER_MAGE_CLERIC     0           0
+CLERIC_RANGER           0           0
+>>>>>>>>
+
+//Prologue
+COPY - ~EET/temp/array/CHPTXT0.2DA~ ~EET/temp/array~
+	READ_2DA_ENTRY 1 0 1 bam
+	READ_2DA_ENTRY 2 1 6 title
+	READ_2DA_ENTRY 2 2 6 strref_1
+	GET_STRREF strref_1 text_1
+	READ_2DA_ENTRY 2 3 6 strref_2
+	GET_STRREF strref_2 text_2
+	READ_2DA_ENTRY 2 4 6 strref_3
+	GET_STRREF strref_3 text_3
+	READ_2DA_ENTRY 2 5 6 strref_4
+	GET_STRREF strref_4 text_4
+	SET text = RESOLVE_STR_REF (~%text_1%
+
+%text_2%
+
+%text_3%
+
+%text_4%~ [INTRO_])
+COPY ~.../chapter.2da~ ~override/CHPTXT0_.2da~ EVALUATE_BUFFER
+	PRETTY_PRINT_2DA
+
+ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/INTRO01F.wav~ ~EET/temp/wav/INTRO02F.wav~ ~EET/temp/wav/INTRO03.wav~ ~EET/temp/wav/INTROADD.wav~ END
+LAF ~textscreen_music~
+	INT_VAR
+	mus_fadeEnd = 3
+	mus_delayEnd = 1
+	spe_volumeFloat = 5 //speech volume set to 1.5
+	STR_VAR
+	input_spe_array = textscreenInputSpeArray
+	input_mus = EVAL "EET%os_slash%base%os_slash%gui%os_slash%CDAY1A.ogg"
+	output = EVAL "EET%os_slash%temp%os_slash%wav%os_slash%INTRO_.wav"
+END
+ACTION_CLEAR_ARRAY textscreenInputSpeArray
+
+//Chapter1
+COPY - ~EET/temp/array/CHPTXT1.2DA~ ~EET/temp/array~
+	READ_2DA_ENTRY 1 0 1 bam
+	READ_2DA_ENTRY 2 1 5 title
+	READ_2DA_ENTRY 2 2 5 strref_1
+	GET_STRREF strref_1 text_1
+	READ_2DA_ENTRY 2 3 5 strref_2
+	GET_STRREF strref_2 text_2
+	READ_2DA_ENTRY 2 4 5 strref_3
+	GET_STRREF strref_3 text_3
+	SET text = RESOLVE_STR_REF (~%text_1%
+
+%text_2%
+
+%text_3%~ [CHAP00_])
+COPY ~.../chapter.2da~ ~override/CHPTXT1_.2da~ EVALUATE_BUFFER
+	PRETTY_PRINT_2DA
+
+ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/CHAP00A.wav~ ~EET/temp/wav/CHAP00B.wav~ ~EET/temp/wav/CHAP00C.wav~ END
+LAF ~textscreen_music~
+	INT_VAR
+	mus_fadeEnd = 3
+	mus_delayEnd = 1
+	spe_volumeFloat = 5 //speech volume set to 1.5
+	STR_VAR
+	input_spe_array = textscreenInputSpeArray
+	input_mus = EVAL "EET%os_slash%base%os_slash%gui%os_slash%DREAMA.ogg"
+	output = EVAL "EET%os_slash%temp%os_slash%wav%os_slash%CHAP00_.wav"
+END
+ACTION_CLEAR_ARRAY textscreenInputSpeArray
+
+//other chapters and dreams
+ACTION_FOR_EACH file IN CHAPTER1 CHAPTER2 CHAPTER3 CHAPTER4 CHAPTER5 CHAPTER6 DREAM1G DREAM1E DREAM2G DREAM2E DREAM3G DREAM3E DREAM4G DREAM4E DREAM5G DREAM5E DREAM6G DREAM6E BEGIN
+	ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/%file%.wav~ END
+	LAF ~textscreen_music~
+		INT_VAR
+		mus_fadeEnd = 3
+		mus_delayEnd = 1
+		spe_volumeFloat = 5 //speech volume set to 1.5
+		STR_VAR
+		input_spe_array = textscreenInputSpeArray
+		input_mus = EVAL "EET%os_slash%base%os_slash%gui%os_slash%DREAMA.ogg"
+		output = EVAL "EET%os_slash%temp%os_slash%wav%os_slash%%file%.wav"
+	END
+	ACTION_CLEAR_ARRAY textscreenInputSpeArray
+END
+
+/////                                                  \\\\\
 ///// Compatibility patches                            \\\\\
 /////                                                  \\\\\
 
