@@ -1106,7 +1106,7 @@ COPY - ~EET/temp/array/CHPTXT0.2DA~ ~EET/temp/array~
 %text_3%
 
 %text_4%~ [INTRO_])
-COPY ~.../chapter.2da~ ~override/CHPTXT0_.2da~ EVALUATE_BUFFER
+COPY + ~.../chapter.2da~ ~EET/temp/2da/CHPTXT0_.2da~ EVALUATE_BUFFER
 	PRETTY_PRINT_2DA
 
 ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/INTRO01F.wav~ ~EET/temp/wav/INTRO02F.wav~ ~EET/temp/wav/INTRO03.wav~ ~EET/temp/wav/INTROADD.wav~ END
@@ -1125,19 +1125,19 @@ ACTION_CLEAR_ARRAY textscreenInputSpeArray
 //Chapter1
 COPY - ~EET/temp/array/CHPTXT1.2DA~ ~EET/temp/array~
 	READ_2DA_ENTRY 1 0 1 bam
-	READ_2DA_ENTRY 2 1 5 title
-	READ_2DA_ENTRY 2 2 5 strref_1
+	READ_2DA_ENTRY 1 1 5 title
+	READ_2DA_ENTRY 1 2 5 strref_1
 	GET_STRREF strref_1 text_1
-	READ_2DA_ENTRY 2 3 5 strref_2
+	READ_2DA_ENTRY 1 3 5 strref_2
 	GET_STRREF strref_2 text_2
-	READ_2DA_ENTRY 2 4 5 strref_3
+	READ_2DA_ENTRY 1 4 5 strref_3
 	GET_STRREF strref_3 text_3
 	SET text = RESOLVE_STR_REF (~%text_1%
 
 %text_2%
 
 %text_3%~ [CHAP00_])
-COPY ~.../chapter.2da~ ~override/CHPTXT1_.2da~ EVALUATE_BUFFER
+COPY + ~.../chapter.2da~ ~EET/temp/2da/CHPTXT1_.2da~ EVALUATE_BUFFER
 	PRETTY_PRINT_2DA
 
 ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/CHAP00A.wav~ ~EET/temp/wav/CHAP00B.wav~ ~EET/temp/wav/CHAP00C.wav~ END
