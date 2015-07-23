@@ -3192,11 +3192,13 @@ MKDIR ~lang/%LANGUAGE_BG2%/movies~
 //resolve BG2 movies conflicts
 
 //renamed (using name from the vanilla game) to prevent from playing in Start Screen
-ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~) BEGIN
+//COPY_LARGE used instead of MOVE to prevent file deletion upon uninstalling
+//disabled - EXE is patched instead
+/*ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~) BEGIN
 	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/BG2INTRO.wbm~
 END ELSE BEGIN
 	COPY_LARGE ~movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/BG2INTRO.wbm~
-END
+END*/
 
 //renamed to bypass hardcoded day/niteday movies when area has 'city' and 'extended nights' flags day/night movies are now triggered via area scripts
 //currently disabled due to bug in Multiplayer mode, probably related to this: http://forum.baldursgate.com/discussion/comment/191406
@@ -3222,9 +3224,9 @@ END
 COPY_LARGE ~EET/base/movies~ ~lang/%LANGUAGE_BG2%/movies~
 
 //copy BG1 movies with voice over
-//INTRO.wbm => INTRO15F.wbm
+//INTRO.wbm => INTROBG1.wbm //name must have the same length as hardcoded INTRO15F
 ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/BEREGOST.wbm~)
-AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/INTRO15F.wbm~)
+AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/INTROBG1.wbm~)
 AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/NASHKELL.wbm~)
 AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/WYVERN.wbm~) BEGIN
 	COPY_LARGE ~%tra_path%/%LANGUAGE%/movies~ ~lang/%LANGUAGE_BG2%/movies~
@@ -3252,13 +3254,13 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 			"WOTC" => "MOVIES"
 			"TSRLOGO" => "MOVIES"
 			"INTRO15F" => "MOVIES"
+			"INTROBG1" => "MOVIES"
 			"INFELOGO" => "MOVIES"
 			"CREDITS_" => "MOVIES"
 			"BWDRAGON" => "MOVIES"
 			"BLACKPI_" => "MOVIES"
 			"BILOGO" => "MOVIES"
 			"BG4LOGO" => "MOVIES"
-			"BG2INTRO" => "MOVIES"
 		END
 		PHP_EACH "table_EET_ini" AS "option" => "row" BEGIN
 			COUNT_REGEXP_INSTANCES ~'%option%'~ num_matches
@@ -3278,7 +3280,6 @@ CREATE TABLE options (
 INSERT INTO options ROWS (
 	'Window',	'Full Screen',	'1',//set only for now due to unknown problem with TIS/WED
 	'Graphics',	'Scale UI',	'1',//set only for now due to unknown problem with TIS/WED
-	'MOVIES',	'BG2INTRO',	'1',
 	'MOVIES',	'BG4LOGO',	'1',
 	'MOVIES',	'BILOGO',	'1',
 	'MOVIES',	'BLACKPI_',	'1',
@@ -3286,6 +3287,7 @@ INSERT INTO options ROWS (
 	'MOVIES',	'CREDITS_',	'1',
 	'MOVIES',	'INFELOGO',	'1',
 	'MOVIES',	'INTRO15F',	'1',
+	'MOVIES',	'INTROBG1',	'1',
 	'MOVIES',	'TSRLOGO',	'1',
 	'MOVIES',	'WOTC',	'1',
 	'Program Options',	'Debug Mode',	'1',
@@ -3450,6 +3452,14 @@ COPY_EXISTING ~worldmap.wmp~ ~override~
 /////                                                  \\\\\
 
 INCLUDE ~EET/lib/bgee_fixpack.tph~
+
+/////                                                  \\\\\
+///// Exe patching                                     \\\\\
+/////                                                  \\\\\
+
+COPY ~Baldur.exe~ ~Baldur.exe~
+	REPLACE_TEXTUALLY ~INTRO15F~ ~INTROBG1~ //changes hardcoded movie reference
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// Biffing                                          \\\\\
