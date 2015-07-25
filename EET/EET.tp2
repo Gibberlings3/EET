@@ -2355,7 +2355,7 @@ LAM bash_log
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_bamIndex" BEGIN
 	"BIGLOGO" => "0500"
 	"TITLE" => "0501"
-	"bpbgtmap" => "100"
+	"MAPICONS" => "100"
 END
 ACTION_PHP_EACH table_EET_bamIndex AS file => index BEGIN
 	COPY ~EET/base/gui/%file%.bam~ ~%biff_dir%~
@@ -3445,7 +3445,7 @@ COPY_EXISTING ~worldmap.wmp~ ~override~
 	WRITE_ASCII wmap_off ~WORLDMAP~ #8
 	WRITE_LONG wmap_off + 0x8 ~1550~
 	WRITE_LONG wmap_off + 0xc ~2160~
-	WRITE_ASCII wmap_off + 0x30 ~bpbgtmap~ #8
+	WRITE_ASCII wmap_off + 0x30 ~MAPICONS~ #8
 
 /////                                                  \\\\\
 ///// Fixpack                                          \\\\\
