@@ -3352,6 +3352,7 @@ END
 COPY - ~%patch_dir%/worldmap.wmp~ ~%patch_dir%~
 	LPF ~dump_wmp~
 	INT_VAR
+		//move_x = 373 //areas file is provided externally
 		skip_areas = 1
 	STR_VAR
 		output_links = "EET/temp/map_bgee_links.tbl"
@@ -3415,7 +3416,10 @@ ACTION_FOR_EACH file IN areas.tbl links.tbl trans.tra BEGIN
 	END
 	//EET worldmap
 	ACTION_IF (~%file%~ STRING_EQUAL_CASE ~areas.tbl~) BEGIN
-		COPY + ~EET/tbl/map_bgee_areas.tbl~ ~EET/temp/map_eet_areas.tbl~
+		COPY + ~EET/tbl/map_eet_areas.tbl~ ~EET/temp~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Z0-9#_]+[ 	]+[A-Z0-9#_]+[ 	]+[A-Z0-9#_]+[ 	]+[0-9]+[ 	]+[0-9]+[ 	]+\)\([0-9\-]+\)~ BEGIN
+				SET MATCH2 = MATCH2 + 373
+			END ~%MATCH1%%MATCH2%~
 			APPEND_FILE ~EET/temp/map_bg2_areas.tbl~
 			APPEND_FILE ~EET/temp/map_tob_areas.tbl~
 	END ELSE BEGIN

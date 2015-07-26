@@ -3,6 +3,7 @@ IF
   Global("MeetOldenFriends","GLOBAL",0)
 THEN
   RESPONSE #100
+    RevealAreaOnMap("AR0020") //City Gates hidden via BG0000.bcs, time to reveal it
     SetGlobal("MeetOldenFriends","GLOBAL",1)
     ActionOverride(Player1,DropInventory())
     ActionOverride(Player2,DropInventory())

@@ -58,15 +58,24 @@ DEFINE_ACTION_FUNCTION ~textscreen_music~
 		PRINT ~mus file not trimmed~
 		COPY_LARGE + ~%input_mus%~ ~%temp_dir%/input_mus.wav~
 	END
-<<<<<<<< .../sox.bat
+	ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+		OUTER_SPRINT bash_cmd ~~
+		OUTER_SPRINT bash_ext ~bat~
+	END ELSE BEGIN
+		OUTER_SPRINT bash_cmd ~#!/bin/bash~
+		OUTER_SPRINT bash_ext ~bash~
+	END
+<<<<<<<< .../sox.cmd
+%bash_cmd%
+
 %trim_mus%
-%sox% %input_spe% %temp_dir%\out_speech.wav channels 1 rate 22050 vol %spe_volumeInt%.%spe_volumeFloat%
-%sox% %temp_dir%\input_mus.wav %temp_dir%\out_mus.wav channels 1 rate 22050 vol %mus_volumeInt%.%mus_volumeFloat%
-%sox% -m %temp_dir%\out_mus.wav "|%sox% %temp_dir%\out_speech.wav -p pad %spe_delayStart%" %output%
+%sox% %input_spe% %temp_dir%%os_slash%out_speech.wav channels 1 rate 22050 vol %spe_volumeInt%.%spe_volumeFloat%
+%sox% %temp_dir%%os_slash%input_mus.wav %temp_dir%%os_slash%out_mus.wav channels 1 rate 22050 vol %mus_volumeInt%.%mus_volumeFloat%
+%sox% -m %temp_dir%%os_slash%out_mus.wav "|%sox% %temp_dir%%os_slash%out_speech.wav -p pad %spe_delayStart%" %output%
 %snd2acm% -wav %output% %output%.acm
 >>>>>>>>
-	COPY + ~.../sox.bat~ ~%temp_dir%~ EVALUATE_BUFFER
-	AT_NOW ~CALL %temp_dir%%os_slash%sox.bat~
+	COPY + ~.../sox.cmd~ ~%temp_dir%/sox.%bash_ext%~ EVALUATE_BUFFER
+	AT_NOW ~CALL %temp_dir%%os_slash%sox.%bash_ext%~
 	OUTER_INNER_PATCH_SAVE output_dir ~%output%~ BEGIN
 		REPLACE_TEXTUALLY ~\\~ ~/~
 		REPLACE_TEXTUALLY ~/[^/]+$~ ~~
