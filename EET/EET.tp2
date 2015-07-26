@@ -2346,7 +2346,7 @@ BUT_ONLY
 
 COPY_LARGE ~EET/base/gui/DLCP1.bmp~ ~EET/temp/biff~
 	~EET/base/gui/DLCV1.bmp~ ~EET/temp/biff~
-	~EET/base/gui/MAPICONS.bam~ ~EET/temp/biff~
+	//~EET/base/gui/MAPICONS.bam~ ~EET/temp/biff~
 
 ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mbc$~ BEGIN
 	AT_NOW ~%tileconv% -e -j %jobs% -q %quality% -o "EET%os_slash%temp%os_slash%biff%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
@@ -2356,7 +2356,7 @@ LAM bash_log
 ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_EET_bamIndex" BEGIN
 	"BIGLOGO" => "0500"
 	"TITLE" => "0501"
-	//"MAPICONS" => "100"
+	"MAPICONS" => "10"
 END
 ACTION_PHP_EACH table_EET_bamIndex AS file => index BEGIN
 	COPY ~EET/base/gui/%file%.bam~ ~%biff_dir%~
