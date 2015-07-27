@@ -75,6 +75,9 @@ DEFINE_ACTION_FUNCTION ~textscreen_music~
 %snd2acm% -wav %output% %output%.acm
 >>>>>>>>
 	COPY + ~.../sox.cmd~ ~%temp_dir%/sox.%bash_ext%~ EVALUATE_BUFFER
+	ACTION_IF ~%WEIDU_OS%~ STR_CMP ~win32~ BEGIN
+		AT_NOW ~chmod 755 %temp_dir%/sox.bash~
+	END
 	AT_NOW ~CALL %temp_dir%%os_slash%sox.%bash_ext%~
 	OUTER_INNER_PATCH_SAVE output_dir ~%output%~ BEGIN
 		REPLACE_TEXTUALLY ~\\~ ~/~

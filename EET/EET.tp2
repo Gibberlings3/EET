@@ -514,6 +514,24 @@ ACTION_FOR_EACH var IN bmp mos wed BEGIN
 	INCLUDE ~EET/lib/prep_%var%.tph~
 END
 
+//fix for OH2000 water issue
+COPY + ~%biff_dir%/OH2000.wed~ ~%biff_dir%~
+	READ_LONG 0x8 overlay_num
+	READ_LONG 0x10 overlay_off
+	READ_SHORT (overlay_off) tilemap_width
+	READ_SHORT (overlay_off+0x2) tilemap_height
+	READ_LONG (overlay_off+0x10) tilemap_off
+	SET tilemap_cnt = tilemap_height * tilemap_width
+	FOR (i = 0; i < tilemap_cnt; i = i + 1 ) BEGIN
+		READ_SHORT ((tilemap_off + (0xa * i)) + 0x4) tilemap_startindex
+		READ_BYTE ((tilemap_off + (0xa * i)) + 0x6) tilemap_drawoverlay
+		PATCH_IF ((tilemap_drawoverlay = 2) AND !(tilemap_startindex = 65535)) BEGIN
+			//PATCH_PRINT ~i: %i%; tilemap_startindex: %tilemap_startindex%; tilemap_drawoverlay: %tilemap_drawoverlay%~
+			WRITE_SHORT  ((tilemap_off + (0xa * i)) + 0x4) ~-1~
+		END
+	END
+BUT_ONLY
+
 COPY + ~EET/base/palette~ ~%biff_dir%~
 
 COPY + ~%tis2bg2%~ ~%biff_dir%~
