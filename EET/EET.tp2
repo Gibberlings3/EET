@@ -3675,7 +3675,7 @@ PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as E
 PRINT ~To install mods without EET argument in GAME_IS command you need to temporarily move it away from override directory~
 
 ACTION_IF (FILE_EXISTS ~EET/docs/[%LANGUAGE%]readme.htm~) BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW EET/docs/[%LANGUAGE%]readme.htm~
+	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[%LANGUAGE%]readme.htm~
 END ELSE BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW EET/docs/[en_US]readme.htm~
+	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[en_US]readme.htm~
 END
