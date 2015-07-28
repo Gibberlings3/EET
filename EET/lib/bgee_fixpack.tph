@@ -20,3 +20,107 @@ COPY_EXISTING ~IMPORT02.2DA~ ~override~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~ SLNG03$~ ~ SLNG05~
 BUT_ONLY
+
+//https://forums.beamdog.com/discussion/39023/tazoksays-blocks-in-ar2400-bcs-and-ar2900-bcs-prevent-further-script-blocks-from-firing#latest
+//Script blocks added to the ends of BG2400.BCS or BG2900.BCS will not execute once BG1900 has been entered.
+//Thanks to AstroBryGuy
+
+ACTION_IF !FILE_EXISTS ~override/AY#BGEEARBCSFIX.000~ BEGIN
+
+	COPY_EXISTING ~BG2400.bcs~ ~override~
+		DECOMPILE_AND_PATCH BEGIN
+  			//Add Exists(Raiken) check to TazokSays script block
+  			REPLACE_TEXTUALLY ~Global("TazokSays","GLOBAL",1)~ ~Global("TazokSays","GLOBAL",1) Exists("Raiken")~
+  		END
+
+	COPY_EXISTING ~BG2900.bcs~ ~override~
+		DECOMPILE_AND_PATCH BEGIN
+  			//Add Exists(Teven) check to TazokSays script block
+  			REPLACE_TEXTUALLY ~Global("TazokSays","GLOBAL",1)~ ~Global("TazokSays","GLOBAL",1) Exists("Teven")~
+  		END
+		
+	COPY_EXISTING ~sw1h01.itm~ ~override/AY#BGEEARBCSFIX.000~
+
+END
+
+
+//In BG:EE Colquetle Family is added by the are file, the are file has no script added
+//There is an existing AR4300.bcs which also adds the family to the area
+//EET assigned these script, now there are 2 Colquetle Familys...
+
+<<<<<<<< ../eet-inlined/oBG4300.baf
+IF
+Global("PoorMrColquetleFamily","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("PoorMrColquetleFamily","GLOBAL",1)
+CreateCreature("mrcolson",[2686.874],NNW)
+ActionOverride("mrcolson",DropInventory())
+CreateCreature("mrcolwif",[2738.879],SW)
+CreateCreature("mrcolboy",[2720.890],SW)
+END
+>>>>>>>> 
+
+<<<<<<<< ../eet-inlined/nBG4300.baf
+>>>>>>>>
+
+COPY_EXISTING ~BG4300.bcs~ ~override~
+R_B_B ~../eet-inlined/oBG4300.baf~ ~../eet-inlined/nBG4300.baf~
+
+//https://forums.beamdog.com/discussion/36102/known-safana-should-not-keep-stopping-if-she-loots-the-pirate-treasure-on-her-own#latest
+//If Safana loots the cave and no NPC is present, she stutters
+
+COPY_EXISTING ~SAFANA.bcs~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~GlobalLT("PirateTreasure","GLOBAL",2)~ ~GlobalLT("PirateTreasure","GLOBAL",2) See([PC]) InMyArea([PC]) !StateCheck([PC],CD_STATE_NOTVALID)~
+	END
+BUT_ONLY
+
+//Tiax and Quayle looks like dwarves
+
+COPY_EXISTING	~tiax.cre~ ~override~
+				~tiax4.cre~ ~override~
+				~tiax6.cre~ ~override~
+				~quayle_.cre~ ~override~
+				~quayle4.cre~ ~override~
+				~quayle6.cre~ ~override~
+WRITE_SHORT 0x28 24580
+
+//Force Talk Rasaad repeats Banters
+<<<<<<<< ../eet-inlined/RASAADJ.D
+ADD_STATE_TRIGGER RASAADJ_ 21 ~!Global("CLOUD_PEAK","OH3000",2)~
+ADD_STATE_TRIGGER RASAADJ_ 29 ~InMyArea("RSGAMAZ")~
+ADD_STATE_TRIGGER RASAADJ_ 35 ~!Global("WARasaadFix","Global",1)~
+ADD_TRANS_ACTION RSGAMAZ BEGIN 23 END BEGIN 0 END ~SetGlobal("WARasaadFix","Global",1)~
+>>>>>>>>
+
+COMPILE ~../eet-inlined/RASAADJ.D~
+
+//Kivan should not have a 1st-level spell slot
+
+COPY_EXISTING 	~KIVAN4.cre~ ~override~
+				~KIVAN6.cre~ ~override~
+WRITE_SHORT 0x2d6 0
+WRITE_SHORT 0x2d8 0
+
+//Dorn Kivan Leaving Fix
+<<<<<<<< ../eet-inlined/dornj.d
+ALTER_TRANS DORNJ_ BEGIN 56 END BEGIN 2 END BEGIN "EPILOGUE" ~EXTERN KIVANJ 7~ END
+>>>>>>>>
+
+COMPILE ~../eet-inlined/dornj.d~
+
+//Force Talk Tiax repeats Dorn Banter
+<<<<<<<< ../eet-inlined/tiaxj.d
+ADD_TRANS_ACTION TIAXJ BEGIN 2 END BEGIN 0 END ~SetGlobal("DORN_TIAX","GLOBAL",3)~
+>>>>>>>>
+
+COMPILE ~../eet-inlined/tiaxj.d~
+
+//Force Talk Safana repeats Dorn Banter
+<<<<<<<< ../eet-inlined/SAFANJ.D
+ADD_TRANS_ACTION SAFANJ BEGIN 7 END BEGIN 0 END ~SetGlobal("DORN_SAFANA_DIALOG1","GLOBAL",2)~
+>>>>>>>>
+
+COMPILE ~../eet-inlined/SAFANJ.D~
+
