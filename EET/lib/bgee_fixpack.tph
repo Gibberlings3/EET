@@ -77,6 +77,7 @@ COPY_EXISTING ~SAFANA.bcs~ ~override~
 BUT_ONLY
 
 //Tiax and Quayle looks like dwarves
+//https://forums.beamdog.com/discussion/38789/windows-tiax-and-quayle-should-used-gnomes-model-instead-of-dwarfs#latest
 
 COPY_EXISTING	~tiax.cre~ ~override~
 				~tiax4.cre~ ~override~
@@ -87,6 +88,7 @@ COPY_EXISTING	~tiax.cre~ ~override~
 WRITE_SHORT 0x28 24580
 
 //Force Talk Rasaad repeats Banters
+//https://forums.beamdog.com/discussion/38792/windows-force-talk-to-rasaad-during-final-battle-on-cloud-peak-will-repeat-the-dialogue-with-gamaz#latest
 <<<<<<<< ../eet-inlined/RASAADJ.D
 ADD_STATE_TRIGGER RASAADJ_ 21 ~!Global("CLOUD_PEAK","OH3000",2)~
 ADD_STATE_TRIGGER RASAADJ_ 29 ~InMyArea("RSGAMAZ")~
@@ -97,6 +99,7 @@ ADD_TRANS_ACTION RSGAMAZ BEGIN 23 END BEGIN 0 END ~SetGlobal("WARasaadFix","Glob
 COMPILE ~../eet-inlined/RASAADJ.D~
 
 //Kivan should not have a 1st-level spell slot
+//https://forums.beamdog.com/discussion/38820/kivan-should-not-have-a-1st-level-spell-slot-at-level-4-and-level-6#latest
 
 COPY_EXISTING 	~KIVAN4.cre~ ~override~
 				~KIVAN6.cre~ ~override~
@@ -104,13 +107,16 @@ WRITE_SHORT 0x2d6 0
 WRITE_SHORT 0x2d8 0
 
 //Dorn Kivan Leaving Fix
+//https://forums.beamdog.com/discussion/39271/kivan-interjection-in-dorn-dialog-goes-to-wrong-state#latest
 <<<<<<<< ../eet-inlined/dornj.d
 ALTER_TRANS DORNJ_ BEGIN 56 END BEGIN 2 END BEGIN "EPILOGUE" ~EXTERN KIVANJ 7~ END
+ALTER_TRANS EDWINJ_ BEGIN 20 END BEGIN 1 END BEGIN ~EPILOGUE~ ~EXTERN KIVANJ 7~ END
 >>>>>>>>
 
 COMPILE ~../eet-inlined/dornj.d~
 
 //Force Talk Tiax repeats Dorn Banter
+//https://forums.beamdog.com/discussion/38791/windows-force-talk-to-tiax-should-not-repeat-banter-between-him-and-dorn#latest
 <<<<<<<< ../eet-inlined/tiaxj.d
 ADD_TRANS_ACTION TIAXJ BEGIN 2 END BEGIN 0 END ~SetGlobal("DORN_TIAX","GLOBAL",3)~
 >>>>>>>>
@@ -118,9 +124,219 @@ ADD_TRANS_ACTION TIAXJ BEGIN 2 END BEGIN 0 END ~SetGlobal("DORN_TIAX","GLOBAL",3
 COMPILE ~../eet-inlined/tiaxj.d~
 
 //Force Talk Safana repeats Dorn Banter
+//https://forums.beamdog.com/discussion/37327/11111-all-force-talking-safana-repeats-dorn-dialog#latest
 <<<<<<<< ../eet-inlined/SAFANJ.D
 ADD_TRANS_ACTION SAFANJ BEGIN 7 END BEGIN 0 END ~SetGlobal("DORN_SAFANA_DIALOG1","GLOBAL",2)~
 >>>>>>>>
 
 COMPILE ~../eet-inlined/SAFANJ.D~
 
+//Animal Summoning I for 3 turns & Ranger Charm Animal ability Save Bonus
+//https://forums.beamdog.com/discussion/38486/beast-masters-animal-summoning-i-should-last-3-turns#latest
+
+COPY_EXISTING ~SPRA304.spl~ ~override~
+	READ_LONG  0x64 "abil_off"
+	READ_SHORT 0x68 "abil_num"
+	READ_LONG  0x6a "fx_off"
+	FOR (index = 0 ; index < abil_num ; index = index + 1) BEGIN
+		READ_SHORT  ("%abil_off%" + 0x1e + (0x28 * "%index%")) "abil_fx_num"
+		READ_SHORT  ("%abil_off%" + 0x20 + (0x28 * "%index%")) "abil_fx_idx"
+		FOR (index2 = 0 ; index2 < abil_fx_num ; index2 = index2 + 1) BEGIN
+			READ_BYTE ("%fx_off%" + 0x00 + (0x30 * ("%abil_fx_idx%" + "%index2%"))) "opcode"		
+				PATCH_IF (~%opcode%~ = 177) THEN BEGIN
+					WRITE_BYTE ("%fx_off%" + 0x0e + (0x30 * ("%abil_fx_idx%" + "%index2%"))) 180					
+					WRITE_BYTE ("%fx_off%" + 0x28 + (0x30 * ("%abil_fx_idx%" + "%index2%"))) 3					
+				END
+		END
+	END
+BUT_ONLY
+
+//The Captive Audience behavior should match description
+//https://forums.beamdog.com/discussion/37692/11112-all-the-captive-audience-produces-wrong-spell-has-no-charges-ammount-shown#latest
+
+COPY_EXISTING ~misc2p.itm~ ~override~
+	READ_LONG   0x64 "abil_off"
+	READ_SHORT  0x68 "abil_num"
+	READ_LONG   0x6a "fx_off"
+	FOR (index = 0 ; index < abil_num ; ++index) BEGIN
+		READ_SHORT  ("%abil_off%" + 0x20 + ("%index%" * 0x38)) "abil_fx_idx"
+		READ_SHORT  ("%abil_off%" + 0x1e + ("%index%" * 0x38)) "abil_fx_num"
+		FOR (index2 = 0 ; index2 < abil_fx_num ; ++index2) BEGIN
+			READ_BYTE ("%fx_off%" + 0x00 + (("%abil_fx_idx%" + "%index2%") * 0x30)) "opcode"
+			PATCH_IF (~%opcode%~ = 5) THEN BEGIN
+				WRITE_SHORT ("%fx_off%" + 0x08 + (("%abil_fx_idx%" + "%index2%") * 0x30)) 1003
+			END
+		END
+	END
+SET opcode = 139
+SET target = 2
+SET parameter1 = 8364
+SET parameter2 = 0
+SET timing = 1
+SET power = 5
+SET resist_dispel = 1
+SET probability1 = 100
+SET probability2 = 0
+SET duration = 0
+SET dicenumber = 0
+SET dicesize = 0
+SET savingthrow = 1
+SET savebonus = ~-2~
+SET header = 0
+SET type = 99
+LPM ADD_ITEM_EFFECT
+BUT_ONLY
+
+//Gorions Letter and Belt should be unstealable
+//https://forums.beamdog.com/discussion/41463/win-steam-gorions-letter-shouldnt-appear-on-his-corpse-when-pickpocketed-before#latest
+
+COPY_EXISTING ~gorion.cre~ ~override~
+SPRINT item_to_change ~SCRL3Z~
+SPRINT flags ~UNSTEALABLE~
+LPM ADD_CRE_ITEM_FLAGS
+SPRINT item_to_change ~BELT16~
+SPRINT flags ~UNSTEALABLE~
+LPM ADD_CRE_ITEM_FLAGS
+
+//Aldeth should not betray the protagonist after exposing Sarevok
+//https://forums.beamdog.com/discussion/40898/gamebreaker-aldeth-should-not-betray-the-protagonist-after-exposing-sarevok#latest
+
+<<<<<<<< ../EET-inlined/Aldeth.d
+ADD_TRANS_TRIGGER ALDETH 21 ~GlobalLT("DukeThanks","GLOBAL",1)~ DO 1
+>>>>>>>>
+
+COMPILE ~../EET-inlined/Aldeth.d~
+
+
+//Some fixes from Prozh Fixpack, thank you. :)
+//https://forums.beamdog.com/discussion/39811/neoficialnyy-perevod-bgee/p1
+
+COPY_EXISTING ~spwi322.spl~ ~override~
+  READ_LONG  0x64 "abil_off"
+  READ_SHORT 0x68 "abil_num"
+  READ_LONG  0x6a "fx_off"
+  FOR (index = 0 ; index < abil_num ; index = index + 1) BEGIN
+    WRITE_SHORT ("%abil_off%" + 0x0e + (0x28 * "%index%")) 20 // range
+  END
+BUT_ONLY
+
+COPY_EXISTING ~spwi611.spl~ ~override~
+              ~sppr506.spl~ ~override~
+  WRITE_BYTE  0x27 7 // change secondary type
+BUT_ONLY
+
+COPY_EXISTING ~wolfgr.itm~ ~override~
+  READ_LONG  0x6a "fx_off"
+  READ_SHORT 0x70 "fx_num"
+  WHILE ("%fx_num%" > 0) BEGIN
+    SET "fx_num" = ("%fx_num%" - 1)
+    READ_SHORT ("%fx_off%" + ("%fx_num%" * 0x30)) "type"
+    PATCH_IF ("%type%" = 120) BEGIN
+      WRITE_BYTE ("%fx_off%" + 0x04 + ("%fx_num%" * 0x30)) 0 // enchantment
+      WRITE_BYTE ("%fx_off%" + 0x08 + ("%fx_num%" * 0x30)) 2 // weapon type
+    END
+	PATCH_IF ("%type%" = 98) BEGIN
+      WRITE_BYTE ("%fx_off%" + 0x04 + ("%fx_num%" * 0x30)) 6 // value
+    END
+  END
+BUT_ONLY
+
+COPY_EXISTING ~shld02p.itm~ ~override~
+  READ_LONG   0x6a "fx_off"
+  READ_SHORT  0x70 "fx_num"
+  FOR (index = 0; index < fx_num; index = index + 1) BEGIN
+    READ_SHORT ("%fx_off%" +        ("%index%" * 0x30)) "opcode"
+    READ_BYTE  ("%fx_off%" + 0x08 + ("%index%" * 0x30)) "flag"
+    PATCH_IF (("%opcode%" = 0) AND (("%flag%" BAND 0b00000010) = 0b00000010)) BEGIN
+      WRITE_LONG  ("%fx_off%" + 0x04 + ("%index%" * 0x30)) 2 // ac bonus vs missiles
+    END
+  END
+BUT_ONLY
+
+COPY_EXISTING ~plat24.itm~ ~override~
+  READ_LONG   0x6a "fx_off"
+  READ_SHORT  0x70 "fx_num"
+  FOR (index = 0; index < fx_num; index = index + 1) BEGIN
+    READ_SHORT ("%fx_off%" +        ("%index%" * 0x30)) "opcode"
+    READ_BYTE  ("%fx_off%" + 0x08 + ("%index%" * 0x30)) "flag"
+    PATCH_IF (("%opcode%" = 0) AND (("%flag%" BAND 0b00001000) = 0b00001000)) BEGIN
+      WRITE_LONG  ("%fx_off%" + 0x04 + ("%index%" * 0x30)) 3 // ac bonus vs slashing
+    END
+  END
+BUT_ONLY
+
+COPY_EXISTING ~wings01.itm~ ~override~
+              ~wings01b.itm~ ~override~
+  READ_BYTE  0x21 "use"
+  WRITE_BYTE 0x21 ("%use%" BAND  0b11011111) // removes monk flag
+  WRITE_BYTE 0x21 ("%use%" BOR 0b00000010) // adds half-elf flag
+BUT_ONLY
+
+COPY_EXISTING ~stafn1.itm~ ~override~
+   READ_LONG   0x64 "abil_off"
+   READ_SHORT  0x68 "abil_num"
+   READ_LONG   0x6a "fx_off"
+   WHILE ("%abil_num%" > 0) BEGIN
+     SET "abil_num" = ("%abil_num%" - 1)
+     READ_BYTE   ("%abil_off%" +        ("%abil_num%" * 0x38)) "type"
+     PATCH_IF ("%type%" = 1) BEGIN // melee ability check
+       READ_SHORT  ("%abil_off%" + 0x1e + ("%abil_num%" * 0x38)) "abil_fx_num"
+       READ_SHORT  ("%abil_off%" + 0x20 + ("%abil_num%" * 0x38)) "abil_fx_idx"
+       WHILE ("%abil_fx_num%" > 0) BEGIN
+         SET "abil_fx_num" = ("%abil_fx_num%" - 1)
+         READ_SHORT ("%fx_off%" +        (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) "opcode"
+         READ_LONG  ("%fx_off%" + 0x02 + (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) "target"
+		 WRITE_BYTE ("%fx_off%" + 0x04 + (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) 1 // damage
+         PATCH_IF (("%opcode%" = 12) AND ("%target%" = 1)) BEGIN
+           WRITE_BYTE ("%fx_off%" + 0x12 + (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) 20 // probability
+           WRITE_BYTE ("%fx_off%" + 0x13 + (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) 11 // probability
+         END
+       END
+     END
+    END
+BUT_ONLY
+
+COPY_EXISTING ~misc78.itm~ ~override~
+			  ~scrljala.itm~ ~override~
+  WRITE_BYTE  0x1c 0 // cathegory
+BUT_ONLY
+
+//dlgfix.d
+<<<<<<<< ../eet-inlined/dlgfix.d
+ALTER_TRANS DORNJ_ BEGIN 178 END BEGIN 3 END BEGIN ~EPILOGUE~ ~EXTERN MINSCJ_ 18~ END
+ALTER_TRANS DORNJ_ BEGIN 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 END BEGIN 4 END BEGIN ~EPILOGUE~ ~EXTERN MINSCJ_ 18~ END
+ALTER_TRANS DORNJ_ BEGIN 229 END BEGIN 18 END BEGIN ~EPILOGUE~ ~EXTERN SAFANJ 13~ END
+ALTER_TRANS NEERAJ_ BEGIN 10 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 7~ END
+ALTER_TRANS NEERAJ_ BEGIN 12 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 15~ END
+ALTER_TRANS NEERAJ_ BEGIN 80 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 89~ END
+ALTER_TRANS RASAADJ_ BEGIN 2 6 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 8~ END
+ALTER_TRANS RASAADJ_ BEGIN 3 4 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 8~ END
+ALTER_TRANS RASAADJ_ BEGIN 68 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 52~ END
+ALTER_TRANS TTBELT BEGIN 34 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 35~ END
+ALTER_TRANS DYNAHZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Minsc",SetDialog("None")) ActionOverride("Minsc",LeaveParty()) ActionOverride("Minsc",EscapeArea()) LeaveParty() EscapeArea()~ END
+ALTER_TRANS MINSCZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Dynaheir",SetDialog("None")) ActionOverride("Dynaheir",LeaveParty()) ActionOverride("Dynaheir",EscapeArea()) LeaveParty() EscapeArea()~ END
+ALTER_TRANS SKIEZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Eldoth",SetDialog("None")) ActionOverride("Eldoth",LeaveParty()) ActionOverride("Eldoth",EscapeArea()) LeaveParty() EscapeArea()~ END
+ALTER_TRANS ELDOTZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Skie",SetDialog("None")) ActionOverride("Skie",LeaveParty()) ActionOverride("Skie",EscapeArea()) LeaveParty() EscapeArea()~ END
+ALTER_TRANS MONTAZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Xzar",SetDialog("None")) ActionOverride("Xzar",LeaveParty()) ActionOverride("Xzar",EscapeArea()) LeaveParty() EscapeArea()~ END
+ALTER_TRANS XZARZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Montaron",SetDialog("None")) ActionOverride("Montaron",LeaveParty()) ActionOverride("Montaron",EscapeArea()) LeaveParty() EscapeArea()~ END
+ALTER_TRANS KENT BEGIN 4 END BEGIN 0 END BEGIN ~UNSOLVED_JOURNAL~ ~@27145~ END
+ALTER_TRANS NARLEN BEGIN 19 END BEGIN 0 END BEGIN ~UNSOLVED_JOURNAL~ ~@27312~ END
+REPLACE_SAY RASAADJ_ 116 @30566
+REPLACE_SAY RASAADJ_ 138 @30907
+REPLACE_SAY NEERAJ_ 153 @30568
+ADD_TRANS_TRIGGER BAELOTH 9 ~!InParty("NEERA")~ DO 0
+ALTER_TRANS BAELOTH BEGIN 9 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 11~ END
+EXTEND_BOTTOM BAELOTH 9
+  IF ~InParty("NEERA")~ THEN REPLY @31888 EXTERN ~NEERAJ_~ 168
+END
+APPEND RSDMNK06
+IF ~~ THEN BEGIN m2
+  SAY @28911
+  IF ~~ THEN GOTO 1
+ END
+END
+ALTER_TRANS RASAADJ_ BEGIN 21 END BEGIN 1 END BEGIN ~EPILOGUE~ ~EXTERN RSDMNK06 m2~ END
+ALTER_TRANS VICONJ BEGIN 14 END BEGIN 0 END BEGIN ~EPILOGUE~ ~EXTERN RSDMNK06 m2~ END
+>>>>>>>>
+
+COMPILE ~../eet-inlined/dlgfix.d~
