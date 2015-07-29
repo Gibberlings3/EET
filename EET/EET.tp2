@@ -3430,13 +3430,13 @@ ACTION_FOR_EACH file IN areas.tbl links.tbl trans.tra BEGIN
 	ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_%file%~) BEGIN
 		COPY ~Worldmap/map_mods_%file%~ ~Worldmap~
 			APPEND_FILE ~EET/temp/map_bgee_%file%~
-			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%.tbl~) BEGIN
-				APPEND_FILE ~EET/temp/map_mods_%file%.tbl~
+			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%~) BEGIN
+				APPEND_FILE ~EET/temp/map_mods_%file%~
 			END
 	END ELSE BEGIN
 		COPY ~EET/temp/map_bgee_%file%~ ~Worldmap/map_mods_%file%~
-			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%.tbl~) BEGIN
-				APPEND_FILE ~EET/temp/map_mods_%file%.tbl~
+			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%~) BEGIN
+				APPEND_FILE ~EET/temp/map_mods_%file%~
 			END
 	END
 	//EET worldmap
