@@ -419,6 +419,10 @@ COPY + ~PCU_custom/Output/SETUP-PCU_CUSTOM.DEBUG~ ~PCU_custom/Output~
 		SPRINT log ~%log%%MATCH1%%LNL%~
 	END
 	~~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Analyzing PCU_custom.+\)$~ BEGIN
+		SPRINT log ~%log%%MATCH1%%LNL%~
+	END
+	~~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Renaming .+\)$~ BEGIN
 		SPRINT log ~%log%%MATCH1%%LNL%~
 	END

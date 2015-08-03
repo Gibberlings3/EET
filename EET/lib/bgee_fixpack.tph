@@ -21,6 +21,11 @@ COPY_EXISTING ~IMPORT02.2DA~ ~override~
 	REPLACE_TEXTUALLY ~ SLNG03$~ ~ SLNG05~
 BUT_ONLY
 
+// replace Erik's long bow with a short bow to prevent injury when training in Candlekeep
+COPY_EXISTING ~erik.cre~ ~override~
+	REPLACE_CRE_ITEM ~bow05~ #0 #0 #0 ~none~ ~weapon1~ EQUIP TWOHANDED
+BUT_ONLY
+
 //https://forums.beamdog.com/discussion/39023/tazoksays-blocks-in-ar2400-bcs-and-ar2900-bcs-prevent-further-script-blocks-from-firing#latest
 //Script blocks added to the ends of BG2400.BCS or BG2900.BCS will not execute once BG1900 has been entered.
 //Thanks to AstroBryGuy
