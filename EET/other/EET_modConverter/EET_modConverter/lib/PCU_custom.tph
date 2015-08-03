@@ -1,10 +1,3 @@
-BACKUP ~PCU_custom/backup~
-AUTHOR ~K4thos (swit)~
-VERSION ~beta 0.1~
-
-BEGIN ~PCU_custom~
-NO_LOG_RECORD
-
 OUTER_SPRINT option ~~
 OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 5) || (option < 1) BEGIN
 	PRINT ~Choose conversion platform:
@@ -12,7 +5,7 @@ OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 5) || (option < 1) BEGIN
  2. EET -> BG:EE
  3. BGT -> EET
  4. custom
- 5. any platform -> EET cpmvars (baf/bcs/d/dlg/tbl/tp2/tph/tpp only)~
+ 5. any platform -> EET cpmvars (baf/bcs/d/dlg/tbl/tp2/tpa/tph/tpp only)~
 	ACTION_READLN option
 END
 
@@ -38,34 +31,19 @@ END ELSE BEGIN
 	END
 END
 
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////                                                  \\\\\
-///// PCU conversion                                   \\\\\
-/////                                                  \\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-
 PRINT ~~
 PRINT ~PCU conversion...~
 
-<<<<<<<< PCU_custom-inlined/blank.txt
->>>>>>>>
-
-OUTER_SPRINT slash ~/~
-
-INCLUDE ~PCU_custom/lib/macros.tph~
-
 ACTION_IF (option = 1) BEGIN //BG:EE -> EET
-	INCLUDE ~PCU_custom/lib/PCU_Dict_bgee-eet.tph~
+	INCLUDE ~EET_modConverter/lib/PCU_Dict_bgee-eet.tph~
 END ELSE ACTION_IF (option = 2) BEGIN //EET -> BG:EE
-	INCLUDE ~PCU_custom/lib/PCU_Dict_eet-bgee.tph~
+	INCLUDE ~EET_modConverter/lib/PCU_Dict_eet-bgee.tph~
 END ELSE ACTION_IF (option = 3) BEGIN //BGT -> EET
-	INCLUDE ~PCU_custom/lib/PCU_Dict_bgt-eet.tph~
+	INCLUDE ~EET_modConverter/lib/PCU_Dict_bgt-eet.tph~
 END ELSE ACTION_IF (option = 4) BEGIN // custom
-	INCLUDE ~PCU_custom/lib/PCU_Dict_custom.tph~
+	INCLUDE ~EET_modConverter/lib/PCU_Dict_custom.tph~
 END ELSE BEGIN //any platform -> cpmvars
-	INCLUDE ~PCU_custom/lib/PCU_Dict_cpmvars.tph~
+	INCLUDE ~EET_modConverter/lib/PCU_Dict_cpmvars.tph~
 END
 
 //FOR variables
@@ -97,61 +75,8 @@ OUTER_SET tbl_check = 0
 OUTER_SET ignore_check = 0
 OUTER_SET ren_check = 0
 
-//create file list for conversion
-ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
-<<<<<<<< PCU_custom-inlined/MakeList.bat
-@echo off
-cd PCU_custom
-
-IF NOT EXIST "Filelist.txt" GOTO NODELETE
-call deldir Output
-del Filelist.txt
-
-:NODELETE
-::create filelist
-xcopy Input\*.* /E /L >> Filelist.txt
->>>>>>>>
-
-<<<<<<<< PCU_custom-inlined/deldir.bat
-VER |find /i "Windows 95" > NUL
-IF NOT ERRORLEVEL 1 GOTO OLDDEL
-
-VER |find /i "Windows 98" > NUL
-IF NOT ERRORLEVEL 1 GOTO OLDDEL
-
-VER |find /i "Windows Millennium" > NUL
-IF NOT ERRORLEVEL 1 GOTO OLDDEL
-
-VER | find "NT" > nul
-IF %errorlevel% EQU 0 GOTO OLDDEL
-
-VER | find "XP" > nul
-IF %errorlevel% EQU 0 GOTO NEWDEL
-
-VER | find "2000" > nul
-IF %errorlevel% EQU 0 GOTO NEWDEL
-
-:NEWDEL
-rd /s /q %1
-GOTO ENDDEL
-
-:OLDDEL
-deltree /y %1
-GOTO ENDDEL
-
-:ENDDEL
->>>>>>>>
-	COPY ~PCU_custom-inlined/MakeList.bat~ ~PCU_custom~
-		~PCU_custom-inlined/deldir.bat~ ~PCU_custom~
-	AT_NOW ~CALL PCU_custom\MakeList.bat~
-END ELSE BEGIN
-	AT_NOW ~rm -rf PCU_custom/Output~
-	//add MAC/Linux MakeList code here
-END
-
-MKDIR ~PCU_custom/Output~
-
-COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
+COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
 	SPRINT list_input ~	~
 	SET number = 0
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^Input[/\\]+\(.+\)$~ BEGIN
@@ -165,21 +90,6 @@ COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
 		SPRINT list_input ~%list_input%%MATCH1%	~
 	END
 	~~
-
-/*COPY ~PCU_custom-inlined/blank.txt~ ~PCU_custom/Filelist.txt~
-
-OUTER_SPRINT list_input ~	~
-OUTER_SET number = 0
-ACTION_BASH_FOR ~PCU_custom/input~ ~^.+$~ BEGIN
-	OUTER_SET number = number + 1
-	ACTION_IF (number = 1) BEGIN
-		OUTER_SPRINT list_number ~%number%~
-	END ELSE BEGIN
-		OUTER_SPRINT list_number ~%list_number%
-%number%~
-	END
-	OUTER_SPRINT list_input ~%list_input%%BASH_FOR_FILE%	~
-END*/
 
 OUTER_PATCH_SAVE ~list_input~ ~%list_input%~ BEGIN
 	REPLACE_TEXTUALLY ~ ~ ~?~
@@ -320,16 +230,15 @@ OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 	END
 END
 
-COPY + ~PCU_custom-inlined/blank.txt~ ~PCU_custom/Filelist.txt~
-APPEND_OUTER + ~PCU_custom/Filelist.txt~ ~%list_number%~
-APPEND_COL_OUTER + ~PCU_custom/Filelist.txt~ ~%list_input%~
-APPEND_COL_OUTER + ~PCU_custom/Filelist.txt~ ~%list_output%~
+COPY + ~.../blank.txt~ ~EET_modConverter/Filelist.txt~
+APPEND_OUTER + ~EET_modConverter/Filelist.txt~ ~%list_number%~
+APPEND_COL_OUTER + ~EET_modConverter/Filelist.txt~ ~%list_input%~
+APPEND_COL_OUTER + ~EET_modConverter/Filelist.txt~ ~%list_output%~
 
 //conversion
 PRINT ~Please be patient during the conversion process. This may take some time...~
 
-MKDIR ~PCU_custom/Output~
-COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
+COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 	REPLACE_TEXTUALLY ~ ~ ~	~ //just for easier importing to spreadsheet if needed
 	COUNT_2DA_ROWS 3 "cntrow" //count every single row
 	PATCH_PRINT ~%cntrow% entries parsed, commencing patching...~
@@ -368,11 +277,11 @@ COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
 				~%patch_ext%~ STRING_EQUAL_CASE ~WAV~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~WBM~ BEGIN
 				ACTION_IF (updated = 1) BEGIN
-					MKDIR ~PCU_custom/Output/%patch_dir%~
-					COPY_LARGE ~PCU_custom/input/%patch_name%~ ~PCU_custom/output/%patch_output%~
+					MKDIR ~EET_modConverter/Output/%patch_dir%~
+					COPY_LARGE ~EET_modConverter/Input/%patch_name%~ ~EET_modConverter/Output/%patch_output%~
 				END
 			END ELSE BEGIN
-				COPY - ~PCU_custom/input/%patch_name%~ ~PCU_custom_inlined/output/%patch_output%~
+				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_output%~
 					PATCH_IF (type < 3) BEGIN
 						READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
 						LAUNCH_PATCH_MACRO ~PCU_core_patch~
@@ -382,8 +291,8 @@ COPY + ~PCU_custom/Filelist.txt~ ~PCU_custom~
 				OUTER_SET ignore_check = ignore_check + 1
 				PRINT ~%cntcurrent%/%cntrow% Ignoring patching %patch_name%...~
 			END ELSE ACTION_IF ("%updated%" = 1) BEGIN
-				MKDIR ~PCU_custom/Output/%patch_dir%~
-				COPY ~PCU_custom_inlined/output/%patch_output%~ ~PCU_custom/output/%patch_output%~
+				MKDIR ~EET_modConverter/Output/%patch_dir%~
+				COPY ~.../Output/%patch_output%~ ~EET_modConverter/Output/%patch_output%~
 			END
 		END
 		PATCH_VERBOSE
@@ -411,15 +320,15 @@ TBL %tbl_check%
 %ignore_check% files patching ignored.
 %ren_check% files renamed.~
 
-AT_NOW ~copy SETUP-PCU_CUSTOM.DEBUG PCU_custom/Output/SETUP-PCU_CUSTOM.DEBUG~ //file is blank when copied within weidu
+AT_NOW ~copy SETUP-EET_modConverter.DEBUG EET_modConverter%os_slash%Output%os_slash%SETUP-EET_modConverter.DEBUG~ //file is blank when copied within weidu
 
 OUTER_SPRINT log ~~
-COPY + ~PCU_custom/Output/SETUP-PCU_CUSTOM.DEBUG~ ~PCU_custom/Output~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Patching PCU_custom.+\)$~ BEGIN
+COPY + ~EET_modConverter/Output/SETUP-EET_modConverter.DEBUG~ ~EET_modConverter/Output~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Patching EET_modConverter.+\)$~ BEGIN
 		SPRINT log ~%log%%MATCH1%%LNL%~
 	END
 	~~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Analyzing PCU_custom.+\)$~ BEGIN
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(Analyzing EET_modConverter.+\)$~ BEGIN
 		SPRINT log ~%log%%MATCH1%%LNL%~
 	END
 	~~
@@ -428,9 +337,4 @@ COPY + ~PCU_custom/Output/SETUP-PCU_CUSTOM.DEBUG~ ~PCU_custom/Output~
 	END
 	~~
 
-COPY + ~PCU_custom-inlined/blank.txt~ ~PCU_custom/Output/Changes.txt~
-APPEND_OUTER + ~PCU_custom/Output/Changes.txt~ ~%log%~
-
-ACTION_IF FILE_EXISTS ~PCU_custom/Output/Changes.txt~ BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW PCU_custom/Output/Changes.txt~
-END
+DELETE + ~EET_modConverter/Output/SETUP-EET_modConverter.DEBUG~

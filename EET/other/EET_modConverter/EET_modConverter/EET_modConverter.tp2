@@ -1,0 +1,106 @@
+BACKUP ~EET_modConverter/backup~
+AUTHOR ~K4thos (swit)~
+VERSION ~beta 0.1~
+
+BEGIN ~EET_modConverter~
+NO_LOG_RECORD
+
+//create file list for conversion
+ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+<<<<<<<< .../MakeList.bat
+@echo off
+cd EET_modConverter
+
+IF NOT EXIST "Filelist.txt" GOTO NODELETE
+call deldir Output
+del Filelist.txt
+
+:NODELETE
+::create filelist
+xcopy Input\*.* /E /L >> Filelist.txt
+>>>>>>>>
+
+<<<<<<<< .../deldir.bat
+VER |find /i "Windows 95" > NUL
+IF NOT ERRORLEVEL 1 GOTO OLDDEL
+
+VER |find /i "Windows 98" > NUL
+IF NOT ERRORLEVEL 1 GOTO OLDDEL
+
+VER |find /i "Windows Millennium" > NUL
+IF NOT ERRORLEVEL 1 GOTO OLDDEL
+
+VER | find "NT" > nul
+IF %errorlevel% EQU 0 GOTO OLDDEL
+
+VER | find "XP" > nul
+IF %errorlevel% EQU 0 GOTO NEWDEL
+
+VER | find "2000" > nul
+IF %errorlevel% EQU 0 GOTO NEWDEL
+
+:NEWDEL
+rd /s /q %1
+GOTO ENDDEL
+
+:OLDDEL
+deltree /y %1
+GOTO ENDDEL
+
+:ENDDEL
+>>>>>>>>
+	COPY ~.../MakeList.bat~ ~EET_modConverter~
+		~.../deldir.bat~ ~EET_modConverter~
+	AT_NOW ~CALL EET_modConverter\MakeList.bat~
+END ELSE BEGIN
+	ACTION_IF FILE_EXISTS ~FileList.txt~ BEGIN
+		AT_NOW ~rm -rf EET_modConverter/Output~
+	END
+	AT_NOW ~echo `ls EET_modConverter/Input/` >EET_modConverter/FileList.txt~
+	COPY ~EET_modConverter/FileList.txt~ ~EET_modConverter~
+		REPLACE_TEXTUALLY ~ ~ ~%LNL%~ // breaks on files with a space
+	BUT_ONLY
+END
+
+MKDIR ~EET_modConverter/Output~
+
+<<<<<<<< .../blank.txt
+>>>>>>>>
+
+OUTER_SPRINT slash ~/~
+ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+	OUTER_SPRINT os_slash ~\~
+END ELSE BEGIN
+	OUTER_SPRINT os_slash ~/~
+END
+
+INCLUDE ~EET_modConverter/lib/macros.tph~
+
+//menu
+
+OUTER_SPRINT option ~~
+OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 3) || (option < 1) BEGIN
+	PRINT ~Choose which tool should be used
+ 1. Custom version of PCU for mods with BG1 content
+ 2. BG2:EE mod GAME_IS patcher
+ 3. BG2:EE mod chapter patcher (do not use it yet)~
+	ACTION_READLN option
+END
+
+ACTION_IF (option = 1) BEGIN
+	INCLUDE ~EET_modConverter/lib/PCU_custom.tph~
+END ELSE ACTION_IF (option = 2) BEGIN
+	INCLUDE ~EET_modConverter/lib/GAME_IS_patcher.tph~
+END ELSE ACTION_IF (option = 3) BEGIN
+	INCLUDE ~EET_modConverter/lib/Chapter_patcher.tph~
+END
+
+//show log
+
+ACTION_IF (~%log%~ STRING_EQUAL_CASE ~~) BEGIN
+	PRINT ~No changes made to the mod~
+END ELSE BEGIN
+	COPY + ~.../blank.txt~ ~EET_modConverter/Output/Changes.txt~
+	APPEND_OUTER + ~EET_modConverter/Output/Changes.txt~ ~%log%~
+	AT_INTERACTIVE_EXIT ~VIEW EET_modConverter/Output/Changes.txt~
+END

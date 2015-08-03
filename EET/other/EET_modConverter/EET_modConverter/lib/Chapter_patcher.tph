@@ -1,68 +1,10 @@
-BACKUP ~Chapter_patcher/backup~
-AUTHOR ~K4thos (swit)~
-VERSION ~beta 0.1~
+PRINT ~~
+PRINT ~Patching chapters...~
 
-BEGIN ~Chapter_patcher for BG2 mods~
-NO_LOG_RECORD
-
-<<<<<<<< Chapter_patcher-inlined/blank.txt
->>>>>>>>
-
-ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
-<<<<<<<< Chapter_patcher-inlined/MakeList.bat
-@echo off
-cd Chapter_patcher
-
-IF NOT EXIST "Filelist.txt" GOTO NODELETE
-call deldir Output
-del Filelist.txt
-
-:NODELETE
-::create filelist
-xcopy Input\*.* /E /L >> Filelist.txt
->>>>>>>>
-
-<<<<<<<< Chapter_patcher-inlined/deldir.bat
-VER |find /i "Windows 95" > NUL
-IF NOT ERRORLEVEL 1 GOTO OLDDEL
-
-VER |find /i "Windows 98" > NUL
-IF NOT ERRORLEVEL 1 GOTO OLDDEL
-
-VER |find /i "Windows Millennium" > NUL
-IF NOT ERRORLEVEL 1 GOTO OLDDEL
-
-VER | find "NT" > nul
-IF %errorlevel% EQU 0 GOTO OLDDEL
-
-VER | find "XP" > nul
-IF %errorlevel% EQU 0 GOTO NEWDEL
-
-VER | find "2000" > nul
-IF %errorlevel% EQU 0 GOTO NEWDEL
-
-:NEWDEL
-rd /s /q %1
-GOTO ENDDEL
-
-:OLDDEL
-deltree /y %1
-GOTO ENDDEL
-
-:ENDDEL
->>>>>>>>
-	COPY ~Chapter_patcher-inlined/MakeList.bat~ ~Chapter_patcher~
-		~Chapter_patcher-inlined/deldir.bat~ ~Chapter_patcher~
-	AT_NOW ~CALL Chapter_patcher\MakeList.bat~
-END ELSE BEGIN
-	ACTION_IF FILE_EXISTS "FileList.txt" BEGIN
-		AT_NOW ~rm -rf Chapter_patcher/Output~
-	END
-	AT_NOW ~echo `ls Chapter_patcher/Input/` >Chapter_patcher/FileList.txt~
-	COPY ~Chapter_patcher/FileList.txt~ ~Chapter_patcher~
-		REPLACE_TEXTUALLY ~ ~ ~%LNL%~ // breaks on files with a space
-	BUT_ONLY
-END
+OUTER_SET cntcurrent = 0
+OUTER_SET ignore_cnt = 0
+OUTER_SET patch_cnt = 0
+OUTER_SPRINT log ~~
 
 OUTER_SPRINT platformMATCH1 "AUTO_EVAL_STRINGS
 
@@ -79,14 +21,9 @@ ALWAYS
 	END
 "
 
-OUTER_SET cntcurrent = 0
-OUTER_SET ignore_cnt = 0
-OUTER_SET patch_cnt = 0
-OUTER_SPRINT log ~~
-
-COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
+COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
-	COUNT_REGEXP_INSTANCES "^Input[/\\]+" cntrow
+	COUNT_REGEXP_INSTANCES ~^Input[/\\]+~ cntrow
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^Input[/\\]+\(.+\)$~ BEGIN
 		SPRINT replaced ~%MATCH1%~
 		SET cntcurrent = cntcurrent + 1
@@ -105,9 +42,10 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 			ACTION_IF ~%patch_ext%~ STRING_EQUAL_CASE ~BAF~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~D~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TP2~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~TPA~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPH~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
-				COPY - ~Chapter_patcher/Input/%patch_name%~ ~Chapter_patcher_inlined/Output/%patch_name%~
+				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
 					REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
 					REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
 						PATCH_IF (patched = 0) BEGIN
@@ -118,15 +56,15 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 						PATCH_PRINT ~%log_temp%~
 						SET patched = 1
 					END
-					~\1%bg2_chapter_%MATCH2%%)~
+					~%MATCH1%%bg2_chapter_%MATCH2%%)~
 					REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
 			END
 			ACTION_IF (patched = 0) BEGIN
 				OUTER_SET ignore_cnt = ignore_cnt + 1
 				PRINT ~%cntcurrent%/%cntrow% Ignoring patching: %patch_name%...~
 			END ELSE BEGIN
-				MKDIR ~Chapter_patcher/Output/%patch_dir%~
-				COPY ~Chapter_patcher_inlined/Output/%patch_name%~ ~Chapter_patcher/Output/%patch_name%~
+				MKDIR ~EET_modConverter/Output/%patch_dir%~
+				COPY ~.../Output/%patch_name%~ ~EET_modConverter/Output/%patch_name%~
 				OUTER_SET patch_cnt = patch_cnt + 1
 			END
 		END
@@ -140,12 +78,12 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 			END
 			SET var_patch = 0
 			INNER_ACTION BEGIN
-				ACTION_IF NOT FILE_EXISTS ~Chapter_patcher/Output/%MATCH1%~ BEGIN
-					COPY ~Chapter_patcher/Input/%MATCH1%~ ~Chapter_patcher/Output/%MATCH1%~
+				ACTION_IF NOT FILE_EXISTS ~EET_modConverter/Output/%MATCH1%~ BEGIN
+					COPY ~EET_modConverter/Input/%MATCH1%~ ~EET_modConverter/Output/%MATCH1%~
 					OUTER_SET patch_cnt = patch_cnt + 1
 					OUTER_SET ignore_cnt = ignore_cnt - 1
 				END
-				COPY ~Chapter_patcher/Output/%MATCH1%~ ~Chapter_patcher/Output/%MATCH1%~
+				COPY ~EET_modConverter/Output/%MATCH1%~ ~EET_modConverter/Output/%MATCH1%~
 					REPLACE_TEXTUALLY ~AUTO_EVAL_STRINGS~ ~~
 					COUNT_REGEXP_INSTANCES ~^[ 	]*ALWAYS[ 	]*.*[ 	]*$~ num_matches
 					PATCH_IF (num_matches > 0) BEGIN
@@ -192,10 +130,3 @@ COPY + ~Chapter_patcher/Filelist.txt~ ~Chapter_patcher~
 PRINT ~Conversion complete. Statistics:
 %patch_cnt% files patched.
 %ignore_cnt% files ignored.~
-
-COPY + ~Chapter_patcher-inlined/blank.txt~ ~Chapter_patcher/Output/Changes.txt~
-APPEND_OUTER + ~Chapter_patcher/Output/Changes.txt~ ~%log%~
-
-ACTION_IF FILE_EXISTS ~Chapter_patcher/Output/Changes.txt~ BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW Chapter_patcher/Output/Changes.txt~
-END
