@@ -603,6 +603,24 @@ END
 DELETE + ~%biff_dir%/tis2bg2.exe~
 	~%biff_dir%/tis2bg2.log~
 
+//fix for OH2010 door issue
+MOVE + ~%biff_dir%/OH2010.MOS~ ~%biff_dir%/eetOH2~
+	~%biff_dir%/OH2010HT.BMP~ ~%biff_dir%/eetOH2~
+	~%biff_dir%/OH2010LM.BMP~ ~%biff_dir%/eetOH2~
+	~%biff_dir%/OH2010SR.BMP~ ~%biff_dir%/eetOH2~
+COPY + ~EET/base/wed/OH2010.WED~ ~%biff_dir%/eetOH2~
+AT_NOW ~%tileconv% -e -j %jobs% -q %quality% -o "EET%os_slash%temp%os_slash%biff%os_slash%eetOH2" "EET%os_slash%base%os_slash%tbc%os_slash%OH2010.tbc" %bash_debug%~ EXACT
+LAM bash_log
+
+//fix for OH3020 door issue
+MOVE + ~%biff_dir%/OH3020.MOS~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3020HT.BMP~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3020LM.BMP~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3020SR.BMP~ ~%biff_dir%/eetOH3~
+COPY + ~EET/base/wed/OH3020.WED~ ~%biff_dir%/eetOH3~
+AT_NOW ~%tileconv% -e -j %jobs% -q %quality% -o "EET%os_slash%temp%os_slash%biff%os_slash%eetOH3" "EET%os_slash%base%os_slash%tbc%os_slash%OH3020.tbc" %bash_debug%~ EXACT
+LAM bash_log
+
 /////                                                  \\\\\
 ///// prepare BG:EE resources for PCU conversion       \\\\\
 /////                                                  \\\\\
