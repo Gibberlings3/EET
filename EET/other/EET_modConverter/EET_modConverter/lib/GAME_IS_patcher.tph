@@ -1,3 +1,12 @@
+OUTER_SPRINT option ~~
+OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 5) || (option < 1) BEGIN
+	PRINT ~Choose GAME_IS platform to append eet parameter to:
+ 1. bgee
+ 2. bg2ee
+ 3. bgt~
+	ACTION_READLN option
+END
+
 PRINT ~~
 PRINT ~Patching GAME_IS...~
 
@@ -6,11 +15,18 @@ OUTER_SET ignore_cnt = 0
 OUTER_SET patch_cnt = 0
 OUTER_SPRINT log ~~
 
-COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
+ACTION_IF (option = 1) BEGIN
+	OUTER_SPRINT game ~bgee~
+END ELSE ACTION_IF (option = 2) BEGIN
+	OUTER_SPRINT game ~bg2ee~
+END ELSE ACTION_IF (option = 3) BEGIN
+	OUTER_SPRINT game ~bgt~
+END
+
+COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
 	COUNT_REGEXP_INSTANCES ~^Input[/\\]+~ cntrow
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^Input[/\\]+\(.+\)$~ BEGIN
-		SPRINT replaced ~%MATCH1%~
 		SET cntcurrent = cntcurrent + 1
 		INNER_PATCH_SAVE ~patch_name~ ~%MATCH1%~ BEGIN
 			REPLACE_TEXTUALLY ~\\~ ~/~
@@ -24,21 +40,39 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 		//PATCH_PRINT ~patch_name = %patch_name%; ;patch_dir = %patch_dir%; patch_ext = %patch_ext%~
 		SET patched = 0
 		INNER_ACTION BEGIN
-			ACTION_IF ~%patch_ext%~ STRING_EQUAL_CASE ~2DA~ OR
+			ACTION_IF ~%patch_ext%~ STRING_EQUAL_CASE ~TP2~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPA~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPH~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~/(GAME_IS[^_^2]+\)\(bg2ee\)\(.*\)$~ BEGIN
+					REPLACE_TEXTUALLY ~GAME_IS~ ~%WNL%GAME_IS~ //workaround for weidu bug
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ 	]+\)\([A-Z0-9]+\)~ BEGIN
 						PATCH_IF (patched = 0) BEGIN
 							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
 						END
-						SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2%%MATCH3% => %MATCH1%%MATCH2% eet%MATCH3%~
+						SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2% => %MATCH1%%tilde%%MATCH2%%tilde%~
 						SPRINT log ~%log%%log_temp%%LNL%~
 						PATCH_PRINT ~%log_temp%~
 						SET patched = 1
 					END
-					~%MATCH1%%MATCH2% eet%MATCH3%~
+					~%MATCH1%%tilde%%MATCH2%%tilde%~
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ 	]+\)\([ 	"%tilde%A-Z0-9]+\)~ BEGIN
+						SPRINT MATCH2_new ~%MATCH2%~
+						PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~%game%~)=0)/*first contain second*/ BEGIN
+							INNER_PATCH_SAVE MATCH2_new ~%MATCH2_new%~ BEGIN
+								REPLACE_TEXTUALLY ~\(%game%\)~ ~\1 eet~
+							END
+						END
+						PATCH_IF (patched = 0) BEGIN
+							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
+						END
+						SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2% => %MATCH1%%MATCH2_new%~
+						SPRINT log ~%log%%log_temp%%LNL%~
+						PATCH_PRINT ~%log_temp%~
+						SET patched = 1
+					END
+					~%MATCH1%%MATCH2_new%~
+					REPLACE_TEXTUALLY ~%WNL%GAME_IS~ ~GAME_IS~ //workaround for weidu bug
 			END
 			ACTION_IF (patched = 0) BEGIN
 				OUTER_SET ignore_cnt = ignore_cnt + 1
@@ -50,7 +84,7 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 			END
 		END
 	END
-	~%replaced%~
+	~~
 
 PRINT ~Conversion complete. Statistics:
 %patch_cnt% files patched.

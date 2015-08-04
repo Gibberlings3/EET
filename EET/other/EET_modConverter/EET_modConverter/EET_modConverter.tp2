@@ -68,6 +68,7 @@ MKDIR ~EET_modConverter/Output~
 >>>>>>>>
 
 OUTER_SPRINT slash ~/~
+OUTER_SPRINT tilde "~"
 ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
 END ELSE BEGIN
@@ -102,5 +103,5 @@ ACTION_IF (~%log%~ STRING_EQUAL_CASE ~~) BEGIN
 END ELSE BEGIN
 	COPY + ~.../blank.txt~ ~EET_modConverter/Output/Changes.txt~
 	APPEND_OUTER + ~EET_modConverter/Output/Changes.txt~ ~%log%~
-	AT_INTERACTIVE_EXIT ~VIEW EET_modConverter/Output/Changes.txt~
+	AT_INTERACTIVE_EXIT ~VIEW EET_modConverter%os_slash%Output%os_slash%Changes.txt~
 END
