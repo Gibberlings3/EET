@@ -289,6 +289,35 @@ EXTEND_TOP ~BALDUR.BCS~ ~EET-inlined/timers-et.baf~
 EXTEND_TOP ~BALDUR25.BCS~ ~EET-inlined/timers-et.baf~
 
 /////                                                  \\\\\
+///// DS3483.BCS (Town Crier)                          \\\\\
+/////                                                  \\\\\
+
+//workaround for CalanderDay trigger used in TOWNC01.DLG
+<<<<<<<< EET-inlined/DS3483-eb.baf
+IF
+  Global("K#DoOnce","LOCALS",0)
+  GlobalsGT("K#DaysPassed","K#DS3483")
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#DS3483","GLOBAL",1)
+	SetGlobal("K#DoOnce","LOCALS",1)
+    Continue()
+END
+
+IF
+  Global("K#DoOnce","LOCALS",1)
+  GlobalsGT("K#DaysPassed","K#DS3483")
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#DS3483","GLOBAL",1)
+    IncrementGlobal("K#DaysPassed","LOCALS",1)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~DS3483.BCS~ ~EET-inlined/DS3483-eb.baf~
+
+/////                                                  \\\\\
 ///// DPLAYER2.BCS                                     \\\\\
 /////                                                  \\\\\
 

@@ -244,3 +244,12 @@ ADD_STATE_TRIGGER ~IMOEN2P~ 3 ~!Global("Chapter","GLOBAL",1)~ 4 7
 >>>>>>>>
 
 COMPILE ~EET-inlined/IMOEN2P.d~
+
+/////                                                  \\\\\
+///// TOWNC01.DLG                                      \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~TOWNC01.DLG~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~CalanderDayLT(~ ~GlobalLT("K#DaysPassed","LOCALS",~
+	END
