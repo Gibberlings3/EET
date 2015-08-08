@@ -114,8 +114,9 @@ ACTION_FOR_EACH tool IN tile2ee tileconv BEGIN
 	PRINT ~%tool% path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%tool%%exe%~
 END
 OUTER_SPRINT tis2bg2 ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%tis2bg2%exe%~
-OUTER_SPRINT ffmpeg ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
 PRINT ~tis2bg2 path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%tis2bg2%exe%~
+OUTER_SPRINT ffmpeg ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
+PRINT ~ffmpeg path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
 
 /////                                                  \\\\\
 ///// Include                                          \\\\\
@@ -3278,7 +3279,6 @@ ACTION_FOR_EACH vidname IN BEREGOST INTROBG1 NASHKELL WYVERN BEGIN
 	END
 	MOVE + ~lang/%LANGUAGE%/movies/%vidname%.webm~ ~lang/%LANGUAGE%/movies/%vidname%.wbm~
 END
-
 
 //update Baldur.ini
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN

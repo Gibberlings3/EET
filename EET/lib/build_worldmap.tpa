@@ -21,8 +21,8 @@ COPY_EXISTING worldmap.wmp override
   na = 0
   PHP_EACH fl#CONTENT AS content => _ BEGIN
     INSERT_BYTES   ip        0xf0
-      WRITE_ASCIIE ip        $fl#SHORT("%content%") #8 //it has worked thus far
-      WRITE_ASCIIE ip + 0x8  "%content%" #8              //so why not?
+      WRITE_ASCIIE ip        "%content%" #8
+      WRITE_ASCIIE ip + 0x8  $fl#SHORT("%content%") #8
       WRITE_ASCIIE ip + 0x10 $fl#LONG("%content%") #32
       WRITE_LONG   ip + 0x30 $fl#FLAGS("%content%")
       WRITE_LONG   ip + 0x34 $fl#BAM("%content%")

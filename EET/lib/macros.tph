@@ -264,14 +264,15 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 						END*/
 						PATCH_IF ("%content%" STRING_EQUAL_CASE "") BEGIN
 							SPRINT EVAL "%var%" N
-						END ELSE PATCH_IF (("%content%" STRING_CONTAINS_REGEXP " ")=0) BEGIN
-							PATCH_PRINT ~link %area% -> %target_are%: %content% is replaced with N~
-							SPRINT EVAL "%var%" N
 						END ELSE PATCH_IF (("%content%" STRING_MATCHES_REGEXP "[a-z0-9_']+")=1) BEGIN
 							PATCH_WARN "link %area% -> %target_are%: check if %content% is valid" 
 							//PATCH_PRINT "link %area% -> %target_are%: %content% is replaced with N"
-							//SPRINT EVAL "%var%" N
+							//SPRINT content "N"
 						END
+						INNER_PATCH_SAVE content "%content%" BEGIN
+							REPLACE_TEXTUALLY " " "###"
+						END
+						SPRINT EVAL "%var%" "%content%"
 					END
 					INNER_PATCH_SAVE nesw "%j%" BEGIN
 						REPLACE_TEXTUALLY 0 N
@@ -453,6 +454,9 @@ DEFINE_PATCH_MACRO ~read_link_array_from_2da~ BEGIN
 				SPRINT cmp EVAL "%%var%%"
 				SPRINT array "%var%"
 				TO_UPPER array
+				INNER_PATCH_SAVE cmp "%cmp%" BEGIN
+					REPLACE_TEXTUALLY "###" " "
+				END
 				PATCH_IF "%cmp%" STRING_COMPARE_CASE N BEGIN
 					SPRINT $EVAL "fl#%array%"("%src%" "%j%" "%trgt%") "%cmp%"
 				END
@@ -623,8 +627,63 @@ END
 DEFINE_PATCH_FUNCTION ~fix_table~ BEGIN
 	REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(SHORT_NAME\)~ ~\1%LNL%%LNL%\2~
 	REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(//\)~ ~\1%LNL%%LNL%\2~
+	REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(SRC_AREA\)~ ~\1%LNL%%LNL%\2~
 	REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(@\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~
 	REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(//\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_ACTION_FUNCTION install_area_table
+	STR_VAR
+	table = ""
+BEGIN
+	ACTION_IF "%table%" STR_CMP "" BEGIN
+		ACTION_IF FILE_EXISTS "worldmap/map_mods_areas.tbl" BEGIN
+			COPY "worldmap/map_mods_areas.tbl" "worldmap/map_mods_areas.tbl"
+				APPEND_FILE_EVALUATE ".../fl#inline/newlines"
+				APPEND_FILE "%table%"
+			BUT_ONLY
+		END ELSE BEGIN
+			COPY "%table%" "worldmap/map_mods_areas.tbl"
+		END
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_ACTION_FUNCTION install_link_table
+	STR_VAR
+	table = ""
+BEGIN
+	ACTION_IF "%table%" STR_CMP "" BEGIN
+		ACTION_IF FILE_EXISTS "worldmap/map_mods_links.tbl" BEGIN
+			COPY "worldmap/map_mods_links.tbl" "worldmap/map_mods_links.tbl"
+				APPEND_FILE_EVALUATE ".../fl#inline/newlines"
+				APPEND_FILE "%table%"
+			BUT_ONLY
+		END ELSE BEGIN
+			COPY "%table%" "worldmap/map_mods_links.tbl"
+		END
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_ACTION_FUNCTION install_translation_table
+	STR_VAR
+	table = ""
+BEGIN
+	ACTION_IF "%tablel%" STR_CMP "" BEGIN
+		ACTION_IF FILE_EXISTS "worldmap/map_mods_trans.tra" BEGIN
+			COPY "worldmap/map_mods_trans.tra" "worldmap/map_mods_trans.tra"
+				APPEND_FILE_EVALUATE ".../fl#inline/newlines"
+				APPEND_FILE "%table%"
+			BUT_ONLY
+		END ELSE BEGIN
+			COPY "%table%" "worldmap/map_mods_trans.tra"
+		END
+	END
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
