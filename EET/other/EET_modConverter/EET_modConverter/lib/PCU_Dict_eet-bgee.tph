@@ -2,7 +2,7 @@
 ///// Preparing MUS variables                          \\\\\
 /////                                                  \\\\\
 
-COPY - ~PCU_custom/lib/songlist_eet.2da~ ~PCU_custom/lib~
+COPY - ~EET_modConverter/lib/songlist_eet.2da~ ~EET_modConverter/lib~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~ BC3\.MUS~ ~ BC1.MUS~
 	REPLACE_TEXTUALLY ~ BC4\.MUS~ ~ BC2.MUS~
@@ -25,7 +25,7 @@ COPY - ~PCU_custom/lib/songlist_eet.2da~ ~PCU_custom/lib~
 		READ_2DA_ENTRY cnt 2 3 "col3"
 		SET EVALUATE_BUFFER "dword_mus_source%cnt%" = col1
 		INNER_ACTION BEGIN
-			COPY - ~PCU_custom/lib/songlist_ee.2da~ ~PCU_custom/lib~
+			COPY - ~EET_modConverter/lib/songlist_ee.2da~ ~EET_modConverter/lib~
 				PRETTY_PRINT_2DA
 				COUNT_2DA_ROWS 3 "cntrow2"
 				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN

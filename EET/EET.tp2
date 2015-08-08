@@ -114,6 +114,7 @@ ACTION_FOR_EACH tool IN tile2ee tileconv BEGIN
 	PRINT ~%tool% path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%tool%%exe%~
 END
 OUTER_SPRINT tis2bg2 ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%tis2bg2%exe%~
+OUTER_SPRINT ffmpeg ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
 PRINT ~tis2bg2 path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%tis2bg2%exe%~
 
 /////                                                  \\\\\
@@ -3269,14 +3270,15 @@ COPY_LARGE ~EET/base/movies~ ~lang/%LANGUAGE_BG2%/movies~
 
 //copy BG1 movies with voice over
 //INTRO.wbm => INTROBG1.wbm //name must have the same length as hardcoded INTRO15F
-ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/BEREGOST.wbm~)
-AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/INTROBG1.wbm~)
-AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/NASHKELL.wbm~)
-AND (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/WYVERN.wbm~) BEGIN
-	COPY_LARGE ~%tra_path%/%LANGUAGE%/movies~ ~lang/%LANGUAGE_BG2%/movies~
-END ELSE BEGIN
-	COPY_LARGE ~%tra_path%/en_US/movies~ ~lang/%LANGUAGE_BG2%/movies~
+ACTION_FOR_EACH vidname IN BEREGOST INTROBG1 NASHKELL WYVERN BEGIN
+	ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/%vidname%.ogg~) BEGIN
+		AT_NOW ~%ffmpeg% -i EET%os_slash%base%os_slash%lmovies%os_slash%%vidname%.wbm -i EET%os_slash%lang%os_slash%%LANGUAGE%%os_slash%movies%os_slash%%vidname%.ogg -acodec copy -vcodec copy lang%os_slash%%LANGUAGE%%os_slash%movies%os_slash%%vidname%.webm~
+	END ELSE BEGIN
+		AT_NOW ~%ffmpeg% -i EET%os_slash%base%os_slash%lmovies%os_slash%%vidname%.wbm -i EET%os_slash%lang%os_slash%en_US%os_slash%movies%os_slash%%vidname%.ogg -acodec copy -vcodec copy lang%os_slash%%LANGUAGE%%os_slash%movies%os_slash%%vidname%.webm~
+	END
+	MOVE + ~lang/%LANGUAGE%/movies/%vidname%.webm~ ~lang/%LANGUAGE%/movies/%vidname%.wbm~
 END
+
 
 //update Baldur.ini
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN

@@ -11,20 +11,20 @@ OUTER_WHILE NOT (IS_AN_INT %songlist%) || (songlist > 5) || (songlist < 1) BEGIN
  4. Custom
  5. Don't patch ARE music offsets~
 	ACTION_READLN songlist
-	ACTION_IF (songlist = 4) AND (NOT FILE_EXISTS ~PCU_custom/Input/songlist.2da~) BEGIN
-		PRINT ~Custom songlist.2da not found in PCU_custom/Input/ directory~
+	ACTION_IF (songlist = 4) AND (NOT FILE_EXISTS ~EET_modConverter/Input/songlist.2da~) BEGIN
+		PRINT ~Custom songlist.2da not found in EET_modConverter/Input/ directory~
 		OUTER_SPRINT songlist ~~
 	END
 END
 
 ACTION_IF (songlist = 1) BEGIN
-	OUTER_SPRINT file ~PCU_custom/lib/songlist_bgt_bg1full.2da~
+	OUTER_SPRINT file ~EET_modConverter/lib/songlist_bgt_bg1full.2da~
 END ELSE ACTION_IF (songlist = 2) BEGIN
-	OUTER_SPRINT file ~PCU_custom/lib/songlist_bgt_hybrid.2da~
+	OUTER_SPRINT file ~EET_modConverter/lib/songlist_bgt_hybrid.2da~
 END ELSE ACTION_IF (songlist = 3) BEGIN
-	OUTER_SPRINT file ~PCU_custom/lib/songlist_bgt_full.2da~
+	OUTER_SPRINT file ~EET_modConverter/lib/songlist_bgt_full.2da~
 END ELSE ACTION_IF (songlist = 4) BEGIN
-	OUTER_SPRINT file ~PCU_custom/Input/songlist.2da~
+	OUTER_SPRINT file ~EET_modConverter/Input/songlist.2da~
 END
 
 ACTION_IF (songlist != 5) BEGIN
@@ -47,7 +47,7 @@ ACTION_IF (songlist != 5) BEGIN
 			READ_2DA_ENTRY cnt 2 3 "col3"
 			SET EVALUATE_BUFFER "dword_mus_source%cnt%" = col1
 			INNER_ACTION BEGIN
-				COPY - ~PCU_custom/lib/songlist_eet.2da~ ~PCU_custom/lib~
+				COPY - ~EET_modConverter/lib/songlist_eet.2da~ ~EET_modConverter/lib~
 					PRETTY_PRINT_2DA
 					COUNT_2DA_ROWS 3 "cntrow2"
 					FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
