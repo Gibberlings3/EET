@@ -1460,6 +1460,9 @@ BUT_ONLY
 // Area traification and installation
 OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
 COPY ~%patch_dir%/are~ ~override~
+	PATCH_IF (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~^BG~ = 0) OR (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~^OH~ = 0) BEGIN //area file starts with BG or OH
+		WRITE_SHORT 0x48 THIS | (1 << BG1AREA)
+	END
 	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
 	//Info points, trigger points, and exit (regions/triggers)
 	READ_LONG 0x5c "info_off"
@@ -1838,7 +1841,7 @@ IF
   Global("K#DoOnceItemList","LOCALS",0)
 THEN
   RESPONSE #100
-	SetGlobal("K#DoOnceItemList","LOCALS",1)
+    SetGlobal("K#DoOnceItemList","LOCALS",1)
     ActionOverride(Myself,TakeItemListPartyNum("IMPORT02",1))
     ActionOverride(Myself,TakeItemListPartyNum("IMPORT01",1))
     ActionOverride(Myself,TakeItemListPartyNum("IMPORT03",1))
@@ -3690,9 +3693,9 @@ END
 ///// Finalize installation                            \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING sw1h01.itm ~override/EET.flag~
-PRINT ~'EET.flag' dummy file is used by weidu to recognize the installation as EET~
-PRINT ~To install mods without EET argument in GAME_IS command you need to temporarily move it away from override directory~
+COPY ~EET-inlined/blank.txt~ ~override/EET.flag~
+APPEND ~EET.flag~ ~dummy~ //just to make it detectable by WeiDU
+PRINT ~'EET.flag' file is used by weidu to recognize the installation as EET~
 
 ACTION_IF (FILE_EXISTS ~EET/docs/[%LANGUAGE%]readme.htm~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[%LANGUAGE%]readme.htm~

@@ -1,0 +1,644 @@
+/////                                                  \\\\\
+///// Action function: EET_IRON_CRISIS                 \\\\\
+/////                                                  \\\\\
+
+//Action function that can be used to automatically patch EET item shattering effect to weapons, armors, shields and helmets. It removes BG:EE/Tutu/BGT item shattering implementation before adding EET one and also expands EET shattering scripts if item name is not present there yet. Example usage:
+/*ACTION_DEFINE_ARRAY arrayName BEGIN ~modDir/weapon.itm~ ~modDir/armor.itm~ ~%var%/shield.itm~ ~override/helmet.itm~ END
+LAF ~EET_IRON_CRISIS~
+	STR_VAR
+	shattering_array = EVAL ~arrayName~ //array with files to patch (supports: weapons, armors, shields, helmets)
+END*/
+
+DEFINE_ACTION_FUNCTION ~EET_IRON_CRISIS~
+	STR_VAR
+		shattering_array = ""
+	BEGIN
+	ACTION_IF (NOT GAME_IS ~eet~) BEGIN
+		PRINT ~Skipped EET_IRON_CRISIS patching (this function is only for EET)~
+	END ELSE BEGIN
+		ACTION_PHP_EACH "%shattering_array%" AS index => file BEGIN
+			OUTER_PATCH_SAVE file ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~\\~ ~/~
+			END
+			OUTER_PATCH_SAVE file_dir ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~[^/]+$~ ~~
+			END
+			OUTER_PATCH_SAVE file_name ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~^.+/\([^/]+\)$~ ~\1~
+			END
+			OUTER_PATCH_SAVE file_res ~%file_name%~ BEGIN
+				REPLACE_TEXTUALLY ~\.[^/]+$~ ~~
+			END
+			OUTER_PATCH_SAVE file_ext ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~^.+\.~ ~~
+			END
+			//PRINT ~file = %file%; file_dir = %file_dir%; file_name = %file_name%; file_res = %file_res%; file_ext = %file_ext%~
+			ACTION_IF (~%file_dir%~ STRING_EQUAL_CASE ~override/~) BEGIN
+				ACTION_IF (FILE_EXISTS_IN_GAME ~%file_name%~) BEGIN
+					COPY_EXISTING ~%file_name%~ ~override~
+						LPM ~EET_IRON_CRISIS_patch~
+					BUT_ONLY
+				END ELSE BEGIN
+					WARN ~%file_name% doesn't exist in game~
+				END
+			END ELSE BEGIN
+				ACTION_IF (FILE_EXISTS ~%file%~) BEGIN
+					COPY ~%file%~ ~%file%~
+						LPM ~EET_IRON_CRISIS_patch~
+					BUT_ONLY
+				END ELSE BEGIN
+					WARN ~%file% not found~
+				END
+			END
+		END
+	END
+END
+
+//part of the function call, don't use separately
+DEFINE_PATCH_MACRO ~EET_IRON_CRISIS_patch~ BEGIN
+	SET patched = 0
+	READ_SHORT 0x1c "Item_type" ELSE 0
+	PATCH_IF (Item_type = 5) /*Arrows*/ OR (Item_type = 15) /*Bows*/ OR (Item_type = 16) /*Daggers*/ OR (Item_type = 17) /*Maces*/ OR (Item_type = 18) /*Slings*/ OR (Item_type = 19) /*Small swords*/ OR (Item_type = 20) /*Large Swords*/ OR (Item_type = 21) /*Hammers*/ OR (Item_type = 22) /*Morning stars*/ OR (Item_type = 23) /*Flails*/ OR (Item_type = 24) /*Darts*/ OR (Item_type = 25) /*Axes*/ OR (Item_type = 26) /*Quarterstaves*/ OR (Item_type = 27) /*Crossbows*/ OR (Item_type = 28) /*Hand-to-hand weapons*/ OR (Item_type = 29) /*Spears*/ OR (Item_type = 30) /*Halberds*/ OR (Item_type = 31) /*Bolts*/ OR (Item_type = 44) /*Clubes*/ OR (Item_type = 57) /*Great swords*/ OR (Item_type = 69) /*Bastard swords*/ BEGIN
+		LPF DELETE_ITEM_EFFECT INT_VAR opcode_to_delete = 146 /*Cast Spell*/ END //BG:EE / Tutu /EET
+		LPF DELETE_ITEM_EFFECT INT_VAR opcode_to_delete = 309 /*Set variable*/ END //BGT
+		LPF ADD_ITEM_EFFECT INT_VAR opcode = 146 /*Cast Spell*/ target = 1 parameter1 = 1 parameter2 = 1 timing = 1 probability1 = 100 header = 1 type = 1 STR_VAR resource = "K#SHATWE" END
+		SPRINT shattering_script ~K#SHATWE~
+		SPRINT real ~Real~
+		SPRINT item_broken ~MISC56_~
+		SET string = 14158
+		SET response1 = 95
+		SET response2 = 5 //0.5% chance
+		SET patched = 1
+		PATCH_PRINT ~Patching %file%: weapon shattering effect added~
+	END ELSE PATCH_IF (Item_type = 12) /*Shields*/ BEGIN
+		LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = 232 /*Cast Spell on Condition*/ END //EET
+		LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = 309 /*Set variable*/ END //BGT
+		LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 timing = 2 probability1 = 100 header = 1 STR_VAR resource = "K#SHATSH" END
+		SPRINT shattering_script ~K#SHATSH~
+		SPRINT item_broken ~MISC57~
+		SET string = 14180
+		SET response1 = 98
+		SET response2 = 2 //0.2% chance
+		SET patched = 1
+		PATCH_PRINT ~Patching %file%: shield shattering effect added~
+	END ELSE PATCH_IF (Item_type = 2) /*Armors*/ BEGIN
+		LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = 232 /*Cast Spell on Condition*/ END //EET
+		LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = 309 /*Set variable*/ END //BGT
+		LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 timing = 2 probability1 = 100 header = 1 STR_VAR resource = "K#SHATAR" END
+		SPRINT shattering_script ~K#SHATAR~
+		SPRINT item_broken ~MISC58~
+		SET string = 15817
+		SET response1 = 98
+		SET response2 = 2 //0.2% chance
+		SET patched = 1
+		PATCH_PRINT ~Patching %file%: armor shattering effect added~
+	END ELSE PATCH_IF (Item_type = 7) /*Headgear*/ BEGIN
+		LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = 232 /*Cast Spell on Condition*/ END //EET
+		LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = 309 /*Set variable*/ END //BGT
+		LPF ADD_ITEM_EQEFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 timing = 2 probability1 = 100 header = 1 STR_VAR resource = "K#SHATHE" END
+		SPRINT shattering_script ~K#SHATHE~
+		SPRINT item_broken ~MISC59~
+		SET string = 15818
+		SET response1 = 99
+		SET response2 = 1 //0.1% chance
+		SET patched = 1
+		PATCH_PRINT ~Patching %file%: helmet shattering effect added~
+	END ELSE BEGIN
+		PATCH_WARN ~%file% not patched. %Item_type% item type is not supported~
+	END
+	PATCH_IF (patched = 1) BEGIN
+		INNER_ACTION BEGIN
+<<<<<<<< .../shattering-eb.baf
+IF
+  HasItemEquiped%real%("%file_res%",LastSummonerOf(Myself))
+THEN
+  RESPONSE #100
+    DisplayStringHead(LastSummonerOf(Myself),#%string%)
+	ActionOverride(LastSummonerOf(Myself),TransformItem("%file_res%","%item_broken%"))
+	DestroySelf()
+END
+>>>>>>>>
+			COPY_EXISTING - ~%shattering_script%.BCS~ ~override~
+				DECOMPILE_AND_PATCH BEGIN
+					COUNT_REGEXP_INSTANCES ~"%file_res%"~ num_matches
+				END
+			ACTION_IF (num_matches = 0) BEGIN
+				EXTEND_BOTTOM ~%shattering_script%.BCS~ ~.../shattering-eb.baf~ EVALUATE_BUFFER
+				PRINT ~Patching %shattering_script%.BCS: %file_res%~
+			END ELSE BEGIN
+				PRINT ~%file_res% already present in %shattering_script%.BCS. No need to add it again.~
+			END
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// Action function: EET_JOURNAL                     \\\\\
+/////                                                  \\\\\
+
+//Action function that can be used in mods to automatically patch all BG2/SoD files to use EET continuous journal system. Example usage:
+/*ACTION_DEFINE_ARRAY arrayName BEGIN ~modDir/AERIE.d~ ~%var%/ALARM25.baf~ ~modDir/code.tph~ ~modDir/AERI25.bcs~ ~override/AERIE.bcs~ ~modDir/ANOMEN.dlg~ ~override/AMNG1.dlg~ END
+LAF ~EET_JOURNAL~
+	INT_VAR
+	journal_game = 1 //0 - BG2 (+14); 1 - SoD (+7) (default = 0)
+	journal_patch_mode = 1 //0 - replace with values; 1 - replace with variables (default = 0)
+	STR_VAR
+	journal_array = EVAL ~arrayName~ //array with files to patch (supports: d, dlg, baf, bcs, and any text file; if path points to override COPY_EXISTING is used)
+END*/
+
+DEFINE_ACTION_FUNCTION ~EET_JOURNAL~
+	INT_VAR
+		journal_game = 0
+		journal_patch_mode = 0
+	STR_VAR
+		journal_array = ""
+	BEGIN
+	ACTION_IF (NOT GAME_IS ~eet~) BEGIN
+		PRINT ~Skipped EET_JOURNAL patching (this function is only for EET)~
+	END ELSE ACTION_IF (NOT FILE_CONTAINS ~override/EET.flag~ ~EET_JOURNAL~) BEGIN
+		PRINT ~Skipped EET_JOURNAL patching (this feature will work after patch 1.4 for BG2:EE release)~
+	END ELSE BEGIN
+		ACTION_IF (journal_game = 0) BEGIN //BG2
+			OUTER_SET journal_add = 14
+		END ELSE ACTION_IF (journal_game = 1) BEGIN //SoD
+			OUTER_SET journal_add = 7
+		END ELSE BEGIN
+			WARN ~journal_game parameter unrecognized~
+		END
+		ACTION_IF (journal_patch_mode = 0) BEGIN //replace with values
+			OUTER_SET journal_mode = 0
+		END ELSE ACTION_IF (journal_patch_mode = 1) BEGIN //replace with variables
+			OUTER_SET journal_mode = 1
+		END ELSE BEGIN
+			WARN ~journal_patch_mode parameter unrecognized~
+		END
+		ACTION_PHP_EACH "%journal_array%" AS index => file BEGIN
+			OUTER_PATCH_SAVE file ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~\\~ ~/~
+			END
+			OUTER_PATCH_SAVE file_dir ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~[^/]+$~ ~~
+			END
+			OUTER_PATCH_SAVE file_name ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~^.+/\([^/]+\)$~ ~\1~
+			END
+			OUTER_PATCH_SAVE file_ext ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~^.+\.~ ~~
+			END
+			//PRINT ~file = %file%; file_dir = %file_dir%; file_name = %file_name%; file_ext = %file_ext%~
+			ACTION_IF (~%file_dir%~ STRING_EQUAL_CASE ~override/~) BEGIN
+				ACTION_IF (FILE_EXISTS_IN_GAME ~%file_name%~) BEGIN
+					COPY_EXISTING ~%file_name%~ ~override~
+						LPM ~EET_JOURNAL_patch~
+					BUT_ONLY
+				END ELSE BEGIN
+					WARN ~%file_name% doesn't exist in game~
+				END
+			END ELSE BEGIN
+				ACTION_IF (FILE_EXISTS ~%file%~) BEGIN
+					COPY ~%file%~ ~%file%~
+						LPM ~EET_JOURNAL_patch~
+					BUT_ONLY
+				END ELSE BEGIN
+					WARN ~%file% not found~
+				END
+			END
+		END
+	END
+END
+
+//part of the function call, don't use separately
+DEFINE_PATCH_MACRO ~EET_JOURNAL_patch~ BEGIN
+	PATCH_IF (~%file_ext%~ STRING_EQUAL_CASE ~bcs~) BEGIN
+		DECOMPILE_BCS_TO_BAF
+	END ELSE PATCH_IF (~%file_ext%~ STRING_EQUAL_CASE ~dlg~) BEGIN
+		DECOMPILE_DLG_TO_D
+	END
+	REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
+	SET patched = 0
+	PATCH_IF (journal_mode = 0) OR (~%file_ext%~ STRING_EQUAL_CASE ~bcs~) OR (~%file_ext%~ STRING_EQUAL_CASE ~dlg~) BEGIN //replace with values
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+			SET MATCH2_new = MATCH2 + journal_add
+			PATCH_PRINT ~Patching %file%: %MATCH1%%MATCH2%) => %MATCH1%%MATCH2_new%)~
+			SET patched = 1
+		END
+		~%MATCH1%%MATCH2_new%)~
+	END ELSE PATCH_IF (journal_game = 0) BEGIN //BG2
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+			PATCH_PRINT ~Patching %file%: %MATCH1%%MATCH2%) => %MATCH1%%bg2_chapter_%MATCH2%%)~
+			SET patched = 1
+		END
+		~%MATCH1%%bg2_chapter_%MATCH2%%)~
+	END ELSE PATCH_IF (journal_game = 1) BEGIN //SoD
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+			PATCH_PRINT ~Patching %file%: %MATCH1%%MATCH2%) => %MATCH1%%sod_chapter_%MATCH2%%)~
+			SET patched = 1
+		END
+		~%MATCH1%%sod_chapter_%MATCH2%%)~
+	END
+	PATCH_IF (patched = 0) BEGIN
+		PATCH_WARN ~%file% not patched. 0 chapter variable matches found~
+	END
+	REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
+	PATCH_IF (~%file_ext%~ STRING_EQUAL_CASE ~bcs~) BEGIN
+		REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
+		COMPILE_BAF_TO_BCS EVALUATE_BUFFER
+	END ELSE PATCH_IF (~%file_ext%~ STRING_EQUAL_CASE ~dlg~) BEGIN
+		REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
+		COMPILE_D_TO_DLG EVALUATE_BUFFER
+	END
+END
+
+/////                                                  \\\\\
+///// Action function: EET_NPC_TRANSITION              \\\\\
+/////                                                  \\\\\
+
+//Action function that can be used in mods to can be used to automatically add NPC transition from BG1 to BG2 ares or disable NPC without BG2 content. Also patches FATESP.DLG and adds NPC transition to ToB, so don't add it manually when GAME_IS ~eet~. Example usage:
+/*LAF ~EET_NPC_TRANSITION~
+	INT_VAR
+	type = 1
+		//1 - BG1 NPC without BG2 content (NPC is disabled from game during SoA transition, mentioned but not summonable in ToB)
+		//2 - BG2 NPC without BG1 content (transition to ToB if joined the party at least once during SoA)
+		//3 - BG1 NPC with BG2 content (full transition to SoA/ToB) (for mods created with whole game in mind from the start)
+		//4 - BG2 NPC with transition swap (converts existing partial transition implemented via option 1 to full SoA/ToB transition - option 3) (for mods adding BG2 content to BG1 NPCs that normally are not joinable in BG2, or for mods with separate installers for BG:EE and BG2:EE portion of the game - in such case use it with additional MOD_IS_INSTALLED check)
+	posX = 3198 //NPC X coordinate on SoA transition destination ARE
+	posY = 2837 //NPC Y coordinate on SoA transition destination ARE
+	face = 6 //NPC facing on SoA transition destination ARE
+	STR_VAR
+	dv = ~IMOEN2~ //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
+	are = ~AR0602~ //ARE file name where NPC should be moved during SoA transition
+	override_BG1 = "IMOEN_" //name of the override NPC script in BG1
+	override_SoA = "IMOEN2" //name of the override NPC script in SoA
+	override_ToB = "IMOEN25" //name of the override NPC script in ToB
+	dialog_ToB = "IMOEN25A" //name of the dialogue file used after spawning NPC in ToB
+	string = "@1" //FATESP summon text (example: "Bring me Quayle, the gnome cleric/illusionist.") or TRA string number starting with "@"
+END*/
+
+DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
+	INT_VAR
+		type = 0
+		posX = "-1"
+		posY = "-1"
+		face = "-1"
+	STR_VAR
+		dv = ""
+		are = ""
+		override_BG1 = ""
+		override_SoA = ""
+		override_ToB = ""
+		dialog_ToB = ""
+		string = ""
+	BEGIN
+	//Check if all needed variables are set
+	OUTER_SET skip = 0
+	ACTION_IF (NOT GAME_IS ~eet~) BEGIN
+		PRINT ~Skipped EET_NPC_TRANSITION patching (this function is only for EET)~
+		OUTER_SET skip = 1
+	END ELSE ACTION_IF (type = 1) BEGIN //BG1 NPC without BG2 content
+		PRINT ~EET_NPC_TRANSITION patching for %dv%: BG1 NPC without BG2 content~
+		ACTION_FOR_EACH var IN dv override_BG1 string BEGIN
+			OUTER_SPRINT EVAL temp ~%var%~
+			ACTION_IF (~%temp%~ STRING_EQUAL_CASE ~~) BEGIN
+				WARN ~EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+				OUTER_SET skip = 1
+			END
+		END
+		OUTER_SPRINT override_SoA ~~
+	END ELSE ACTION_IF (type = 2) BEGIN //BG2 NPC without BG1 content
+		PRINT ~EET_NPC_TRANSITION patching for %dv%: BG2 NPC without BG1 content~
+		ACTION_FOR_EACH var IN dv override_SoA override_ToB dialog_ToB string BEGIN
+			OUTER_SPRINT EVAL temp ~%var%~
+			ACTION_IF (~%temp%~ STRING_EQUAL_CASE ~~) BEGIN
+				WARN ~EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+				OUTER_SET skip = 1
+			END
+		END
+	END ELSE ACTION_IF (type >= 3) BEGIN //BG1 NPC with BG2 content OR BG2 NPC with transition swap
+		ACTION_IF (type = 3) BEGIN
+			PRINT ~EET_NPC_TRANSITION patching for %dv%: BG1 NPC with BG2 content~
+		END ELSE ACTION_IF (type = 4) BEGIN
+			PRINT ~EET_NPC_TRANSITION patching for %dv%: BG2 NPC with transition swap~
+		END
+		ACTION_FOR_EACH var IN dv are override_BG1 override_SoA override_ToB dialog_ToB string BEGIN
+			OUTER_SPRINT EVAL temp ~%var%~
+			ACTION_IF (~%temp%~ STRING_EQUAL_CASE ~~) BEGIN
+				WARN ~EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+				OUTER_SET skip = 1
+			END
+		END
+		ACTION_IF (posX < 0) OR (posY < 0) OR (face < 0) BEGIN
+			WARN ~EET_NPC_TRANSITION: posX/posY/face INT_VAR not set~
+			OUTER_SET skip = 1
+		END
+	END ELSE BEGIN
+		WARN ~EET_NPC_TRANSITION: unexpected "type" INT_VAR value (%type%)~
+		OUTER_SET skip = 1
+	END
+
+	ACTION_IF (skip = 0) BEGIN
+		OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
+
+		//Expand transition script
+		ACTION_IF (type != 2) BEGIN //not BG2 NPC without BG1 content
+			COPY_EXISTING ~K#TELBGT.BCS~ ~override~
+				PATCH_IF (type = 4) BEGIN //BG2 NPC with transition swap
+					INNER_ACTION BEGIN
+<<<<<<<< .../blank.baf
+>>>>>>>>
+
+<<<<<<<< .../K#TELBGT-rb.baf
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  !InMyArea("%dv%")
+THEN
+  RESPONSE #100
+    MoveGlobalObjectOffScreen("%dv%",Player1)
+    Continue()
+END
+
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  InPartyAllowDead("%dv%")
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",LeaveParty())
+    Continue()
+END
+
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#DoOnce%dv%","LOCALS",1)
+    ActionOverride("%dv%",DropInventory())
+    ActionOverride("%dv%",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+					END
+					REPLACE_BCS_BLOCK EVAL ~.../K#TELBGT-rb.baf~ ~.../blank.baf~
+				END
+				DECOMPILE_AND_PATCH BEGIN
+					PATCH_IF (type = 1) BEGIN //BG1 NPC without BG2 content
+						REPLACE_TEXTUALLY ~\(AdvanceTime([^)]+)[%newline%]*Continue()[%newline%]*END\)~ ~\1
+//NPCs outside transition area
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  !InMyArea("%dv%")
+THEN
+  RESPONSE #100
+    MoveGlobalObjectOffScreen("%dv%",Player1)
+    Continue()
+END
+//NPCs in party
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  InPartyAllowDead("%dv%")
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",LeaveParty())
+    Continue()
+END
+//NPCs without MoveBetweenAreas transition
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#DoOnce%dv%","LOCALS",1)
+    ActionOverride("%dv%",DropInventory())
+    ActionOverride("%dv%",DestroySelf())
+    Continue()
+END~
+						PATCH_PRINT ~Patching K#TELBGT.BCS: NPC disabled during SoA transition~
+					END ELSE BEGIN //BG1 NPC with BG2 content OR BG2 NPC with transition swap
+						REPLACE_TEXTUALLY ~\(AdvanceTime([^)]+)[%newline%]*Continue()[%newline%]*END\)~ ~\1
+//NPCs outside party
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  !InMyArea("%dv%")
+THEN
+  RESPONSE #100
+    MoveGlobalObjectOffScreen("%dv%",Player1)
+    Continue()
+END
+//NPCs in party
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  InPartyAllowDead("%dv%")
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",LeaveParty())
+    Continue()
+END
+//NPCs with MoveBetweenAreas (dead)
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  Dead("%dv%")
+THEN
+  RESPONSE #100
+    SetGlobal("K#DoOnce%dv%","LOCALS",1)
+    SetGlobal("%dv%PartyBG1","GLOBAL",0)
+    ActionOverride("%dv%",DropInventory())
+    ActionOverride("%dv%",DestroySelf())
+    Continue()
+END
+//NPCs with MoveBetweenAreas transition (not dead)
+IF
+  Global("K#DoOnce%dv%","LOCALS",0)
+  Global("%dv%PartyBG1","GLOBAL",1)
+  !Dead("%dv%")
+THEN
+  RESPONSE #100
+    SetGlobal("K#DoOnce%dv%","LOCALS",1)
+    ActionOverride("%dv%",DropInventory())
+    ActionOverride("%dv%",ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride("%dv%",ChangeAIScript("",DEFAULT))
+    ActionOverride("%dv%",ChangeEnemyAlly(Myself,NEUTRAL))
+    ActionOverride("%dv%",MoveBetweenAreas("%are%",[%posX%.%posY%],%face%))
+    Continue()
+END~
+						PATCH_PRINT ~Patching K#TELBGT.BCS: transition to "%are%",[%posX%.%posY%],%face%~
+					END
+				END
+			BUT_ONLY
+		END
+
+		//Expand local scripts
+<<<<<<<< .../PARTY-et.baf
+IF
+  Global("ENDOFBG%game%","GLOBAL",0)
+  Global("%dv%PartyBG%game%","GLOBAL",0)
+  InParty(Myself)
+THEN
+  RESPONSE #100
+    SetGlobal("%dv%PartyBG%game%","GLOBAL",1)
+    Continue()
+END
+
+IF
+  GlobalGT("ENDOFBG%game%","GLOBAL",0)
+  Global("%dv%PartyBG%game%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+		ACTION_IF (NOT ~%override_BG1%~ STRING_EQUAL_CASE ~~) AND (type != 4) /*already there*/ BEGIN
+			PRINT ~Patching %override_BG1%.BCS~
+			OUTER_SET game = 1
+			EXTEND_TOP ~%override_BG1%.BCS~ ~.../PARTY-et.baf~ EVALUATE_BUFFER
+		END
+		ACTION_IF (NOT ~%override_SoA%~ STRING_EQUAL_CASE ~~) BEGIN
+			PRINT ~Patching %override_SoA%.BCS~
+			OUTER_SET game = 2
+			EXTEND_TOP ~%override_SoA%.BCS~ ~.../PARTY-et.baf~ EVALUATE_BUFFER
+		END
+
+		//Expand FATESP.DLG
+		ACTION_IF (~%string%~ STRING_CONTAINS_REGEXP ~^@~) BEGIN //not TRA reference
+			OUTER_PATCH_SAVE string ~%string%~ BEGIN
+				REPLACE_TEXTUALLY ~^~ "~"
+				REPLACE_TEXTUALLY ~$~ "~"
+			END
+		END
+		COPY_EXISTING ~FATESP.DLG~ ~override~
+			DECOMPILE_AND_PATCH BEGIN
+				COUNT_REGEXP_INSTANCES ~"%dv%"~ num_matches
+			END
+		BUT_ONLY
+		ACTION_IF (num_matches > 0) BEGIN
+			PRINT ~FATESP.DLG already has %dv% references. Patching not needed (unless some mod messed it up)~
+		END ELSE BEGIN
+<<<<<<<< .../FATESP-et.d
+EXTEND_TOP FATESP 6
+  IF ~  Dead("%dv%")
+!InMyArea("%dv%")
+Global("%dv%Summoned","GLOBAL",0)
+~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
+~ GOTO 10
+  IF ~  !Dead("%dv%")
+!InMyArea("%dv%")
+Global("%dv%Summoned","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",0)
+~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
+~ GOTO 7
+  IF ~  !Dead("%dv%")
+!InMyArea("%dv%")
+Global("%dv%Summoned","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",1)
+~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",1)
+~ GOTO 9
+END
+>>>>>>>>
+			PRINT ~Patching FATESP.DLG~
+			COMPILE ~.../FATESP-et.d~ EVALUATE_BUFFER
+		END
+
+		//Expand AR4000.BCS
+		COPY_EXISTING ~AR4000.BCS~ ~override~
+			DECOMPILE_AND_PATCH BEGIN
+				COUNT_REGEXP_INSTANCES ~"%dv%"~ num_matches
+				PATCH_IF (num_matches = 0) BEGIN
+					REPLACE_TEXTUALLY ~\(SetGlobal("NEWGAME_TOB","GLOBAL",1)\)~ ~SetGlobal("%dv%Summoned","GLOBAL",2)
+    \1~
+				END
+			END
+		BUT_ONLY
+		ACTION_IF (num_matches > 0) BEGIN
+			PRINT ~AR4000.BCS already has %dv% references. Patching not needed (unless some mod messed it up)~
+		END ELSE BEGIN
+<<<<<<<< .../AR4000-eb.baf
+IF
+  InParty("%dv%")
+  Global("%dv%Summoned","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("%dv%Summoned","GLOBAL",2)
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%dv%Summoned","GLOBAL",0)
+  Global("%dv%PartyBG1","GLOBAL",0)
+  Global("%dv%PartyBG2","GLOBAL",0)
+  !InMyArea("%dv%")
+THEN
+  RESPONSE #100
+    SetGlobal("%dv%Summoned","GLOBAL",2)
+    Continue()
+END
+>>>>>>>>
+			PRINT ~Patching AR4000.BCS~
+			EXTEND_BOTTOM ~AR4000.BCS~ ~.../AR4000-eb.baf~ EVALUATE_BUFFER
+		END
+
+		//Expand AR4500.BCS
+		ACTION_IF (type != 2) BEGIN //not BG1 NPC without BG2 content
+			COPY_EXISTING ~AR4500.BCS~ ~override~
+				DECOMPILE_AND_PATCH BEGIN
+					COUNT_REGEXP_INSTANCES ~"%dv%"~ num_matches
+				END
+			BUT_ONLY
+			ACTION_IF (num_matches > 0) BEGIN
+				PRINT ~AR4500.BCS already has %dv% references. Patching not needed (unless some mod messed it up)~
+			END ELSE BEGIN
+<<<<<<<< .../AR4500-eb.baf
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%dv%Summoned","GLOBAL",1)
+  Global("%dv%SpawnPlane","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CreateVisualEffect("SPPORTAL",[1999.1218])
+    Wait(2)
+    MoveGlobal("AR4500","%dv%",[1999.1218])
+    ActionOverride("%dv%",Face(S))
+    ActionOverride("%dv%",SetNumTimesTalkedTo(0))
+    ActionOverride("%dv%",JoinParty())
+    MoveToExpansion()
+    SetGlobal("%dv%Summoned","GLOBAL",-1)
+    //Continue()
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%dv%Summoned","GLOBAL",-1)
+  Global("%dv%SpawnPlane","GLOBAL",0)
+  XPLT("%dv%",2500000)
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",ChangeStat(Myself,XP,2500000,SET))
+    Continue()
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%dv%Summoned","GLOBAL",-1)
+  Global("%dv%SpawnPlane","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",LeaveParty())
+    ActionOverride("%dv%",SetBeenInPartyFlags())
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
+    ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
+    ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
+    SetGlobal("%dv%SpawnPlane","GLOBAL",1)
+    SetGlobal("%dv%Summoned","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
+				PRINT ~Patching AR4500.BCS~
+				EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb.baf~ EVALUATE_BUFFER
+			END
+		END
+	END
+END

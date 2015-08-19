@@ -1927,7 +1927,8 @@ COPY_EXISTING ~CUT01.BCS~ ~override~
 		SPRINT textToReplace ~ActionOverride("Imoen2",DestroySelf())~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~MoveGlobal("AR1512","Imoen2",[1857.1520])~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("Imoen2",MoveGlobal("AR1512",Myself,[1857.1520]))
+    ActionOverride("Imoen2",Face(SW))~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~

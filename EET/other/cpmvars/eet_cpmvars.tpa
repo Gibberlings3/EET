@@ -43,16 +43,62 @@ ACTION_IF GAME_IS "eet" BEGIN
 
 	OUTER_SPRINT "tutu_imoen6" "imoen6_"
 	OUTER_SPRINT "tutu_viconi6" "viconi6_"
-	OUTER_SPRINT "tutu_skeleton_warrior" "skelwa"//use below variables instead
-	OUTER_SPRINT "tutu_skeleton_warrior2" "skelwa2_"
-	OUTER_SPRINT "tutu_skeleton_warrior3" "skelwa3_"
 
 	/* EET naming convention */
-	OUTER_SPRINT "eet_var" "_"//EET '_' suffix for conflicting resources with 7 or less characters, otherwise '0' is dropped, or last letter if '0' doesn't exist
-	OUTER_SPRINT "eet_script0" ""//SKELWA02.CRE => SKELWA2_.CRE, SKELWA03.CRE => SKELWA3_.CRE, also used for random item tables (RNDEQU / RNDMAG / RNDSCR / RNDTRE / RNDWEP - same as vanilla but with dropped 0)
-	OUTER_SPRINT "eet_scriptt" "_"//ENDCRDIT.WBM => ENDCRDI_.WBM, BLACKPIT.WBM => BLACKPI_.WBM
+	OUTER_SPRINT "eet_var" "_"//EET '_' suffix for conflicting resources with 7 or less characters, otherwise '0' is dropped
+	OUTER_SPRINT "eet_script0" ""//used to remove "0" in conflicting resources with 8 letters, you should also add %eet_var% at the end (SKELWA02.CRE => SKELWA2_.CRE, SKELWA03.CRE => SKELWA3_.CRE, also used for random item tables (RNDEQU / RNDMAG / RNDSCR / RNDTRE / RNDWEP - example: RNDWEP01 => RNDWEP1_)
 
-	/* BGT-only shutdown of D and BAF after BG1 content */
+	/* EET Worldmap*/
+	OUTER_SET wmp_xCoord_BG1 = 373 //in relation to BG1/Tutu WORLDMAP.WMP add 373 px correction to X coordinate
+	OUTER_SET wmp_yCoord_BG1 = 0
+	OUTER_SET wmp_xCoord_SoA = 0
+	OUTER_SET wmp_yCoord_SoA = 953 //in relation to BG2/BG2:EE WORLDMAP.WMP add 953 px correction to X coordinate
+	OUTER_SET wmp_xCoord_ToB = 893 //in relation to BG2/BG2:EE WORLDM25.WMP add 893 px correction to X coordinate
+	OUTER_SET wmp_yCoord_ToB = 1681 //in relation to BG2/BG2:EE WORLDM25.WMP add 1681 px correction to Y coordinate
+	OUTER_SET wmp_mapIcon_BG1 = 29 //in relation to BG1/Tutu MAPICONS.BAM add 29 cycles correction to map icon
+	OUTER_SET wmp_mapIcon_ToB = 85 //in relation to BG2 25MAPIC.BAM add 85 cycles correction to map icon
+	OUTER_SPRINT wmp_worldmap_ToB "worldmap" //when editing ToB worldmap use WORLDMAP.WMP instead of WORLDM25.WMP
+
+	/* EET continuous journal/chapters system */
+	ACTION_IF (FILE_CONTAINS ~override/EET.flag~ ~EET_JOURNAL~) BEGIN //EET version that will be available after patch 1.4 for BG2:EE release
+		OUTER_SET sod_chapter_1 = 8
+		OUTER_SET sod_chapter_2 = 9
+		OUTER_SET sod_chapter_3 = 10
+		OUTER_SET sod_chapter_4 = 11
+		OUTER_SET sod_chapter_5 = 12
+		OUTER_SET sod_chapter_6 = 13
+		OUTER_SET sod_chapter_7 = 14
+		OUTER_SET bg2_chapter_1 = 15
+		OUTER_SET bg2_chapter_2 = 16
+		OUTER_SET bg2_chapter_3 = 17
+		OUTER_SET bg2_chapter_4 = 18
+		OUTER_SET bg2_chapter_5 = 19
+		OUTER_SET bg2_chapter_6 = 20
+		OUTER_SET bg2_chapter_7 = 21
+		OUTER_SET bg2_chapter_8 = 22
+		OUTER_SET bg2_chapter_9 = 23
+		OUTER_SET bg2_chapter_10 = 24
+	END ELSE BEGIN //compatible with current public EET version
+		OUTER_SET sod_chapter_1 = 1
+		OUTER_SET sod_chapter_2 = 2
+		OUTER_SET sod_chapter_3 = 3
+		OUTER_SET sod_chapter_4 = 4
+		OUTER_SET sod_chapter_5 = 5
+		OUTER_SET sod_chapter_6 = 6
+		OUTER_SET sod_chapter_7 = 7
+		OUTER_SET bg2_chapter_1 = 1
+		OUTER_SET bg2_chapter_2 = 2
+		OUTER_SET bg2_chapter_3 = 3
+		OUTER_SET bg2_chapter_4 = 4
+		OUTER_SET bg2_chapter_5 = 5
+		OUTER_SET bg2_chapter_6 = 6
+		OUTER_SET bg2_chapter_7 = 7
+		OUTER_SET bg2_chapter_8 = 8
+		OUTER_SET bg2_chapter_9 = 9
+		OUTER_SET bg2_chapter_10 = 10
+	END
+
+	/* BGT/EET shutdown of D and BAF after BG1 content */
 	OUTER_SPRINT ~BGT_VAR~ ~GlobalLT("ENDOFBG1","GLOBAL",2)~
 
 	/* DVs are the same for Tutu/BGT, except for Imoen */
@@ -62,7 +108,7 @@ ACTION_IF GAME_IS "eet" BEGIN
 	OUTER_SPRINT "KICKED_OUT" "KickedOut"
 	OUTER_SPRINT "tazokminhp" "MIHP1"
 
-	/* Tutu/BGT vs BGEE Dialog states */
+	/* Tutu/BGT vs BGEE/EET Dialog states */
 	OUTER_SET firebeadstate1 = 3
 	OUTER_SET firebeadstate2 = 1
 	OUTER_SET hentolstate1 = 12

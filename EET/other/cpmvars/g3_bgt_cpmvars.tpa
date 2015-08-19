@@ -43,16 +43,42 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 
 	OUTER_SPRINT "tutu_imoen6" "imoen61"
 	OUTER_SPRINT "tutu_viconi6" "viconi61"
-	OUTER_SPRINT "tutu_skeleton_warrior" "bgskel"//use below variables instead
-	OUTER_SPRINT "tutu_skeleton_warrior2" "bgskel02"
-	OUTER_SPRINT "tutu_skeleton_warrior3" "bgskel03"
 
 	/* EET naming convention */
-	OUTER_SPRINT "eet_var" ""//EET '_' suffix for conflicting resources with 7 or less characters, otherwise '0' is dropped, or last letter if '0' doesn't exist
-	OUTER_SPRINT "eet_script0" "0"//SKELWA02.CRE => SKELWA2_.CRE, SKELWA03.CRE => SKELWA3_.CRE, also used for random item tables (RNDEQU / RNDMAG / RNDSCR / RNDTRE / RNDWEP - same as vanilla but with dropped 0)
-	OUTER_SPRINT "eet_scriptt" "t"//ENDCRDIT.WBM => ENDCRDI_.WBM, BLACKPIT.WBM => BLACKPI_.WBM
+	OUTER_SPRINT "eet_var" ""
+	OUTER_SPRINT "eet_script0" "0"
 
-	/* BGT-only shutdown of D and BAF after BG1 content */
+	/* EET Worldmap*/
+	OUTER_SET wmp_xCoord_BG1 = 0
+	OUTER_SET wmp_yCoord_BG1 = 0
+	OUTER_SET wmp_xCoord_SoA = 0
+	OUTER_SET wmp_yCoord_SoA = 0
+	OUTER_SET wmp_xCoord_ToB = 0
+	OUTER_SET wmp_yCoord_ToB = 0
+	OUTER_SET wmp_mapIcon_BG1 = 0
+	OUTER_SET wmp_mapIcon_ToB = 0
+	OUTER_SPRINT wmp_worldmap_ToB "worldm25"
+
+	/* EET continuous journal/chapters system */
+	OUTER_SET sod_chapter_1 = 1
+	OUTER_SET sod_chapter_2 = 2
+	OUTER_SET sod_chapter_3 = 3
+	OUTER_SET sod_chapter_4 = 4
+	OUTER_SET sod_chapter_5 = 5
+	OUTER_SET sod_chapter_6 = 6
+	OUTER_SET sod_chapter_7 = 7
+	OUTER_SET bg2_chapter_1 = 1
+	OUTER_SET bg2_chapter_2 = 2
+	OUTER_SET bg2_chapter_3 = 3
+	OUTER_SET bg2_chapter_4 = 4
+	OUTER_SET bg2_chapter_5 = 5
+	OUTER_SET bg2_chapter_6 = 6
+	OUTER_SET bg2_chapter_7 = 7
+	OUTER_SET bg2_chapter_8 = 8
+	OUTER_SET bg2_chapter_9 = 9
+	OUTER_SET bg2_chapter_10 = 10
+
+	/* BGT/EET shutdown of D and BAF after BG1 content */
 	OUTER_SPRINT ~BGT_VAR~ ~!Global("endofbg1","GLOBAL",2)~
 
 	/* DVs are the same for Tutu/BGT, except for Imoen */
@@ -62,7 +88,7 @@ ACTION_IF GAME_IS ~bgt~ THEN BEGIN
 	OUTER_SPRINT "KICKED_OUT" "IWasKickedOut"
 	OUTER_SPRINT "tazokminhp" "MINHP1"
 
-	/* Tutu/BGT vs BGEE Dialog states */
+	/* Tutu/BGT vs BGEE/EET Dialog states */
 	OUTER_SET firebeadstate1 = 1
 	OUTER_SET firebeadstate2 = 2
 	OUTER_SET hentolstate1 = 1

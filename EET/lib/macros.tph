@@ -256,23 +256,14 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 					READ_LONG lo + 0xd8*(li + k) + 0x54 prob
 					PATCH_FOR_EACH var IN entry enc1 enc2 enc3 enc4 enc5 BEGIN
 						SPRINT content EVAL "%%var%%"
-						/*INNER_PATCH_SAVE content ~%content%~ BEGIN
-							REPLACE_EVALUATE CASE_INSENSITIVE ~ ~ BEGIN
-								PATCH_PRINT ~link %area% -> %target_are%: %content% whitespace changed to ###~
-							END
-							~###~
-						END*/
 						PATCH_IF ("%content%" STRING_EQUAL_CASE "") BEGIN
 							SPRINT EVAL "%var%" N
-						END ELSE PATCH_IF (("%content%" STRING_MATCHES_REGEXP "[a-z0-9_']+")=1) BEGIN
-							PATCH_WARN "link %area% -> %target_are%: check if %content% is valid" 
-							//PATCH_PRINT "link %area% -> %target_are%: %content% is replaced with N"
-							//SPRINT content "N"
+						END ELSE BEGIN
+							INNER_PATCH_SAVE content "%content%" BEGIN
+								REPLACE_TEXTUALLY " " "###"
+							END
+							SPRINT EVAL "%var%" "%content%"
 						END
-						INNER_PATCH_SAVE content "%content%" BEGIN
-							REPLACE_TEXTUALLY " " "###"
-						END
-						SPRINT EVAL "%var%" "%content%"
 					END
 					INNER_PATCH_SAVE nesw "%j%" BEGIN
 						REPLACE_TEXTUALLY 0 N

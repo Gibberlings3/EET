@@ -1,4 +1,11 @@
 /////                                                  \\\\\
+///// AREATYPE.IDS                                     \\\\\
+/////                                                  \\\\\
+
+//new entry added by EET
+ADD_AREA_TYPE BG1AREA
+
+/////                                                  \\\\\
 ///// ACTION.IDS                                       \\\\\
 /////                                                  \\\\\
 
@@ -178,14 +185,6 @@ APPEND ~ANIMATE.IDS~ ~0xEF91 DONOT_USE2~               UNLESS ~0xEF91 DONOT_USE2
 
 //EET uses INI files instead of 2DA for both BG and IWD animation offsets. INI files take precedence over 2DA, so nothing need to be added (other than auto import from BG:EE present later in this file)
 //IWD:EE has 2DA entries for all new animation offsets, but assigned 2DA files don't exists there, so it's useless either way
-
-/////                                                  \\\\\
-///// AREAFLAG.IDS                                     \\\\\
-/////                                                  \\\\\
-
-APPEND ~AREAFLAG.IDS~ ~3  DEADMAGICZONE~ UNLESS ~DEADMAGICZONE~
-APPEND ~AREAFLAG.IDS~ ~4  DREAMAREA~     UNLESS ~DREAMAREA~
-APPEND ~AREAFLAG.IDS~ ~5  PLAYER1CANDIE~ UNLESS ~PLAYER1CANDIE~
 
 /////                                                  \\\\\
 ///// CLASS.IDS                                        \\\\\
@@ -440,9 +439,9 @@ APPEND ~ACTSLEEP.IDS~ ~369 StartRandomTimer(I:TimerID*,I:MinTime*,I:MaxTime*)~  
 APPEND ~ACTSLEEP.IDS~ ~370 ChangeStat(O:Object*,I:Stat*Stats,I:Value*,I:Modifier*StatMod)~ UNLESS ~370 ChangeStat(~
 APPEND ~ACTSLEEP.IDS~ ~376 DisplayStringNoNameDlg(O:Object*,I:StrRef*)~                    UNLESS ~376 DisplayStringNoNameDlg(~
 
-APPEND ~AREAFLAG.IDS~ ~8 DREAMAREA~      UNLESS ~8 DREAMAREA~
-APPEND ~AREAFLAG.IDS~ ~16 PLAYER1CANDIE~ UNLESS ~16 PLAYER1CANDIE~
-APPEND ~AREAFLAG.IDS~ ~32 NOREST~        UNLESS ~32 NOREST~
+APPEND ~AREAFLAG.IDS~ ~8 DREAMAREA~      UNLESS ~DREAMAREA~
+APPEND ~AREAFLAG.IDS~ ~16 PLAYER1CANDIE~ UNLESS ~PLAYER1CANDIE~
+APPEND ~AREAFLAG.IDS~ ~32 NOREST~        UNLESS ~NOREST~
 
 APPEND ~INSTANT.IDS~ ~330 AddAreaType(I:Type*AREATYPE)~                                   UNLESS ~330 AddAreaType(~
 APPEND ~INSTANT.IDS~ ~331 RemoveAreaType(I:Type*AREATYPE)~                                UNLESS ~331 RemoveAreaType(~

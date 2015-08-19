@@ -1,9 +1,15 @@
 Only "EET/cpmvars/eet_cpmvars.tpa" is used during EET installation. Other stuff from this directory are resources that may be useful for modders interested in creating mods compatible with EET:
 - BGEE_to_EET_mod_checker - analyze files located in BG:EE override folder to find out if a mod that changed them can possibly conflict when installed on BG:EE previous to installing EET on BG2:EE
 - cpmvars - common variables that can be used to make the mod compatible with BG:EE, Tutu, BGT and EET at the same time
-- EET_modConverter - tool for modders that would like to make thier mods compatible with EET. It contains several conversion options:
+- EET_functions.tph - this file contains functions and macros that can be used directly in mods to make them compatible with EET on the fly. Current functions:
+  1. EET_JOURNAL - can be used to automatically patch all BG2/SoD mod files to use EET continuous journal system.
+  2. EET_NPC_TRANSITION - can be used to automatically add NPC transition from BG1 to BG2 areas or disable NPC without BG2 content. Also patches FATESP.DLG and adds NPC transition to ToB.
+  3. EET_IRON_CRISIS - can be used to automatically patch EET item shattering effect to weapons, armors, shields and helmets. It removes BG:EE/Tutu/BGT item shattering implementation before adding EET one and also expands EET shattering scripts if item name is not present there yet.
+- EET_modConverter - tool for modders that would like to make their mods compatible with EET. It contains several conversion options:
   1. PCU_custom - custom version of Ascension64' Platform Conversion Utility that has been expanded and specialized for BG:EE and BGT mods conversions to EET. Readme and some improvements for converting into cpmvars (automatically adding %eet_var%, %eet_script0%, %eet_scriptt% variables is not implemented yet) will be added soon.
   2. GAME_IS_patcher - automatically patches all GAME_IS commands appending ~eet~ to already present platform of choice parameter. 100% safe only for mods released for BG2:EE that don't have code related to BG1/BG:EE.
-  3. Chapter_patcher - automatically patches all BG2/BG2:EE mod files to use EET BG2 chapter numbers. Currently useless due to this problem: http://forums.beamdog.com/discussion/42425/remove-hardcoded-limit-for-10-chapters-journal
+  3. Chapter_patcher - automatically patches all BG2/BG2:EE mod files to use EET BG2 chapter numbers. Currently not used in open repository
 - --traify-tlk - batch file that can be used to traify game TLK files
 - auto_install - example file that shows how to automatically install the mod without being bothered with prompts (more information in the readme file)
+
+More information about new tools and code examples can be found in EET/docs/Developer’s Documentation.htm file.
