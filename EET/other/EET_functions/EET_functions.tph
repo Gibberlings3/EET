@@ -217,20 +217,20 @@ DEFINE_PATCH_MACRO ~EET_JOURNAL_patch~ BEGIN
 	REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
 	SET patched = 0
 	PATCH_IF (journal_mode = 0) OR (~%file_ext%~ STRING_EQUAL_CASE ~bcs~) OR (~%file_ext%~ STRING_EQUAL_CASE ~dlg~) BEGIN //replace with values
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*G[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT, SG, G, GGT, GLT
 			SET MATCH2_new = MATCH2 + journal_add
 			PATCH_PRINT ~Patching %file%: %MATCH1%%MATCH2%) => %MATCH1%%MATCH2_new%)~
 			SET patched = 1
 		END
 		~%MATCH1%%MATCH2_new%)~
 	END ELSE PATCH_IF (journal_game = 0) BEGIN //BG2
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*G[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT, SG, G, GGT, GLT
 			PATCH_PRINT ~Patching %file%: %MATCH1%%MATCH2%) => %MATCH1%%bg2_chapter_%MATCH2%%)~
 			SET patched = 1
 		END
 		~%MATCH1%%bg2_chapter_%MATCH2%%)~
 	END ELSE PATCH_IF (journal_game = 1) BEGIN //SoD
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*G[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT, SG, G, GGT, GLT
 			PATCH_PRINT ~Patching %file%: %MATCH1%%MATCH2%) => %MATCH1%%sod_chapter_%MATCH2%%)~
 			SET patched = 1
 		END
