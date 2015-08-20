@@ -1165,10 +1165,27 @@ END
 <p>Unlike classic games Infinity Engine distributed with Enhanced Edition games doesn't have hardcoded limit for animations, so assigning new animations to existing vanilla slots is considered a bad practice now. There are 2 ways to implement new animations to the game:</p>
 <ul>
 <li><strong>INI files</strong> - engine feature introduced in IWD:EE and BG2:EE (patch 1.3). INI files, named afer the offset used for particular animation, contains code that was previously hardcoded within EXE file. Unfortunately they are not documented on <a href="http://gemrb.org/iesdp/main.htm">IESDP</a> yet, but many options available are pretty self-explanatory. EET distributes INI files from IWD:EE that cover all vanilla BG:EE, BG2:EE and IWD:EE animations. Please refer to them for example usage. Probably the most interesting thing about them is optional "new_palette=" entry under [general] section that allows us to assign external palette BMP files that will be used with animation, which means there is no point in distributing animation with mod if it's just a re-palleted version of existing one - INI file with new offset and palette reference will do the job.</li>
-<li><strong>EXTANIM.2DA, EXTSPEED.2DA</strong> - alternative to above implementation and another engine feature introduced by Beamdog. In EE games new animations are externalised via these 2 new 2DA files. More information about them and example usage can be found in <a href="">here</a> (no link yet, and it looks like IESDP don't have anything about them too... Anyone interested in writing a tutorial?).</li>
+<li><strong>EXTANIM.2DA, EXTSPEED.2DA</strong> - alternative to above implementation and another engine feature introduced by Beamdog. Hopefully <a href="http://gemrb.org/iesdp/main.htm">IESDP</a> will have full documentation for these files at some point. For now refer to what has been said by Scott Brooks in <a href="https://forums.beamdog.com/discussion/comment/116705#Comment_116705">this topic</a>. Example code can be found in viader's <a href="https://forums.beamdog.com/discussion/19501/resource-pack-extended-animations/p1">Extended Animations</a> mod.</li>
 </ul>
-<p>EET promotes common standard introduced in IWD:EE and viader's <a href="https://forums.beamdog.com/discussion/19501/resource-pack-extended-animations/p1">Extended Animations</a> mod. If you are creating mod compatible with EET you should follow what has been said by viader regarding reserved slots, in above mentioned topic.</p>
-<p>After installing EET, the game has all animations present in BG:EE, BG2:EE and IWD:EE. All files associated with these animations (INI, BMP palettes, WAV, 2DA entries, IDS entries) are part of the vanilla EET installation too, so there is no need to pack them with your mod. Reference table listing all animations, offsets that they occupy and image presenting them, will be added here "soon".</p>
+<p>EET promotes common standard introduced in IWD:EE and viader's Extended Animations mod. If you are creating mod compatible with EET you should follow what has been said by viader regarding animation slot offsets, in above mentioned topic:</p>
+<div class="important">
+<pre>
+0xE240 - 0xE2FF - reserved by Extended Animations
+0xE330 - 0xE3FF - free
+0xE440 - 0xE4FF - free
+0xE530 - 0xE5FF - free
+0xE620 - 0xE6FF - free
+0xE730 - 0xE7FF - free
+0xE850 - 0xE8FF - free
+0xE920 - 0xE9FF - free
+0xEA30 - 0xEAFF - free
+0xEB30 - 0xEBFF - free
+0xEC30 - 0xECFF - free
+0xED30 - 0xEDFF - free
+0xEE20 - 0xEEFF - free
+</pre>
+</div>
+<p>The game with installed EET has all BAM animations present in BG:EE, BG2:EE and IWD:EE and files associated with these animations (INI, WAV, BMP palettes, 2DA entries, IDS entries). There is no need to pack them with your mod or patch IDS/2DA files if you're going to use any of them. Reference table listing all animations, offsets that they occupy and image presenting them, will be added here "soon".</p>
 
 <hr />
 <a id="Adding support for EET Worldmap" name="Adding support for EET Worldmap"></a>
