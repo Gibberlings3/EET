@@ -117,6 +117,7 @@ OUTER_SPRINT tis2bg2 ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%tis2bg2%exe%
 PRINT ~tis2bg2 path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%tis2bg2%exe%~
 OUTER_SPRINT ffmpeg ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
 PRINT ~ffmpeg path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
+OUTER_SET EET_JOURNAL = 0 //set it to 1 after the patch is released
 
 /////                                                  \\\\\
 ///// Include                                          \\\\\
@@ -124,6 +125,7 @@ PRINT ~ffmpeg path assigned to EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffm
 
 COPY - ~EET/other/cpmvars/eet_cpmvars.tpa~ ~EET-inlined/eet_cpmvars.tpa~
 	REPLACE_TEXTUALLY ~\(GAME_IS "\)eet~ ~\1bg2ee~//at this point WeiDU thinks it's still BG2:EE installation
+	REPLACE_TEXTUALLY "FILE_CONTAINS ~override/EET.flag~ ~EET_JOURNAL~" "EET_JOURNAL = 1" //at this point the EET.flag does no exist
 	REPLACE_TEXTUALLY ~FAIL .*~ ~~
 INCLUDE ~EET-inlined/eet_cpmvars.tpa~
 
