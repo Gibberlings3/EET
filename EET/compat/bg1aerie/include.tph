@@ -1,0 +1,20 @@
+//DestroySelf() when ENDOFBG1 > 0
+
+<<<<<<<< EET-inlined/destroy.baf
+IF
+  GlobalGT("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH file IN B2#Aeri B2#Aeri2 BEGIN
+	ACTION_IF NOT FILE_EXISTS ~%patch_dir%/bcs/%file%.BCS~ BEGIN //in current version B2#Aeri.BCS doesn't exist, but this may change in future as it's already present within CRE file
+		COPY + ~EET/base/blank.bcs~ ~%patch_dir%/bcs/%file%.bcs~
+	END
+	COPY + ~%patch_dir%/bcs/%file%.bcs~ ~%patch_dir%/bcs~
+		DECOMPILE_AND_PATCH BEGIN
+			APPEND_FILE ~EET-inlined/destroy.baf~
+		END
+END
