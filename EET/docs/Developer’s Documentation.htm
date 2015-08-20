@@ -632,7 +632,7 @@ These 2 variables can be used to properly reference BG1 resources in code that a
 - <strong>BGT_VAR</strong> - not exactly new addition (it already existed with the same purpose for BGT) but still very important for EET. It can be used as trigger filter to shutdown of D and BAF blocks after BG1 content. It adds following trigger: GlobalLT("ENDOFBG1","GLOBAL",2). <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Content filtering</a> is explained in later part of this document (consider adding more filtering variables to your copy of cpmvars if you need them).<br>
 - <strong>sod_chapter_1-7, bg2_chapter_1-10</strong> - variables that should replace SoD/BG2 chapter numbers in your code. More information in <a href="#Adding support for EET chapters/journal system">this section</a>.<br>
 - <strong>wmp_xCoord_BG1, wmp_yCoord_BG1, wmp_xCoord_SoA, wmp_yCoord_SoA, wmp_mapIcon_BG1, wmp_mapIcon_ToB, wmp_worldmap_ToB</strong> - a bunch of variables that can be used to properly patch EET Worldmap with the same code as in other platforms. They have been explained in <a href="#Adding support for EET Worldmap">this section</a>.</li>
-<li><a href="../other/BG1 Platform-Abstraction Layer">BG1 Platform-Abstraction Layer (BG1PAL)</a> - a resource-name abstraction library for the different versions of Baldur's Gate. It can be used to return the correct resource name regardless of the platform. The input name is the one from BG1/BG:EE. More information about this tool and example code can be found in <a href="http://gibberlings3.net/forums/index.php?showtopic=27073">this topic</a>.</li>
+<li><a href="https://github.com/FredrikLindgren/bg1pal">BG1 Platform-Abstraction Layer (BG1PAL)</a> - a resource-name abstraction library for the different versions of Baldur's Gate. It converts canonical resource names into the appropriate form for the current platform via the function fl#bg1pal, which is available both as an action and a patch function. All resource names and resource types are supported. The input name is the one from BG1/BG:EE. For more extensive documentation, please refer to the file readme.html distributed with this resource.</li>
 </ul>
 
 <p>You can also patch files directly using <a href="../other/EET_modConverter">EET_modConverter</a> tool that has custom version of Platform Conversion Utility in it, specialized in converting BG:EE and BGT code and resources to adopt EET naming convention. The tool will print all changes it makes into the log file, so you can review them if they are really needed. "Patching (...)" in log means that the input file has been patched and has been copied to output directory of the tool. "Analyzing (...)" means that the tool found an instance of the resource in tp2/tph/tpp/tpa files that didn't have extension provided. In such case the file is not patched but you should manually check if suggested change is warranted. Keep in mind that PCU part of this tool is designed for mods with BG1/BG:EE content only. You should not use it for mods with BG2 resources/code, unless you really know you're doing. Supported files that this tool can automatically convert: TBL, GAM, ARE, BAF, BCS, CRE, D, DLG, EFF, ITM, SPL, STO, TRA, TP2, TPH, TPP, TPA, VVC, WED, WMP. Other than renaming and patching files to use EET naming convention it will also handle converting ARE Song references to use EET song playlist.</p>
@@ -997,21 +997,21 @@ END
 
 <div class="important">
 <pre>
-  IF ~  Dead("%dv%")
+  IF ~  Global("%dv%Summoned","GLOBAL",0)
+Dead("%dv%")
 !InMyArea("%dv%")
-Global("%dv%Summoned","GLOBAL",0)
 ~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
 ~ GOTO 10
-  IF ~  !Dead("%dv%")
-!InMyArea("%dv%")
-Global("%dv%Summoned","GLOBAL",0)
+  IF ~  Global("%dv%Summoned","GLOBAL",0)
 Global("%dv%PartyBG2","GLOBAL",0)
+!Dead("%dv%")
+!InMyArea("%dv%")
 ~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
 ~ GOTO 7
-  IF ~  !Dead("%dv%")
-!InMyArea("%dv%")
-Global("%dv%Summoned","GLOBAL",0)
+  IF ~  Global("%dv%Summoned","GLOBAL",0)
 Global("%dv%PartyBG2","GLOBAL",1)
+!Dead("%dv%")
+!InMyArea("%dv%")
 ~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",1)
 ~ GOTO 9
 END
@@ -1175,7 +1175,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
   OUTER_SET wmp_yCoord_SoA = 953 //in relation to BG2/BG2:EE WORLDMAP.WMP add 953 px correction to Y coordinate
   OUTER_SET wmp_xCoord_ToB = 893 //in relation to BG2/BG2:EE WORLDM25.WMP add 893 px correction to X coordinate
   OUTER_SET wmp_yCoord_ToB = 1681 //in relation to BG2/BG2:EE WORLDM25.WMP add 1681 px correction to Y coordinate
-  OUTER_SET wmp_mapIcon_BG1 = 29 //in relation to BG1/Tutu MAPICONS.BAM add 29 cycles correction to map icon
+  OUTER_SET wmp_mapIcon_BG1 = 29 //in relation to Tutu YAC22MAP.BAM add 29 cycles correction to map icon
   OUTER_SET wmp_mapIcon_ToB = 85 //in relation to BG2 25MAPIC.BAM add 85 cycles correction to map icon
   OUTER_SPRINT wmp_worldmap_ToB "worldmap" //when editing ToB worldmap use WORLDMAP.WMP instead of WORLDM25.WMP
 END ELSE BEGIN
@@ -1242,7 +1242,7 @@ END
  <tr>
   <th class="tg">Icon</th>
   <th class="tg">EET / BP-BGT Worldmap</th>
-  <th class="tg">BG1 / BG:EE / Tutu</th>
+  <th class="tg">Tutu</th>
   <th class="tg">BG2 / BG2:EE (SoA map)</th>
   <th class="tg">BG2 / BG2:EE (ToB map)</th>
  </tr>
@@ -1928,7 +1928,7 @@ END
 
 <div class="content">
 <h2>List of changes in vanilla files</h2>
-<p>Not done yet, this section will be added after Siege of Dragonspear become fully compatible with EET. Don't worry about it all that much. The changes are relatively minor and not intrusive, so as long as you followed what has been said in previous sections of developer's documentation, chance that EET will brake your mod is close to 0.</p>
+<p>Not done yet, this section will be finished after Siege of Dragonspear become fully compatible with EET. Don't worry about it all that much. The changes are relatively minor and not intrusive, so as long as you followed what has been said in previous sections of developer's documentation, chance that EET will brake your mod is close to 0.</p>
 
 <address><span class="footer">DEV > List of changes in vanilla files</span> ·<a href="#top">BACK TO TOP</a></address>
 </div>
