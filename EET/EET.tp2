@@ -982,7 +982,7 @@ COPY + ~EET/temp/array/RNDEQUIP.2DA~ ~EET/temp/array~
 	~EET/temp/array/RNDTREAS.2DA~ ~EET/temp/array~
 	~EET/temp/array/RNDWEP.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~2DA[ 	]+V1.0[%newline%]+.[%newline%]+.+[%newline%]+~ ~~
+	REPLACE_TEXTUALLY ~2DA[ %TAB%]+V1.0[%newline%]+.[%newline%]+.+[%newline%]+~ ~~
 	SPRINT filename "%SOURCE_RES%"
 	COUNT_2DA_ROWS 1 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1019,7 +1019,7 @@ COPY + ~EET/temp/array/RNDEQUIP.2DA~ ~EET/temp/array~
 		SPRINT name_dest "resref_itm_dest%i%"
 		SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 		SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
-		REPLACE_TEXTUALLY ~\([ 	]\)%resref_index_source%\([^A-Z^a-z]\)~ ~\1%resref_index_dest%\2~
+		REPLACE_TEXTUALLY ~\([ %TAB%]\)%resref_index_source%\([^A-Z^a-z]\)~ ~\1%resref_index_dest%\2~
 	END
 
 ACTION_IF FILE_EXISTS_IN_GAME rndtres.2da BEGIN
@@ -1564,7 +1564,7 @@ THEN
 END
 >>>>>>>>
 
-OUTER_SPRINT ~spl_list~ ~2DA%WNL%dummy%WNL%Name	Level	Primary#School	Opposing#School~
+OUTER_SPRINT ~spl_list~ ~2DA%WNL%dummy%WNL%Name%TAB%Level%TAB%Primary#School%TAB%Opposing#School~
 COPY_EXISTING - ~SPLAUTOP.2DA~ ~override~
 	FOR (col = 9; col > 0; col = col - 1) BEGIN
 		COUNT_2DA_ROWS 10 "cntrow"
@@ -1622,7 +1622,7 @@ COPY_EXISTING - ~SPLAUTOP.2DA~ ~override~
 							SPRINT ~spl_kit~ ~0~
 						END
 					BUT_ONLY
-					OUTER_SPRINT ~spl_list~ ~%spl_list%%WNL%%spl_id%.SPL	%spl_name%	%spl_lvl%	%spl_primschool%	%spl_opschool%~
+					OUTER_SPRINT ~spl_list~ ~%spl_list%%WNL%%spl_id%.SPL%TAB%%spl_name%%TAB%%spl_lvl%%TAB%%spl_primschool%%TAB%%spl_opschool%~
 					EXTEND_TOP ~K#TELBG2.BCS~ ~EET-inlined/K#TELBG2-et.baf~ EVALUATE_BUFFER
 				END
 			END
@@ -1642,7 +1642,7 @@ ACTION_PHP_EACH table_EET_IDprimschool AS spl_id => spl_primschool BEGIN
 			READ_STRREF 0x8 "spl_name"
 			READ_LONG 0x34 "spl_lvl" ELSE 0
 		EXTEND_TOP ~K#TELBG2.BCS~ ~EET-inlined/K#TELBG2-et.baf~ EVALUATE_BUFFER
-		OUTER_SPRINT ~spl_list~ ~%spl_list%%WNL%%spl_id%.SPL	%spl_name%	%spl_lvl%	%spl_primschool%#(Wildmage)	none~
+		OUTER_SPRINT ~spl_list~ ~%spl_list%%WNL%%spl_id%.SPL%TAB%%spl_name%%TAB%%spl_lvl%%TAB%%spl_primschool%#(Wildmage)%TAB%none~
 	END
 END
 
@@ -2737,7 +2737,7 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 			REPLACE_TEXTUALLY ~INSERT INTO options ROWS (~ ~INSERT INTO options ROWS (
 	'Language',	'Text',	'%LANGUAGE_BG2%',~
 		END ELSE BEGIN
-			REPLACE_TEXTUALLY ~'Language',[ 	]+'Text',[ 	]+'.*'~ ~'Language',	'Text',	'%LANGUAGE_BG2%'~
+			REPLACE_TEXTUALLY ~'Language',[ %TAB%]+'Text',[ %TAB%]+'.*'~ ~'Language',%TAB%'Text',%TAB%'%LANGUAGE_BG2%'~
 		END
 		DEFINE_ASSOCIATIVE_ARRAY table_EET_ini BEGIN
 			"Full Screen" => "Window"//set only for now due to unknown problem with TIS/WED
@@ -2911,7 +2911,7 @@ ACTION_FOR_EACH file IN areas.tbl links.tbl trans.tra BEGIN
 	//EET worldmap
 	ACTION_IF (~%file%~ STRING_EQUAL_CASE ~areas.tbl~) BEGIN
 		COPY + ~EET/tbl/map_eet_areas.tbl~ ~EET/temp~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Z0-9#_]+[ 	]+[A-Z0-9#_]+[ 	]+[A-Z0-9#_]+[ 	]+[0-9]+[ 	]+[0-9]+[ 	]+\)\([0-9\-]+\)~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Z0-9#_]+[ %TAB%]+[A-Z0-9#_]+[ %TAB%]+[A-Z0-9#_]+[ %TAB%]+[0-9]+[ %TAB%]+[0-9]+[ %TAB%]+\)\([0-9\-]+\)~ BEGIN
 				SET MATCH2 = MATCH2 + 373
 			END ~%MATCH1%%MATCH2%~
 			APPEND_FILE ~EET/temp/map_bg2_areas.tbl~

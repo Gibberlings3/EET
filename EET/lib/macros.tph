@@ -563,9 +563,9 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 				END
 			END ELSE BEGIN
 				INNER_ACTION BEGIN
-					ACTION_IF (FILE_CONTAINS_EVALUATED (~%tra%~ ~^[ 	]*@%name%[ 	]*=[ 	]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%^%quote%]*$~)) BEGIN
+					ACTION_IF (FILE_CONTAINS_EVALUATED (~%tra%~ ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%^%quote%]*$~)) BEGIN
 						COPY - ~%tra%~ ~%tra%~
-							REPLACE_EVALUATE CASE_INSENSITIVE ~^[ 	]*@%name%[ 	]*=[ 	]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%^%quote%]*$~ BEGIN
+							REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%^%quote%]*$~ BEGIN
 								SPRINT name "%MATCH1%"
 								SPRINT tool "%MATCH1%"
 							END
