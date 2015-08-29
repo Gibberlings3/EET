@@ -1,0 +1,148 @@
+IF
+  Global("NeeraImport","GLOBAL",0)
+  XPLT(Protagonist,250000)
+  XPLT(Myself,161000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,161000,SET)
+    Continue()
+END
+
+IF
+  Global("NeeraImport","GLOBAL",0)
+  XPGT(Protagonist,249999)
+  XPLT(Protagonist,400000)
+  XPLT(Myself,250000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,250000,SET)
+    Continue()
+END
+
+IF
+  Global("NeeraImport","GLOBAL",0)
+  XPGT(Protagonist,399999)
+  XPLT(Protagonist,800000)
+  XPLT(Myself,400000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,400000,SET)
+    Continue()
+END
+
+IF
+  Global("NeeraImport","GLOBAL",0)
+  XPGT(Protagonist,799999)
+  XPLT(Protagonist,1200000)
+  XPLT(Myself,800000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,800000,SET)
+    Continue()
+END
+
+IF
+  Global("NeeraImport","GLOBAL",0)
+  XPGT(Protagonist,1199999)
+  XPLT(Myself,1200000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,1200000,SET)
+    Continue()
+END
+
+IF
+  Global("NeeraImport","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NeeraImport","GLOBAL",2)
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+    CreateItem("NEBELT01",1,0,0) // Adoy's Belt
+    CreateItem("STAFN1",1,0,0) // Neera's Staff +1
+    FillSlot(SLOT_BELT)
+    FillSlot(SLOT_WEAPON)
+    EquipMostDamagingMelee()
+    SetPlayerSound(Myself,-1,INITIAL_MEETING) // No such index
+    SetPlayerSound(Myself,-1,MORALE) // No such index
+    SetPlayerSound(Myself,84546,HAPPY) // I'm so proud of you, <CHARNAME>.
+    SetPlayerSound(Myself,86672,UNHAPPY_ANNOYED) // I don't like where this is headed.
+    SetPlayerSound(Myself,86673,UNHAPPY_SERIOUS) // Definitely don't like where this is headed.
+    SetPlayerSound(Myself,102930,UNHAPPY_BREAKING_POINT) // I can't take any more of this!
+    SetPlayerSound(Myself,88513,LEADER) // You understand that I am volatile and occasionally unreasonable? Okay, great!
+    SetPlayerSound(Myself,88514,TIRED) // *yawn* My mind's even foggier than usual. Can we... stop?
+    SetPlayerSound(Myself,88516,BORED) // Fidgeting over here... fidget, fidget, fidget!
+    SetPlayerSound(Myself,88510,BATTLE_CRY1) // Get down, everyone!
+    SetPlayerSound(Myself,88511,BATTLE_CRY2) // I command pure chaos! Kinda.
+    SetPlayerSound(Myself,88512,BATTLE_CRY3) // Victory? Unclear. Destruction? Certain!
+    SetPlayerSound(Myself,-1,BATTLE_CRY4) // No such index
+    SetPlayerSound(Myself,-1,BATTLE_CRY5) // No such index
+    SetPlayerSound(Myself,-1,ATTACK1) // No such index
+    SetPlayerSound(Myself,-1,ATTACK2) // No such index
+    SetPlayerSound(Myself,-1,ATTACK3) // No such index
+    SetPlayerSound(Myself,-1,ATTACK4) // No such index
+    SetPlayerSound(Myself,88533,DAMAGE) // Ouch. OUCH!
+    SetPlayerSound(Myself,88534,DYING) // 
+    SetPlayerSound(Myself,88518,HURT) // Please! Someone... anyone?! I'm in... quite a bit of pain here.
+    SetPlayerSound(Myself,88535,AREA_FOREST) // Being in the woods always reminds me of the High Forest. I like it.
+    SetPlayerSound(Myself,88536,AREA_CITY) // Are you gonna make me cast spells here? There are a lot of people around.
+    SetPlayerSound(Myself,88537,AREA_DUNGEON) // I sense great evil... fabled treasure... terrible danger... probably some spiders.
+    SetPlayerSound(Myself,88538,AREA_DAY) // It's a fine day for fireballs.
+    SetPlayerSound(Myself,88539,AREA_NIGHT) // An evening stroll under the stars! When do we get attacked?
+    SetPlayerSound(Myself,88519,SELECT_COMMON1) // Hmm?
+    SetPlayerSound(Myself,88520,SELECT_COMMON2) // Ready for anything.
+    SetPlayerSound(Myself,88521,SELECT_COMMON3) // Happy to help... uh, to try to help, anyway.
+    SetPlayerSound(Myself,88522,SELECT_COMMON4) // I'm ready!
+    SetPlayerSound(Myself,88523,SELECT_COMMON5) // Yes?
+    SetPlayerSound(Myself,88524,SELECT_COMMON6) // What'll it be?
+    SetPlayerSound(Myself,88526,SELECT_ACTION1) // That's it?
+    SetPlayerSound(Myself,88527,SELECT_ACTION2) // Fine!
+    SetPlayerSound(Myself,88528,SELECT_ACTION3) // Sure.
+    SetPlayerSound(Myself,88529,SELECT_ACTION4) // I suppose.
+    SetPlayerSound(Myself,88530,SELECT_ACTION5) // I'll do it.
+    SetPlayerSound(Myself,88531,SELECT_ACTION6) // Simple and surge-free.
+    SetPlayerSound(Myself,88532,SELECT_ACTION7) // So easy you could almost do it yourself.
+    SetPlayerSound(Myself,-1,INTERACTION1) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION1) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION2) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION3) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION4) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION5) // No such index
+    SetPlayerSound(Myself,-1,INSULT) // No such index
+    SetPlayerSound(Myself,-1,COMPLIMENT1) // No such index
+    SetPlayerSound(Myself,-1,COMPLIMENT2) // No such index
+    SetPlayerSound(Myself,-1,COMPLIMENT3) // No such index
+    SetPlayerSound(Myself,-1,SPECIAL1) // No such index
+    SetPlayerSound(Myself,-1,SPECIAL2) // No such index
+    SetPlayerSound(Myself,-1,SPECIAL3) // No such index
+    SetPlayerSound(Myself,88540,REACT_TO_DIE_GENERAL) // No! We can't let them get away with this!
+    SetPlayerSound(Myself,-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound(Myself,-1,MISCELLANEOUS) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound(Myself,-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound(Myself,-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound(Myself,88541,SELECT_RARE1) // Not savin' the day this time.
+    SetPlayerSound(Myself,88542,SELECT_RARE2) // I was tryin' to concentrate!
+    SetPlayerSound(Myself,88544,CRITICAL_HIT) // Did everyone see that? It was incredible!
+    SetPlayerSound(Myself,88546,CRITICAL_MISS) // That wasn't even close, was it?
+    SetPlayerSound(Myself,88547,TARGET_IMMUNE) // Blast it! That's not gonna work.
+    SetPlayerSound(Myself,88548,INVENTORY_FULL) // Get rid of some of this trash! I can't carry anymore.
+    SetPlayerSound(Myself,88549,PICKED_POCKET) // I could get used to this! It was so easy.
+    SetPlayerSound(Myself,88550,EXISTANCE1) // I feel so sneaky.
+    SetPlayerSound(Myself,88551,EXISTANCE2) // Oh no, I've lost my spell!
+    SetPlayerSound(Myself,88552,EXISTANCE3) // Ha! Can't wait to see what happens.
+    SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
+    SetPlayerSound(Myself,93710,EXISTANCE5) // When asked about her past, NEERA shrugs. She says that, before coming to Athkatla, she wandered the Sword Coast enjoying an adventurer's life while evading the Order of Eight Staves, an organization dedicated to hunting wild mages. She talks less about her distant past, but does not hide the fact she was banished from the High Forest for her wild magic. She is quick to laugh and to chatter, perhaps a little glibly, but lashes out whenever she senses a threat to her autonomy. She is deeply invested in protecting other wild mages and seems willing to risk almost everything to do so.
+    SetDialog("NEERA")
+    SetNumTimesTalkedTo(0)
+    SetGlobal("K#PDIALOG","LOCALS",0)
+    SetGlobal("KickedOut","LOCALS",0)
+    ChangeAIScript("",CLASS)
+    ChangeAIScript("",RACE)
+    ChangeAIScript("",GENERAL)
+    ChangeAIScript("WTARSGT",DEFAULT)
+    ChangeAIScript("NEERA",OVERRIDE)
+END

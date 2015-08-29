@@ -2,228 +2,18 @@
 ///// FATESP.DLG                                       \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING ~FATESP.DLG~ ~override~
-	//change Yoshimo block to work like other BG2 NPCs
-	DECOMPILE_DLG_TO_D
-	REPLACE_TEXTUALLY ~Global("YoshimoSummoned","GLOBAL",0)~ ~!Dead("Yoshimo")
-!InMyArea("Yoshimo")
-Global("YoshimoSummoned","GLOBAL",0)~
-	REPLACE_TEXTUALLY ~SetGlobal("YoshimoSummoned","GLOBAL",2)[%newline%]\(.*\)GOTO 10~ ~SetGlobal("YoshimoSummoned","GLOBAL",1)
-\1GOTO 8~
-BUT_ONLY
-
-COPY_EXISTING ~FATESP.DLG~ ~override~
-	//change BG2 NPCs blocks to work like BG2:EE NPCs blocks
-	PATCH_FOR_EACH "DV" IN Aerie Anomen Cernd Edwin HaerDalis Imoen2 Jaheira Jan Keldorn Korgan Mazzy Minsc Nalia Valygar Viconia BEGIN
-		REPLACE_TEXTUALLY ~!Dead("%DV%")~ ~!Dead("%DV%")
-!InMyArea("%DV%")~
-	END
-BUT_ONLY
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2DLG_DVDVet" BEGIN
-	"Ajantis" => "Anomen"
-	"Alora" => "Anomen"
-	"Baeloth" => "Cernd"
-	"Branwen" => "Cernd"
-	"Coran" => "Dorn"
-	"Dynaheir" => "Edwin"
-	"Eldoth" => "HaerDalis"
-	"Faldorn" => "HaerDalis"
-	"Garrick" => "HaerDalis"
-	"Kagain" => "Keldorn"
-	"Khalid" => "Korgan"
-	"Kivan" => "Korgan"
-	"Montaron" => "Neera"
-	"Quayle" => "Rasaad"
-	"Safana" => "Valygar"
-	"SharTeel" => "Valygar"
-	"Skie" => "Valygar"
-	"Tiax" => "Valygar"
-	"Xan" => "Yoshimo"
-	"Xzar" => "Yoshimo"
-	"Yeslick" => "Yoshimo"
+<<<<<<<< EET-inlined/FATESP.d
+REPLACE FATESP
+IF ~  Global("TalkedToFatesp","GLOBAL",1)
+~ THEN BEGIN 6
+  SAY #65009 /* ~Is there a thread you wish me to search for, child of Bhaal? I will bring them to this place, if I can.~ */
+  IF ~~ THEN REPLY #65029 /* ~Never mind. I can't think of anyone else.~ */ DO ~SetGlobalTimer("FateSpiritTimer","AR4500",1)
+~ GOTO 9
 END
-
-COPY_EXISTING ~FATESP.DLG~ ~override~
-	//add BG1 NPCs to the list
-	PHP_EACH "table_BG2DLG_DVDVet" AS "DV" => "DVet" BEGIN
-		REPLACE_TEXTUALLY ~IF \(.\) \(.*\)("%DVet%")[%newline%]\(.*\)("%DVet%")~ ~IF \1  Dead("%DV%")
-!InMyArea("%DV%")
-Global("%DV%Summoned","GLOBAL",0)
-\1 THEN REPLY #0 DO \1SetGlobal("%DV%Summoned","GLOBAL",2)
-\1 GOTO 10
-	IF \1 !Dead("%DV%")
-!InMyArea("%DV%")
-Global("%DV%Summoned","GLOBAL",0)
-Global("%DV%PartyBG2","GLOBAL",0)
-Global("NEWGAME_TOB","GLOBAL",0)
-\1 THEN REPLY #0 DO \1SetGlobal("%DV%Summoned","GLOBAL",2)
-\1 GOTO 7
-	IF \1 !Dead("%DV%")
-!InMyArea("%DV%")
-Global("%DV%Summoned","GLOBAL",0)
-Global("%DV%PartyBG2","GLOBAL",1)
-\1 THEN REPLY #0 DO \1SetGlobal("%DV%Summoned","GLOBAL",1)
-\1 GOTO 9
-	IF \1 \2("%DVet%")
-\3("%DVet%")~
-	END
-BUT_ONLY
-
-COPY_EXISTING ~FATESP.DLG~ ~override~
-	//add BG2 version of DV for BG1 NPCs
-	REPLACE_TEXTUALLY ~ Dead("Ajantis")~ ~ OR(2)
-Dead("Ajantis")
-Dead("palkni04")~
-	REPLACE_TEXTUALLY ~ Dead("Coran")~ ~ OR(2)
-Dead("Coran")
-Dead("c6coran")~
-	REPLACE_TEXTUALLY ~ Dead("Faldorn")~ ~ OR(3)
-Dead("Faldorn")
-Dead("cefaldor")
-Dead("cefald01")~
-	/*REPLACE_TEXTUALLY ~ Dead("Khalid")~ ~ OR(2)
-Dead("Khalid")
-Dead("DeadKhalid")~*/
-	REPLACE_TEXTUALLY ~ Dead("Safana")~ ~ OR(2)
-Dead("Safana")
-Dead("c6safa")~
-	REPLACE_TEXTUALLY ~ Dead("Tiax")~ ~ OR(3)
-Dead("Tiax")
-Dead("pptiax")
-Dead("pptiax2")~
-	REPLACE_TEXTUALLY ~ Dead("Xzar")~ ~ OR(2)
-Dead("Xzar")
-Dead("Lyros")~
-BUT_ONLY
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2DLG_DVvar" BEGIN
-	"Aerie" => "Aerie"
-	"Anomen" => "Anomen"
-	"Cernd" => "Cernd"
-	"Edwin" => "Edwin"
-	"HaerDalis" => "HaerDalis"
-	"Imoen2" => "Imoen"
-	"Jaheira" => "Jaheira"
-	"Jan" => "Jan"
-	"Keldorn" => "Keldorn"
-	"Korgan" => "Korgan"
-	"Mazzy" => "Mazzy"
-	"Minsc" => "Minsc"
-	"Nalia" => "Nalia"
-	"Valygar" => "Valygar"
-	"Viconia" => "Viconia"
-	"Yoshimo" => "Yoshimo"
-	"Dorn" => "OHD_Dorn"
-	"Hexxat" => "OHH_Hexxat"
-	"Neera" => "OHN_Neera"
-	"Rasaad" => "OHR_Rasaad"
-	"Wilson" => "OHR_Wilson"
 END
+>>>>>>>>
 
-COPY_EXISTING ~FATESP.DLG~ ~override~
-	PHP_EACH "table_BG2DLG_DVvar" AS "DV" => "var" BEGIN
-		//modify import blocks for NPCs existing in both BG1 and BG2
-		PATCH_IF (("%DV%" STRING_EQUAL_CASE "Edwin")=1)
-		OR (("%DV%" STRING_EQUAL_CASE "Imoen2")=1)
-		OR (("%DV%" STRING_EQUAL_CASE "Jaheira")=1)
-		OR (("%DV%" STRING_EQUAL_CASE "Minsc")=1)
-		OR (("%DV%" STRING_EQUAL_CASE "Viconia")=1)
-		OR (("%DV%" STRING_EQUAL_CASE "Dorn")=1)
-		OR (("%DV%" STRING_EQUAL_CASE "Neera")=1)
-		OR (("%DV%" STRING_EQUAL_CASE "Rasaad")=1) BEGIN
-			REPLACE_TEXTUALLY ~\(!Dead("%DV%")[%newline%]!InMyArea("%DV%")[%newline%]Global("%var%Summoned","GLOBAL",0)\)~ ~\1
-OR(2)
-  Global("%DV%PartyBG2","GLOBAL",1)
-  Global("NEWGAME_TOB","GLOBAL",1)~
-			REPLACE_TEXTUALLY ~IF \(.\) \(.*\)("%DV%")[%newline%]\(.*\)("%DV%")~ ~IF \1  Dead("%DV%")
-!InMyArea("%DV%")
-Global("%var%Summoned","GLOBAL",0)
-\1 THEN REPLY #0 DO \1SetGlobal("%var%Summoned","GLOBAL",2)
-\1 GOTO 10
-	IF \1 !Dead("%DV%")
-!InMyArea("%DV%")
-Global("%var%Summoned","GLOBAL",0)
-Global("%DV%PartyBG2","GLOBAL",0)
-Global("NEWGAME_TOB","GLOBAL",0)
-\1 THEN REPLY #0 DO \1SetGlobal("%var%Summoned","GLOBAL",2)
-\1 GOTO 7
-	IF \1 \2("%DV%")
-\3("%DV%")~
-		//modify import blocks for Wilson
-		END ELSE PATCH_IF (("%DV%" STRING_EQUAL_CASE "Wilson")=1) BEGIN
-			REPLACE_TEXTUALLY ~IF \(.\) \(.*\)[%newline%]\(.*\)("%DV%")~ ~IF \1  Dead("%DV%")
-!InMyArea("%DV%")
-Global("%var%Summoned","GLOBAL",0)
-\1 THEN REPLY #0 DO \1SetGlobal("%var%Summoned","GLOBAL",2)
-\1 GOTO 10
-	IF \1 \2
-\3("%DV%")~
-		//modify import blocks for other BG2 NPCs
-		END ELSE BEGIN
-			REPLACE_TEXTUALLY ~IF \(.\) \(.*\)("%DV%")~ ~IF \1  Dead("%DV%")
-!InMyArea("%DV%")
-Global("%var%Summoned","GLOBAL",0)
-\1 THEN REPLY #0 DO \1SetGlobal("%var%Summoned","GLOBAL",2)
-\1 GOTO 10
-	IF \1 \2("%DV%")~
-		END
-	END
-BUT_ONLY
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_BG2DLG_strrefVar" BEGIN
-	"#65010" => "Aerie"
-	"@1000000" => "Ajantis"
-	"@1000001" => "Alora"
-	"#65018" => "Anomen"
-	"@1000002" => "Baeloth"
-	"@1000003" => "Branwen"
-	"#65020" => "Cernd"
-	"@1000004" => "Coran"
-	"#91784" => "OHD_Dorn"
-	"@1000005" => "Dynaheir"
-	"#65026" => "Edwin"
-	"@1000006" => "Eldoth"
-	"@1000007" => "Faldorn"
-	"@1000008" => "Garrick"
-	"#65021" => "HaerDalis"
-	"#86589" => "OHH_Hexxat"
-	"#65017" => "Imoen"
-	"#65014" => "Jaheira"
-	"#65016" => "Jan"
-	"@1000009" => "Kagain"
-	"#65013" => "Keldorn"
-	"@1000010" => "Khalid"
-	"@1000011" => "Kivan"
-	"#65012" => "Korgan"
-	"#65024" => "Mazzy"
-	"#65011" => "Minsc"
-	"@1000012" => "Montaron"
-	"#89602" => "OHN_Neera"
-	"#65019" => "Nalia"
-	"@1000013" => "Quayle"
-	"#83364" => "OHR_Rasaad"
-	"@1000014" => "Safana"
-	"@1000015" => "SharTeel"
-	"@1000016" => "Skie"
-	"@1000017" => "Tiax"
-	"#65022" => "Valygar"
-	"#65023" => "Viconia"
-	"#87156" => "OHR_Wilson"
-	"@1000018" => "Xan"
-	"@1000019" => "Xzar"
-	"@1000020" => "Yeslick"
-	"#65027" => "Yoshimo"
-END
-
-COPY_EXISTING ~FATESP.DLG~ ~override~
-	//assign correct fate dialogue for NPCs
-	PHP_EACH "table_BG2DLG_strrefVar" AS "strref" => "var" BEGIN
-		REPLACE_TEXTUALLY ~THEN REPLY #0 DO\(.*\)SetGlobal("%var%Summoned","GLOBAL",~ ~THEN REPLY %strref% DO\1SetGlobal("%var%Summoned","GLOBAL",~
-	END
-
-COPY_EXISTING ~FATESP.DLG~ ~override~
-	COMPILE_D_TO_DLG
+COMPILE ~EET-inlined/FATESP.d~
 
 /////                                                  \\\\\
 ///// IMOEN10.DLG                                      \\\\\
@@ -234,6 +24,7 @@ COPY_EXISTING ~IMOEN10.DLG~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE_TEXTUALLY ~~~~~\(IF ~\)\(~ THEN REPLY #61011 GOTO 27\)~~~~~ ~\1InMyArea("Jaheira") InMyArea("Minsc")\2~
 	END
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// IMOEN2P.DLG                                      \\\\\
@@ -251,5 +42,6 @@ COMPILE ~EET-inlined/IMOEN2P.d~
 
 COPY_EXISTING ~TOWNC01.DLG~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~CalanderDayLT(~ ~GlobalLT("K#DaysPassed","LOCALS",~
+		REPLACE_TEXTUALLY ~CalanderDayLT(~ ~GlobalLT("K#TOWNC01_cnt","GLOBAL",~
 	END
+BUT_ONLY

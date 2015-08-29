@@ -2,7 +2,363 @@
 //BEGIN Macros
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_ACTION_FUNCTION ~textscreen_music~
+DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
+	INT_VAR
+		min = 1 //minimum strref number used for patching
+		max = "-1" //maximum strref number used for patching (cutoff detected via tra str_var if not specified)
+	STR_VAR
+		tra = "" //path to TRA file, only use it if you didn't set max int_var
+		array = "" //name of the optional array that will replace one strref with another in CRE/EFF/ITM/SPL if fx_type = 267
+	RET
+		log //returns list of all changes made to the file
+	BEGIN
+	PATCH_IF (max < 0) BEGIN
+		PATCH_IF (~%tra%~ STRING_EQUAL_CASE ~~) BEGIN
+			PATCH_FAIL ~EET_expand_tlk needs to know total number of sttrefs in TRA file. Either set INT_VAR max or STR_VAR tra~
+		END ELSE BEGIN
+			INNER_ACTION BEGIN
+				COPY - ~%tra%~ ~%tra%~
+					COUNT_2DA_ROWS 3 "cnt_row"
+					SPRINT StrRef_cutoff ~dummy~
+					WHILE (~%StrRef_cutoff%~ STRING_CONTAINS_REGEXP ~^@[0-9]+~) BEGIN //not StrRef
+						READ_2DA_ENTRY cnt_row 0 3 "StrRef_cutoff"
+						SET cnt_row = cnt_row - 1
+					END
+					INNER_PATCH_SAVE StrRef_cutoff ~%StrRef_cutoff%~ BEGIN
+						REPLACE_TEXTUALLY ~^@~ ~~
+					END
+					SET max = StrRef_cutoff
+					//PATCH_PRINT ~StrRef min = %min%, max = %max%~
+			END
+		END
+	END
+	SPRINT ~log~ ~COPY "%SOURCE_FILESPEC%" "override"%LNL%~
+	//ARE
+	PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~are~) BEGIN
+		//Info points, trigger points, and exit (regions/triggers)
+		READ_LONG 0x5c "info_off"
+		READ_SHORT 0x5a "info_cnt"
+		FOR (cnt=0; cnt<"%info_cnt%"; cnt=cnt+1) BEGIN
+			PATCH_FOR_EACH ~add_off~ IN 0x64 0xb8 BEGIN
+				SET offset = ("%info_off%"+0xc4*cnt+"%add_off%") //Information text (for info points), Name
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				END
+			END
+		END
+		//Containers
+		READ_LONG 0x70 "contain_off"
+		READ_SHORT 0x74 "contain_cnt"
+		FOR (cnt=0; cnt<"%contain_cnt%"; cnt=cnt+1) BEGIN
+			SET offset = ("%contain_off%"+0xc0*cnt+0x84) //Lockpick string
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+		//Doors
+		READ_LONG 0xa8 "door_off"
+		READ_SHORT 0xa4 "door_cnt"
+		FOR (cnt=0; cnt<"%door_cnt%"; cnt=cnt+1) BEGIN
+			PATCH_FOR_EACH ~add_off~ IN 0x98 0xb4 BEGIN
+				SET offset = ("%door_off%"+0xc8*cnt+"%add_off%") //Lockpick string, Dialog speaker name
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				END
+			END
+		END
+		//Automap Notes
+		READ_LONG 0xc4 "note_off"
+		READ_LONG 0xc8 "note_cnt"
+		FOR (cnt=0; cnt<"%note_cnt%"; cnt=cnt+1) BEGIN
+			SET offset = ("%note_off%"+0x34*cnt+0x4) //Note text
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+		//Rest Interruptions
+		READ_LONG 0xc0 "rest_off"
+		FOR (cnt=0; cnt<10; cnt=cnt+1) BEGIN
+			SET offset = ("%rest_off%"+0x4*cnt+0x20) //Interruption explantion text (10*0x4)
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+	//CHR
+	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~chr~) BEGIN
+		FOR (index = 0; index < 99 ; index = index + 1) BEGIN
+			SET "offset" = (0x108 + (0x4 * index))
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+			END
+		END
+	//CRE
+	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~cre~) BEGIN
+		PATCH_FOR_EACH ~offset~ IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+		FOR (cnt=0; cnt<99; cnt=cnt+1) BEGIN
+			SET offset = (0xa4+0x4*cnt)
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+		READ_LONG 0x2c4 "fx_off"
+		READ_LONG 0x2c8 "fx_cnt"
+		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+			READ_LONG ("%fx_off%"+0x108*cnt+0x8) "fx_type"
+			PATCH_IF ("%fx_type%" = 103) //Change Name
+			OR ("%fx_type%" = 139) //Display String
+			OR ("%fx_type%" = 180) //Can't Use Item
+			OR ("%fx_type%" = 206) //Protection from Spell
+			OR ("%fx_type%" = 253) //Add Map Marker
+			OR ("%fx_type%" = 254) //Remove Map Marker
+			OR ("%fx_type%" = 267) //Protection from Display Specific String
+			OR ("%fx_type%" = 290) //Change Title
+			OR ("%fx_type%" = 330) //Float text
+			OR ("%fx_type%" = 338) //Disable rest or save
+			BEGIN
+				SET offset = ("%fx_off%"+0x108*cnt+0x14)
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SET str_updated = 0
+					PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
+							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
+									//SAY offset ( AT "StrRef" )
+									SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								END ELSE BEGIN
+									WRITE_LONG offset "%strNew%"
+									SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								END
+								SET str_updated = 1
+							END
+						END
+					END
+					PATCH_IF (str_updated = 0) BEGIN
+						SAY offset ( AT "StrRef" )
+						SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					END
+				END
+			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+				SET offset = ("%fx_off%"+0x108*cnt+0x40)
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
+			END
+		END
+	//EFF
+	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~eff~) BEGIN
+		READ_LONG 0x10 "fx_type"
+		PATCH_IF ("%fx_type%" = 103) //Change Name
+		OR ("%fx_type%" = 139) //Display String
+		OR ("%fx_type%" = 180) //Can't Use Item
+		OR ("%fx_type%" = 206) //Protection from Spell
+		OR ("%fx_type%" = 253) //Add Map Marker
+		OR ("%fx_type%" = 254) //Remove Map Marker
+		OR ("%fx_type%" = 267) //Protection from Display Specific String
+		OR ("%fx_type%" = 290) //Change Title
+		OR ("%fx_type%" = 330) //Float text
+		OR ("%fx_type%" = 338) //Disable rest or save
+		BEGIN
+			SET offset = 0x1c
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SET str_updated = 0
+				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+					PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
+						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
+								//SAY offset ( AT "StrRef" )
+								SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%strNew%"
+								SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+							END
+							SET str_updated = 1
+						END
+					END
+				END
+				PATCH_IF (str_updated = 0) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
+			END
+		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+			SET offset = 0x48
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+			END
+		END
+	//ITM
+	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~itm~) BEGIN
+		PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+		READ_LONG 0x64 "abil_off"
+		READ_SHORT 0x68 "abil_cnt"
+		READ_LONG 0x6a "fx_off"
+		READ_SHORT 0x70 "fx_cnt"
+		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%abil_off%"+0x38*cnt+0x1e) "fx_num"
+			SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
+		END
+		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
+			PATCH_IF ("%fx_type%" = 103) //Change Name
+			OR ("%fx_type%" = 139) //Display String
+			OR ("%fx_type%" = 180) //Can't Use Item
+			OR ("%fx_type%" = 206) //Protection from Spell
+			OR ("%fx_type%" = 253) //Add Map Marker
+			OR ("%fx_type%" = 254) //Remove Map Marker
+			OR ("%fx_type%" = 267) //Protection from Display Specific String
+			OR ("%fx_type%" = 290) //Change Title
+			OR ("%fx_type%" = 330) //Float text
+			OR ("%fx_type%" = 338) //Disable rest or save
+			BEGIN
+				SET offset = ("%fx_off%"+0x30*cnt+0x4)
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SET str_updated = 0
+					PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
+							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
+									//SAY offset ( AT "StrRef" )
+									SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								END ELSE BEGIN
+									WRITE_LONG offset "%strNew%"
+									SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								END
+								SET str_updated = 1
+							END
+						END
+					END
+					PATCH_IF (str_updated = 0) BEGIN
+						SAY offset ( AT "StrRef" )
+						SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					END
+				END
+			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+				SET offset = ("%fx_off%"+0x30*cnt+0x2c)
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
+			END
+		END
+	//SPL
+	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~spl~) BEGIN
+		PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+		READ_LONG 0x64 "abil_off"
+		READ_SHORT 0x68 "abil_cnt"
+		READ_LONG 0x6a "fx_off"
+		READ_SHORT 0x70 "fx_cnt"
+		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%abil_off%"+0x28*cnt+0x1e) "fx_num"
+			SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
+		END
+		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
+			PATCH_IF ("%fx_type%" = 103) //Change Name
+			OR ("%fx_type%" = 139) //Display String
+			OR ("%fx_type%" = 180) //Can't Use Item
+			OR ("%fx_type%" = 206) //Protection from Spell
+			OR ("%fx_type%" = 253) //Add Map Marker
+			OR ("%fx_type%" = 254) //Remove Map Marker
+			OR ("%fx_type%" = 267) //Protection from Display Specific String
+			OR ("%fx_type%" = 290) //Change Title
+			OR ("%fx_type%" = 330) //Float text
+			OR ("%fx_type%" = 338) //Disable rest or save
+			BEGIN
+				SET offset = ("%fx_off%"+0x30*cnt+0x4)
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SET str_updated = 0
+					PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
+							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
+									//SAY offset ( AT "StrRef" )
+									SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								END ELSE BEGIN
+									WRITE_LONG offset "%strNew%"
+									SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								END
+								SET str_updated = 1
+							END
+						END
+					END
+					PATCH_IF (str_updated = 0) BEGIN
+						SAY offset ( AT "StrRef" )
+						SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					END
+				END
+			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+				SET offset = ("%fx_off%"+0x30*cnt+0x2c)
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
+			END
+		END
+	//STO
+	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~sto~) BEGIN
+		SET offset = 0xc //Name
+		READ_LONG offset "StrRef"
+		PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+			SAY offset ( AT "StrRef" )
+			SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+		END
+		READ_LONG 0x4c "drink_off"
+		READ_SHORT 0x50 "drink_cnt"
+		FOR (cnt=0; cnt<"%drink_cnt%"; cnt=cnt+1) BEGIN
+			SET offset = ("%drink_off%"+0x14*cnt+0x8) //Drink name
+			READ_LONG offset "StrRef"
+			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+				SAY offset ( AT "StrRef" )
+				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_ACTION_FUNCTION ~EET_textscreen_music~
 	INT_VAR
 		mus_fadeEnd = 0
 		mus_delayEnd = 0
@@ -122,7 +478,7 @@ END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_ACTION_MACRO ~EET_WRITE_SSET~ BEGIN //Workaround for regexp glitch in Gort's WRITE_SOUNDSET
+DEFINE_ACTION_MACRO ~EET_write_soundset~ BEGIN //Workaround for regexp glitch in Gort's WRITE_SOUNDSET
 	COPY_EXISTING ~%npc%~ ~override~
 		PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
 			FOR (j1 = 0; j1 < 100; j1 += 1) BEGIN

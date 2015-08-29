@@ -5,8 +5,8 @@
 //Action function that can be used to automatically patch EET item shattering effect to weapons, armors, shields and helmets. It removes BG:EE/Tutu/BGT item shattering implementation before adding EET one and also expands EET shattering scripts if item name is not present there yet. Example usage:
 /*ACTION_DEFINE_ARRAY arrayName BEGIN ~modDir/weapon.itm~ ~modDir/armor.itm~ ~%var%/shield.itm~ ~override/helmet.itm~ END
 LAF ~EET_IRON_CRISIS~
-	STR_VAR
-	shattering_array = EVAL ~arrayName~ //array with files to patch (supports: weapons, armors, shields, helmets)
+  STR_VAR
+    shattering_array = EVAL ~arrayName~ //array with files to patch (supports: weapons, armors, shields, helmets)
 END*/
 
 DEFINE_ACTION_FUNCTION ~EET_IRON_CRISIS~
@@ -137,13 +137,13 @@ END
 /////                                                  \\\\\
 
 //Action function that can be used in mods to automatically patch all BG2/SoD files to use EET continuous journal system. Example usage:
-/*ACTION_DEFINE_ARRAY arrayName BEGIN ~modDir/AERIE.d~ ~%var%/ALARM25.baf~ ~modDir/code.tph~ ~modDir/AERI25.bcs~ ~override/AERIE.bcs~ ~modDir/ANOMEN.dlg~ ~override/AMNG1.dlg~ END
+/*ACTION_DEFINE_ARRAY arrayName BEGIN ~modDir/AERIE.d~ ~%var%/ALARM25.baf~ ~modDir/code.tph~ ~override/AERIE.bcs~ END
 LAF ~EET_JOURNAL~
-	INT_VAR
-	journal_game = 1 //0 - BG2 (+14); 1 - SoD (+7) (default = 0)
-	journal_patch_mode = 1 //0 - replace with values; 1 - replace with variables (default = 0)
-	STR_VAR
-	journal_array = EVAL ~arrayName~ //array with files to patch (supports: d, dlg, baf, bcs, and any text file; if path points to override COPY_EXISTING is used)
+  INT_VAR
+    journal_game = 1 //0 - BG2 (current chapter value + 14); 1 - SoD (current chapter value + 7) (default = 0)
+    journal_patch_mode = 1 //0 - replace with values; 1 - replace with variables (default = 0)
+  STR_VAR
+    journal_array = EVAL ~arrayName~ //array with files to patch (supports: d, dlg, baf, bcs, and any text file with code)
 END*/
 
 DEFINE_ACTION_FUNCTION ~EET_JOURNAL~
@@ -253,25 +253,34 @@ END
 ///// Action function: EET_NPC_TRANSITION              \\\\\
 /////                                                  \\\\\
 
-//Action function that can be used in mods to can be used to automatically add NPC transition from BG1 to BG2 ares or disable NPC without BG2 content. Also patches FATESP.DLG and adds NPC transition to ToB, so don't add it manually when GAME_IS ~eet~. Example usage:
+//Action function that can be used in mods to automatically add EET NPC transition system. Example usage:
 /*LAF ~EET_NPC_TRANSITION~
-	INT_VAR
-	type = 1
-		//1 - BG1 NPC without BG2 content (NPC is disabled from game during SoA transition, mentioned but not summonable in ToB)
-		//2 - BG2 NPC without BG1 content (transition to ToB if joined the party at least once during SoA)
-		//3 - BG1 NPC with BG2 content (full transition to SoA/ToB) (for mods created with whole game in mind from the start)
-		//4 - BG2 NPC with transition swap (converts existing partial transition implemented via option 1 to full SoA/ToB transition - option 3) (for mods adding BG2 content to BG1 NPCs that normally are not joinable in BG2, or for mods with separate installers for BG:EE and BG2:EE portion of the game - in such case use it with additional MOD_IS_INSTALLED check)
-	posX = 3198 //NPC X coordinate on SoA transition destination ARE
-	posY = 2837 //NPC Y coordinate on SoA transition destination ARE
-	face = 6 //NPC facing on SoA transition destination ARE
-	STR_VAR
-	dv = ~IMOEN2~ //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
-	are = ~AR0602~ //ARE file name where NPC should be moved during SoA transition
-	override_BG1 = "IMOEN_" //name of the override NPC script in BG1
-	override_SoA = "IMOEN2" //name of the override NPC script in SoA
-	override_ToB = "IMOEN25" //name of the override NPC script in ToB
-	dialog_ToB = "IMOEN25A" //name of the dialogue file used after spawning NPC in ToB
-	string = "@1" //FATESP summon text (example: "Bring me Quayle, the gnome cleric/illusionist.") or TRA string number starting with "@"
+  INT_VAR
+    type = 1
+      //1 - BG1 NPC without BG2 content (NPC is disabled from game during SoA transition, mentioned but not summonable in ToB)
+      //2 - BG2 NPC without BG1 content (transition to ToB if joined the party at least once during SoA)
+      //3 - NPC with BG1 and BG2 content (full transition to SoA/ToB)
+    posX = 3198 //NPC X coordinate on SoA transition destination ARE
+    posY = 2837 //NPC Y coordinate on SoA transition destination ARE
+    face = 6 //NPC facing on SoA transition destination ARE
+    create_SoA = 0 //controls if new CRE should be spawned in SoA if NPC was killed in BG1 (no by default - 0)
+    default_ToB = 0 //controls if NPC should be spawnable in ToB when the game has been started in ToB (no by default - 0)
+  STR_VAR
+    dv = "IMOEN2" //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
+    are = "AR0602" //ARE file name where NPC should be moved during SoA transition
+    transition_SoA = "" //script assigned to override slot during transition, should be manually replaced with override_SoA
+    override_BG1 = "IMOEN_" //name of the override NPC script in BG1
+    override_SoA = "IMOEN2" //name of the override NPC script in SoA
+    override_ToB = "IMOEN25" //name of the override NPC script in ToB
+    dialog_ToB = "IMOEN25A" //name of the dialogue file used after spawning NPC in ToB
+    string = "@1" //FATESP summon text (example: "Bring me Quayle, the gnome cleric/illusionist.") or TRA string number
+    stringPosDV = "" //set the DV of NPC right below your response (used for sorting FATESP responses alphabetically)
+      //Aerie, Ajantis, Alora, Anomen, Baeloth, Branwen, Cernd, Coran, Dorn, Dynaheir, Edwin, Eldoth, Faldorn, Garrick
+      //HaerDalis, Hexxat, Imoen2, Jaheira, Jan, Kagain, Keldorn, Khalid, Kivan, Korgan, Mazzy, Minsc, Montaron, Nalia
+      //Neera, Quayle, Rasaad, Safana, SharTeel, Skie, Tiax, Viconia, Valygar, Wilson, Xan, Xzar, Yeslick, Yoshimo
+      //variable not set (default) = NPC name appended at the end of summoning list
+    SummonedVar = "" //set it only if you want to use different var name than %dv%Summoned (useless in most cases)
+    SpawnPlaneVar = "" //set it only if you want use different var name than %dv%SpawnPlane (useless in most cases)
 END*/
 
 DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
@@ -280,14 +289,20 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 		posX = "-1"
 		posY = "-1"
 		face = "-1"
+		create_SoA = 0
+		default_ToB = 0
 	STR_VAR
 		dv = ""
 		are = ""
+		transition_SoA = ""
 		override_BG1 = ""
 		override_SoA = ""
 		override_ToB = ""
 		dialog_ToB = ""
 		string = ""
+		stringPosDV = ""
+		SummonedVar = ""
+		SpawnPlaneVar = ""
 	BEGIN
 	//Check if all needed variables are set
 	OUTER_SET skip = 0
@@ -313,12 +328,8 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 				OUTER_SET skip = 1
 			END
 		END
-	END ELSE ACTION_IF (type >= 3) BEGIN //BG1 NPC with BG2 content OR BG2 NPC with transition swap
-		ACTION_IF (type = 3) BEGIN
-			PRINT ~EET_NPC_TRANSITION patching for %dv%: BG1 NPC with BG2 content~
-		END ELSE ACTION_IF (type = 4) BEGIN
-			PRINT ~EET_NPC_TRANSITION patching for %dv%: BG2 NPC with transition swap~
-		END
+	END ELSE ACTION_IF (type = 3) BEGIN //NPC with BG1 and BG2 content
+		PRINT ~EET_NPC_TRANSITION patching for %dv%: NPC with BG1 and BG2 content~
 		ACTION_FOR_EACH var IN dv are override_BG1 override_SoA override_ToB dialog_ToB string BEGIN
 			OUTER_SPRINT EVAL temp ~%var%~
 			ACTION_IF (~%temp%~ STRING_EQUAL_CASE ~~) BEGIN
@@ -338,53 +349,27 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 	ACTION_IF (skip = 0) BEGIN
 		OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
 
+		// SummonedVar / SpawnPlaneVar
+		ACTION_IF (~%SummonedVar%~ STRING_EQUAL_CASE ~~) BEGIN
+			OUTER_SPRINT SummonedVar EVAL ~%dv%Summoned~
+		END
+		ACTION_IF (~%SpawnPlaneVar%~ STRING_EQUAL_CASE ~~) BEGIN
+			OUTER_SPRINT SpawnPlaneVar EVAL ~%dv%SpawnPlane~
+		END
+
 		//Expand transition script
-		ACTION_IF (type != 2) BEGIN //not BG2 NPC without BG1 content
+		ACTION_IF (type = 3) BEGIN //NPC with BG1 and BG2 content
 			COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-				PATCH_IF (type = 4) BEGIN //BG2 NPC with transition swap
-					INNER_ACTION BEGIN
-<<<<<<<< .../blank.baf
->>>>>>>>
-
-<<<<<<<< .../K#TELBGT-rb.baf
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-  !InMyArea("%dv%")
-THEN
-  RESPONSE #100
-    MoveGlobalObjectOffScreen("%dv%",Player1)
-    Continue()
-END
-
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-  InPartyAllowDead("%dv%")
-THEN
-  RESPONSE #100
-    ActionOverride("%dv%",LeaveParty())
-    Continue()
-END
-
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnce%dv%","LOCALS",1)
-    ActionOverride("%dv%",DropInventory())
-    ActionOverride("%dv%",DestroySelf())
-    Continue()
-END
->>>>>>>>
-					END
-					REPLACE_BCS_BLOCK EVAL ~.../K#TELBGT-rb.baf~ ~.../blank.baf~
-				END
 				DECOMPILE_AND_PATCH BEGIN
-					PATCH_IF (type = 1) BEGIN //BG1 NPC without BG2 content
-						REPLACE_TEXTUALLY ~\(AdvanceTime([^)]+)[%newline%]*Continue()[%newline%]*END\)~ ~\1
-//NPCs outside transition area
+					PATCH_IF (create_SoA = 1) BEGIN
+						SPRINT reset_PartyBG1 ~SetGlobal("%dv%PartyBG1","GLOBAL",0)%LNL%SetGlobal("SPRITE_IS_DEAD%dv%","GLOBAL",0)~
+					END ELSE BEGIN
+						SPRINT reset_PartyBG1 ~~
+					END
+					PATCH_IF (~%transition_SoA%~ STRING_EQUAL_CASE ~~) BEGIN
+						SPRINT transition_SoA ~%override_SoA%~
+					END
+					REPLACE_TEXTUALLY ~\(IF[%newline%]*InPartyAllowDead(Player2)\)~ ~
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -394,7 +379,7 @@ THEN
     MoveGlobalObjectOffScreen("%dv%",Player1)
     Continue()
 END
-//NPCs in party
+
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -404,41 +389,7 @@ THEN
     ActionOverride("%dv%",LeaveParty())
     Continue()
 END
-//NPCs without MoveBetweenAreas transition
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnce%dv%","LOCALS",1)
-    ActionOverride("%dv%",DropInventory())
-    ActionOverride("%dv%",DestroySelf())
-    Continue()
-END~
-						PATCH_PRINT ~Patching K#TELBGT.BCS: NPC disabled during SoA transition~
-					END ELSE BEGIN //BG1 NPC with BG2 content OR BG2 NPC with transition swap
-						REPLACE_TEXTUALLY ~\(AdvanceTime([^)]+)[%newline%]*Continue()[%newline%]*END\)~ ~\1
-//NPCs outside party
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-  !InMyArea("%dv%")
-THEN
-  RESPONSE #100
-    MoveGlobalObjectOffScreen("%dv%",Player1)
-    Continue()
-END
-//NPCs in party
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-  InPartyAllowDead("%dv%")
-THEN
-  RESPONSE #100
-    ActionOverride("%dv%",LeaveParty())
-    Continue()
-END
-//NPCs with MoveBetweenAreas (dead)
+
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -446,12 +397,12 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#DoOnce%dv%","LOCALS",1)
-    SetGlobal("%dv%PartyBG1","GLOBAL",0)
+    %reset_PartyBG1% //%dv%PartyBG1 and SPRITEISDEAD variables set to 0 if create_SoA = 1
     ActionOverride("%dv%",DropInventory())
     ActionOverride("%dv%",DestroySelf())
     Continue()
 END
-//NPCs with MoveBetweenAreas transition (not dead)
+
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -464,14 +415,15 @@ THEN
     ActionOverride("%dv%",ChangeAIScript("",DEFAULT))
     ActionOverride("%dv%",ChangeEnemyAlly(Myself,NEUTRAL))
     ActionOverride("%dv%",MoveBetweenAreas("%are%",[%posX%.%posY%],%face%))
+    ActionOverride("%dv%",ChangeAIScript("%transition_SoA%",OVERRIDE) //override_SoA used if not specified
     Continue()
-END~
-						PATCH_PRINT ~Patching K#TELBGT.BCS: transition to "%are%",[%posX%.%posY%],%face%~
-					END
+END
+
+\1~
+					PATCH_PRINT ~Patching K#TELBGT.BCS: transition to "%are%",[%posX%.%posY%],%face%~
 				END
 			BUT_ONLY
 		END
-
 		//Expand local scripts
 <<<<<<<< .../PARTY-et.baf
 IF
@@ -492,19 +444,30 @@ THEN
     DestroySelf()
 END
 >>>>>>>>
-		ACTION_IF (NOT ~%override_BG1%~ STRING_EQUAL_CASE ~~) AND (type != 4) /*already there*/ BEGIN
+		ACTION_IF (NOT ~%override_BG1%~ STRING_EQUAL_CASE ~~) AND (type != 2) /*not BG2 NPC without BG1 content*/ BEGIN
 			PRINT ~Patching %override_BG1%.BCS~
 			OUTER_SET game = 1
-			EXTEND_TOP ~%override_BG1%.BCS~ ~.../PARTY-et.baf~ EVALUATE_BUFFER
+			COPY_EXISTING - ~%override_BG1%.BCS~ ~override~
+				COUNT_REGEXP_INSTANCES ~SetGlobal("%dv%PartyBG%game%","GLOBAL",1)~ num_matches
+			ACTION_IF (num_matches > 0) BEGIN
+				PRINT ~%override_BG1%.BCS already has %dv%PartyBG%game% references. Patching not needed~
+			END ELSE BEGIN
+				EXTEND_TOP ~%override_BG1%.BCS~ ~.../PARTY-et.baf~ EVALUATE_BUFFER
+			END
 		END
-		ACTION_IF (NOT ~%override_SoA%~ STRING_EQUAL_CASE ~~) BEGIN
+		ACTION_IF (NOT ~%override_SoA%~ STRING_EQUAL_CASE ~~) AND (type != 1) /*not BG1 NPC without BG2 content*/ BEGIN
 			PRINT ~Patching %override_SoA%.BCS~
 			OUTER_SET game = 2
-			EXTEND_TOP ~%override_SoA%.BCS~ ~.../PARTY-et.baf~ EVALUATE_BUFFER
+			COPY_EXISTING - ~%override_SoA%.BCS~ ~override~
+				COUNT_REGEXP_INSTANCES ~SetGlobal("%dv%PartyBG%game%","GLOBAL",1)~ num_matches
+			ACTION_IF (num_matches > 0) BEGIN
+				WARN ~%override_SoA%.BCS already has %dv%PartyBG%game% references. This is unexpected. Skipped patching~
+			END ELSE BEGIN
+				EXTEND_TOP ~%override_SoA%.BCS~ ~.../PARTY-et.baf~ EVALUATE_BUFFER
+			END
 		END
-
 		//Expand FATESP.DLG
-		ACTION_IF (~%string%~ STRING_CONTAINS_REGEXP ~^@~) BEGIN //not TRA reference
+		ACTION_IF (NOT ~%string%~ STRING_CONTAINS_REGEXP ~^[^@^#]~) BEGIN //not TRA or TLK reference
 			OUTER_PATCH_SAVE string ~%string%~ BEGIN
 				REPLACE_TEXTUALLY ~^~ "~"
 				REPLACE_TEXTUALLY ~$~ "~"
@@ -518,84 +481,148 @@ END
 		ACTION_IF (num_matches > 0) BEGIN
 			PRINT ~FATESP.DLG already has %dv% references. Patching not needed (unless some mod messed it up)~
 		END ELSE BEGIN
-<<<<<<<< .../FATESP-et.d
-EXTEND_TOP FATESP 6
-  IF ~  Dead("%dv%")
-!InMyArea("%dv%")
-Global("%dv%Summoned","GLOBAL",0)
-~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
+			ACTION_IF (~%stringPosDV%~ STRING_EQUAL_CASE ~~) BEGIN
+<<<<<<<< .../FATESP-eb.d
+EXTEND_BOTTOM FATESP 6
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
 ~ GOTO 10
-  IF ~  !Dead("%dv%")
-!InMyArea("%dv%")
-Global("%dv%Summoned","GLOBAL",0)
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
 Global("%dv%PartyBG2","GLOBAL",0)
-~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
 ~ GOTO 7
-  IF ~  !Dead("%dv%")
-!InMyArea("%dv%")
-Global("%dv%Summoned","GLOBAL",0)
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
 Global("%dv%PartyBG2","GLOBAL",1)
-~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",1)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",1)
 ~ GOTO 9
 END
 >>>>>>>>
-			PRINT ~Patching FATESP.DLG~
-			COMPILE ~.../FATESP-et.d~ EVALUATE_BUFFER
+				PRINT ~Patching FATESP.DLG: EXTEND_BOTTOM~
+				COMPILE ~.../FATESP-eb.d~ EVALUATE_BUFFER
+				COPY_EXISTING ~FATESP.DLG~ ~override~
+					DECOMPILE_AND_PATCH BEGIN
+						REPLACE_TEXTUALLY ~IF[ ]+..[ ]+THEN[ ]+REPLY[ ]+#65029[ ]+DO[ ]+.SetGlobalTimer("FateSpiritTimer","AR4500",1)[%newline%]*.[ ]+GOTO 9~ ~~
+					END
+				BUT_ONLY
+<<<<<<<< .../FATESP-eb.d
+EXTEND_BOTTOM FATESP 6
+  IF ~~ THEN REPLY #65029 DO ~SetGlobalTimer("FateSpiritTimer","AR4500",1)
+~ GOTO 9
+END
+>>>>>>>>
+				COMPILE ~.../FATESP-eb.d~ EVALUATE_BUFFER
+			END ELSE BEGIN
+				COPY_EXISTING - ~FATESP.DLG~ ~override~
+					DECOMPILE_AND_PATCH BEGIN
+						SPRINT tilde "~"
+						SET match = 0
+						SET position = 1 //first is already taken by exit response
+						REPLACE_EVALUATE CASE_INSENSITIVE ~\(IF[ ]+.[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*Dead("\)\([^"]+\)\(")\)~ BEGIN
+							PATCH_IF (match = 0) BEGIN
+								PATCH_IF (~%MATCH2%~ STRING_EQUAL_CASE ~%stringPosDV%~) BEGIN
+									SET match = 1
+								END ELSE BEGIN
+									SET position = position + 3
+								END
+							END
+						END ~%MATCH1%%MATCH2%%MATCH3%~
+					END
+				BUT_ONLY
+				ACTION_IF (match = 0) BEGIN
+					WARN ~%stringPosDV% position not found within FATESP.DLG~
+				END ELSE BEGIN
+<<<<<<<< .../FATESP-et.d
+EXTEND_TOP FATESP 6 #%position%
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
+~ GOTO 10
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",0)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
+~ GOTO 7
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",1)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",1)
+~ GOTO 9
+END
+>>>>>>>>
+					PRINT ~Patching FATESP.DLG: position %position%~
+					COMPILE ~.../FATESP-et.d~ EVALUATE_BUFFER
+				END
+			END
 		END
 
 		//Expand AR4000.BCS
 		COPY_EXISTING ~AR4000.BCS~ ~override~
 			DECOMPILE_AND_PATCH BEGIN
-				COUNT_REGEXP_INSTANCES ~"%dv%"~ num_matches
-				PATCH_IF (num_matches = 0) BEGIN
-					REPLACE_TEXTUALLY ~\(SetGlobal("NEWGAME_TOB","GLOBAL",1)\)~ ~SetGlobal("%dv%Summoned","GLOBAL",2)
+				PATCH_IF (default_ToB != 0) AND (type != 1) /*not BG1 NPC without BG2 content*/ BEGIN
+					COUNT_REGEXP_INSTANCES ~SetGlobal("%dv%PartyBG2","GLOBAL",1)~ num_matches
+					PATCH_IF (num_matches > 0) BEGIN
+						PATCH_PRINT ~AR4000.BCS already has "%dv%PartyBG2" reference. Patching not needed~
+					END ELSE BEGIN
+						REPLACE_TEXTUALLY ~\(SetGlobal("NEWGAME_TOB","GLOBAL",1)\)~ ~SetGlobal("%dv%PartyBG2","GLOBAL",1)
     \1~
+					END
 				END
+				COUNT_REGEXP_INSTANCES ~SetGlobal("%SummonedVar%","GLOBAL",2)~ num_matches
+				COUNT_REGEXP_INSTANCES ~"%dv%PartyBG1"~ num_matches2
 			END
 		BUT_ONLY
 		ACTION_IF (num_matches > 0) BEGIN
-			PRINT ~AR4000.BCS already has %dv% references. Patching not needed (unless some mod messed it up)~
+			PRINT ~AR4000.BCS already has %SummonedVar% reference. Patching not needed (unless some mod messed it up)~
 		END ELSE BEGIN
-<<<<<<<< .../AR4000-eb.baf
+<<<<<<<< .../AR4000-eb1.baf
 IF
   InParty("%dv%")
-  Global("%dv%Summoned","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",0)
 THEN
   RESPONSE #100
-    SetGlobal("%dv%Summoned","GLOBAL",2)
+    SetGlobal("%SummonedVar%","GLOBAL",2)
 END
+>>>>>>>>
+				PRINT ~Patching AR4000.BCS: %SummonedVar%~
+				EXTEND_BOTTOM ~AR4000.BCS~ ~.../AR4000-eb1.baf~ EVALUATE_BUFFER
+			END
 
+			ACTION_IF (num_matches2 > 0) BEGIN
+				PRINT ~AR4000.BCS already has %dv%Party reference. Patching not needed (unless some mod messed it up)~
+			END ELSE BEGIN
+<<<<<<<< .../AR4000-eb2.baf
 IF
-  Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",0)
   Global("%dv%PartyBG1","GLOBAL",0)
   Global("%dv%PartyBG2","GLOBAL",0)
-  !InMyArea("%dv%")
 THEN
   RESPONSE #100
-    SetGlobal("%dv%Summoned","GLOBAL",2)
+    SetGlobal("%SummonedVar%","GLOBAL",2)
     Continue()
 END
 >>>>>>>>
-			PRINT ~Patching AR4000.BCS~
-			EXTEND_BOTTOM ~AR4000.BCS~ ~.../AR4000-eb.baf~ EVALUATE_BUFFER
+			PRINT ~Patching AR4000.BCS: %dv%Party~
+			EXTEND_BOTTOM ~AR4000.BCS~ ~.../AR4000-eb2.baf~ EVALUATE_BUFFER
 		END
 
-		//Expand AR4500.BCS
-		ACTION_IF (type != 2) BEGIN //not BG1 NPC without BG2 content
+		ACTION_IF (type != 1) BEGIN //not BG1 NPC without BG2 content
+			//Expand AR4500.BCS
 			COPY_EXISTING ~AR4500.BCS~ ~override~
 				DECOMPILE_AND_PATCH BEGIN
-					COUNT_REGEXP_INSTANCES ~"%dv%"~ num_matches
+					COUNT_REGEXP_INSTANCES ~MoveGlobal("AR4500","%dv%"~ num_matches
 				END
 			BUT_ONLY
 			ACTION_IF (num_matches > 0) BEGIN
-				PRINT ~AR4500.BCS already has %dv% references. Patching not needed (unless some mod messed it up)~
+				PRINT ~AR4500.BCS already has MoveGlobal reference for %dv%. Patching not needed (unless some mod messed it up)~
 			END ELSE BEGIN
 <<<<<<<< .../AR4500-eb.baf
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",1)
-  Global("%dv%SpawnPlane","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
 THEN
   RESPONSE #100
     CreateVisualEffect("SPPORTAL",[1999.1218])
@@ -605,14 +632,14 @@ THEN
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
     ActionOverride("%dv%",JoinParty())
     MoveToExpansion()
-    SetGlobal("%dv%Summoned","GLOBAL",-1)
+    SetGlobal("%SummonedVar%","GLOBAL",-1)
     //Continue()
 END
 
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",-1)
-  Global("%dv%SpawnPlane","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",-1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
   XPLT("%dv%",2500000)
 THEN
   RESPONSE #100
@@ -622,8 +649,8 @@ END
 
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",-1)
-  Global("%dv%SpawnPlane","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",-1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
 THEN
   RESPONSE #100
     ActionOverride("%dv%",LeaveParty())
@@ -631,8 +658,8 @@ THEN
     ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
     ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
-    SetGlobal("%dv%SpawnPlane","GLOBAL",1)
-    SetGlobal("%dv%Summoned","GLOBAL",1)
+    SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
+    SetGlobal("%SummonedVar%","GLOBAL",1)
     Continue()
 END
 >>>>>>>>

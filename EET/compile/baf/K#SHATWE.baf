@@ -1,0 +1,20 @@
+IF
+  OR(3)
+    GlobalGT("ENDOFBG1","GLOBAL",0)
+    GlobalGT("OHB_BP2_CAPTURE","GLOBAL",0)
+    GlobalGT("BPINTRO","GLOBAL",0)
+THEN
+  RESPONSE #100
+	DestroySelf()
+END
+
+IF
+  CheckStatLT(LastSummonerOf(Myself),50,INTOXICATION)//In vanilla BG1 weapons break almost every hit when character is drunk
+THEN
+  RESPONSE #95
+	DestroySelf()
+  RESPONSE #5 //0.5% chance
+	Continue()
+END
+
+//expanded bottom via EET_IRON_CRISIS function

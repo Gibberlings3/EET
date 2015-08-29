@@ -10,6 +10,7 @@ LANGUAGE ~English~
 	~EET/lang/en_US/dialog.tra~
 	~EET/lang/en_US/scripts.tra~
 	~EET/lang/en_US/2da.tra~
+	~EET/lang/en_US/compatibility.tra~
 LANGUAGE ~Polski (Polish)~
 	~pl_PL~
 	~EET/lang/pl_PL/prompts.tra~
@@ -17,6 +18,7 @@ LANGUAGE ~Polski (Polish)~
 	~EET/lang/pl_PL/dialog.tra~
 	~EET/lang/pl_PL/scripts.tra~
 	~EET/lang/pl_PL/2da.tra~
+	~EET/lang/pl_PL/compatibility.tra~
 LANGUAGE ~Deutsch (German)~
 	~de_DE~
 	~EET/lang/de_DE/prompts.tra~
@@ -24,7 +26,8 @@ LANGUAGE ~Deutsch (German)~
 	~EET/lang/de_DE/dialog.tra~
 	~EET/lang/de_DE/scripts.tra~
 	~EET/lang/de_DE/2da.tra~
-	
+	~EET/lang/de_DE/compatibility.tra~
+
 BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET)~
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ ~Please install it on BG2:EE engine.~
 FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ ~EET should be installed BEFORE BP-BGT Worldmap~
@@ -129,6 +132,7 @@ COPY - ~EET/other/cpmvars/eet_cpmvars.tpa~ ~EET-inlined/eet_cpmvars.tpa~
 	REPLACE_TEXTUALLY ~FAIL .*~ ~~
 INCLUDE ~EET-inlined/eet_cpmvars.tpa~
 
+INCLUDE ~EET/other/EET_functions/EET_functions.tph~
 INCLUDE ~EET/lib/macros.tph~
 INCLUDE ~EET/lib/PCU_Dict.tph~
 INCLUDE ~EET/lib/strings.tph~
@@ -347,6 +351,17 @@ COPY + ~EET/bgee.tra~ ~EET~
 		SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
 		REPLACE_TEXTUALLY ~~~~~\(\[\)%resref_index_source%\(\]\)~~~~~ ~\1%resref_index_dest%\2~
 	END
+	COUNT_2DA_ROWS 3 "cnt_row"
+	SPRINT StrRef_cutoff ~dummy~
+	WHILE (~%StrRef_cutoff%~ STRING_CONTAINS_REGEXP ~^@[0-9]+~) BEGIN //not StrRef
+		READ_2DA_ENTRY cnt_row 0 3 "StrRef_cutoff"
+		SET cnt_row = cnt_row - 1
+	END
+	INNER_PATCH_SAVE StrRef_cutoff ~%StrRef_cutoff%~ BEGIN
+		REPLACE_TEXTUALLY ~^@~ ~~
+	END
+	SET StrRef_cutoff = StrRef_cutoff //just to be sure that its integer
+	PATCH_PRINT ~StrRef_cutoff = %StrRef_cutoff%~
 
 /////                                                  \\\\\
 ///// Clear []s at the start of BG2:EE StrRefs         \\\\\
@@ -378,26 +393,6 @@ PRINT ~Clearing []s at the start of BG2:EE StrRefs...~
 END*/
 
 /////                                                  \\\\\
-///// Get total number of strings in BG:EE TLK         \\\\\
-/////                                                  \\\\\
-
-COPY - ~EET/bgee.tra~ ~EET-inlined~
-	REPLACE_TEXTUALLY ~^\([0-9]+\).*~ ~~
-	REPLACE_TEXTUALLY ~^[^@0-9]+.*~ ~~
-	REPLACE_TEXTUALLY ~^@\([0-9]+\).*~ ~\1~
-	COUNT_2DA_ROWS 0 "tra_rows"
-	WHILE ("%tra_rows%" > 0) BEGIN
-		StrRef_cutoff = 0
-		READ_2DA_ENTRY tra_rows 0 0 "StrRef_cutoff"
-		PATCH_IF ("%StrRef_cutoff%" > 33998) BEGIN
-			tra_rows = 0
-		END ELSE BEGIN
-			tra_rows -= 1
-		END
-	END
-PRINT ~StrRef_cutoff = %StrRef_cutoff%~
-
-/////                                                  \\\\\
 ///// HANDLE_CHARSETS                                  \\\\\
 /////                                                  \\\\\
 
@@ -418,8 +413,8 @@ ACTION_IF NOT ~%LANGUAGE%~ STRING_EQUAL_CASE ~en_US~ BEGIN
 		//"uk_ua" => ""
 		//"zh_cn" => ""
 	END
-	ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN dialog scripts 2da END
-	ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog scripts 2da END
+	ACTION_DEFINE_ARRAY charsetsConvertArray BEGIN dialog scripts 2da compatibility END
+	ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN dialog scripts 2da compatibility END
 	LAF ~HANDLE_CHARSETS~
 		INT_VAR
 		infer_charsets = 0
@@ -1073,16 +1068,49 @@ END
 //0xED30 - 0xEDFF - free
 //0xEE20 - 0xEEFF - free
 
-ACTION_FOR_EACH var IN IDS TLK 2DA CRE ITM BCS DLG BEGIN
+ACTION_FOR_EACH var IN IDS TLK 2DA CRE BCS DLG BEGIN
 	INCLUDE ~EET/lib/bg2_%var%.tph~
 END
+
+/////                                                  \\\\\
+///// Minor BG2:EE patching                            \\\\\
+/////                                                  \\\\\
+
+//changes Bandit Scalp itemtype to Tattoos (39)
+COPY_EXISTING ~MISC86.ITM~ ~override~
+	WRITE_SHORT 0x1c 39
+BUT_ONLY
+
+//Viconia cutscene people spawned via AR1000.BCS instead of ARE
+COPY_EXISTING ~AR1000.ARE~ ~override~
+	READ_LONG  0x54 "actor_off"
+	READ_SHORT 0x58 "actor_num"
+	FOR (index = 0 ; index < actor_num ; index = index + 1) BEGIN
+		READ_ASCII ("%actor_off%" + 0x80 + (0x110 * "%index%")) "resref" // cre file
+		PATCH_IF ("%resref%" STRING_EQUAL_CASE "VICG1")
+		OR ("%resref%" STRING_EQUAL_CASE "VICG2")
+		OR ("%resref%" STRING_EQUAL_CASE "VICTOWN1")
+		OR ("%resref%" STRING_EQUAL_CASE "VICTOWN2")
+		OR ("%resref%" STRING_EQUAL_CASE "VICTOWN3")
+		OR ("%resref%" STRING_EQUAL_CASE "VICTOWN4")
+		OR ("%resref%" STRING_EQUAL_CASE "VICG3") BEGIN
+			PATCH_PRINT "Patching %SOURCE_FILE%: removing actor %resref%"
+			LPF fj_are_structure
+				INT_VAR fj_delete_mode = "%index%"
+				STR_VAR fj_structure_type = actor
+			END
+			SET index = index - 1
+			READ_SHORT 0x58 "actor_num"
+		END
+	END
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// Dynamic biography                                \\\\\
 /////                                                  \\\\\
 
 OUTER_SET bio = 0
-COPY ~EET/base/compile/baf/K#BIO.baf~ ~EET/base/compile/baf~
+COPY ~EET/compile/baf/K#BIO.baf~ ~EET/compile/baf~
 	PATCH_FOR_EACH clastext IN ~%bio15881%~ /*FIGHTER_ALL*/ ~15888~ /*RANGER_ALL*/ ~15887~ /*PALADIN_ALL*/ ~15884~ /*CLERIC_ALL*/ ~15885~ /*DRUID_ALL*/ ~%bio15882%~ /*MAGE_ALL*/ ~15883~ /*THIEF_ALL*/ ~15886~ /*BARD_ALL*/ ~15884~ /*MONK*/ ~15889~ /*multi class*/ BEGIN
 		PATCH_FOR_EACH racetext IN ~15895~ /*HUMAN*/ ~15891~ /*ELF*/ ~15892~ /*HALF_ELF*/ ~15890~ /*DWARF*/ ~15893~ /*HALFLING*/ ~15894~ /*GNOME*/ ~%bio31709%~ /*HALF_ORC*/ BEGIN
 			GET_STRREF ~%clastext%~ bio_clas
@@ -1459,74 +1487,16 @@ COPY + ~%patch_dir%/are~ ~%patch_dir%/are~
 	END
 BUT_ONLY
 
-// Area traification and installation
-OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
+OUTER_SPRINT logged ~~
 COPY ~%patch_dir%/are~ ~override~
-	PATCH_IF (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~^BG~ = 0) OR (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~^OH~ = 0) BEGIN //area file starts with BG or OH
+	PATCH_IF (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~^BG~ = 0) OR (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~^OH~ = 0) BEGIN //area file starting with BG or OH
 		WRITE_SHORT 0x48 THIS | (1 << BG1AREA)
 	END
-	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	//Info points, trigger points, and exit (regions/triggers)
-	READ_LONG 0x5c "info_off"
-	READ_SHORT 0x5a "info_cnt"
-	FOR (cnt=0; cnt<"%info_cnt%"; cnt=cnt+1) BEGIN
-		PATCH_FOR_EACH ~add_off~ IN 0x64 0xb8 BEGIN
-			SET offset = ("%info_off%"+0xc4*cnt+"%add_off%") //Information text (for info points), Name
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-			END
-		END
-	END
-	//Containers
-	READ_LONG 0x70 "contain_off"
-	READ_SHORT 0x74 "contain_cnt"
-	FOR (cnt=0; cnt<"%contain_cnt%"; cnt=cnt+1) BEGIN
-		SET offset = ("%contain_off%"+0xc0*cnt+0x84) //Lockpick string
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
-	//Doors
-	READ_LONG 0xa8 "door_off"
-	READ_SHORT 0xa4 "door_cnt"
-	FOR (cnt=0; cnt<"%door_cnt%"; cnt=cnt+1) BEGIN
-		PATCH_FOR_EACH ~add_off~ IN 0x98 0xb4 BEGIN
-			SET offset = ("%door_off%"+0xc8*cnt+"%add_off%") //Lockpick string, Dialog speaker name
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-			END
-		END
-	END
-	//Automap Notes
-	READ_LONG 0xc4 "note_off"
-	READ_LONG 0xc8 "note_cnt"
-	FOR (cnt=0; cnt<"%note_cnt%"; cnt=cnt+1) BEGIN
-		SET offset = ("%note_off%"+0x34*cnt+0x4) //Note text
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
-	//Rest Interruptions
-	READ_LONG 0xc0 "rest_off"
-	FOR (cnt=0; cnt<10; cnt=cnt+1) BEGIN
-		SET offset = ("%rest_off%"+0x4*cnt+0x20) //Interruption explantion text (10*0x4)
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
+	LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff RET log END
+	SPRINT logged ~%logged%%LNL%%log%~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/are.tph~
-	PATCH_LOG ~%log%~
-APPEND_OUTER + ~EET/temp/are.tph~ ~%log%~
+	PATCH_LOG ~%logged%~
+APPEND_OUTER + ~EET/temp/are.tph~ ~%logged%~
 
 COPY_EXISTING ~OH1000.ARE~ ~override/BG0000.ARE~
 	WRITE_ASCII 0x94 ~BG0000~ #8
@@ -1569,337 +1539,10 @@ END
 //compile scripts
 COMPILE ~%patch_dir%/bcs~
 	~%patch_dir%/bcs_app~
-	~EET/base/compile/baf~
+	~EET/compile/baf~
 
 //patching BG:EE scripts
 INCLUDE ~EET/lib/bg1_BCS.tph~
-
-//Combine transition.tbl
-ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/EET-transition.tbl~) BEGIN
-	COPY + ~%bgee_dir%/override/EET-transition.tbl~ ~EET/temp~
-END
-
-ACTION_IF (FILE_EXISTS ~override/EET-transition.tbl~) BEGIN
-	COPY ~override/EET-transition.tbl~ ~override~
-		APPEND_FILE ~EET/tbl/EET-transition.tbl~
-		PATCH_IF (FILE_EXISTS ~EET/temp/EET-transition.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/EET-transition.tbl~
-		END
-END ELSE BEGIN
-    COPY ~EET/tbl/EET-transition.tbl~ ~override~
-		PATCH_IF (FILE_EXISTS ~EET/temp/EET-transition.tbl~) BEGIN
-			APPEND_FILE ~EET/temp/EET-transition.tbl~
-		END
-END
-
-////////////////////////
-// Items shattering
-////////////////////////
-
-<<<<<<<< EET-inlined/shattering.baf
-IF
-  OR(3)
-    GlobalGT("ENDOFBG1","GLOBAL",0)
-    GlobalGT("OHB_BP2_CAPTURE","GLOBAL",0)
-    GlobalGT("BPINTRO","GLOBAL",0)
-THEN
-  RESPONSE #100
-	DestroySelf()
-END
-
-IF
-  CheckStatLT(LastSummonerOf(Myself),50,INTOXICATION)//In vanilla BG1 weapons break almost every hit when character is drunk
-THEN
-  RESPONSE #%response1%
-	DestroySelf()
-  RESPONSE #%response2%
-	Continue()
-END
->>>>>>>>
-
-<<<<<<<< EET-inlined/shattering-eb.baf
-IF
-  HasItemEquiped%real%("%item%",LastSummonerOf(Myself))
-THEN
-  RESPONSE #100
-    DisplayStringHead(LastSummonerOf(Myself),#%string%)
-	ActionOverride(LastSummonerOf(Myself),TransformItem("%item%","%item_broken%"))
-	DestroySelf()
-END
->>>>>>>>
-
-//Weapons
-OUTER_SPRINT real ~Real~
-OUTER_SPRINT item_broken ~MISC56_~
-OUTER_SET string = 14158
-OUTER_SET response1 = 95
-OUTER_SET response2 = 5 //0.5% chance
-COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATWE.baf~
-COMPILE ~EET-inlined/K#SHATWE.baf~ EVALUATE_BUFFER
-ACTION_FOR_EACH item IN AX1H01 AX1H04 BLUN02 BLUN04 BLUN06 BLUN08 /*CATTAC1*/ DAGG01 DAGG06 DAGG07 /*DAGGSHIT*/ /*FLIND1*/ HALB01 HAMM01 SPER01 SW1H01 /*COMPS01*/ SW1H04 SW1H07 SW1H12 SW1H17 SW1H20 /*SW1H21*/ SW1H43 SW1H46 SW1H48 SW2H01 /*SW2H01B*/ /*TASLOIIL*/ /*XVARTIL*/ BEGIN
-	EXTEND_BOTTOM ~K#SHATWE.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
-END
-OUTER_SPRINT real ~~
-
-//Shields
-OUTER_SPRINT item_broken ~MISC57~
-OUTER_SET string = 14180
-OUTER_SET response1 = 98
-OUTER_SET response2 = 2 //0.2% chance
-COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATSH.baf~
-COMPILE ~EET-inlined/K#SHATSH.baf~ EVALUATE_BUFFER
-ACTION_FOR_EACH item IN SHLD01 SHLD03 SHLD05 SHLD08 SHLD09 SHLD10 SHLD11 SHLD12 SHLD13 SHLD14 SHLD15 SHLD16 SHLD18 BEGIN
-	EXTEND_BOTTOM ~K#SHATSH.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
-END
-
-//Armors
-OUTER_SPRINT item_broken ~MISC58~
-OUTER_SET string = 15817
-OUTER_SET response1 = 98
-OUTER_SET response2 = 2 //0.2% chance
-COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATAR.baf~
-COMPILE ~EET-inlined/K#SHATAR.baf~ EVALUATE_BUFFER
-ACTION_FOR_EACH item IN CHAN01 CHAN04 PLAT01 PLAT04 BEGIN
-	EXTEND_BOTTOM ~K#SHATAR.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
-END
-
-//Helmets
-OUTER_SPRINT item_broken ~MISC59~
-OUTER_SET string = 15818
-OUTER_SET response1 = 99
-OUTER_SET response2 = 1 //0.1% chance
-COPY - ~EET-inlined/shattering.baf~ ~EET-inlined/K#SHATHE.baf~
-COMPILE ~EET-inlined/K#SHATHE.baf~ EVALUATE_BUFFER
-ACTION_FOR_EACH item IN HELM01 HELM08 HELM09 HELM10 HELM11 HELM12 HELM13 HELM15 BEGIN
-	EXTEND_BOTTOM ~K#SHATHE.BCS~ ~EET-inlined/shattering-eb.baf~ EVALUATE_BUFFER
-END
-
-////////////////////////
-// K#TELBGT.BCS
-////////////////////////
-
-//NPCs outside party
-<<<<<<<< EET-inlined/K#TELBGT-et.baf
-IF
-  Global("K#DoOnce%DV%","LOCALS",0)
-  Global("%DV%PartyBG1","GLOBAL",1)
-  !InPartyAllowDead("%DV%")
-  !InMyArea("%DV%")
-THEN
-  RESPONSE #100
-    //MoveGlobal("BG0125","%DV%",[1000.1000])
-	MoveGlobalObjectOffScreen("%DV%",Player1)
-    Continue()
-END
->>>>>>>>
-
-//NPCs in party
-<<<<<<<< EET-inlined/K#TELBGT-et2.baf
-IF
-  Global("K#DoOnce%DV%","LOCALS",0)
-  Global("%DV%PartyBG1","GLOBAL",1)
-  InPartyAllowDead("%DV%")
-THEN
-  RESPONSE #100
-    //MoveGlobal("BG0125","%DV%",[1000.1000])
-    //MoveGlobalObjectOffScreen("%DV%",Player1)
-    ActionOverride("%DV%",LeaveParty())
-    Continue()
-END
->>>>>>>>
-
-//NPCs without MoveBetweenAreas transition
-<<<<<<<< EET-inlined/K#TELBGT-et3.baf
-IF
-  Global("K#DoOnce%DV%","LOCALS",0)
-  Global("%DV%PartyBG1","GLOBAL",1)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnce%DV%","LOCALS",1)
-    ActionOverride("%DV%",DropInventory())
-    ActionOverride("%DV%",DestroySelf())
-    Continue()
-END
->>>>>>>>
-
-COPY - ~EET/temp/array/PDIALOG.2DA~ ~EET-inlined~
-	COUNT_2DA_ROWS 8 "cntrow"
-	FOR (cnt = 0; cnt < ("%cntrow%" - 1) ; cnt = cnt + 1) BEGIN //-1 due to dummy entry set via bg2_2DA.tph at the end
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 8 "DV"
-		PATCH_PRINT ~Adding BG2 transition code for %DV%~
-		INNER_ACTION BEGIN
-			COPY_EXISTING - ~EET-transition.tbl~ ~override~
-				COUNT_2DA_ROWS 3 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%" ; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 3 "compareWith"
-					PATCH_IF (("%DV%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			ACTION_IF ("%noupdate%" = 0) BEGIN //only if no full transition is available
-				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et3.baf~ EVALUATE_BUFFER
-				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et2.baf~ EVALUATE_BUFFER
-				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et.baf~ EVALUATE_BUFFER
-			END
-		END
-	END
-
-//here goes EET-inlined/K#TELBGT-et.baf
-
-//NPCs that should be resurrected if possible
-<<<<<<<< EET-inlined/K#TELBGT-et4.baf
-IF
-  Global("K#DoOnce%DV%Res","LOCALS",0)
-  Global("%DV%PartyBG1","GLOBAL",1)
-  Dead("%DV%")
-  NotStateCheck("%DV%",STATE_EXPLODING_DEATH)
-  NotStateCheck("%DV%",STATE_STONE_DEATH)
-  NotStateCheck("%DV%",STATE_FROZEN_DEATH)
-  //NotStateCheck("%DV%",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnce%DV%Res","LOCALS",1)
-    ActionOverride("%DV%",ApplySpellRES("K#LIVE",Myself))
-    SetGlobal("SPRITE_IS_DEAD%DV%","GLOBAL",0)
-    //Continue() //1 frame delay
-END
->>>>>>>>
-
-//here goes EET-inlined/K#TELBGT-et2.baf
-
-//NPCs with MoveBetweenAreas (still dead)
-<<<<<<<< EET-inlined/K#TELBGT-et5.baf
-IF
-  Global("K#DoOnce%DV%","LOCALS",0)
-  Global("%DV%PartyBG1","GLOBAL",1)
-  OR(5)
-    Dead("%DV%")
-    StateCheck("%DV%",STATE_EXPLODING_DEATH)
-    StateCheck("%DV%",STATE_STONE_DEATH)
-    StateCheck("%DV%",STATE_FROZEN_DEATH)
-    StateCheck("%DV%",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnce%DV%","LOCALS",1)
-    SetGlobal("%DV%PartyBG1","GLOBAL",0)
-    ActionOverride("%DV%",DropInventory())
-    ActionOverride("%DV%",DestroySelf())
-    Continue()
-END
->>>>>>>>
-
-//NPCs with MoveBetweenAreas transition (not dead)
-<<<<<<<< EET-inlined/K#TELBGT-et6.baf
-IF
-  Global("K#DoOnce%DV%","LOCALS",0)
-  Global("%DV%PartyBG1","GLOBAL",1)
-  !Dead("%DV%")
-  NotStateCheck("%DV%",STATE_EXPLODING_DEATH)
-  NotStateCheck("%DV%",STATE_STONE_DEATH)
-  NotStateCheck("%DV%",STATE_FROZEN_DEATH)
-  NotStateCheck("%DV%",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnce%DV%","LOCALS",1)
-    ActionOverride("%DV%",DropInventory())
-    ActionOverride("%DV%",ApplySpellRES("K#DISPEL",Myself))
-    ActionOverride("%DV%",ChangeAIScript("",DEFAULT))
-	ActionOverride("%DV%",ChangeEnemyAlly(Myself,NEUTRAL))
-    ActionOverride("%DV%",MoveBetweenAreas(%location%))
-    Continue()
-END
->>>>>>>>
-
-COPY_EXISTING - ~EET-transition.tbl~ ~override~
-	COUNT_2DA_ROWS 3 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%" ; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "DV"
-		READ_2DA_ENTRY cnt 1 3 "location"
-		READ_2DA_ENTRY cnt 2 3 "resurrect"
-		PATCH_PRINT ~Transition added for %DV% to area: %location% - resurrection: %resurrect%~
-		INNER_ACTION BEGIN
-			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et6.baf~ EVALUATE_BUFFER
-			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et5.baf~ EVALUATE_BUFFER
-			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et2.baf~ EVALUATE_BUFFER
-			//ACTION_IF ("%resurrect%" = 1) BEGIN
-				EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et4.baf~ EVALUATE_BUFFER
-			//END
-			EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et.baf~ EVALUATE_BUFFER
-		END
-	END
-
-//time pass and item variables
-<<<<<<<< EET-inlined/K#TELBGT-et7.baf
-IF
-  Global("MeetOldenFriends","GLOBAL",0)
-  PartyHasItem("MISC47") // Golden Pantaloons
-THEN
-  RESPONSE #100
-    ActionOverride("K#TELBGT",TakePartyItem("MISC47")) // Golden Pantaloons
-END
-
-IF
-  Global("K#DoOnceItemList","LOCALS",0)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnceItemList","LOCALS",1)
-    ActionOverride(Myself,TakeItemListPartyNum("IMPORT02",1))
-    ActionOverride(Myself,TakeItemListPartyNum("IMPORT01",1))
-    ActionOverride(Myself,TakeItemListPartyNum("IMPORT03",1))
-    Continue()
-END
-
-IF
-  Global("BG1DrizztItem","GLOBAL",0)
-  OR(3)
-    PartyHasItem("CHAN06") // Mithral Chain Mail +4
-    PartyHasItem("SW1H15") // Icingdeath +3
-    PartyHasItem("SW1H16") // Twinkle +3
-THEN
-  RESPONSE #100
-    SetGlobal("BG1DrizztItem","GLOBAL",1)
-    Continue()
-END
-
-IF
-  Global("K#AdvanceTimeOneMonth","LOCALS",0)
-  //GlobalLT("K#DaysPassed","GLOBAL",365)
-THEN
-  RESPONSE #100
-    SetGlobal("K#AdvanceTimeOneMonth","LOCALS",1)
-    AdvanceTime(ONE_MONTH)
-    Continue()
-END
->>>>>>>>
-
-EXTEND_TOP ~K#TELBGT.BCS~ ~EET-inlined/K#TELBGT-et7.baf~
-
-//EraseJournalEntry
-COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-	DECOMPILE_BCS_TO_BAF //saves time with patching
-COPY - ~EET/temp/array/BGEE.SQL~ ~EET/temp/array~
-	REPLACE_TEXTUALLY ~,~ ~ ~
-	COUNT_2DA_ROWS 4 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 2 4 "col3"
-		PATCH_IF (("%col3%" STRING_EQUAL_CASE "journals_quests")=1) BEGIN
-			SET journals_quests_row = cnt
-		END ELSE PATCH_IF (("%col3%" STRING_EQUAL_CASE "portraits")=1) BEGIN
-			SET portraits_row = cnt
-			SET cnt = "%cntrow%"
-		END
-	END
-	FOR (cnt = "%portraits_row%" - 1; cnt > "%journals_quests_row%"; cnt = cnt - 1) BEGIN
-		READ_2DA_ENTRY cnt 0 4 "col1"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-				REPLACE_TEXTUALLY ~Wait(3)~ ~EraseJournalEntry(@%col1%)
-    Wait(3)~
-		END
-	END
-COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-	COMPILE_BAF_TO_BCS
 
 ////////////////////////
 // K#TELBG2.BCS
@@ -2024,6 +1667,8 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#AdvanceTimeOneYear","LOCALS",1)
+    SetGlobal("K#temp","GLOBAL",364)
+	AddGlobals("K#DaysPassed","K#temp")
     AdvanceTime(ONE_YEAR)
     Continue()
 END
@@ -2094,20 +1739,17 @@ COPY ~EET/base/test/EET_test.baf~ ~scripts/EET_test.bs~
 ///// CHR                                              \\\\\
 /////                                                  \\\\\
 
-//BG2:EE BPARTY01-06.cre files has been converted to chr files, so they can be chosen instead of Black Pits 1 party
 PRINT ~If you see UNIX error below this line than it's not really an error. No need to report it.~
 MKDIR ~%USER_DIRECTORY%/characters~
-COPY ~EET/base/chr~ ~%USER_DIRECTORY%/characters~
 
 //BG:EE default CHR files
-COPY ~EET/temp/chr~ ~%USER_DIRECTORY%/characters~
-	FOR (index = 0; index < 99 ; index = index + 1) BEGIN
-		SET "offset" = (0x108 + (0x4 * index))
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-		END
+ACTION_BASH_FOR ~EET/temp/chr~ ~^.+\.chr$~ BEGIN
+	ACTION_IF (NOT FILE_EXISTS ~%USER_DIRECTORY%/characters/%BASH_FOR_FILE%~) BEGIN
+		COPY ~%BASH_FOR_FILESPEC%~ ~%USER_DIRECTORY%/characters~
+			LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff RET log END
+			PATCH_LOG ~%log%~
 	END
+END
 
 /////                                                  \\\\\
 ///// CHU                                              \\\\\
@@ -2121,74 +1763,13 @@ BUT_ONLY
 ///// CRE                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
+OUTER_SPRINT logged ~~
 COPY ~%patch_dir%/cre~ ~override~
-	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	PATCH_FOR_EACH ~offset~ IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
-	FOR (cnt=0; cnt<99; cnt=cnt+1) BEGIN
-		SET offset = (0xa4+0x4*cnt)
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
-	READ_LONG 0x2c4 "fx_off"
-	READ_LONG 0x2c8 "fx_cnt"
-	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
-		READ_LONG ("%fx_off%"+0x108*cnt+0x8) "fx_type"
-		PATCH_IF ("%fx_type%" = 103) //Change Name
-		OR ("%fx_type%" = 139) //Display String
-		OR ("%fx_type%" = 180) //Can't Use Item
-		OR ("%fx_type%" = 206) //Protection from Spell
-		OR ("%fx_type%" = 253) //Add Map Marker
-		OR ("%fx_type%" = 254) //Remove Map Marker
-		OR ("%fx_type%" = 267) //Protection from Display Specific String
-		OR ("%fx_type%" = 290) //Change Title
-		OR ("%fx_type%" = 330) //Float text
-		OR ("%fx_type%" = 338) //Disable rest or save
-		BEGIN
-			SET offset = ("%fx_off%"+0x108*cnt+0x14)
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SET str_updated = 0
-				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
-					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-								//SAY offset ( AT "StrRef" )
-								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
-							END ELSE BEGIN
-								WRITE_LONG offset "%strNew%"
-								SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
-							END
-							SET str_updated = 1
-						END
-					END
-				END
-				PATCH_IF (str_updated = 0) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-				END
-			END
-		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-			SET offset = ("%fx_off%"+0x108*cnt+0x40)
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-			END
-		END
-	END
+	LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff STR_VAR array = table_traify_strOldstrNew RET log END
+	SPRINT logged ~%logged%%LNL%%log%~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/cre.tph~
-	PATCH_LOG ~%log%~
-APPEND_OUTER + ~EET/temp/cre.tph~ ~%log%~
+	PATCH_LOG ~%logged%~
+APPEND_OUTER + ~EET/temp/cre.tph~ ~%logged%~
 
 COPY ~EET/base/cre~ ~override~
 
@@ -2232,61 +1813,19 @@ ACTION_PHP_EACH table_EET_BG1dlgBG2dlg AS BG1dlg => BG2dlg BEGIN
 END
 
 COMPILE ~%patch_dir%/dlg~
-	~EET/base/compile/d~
+	~EET/compile/d~
 
 /////                                                  \\\\\
 ///// EFF                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
+OUTER_SPRINT logged ~~
 COPY ~%patch_dir%/eff~ ~override~
-	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	READ_LONG 0x10 "fx_type"
-	PATCH_IF ("%fx_type%" = 103) //Change Name
-	OR ("%fx_type%" = 139) //Display String
-	OR ("%fx_type%" = 180) //Can't Use Item
-	OR ("%fx_type%" = 206) //Protection from Spell
-	OR ("%fx_type%" = 253) //Add Map Marker
-	OR ("%fx_type%" = 254) //Remove Map Marker
-	OR ("%fx_type%" = 267) //Protection from Display Specific String
-	OR ("%fx_type%" = 290) //Change Title
-	OR ("%fx_type%" = 330) //Float text
-	OR ("%fx_type%" = 338) //Disable rest or save
-	BEGIN
-		SET offset = 0x1c
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SET str_updated = 0
-			PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
-				PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-					PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-						PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-							//SAY offset ( AT "StrRef" )
-							SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
-						END ELSE BEGIN
-							WRITE_LONG offset "%strNew%"
-							SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
-						END
-						SET str_updated = 1
-					END
-				END
-			END
-			PATCH_IF (str_updated = 0) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-			END
-		END
-	END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-		SET offset = 0x48
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-		END
-	END
+	LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff STR_VAR array = table_traify_strOldstrNew RET log END
+	SPRINT logged ~%logged%%LNL%%log%~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/eff.tph~
-	PATCH_LOG ~%log%~
-APPEND_OUTER + ~EET/temp/eff.tph~ ~%log%~
+	PATCH_LOG ~%logged%~
+APPEND_OUTER + ~EET/temp/eff.tph~ ~%logged%~
 
 COPY ~EET/base/eff~ ~override~
 
@@ -2426,76 +1965,55 @@ END
 
 COPY ~EET/base/ini~ ~override~
 
+//changes in files compared to IWD:EE
+/*
+//7A00.INI (MSPI_GI spider_giant)
+ellipse=24 -> 16
+personal_space=4 -> 3
+
+//7A01.INI (MSPI_HU spider_huge)
+ellipse=24 -> 16
+personal_space=4 -> 3
+
+//7A02.INI (MSPI_PH spider_phase)
+ellipse=24 -> 16
+personal_space=4 -> 3
+
+//7A03.INI (MSPI_SW spider_sword)
+ellipse=24 -> 16
+personal_space=4 -> 3
+
+//7A04.INI (MSPI_WR spider_wraith)
+ellipse=24 -> 16
+personal_space=4 -> 3
+
+//7F04.INI (MIGO golem_iron)
+ellipse=32 -> 48
+personal_space=5 -> 6
+
+//7F07.INI (MGLC golem_clay)
+ellipse=24 -> 16
+
+//E0F0 MGIC golem_ice
+ellipse=32 -> 16
+personal_space=5 -> 3
+
+//7F32.INI (MSLY slayer)
+ellipse=24 -> 16
+personal_space=5 -> 3
+*/
+
 /////                                                  \\\\\
 ///// ITM                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
+OUTER_SPRINT logged ~~
 COPY ~%patch_dir%/itm~ ~override~
-	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
-	READ_LONG 0x64 "abil_off"
-	READ_SHORT 0x68 "abil_cnt"
-	READ_LONG 0x6a "fx_off"
-	READ_SHORT 0x70 "fx_cnt"
-	FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
-		READ_SHORT ("%abil_off%"+0x38*cnt+0x1e) "fx_num"
-		SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
-	END
-	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
-		READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
-		PATCH_IF ("%fx_type%" = 103) //Change Name
-		OR ("%fx_type%" = 139) //Display String
-		OR ("%fx_type%" = 180) //Can't Use Item
-		OR ("%fx_type%" = 206) //Protection from Spell
-		OR ("%fx_type%" = 253) //Add Map Marker
-		OR ("%fx_type%" = 254) //Remove Map Marker
-		OR ("%fx_type%" = 267) //Protection from Display Specific String
-		OR ("%fx_type%" = 290) //Change Title
-		OR ("%fx_type%" = 330) //Float text
-		OR ("%fx_type%" = 338) //Disable rest or save
-		BEGIN
-			SET offset = ("%fx_off%"+0x30*cnt+0x4)
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SET str_updated = 0
-				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
-					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-								//SAY offset ( AT "StrRef" )
-								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
-							END ELSE BEGIN
-								WRITE_LONG offset "%strNew%"
-								SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
-							END
-							SET str_updated = 1
-						END
-					END
-				END
-				PATCH_IF (str_updated = 0) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-				END
-			END
-		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-			SET offset = ("%fx_off%"+0x30*cnt+0x2c)
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-			END
-		END
-	END
+	LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff STR_VAR array = table_traify_strOldstrNew RET log END
+	SPRINT logged ~%logged%%LNL%%log%~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/itm.tph~
-	PATCH_LOG ~%log%~
-APPEND_OUTER + ~EET/temp/itm.tph~ ~%log%~
+	PATCH_LOG ~%logged%~
+APPEND_OUTER + ~EET/temp/itm.tph~ ~%logged%~
 
 COPY_EXISTING ~BPRNG1.ITM~ ~override~
 	LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = "208" END //Minimum HP
@@ -3011,99 +2529,25 @@ APPEND ~SPELL.IDS~ ~4101 DARK_GIFT~ UNLESS ~DARK_GIFT~
 END
 APPEND ~add_spell.IDS~ ~4101 DARK_GIFT~ UNLESS ~DARK_GIFT~//information for the weidu unistall*/
 
-OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
+OUTER_SPRINT logged ~~
 COPY ~%patch_dir%/spl~ ~override~
-	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
-	READ_LONG 0x64 "abil_off"
-	READ_SHORT 0x68 "abil_cnt"
-	READ_LONG 0x6a "fx_off"
-	READ_SHORT 0x70 "fx_cnt"
-	FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
-		READ_SHORT ("%abil_off%"+0x28*cnt+0x1e) "fx_num"
-		SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
-	END
-	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
-		READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
-		PATCH_IF ("%fx_type%" = 103) //Change Name
-		OR ("%fx_type%" = 139) //Display String
-		OR ("%fx_type%" = 180) //Can't Use Item
-		OR ("%fx_type%" = 206) //Protection from Spell
-		OR ("%fx_type%" = 253) //Add Map Marker
-		OR ("%fx_type%" = 254) //Remove Map Marker
-		OR ("%fx_type%" = 267) //Protection from Display Specific String
-		OR ("%fx_type%" = 290) //Change Title
-		OR ("%fx_type%" = 330) //Float text
-		OR ("%fx_type%" = 338) //Disable rest or save
-		BEGIN
-			SET offset = ("%fx_off%"+0x30*cnt+0x4)
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SET str_updated = 0
-				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
-					PHP_EACH "table_traify_strOldstrNew" AS "strOld" => "strNew" BEGIN
-						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-								//SAY offset ( AT "StrRef" )
-								SPRINT ~log~ ~%log%%WNL%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%~
-							END ELSE BEGIN
-								WRITE_LONG offset "%strNew%"
-								SPRINT ~log~ ~%log%%WNL%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%~
-							END
-							SET str_updated = 1
-						END
-					END
-				END
-				PATCH_IF (str_updated = 0) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-				END
-			END
-		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-			SET offset = ("%fx_off%"+0x30*cnt+0x2c)
-			READ_LONG offset "StrRef"
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%~
-			END
-		END
-	END
+	LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff STR_VAR array = table_traify_strOldstrNew RET log END
+	SPRINT logged ~%logged%%LNL%%log%~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/spl.tph~
-	PATCH_LOG ~%log%~
-APPEND_OUTER + ~EET/temp/spl.tph~ ~%log%~
+	PATCH_LOG ~%logged%~
+APPEND_OUTER + ~EET/temp/spl.tph~ ~%logged%~
 
 /////                                                  \\\\\
 ///// STO                                              \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~log~ ~%slash%%slash%log file generated during EET installation~
+OUTER_SPRINT logged ~~
 COPY ~%patch_dir%/sto~ ~override~
-	SPRINT ~log~ ~%log%%WNL%%WNL%COPY "%SOURCE_FILESPEC%" "override"~
-	SET offset = 0xc //Name
-	READ_LONG offset "StrRef"
-	PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-		SAY offset ( AT "StrRef" )
-		SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-	END
-	READ_LONG 0x4c "drink_off"
-	READ_SHORT 0x50 "drink_cnt"
-	FOR (cnt=0; cnt<"%drink_cnt%"; cnt=cnt+1) BEGIN
-		SET offset = ("%drink_off%"+0x14*cnt+0x8) //Drink name
-		READ_LONG offset "StrRef"
-		PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%%WNL%  SAY %offset% @%StrRef%~
-		END
-	END
+	LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff RET log END
+	SPRINT logged ~%logged%%LNL%%log%~
 COPY + ~EET-inlined/blank.txt~ ~EET/temp/sto.tph~
-	PATCH_LOG ~%log%~
-APPEND_OUTER + ~EET/temp/sto.tph~ ~%log%~
+	PATCH_LOG ~%logged%~
+APPEND_OUTER + ~EET/temp/sto.tph~ ~%logged%~
 
 /////                                                  \\\\\
 ///// VVC                                              \\\\\
@@ -3117,7 +2561,7 @@ COPY ~%patch_dir%/vvc~ ~override~
 
 //Textscreen music
 ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/INTRO01F.wav~ ~EET/temp/wav/INTRO02F.wav~ ~EET/temp/wav/INTRO03.wav~ ~EET/temp/wav/INTROADD.wav~ END
-LAF ~textscreen_music~
+LAF ~EET_textscreen_music~
 	INT_VAR
 	mus_fadeEnd = 3
 	mus_delayEnd = 1
@@ -3130,7 +2574,7 @@ END
 ACTION_CLEAR_ARRAY textscreenInputSpeArray
 
 ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/CHAP00A.wav~ ~EET/temp/wav/CHAP00B.wav~ ~EET/temp/wav/CHAP00C.wav~ END
-LAF ~textscreen_music~
+LAF ~EET_textscreen_music~
 	INT_VAR
 	mus_fadeEnd = 3
 	mus_delayEnd = 1
@@ -3145,7 +2589,7 @@ ACTION_CLEAR_ARRAY textscreenInputSpeArray
 //other chapters and dreams
 ACTION_FOR_EACH file IN CHAPTER1 CHAPTER2 CHAPTER3 CHAPTER4 CHAPTER5 CHAPTER6 DREAM1G DREAM1E DREAM2G DREAM2E DREAM3G DREAM3E DREAM4G DREAM4E DREAM5G DREAM5E DREAM6G DREAM6E BEGIN
 	ACTION_DEFINE_ARRAY textscreenInputSpeArray BEGIN ~EET/temp/wav/%file%.wav~ END
-	LAF ~textscreen_music~
+	LAF ~EET_textscreen_music~
 		INT_VAR
 		mus_fadeEnd = 3
 		mus_delayEnd = 1
@@ -3364,7 +2808,7 @@ COPY ~%patch_dir%/wed~ ~override~
 MKDIR ~Worldmap~
 
 COPY_EXISTING ~xnewarea.2da~ ~override~
-	REPLACE_TEXTUALLY CASE_INSENSITIVE ~^.*ar3000.*$~ ~~
+	REPLACE_TEXTUALLY CASE_INSENSITIVE ~^.*ar3000.*$~ ~1~ //without 1 engine behave in weird way (sets XP CAP to 2950000)
 IF ~ar3000~
 BUT_ONLY
 
@@ -3501,6 +2945,22 @@ COPY_EXISTING ~worldmap.wmp~ ~override~
 	WRITE_LONG wmap_off + 0x8 ~1550~
 	WRITE_LONG wmap_off + 0xc ~2160~
 	WRITE_ASCII wmap_off + 0x30 ~MAPICONS~ #8
+
+/////                                                  \\\\\
+///// Iron Crisis (item shattering)                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ARRAY eet_ironCrisis_array BEGIN ~override/AX1H01.itm~ ~override/AX1H04.itm~ ~override/BLUN02.itm~ ~override/BLUN04.itm~ ~override/BLUN06.itm~ ~override/BLUN08.itm~ ~override/DAGG01.itm~ ~override/DAGG06.itm~ ~override/DAGG07.itm~ ~override/HALB01.itm~ ~override/HAMM01.itm~ ~override/SPER01.itm~ ~override/SW1H01.itm~ ~override/SW1H04.itm~ ~override/SW1H07.itm~ ~override/SW1H12.itm~ ~override/SW1H17.itm~ ~override/SW1H20.itm~ ~override/SW1H43.itm~ ~override/SW1H46.itm~ ~override/SW1H48.itm~ ~override/SW2H01.itm~ ~override/SHLD01.itm~ ~override/SHLD03.itm~ ~override/SHLD05.itm~ ~override/SHLD08.itm~ ~override/SHLD09.itm~ ~override/SHLD10.itm~ ~override/SHLD11.itm~ ~override/SHLD12.itm~ ~override/SHLD13.itm~ ~override/SHLD14.itm~ ~override/SHLD15.itm~ ~override/SHLD16.itm~ ~override/SHLD18.itm~ ~override/CHAN01.itm~ ~override/CHAN04.itm~ ~override/PLAT01.itm~ ~override/PLAT04.itm~ ~override/HELM01.itm~ ~override/HELM08.itm~ ~override/HELM09.itm~ ~override/HELM10.itm~ ~override/HELM11.itm~ ~override/HELM12.itm~ ~override/HELM13.itm~ ~override/HELM15.itm~ END
+LAF ~EET_IRON_CRISIS~
+	STR_VAR
+	shattering_array = EVAL ~eet_ironCrisis_array~ //array with files to patch (supports: weapons, armors, shields, helmets)
+END
+
+/////                                                  \\\\\
+///// EET transition                                   \\\\\
+/////                                                  \\\\\
+
+//INCLUDE ~EET/lib/transition.tph~
 
 /////                                                  \\\\\
 ///// Fixpack                                          \\\\\

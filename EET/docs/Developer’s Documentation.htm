@@ -469,12 +469,12 @@ This document is divided into a number of sections to allow quick reference for 
 <hr />
 <a id="Item importation" name="Item importation"></a>
 <h3>Item importation</h3>
-<p>Transition script also takes care of item importation. It takes place in area where transition starts, not in Irenicus Dungeon (currently right after killing Sarevok, in future - at the end of Siege of Dragonspear). Before all players are made to lose all droppable inventory using the DropInventory() command, PartyHasItem() checks are made for items that need to be imported. If the party has a particular item, an invisible creature will take that item and return it back to player1 after all inventory is dropped. This way modders can easily add other importable items and implementation itself is fully compatible with code present in Irenicus Dungeon (AR0602.BCS). You can also come back later in the game to recover rest of your items that will lay exactly where the transition started.</p>
+<p>Transition script also takes care of item importation. In order to record items from the whole party and not only Player1, it need to be done before migrating to Irenicus Dungeon. Before pary is made to lose all inventory using the DropInventory() command, additional code is used to preserve items that should be imported. If the party has a particular item, an invisible creature will take it and return it back to player1 after all inventory is dropped. This way modders can easily add other importable items and implementation itself is fully compatible with code present in Irenicus Dungeon (AR0602.BCS).</p>
 
 <hr />
 <a id="Item shattering" name="Item shattering"></a>
 <h3>Item shattering</h3>
-<p>Item shattering is controlled differently than in BG:EE. Instead of unique spells added to each item type, breakable items now uses common spell to summon invisible creature that will replace the item with braked version if needed (only during BG1). Additionally, by default, Iron Crisis now affects not only normal iron weapons (0.5% chance for each attack in EET, compared to 1% in BG1) but armours (0.2% on hit), shields (0.2%) and helmets (0.1%) too. The effect is true for your party and enemies. I consider it more a restoration rather than tweak, as from game files it's pretty clear that at least armours and shields were meant to break since they have corresponding flags set and unused icons are present too. If you don't like this feature you can adjust it via <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> components.</p>
+<p>Item shattering is controlled differently than in BG:EE. Instead of unique spells added to each item type, breakable items now uses common spell to summon invisible creature that will replace the item with braked version if needed (only during BG1). Additionally, by default, Iron Crisis now affects not only normal iron weapons (0.5% chance for each attack in EET, compared to 1% in BG1) but armours (0.2% on hit), shields (0.2%) and helmets (0.1%) too. The effect is true for your party and enemies. It can be considered more a restoration rather than tweak, as from game files it's pretty clear that at least armours and shields were meant to break since they have corresponding flags set and unused icons are present too. If you don't like this feature you can adjust it via <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> components.</p>
 
 <hr />
 <a id="Journal system and Chapters" name="Journal system and Chapters"></a>
@@ -494,7 +494,7 @@ This document is divided into a number of sections to allow quick reference for 
 <hr />
 <a id="Language support" name="Language support"></a>
 <h3>Language support</h3>
-<p>For now EET is available in English, Polish and German. Whole BG:EE portion of the game is dynamically translated using dialog.tlk file exported directly from the BG:EE. There are not many additional lines (just a few KB), so hopefully more languages will be supported soon. Other than this the mod comes with vanilla BG1 movies converted to HD format. If you are interested in helping with translation you can use EET/tra/en_US tra files as a base. If BG1 has been fully localized in your country and you have access to it, send me all MVE files present there and I will convert them to WBM format used in Enhanced Edition engine.</p>
+<p>For now EET is available in English, Polish and German. Whole BG:EE portion of the game is dynamically translated using dialog.tlk file exported directly from the BG:EE. There are not many additional lines (just a few KB), so hopefully more languages will be supported soon. Other than this the mod comes with vanilla BG1 movies converted to HD format. If you are interested in helping with translation you can use EET/tra/en_US tra files as a base. If BG1 has been fully localized in your country and you have access to it, send us all MVE files present there and we will convert them to WBM format used in Enhanced Edition engine.</p>
 
 <hr />
 <a id="Mod support" name="Mod support"></a>
@@ -530,7 +530,7 @@ This document is divided into a number of sections to allow quick reference for 
 <hr />
 <a id="Story progression" name="Story progression"></a>
 <h3>Story progression</h3>
-<p>You start the game in Candlekeep and continue the BG1 storyline up until defeating Sarevok. Instead of end credits you can continue playing. After returning to Baldur’s Gate, Siege Of Dragonspear expansion starts seamlessly and allows you to experience new questline up until the party is captured by Irenicus (or at least that is how I hope Siege Of Dragonspear ends). After that you end up in Irenicus Dungeon. In current version access to BG1 areas during BG2 is blocked until you reach chapter 7 (entering Suldanessellar for the first time), but after patch 1.4 release you will be able to travel back as soon as chapter 2 starts. Nothing changes on how ToB expansion progress. The only difference is that you have free access to previously visited areas as soon as you leave Saradush.</p>
+<p>You start the game in Candlekeep and continue the BG1 storyline up until defeating Sarevok. Instead of end credits you can continue playing. After returning to Baldur’s Gate, Siege Of Dragonspear expansion starts seamlessly and allows you to experience new questline up until the party is captured by Irenicus (or at least that is how we hope Siege Of Dragonspear ends). After that you end up in Irenicus Dungeon. In current version access to BG1 areas during BG2 is blocked until you reach chapter 7 (entering Suldanessellar for the first time), but after patch 1.4 release you will be able to travel back as soon as chapter 2 starts. Nothing changes on how ToB expansion progress. The only difference is that you have free access to previously visited areas as soon as you leave Saradush.</p>
 
 <hr />
 <a id="Visiting old areas" name="Visiting old areas"></a>
@@ -612,11 +612,13 @@ This document is divided into a number of sections to allow quick reference for 
 	<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
 	<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
 	<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
+	<li><a href="#Detecting mods installed on BG:EE">Detecting mods installed on BG:EE</a></li>
 	<li><a href="#Adding support for mods installable on BG:EE previous to installing EET on BG2:EE">Adding support for mods installable on BG:EE previous to installing EET on BG2:EE</a></li>
 	<li><a href="#Adding support for shattering items (iron crisis) system in BG1 portion of the game">Adding support for shattering items (iron crisis) system in BG1 portion of the game</a></li>
 	<li><a href="#Importing more items to BG2">Importing more items to BG2</a></li>
 	<li><a href="#Adding support for NPC transition system">Adding support for NPC transition system</a></li>
 	<li><a href="#Workaround for PDIALOG.2DA forced dialogues">Workaround for PDIALOG.2DA forced dialogues</a></li>
+	<li><a href="#Workaround for CalanderDay command in SoD/BG2 portion of the game">Workaround for CalanderDay command in SoD/BG2 portion of the game</a></li>
 	<li><a href="#Adding new animations">Adding new animations</a></li>
 	<li><a href="#Adding support for EET Worldmap">Adding support for EET Worldmap</a></li>
 </ul>
@@ -626,7 +628,7 @@ This document is divided into a number of sections to allow quick reference for 
 <h3>Adopting EET naming conventions for BG1 resources</h3>
 <p>If your mod is designed to work not only with EET but also other platforms you should consider using either:</p>
 <ul>
-<li><a href="../other/cpmvars">cpmvars variable libraries</a> - a set of variable declaration for BG:EE/BGT/Tutu/EET. INCLUDE each of these TPA files using GAME_IS WeiDU command, depending on each platform. These will cover all area names, area scripts, NPC dialogue and some other differences, allowing you to code everything with the same WeiDU code (by replacing resource name with variable). If some resource is not implemented here you can expand it to cover all your needs. It's a well known way of coding, with plenty of examples in released mods, so I will focus only on new additions related to EET.<br>
+<li><a href="../other/cpmvars">cpmvars variable libraries</a> - a set of variable declaration for BG:EE/BGT/Tutu/EET. INCLUDE each of these TPA files using GAME_IS WeiDU command, depending on each platform. These will cover all area names, area scripts, NPC dialogue and some other differences, allowing you to code everything with the same WeiDU code (by replacing resource name with variable). If some resource is not implemented here you can expand it to cover all your needs. It's a well known way of coding, with plenty of examples in released mods, so let's focus only on new additions related to EET.<br>
 - <strong>eet_var</strong> - used to add EET "_" suffix at the end of files. Other platforms will return nothing for it, so the letter is added only for EET.<br>
 - <strong>eet_script0</strong> - used to remove "0" in conflicting resources with 8 letters (SKELWA02.CRE => SKELWA2_.CRE, SKELWA03.CRE => SKELWA3_.CRE, also used for random item tables (RNDEQU / RNDMAG / RNDSCR / RNDTRE / RNDWEP - example: RNDWEP01 => RNDWEP1_). Other platforms will return "0" for it and EET cpmvars will return nothing (symbol is removed). You still need to use %eet_var% a the end to add "_" symbol.<br>
 These 2 variables can be used to properly reference BG1 resources in code that are not already handled by existing cpmvars. Take a look at <a href="#conventions">EET conventions</a> section if you have problem understanding why exactly these variables are handy.<br>
@@ -715,9 +717,42 @@ END
 </div>
 
 <hr />
+<a id="Detecting mods installed on BG:EE" name="Detecting mods installed on BG:EE"></a>
+<h3>Detecting mods installed on BG:EE</h3>
+
+<p>EET has <a href="#Mod support">limited support for BG:EE mods installed on BG:EE</a> previous to installing EET on BG2:EE. Mods installed this way are treated exactly the same as vanilla resources and end up part of the BG2:EE EET installation. So, how can other mods detect if a particular mod has been installed on BG:EE? There are 2 ways to do it:</p>
+
+<ul>
+<li><strong>dummy files</strong> are often used by mods to make them detectable by other mods. They are copied to EET override directory during installation, so can be normally detected via FILE_EXISTS_IN_GAME WeiDU command.</li>
+<li><strong>WeiDU.log file</strong> from BG:EE is copied to EET override directory which allows modders to use workarounds for existing WeiDU functions. Here are few examples using BG1 NPC Project component 0, any language:</li>
+</ul>
+
+<div class="important">
+<pre>
+//works the same as REQUIRE_COMPONENT
+REQUIRE_PREDICATE ((FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
+
+//works the same as FORBID_COMPONENT
+REQUIRE_PREDICATE ((!FILE_EXISTS ~override/WeiDU.log~) OR (!FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
+
+//works the same as MOD_IS_INSTALLED
+ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
+    //do something if component has been detected
+END ELSE BEGIN
+    //do something if component has NOT been detected
+END
+</pre>
+</div>
+
+<ul>
+	<p>Of course if your mod is meant to also detect the mod installed natively than you should nest above mentioned code with vanilla WeiDU commands used for mod detection.</p>
+	<p>Overall this workaround doesn't sound like a very useful thing because BG:EE mods usually don't affect BG2:EE content, so the need for additional check for them in BG2:EE mods is not common. The ones affected are usually installed on BG:EE too, so any WeiDU mod detection command works correctly at that time. And the more complicated mods (such as BG1 NPC Project) already uses dummy files, so they are detectable without any hassle anyway.</p>
+</ul>
+
+<hr />
 <a id="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE" name="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE"></a>
 <h3>Adding support for mods installable on BG:EE previous to installing EET on BG2:EE</h3>
-<p>As <a href="#Mod support">mentioned before</a> EET has limited support for BG:EE mods installed on BG:EE previous to installing EET on BG2:EE. If you're not planning to convert your BG:EE mod to work natively with EET, you may be interested in this solution that treats mods installed on BG:EE as vanilla content, which means all new resources are converted on the fly with vanilla files. For more information how to achieve this please take a look at <a href="../other/BGEE_to_EET_mod_checker">BGEE_to_EET_mod_checker</a> tool readme file.</p>
+<p>If you're not planning to convert your BG:EE mod to work natively with EET, you may be interested in a solution that treats mods installed on BG:EE (previous to installing EET on BG2:EE) as vanilla content, which means all new BG:EE resources are converted on the fly with vanilla files. For more information how to achieve this please take a look at <a href="../other/BGEE_to_EET_mod_checker">BGEE_to_EET_mod_checker</a> tool readme file.</p>
 
 <hr />
 <a id="Adding support for shattering items (iron crisis) system in BG1 portion of the game" name="Adding support for shattering items (iron crisis) system in BG1 portion of the game"></a>
@@ -737,7 +772,26 @@ END
 <hr />
 <a id="Importing more items to BG2" name="Importing more items to BG2"></a>
 <h3>Importing more items to BG2</h3>
-<p>As explained in <a href="#Item importation">Item importation</a> description it's easy to import more items to BG2, using the same AR0602.BCS code that works in vanilla BG2. All you need to do is <strong>EXTEND_TOP</strong> SoD -> BG2 transition script (<strong>K#TELBGT.BCS</strong>) with the code that will preserve items during transition. Here are few examples:</p>
+<p>As explained in <a href="#Item importation">Item importation</a> description it's easy to import more items to BG2, using the same AR0602.BCS code that works in vanilla BG2. All you need to do is:</p>
+
+<ul>
+	<li><strong>REPLACE_TEXTUALLY K#TELBGT.BCS</strong> to add additional items into existing block in EET transition script, for example:</li>
+</ul>
+
+<div class="important">
+<pre>
+COPY_EXISTING ~K#TELBGT.BCS~ ~override~
+  REPLACE_TEXTUALLY ~SetGlobal("K#DoOnceItemList","LOCALS",1)~ ~SetGlobal("K#DoOnceItemList","LOCALS",1)
+    TakePartyItem("MISC47") // Golden Pantaloons
+    TakePartyItem("CHAN06") // Mithral Chain Mail +4
+    TakePartyItem("SW1H15") // Icingdeath +3
+    TakePartyItem("SW1H16") // Twinkle +3~
+</pre>
+</div>
+
+<ul>
+	<li>Alternatively you could <strong>EXTEND_TOP K#TELBGT.BCS</strong> with the code that will preserve items during transition. Here are few examples:</li>
+</ul>
 
 <div class="important">
 <pre>
@@ -759,7 +813,8 @@ IF
   PartyHasItem("MISC47") // Golden Pantaloons
 THEN
   RESPONSE #100
-    ActionOverride("K#TELBGT",TakePartyItem("MISC47")) // Golden Pantaloons
+    TakePartyItem("MISC47") // Golden Pantaloons
+    Continue()
 END
 
 //as above but saves the item using TakeItemListPartyNum action (in EE engine you can use any 2da file with this action)
@@ -768,9 +823,9 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("variableNameOfYourChoice","LOCALS",1)
-    ActionOverride(Myself,TakeItemListPartyNum("IMPORT02",1))
-    ActionOverride(Myself,TakeItemListPartyNum("IMPORT01",1))
-    ActionOverride(Myself,TakeItemListPartyNum("IMPORT03",1))
+    TakeItemListPartyNum("IMPORT02",1)
+    TakeItemListPartyNum("IMPORT01",1)
+    TakeItemListPartyNum("IMPORT03",1)
     Continue()
 END
 </pre>
@@ -781,7 +836,71 @@ END
 <hr />
 <a id="Adding support for NPC transition system" name="Adding support for NPC transition system"></a>
 <h3>Adding support for NPC transition system</h3>
-<p>As <a href="#Character continuity between BG1 and SoD">already explained</a> EET uses new system for NPC transition from Siege of Dragonspear expansion to Shadows of Amn (currently transition starts after killing Sarevok, but it will be changed once SoD support is implemented) and from Shadows of Amn to Throne of Bhaal expansion. In order to make modder's life easier I've prepared a function designed to automatically add both types of transition to any kind of NPC mod. All you need to do to make your NPC fully compatible with EET is disabling your normal patching code for AR4000.BCS, AR4500.BCS, FATESP.DLG and using EET_TRANSITION function instead. Copy <a href="../other/EET_functions">EET_functions.tph</a> to your mod folder and use INCLUDE command to properly declare these new functions. You can use this example code for reference how the function is meant to be used:</p>
+<p>As <a href="#Character continuity between BG1 and SoD">already explained</a> EET uses new system for NPC transition from Siege of Dragonspear expansion to Shadows of Amn (currently transition starts after killing Sarevok, but it will be changed once SoD support is implemented) and from Shadows of Amn to Throne of Bhaal expansion. In order to make modder's life easier we've prepared a function designed to automatically add both types of transition to any kind of NPC mod. All you need to do to make your NPC fully compatible with EET is disabling your normal patching code for AR4000.BCS, AR4500.BCS, FATESP.DLG and using EET_TRANSITION function instead.</p>
+<p>If your BG2 NPC is meant to have BG1->BG2 transition than you should add additional <strong>Global("%dv%PartyBG1","GLOBAL",0)</strong> trigger (where %DV% is death variable of your CRE) in the code that spawns new version of CRE file into BG2 area. This way such block won't trigger if the NPC is valid for migration from BG1 to BG2. For example:</p>
+
+<div class="important">
+<pre>
+//this code will spawn new version of CRE if the transition didn't occur and CRE was not left dead in BG1
+IF
+  Global("MinscImport","MYAREA",0)
+  Global("MinscPartyBG1","GLOBAL",0)
+  !Dead("Minsc")
+  LevelGT(Player1,11)
+THEN
+  RESPONSE #100
+    CreateCreature("Minsc12",[4029.2759],6)
+    SetGlobal("MinscImport","MYAREA",1)
+    Continue()
+END
+</pre>
+</div>
+
+<p>You can optionally specify SoA transition script in the function explained below. The script can be used to make some adjustments for BG2 portion of the game if needed. It is assigned to OVERRIDE script slot during transition and triggers as soon as you visit BG2 area where your NPC has been moved. Don't forget to replace the OVERRIDE script with the correct one at the end of the this transition script. For example:</p>
+
+<div class="important">
+<pre>
+IF
+  LevelLT(Protagonist,13)
+  XPLT(Myself,400000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,400000,SET)
+    Continue()
+END
+
+IF
+  LevelGT(Protagonist,12)
+  XPLT(Myself,1200000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,1200000,SET)
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    DestroyItem("IMOENHP1")
+    CreateItem("STAF01",1,0,0)
+    CreateItem("CLCK14",1,0,0)
+    FillSlot(SLOT_ARMOR)
+    FillSlot(SLOT_WEAPON)
+    EquipMostDamagingMelee()
+    SetPlayerSound(Myself,30759,MORALE)
+    SetDialog("IMOEN10")
+    SetNumTimesTalkedTo(0)
+    SetGlobal("K#PDIALOG","LOCALS",0)
+    SetGlobal("KickedOut","LOCALS",0)
+    ChangeAIScript("NPCMAGE1",CLASS)
+    ChangeAIScript("",RACE)
+    ChangeAIScript("IMOEN",OVERRIDE) //this one will end the script
+END
+</pre>
+</div>
+
+<p>Copy <a href="../other/EET_functions">EET_functions.tph</a> to your mod folder and use INCLUDE command to properly declare these new functions. You can use this example code for reference how the function is meant to be used:</p>
 
 <div class="important">
 <pre>
@@ -790,21 +909,28 @@ LAF ~EET_NPC_TRANSITION~
     type = 1
       //1 - BG1 NPC without BG2 content (NPC is disabled from game during SoA transition, mentioned but not summonable in ToB)
       //2 - BG2 NPC without BG1 content (transition to ToB if joined the party at least once during SoA)
-      //3 - BG1 NPC with BG2 content (full transition to SoA/ToB) (for mods created with whole game in mind from the start)
-      //4 - BG2 NPC with transition swap (converts partial transition implemented via 1 to full SoA/ToB transition - 3)
-      //last option is for mods adding BG2 content to BG1 NPCs that normally are not joinable in BG2,
-      //or for mods with separate installers for BG:EE and BG2:EE portion of the game (use it with MOD_IS_INSTALLED check)
+      //3 - NPC with BG1 and BG2 content (full transition to SoA/ToB)
     posX = 3198 //NPC X coordinate on SoA transition destination ARE
     posY = 2837 //NPC Y coordinate on SoA transition destination ARE
     face = 6 //NPC facing on SoA transition destination ARE
+    create_SoA = 0 //controls if new CRE should be spawned in SoA if NPC was killed in BG1 (no by default - 0)
+    default_ToB = 0 //controls if NPC should be spawnable in ToB when the game has been started in ToB (no by default - 0)
   STR_VAR
-    dv = ~IMOEN2~ //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
-    are = ~AR0602~ //ARE file name where NPC should be moved during SoA transition
+    dv = "IMOEN2" //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
+    are = "AR0602" //ARE file name where NPC should be moved during SoA transition
+    transition_SoA = "" //script assigned to override slot during transition, should be manually replaced with override_SoA
     override_BG1 = "IMOEN_" //name of the override NPC script in BG1
     override_SoA = "IMOEN2" //name of the override NPC script in SoA
     override_ToB = "IMOEN25" //name of the override NPC script in ToB
     dialog_ToB = "IMOEN25A" //name of the dialogue file used after spawning NPC in ToB
     string = "@1" //FATESP summon text (example: "Bring me Quayle, the gnome cleric/illusionist.") or TRA string number
+    stringPosDV = "" //set the DV of NPC right below your response (used for sorting FATESP responses alphabetically)
+      //Aerie, Ajantis, Alora, Anomen, Baeloth, Branwen, Cernd, Coran, Dorn, Dynaheir, Edwin, Eldoth, Faldorn, Garrick
+      //HaerDalis, Hexxat, Imoen2, Jaheira, Jan, Kagain, Keldorn, Khalid, Kivan, Korgan, Mazzy, Minsc, Montaron, Nalia
+      //Neera, Quayle, Rasaad, Safana, SharTeel, Skie, Tiax, Viconia, Valygar, Wilson, Xan, Xzar, Yeslick, Yoshimo
+      //variable not set (default) = NPC name appended at the end of summoning list
+    SummonedVar = "" //set it only if you want to use different var name than %dv%Summoned (useless in most cases)
+    SpawnPlaneVar = "" //set it only if you want use different var name than %dv%SpawnPlane (useless in most cases)
 END
 </pre>
 </div>
@@ -816,7 +942,7 @@ LAF ~EET_NPC_TRANSITION~
   INT_VAR
     type = 1
   STR_VAR
-    dv = ~IMOEN2~
+    dv = "IMOEN2"
     override_BG1 = "IMOEN_"
     string = "@1"
 END
@@ -826,14 +952,14 @@ LAF ~EET_NPC_TRANSITION~
   INT_VAR
     type = 2
   STR_VAR
-    dv = ~IMOEN2~
+    dv = "IMOEN2"
     override_SoA = "IMOEN2"
     override_ToB = "IMOEN25"
     dialog_ToB = "IMOEN25A"
     string = "@1"
 END
 
-//BG1 NPC with BG2 content
+//NPC with BG1 and BG2 content (type = 3 can be also used to add transition into vanilla BG1 NPC without it)
 LAF ~EET_NPC_TRANSITION~
   INT_VAR
     type = 3
@@ -841,8 +967,8 @@ LAF ~EET_NPC_TRANSITION~
     posY = 2837
     face = 6
   STR_VAR
-    dv = ~IMOEN2~
-    are = ~AR0602~
+    dv = "IMOEN2"
+    are = "AR0602"
     override_BG1 = "IMOEN_"
     override_SoA = "IMOEN2"
     override_ToB = "IMOEN25"
@@ -850,17 +976,22 @@ LAF ~EET_NPC_TRANSITION~
     string = "@1"
 END
 
-//BG2 NPC with transition swap
+//type of transition depends on if separate mod with type = 1 transition has been installed
+ACTION_IF MOD_IS_INSTALLED ~NPCName/NPCName.tp2~ ~0~ BEGIN
+  OUTER_SET type_var = 3 //this will change type of transition from 1 to 3
+END ELSE BEGIN
+  OUTER_SET type_var = 2 //BG1 version of NPC is not installed, so just add BG2 only transition
+END
 LAF ~EET_NPC_TRANSITION~
   INT_VAR
-    type = 3
-    posX = 3198
-    posY = 2837
-    face = 6
+    type = type_var
+    posX = 3198 //won't be used if type_var = 2
+    posY = 2837 //won't be used if type_var = 2
+    face = 6 //won't be used if type_var = 2
   STR_VAR
-    dv = ~IMOEN2~
-    are = ~AR0602~
-    override_BG1 = "IMOEN_"
+    dv = "IMOEN2"
+    are = "AR0602"
+    override_BG1 = "IMOEN_" //won't be used if type_var = 2
     override_SoA = "IMOEN2"
     override_ToB = "IMOEN25"
     dialog_ToB = "IMOEN25A"
@@ -869,15 +1000,13 @@ END
 </pre>
 </div>
 
-<p>It is preferable to use EET_TRANSITION than manually patching files. This way if anything regarding transition will be changed in future you won't need to edit your code but just replace TPH file with updated function declaration. For those interested how exactly it works or those who need to include additional REPLACE_TEXTUALLY patching within outcome code, here is an explanation what the function does:</p>
+<p>You can see more examples in EET/lib/transition.tph file. It is preferable to use EET_TRANSITION than manually patching files. This way if anything regarding transition will be changed in future you won't need to edit your code but just replace TPH file with updated function declaration. For those interested how exactly it works or those who need to include additional REPLACE_TEXTUALLY patching within outcome code, here is an explanation what the function does:</p>
 <ul>
-<li><strong>K#TELBGT.BCS</strong> (SoD -> BG2 transition script) is expanded with one of these 2 code blocks depending if the NPC has BG2 content:</li>
+<li><strong>K#TELBGT.BCS</strong> (SoD -> BG2 transition script) is expanded if type = 1 or 3:</li>
 </ul>
+
 <div class="important">
 <pre>
-//this code disables NPC without BG2 content
-
-//NPCs outside transition area
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -887,7 +1016,7 @@ THEN
     MoveGlobalObjectOffScreen("%dv%",Player1)
     Continue()
 END
-//NPCs in party
+
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -897,45 +1026,7 @@ THEN
     ActionOverride("%dv%",LeaveParty())
     Continue()
 END
-//NPCs without MoveBetweenAreas transition
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnce%dv%","LOCALS",1)
-    ActionOverride("%dv%",DropInventory())
-    ActionOverride("%dv%",DestroySelf())
-    Continue()
-END
-</pre>
-</div>
 
-<div class="important">
-<pre>
-//this code moves BG1 NPC to BG2 area
-
-//NPCs outside party
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-  !InMyArea("%dv%")
-THEN
-  RESPONSE #100
-    MoveGlobalObjectOffScreen("%dv%",Player1)
-    Continue()
-END
-//NPCs in party
-IF
-  Global("K#DoOnce%dv%","LOCALS",0)
-  Global("%dv%PartyBG1","GLOBAL",1)
-  InPartyAllowDead("%dv%")
-THEN
-  RESPONSE #100
-    ActionOverride("%dv%",LeaveParty())
-    Continue()
-END
-//NPCs with MoveBetweenAreas (dead)
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -943,12 +1034,12 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#DoOnce%dv%","LOCALS",1)
-    SetGlobal("%dv%PartyBG1","GLOBAL",0)
+    %reset_PartyBG1% //%dv%PartyBG1 and SPRITEISDEAD variables set to 0 if create_SoA = 1
     ActionOverride("%dv%",DropInventory())
     ActionOverride("%dv%",DestroySelf())
     Continue()
 END
-//NPCs with MoveBetweenAreas transition (not dead)
+
 IF
   Global("K#DoOnce%dv%","LOCALS",0)
   Global("%dv%PartyBG1","GLOBAL",1)
@@ -961,6 +1052,7 @@ THEN
     ActionOverride("%dv%",ChangeAIScript("",DEFAULT))
     ActionOverride("%dv%",ChangeEnemyAlly(Myself,NEUTRAL))
     ActionOverride("%dv%",MoveBetweenAreas("%are%",[%posX%.%posY%],%face%))
+    ActionOverride("%dv%",ChangeAIScript("%transition_SoA%",OVERRIDE) //override_SoA used if not specified
     Continue()
 END
 </pre>
@@ -998,22 +1090,19 @@ END
 
 <div class="important">
 <pre>
-  IF ~  Global("%dv%Summoned","GLOBAL",0)
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
 Dead("%dv%")
-!InMyArea("%dv%")
-~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
 ~ GOTO 10
-  IF ~  Global("%dv%Summoned","GLOBAL",0)
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
 Global("%dv%PartyBG2","GLOBAL",0)
 !Dead("%dv%")
-!InMyArea("%dv%")
-~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",2)
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
 ~ GOTO 7
-  IF ~  Global("%dv%Summoned","GLOBAL",0)
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
 Global("%dv%PartyBG2","GLOBAL",1)
 !Dead("%dv%")
-!InMyArea("%dv%")
-~ THEN REPLY %string% DO ~SetGlobal("%dv%Summoned","GLOBAL",1)
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",1)
 ~ GOTO 9
 END
 </pre>
@@ -1027,25 +1116,25 @@ END
 <pre>
 IF
   InParty("%dv%")
-  Global("%dv%Summoned","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",0)
 THEN
   RESPONSE #100
-    SetGlobal("%dv%Summoned","GLOBAL",2)
+    SetGlobal("%SummonedVar%","GLOBAL",2)
 END
 
 IF
-  Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",0)
   Global("%dv%PartyBG1","GLOBAL",0)
   Global("%dv%PartyBG2","GLOBAL",0)
-  !InMyArea("%dv%")
 THEN
   RESPONSE #100
-    SetGlobal("%dv%Summoned","GLOBAL",2)
+    SetGlobal("%SummonedVar%","GLOBAL",2)
     Continue()
 END
 </pre>
 </div>
+
+<p>Also if default_ToB is set to 1 than %dv%PartyBG2 will be set to 1 if you start a new game in ToB (REPLACE_TEXTUALLY first block in AR4000.BCS).</p>
 
 <ul>
 <li><strong>AR4500.BCS</strong> is extended bottom with this code:</li>
@@ -1055,8 +1144,8 @@ END
 <pre>
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",1)
-  Global("%dv%SpawnPlane","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
 THEN
   RESPONSE #100
     CreateVisualEffect("SPPORTAL",[1999.1218])
@@ -1066,14 +1155,14 @@ THEN
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
     ActionOverride("%dv%",JoinParty())
     MoveToExpansion()
-    SetGlobal("%dv%Summoned","GLOBAL",-1)
+    SetGlobal("%SummonedVar%","GLOBAL",-1)
     //Continue()
 END
 
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",-1)
-  Global("%dv%SpawnPlane","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",-1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
   XPLT("%dv%",2500000)
 THEN
   RESPONSE #100
@@ -1083,8 +1172,8 @@ END
 
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%dv%Summoned","GLOBAL",-1)
-  Global("%dv%SpawnPlane","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",-1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
 THEN
   RESPONSE #100
     ActionOverride("%dv%",LeaveParty())
@@ -1092,14 +1181,50 @@ THEN
     ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
     ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
-    SetGlobal("%dv%SpawnPlane","GLOBAL",1)
-    SetGlobal("%dv%Summoned","GLOBAL",1)
+    SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
+    SetGlobal("%SummonedVar%","GLOBAL",1)
     Continue()
 END
 </pre>
 </div>
 
-<p>Depending on which variables you set in EET_TRANSITION code, different combination of above patching will take place (or in case of type = 4 one patching type will also replace another).</p>
+<p>Depending on which variables you set in EET_TRANSITION code, different combination of above patching will take place.</p>
+
+<p>If your mod changes BG2 plot to introduce Ajantis, Coran, Faldorn, Khalid, Safana, Tiax or Xzar as joinable NPCs in BG2 portion of the game than keep in mind that EET uses following code to properly set <a href="http://www.shsforums.net/topic/15817-dead-and-sprite-is-dead-varisbles/">SPRITEISDEAD variable</a> when BG2 version of them dies. Depending on how your mod is written you may need to clean changes made by EET in area scripts, implemented by this code:</p>
+
+<div class="important">
+<pre>
+<<<<<<<< EET-inlined/SPRITEISDEAD-eb.baf
+IF
+  Global("K#Dead%dv_1%","%area%",0)
+  OR(2)
+    Dead("%dv%")
+    StateCheck("%dv%",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#Dead%dv_1%","%area%",1)
+    SetGlobal("SPRITEISDEAD%dv_1%","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_bg2bcs_dvArea BEGIN
+  palkni04 , Ajantis => AR1200
+  c6coran , Coran => AR2600
+  cefaldor , Faldorn => AR1901
+  cefald01 , Faldorn => AR1901
+  DeadKhalid , Khalid => AR0603
+  c6safa , Safana => AR2600
+  pptiax , Tiax => AR1515
+  pptiax2 , Tiax => AR1515
+  Lyros , Xzar => AR0300
+END
+
+ACTION_PHP_EACH table_bg2bcs_dvArea AS dv => area BEGIN
+  EXTEND_BOTTOM ~%area%.BCS~ ~EET-inlined/SPRITEISDEAD-eb.baf~ EVALUATE_BUFFER
+END
+</pre>
+</div>
 
 <hr />
 <a id="Workaround for PDIALOG.2DA forced dialogues" name="Workaround for PDIALOG.2DA forced dialogues"></a>
@@ -1158,6 +1283,50 @@ END
 </div>
 
 <p>If you are using the same override script in BG1 and BG2 than you should add ENDOFBG1 filtering to above code. Remember that you can also use SetDialog to assign new starting dialogue when the NPC is first met in BG2 portion of the game and ChangeAIScript to overwrite any local script currently assign to the NPC.</p>
+
+<hr />
+<a id="Workaround for CalanderDay command in SoD/BG2 portion of the game" name="Workaround for CalanderDay command in SoD/BG2 portion of the game"></a>
+<h3>Workaround for CalanderDay command in SoD/BG2 portion of the game</h3>
+<p>CalanderDay(I:Day*) / CalanderDayGT(I:Day*) / CalanderDayLT(I:Day*) triggers can be used to detect if the current day is the day specified / after the day specified / before the day specified. What about situations when you need to use it in Siege of Dragonspear or Baldur's Gate 2 portion of the game? We don't know how many days it will take CHARNAME party to finish first 7 chapters, so the vanilla command becomes less useful. That is why EET introduced days counter that can be used as a workaround here. For easier explanation let's take a look at how EET resolved this problem for Town Crier in Athkatla, who should tell something new each 3 passing days.
+
+<p>Town Crier local script (DS3483.BCS) has been expanded with the below code that assigns K#TOWNC01_day variable to use K#DaysPassed value (in EET this variable counts passed in-game days). From now after each day the value of K#TOWNC01_cnt will be increased by 1. You don't need to be near NPC to make it work - the K#TOWNC01_cnt variable will be updated correctly as soon as you return to area with this NPC.</p>
+<div class="important">
+<pre>
+IF
+  Global("K#DoOnce","LOCALS",0)
+  Global("K#TOWNC01_cnt","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#DoOnce","LOCALS",1)
+    SetGlobal("K#TOWNC01_cnt","GLOBAL",1) //modify this value if you want to change starting day
+    SetGlobal("K#TOWNC01_day","GLOBAL",0) //just to be sure
+    AddGlobals("K#TOWNC01_day","K#DaysPassed")
+    Continue()
+END
+
+IF
+  Global("K#DoOnce","LOCALS",1)
+  GlobalsGT("K#DaysPassed","K#TOWNC01_day")
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#TOWNC01_cnt","GLOBAL",1)
+    IncrementGlobal("K#TOWNC01_day","GLOBAL",1)
+    Continue()
+END
+</pre>
+</div>
+
+<p>Now that we have a working day tracking system we should modify TOWNC01.DLG to replace CalanderDayLT trigger with variable check instead, like this:</p>
+<div class="important">
+<pre>
+COPY_EXISTING ~TOWNC01.DLG~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~CalanderDayLT(~ ~GlobalLT("K#TOWNC01_cnt","GLOBAL",~
+  END
+BUT_ONLY
+</pre>
+</div>
+<p>There you go - a working workaround for CalanderDayLT. You can adjust the code to easily create workarounds for CalanderDay and CalanderDayGT too. In this example K#TOWNC01_cnt is a GLOBAL variable due to multiple instances of TOWNC01.CRE in different areas and we want them all to use the same days passed counter. You can change it to use LOCALS variable instead if the counter should be tracked only for 1 instance of NPC.</p>
 
 <hr />
 <a id="Adding new animations" name="Adding new animations"></a>
@@ -1970,7 +2139,6 @@ END
 <ul>
 	<li><a href="../base/2da">CRIPPSTR.2DA, SNEAKATT.2DA</a> - 2da files imported from IWD:EE. Patch 1.3 for BG2:EE backported new features from IWD:EE release. These particular files are used for Thief sneak attack/crippling strike mechanics known from IWD and 3rd edition of pen-and-paper Dungeon & Dragons ruleset. They work exactly the same as in IWD:EE and replaces Backstabbing. To fully enable this mechanics in your game install "3E Thief Sneak Attack" <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> component.</li>
 	<li><a href="../base/animation">IWD:EE animation BAM files</a> - unused in vanilla game, but included so modders can use them without need of including these files within mod archive. Having them in a package also allows EET to promote a common standard for animation offsets (EET uses exactly the same offsets for new animations as IWD:EE). Some of them are used to adopt mods from BG:EE compatibility list into common standard (see: Drizzt Saga which normally overwrites existing animations instead of adding them to new slots). After Siege of Dragonspear release, which will be required for EET, amount of new animation files will be reduced as it looks like the expansion will come with quite a lot of them.</li>
-	<li><a href="../base/chr">Character files</a> - a bunch of characters from Black Pits 2 that have been converted from CRE to CHR format. They are moved to "characters" directory, so you can choose them instead of Black Pits 1 ones (which are now default) if you prefer these guys.</li>
 	<li><a href="../base/chr">Creature files</a> - dummy invisible creatures with local scripts attached. Used for various things like setting dynamic biography (K#BIO.CRE), applying penalties after familiar is killed (K#FAMKIL.CRE), removing familiars and bonuses (K#FAMREM.CRE), summoning and assigning familiar based on Player1 allegiance (K#FAMSUM.CRE), iron crisis during BG1 implementation for different items (K#SHATAR.CRE, K#SHATHE.CRE, K#SHATSH.CRE, K#SHATWE.CRE), skipping the BG1 game and moving right into BG2 (K#TELBG2.CRE), SoD -> BG2 transition script (K#TELBGT.CRE), starting tutorial (K#TELTUT.CRE).</li>
 	<li><a href="../base/eff">Effect files</a> - same names as dummy creatures, part of the implementation of above mentioned features.</li>
 	<li><a href="../base/gui">GUI graphic</a> - mostly BAM, PVRZ, MBC (packed MOS) and some other files related to EET GUI elements</li>

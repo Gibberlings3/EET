@@ -1,0 +1,140 @@
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  CheckStatLT(Myself,17,DEX)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,DEX,17,SET)
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  LevelLT(Protagonist,8)
+  XPLT(Myself,90000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,90000,SET)
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  LevelGT(Protagonist,7)
+  LevelLT(Protagonist,11)
+  XPLT(Myself,161000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,161000,SET)
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  Level(Protagonist,11)
+  XPLT(Myself,400000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,400000,SET)
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+  LevelGT(Protagonist,11)
+  XPLT(Myself,800000)
+THEN
+  RESPONSE #100
+    ChangeStat(Myself,XP,800000,SET)
+    Continue()
+END
+
+IF
+  Global("JaheiraImport","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraImport","GLOBAL",2)
+    //ReallyForceSpellRES("K#PORJAH",Myself) // No such index
+    SetPlayerSound(Myself,-1,INITIAL_MEETING) // No such index
+    SetPlayerSound(Myself,4008,MORALE) // I will not fall here!
+    SetPlayerSound(Myself,4010,HAPPY) // Our actions are good, and will serve the greater balance.
+    SetPlayerSound(Myself,4011,UNHAPPY_ANNOYED) // I hope this is not a sign of things to come. We must strive to maintain balance.
+    SetPlayerSound(Myself,4012,UNHAPPY_SERIOUS) // This is no longer a matter that can be brushed aside! Change your ways or we shall be at odds!
+    SetPlayerSound(Myself,4013,UNHAPPY_BREAKING_POINT) // I... I cannot believe the change in this group! For the greater balance, I... I must oppose you!
+    SetPlayerSound(Myself,4014,LEADER) // As I have said before, you could not have made a better choice.
+    SetPlayerSound(Myself,4015,TIRED) // Rest would be welcome lest we endanger ourselves.
+    SetPlayerSound(Myself,4016,BORED) // It is strange that we stand about when there is so much to do.
+    SetPlayerSound(Myself,4009,BATTLE_CRY1) // For the fallen!
+    SetPlayerSound(Myself,30765,BATTLE_CRY2) // Fall, creature! And feed the earth!
+    SetPlayerSound(Myself,30766,BATTLE_CRY3) // Nature take the life she gave!
+    SetPlayerSound(Myself,-1,BATTLE_CRY4) // No such index
+    SetPlayerSound(Myself,-1,BATTLE_CRY5) // No such index
+    SetPlayerSound(Myself,-1,ATTACK1) // No such index
+    SetPlayerSound(Myself,-1,ATTACK2) // No such index
+    SetPlayerSound(Myself,-1,ATTACK3) // No such index
+    SetPlayerSound(Myself,-1,ATTACK4) // No such index
+    SetPlayerSound(Myself,5353,DAMAGE) // 
+    SetPlayerSound(Myself,5354,DYING) // 
+    SetPlayerSound(Myself,4017,HURT) // I will require healing if I am to be of use to the group.
+    SetPlayerSound(Myself,4018,AREA_FOREST) // I am at peace in the outdoor places, though it never seems to last.
+    SetPlayerSound(Myself,4019,AREA_CITY) // I have no patience for cities. Our stay had best be a short one.
+    SetPlayerSound(Myself,4020,AREA_DUNGEON) // Nature could find a home here if it were properly cleansed and balanced.
+    SetPlayerSound(Myself,5352,AREA_DAY) // I welcome each day we see. Some are not so lucky. 
+    SetPlayerSound(Myself,4021,AREA_NIGHT) // Nature has many children that call the darkness home. I am not one of them. 
+    SetPlayerSound(Myself,4022,SELECT_COMMON1) // Nature's servant awaits.
+    SetPlayerSound(Myself,4023,SELECT_COMMON2) // I await your need.
+    SetPlayerSound(Myself,54350,SELECT_COMMON3) // Yes?
+    SetPlayerSound(Myself,4024,SELECT_COMMON4) // I am ready.
+    SetPlayerSound(Myself,30767,SELECT_COMMON5) // It is about time.
+    SetPlayerSound(Myself,30768,SELECT_COMMON6) // Speak your mind.
+    SetPlayerSound(Myself,4025,SELECT_ACTION1) // It is done.
+    SetPlayerSound(Myself,30769,SELECT_ACTION2) // I am willing.
+    SetPlayerSound(Myself,4027,SELECT_ACTION3) // I go.
+    SetPlayerSound(Myself,4028,SELECT_ACTION4) // As I would have done.
+    SetPlayerSound(Myself,4029,SELECT_ACTION5) // If it will help.
+    SetPlayerSound(Myself,4030,SELECT_ACTION6) // I thought as much.
+    SetPlayerSound(Myself,4031,SELECT_ACTION7) // As you would have it.
+    SetPlayerSound(Myself,-1,INTERACTION1) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION1) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION2) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION3) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION4) // No such index
+    SetPlayerSound(Myself,-1,INTERACTION5) // No such index
+    SetPlayerSound(Myself,-1,INSULT) // No such index
+    SetPlayerSound(Myself,-1,COMPLIMENT1) // No such index
+    SetPlayerSound(Myself,-1,COMPLIMENT2) // No such index
+    SetPlayerSound(Myself,-1,COMPLIMENT3) // No such index
+    SetPlayerSound(Myself,-1,SPECIAL1) // No such index
+    SetPlayerSound(Myself,-1,SPECIAL2) // No such index
+    SetPlayerSound(Myself,-1,SPECIAL3) // No such index
+    SetPlayerSound(Myself,-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound(Myself,-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound(Myself,-1,MISCELLANEOUS) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound(Myself,-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound(Myself,-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound(Myself,-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound(Myself,30770,SELECT_RARE1) // You require nothing more?
+    SetPlayerSound(Myself,30771,SELECT_RARE2) // If you think it is wise to do so. So much comes back to haunt us.
+    SetPlayerSound(Myself,30772,CRITICAL_HIT) // With vengeance!
+    SetPlayerSound(Myself,30775,CRITICAL_MISS) // Ugh!
+    SetPlayerSound(Myself,30776,TARGET_IMMUNE) // Weapon has no effect!
+    SetPlayerSound(Myself,30777,INVENTORY_FULL) // I have too much in my pack as it is. You'll have to pick that up off the ground.
+    SetPlayerSound(Myself,30778,PICKED_POCKET) // 
+    SetPlayerSound(Myself,30779,EXISTANCE1) // 
+    SetPlayerSound(Myself,30780,EXISTANCE2) // My concentration is undone. My spell has failed!
+    SetPlayerSound(Myself,30781,EXISTANCE3) // 
+    SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
+    SetPlayerSound(Myself,10199,EXISTANCE5) // When asked about her past, JAHEIRA glares as she speaks. She says that she was born in the Tethyr region to a loyalist of the King Alemander regime, unfortunately during the Tethyrian civil war. Her family was among the nobles targeted by the angry mobs of peasants, and she was only spared because a servant girl took her from their castle before it fell. An enclave of druids in the Forest of Tethir was willing to grant shelter, and Jaheira grew up headstrong in their care. She believes the only way to protect nature is to have an active role in the world, but the cost of this dedication seems to weigh heavily on her mind these days.  She grows quiet when you ask about recent events, and while she gives the appearance of her normal, strong-willed self, there is a look of doubt in her eyes. It would seem that she has seen too many friends fall to remain unaffected. She does not like the subject, and lets it drop.
+    SetDialog("Jaheira")
+    SetNumTimesTalkedTo(0)
+    SetGlobal("K#PDIALOG","LOCALS",0)
+    SetGlobal("KickedOut","LOCALS",0)
+    ChangeAIScript("SHOUT",CLASS)
+    ChangeAIScript("NPCDRU1",RACE)
+    ChangeAIScript("",GENERAL)
+    ChangeAIScript("WTARSGT",DEFAULT)
+    ChangeAIScript("JAHEIRA",OVERRIDE)
+END

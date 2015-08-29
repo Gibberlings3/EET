@@ -1,0 +1,237 @@
+//for some reason TakeItemListPartyNum takes item even if party don't have it, workaround below
+IF
+  Global("K#DoOnceItemList","LOCALS",0)
+  OR(5)
+    PartyHasItem("LEAT03") // Protector of the Second +2
+    PartyHasItem("CHAN03") // Mail of the Dead +2
+    PartyHasItem("PLAT02") // Plate Mail +1
+    PartyHasItem("LEAT06") // Armor of Missile Attraction +2
+    PartyHasItem("CHAN07") // Chain Mail +3
+THEN
+  RESPONSE #100
+    TakeItemListPartyNum("IMPORT01",1)
+    Continue()
+END
+
+IF
+  Global("K#DoOnceItemList","LOCALS",0)
+  OR(11)
+    PartyHasItem("SW1H24") // The Burning Earth +1
+    PartyHasItem("HAMM03") // Ashideena +2
+    PartyHasItem("AX1H07") // Bala's Axe, Wizard Slayer
+    PartyHasItem("HALB03") // Suryris's Blade +2
+    PartyHasItem("DAGG04") // The Grave Binder +2
+    PartyHasItem("STAF07") // Staff Spear +2
+    PartyHasItem("STAF06") // Staff Mace +2
+    PartyHasItem("SLNG05") // Arla's Dragonbane +3
+    PartyHasItem("SW1H06") // Varscona +2
+    PartyHasItem("BLUN11") // Mace
+    PartyHasItem("BLUN09") // Kiel's Morning Star
+THEN
+  RESPONSE #100
+    TakeItemListPartyNum("IMPORT02",1)
+    Continue()
+END
+
+IF
+  Global("K#DoOnceItemList","LOCALS",0)
+  OR(4)
+    PartyHasItem("HELM07") // Helm of Balduran
+    PartyHasItem("MISC72") // The Claw of Kazgaroth
+    PartyHasItem("MISC73") // The Horn of Kazgaroth
+    PartyHasItem("RING25") // Koveras's Ring of Protection
+THEN
+  RESPONSE #100
+    TakeItemListPartyNum("IMPORT03",1)
+    Continue()
+END
+
+IF
+  Global("K#DoOnceItemList","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#DoOnceItemList","LOCALS",1)
+    TakePartyItem("MISC47") // Golden Pantaloons
+    TakePartyItem("CHAN06") // Mithral Chain Mail +4
+    TakePartyItem("SW1H15") // Icingdeath +3
+    TakePartyItem("SW1H16") // Twinkle +3
+    //TakePartyGold(2147483647)
+    Continue()
+END
+
+IF
+  Global("K#AdvanceTimeOneMonth","LOCALS",0)
+  //GlobalLT("K#DaysPassed","GLOBAL",365)
+THEN
+  RESPONSE #100
+    SetGlobal("K#AdvanceTimeOneMonth","LOCALS",1)
+    SetGlobal("K#temp","GLOBAL",29)
+	AddGlobals("K#DaysPassed","K#temp")
+    AdvanceTime(ONE_MONTH)
+    Continue()
+END
+
+//at this place code is expanded via EET_NPC_TRANSITION
+
+IF
+  Global("K#FRAMEDELAY","LOCALS",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,DropInventory())
+    ActionOverride(Player2,DropInventory())
+    ActionOverride(Player3,DropInventory())
+    ActionOverride(Player4,DropInventory())
+    ActionOverride(Player5,DropInventory())
+    ActionOverride(Player6,DropInventory())
+    SetGlobal("K#FRAMEDELAY","LOCALS",1) //loop delay needed by K#DPLAYER3 blocks
+END
+
+IF
+  InPartyAllowDead(Player2)
+  NextTriggerObject(Player2)
+  Global("K#DPLAYER3","LOCALS",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,LeaveParty())
+    ActionOverride(Player2,DestroySelf())
+	Continue()
+END
+
+IF
+  InPartyAllowDead(Player3)
+  NextTriggerObject(Player3)
+  Global("K#DPLAYER3","LOCALS",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player3,LeaveParty())
+    ActionOverride(Player3,DestroySelf())
+	Continue()
+END
+
+IF
+  InPartyAllowDead(Player4)
+  NextTriggerObject(Player4)
+  Global("K#DPLAYER3","LOCALS",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player4,LeaveParty())
+    ActionOverride(Player4,DestroySelf())
+	Continue()
+END
+
+IF
+  InPartyAllowDead(Player5)
+  NextTriggerObject(Player5)
+  Global("K#DPLAYER3","LOCALS",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player5,LeaveParty())
+    ActionOverride(Player5,DestroySelf())
+	Continue()
+END
+
+IF
+  InPartyAllowDead(Player6)
+  NextTriggerObject(Player6)
+  Global("K#DPLAYER3","LOCALS",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,LeaveParty())
+    ActionOverride(Player6,DestroySelf())
+	Continue()
+END
+
+IF
+  Alignment(Player1,LAWFUL_GOOD)
+THEN
+  RESPONSE #100
+    ReputationSet(12)
+    Continue()
+END
+
+IF
+  OR(2)
+    Alignment(Player1,NEUTRAL_GOOD)
+    Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #100
+    ReputationSet(11)
+    Continue()
+END
+
+IF
+  OR(3)
+    Alignment(Player1,LAWFUL_NEUTRAL)
+    Alignment(Player1,NEUTRAL)
+    Alignment(Player1,CHAOTIC_NEUTRAL)
+THEN
+  RESPONSE #100
+    ReputationSet(10)
+    Continue()
+END
+
+IF
+  OR(2)
+    Alignment(Player1,LAWFUL_EVIL)
+    Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #100
+    ReputationSet(9)
+    Continue()
+END
+
+IF
+  Alignment(Player1,CHAOTIC_EVIL)
+THEN
+  RESPONSE #100
+    ReputationSet(8)
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    GivePartyAllEquipment()
+	Wait(1)
+    RevealAreaOnMap("AR0020") //City Gates hidden via BG0000.bcs, time to reveal it
+    ActionOverride(Player1,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player2,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player3,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player4,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player5,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride(Player6,ApplySpellRES("K#DISPEL",Myself))
+    ActionOverride("Imoen2",SetDialog("IMOEN10"))
+    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    SetGlobal("SPRITE_IS_DEADCALAHAN","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADCARBOS","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADDIANA","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADEDWIN","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADFTOWNNASH3","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADGORF","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADIMOEN2","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADKING","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADKNIGHT1","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADPAWN","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADQUEEN","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADROGER","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADSENDAI","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADSHANK","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADTARNOR","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADTAZOK","GLOBAL",0)
+    SetGlobal("SPRITE_IS_DEADWILLIAM","GLOBAL",0)
+    //EraseJournalEntry for all journal entries listed in BGEE.sql added below via EET.tp2
+    //only below journal entries will be removed after BG2:EE patch 1.4 is released
+    Wait(3)
+    ActionOverride(Player1,SetPlayerSound(Myself,15881,EXISTANCE5))//Your history is nearly as unknown as your future (...)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0602","",[3744.2801],S))
+    ActionOverride(Player1,LeaveAreaLUA("AR0602","",[3744.2801],S))
+    ActionOverride(Player2,LeaveAreaLUA("AR0602","",[3585.2917],SWW))
+    ActionOverride(Player3,LeaveAreaLUA("AR0602","",[3532.2956],NW))
+    ActionOverride(Player4,LeaveAreaLUA("AR0602","",[3374.3068],NNE))
+    ActionOverride(Player5,LeaveAreaLUA("AR0602","",[3824.2447],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0602","",[3889.2479],SSE))
+    MultiPlayerSync()
+    Wait(1)
+    DestroySelf()
+END
