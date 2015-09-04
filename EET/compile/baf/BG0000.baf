@@ -1,7 +1,8 @@
 IF
-  OnCreation()
+  Global("K#DoOnce","BG0000",0)
 THEN
   RESPONSE #100
+    SetGlobal("K#DoOnce","BG0000",1)
     Explore()
     PlaySound("error10")
     //DisplayStringNoName(Player1,16493) // You have been waylaid by enemies and must defend yourself!

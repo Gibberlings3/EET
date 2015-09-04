@@ -284,7 +284,7 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_output%~
 					PATCH_IF (type < 3) BEGIN
 						READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
-						LAUNCH_PATCH_MACRO ~PCU_core_patch~
+						LAUNCH_PATCH_MACRO ~EET_PCU_core~
 					END
 			END
 			ACTION_IF (checked = 0) BEGIN

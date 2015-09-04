@@ -83,13 +83,12 @@ THEN
     ActionOverride(Player4,DropInventory())
     ActionOverride(Player5,DropInventory())
     ActionOverride(Player6,DropInventory())
-    SetGlobal("K#FRAMEDELAY","LOCALS",1) //loop delay needed by K#DPLAYER3 blocks
+    SetGlobal("K#FRAMEDELAY","LOCALS",1) //loop delay needed by !Name blocks
 END
 
 IF
   InPartyAllowDead(Player2)
-  NextTriggerObject(Player2)
-  Global("K#DPLAYER3","LOCALS",0)
+  !Name("None",Player2)
 THEN
   RESPONSE #100
     ActionOverride(Player2,LeaveParty())
@@ -99,8 +98,7 @@ END
 
 IF
   InPartyAllowDead(Player3)
-  NextTriggerObject(Player3)
-  Global("K#DPLAYER3","LOCALS",0)
+  !Name("None",Player3)
 THEN
   RESPONSE #100
     ActionOverride(Player3,LeaveParty())
@@ -110,8 +108,7 @@ END
 
 IF
   InPartyAllowDead(Player4)
-  NextTriggerObject(Player4)
-  Global("K#DPLAYER3","LOCALS",0)
+  !Name("None",Player4)
 THEN
   RESPONSE #100
     ActionOverride(Player4,LeaveParty())
@@ -121,8 +118,7 @@ END
 
 IF
   InPartyAllowDead(Player5)
-  NextTriggerObject(Player5)
-  Global("K#DPLAYER3","LOCALS",0)
+  !Name("None",Player5)
 THEN
   RESPONSE #100
     ActionOverride(Player5,LeaveParty())
@@ -132,8 +128,7 @@ END
 
 IF
   InPartyAllowDead(Player6)
-  NextTriggerObject(Player6)
-  Global("K#DPLAYER3","LOCALS",0)
+  !Name("None",Player6)
 THEN
   RESPONSE #100
     ActionOverride(Player6,LeaveParty())

@@ -1279,7 +1279,7 @@ COPY + ~EET/temp/Filelist.txt~ ~EET/temp~
 			COPY + ~%patch_dir%/%patch_name%~ ~%patch_dir%/%patch_name%~
 				SET checked = 0
 				READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
-				LAUNCH_PATCH_MACRO ~PCU_core_patch~
+				LAUNCH_PATCH_MACRO ~EET_PCU_core~
 			//Unrecognised files
 			ACTION_IF ("%checked%" = 0) BEGIN
 				OUTER_SET ignore_check = "%ignore_check%" + 1
