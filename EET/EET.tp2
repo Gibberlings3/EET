@@ -1244,10 +1244,12 @@ OUTER_SET dlg_check = 0
 OUTER_SET eff_check = 0
 OUTER_SET gam_check = 0
 OUTER_SET itm_check = 0
+OUTER_SET pro_check = 0
 OUTER_SET spl_check = 0
 OUTER_SET sto_check = 0
-OUTER_SET tra_check = 0
 OUTER_SET tp2_check = 0
+OUTER_SET tra_check = 0
+OUTER_SET vef_check = 0
 OUTER_SET vvc_check = 0
 OUTER_SET wed_check = 0
 OUTER_SET wmp_check = 0
@@ -1299,10 +1301,12 @@ DLG %dlg_check%
 EFF %eff_check%
 GAM %gam_check%
 ITM %itm_check%
+PRO %pro_check%
 SPL %spl_check%
 STO %sto_check%
 TP* %tp2_check%
 TRA %tra_check%
+VEF %vvc_check%
 VVC %vvc_check%
 WED %wed_check%
 WMP %wmp_check%
@@ -1779,7 +1783,7 @@ INCLUDE ~EET/lib/bg1_cre.tph~
 // Find Familiar externalization
 ACTION_FOR_EACH file IN FAMCAT_ FAMDUST_ FAMFAIR_ FAMFER_ FAMIMP_ FAMPSD_ FAMQUAS_ FAMRAB_ FAMCAT FAMDUST FAMFAIR FAMFER FAMIMP FAMPSD FAMQUAS FAMRAB FAMCAT25 FAMDUS25 FAMFAI25 FAMFER25 FAMIMP25 FAMPSD25 FAMQUA25 FAMRAB25 BEGIN
 	COPY_EXISTING ~%file%.CRE~ ~override~
-		LPF ADD_CRE_EFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ parameter2 = 16 /*Target dies*/ STR_VAR resource = "K#FAMKIL" END
+		LPF ADD_CRE_EFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 /*Self*/ parameter2 = 16 /*Target dies*/ timing = 9 /*Instant/Permanent*/ STR_VAR resource = "K#FAMKIL" END
 	BUT_ONLY
 END
 

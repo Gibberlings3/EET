@@ -64,10 +64,12 @@ OUTER_SET dlg_check = 0
 OUTER_SET eff_check = 0
 OUTER_SET gam_check = 0
 OUTER_SET itm_check = 0
+OUTER_SET pro_check = 0
 OUTER_SET spl_check = 0
 OUTER_SET sto_check = 0
-OUTER_SET tra_check = 0
 OUTER_SET tp2_check = 0
+OUTER_SET tra_check = 0
+OUTER_SET vef_check = 0
 OUTER_SET vvc_check = 0
 OUTER_SET wed_check = 0
 OUTER_SET wmp_check = 0
@@ -124,6 +126,7 @@ OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BAM\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.VVC\)~ ~\1%resref_index_dest%\2~
 		END
 
 		FOR (i=1; i<="%resref_bmp_total%"; i=i+1) BEGIN
@@ -193,6 +196,14 @@ OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WBM\)~ ~\1%resref_index_dest%\2~
 		END
 
+		FOR (i=1; i<="%resref_pro_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_pro_source%i%"
+			SPRINT name_dest "resref_pro_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.PRO\)~ ~\1%resref_index_dest%\2~
+		END
+
 		FOR (i=1; i<="%resref_spl_total%"; i=i+1) BEGIN
 			SPRINT name_source "resref_spl_source%i%"
 			SPRINT name_dest "resref_spl_dest%i%"
@@ -218,6 +229,21 @@ OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.TIZ\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.MOS\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WED\)~ ~\1%resref_index_dest%\2~
+			INNER_PATCH_SAVE pvrz_source ~%resref_index_source%~ BEGIN
+				REPLACE_TEXTUALLY ~^\(.\).\(.+\)$~ ~\1\2~
+			END
+			INNER_PATCH_SAVE pvrz_dest ~%resref_index_dest%~ BEGIN
+				REPLACE_TEXTUALLY ~^\(.\).\(.+\)$~ ~\1\2~
+			END
+			REPLACE_TEXTUALLY ~\([	/]+\)%pvrz_source%\([0-9]+\.PVRZ\)~ ~\1%pvrz_dest%\2~
+		END
+
+		FOR (i=1; i<="%resref_vef_total%"; i=i+1) BEGIN
+			SPRINT name_source "resref_vef_source%i%"
+			SPRINT name_dest "resref_vef_dest%i%"
+			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
+			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.VEF\)~ ~\1%resref_index_dest%\2~
 		END
 
 		FOR (i=1; i<="%resref_wav_total%"; i=i+1) BEGIN
@@ -226,6 +252,7 @@ OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
 			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WAV\)~ ~\1%resref_index_dest%\2~
+			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WFX\)~ ~\1%resref_index_dest%\2~
 		END
 	END
 END
@@ -272,9 +299,11 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 				~%patch_ext%~ STRING_EQUAL_CASE ~BMP~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~MOS~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~MVE~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~PLT~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TIS~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~TIZ~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~WAV~ OR
+				~%patch_ext%~ STRING_EQUAL_CASE ~WFX~ OR
 				~%patch_ext%~ STRING_EQUAL_CASE ~WBM~ BEGIN
 				ACTION_IF (updated = 1) BEGIN
 					MKDIR ~EET_modConverter/Output/%patch_dir%~
@@ -308,10 +337,12 @@ DLG %dlg_check%
 EFF %eff_check%
 GAM %gam_check%
 ITM %itm_check%
+PRO %pro_check%
 SPL %spl_check%
 STO %sto_check%
 TP* %tp2_check%
 TRA %tra_check%
+VEF %vvc_check%
 VVC %vvc_check%
 WED %wed_check%
 WMP %wmp_check%

@@ -861,6 +861,7 @@ END
 <div class="important">
 <pre>
 IF
+  Global("ImoenImport","MYAREA",0) //use GLOBAL/LOCALS/AREA variable just to be sure that block will be true only once
   LevelLT(Protagonist,13)
   XPLT(Myself,400000)
 THEN
@@ -870,6 +871,7 @@ THEN
 END
 
 IF
+  Global("ImoenImport","MYAREA",0)
   LevelGT(Protagonist,12)
   XPLT(Myself,1200000)
 THEN
@@ -879,9 +881,10 @@ THEN
 END
 
 IF
-  True()
+  Global("ImoenImport","MYAREA",0)
 THEN
   RESPONSE #100
+    SetGlobal("ImoenImport","MYAREA",1)
     DestroyItem("IMOENHP1")
     CreateItem("STAF01",1,0,0)
     CreateItem("CLCK14",1,0,0)
@@ -1109,7 +1112,7 @@ END
 </div>
 
 <ul>
-<li><strong>AR4000.BCS</strong> has additional code that will check if the NPC should be summonable (it also disables NPC summoning of the non-vanilla NPC if you started your game in ToB, which is not shown in below code):</li>
+<li><strong>AR4000.BCS</strong> has additional code that will check if the NPC is currently in party or were at party at some point during BG1 and BG2. Setting %SummonedVar% to 2 removes NPC from Fate Spirit summon list. default_ToB set to 1 can be used to make NPC summonable by default in new game started in ToB expansion (in such case NEWGAME_TOB variable is set to 1) - this will REPLACE_TEXTUALLY first block in AR4000.BCS setting %dv%PartyBG2 variable to 1, which is not shown in below code.</li>
 </ul>
 
 <div class="important">
@@ -1134,10 +1137,8 @@ END
 </pre>
 </div>
 
-<p>Also if default_ToB is set to 1 than %dv%PartyBG2 will be set to 1 if you start a new game in ToB (REPLACE_TEXTUALLY first block in AR4000.BCS).</p>
-
 <ul>
-<li><strong>AR4500.BCS</strong> is extended bottom with this code:</li>
+<li><strong>AR4500.BCS</strong> is extended bottom with the code that migrate NPC from BG2 area to Pocket Plane:</li>
 </ul>
 
 <div class="important">
@@ -1156,7 +1157,6 @@ THEN
     ActionOverride("%dv%",JoinParty())
     MoveToExpansion()
     SetGlobal("%SummonedVar%","GLOBAL",-1)
-    //Continue()
 END
 
 IF

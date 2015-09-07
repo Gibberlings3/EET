@@ -2091,6 +2091,79 @@ CO") BEGIN
 	END
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//PRO patching
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "PRO V1.0") BEGIN
+		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching PRO version 1.0 file %patch_name%...~
+
+		//0x10 fire sound WAV resref
+		SET off = 0x10 SPRINT res "wav" LPM EET_PCU_off
+
+		//0x18 impact sound WAV resref
+		SET off = 0x18 SPRINT res "wav" LPM EET_PCU_off
+
+		//0x20 source animation VVC/BAM resref
+		SET off = 0x20 SPRINT res "bam" LPM EET_PCU_off
+
+		//0x44 default spell SPL resref
+		SET off = 0x44 SPRINT res "spl" LPM EET_PCU_off
+
+		//0x4c success spell SPL resref
+		SET off = 0x4c SPRINT res "spl" LPM EET_PCU_off
+
+		//////////////
+		//Projectile info
+		//////////////
+
+		//0x104 projectile animation BAM resref
+		SET off = 0x104 SPRINT res "bam" LPM EET_PCU_off
+
+		//0x10c shadow animation BAM resref
+		SET off = 0x10c SPRINT res "bam" LPM EET_PCU_off
+
+		//0x11c palette BMP resref
+		SET off = 0x11c SPRINT res "bmp" LPM EET_PCU_off
+
+		//0x136 traveling animation 1 BAM resref
+		SET off = 0x136 SPRINT res "bam" LPM EET_PCU_off
+
+		//0x13e traveling animation 2 BAM resref
+		SET off = 0x13e SPRINT res "bam" LPM EET_PCU_off
+
+		//0x146 traveling animation 3 BAM resref
+		SET off = 0x146 SPRINT res "bam" LPM EET_PCU_off
+
+		//////////////
+		//Area info
+		//////////////
+		PATCH_IF (~%SOURCE_SIZE%~ >= 768) BEGIN
+			//0x208 explosion sound WAV resref
+			SET off = 0x208 SPRINT res "wav" LPM EET_PCU_off
+
+			//0x214 secondary projectile PRO resref
+			SET off = 0x214 SPRINT res "pro" LPM EET_PCU_off
+
+			//0x21a explosion projectile PRO resref
+			SET off = 0x21a SPRINT res "pro" LPM EET_PCU_off
+
+			//0x21c explosion animation VVC/BAM resref
+			SET off = 0x21c SPRINT res "bam" LPM EET_PCU_off
+
+			//0x228 speed animation VVC/BAM resref
+			SET off = 0x228 SPRINT res "bam" LPM EET_PCU_off
+
+			//0x230 ring animation VVC/BAM resref
+			SET off = 0x230 SPRINT res "bam" LPM EET_PCU_off
+
+			//0x238 area sound WAV resref
+			SET off = 0x238 SPRINT res "wav" LPM EET_PCU_off
+		END
+
+		SET pro_check += 1
+		SET checked = 1
+	END
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//SPL patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SPL V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 5) BEGIN
@@ -2530,6 +2603,36 @@ CO") BEGIN
 	END
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//VEF patching
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VEF V1.0") BEGIN
+		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching VEF version 1.0 file %patch_name%...~
+
+		//////////
+		//Components
+		//////////
+		READ_LONG 0x8 "components1_off"
+		READ_LONG 0xc "components1_num"
+		READ_LONG 0x14 "components2_num"
+		FOR (cnt=0; cnt<("%components1_num%"+"%components2_num%"); cnt=cnt+1) BEGIN
+			READ_LONG ("%components1_off%"+0xe0*cnt+0xc) "Resource_Type"
+			//0x10 resource name WAV/VEF/VVC/BAM resref
+			SET offset = ("%components1_off%"+0xe0*cnt+0x10)
+			PATCH_IF (Resource_Type = 0) BEGIN //WAV
+				SET off = offset SPRINT res "wav" LPM EET_PCU_off
+			END ELSE PATCH_IF (Resource_Type = 1) BEGIN //VVC / BAM
+				SET off = offset SPRINT res "bam" LPM EET_PCU_off
+			END ELSE PATCH_IF (Resource_Type = 2) BEGIN //VEF / VVC / BAM
+				SET off = offset SPRINT res "vef" LPM EET_PCU_off
+				SET off = offset SPRINT res "bam" LPM EET_PCU_off
+			END
+		END
+
+		SET vef_check += 1
+		SET checked = 1
+	END
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//VVC patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VVC V1.0") AND (option != 5) BEGIN
@@ -2562,7 +2665,7 @@ CO") BEGIN
 		//////////
 		READ_LONG 0x8 "overlays_num"
 		READ_LONG 0x10 "overlays_off"
-		FOR ( cnt=0; cnt<"%overlays_num%"; cnt +=1) BEGIN
+		FOR (cnt=0; cnt<"%overlays_num%"; cnt=cnt+1) BEGIN
 			//0x4 tileset TIS resref
 			SET off = ("%overlays_off%"+0xa*cnt+0x4) SPRINT res "tis" LPM EET_PCU_off
 		END
