@@ -189,8 +189,48 @@ OUTER_SET dword_mus_dest89 = 140 //NAdoys
 OUTER_SET dword_mus_dest90 = 141 //NGoblin
 OUTER_SET dword_mus_dest91 = 142 //RPeaks
 
-OUTER_SET resref_mus_total = 91
+OUTER_SET dword_mus_total = 91
 */
+
+/////                                                  \\\\\
+///// Preparing STATE variables                        \\\\\
+/////                                                  \\\\\
+
+OUTER_SPRINT dword_state_source1 ""
+
+OUTER_SPRINT dword_state_dest1 ""
+
+OUTER_SET dword_state_total = 0
+
+/////                                                  \\\\\
+///// Preparing PRO IDS variables                      \\\\\
+/////                                                  \\\\\
+
+OUTER_SPRINT word_ipro_source1 ""
+
+OUTER_SPRINT word_ipro_dest1 ""
+
+OUTER_SET word_ipro_total = 0
+
+/////                                                  \\\\\
+///// Preparing Kit IDS variables                      \\\\\
+/////                                                  \\\\\
+
+OUTER_SPRINT byte_kit_source1 ""
+
+OUTER_SPRINT byte_kit_dest1 ""
+
+OUTER_SET byte_kit_total = 0
+
+/////                                                  \\\\\
+///// Preparing Class IDS variables                    \\\\\
+/////                                                  \\\\\
+
+OUTER_SPRINT byte_class_source1 ""
+
+OUTER_SPRINT byte_class_dest1 ""
+
+OUTER_SET byte_class_total = 0
 
 /////                                                  \\\\\
 ///// Preparing DLG EXTERN variables                   \\\\\
@@ -2536,6 +2576,46 @@ OUTER_SPRINT resref_itm_source20 "FAMIMP"
 OUTER_SPRINT resref_itm_source21 "FAMPSD"
 OUTER_SPRINT resref_itm_source22 "FAMQUAS"
 OUTER_SPRINT resref_itm_source23 "FAMRAB"
+OUTER_SPRINT resref_itm_source24 "SHLD01"
+OUTER_SPRINT resref_itm_source25 "SHLD02"
+OUTER_SPRINT resref_itm_source26 "SHLD03"
+OUTER_SPRINT resref_itm_source27 "SHLD04"
+OUTER_SPRINT resref_itm_source28 "SHLD05"
+OUTER_SPRINT resref_itm_source29 "SHLD06"
+OUTER_SPRINT resref_itm_source30 "SHLD07"
+OUTER_SPRINT resref_itm_source31 "SHLD08"
+OUTER_SPRINT resref_itm_source32 "SHLD09"
+OUTER_SPRINT resref_itm_source33 "SHLD10"
+OUTER_SPRINT resref_itm_source34 "SHLD11"
+OUTER_SPRINT resref_itm_source35 "SHLD12"
+OUTER_SPRINT resref_itm_source36 "SHLD13"
+OUTER_SPRINT resref_itm_source37 "SHLD14"
+OUTER_SPRINT resref_itm_source38 "SHLD15"
+OUTER_SPRINT resref_itm_source39 "SHLD16"
+OUTER_SPRINT resref_itm_source40 "SHLD17"
+OUTER_SPRINT resref_itm_source41 "SHLD19"
+OUTER_SPRINT resref_itm_source42 "SHLD28"
+OUTER_SPRINT resref_itm_source43 "SHLD29"
+OUTER_SPRINT resref_itm_source44 "SHLD01A"
+OUTER_SPRINT resref_itm_source45 "SHLD02A"
+OUTER_SPRINT resref_itm_source46 "SHLD03A"
+OUTER_SPRINT resref_itm_source47 "SHLD04A"
+OUTER_SPRINT resref_itm_source48 "SHLD05A"
+OUTER_SPRINT resref_itm_source49 "SHLD06A"
+OUTER_SPRINT resref_itm_source50 "SHLD07A"
+OUTER_SPRINT resref_itm_source51 "SHLD08A"
+OUTER_SPRINT resref_itm_source52 "SHLD09A"
+OUTER_SPRINT resref_itm_source53 "SHLD10A"
+OUTER_SPRINT resref_itm_source54 "SHLD11A"
+OUTER_SPRINT resref_itm_source55 "SHLD12A"
+OUTER_SPRINT resref_itm_source56 "SHLD13A"
+OUTER_SPRINT resref_itm_source57 "SHLD14A"
+OUTER_SPRINT resref_itm_source58 "SHLD15A"
+OUTER_SPRINT resref_itm_source59 "SHLD16A"
+OUTER_SPRINT resref_itm_source60 "SHLD17A"
+OUTER_SPRINT resref_itm_source61 "SHLD19A"
+OUTER_SPRINT resref_itm_source62 "SHLD28A"
+OUTER_SPRINT resref_itm_source63 "SHLD29A"
 
 OUTER_SPRINT resref_itm_dest1 "HELM15_"
 OUTER_SPRINT resref_itm_dest2 "MISC56_"
@@ -2560,8 +2640,48 @@ OUTER_SPRINT resref_itm_dest20 "FAMIMP_"
 OUTER_SPRINT resref_itm_dest21 "FAMPSD_"
 OUTER_SPRINT resref_itm_dest22 "FAMQUAS_"
 OUTER_SPRINT resref_itm_dest23 "FAMRAB_"
+OUTER_SPRINT resref_itm_dest24 "SHLD01A"
+OUTER_SPRINT resref_itm_dest25 "SHLD02A"
+OUTER_SPRINT resref_itm_dest26 "SHLD03A"
+OUTER_SPRINT resref_itm_dest27 "SHLD04A"
+OUTER_SPRINT resref_itm_dest28 "SHLD05A"
+OUTER_SPRINT resref_itm_dest29 "SHLD06A"
+OUTER_SPRINT resref_itm_dest30 "SHLD07A"
+OUTER_SPRINT resref_itm_dest31 "SHLD08A"
+OUTER_SPRINT resref_itm_dest32 "SHLD09A"
+OUTER_SPRINT resref_itm_dest33 "SHLD10A"
+OUTER_SPRINT resref_itm_dest34 "SHLD11A"
+OUTER_SPRINT resref_itm_dest35 "SHLD12A"
+OUTER_SPRINT resref_itm_dest36 "SHLD13A"
+OUTER_SPRINT resref_itm_dest37 "SHLD14A"
+OUTER_SPRINT resref_itm_dest38 "SHLD15A"
+OUTER_SPRINT resref_itm_dest39 "SHLD16A"
+OUTER_SPRINT resref_itm_dest40 "SHLD17A"
+OUTER_SPRINT resref_itm_dest41 "SHLD19A"
+OUTER_SPRINT resref_itm_dest42 "SHLD28A"
+OUTER_SPRINT resref_itm_dest43 "SHLD29A"
+OUTER_SPRINT resref_itm_dest44 "SHLD01"
+OUTER_SPRINT resref_itm_dest45 "SHLD02"
+OUTER_SPRINT resref_itm_dest46 "SHLD03"
+OUTER_SPRINT resref_itm_dest47 "SHLD04"
+OUTER_SPRINT resref_itm_dest48 "SHLD05"
+OUTER_SPRINT resref_itm_dest49 "SHLD06"
+OUTER_SPRINT resref_itm_dest50 "SHLD07"
+OUTER_SPRINT resref_itm_dest51 "SHLD08"
+OUTER_SPRINT resref_itm_dest52 "SHLD09"
+OUTER_SPRINT resref_itm_dest53 "SHLD10"
+OUTER_SPRINT resref_itm_dest54 "SHLD11"
+OUTER_SPRINT resref_itm_dest55 "SHLD12"
+OUTER_SPRINT resref_itm_dest56 "SHLD13"
+OUTER_SPRINT resref_itm_dest57 "SHLD14"
+OUTER_SPRINT resref_itm_dest58 "SHLD15"
+OUTER_SPRINT resref_itm_dest59 "SHLD16"
+OUTER_SPRINT resref_itm_dest60 "SHLD17"
+OUTER_SPRINT resref_itm_dest61 "SHLD19"
+OUTER_SPRINT resref_itm_dest62 "SHLD28"
+OUTER_SPRINT resref_itm_dest63 "SHLD29"
 
-OUTER_SET resref_itm_total = 23 //during installation this value is increased with random items that are moved to randtres.2da
+OUTER_SET resref_itm_total = 63 //during installation this value is increased with random items that are moved to randtres.2da
 
 //not changed yet, waiting what Beamdog will come up with http://forums.beamdog.com/discussion/39817/fallorains-plate-should-not-be-a-generic-plate-mail-1-and-should-be-unique-in-the-game
 //also http://gibberlings3.net/forums/index.php?showtopic=23896
@@ -2606,28 +2726,38 @@ OUTER_SPRINT resref_spl_dest7 "BGWI930"
 OUTER_SET resref_spl_total = 7
 
 /////                                                  \\\\\
-///// Preparing SPL names variables                    \\\\\
+///// Preparing SPL res variables                      \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT resref_splName_source1 "TANARI_DEATH_GAZE" //SPIN996
-OUTER_SPRINT resref_splName_source2 "WIZARD_SUMMON_PLANATAR_EVIL" //SPWI924
-OUTER_SPRINT resref_splName_source3 "BERESH_CHANGE" //SPWI924
-OUTER_SPRINT resref_splName_source4 "KAISHAS_CHANGE" //SPWI925
-OUTER_SPRINT resref_splName_source5 "WIZARD_COMET" //SPWI925
-OUTER_SPRINT resref_splName_source6 "GREATER_WOLFWERE_CHANGE" //SPWI947
-OUTER_SPRINT resref_splName_source7 "SUCCUBUS_ETHEREAL" //SPWI927
-OUTER_SPRINT resref_splName_source8 "SUCCUBUS_CHARM_MALE" //SPWI930
+OUTER_SPRINT resref_splRes_source1 "TANARI_DEATH_GAZE" //SPIN996
+OUTER_SPRINT resref_splRes_source2 "WIZARD_SUMMON_PLANATAR_EVIL" //SPWI924
+OUTER_SPRINT resref_splRes_source3 "BERESH_CHANGE" //SPWI924
+OUTER_SPRINT resref_splRes_source4 "KAISHAS_CHANGE" //SPWI925
+OUTER_SPRINT resref_splRes_source5 "WIZARD_COMET" //SPWI925
+OUTER_SPRINT resref_splRes_source6 "GREATER_WOLFWERE_CHANGE" //SPWI947
+OUTER_SPRINT resref_splRes_source7 "SUCCUBUS_ETHEREAL" //SPWI927
+OUTER_SPRINT resref_splRes_source8 "SUCCUBUS_CHARM_MALE" //SPWI930
 
-OUTER_SPRINT resref_splName_dest1 "BGIN996"
-OUTER_SPRINT resref_splName_dest2 "BGWI924"
-OUTER_SPRINT resref_splName_dest3 "BGWI924"
-OUTER_SPRINT resref_splName_dest4 "BGWI925"
-OUTER_SPRINT resref_splName_dest5 "BGWI925"
-OUTER_SPRINT resref_splName_dest6 "BGWI947"
-OUTER_SPRINT resref_splName_dest7 "BGWI927"
-OUTER_SPRINT resref_splName_dest8 "BGWI930"
+OUTER_SPRINT resref_splRes_dest1 "BGIN996"
+OUTER_SPRINT resref_splRes_dest2 "BGWI924"
+OUTER_SPRINT resref_splRes_dest3 "BGWI924"
+OUTER_SPRINT resref_splRes_dest4 "BGWI925"
+OUTER_SPRINT resref_splRes_dest5 "BGWI925"
+OUTER_SPRINT resref_splRes_dest6 "BGWI947"
+OUTER_SPRINT resref_splRes_dest7 "BGWI927"
+OUTER_SPRINT resref_splRes_dest8 "BGWI930"
 
-OUTER_SET resref_splName_total = 8
+OUTER_SET resref_splRes_total = 8
+
+/////                                                  \\\\\
+///// Preparing SPL name variables                     \\\\\
+/////                                                  \\\\\
+
+OUTER_SPRINT resref_splName_source1 ""
+
+OUTER_SPRINT resref_splName_dest1 ""
+
+OUTER_SET resref_splName_total = 0
 
 /////                                                  \\\\\
 ///// Preparing STO variables                          \\\\\

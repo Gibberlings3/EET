@@ -1244,10 +1244,10 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 		REPLACE_TEXTUALLY ~ %oldName%\.MUS~ ~ %newName%.MUS~
 	END
 	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 3 "cntrow"
-	SET dword_mus_total = cntrow - 1
 	SPRINT ~log~ ~~
 	SPRINT ~log2~ ~~
+	COUNT_2DA_ROWS 3 "cntrow"
+	SET dword_mus_total = cntrow - 1
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 3 "col1"

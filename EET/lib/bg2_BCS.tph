@@ -1890,15 +1890,6 @@ COPY_EXISTING ~MAGE7.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
-
-		SPRINT textToReplace ~HaveSpell(WIZARD_REMOVE_MAGIC)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~HaveSpell(WIZARD_DISPEL_MAGIC)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
 	END
 BUT_ONLY
 
@@ -2109,10 +2100,10 @@ BUT_ONLY
 //WDRUNSGT.BCS
 COPY_EXISTING ~WDRUNSGT.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),150)~
+		SPRINT textToReplace ~RunAwayFrom(~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),150)~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~

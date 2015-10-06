@@ -353,6 +353,23 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
+	//WMP
+	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~wmp~) BEGIN
+		// possibility of more than one world map?
+		//READ_LONG 0x8 "mapentry_num"
+		READ_LONG 0xc "mapentry_off"
+		READ_LONG ("%mapentry_off%"+0x20) "areaentry_num"
+		READ_LONG ("%mapentry_off%"+0x24) "areaentry_off"
+		FOR (cnt=0; cnt<"%areaentry_num%"; cnt=cnt+1) BEGIN
+			PATCH_FOR_EACH ~add_off~ IN 0x40 0x44 BEGIN
+				SET offset = ("%areaentry_off%"+0xf0*cnt+"%add_off%") //Name (caption), Name (tooltips)
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				END
+			END
+		END
 	END
 END
 
@@ -1040,21 +1057,99 @@ DEFINE_PATCH_MACRO ~EET_PCU_off~ BEGIN
 		PATCH_WARN ~EET_PCU_off macro: res variable not specified for %SOURCE_FILESPEC% patching~
 	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~mus~ BEGIN //Songs
 		READ_LONG off "dword"
-		FOR (i=1; i<="%dword_mus_total%"; i=i+1) BEGIN
-			SPRINT name_source "dword_mus_source%i%"
-			SPRINT name_dest "dword_mus_dest%i%"
-			SPRINT dword_index_source EVAL ~%%name_source%%~
-			SPRINT dword_index_dest EVAL ~%%name_dest%%~
-			PATCH_IF ("%dword%" = "%dword_index_source%") AND ("%dword%" > 0) AND (%dword_index_source% != %dword_index_dest%) BEGIN
-				SET updated = 1
-				WRITE_LONG off "%dword_index_dest%"
-				SPRINT str ~Patching %SOURCE_FILESPEC%: MUSIC = %dword_index_source% => %dword_index_dest% -~
-				SPRINTF str ~%s %x~ ("%str%" off)
-				PATCH_IF (dword_index_source > 0) AND (dword_index_dest = 0) BEGIN
-					PATCH_WARN ~WARNING: %str%~
-					//PATCH_PRINT ~ATTENTION: %str%~
-				END ELSE BEGIN
+		PATCH_IF ("%dword%" > 0) BEGIN
+			FOR (i=1; i<="%dword_mus_total%"; i=i+1) BEGIN
+				SPRINT name_source "dword_mus_source%i%"
+				SPRINT name_dest "dword_mus_dest%i%"
+				SPRINT dword_index_source EVAL ~%%name_source%%~
+				SPRINT dword_index_dest EVAL ~%%name_dest%%~
+				PATCH_IF ("%dword%" = "%dword_index_source%") AND (%dword_index_source% != %dword_index_dest%) BEGIN
+					SET updated = 1
+					WRITE_LONG off "%dword_index_dest%"
+					SPRINT str ~Patching %SOURCE_FILESPEC%: MUSIC = %dword_index_source% => %dword_index_dest% -~
+					SPRINTF str ~%s %x~ ("%str%" off)
+					PATCH_IF (dword_index_source > 0) AND (dword_index_dest = 0) BEGIN
+						PATCH_WARN ~WARNING: %str%~
+						//PATCH_PRINT ~ATTENTION: %str%~
+					END ELSE BEGIN
+						PATCH_PRINT ~%str%~
+					END
+					SET i = dword_mus_total
+				END
+			END
+		END
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~state~ BEGIN //State
+		READ_LONG off "dword"
+		PATCH_IF ("%dword%" > 0) BEGIN
+			FOR (i=1; i<="%dword_state_total%"; i=i+1) BEGIN
+				SPRINT name_source "dword_state_source%i%"
+				SPRINT name_dest "dword_state_dest%i%"
+				SPRINT dword_index_source EVAL ~%%name_source%%~
+				SPRINT dword_index_dest EVAL ~%%name_dest%%~
+				PATCH_IF ("%dword%" = "%dword_index_source%") BEGIN
+					SET updated = 1
+					WRITE_LONG off "%dword_index_dest%"
+					SPRINT str ~Patching %SOURCE_FILESPEC%: STATE = %dword_index_source% => %dword_index_dest% -~
+					SPRINTF str ~%s %x~ ("%str%" off)
 					PATCH_PRINT ~%str%~
+					SET i = dword_state_total
+				END
+			END
+		END
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~kit~ BEGIN //Kit internal number (the values of 0x244 offset are written in big endian style)
+		READ_BYTE 0x244 ~byte244~
+		READ_BYTE 0x245 ~byte245~
+		READ_BYTE 0x246 ~byte246~
+		READ_BYTE 0x247 ~byte247~
+		PATCH_IF (("%byte244%" = 0) AND ("%byte245%" = 0) AND ("%byte246%" > 40) AND ("%byte247%" = 64)) BEGIN
+			FOR (i=1; i<="%byte_kit_total%"; i=i+1) BEGIN
+				SPRINT name_source "byte_kit_source%i%"
+				SPRINT name_dest "byte_kit_dest%i%"
+				SPRINT byte_index_source EVAL ~%%name_source%%~
+				SPRINT byte_index_dest EVAL ~%%name_dest%%~
+				PATCH_IF ("%byte246%" = "%byte_index_source%") BEGIN
+					SET updated = 1
+					WRITE_SHORT 0x244 0
+					WRITE_BYTE 0x246 ~%byte_index_dest%~
+					WRITE_BYTE 0x247 0x40
+					PATCH_PRINT ~Patching %SOURCE_FILESPEC%: KIT = %byte_index_source% => %byte_index_dest% - 0x244 (byte 0x246)~
+					SET i = byte_kit_total
+				END
+			END
+		END
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~class~ BEGIN //Class
+		READ_BYTE off ~byte~
+		PATCH_IF ("%byte%" > 0) BEGIN
+			FOR (i=1; i<="%byte_class_total%"; i=i+1) BEGIN
+				SPRINT name_source "byte_class_source%i%"
+				SPRINT name_dest "byte_class_dest%i%"
+				SPRINT byte_index_source EVAL ~%%name_source%%~
+				SPRINT byte_index_dest EVAL ~%%name_dest%%~
+				PATCH_IF ("%byte%" = "%byte_index_source%") BEGIN
+					SET updated = 1
+					WRITE_BYTE off ~%byte_index_dest%~
+					SPRINT str ~Patching %SOURCE_FILESPEC%: %res% %word_index_source% => %word_index_dest% -~
+					SPRINTF str ~%s %x~ ("%str%" off)
+					PATCH_PRINT ~%str%~
+					SET i = byte_class_total
+				END
+			END
+		END
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~ipro~ BEGIN //IDS Projectiles
+		READ_SHORT off "word"
+		PATCH_IF ("%word%" > 1) BEGIN
+			FOR (i=1; i<="%word_ipro_total%"; i=i+1) BEGIN
+				SPRINT name_source "word_ipro_source%i%"
+				SPRINT name_dest "word_ipro_dest%i%"
+				SPRINT word_index_source EVAL ~%%name_source%%~
+				SPRINT word_index_dest EVAL ~%%name_dest%%~
+				PATCH_IF ("%word%" = "%word_index_source%") BEGIN
+					SET updated = 1
+					WRITE_SHORT off "%word_index_dest%"
+					SPRINT str ~Patching %SOURCE_FILESPEC%: IDS PROJECTILE = %word_index_source% => %word_index_dest% -~
+					SPRINTF str ~%s %x~ ("%str%" off)
+					PATCH_PRINT ~%str%~
+					SET i = word_ipro_total
 				END
 			END
 		END
@@ -1071,6 +1166,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_off~ BEGIN
 				SPRINT str ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% -~
 				SPRINTF str ~%s %x~ ("%str%" off)
 				PATCH_PRINT ~%str%~
+				SET i = resref_dv_total
 			END
 		END
 	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~door~ BEGIN //Door
@@ -1232,6 +1328,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_off~ BEGIN
 				SPRINT str ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% -~
 				SPRINTF str ~%s %x~ ("%str%" off)
 				PATCH_PRINT ~%str%~
+				SET i = index_total
 			END
 		END
 	END
@@ -1250,10 +1347,45 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 			SPRINT resref_index_source EVAL ~%%name_source%%~
 			PATCH_IF (~%match%~ STRING_EQUAL_CASE ~%resref_index_source%~) BEGIN
 				SET updated = 1
-				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %res%~
 				SPRINT name_dest "resref_%res%_dest%i%"
 				SPRINT resref_index_dest EVAL ~%%name_dest%%~
 				SPRINT match ~deleteMeDummy%resref_index_dest%~
+				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %res%~
+				SET i = index_total
+			END
+		END
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO ~EET_PCU_outer~ BEGIN
+	PATCH_IF ~%res%~ STRING_EQUAL_CASE ~ipro~ BEGIN
+		SPRINT res_type ~word~
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~mus~ BEGIN
+		SPRINT res_type ~dword~
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~state~ BEGIN
+		SPRINT res_type ~dword~
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~kit~ BEGIN
+		SPRINT res_type ~byte~
+	END ELSE PATCH_IF ~%res%~ STRING_EQUAL_CASE ~class~ BEGIN
+		SPRINT res_type ~byte~
+	END ELSE BEGIN
+		SPRINT res_type ~resref~
+	END
+	PATCH_IF ~%res%~ STRING_EQUAL_CASE ~~ BEGIN
+		PATCH_WARN ~EET_PCU_match macro: res variable not specified for %SOURCE_FILESPEC% patching~
+	END ELSE BEGIN
+		SPRINT total ~%res_type%_%res%_total~
+		SPRINT index_total EVAL ~%%total%%~
+		FOR (i=1; i<="%index_total%"; i=i+1) BEGIN
+			SPRINT name_source "%res_type%_%res%_source%i%"
+			SPRINT index_source EVAL ~%%name_source%%~
+			PATCH_IF (~%match%~ STRING_EQUAL_CASE ~%index_source%~) BEGIN
+				SPRINT name_dest "%res_type%_%res%_dest%i%"
+				SPRINT index_dest EVAL ~%%name_dest%%~
+				SPRINT match ~%index_dest%~
+				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %index_source% => %index_dest% - %res%~
 				SET i = index_total
 			END
 		END
@@ -1570,6 +1702,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
 		LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
 		LAUNCH_PATCH_MACRO ~BAF_door_replace~
+		LAUNCH_PATCH_MACRO ~BAF_SPLres_replace~
 		LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
 
 		LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
@@ -1604,6 +1737,7 @@ CO") BEGIN
 			LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
 			LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
 			LAUNCH_PATCH_MACRO ~BAF_door_replace~
+			LAUNCH_PATCH_MACRO ~BAF_SPLres_replace~
 			LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
 
 			LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
@@ -1631,6 +1765,9 @@ CO") BEGIN
 			//0x3c large portrait BMP resref
 			SET off = 0x3c SPRINT res "bmp" LPM EET_PCU_off
 
+			//0x244 kit internal number
+			SET off = 0x244 SPRINT res "kit" LPM EET_PCU_off
+
 			//0x248 override BCS resref
 			SET off = 0x248 SPRINT res "bcs" LPM EET_PCU_off
 
@@ -1645,6 +1782,9 @@ CO") BEGIN
 
 			//0x268 default BCS resref
 			SET off = 0x268 SPRINT res "bcs" LPM EET_PCU_off
+
+			//0x273 Class number
+			SET off = 0x273 SPRINT res "class" LPM EET_PCU_off
 
 			//0x280 Death Variable
 			SET off = 0x280 SPRINT res "dv" LPM EET_PCU_off
@@ -1808,6 +1948,7 @@ CO") BEGIN
 		LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
 		LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
 		LAUNCH_PATCH_MACRO ~BAF_door_replace~
+		LAUNCH_PATCH_MACRO ~BAF_SPLres_replace~
 		LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
 		LAUNCH_PATCH_MACRO ~D_DLG_replace~
 		//LAUNCH_PATCH_MACRO ~D_DLGext_replace~
@@ -1853,6 +1994,7 @@ CO") BEGIN
 			LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
 			LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
 			LAUNCH_PATCH_MACRO ~BAF_door_replace~
+			LAUNCH_PATCH_MACRO ~BAF_SPLres_replace~
 			LAUNCH_PATCH_MACRO ~BAF_SPLname_replace~
 			LAUNCH_PATCH_MACRO ~D_DLG_replace~
 			//LAUNCH_PATCH_MACRO ~D_DLGext_replace~
@@ -1877,6 +2019,11 @@ CO") BEGIN
 		READ_SHORT 0x10 "fx_type"
 		SET offset = 0x30
 		SET offset2 = 0x78
+
+		PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
+		OR ("%fx_type%" = 169) BEGIN //Prevent Special Effect Icon
+			SET off = 0x20 SPRINT res "state" LPM EET_PCU_off
+		END
 
 		PATCH_IF ("%fx_type%" = 215) BEGIN //Play 3D Effect
 			SET off = offset SPRINT res "bam" LPM EET_PCU_off
@@ -1996,6 +2143,8 @@ CO") BEGIN
 		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
 			//0x4 memorised icon BAM resref
 			SET off = ("%abil_off%"+0x38*cnt+0x4) SPRINT res "bam" LPM EET_PCU_off
+			//0x2a Projectile animation (projectl.ids/missile.ids)
+			SET off = ("%abil_off%"+0x38*cnt+0x2a) SPRINT res "ipro" LPM EET_PCU_off
 		END
 
 		//////////////
@@ -2012,6 +2161,11 @@ CO") BEGIN
 		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
 			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
 			SET offset = ("%fx_off%"+0x30*cnt+0x14)
+
+			PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
+			OR ("%fx_type%" = 169) BEGIN //Prevent Special Effect Icon
+				SET off = ("%fx_off%"+0x30*cnt+0x8) SPRINT res "state" LPM EET_PCU_off
+			END
 
 			PATCH_IF ("%fx_type%" = 215) BEGIN //Play 3D Effect
 				SET off = offset SPRINT res "bam" LPM EET_PCU_off
@@ -2183,6 +2337,8 @@ CO") BEGIN
 		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
 			//0x4 memorised icon BAM resref
 			SET off = ("%abil_off%"+0x28*cnt+0x4) SPRINT res "bam" LPM EET_PCU_off
+			//0x26 Projectile animation (projectl.ids/missile.ids)
+			SET off = ("%abil_off%"+0x28*cnt+0x26) SPRINT res "ipro" LPM EET_PCU_off
 		END
 
 		//////////////
@@ -2199,6 +2355,11 @@ CO") BEGIN
 		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
 			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
 			SET offset = ("%fx_off%"+0x30*cnt+0x14)
+
+			PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
+			OR ("%fx_type%" = 169) BEGIN //Prevent Special Effect Icon
+				SET off = ("%fx_off%"+0x30*cnt+0x8) SPRINT res "state" LPM EET_PCU_off
+			END
 
 			PATCH_IF ("%fx_type%" = 215) BEGIN //Play 3D Effect
 				SET off = offset SPRINT res "bam" LPM EET_PCU_off
@@ -3242,10 +3403,10 @@ END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_PATCH_MACRO ~BAF_SPLname_replace~ BEGIN
-	FOR (i=1; i<="%resref_splName_total%"; i=i+1) BEGIN
-		SPRINT name_source "resref_splName_source%i%"
-		SPRINT name_dest "resref_splName_dest%i%"
+DEFINE_PATCH_MACRO ~BAF_SPLres_replace~ BEGIN
+	FOR (i=1; i<="%resref_splRes_total%"; i=i+1) BEGIN
+		SPRINT name_source "resref_splRes_source%i%"
+		SPRINT name_dest "resref_splRes_dest%i%"
 		SPRINT resref_index_source EVAL ~%%name_source%%~
 		SPRINT resref_index_dest EVAL ~%%name_dest%%~
 
@@ -3261,6 +3422,20 @@ DEFINE_PATCH_MACRO ~BAF_SPLname_replace~ BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~ReallyForceSpellDead(\([^,]+\),%resref_index_source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ReallyForceSpellDead -> ReallyForceSpellDeadRES~ END ~ReallyForceSpellDeadRES("%resref_index_dest%",\1)~
 		REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellRange(\([^,]+\),%resref_index_source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellRange -> ForceSpellRangeRES~ END ~ForceSpellRangeRES("%resref_index_dest%",\1)~
 		REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellPointRange(\([^,]+\),%resref_index_source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - ForceSpellPointRange -> ForceSpellPointRangeRES~ END ~ForceSpellPointRangeRES("%resref_index_dest%",\1)~
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO ~BAF_SPLname_replace~ BEGIN
+	FOR (i=1; i<="%resref_splName_total%"; i=i+1) BEGIN
+		SPRINT name_source "resref_splName_source%i%"
+		SPRINT name_dest "resref_splName_dest%i%"
+		SPRINT resref_index_source EVAL ~%%name_source%%~
+		SPRINT resref_index_dest EVAL ~%%name_dest%%~
+
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+Spell[A-Za-z]*\)(%resref_index_source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1%~ END ~\1(%resref_index_dest%)~ //HaveSpell, RemoveSpell, HaveSpellParty
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Spell[A-Za-z]*([^,]+,\)%resref_index_source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %resref_index_source% => %resref_index_dest% - %MATCH1%~ END ~\1%resref_index_dest%)~ //SpellCast, SpellCastOnMe, SpellCastPriest, SpellCastInnate, Spell, ForceSpell, ApplySpell, ReallyForceSpell, SpellPoint, ForceSpellPoint, ReallyForceSpellPoint, SpellNoDec, SpellPointNoDec, ReallyForceSpellDead, ForceSpellRange, ForceSpellPointRange
 	END
 END
 

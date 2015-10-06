@@ -67,8 +67,10 @@ OUTER_SPRINT quote ~"~
 OUTER_SPRINT tilde "~"
 OUTER_SPRINT bg2ee_dir ~.~
 OUTER_SPRINT tra_path ~EET/lang~
+OUTER_SPRINT temp_dir ~EET/temp~
 OUTER_SPRINT patch_dir ~EET/temp/patch~
 OUTER_SPRINT biff_dir ~EET/temp/biff~
+OUTER_SPRINT backup_dir ~EET/backup~
 OUTER_SPRINT arch_var ~~
 
 OUTER_SET auto_install = 0
@@ -132,7 +134,10 @@ COPY - ~EET/other/cpmvars/eet_cpmvars.tpa~ ~EET-inlined/eet_cpmvars.tpa~
 	REPLACE_TEXTUALLY ~FAIL .*~ ~~
 INCLUDE ~EET-inlined/eet_cpmvars.tpa~
 
-INCLUDE ~EET/other/EET_functions/EET_functions.tph~
+COPY - ~EET/other/EET_functions/EET_functions.tph~ ~EET-inlined/EET_functions.tph~
+	REPLACE_TEXTUALLY "\(GAME_IS ~\)eet" "\1bg2ee"//at this point WeiDU thinks it's still BG2:EE installation
+INCLUDE ~EET-inlined/EET_functions.tph~
+
 INCLUDE ~EET/lib/macros.tph~
 INCLUDE ~EET/lib/PCU_Dict.tph~
 INCLUDE ~EET/lib/strings.tph~
@@ -159,7 +164,7 @@ echo %%var%%>EET/temp/%var%.txt
 		AT_NOW ~EET/temp/programfiles.bat~
 		COPY - ~EET/temp/%var%.txt~ ~EET/temp~//for some reason the same file can't be used for all 3 vars
 			READ_ASCII 0x0 dir (%SOURCE_SIZE%)
-		OUTER_INNER_PATCH_SAVE dir ~%dir%~ BEGIN
+		OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
 			REPLACE_TEXTUALLY ~%WNL%~ ~~//needed due to newline added by windows > command
 		END
 		PRINT ~%var% = %dir%~
@@ -202,7 +207,7 @@ Example: C:\Program Files (x86)\BeamDog\Games\00766~
 END
 
 OUTER_WHILE (valid_dir = 0) BEGIN
-	OUTER_INNER_PATCH_SAVE ~bgee_dir~ ~%bgee_dir%~ BEGIN
+	OUTER_PATCH_SAVE bgee_dir ~%bgee_dir%~ BEGIN
 		PATCH_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN //Win32
 			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
 			REPLACE_TEXTUALLY ~\~ ~/~ //change slashes
@@ -1069,6 +1074,7 @@ END
 //0xEE20 - 0xEEFF - free
 
 ACTION_FOR_EACH var IN IDS TLK 2DA CRE BCS DLG BEGIN
+	PRINT ~Patching BG2:EE %var% files~
 	INCLUDE ~EET/lib/bg2_%var%.tph~
 END
 
@@ -2954,7 +2960,7 @@ COPY_EXISTING ~worldmap.wmp~ ~override~
 ///// Iron Crisis (item shattering)                    \\\\\
 /////                                                  \\\\\
 
-ACTION_DEFINE_ARRAY eet_ironCrisis_array BEGIN ~override/AX1H01.itm~ ~override/AX1H04.itm~ ~override/BLUN02.itm~ ~override/BLUN04.itm~ ~override/BLUN06.itm~ ~override/BLUN08.itm~ ~override/DAGG01.itm~ ~override/DAGG06.itm~ ~override/DAGG07.itm~ ~override/HALB01.itm~ ~override/HAMM01.itm~ ~override/SPER01.itm~ ~override/SW1H01.itm~ ~override/SW1H04.itm~ ~override/SW1H07.itm~ ~override/SW1H12.itm~ ~override/SW1H17.itm~ ~override/SW1H20.itm~ ~override/SW1H43.itm~ ~override/SW1H46.itm~ ~override/SW1H48.itm~ ~override/SW2H01.itm~ ~override/SHLD01.itm~ ~override/SHLD03.itm~ ~override/SHLD05.itm~ ~override/SHLD08.itm~ ~override/SHLD09.itm~ ~override/SHLD10.itm~ ~override/SHLD11.itm~ ~override/SHLD12.itm~ ~override/SHLD13.itm~ ~override/SHLD14.itm~ ~override/SHLD15.itm~ ~override/SHLD16.itm~ ~override/SHLD18.itm~ ~override/CHAN01.itm~ ~override/CHAN04.itm~ ~override/PLAT01.itm~ ~override/PLAT04.itm~ ~override/HELM01.itm~ ~override/HELM08.itm~ ~override/HELM09.itm~ ~override/HELM10.itm~ ~override/HELM11.itm~ ~override/HELM12.itm~ ~override/HELM13.itm~ ~override/HELM15.itm~ END
+ACTION_DEFINE_ARRAY eet_ironCrisis_array BEGIN ~override/AX1H01.itm~ ~override/AX1H04.itm~ ~override/BLUN02.itm~ ~override/BLUN04.itm~ ~override/BLUN06.itm~ ~override/BLUN08.itm~ ~override/DAGG01.itm~ ~override/DAGG06.itm~ ~override/DAGG07.itm~ ~override/HALB01.itm~ ~override/HAMM01.itm~ ~override/SPER01.itm~ ~override/SW1H01.itm~ ~override/SW1H04.itm~ ~override/SW1H07.itm~ ~override/SW1H12.itm~ ~override/SW1H17.itm~ ~override/SW1H20.itm~ ~override/SW1H43.itm~ ~override/SW1H46.itm~ ~override/SW1H48.itm~ ~override/SW2H01.itm~ ~override/SHLD01.itm~ ~override/SHLD03.itm~ ~override/SHLD05.itm~ ~override/SHLD08.itm~ ~override/SHLD09.itm~ ~override/SHLD10.itm~ ~override/SHLD11.itm~ ~override/SHLD12.itm~ ~override/SHLD13.itm~ ~override/SHLD14.itm~ ~override/SHLD15.itm~ ~override/SHLD16.itm~ ~override/SHLD01A.itm~ ~override/SHLD03A.itm~ ~override/SHLD05A.itm~ ~override/SHLD08A.itm~ ~override/SHLD09A.itm~ ~override/SHLD10A.itm~ ~override/SHLD11A.itm~ ~override/SHLD12A.itm~ ~override/SHLD13A.itm~ ~override/SHLD14A.itm~ ~override/SHLD15A.itm~ ~override/SHLD16A.itm~ ~override/CHAN01.itm~ ~override/CHAN04.itm~ ~override/PLAT01.itm~ ~override/PLAT04.itm~ ~override/HELM01.itm~ ~override/HELM08.itm~ ~override/HELM09.itm~ ~override/HELM10.itm~ ~override/HELM11.itm~ ~override/HELM12.itm~ ~override/HELM13.itm~ ~override/HELM15.itm~ END
 LAF ~EET_IRON_CRISIS~
 	STR_VAR
 	shattering_array = EVAL ~eet_ironCrisis_array~ //array with files to patch (supports: weapons, armors, shields, helmets)

@@ -155,8 +155,8 @@ ACTION_IF GAME_IS "eet" BEGIN
 	/* EET FluidStates */
 	ACTION_IF FILE_EXISTS ~EET/FluidStates.tpa~ THEN BEGIN
 		INCLUDE ~EET/FluidStates.tpa~
-	END ELSE BEGIN
-		FAIL ~EET/FluidStates.tpa has not been detected~//there is no point in installing the mod that need these variables if this file has not been generated or has been deleted~
+	END ELSE BEGIN //there is no point in installing the mod that needs these variables if this file has not been generated or has been deleted
+		FAIL ~EET/FluidStates.tpa has not been detected~
 	END
 
 	/* Post Dialogue Files */
