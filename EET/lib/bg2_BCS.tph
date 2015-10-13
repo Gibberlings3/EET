@@ -1298,10 +1298,7 @@ IF
   Global("ENDOFBG1","GLOBAL",0) //New Game started in ToB
 THEN
   RESPONSE #100
-    TakePartyItem("K#TELTUT")
-    DestroyItem("K#TELTUT")
-    TakePartyItem("K#TELBG2")
-    DestroyItem("K#TELBG2")
+    TakeItemListPartyNum("K#PLOT",99)
     SetGlobal("SPRITE_IS_DEADYoshimo","GLOBAL",1)
     SetGlobal("NEWGAME_TOB","GLOBAL",1) //used to determinate if NPCs not met in BG2 should be spawned
     Continue()

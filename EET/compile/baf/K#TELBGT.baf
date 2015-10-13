@@ -66,7 +66,7 @@ THEN
   RESPONSE #100
     SetGlobal("K#AdvanceTimeOneMonth","LOCALS",1)
     SetGlobal("K#temp","GLOBAL",29)
-	AddGlobals("K#DaysPassed","K#temp")
+    AddGlobals("K#DaysPassed","K#temp")
     AdvanceTime(ONE_MONTH)
     Continue()
 END
@@ -93,7 +93,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player2,LeaveParty())
     ActionOverride(Player2,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -103,7 +103,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player3,LeaveParty())
     ActionOverride(Player3,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -113,7 +113,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player4,LeaveParty())
     ActionOverride(Player4,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -123,7 +123,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player5,LeaveParty())
     ActionOverride(Player5,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -133,7 +133,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player6,LeaveParty())
     ActionOverride(Player6,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -188,7 +188,7 @@ IF
 THEN
   RESPONSE #100
     GivePartyAllEquipment()
-	Wait(1)
+    Wait(1)
     RevealAreaOnMap("AR0020") //City Gates hidden via BG0000.bcs, time to reveal it
     ActionOverride(Player1,ApplySpellRES("K#DISPEL",Myself))
     ActionOverride(Player2,ApplySpellRES("K#DISPEL",Myself))

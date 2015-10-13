@@ -3122,6 +3122,7 @@ DEFINE_PATCH_MACRO ~BAF_DV_replace~ BEGIN
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellRangeRES("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dv~ LPM EET_PCU_match END ~\1%match%\3~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringHeadDead("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dv~ LPM EET_PCU_match END ~\1%match%\3~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringNoNameHead("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dv~ LPM EET_PCU_match END ~\1%match%\3~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringNoNameDlg("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dv~ LPM EET_PCU_match END ~\1%match%\3~
 
 	//TRIGGER.IDS
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AttackedBy("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dv~ LPM EET_PCU_match END ~\1%match%\3~
@@ -3552,16 +3553,17 @@ DEFINE_PATCH_MACRO ~D_traifyBCS_replace~ BEGIN
 	REPLACE_TEXTUALLY ~EraseJournalEntry(~ ~EraseJournalEntry(@~
 	REPLACE_TEXTUALLY ~SetName(~ ~SetName(@~
 	REPLACE_TEXTUALLY ~DisplayStringPoint(~ ~DisplayStringPoint(@~
-	REPLACE_TEXTUALLY ~\(DisplayString(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(SetToken(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringNoName(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringHead(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringHeadOwner(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringWait(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(SetPlayerSound([^,]*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(RemoveMapNote(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringHeadDead(.*\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringNoNameHead(.*\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayString([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(SetToken([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayStringNoName([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayStringHead([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayStringHeadOwner([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayStringWait([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(SetPlayerSound([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(RemoveMapNote([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayStringHeadDead([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayStringNoNameHead([^,]+\),~ ~\1,@~
+	REPLACE_TEXTUALLY ~\(DisplayStringNoNameDlg([^,]+\),~ ~\1,@~
 	REPLACE_TEXTUALLY ~@-1~ ~-1~
 END
 

@@ -5,16 +5,16 @@ IF
     GlobalGT("BPINTRO","GLOBAL",0)
 THEN
   RESPONSE #100
-	DestroySelf()
+    DestroySelf()
 END
 
 IF
   CheckStatLT(LastSummonerOf(Myself),50,INTOXICATION)//In vanilla BG1 weapons break almost every hit when character is drunk
 THEN
   RESPONSE #95
-	DestroySelf()
+    DestroySelf()
   RESPONSE #5 //0.5% chance
-	Continue()
+    Continue()
 END
 
 //expanded bottom via EET_IRON_CRISIS function

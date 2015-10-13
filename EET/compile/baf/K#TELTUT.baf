@@ -5,7 +5,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player2,LeaveParty())
     ActionOverride(Player2,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -15,7 +15,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player3,LeaveParty())
     ActionOverride(Player3,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -25,7 +25,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player4,LeaveParty())
     ActionOverride(Player4,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -35,7 +35,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player5,LeaveParty())
     ActionOverride(Player5,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -45,7 +45,7 @@ THEN
   RESPONSE #100
     ActionOverride(Player6,LeaveParty())
     ActionOverride(Player6,DestroySelf())
-	Continue()
+    Continue()
 END
 
 IF
@@ -76,14 +76,15 @@ THEN
     EraseJournalEntry(@27109)
     EraseJournalEntry(@27110)
     EraseJournalEntry(@27111)
-	ActionOverride(Player1,ApplySpellRES("K#DISPEL",Myself))
-    ActionOverride(Player2,LeaveParty())
-    ActionOverride(Player3,LeaveParty())
-    ActionOverride(Player4,LeaveParty())
-    ActionOverride(Player5,LeaveParty())
-    ActionOverride(Player6,LeaveParty())
+    ActionOverride(Player1,ApplySpellRES("K#DISPEL",Myself))
     ActionOverride(Player1,LeaveAreaLUAPanic("TU0015","",[607.660],S))
     ActionOverride(Player1,LeaveAreaLUA("TU0015","",[607.660],S))
+    ActionOverride(Player2,LeaveAreaLUA("TU0015","",[607.607],S))
+    ActionOverride(Player3,LeaveAreaLUA("TU0015","",[607.607],S))
+    ActionOverride(Player4,LeaveAreaLUA("TU0015","",[607.607],S))
+    ActionOverride(Player5,LeaveAreaLUA("TU0015","",[607.607],S))
+    ActionOverride(Player6,LeaveAreaLUA("TU0015","",[607.607],S))
     MultiPlayerSync()
     Wait(1)
+    DestroySelf()
 END

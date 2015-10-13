@@ -536,8 +536,6 @@ COPY + ~%biff_dir%/OH2000.wed~ ~%biff_dir%~
 	END
 BUT_ONLY
 
-COPY + ~EET/base/palette~ ~%biff_dir%~
-
 COPY + ~%tis2bg2%~ ~%biff_dir%~
 OUTER_SPRINT tis2bg2 ~EET%os_slash%temp%os_slash%biff%os_slash%tis2bg2%exe%~
 
@@ -667,9 +665,6 @@ MKDIR ~EET/temp/array~
 	~%bgee_dir%/lang/%LANGUAGE%/override~
 	~EET/temp/wav~
 	~EET/temp/chr~
-
-//additional CRE sounds from IWD:EE moved to biff dir (overwritten if needed)
-COPY + ~EET/base/wav~ ~EET/temp/wav~
 
 ACTION_FOR_EACH var IN 2da bam pro wav BEGIN
 	PRINT ~~
@@ -1448,6 +1443,7 @@ COPY + ~EET/temp/2da/TOSCEND.2DA~ ~EET/temp/2da~
 	PRETTY_PRINT_2DA
 
 COPY ~EET/temp/2da~ ~override~
+	~EET/base/2da/K#PLOT.2DA~ ~override~
 
 /////                                                  \\\\\
 ///// ARE                                              \\\\\
@@ -1510,6 +1506,12 @@ APPEND_OUTER + ~EET/temp/are.tph~ ~%logged%~
 
 COPY_EXISTING ~OH1000.ARE~ ~override/BG0000.ARE~
 	WRITE_ASCII 0x94 ~BG0000~ #8
+
+/////                                                  \\\\\
+///// BAM                                              \\\\\
+/////                                                  \\\\\
+
+COPY_LARGE + ~EET/base/bam~ ~%biff_dir%~
 
 /////                                                  \\\\\
 ///// BCS                                              \\\\\
@@ -1735,6 +1737,12 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~K#TELBG2.BCS~ ~EET-inlined/K#TELBG2-et2.baf~
+
+/////                                                  \\\\\
+///// BMP                                              \\\\\
+/////                                                  \\\\\
+
+COPY_LARGE + ~EET/base/bmp~ ~%biff_dir%~
 
 /////                                                  \\\\\
 ///// BS                                               \\\\\
@@ -2011,6 +2019,20 @@ personal_space=5 -> 3
 //7F32.INI (MSLY slayer)
 ellipse=24 -> 16
 personal_space=5 -> 3
+
+//6405.INI and 6406.INI (MDGU doom_guard, MDGU doom_guard_larger)
+//corrected sound references:
+hit02c -> hit_02c
+hit02a -> hit_02a
+hit03a -> hit_03a
+hit01a -> hit_01a
+hit01b -> hit_01b
+hit02a -> hit_02a
+hit03a -> hit_03a
+hit01_c -> hit_01c
+hit02_c -> hit_02c
+hit03_d -> hit_03d
+hit02_b -> hit_02b
 */
 
 /////                                                  \\\\\
@@ -2688,6 +2710,8 @@ OUTER_FOR (cnt = 1; cnt <= 6; cnt = cnt + 1) BEGIN
 	END
 END
 
+COPY_LARGE + ~EET/base/wav~ ~EET/temp/wav~
+
 /////                                                  \\\\\
 ///// WBM                                              \\\\\
 /////                                                  \\\\\
@@ -2990,9 +3014,9 @@ BUT_ONLY
 ///// Biffing                                          \\\\\
 /////                                                  \\\\\
 
-// Biff area graphic resources, wav files and IWD animations
+// Biff graphic resources and wav files
 ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Bb]~ = 1) BEGIN //b not dected in –args-list
-	PRINT ~Biffing graphic resources, wav files and IWD animations~
+	PRINT ~Biffing graphic resources and wav files~
 	MAKE_BIFF ~eetTU00~ BEGIN ~EET/temp/biff/eetTU00~ ~^.*$~ END
 	MAKE_BIFF ~eetOH2~ BEGIN ~EET/temp/biff/eetOH2~ ~^.*$~ END
 	MAKE_BIFF ~eetOH3~ BEGIN ~EET/temp/biff/eetOH3~ ~^.*$~ END
@@ -3060,7 +3084,6 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Bb]~ = 1) BEGIN //b not dected i
 	MAKE_BIFF ~eetAR61~ BEGIN ~EET/temp/biff/eetAR61~ ~^.*$~ END
 	MAKE_BIFF ~eetWAV~ BEGIN ~EET/temp/wav~ ~^.*$~ END
 	MAKE_BIFF ~eetBAM~ BEGIN ~EET/temp/bam~ ~^.*$~ END
-	MAKE_BIFF ~eetIWD~ BEGIN ~EET/base/animation~ ~^.*$~ END
 	//OUTER_SET currentTotal = 0
 	//OUTER_SET currentFile = 0
 	//MKDIR ~EET/temp/biff/eetMis0~ //already created
@@ -3083,7 +3106,7 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Bb]~ = 1) BEGIN //b not dected i
 		MAKE_BIFF ~eetMis%currentFile%~ BEGIN ~EET/temp/biff/eetMis%currentFile%~ ~^.*$~ END
 	END
 END ELSE BEGIN
-	PRINT ~Copying area graphic resources, wav files and IWD animations to override. This will take a while...~
+	PRINT ~Copying graphic resources and wav files to override. This will take a while...~
 	COPY_LARGE ~EET/temp/biff/eetTU00~ ~override~
 		~EET/temp/biff/eetOH2~ ~override~
 		~EET/temp/biff/eetOH3~ ~override~
@@ -3151,7 +3174,6 @@ END ELSE BEGIN
 		~EET/temp/biff/eetAR61~ ~override~
 		~EET/temp/wav~ ~override~
 		~EET/temp/bam~ ~override~
-		~EET/base/animation~ ~override~
 		~EET/temp/biff~ ~override~
 		~EET/temp/biff/eetMis0~ ~override~
 	OUTER_SET biff_temp = currentFile
