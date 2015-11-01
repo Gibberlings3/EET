@@ -100,19 +100,10 @@ END
 
 OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 	PATCH_IF (option != 5) AND (type != 2) BEGIN
-		FOR (i=1; i<="%resref_2da_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_2da_source%i%"
-			SPRINT name_dest "resref_2da_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_2da AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.2DA\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_are_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_are_source%i%"
-			SPRINT name_dest "resref_are_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_are AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.ARE\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(HT\.BMP\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(LM\.BMP\)~ ~\1%resref_index_dest%\2~
@@ -120,112 +111,47 @@ OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(LN\.BMP\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.INI\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_bam_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_bam_source%i%"
-			SPRINT name_dest "resref_bam_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_bam AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BAM\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.VVC\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_bmp_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_bmp_source%i%"
-			SPRINT name_dest "resref_bmp_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_bmp AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BMP\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_bcs_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_bcs_source%i%"
-			SPRINT name_dest "resref_bcs_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_bcs AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BCS\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.BAF\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_cre_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_cre_source%i%"
-			SPRINT name_dest "resref_cre_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_cre AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.CRE\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_dlg_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_dlg_source%i%"
-			SPRINT name_dest "resref_dlg_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_dlg AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.D\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.DLG\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_eff_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_eff_source%i%"
-			SPRINT name_dest "resref_eff_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_eff AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.EFF\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_itm_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_itm_source%i%"
-			SPRINT name_dest "resref_itm_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_itm AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.ITM\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_mos_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_mos_source%i%"
-			SPRINT name_dest "resref_mos_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_mos AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.MOS\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_mve_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_mve_source%i%"
-			SPRINT name_dest "resref_mve_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_mve AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.MVE\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WBM\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_pro_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_pro_source%i%"
-			SPRINT name_dest "resref_pro_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_pro AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.PRO\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_spl_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_spl_source%i%"
-			SPRINT name_dest "resref_spl_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_spl AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.SPL\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_sto_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_sto_source%i%"
-			SPRINT name_dest "resref_sto_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_sto AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.STO\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_tis_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_tis_source%i%"
-			SPRINT name_dest "resref_tis_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_tis AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.TIS\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.TIZ\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.MOS\)~ ~\1%resref_index_dest%\2~
@@ -238,20 +164,10 @@ OUTER_PATCH_SAVE ~list_output~ ~%list_input%~ BEGIN
 			END
 			REPLACE_TEXTUALLY ~\([	/]+\)%pvrz_source%\([0-9]+\.PVRZ\)~ ~\1%pvrz_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_vef_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_vef_source%i%"
-			SPRINT name_dest "resref_vef_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_vef AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.VEF\)~ ~\1%resref_index_dest%\2~
 		END
-
-		FOR (i=1; i<="%resref_wav_total%"; i=i+1) BEGIN
-			SPRINT name_source "resref_wav_source%i%"
-			SPRINT name_dest "resref_wav_dest%i%"
-			SPRINT resref_index_source EVALUATE_BUFFER ~%%name_source%%~
-			SPRINT resref_index_dest EVALUATE_BUFFER ~%%name_dest%%~
+		PHP_EACH remapped_wav AS resref_index_source => resref_index_dest BEGIN
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WAV\)~ ~\1%resref_index_dest%\2~
 			REPLACE_TEXTUALLY ~\([	/]+\)%resref_index_source%\(\.WFX\)~ ~\1%resref_index_dest%\2~
 		END

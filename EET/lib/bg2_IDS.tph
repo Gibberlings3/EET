@@ -326,6 +326,7 @@ COPY + ~EET/temp/array/GTIMES.IDS~ ~EET/temp/array~
 						END
 					END
 				END
+			BUT_ONLY
 			ACTION_IF ("%noupdate%" = 0) BEGIN
 				APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
@@ -411,10 +412,10 @@ APPEND ~TRIGGER.IDS~ ~0x40E9 NightmareModeOn()~                                 
 
 ACTION_FOR_EACH file IN EXTSTATE ITEMFLAG MAPNOTES SPLSTATE STATMOD WMPFLAG BEGIN
 	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%file%.IDS~ BEGIN
-<<<<<<<< EET-inlined/dummy.ids
+<<<<<<<< .../dummy.ids
 IDS V1.0
 >>>>>>>>
-		COPY ~EET-inlined/dummy.ids~ ~override/%file%.IDS~
+		COPY ~.../dummy.ids~ ~override/%file%.IDS~
 	END
 END
 

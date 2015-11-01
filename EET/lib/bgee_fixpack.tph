@@ -48,7 +48,7 @@ END
 //There is an existing AR4300.bcs which also adds the family to the area
 //EET assigned these script, now there are 2 Colquetle Familys...
 
-<<<<<<<< ../eet-inlined/oBG4300.baf
+<<<<<<<< .../oBG4300.baf
 IF
 Global("PoorMrColquetleFamily","GLOBAL",0)
 THEN
@@ -61,11 +61,11 @@ CreateCreature("mrcolboy",[2720.890],SW)
 END
 >>>>>>>> 
 
-<<<<<<<< ../eet-inlined/nBG4300.baf
+<<<<<<<< .../nBG4300.baf
 >>>>>>>>
 
 COPY_EXISTING ~BG4300.bcs~ ~override~
-R_B_B ~../eet-inlined/oBG4300.baf~ ~../eet-inlined/nBG4300.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching ../eet-inlined/oBG4300.baf in %SOURCE_FILE% (not a problem, some mod probably fixed it before)~ END
+R_B_B ~.../oBG4300.baf~ ~.../nBG4300.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oBG4300.baf in %SOURCE_FILE% (not a problem, some mod probably fixed it before)~ END
 
 //https://forums.beamdog.com/discussion/36102/known-safana-should-not-keep-stopping-if-she-loots-the-pirate-treasure-on-her-own#latest
 //If Safana loots the cave and no NPC is present, she stutters
@@ -89,14 +89,14 @@ WRITE_SHORT 0x28 24580
 
 //Force Talk Rasaad repeats Banters
 //https://forums.beamdog.com/discussion/38792/windows-force-talk-to-rasaad-during-final-battle-on-cloud-peak-will-repeat-the-dialogue-with-gamaz#latest
-<<<<<<<< ../eet-inlined/RASAADJ.D
+<<<<<<<< .../RASAADJ.D
 ADD_STATE_TRIGGER RASAADJ_ 21 ~!Global("CLOUD_PEAK","OH3000",2)~
 ADD_STATE_TRIGGER RASAADJ_ 29 ~InMyArea("RSGAMAZ")~
 ADD_STATE_TRIGGER RASAADJ_ 35 ~!Global("WARasaadFix","Global",1)~
 ADD_TRANS_ACTION RSGAMAZ BEGIN 23 END BEGIN 0 END ~SetGlobal("WARasaadFix","Global",1)~
 >>>>>>>>
 
-COMPILE ~../eet-inlined/RASAADJ.D~
+COMPILE ~.../RASAADJ.D~
 
 //Kivan should not have a 1st-level spell slot
 //https://forums.beamdog.com/discussion/38820/kivan-should-not-have-a-1st-level-spell-slot-at-level-4-and-level-6#latest
@@ -108,28 +108,28 @@ WRITE_SHORT 0x2d8 0
 
 //Dorn Kivan Leaving Fix
 //https://forums.beamdog.com/discussion/39271/kivan-interjection-in-dorn-dialog-goes-to-wrong-state#latest
-<<<<<<<< ../eet-inlined/dornj.d
+<<<<<<<< .../dornj.d
 ALTER_TRANS DORNJ_ BEGIN 56 END BEGIN 2 END BEGIN "EPILOGUE" ~EXTERN KIVANJ 7~ END
 ALTER_TRANS EDWINJ_ BEGIN 20 END BEGIN 1 END BEGIN ~EPILOGUE~ ~EXTERN KIVANJ 7~ END
 >>>>>>>>
 
-COMPILE ~../eet-inlined/dornj.d~
+COMPILE ~.../dornj.d~
 
 //Force Talk Tiax repeats Dorn Banter
 //https://forums.beamdog.com/discussion/38791/windows-force-talk-to-tiax-should-not-repeat-banter-between-him-and-dorn#latest
-<<<<<<<< ../eet-inlined/tiaxj.d
+<<<<<<<< .../tiaxj.d
 ADD_TRANS_ACTION TIAXJ BEGIN 2 END BEGIN 0 END ~SetGlobal("DORN_TIAX","GLOBAL",3)~
 >>>>>>>>
 
-COMPILE ~../eet-inlined/tiaxj.d~
+COMPILE ~.../tiaxj.d~
 
 //Force Talk Safana repeats Dorn Banter
 //https://forums.beamdog.com/discussion/37327/11111-all-force-talking-safana-repeats-dorn-dialog#latest
-<<<<<<<< ../eet-inlined/SAFANJ.D
+<<<<<<<< .../SAFANJ.D
 ADD_TRANS_ACTION SAFANJ BEGIN 7 END BEGIN 0 END ~SetGlobal("DORN_SAFANA_DIALOG1","GLOBAL",2)~
 >>>>>>>>
 
-COMPILE ~../eet-inlined/SAFANJ.D~
+COMPILE ~.../SAFANJ.D~
 
 //Animal Summoning I for 3 turns & Ranger Charm Animal ability Save Bonus
 //https://forums.beamdog.com/discussion/38486/beast-masters-animal-summoning-i-should-last-3-turns#latest
@@ -201,11 +201,11 @@ LPM ADD_CRE_ITEM_FLAGS
 //Aldeth should not betray the protagonist after exposing Sarevok
 //https://forums.beamdog.com/discussion/40898/gamebreaker-aldeth-should-not-betray-the-protagonist-after-exposing-sarevok#latest
 
-<<<<<<<< ../EET-inlined/Aldeth.d
+<<<<<<<< .../Aldeth.d
 ADD_TRANS_TRIGGER ALDETH 21 ~GlobalLT("DukeThanks","GLOBAL",1)~ DO 1
 >>>>>>>>
 
-COMPILE ~../EET-inlined/Aldeth.d~
+COMPILE ~.../Aldeth.d~
 
 
 //Some fixes from Prozh Fixpack, thank you. :)
@@ -302,7 +302,7 @@ COPY_EXISTING ~misc78.itm~ ~override~
 BUT_ONLY
 
 //dlgfix.d
-<<<<<<<< ../eet-inlined/dlgfix.d
+<<<<<<<< .../dlgfix.d
 ALTER_TRANS DORNJ_ BEGIN 178 END BEGIN 3 END BEGIN ~EPILOGUE~ ~EXTERN MINSCJ_ 18~ END
 ALTER_TRANS DORNJ_ BEGIN 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 END BEGIN 4 END BEGIN ~EPILOGUE~ ~EXTERN MINSCJ_ 18~ END
 ALTER_TRANS DORNJ_ BEGIN 229 END BEGIN 18 END BEGIN ~EPILOGUE~ ~EXTERN SAFANJ 13~ END
@@ -339,4 +339,4 @@ ALTER_TRANS RASAADJ_ BEGIN 21 END BEGIN 1 END BEGIN ~EPILOGUE~ ~EXTERN RSDMNK06 
 ALTER_TRANS VICONJ BEGIN 14 END BEGIN 0 END BEGIN ~EPILOGUE~ ~EXTERN RSDMNK06 m2~ END
 >>>>>>>>
 
-COMPILE ~../eet-inlined/dlgfix.d~
+COMPILE ~.../dlgfix.d~

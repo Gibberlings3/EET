@@ -241,10 +241,8 @@ DEFINE_PATCH_MACRO ~EET_JOURNAL_patch~ BEGIN
 	END
 	REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
 	PATCH_IF (~%file_ext%~ STRING_EQUAL_CASE ~bcs~) BEGIN
-		REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
 		COMPILE_BAF_TO_BCS EVALUATE_BUFFER
 	END ELSE PATCH_IF (~%file_ext%~ STRING_EQUAL_CASE ~dlg~) BEGIN
-		REPLACE_TEXTUALLY ~\(Allegiance(.*,\)ANYONE)~ ~\10)~//workaround for weidu compiler bug
 		COMPILE_D_TO_DLG EVALUATE_BUFFER
 	END
 END
@@ -467,7 +465,7 @@ END
 			END
 		END
 		//Expand FATESP.DLG
-		ACTION_IF (NOT ~%string%~ STRING_CONTAINS_REGEXP ~^[^@^#]~) BEGIN //not TRA or TLK reference
+		ACTION_IF (NOT ~%string%~ STRING_CONTAINS_REGEXP ~^[^@#]~) BEGIN //not TRA or TLK reference
 			OUTER_PATCH_SAVE string ~%string%~ BEGIN
 				REPLACE_TEXTUALLY ~^~ "~"
 				REPLACE_TEXTUALLY ~$~ "~"

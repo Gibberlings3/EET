@@ -46,7 +46,7 @@ COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
 					REPLACE_TEXTUALLY ~GAME_IS~ ~%WNL%GAME_IS~ //workaround for weidu bug
-					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ 	]+\)\([A-Z0-9]+\)~ BEGIN
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ 	]+\)\([A-Za-z0-9]+\)~ BEGIN
 						PATCH_IF (patched = 0) BEGIN
 							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
 						END

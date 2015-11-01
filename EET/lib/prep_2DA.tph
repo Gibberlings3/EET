@@ -1,4 +1,10 @@
-//rename conflicting 2DAs
+//read during installation
+ACTION_FOR_EACH file IN 25STWEAP ABCLASRQ ABCLSMOD ABDCDSRQ ABDCSCRQ ALIGNMNT BACKSTAB CHARSND CLASCOLR CLASISKL CLASTEXT CLASTHAC CLASWEAP CLEARAIR CLEARTRP CLSRCREQ CLSWPBON CRIPPSTR DUALCLAS ENTRIES EXTANIM EXTSPEED HATERACE HIDESPL HPCLASS INTERDIA ITEM_USE ITEMANIM ITEMDIAL ITEMEXCL K_B_D K_B_E K_B_G K_B_H K_B_HE K_B_HL K_B_HO K_C_D K_C_E K_C_G K_C_H K_C_HE K_C_HL K_C_HO K_D_D K_D_E K_D_G K_D_H K_D_HE K_D_HL K_D_HO K_F_D K_F_E K_F_G K_F_H K_F_HE K_F_HL K_F_HO K_MN_H K_P_D K_P_E K_P_G K_P_H K_P_HE K_P_HL K_P_HO K_R_D K_R_E K_R_G K_R_H K_R_HE K_R_HL K_R_HO K_S_D K_S_E K_S_G K_S_H K_S_HE K_S_HL K_S_HO K_T_D K_T_E K_T_G K_T_H K_T_HE K_T_HL K_T_HO KITLIST KITTABLE LUABBR MASTAREA MONSUM01 MONSUM02 MONSUM03 MONSUM04 MONSUM05 MONSUM06 MONSUM07 MOVIDESC MSECTYPE NPCLEVEL NUMWSLOT PDIALOG PORTRAIT RACETEXT RNDEQUIP RNDMAGIC RNDSCROL RNDTREAS RNDTRES RNDWEP SCRPDESC SMTABLES SNDRESRF SNEAKATT SONGLIST SPAWNGRP SPELDESC STATDESC THIEFSCL THIEFSKL TOOLTIP TRACKING TRAPLIMT WEAPPROF XPLIST BEGIN
+	ACTION_IF (FILE_EXISTS ~EET/temp/2da/%file%.2da~) BEGIN
+		MOVE + ~EET/temp/2da/%file%.2da~ ~EET/temp/array~
+	END
+END
+
 MOVE + ~EET/temp/2da/CHPTXT2.2DA~ ~EET/temp/2da/CHPTXT2_.2DA~
 	~EET/temp/2da/CHPTXT3.2DA~ ~EET/temp/2da/CHPTXT3_.2DA~
 	~EET/temp/2da/CHPTXT4.2DA~ ~EET/temp/2da/CHPTXT4_.2DA~
@@ -12,71 +18,6 @@ MOVE + ~EET/temp/2da/CHPTXT2.2DA~ ~EET/temp/2da/CHPTXT2_.2DA~
 	~EET/temp/2da/DRMTXT5.2DA~ ~EET/temp/2da/DRMTXT5_.2DA~
 	~EET/temp/2da/DRMTXT6.2DA~ ~EET/temp/2da/DRMTXT6_.2DA~
 	~EET/temp/2da/DRMTXT7.2DA~ ~EET/temp/2da/DRMTXT7_.2DA~
-//moved and later used to update BG2:EE 2DAs
-	~EET/temp/2da/25STWEAP.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ABCLASRQ.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ABCLSMOD.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ABDCDSRQ.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ABDCSCRQ.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ALIGNMNT.2DA~ ~EET/temp/array~
-	~EET/temp/2da/BACKSTAB.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CHARSND.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CLASCOLR.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CLASISKL.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CLASTEXT.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CLASTHAC.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CLASWEAP.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CLSRCREQ.2DA~ ~EET/temp/array~
-	~EET/temp/2da/CLSWPBON.2DA~ ~EET/temp/array~
-	~EET/temp/2da/DUALCLAS.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ENTRIES.2DA~ ~EET/temp/array~
-	~EET/temp/2da/EXTANIM.2DA~ ~EET/temp/array~
-	~EET/temp/2da/EXTSPEED.2DA~ ~EET/temp/array~
-	~EET/temp/2da/HATERACE.2DA~ ~EET/temp/array~
-	~EET/temp/2da/HPCLASS.2DA~ ~EET/temp/array~
-	~EET/temp/2da/INTERDIA.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ITEM_USE.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ITEMANIM.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ITEMDIAL.2DA~ ~EET/temp/array~
-	~EET/temp/2da/ITEMEXCL.2DA~ ~EET/temp/array~
-	~EET/temp/2da/KITLIST.2DA~ ~EET/temp/array~
-	~EET/temp/2da/KITTABLE.2DA~ ~EET/temp/array~
-	~EET/temp/2da/LUABBR.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MASTAREA.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MONSUM01.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MONSUM02.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MONSUM03.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MONSUM04.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MONSUM05.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MONSUM06.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MONSUM07.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MOVIDESC.2DA~ ~EET/temp/array~
-	~EET/temp/2da/MSECTYPE.2DA~ ~EET/temp/array~
-	~EET/temp/2da/NPCLEVEL.2DA~ ~EET/temp/array~
-	~EET/temp/2da/NUMWSLOT.2DA~ ~EET/temp/array~
-	~EET/temp/2da/PDIALOG.2DA~ ~EET/temp/array~
-	~EET/temp/2da/PORTRAIT.2DA~ ~EET/temp/array~
-	~EET/temp/2da/RACETEXT.2DA~ ~EET/temp/array~
-	~EET/temp/2da/RNDEQUIP.2DA~ ~EET/temp/array~
-	~EET/temp/2da/RNDMAGIC.2DA~ ~EET/temp/array~
-	~EET/temp/2da/RNDSCROL.2DA~ ~EET/temp/array~
-	~EET/temp/2da/RNDTREAS.2DA~ ~EET/temp/array~
-	~EET/temp/2da/RNDWEP.2DA~ ~EET/temp/array~
-	~EET/temp/2da/SNDRESRF.2DA~ ~EET/temp/array~
-	~EET/temp/2da/SONGLIST.2DA~ ~EET/temp/array~
-	~EET/temp/2da/SPAWNGRP.2DA~ ~EET/temp/array~
-	~EET/temp/2da/SPELDESC.2DA~ ~EET/temp/array~
-	~EET/temp/2da/THIEFSCL.2DA~ ~EET/temp/array~
-	~EET/temp/2da/THIEFSKL.2DA~ ~EET/temp/array~
-	~EET/temp/2da/TOOLTIP.2DA~ ~EET/temp/array~
-	~EET/temp/2da/TRAPLIMT.2DA~ ~EET/temp/array~
-	~EET/temp/2da/WEAPPROF.2DA~ ~EET/temp/array~
-
-ACTION_FOR_EACH file IN SNEAKATT CRIPPSTR BEGIN
-	ACTION_IF (FILE_EXISTS ~EET/temp/2da/%file%.2DA~) BEGIN
-		MOVE + ~EET/temp/2da/%file%.2DA~ ~EET/temp/array~
-	END
-END
 
 DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/ABSTART.2DA~
@@ -150,7 +91,6 @@ DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/CLABTH03.2DA~
 	~EET/temp/2da/CLABTH04.2DA~
 	~EET/temp/2da/CLABTH05.2DA~
-	~EET/temp/2da/CLEARAIR.2DA~
 	~EET/temp/2da/CONTCOND.2DA~
 	~EET/temp/2da/CONTINGX.2DA~
 	~EET/temp/2da/CONTTARG.2DA~
@@ -169,7 +109,6 @@ DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/FATIGMOD.2DA~
 	~EET/temp/2da/HAERND.2DA~
 	~EET/temp/2da/HAPPY.2DA~
-	~EET/temp/2da/HIDESPL.2DA~
 	~EET/temp/2da/HPBARB.2DA~
 	~EET/temp/2da/HPCM.2DA~//not yet available in BG2:EE
 	~EET/temp/2da/HPCONBON.2DA~
@@ -199,63 +138,6 @@ DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/JAHEIND1.2DA~
 	~EET/temp/2da/JAHEIND2.2DA~
 	~EET/temp/2da/JANND.2DA~
-	~EET/temp/2da/K_B_D.2DA~
-	~EET/temp/2da/K_B_E.2DA~
-	~EET/temp/2da/K_B_G.2DA~
-	~EET/temp/2da/K_B_H.2DA~
-	~EET/temp/2da/K_B_HE.2DA~
-	~EET/temp/2da/K_B_HL.2DA~
-	~EET/temp/2da/K_B_HO.2DA~
-	~EET/temp/2da/K_C_D.2DA~
-	~EET/temp/2da/K_C_E.2DA~
-	~EET/temp/2da/K_C_G.2DA~
-	~EET/temp/2da/K_C_H.2DA~
-	~EET/temp/2da/K_C_HE.2DA~
-	~EET/temp/2da/K_C_HL.2DA~
-	~EET/temp/2da/K_C_HO.2DA~
-	~EET/temp/2da/K_D_D.2DA~
-	~EET/temp/2da/K_D_E.2DA~
-	~EET/temp/2da/K_D_G.2DA~
-	~EET/temp/2da/K_D_H.2DA~
-	~EET/temp/2da/K_D_HE.2DA~
-	~EET/temp/2da/K_D_HL.2DA~
-	~EET/temp/2da/K_D_HO.2DA~
-	~EET/temp/2da/K_F_D.2DA~
-	~EET/temp/2da/K_F_E.2DA~
-	~EET/temp/2da/K_F_G.2DA~
-	~EET/temp/2da/K_F_H.2DA~
-	~EET/temp/2da/K_F_HE.2DA~
-	~EET/temp/2da/K_F_HL.2DA~
-	~EET/temp/2da/K_F_HO.2DA~
-	~EET/temp/2da/K_MN_H.2DA~
-	~EET/temp/2da/K_P_D.2DA~
-	~EET/temp/2da/K_P_E.2DA~
-	~EET/temp/2da/K_P_G.2DA~
-	~EET/temp/2da/K_P_H.2DA~
-	~EET/temp/2da/K_P_HE.2DA~
-	~EET/temp/2da/K_P_HL.2DA~
-	~EET/temp/2da/K_P_HO.2DA~
-	~EET/temp/2da/K_R_D.2DA~
-	~EET/temp/2da/K_R_E.2DA~
-	~EET/temp/2da/K_R_G.2DA~
-	~EET/temp/2da/K_R_H.2DA~
-	~EET/temp/2da/K_R_HE.2DA~
-	~EET/temp/2da/K_R_HL.2DA~
-	~EET/temp/2da/K_R_HO.2DA~
-	~EET/temp/2da/K_S_D.2DA~
-	~EET/temp/2da/K_S_E.2DA~
-	~EET/temp/2da/K_S_G.2DA~
-	~EET/temp/2da/K_S_H.2DA~
-	~EET/temp/2da/K_S_HE.2DA~
-	~EET/temp/2da/K_S_HL.2DA~
-	~EET/temp/2da/K_S_HO.2DA~
-	~EET/temp/2da/K_T_D.2DA~
-	~EET/temp/2da/K_T_E.2DA~
-	~EET/temp/2da/K_T_G.2DA~
-	~EET/temp/2da/K_T_H.2DA~
-	~EET/temp/2da/K_T_HE.2DA~
-	~EET/temp/2da/K_T_HL.2DA~
-	~EET/temp/2da/K_T_HO.2DA~
 	~EET/temp/2da/KELDORND.2DA~
 	~EET/temp/2da/KORGAND.2DA~
 	~EET/temp/2da/KPLOSE.2DA~
@@ -500,7 +382,6 @@ DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/SCENE03.2DA~
 	~EET/temp/2da/SCENE04.2DA~
 	~EET/temp/2da/SCRODRE.2DA~
-	~EET/temp/2da/SCRPDESC.2DA~
 	~EET/temp/2da/SCRPRESS.2DA~
 	~EET/temp/2da/SCRSARA.2DA~
 	~EET/temp/2da/SCRTXT01.2DA~
@@ -531,7 +412,6 @@ DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/STARTARE.2DA~
 	~EET/temp/2da/STARTBP.2DA~
 	~EET/temp/2da/STARTPOS.2DA~
-	~EET/temp/2da/STATDESC.2DA~
 	~EET/temp/2da/STRMOD.2DA~
 	~EET/temp/2da/STRMODEX.2DA~
 	~EET/temp/2da/STRTGOLD.2DA~
@@ -542,7 +422,6 @@ DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/TBPPARTY.2DA~
 	~EET/temp/2da/THAC0.2DA~
 	~EET/temp/2da/TOKENTXT.2DA~
-	~EET/temp/2da/TRACKING.2DA~
 	~EET/temp/2da/TRANDEF.2DA~
 	~EET/temp/2da/VALYGND.2DA~
 	~EET/temp/2da/VICONND1.2DA~
@@ -556,5 +435,4 @@ DELETE + ~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/XPBONUS.2DA~
 	~EET/temp/2da/XPCAP.2DA~
 	~EET/temp/2da/XPLEVEL.2DA~
-	~EET/temp/2da/XPLIST.2DA~
 	~EET/temp/2da/YEARS.2DA~

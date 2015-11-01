@@ -1,31 +1,140 @@
-OUTER_SET dword_mus_total = 0
-OUTER_SET dword_state_total = 0
-OUTER_SET word_ipro_total = 0
-OUTER_SET byte_kit_total = 0
-OUTER_SET byte_class_total = 0
-OUTER_SET resref_dlgext_total = 0
-OUTER_SET resref_2da_total = 0
-OUTER_SET resref_mve_total = 0
-OUTER_SET resref_bam_total = 0
-OUTER_SET resref_eff_total = 0
-OUTER_SET resref_spl_total = 0
-OUTER_SET resref_splRes_total = 0
-OUTER_SET resref_splName_total = 0
-OUTER_SET resref_sto_total = 0
-OUTER_SET resref_tis_total = 0
-OUTER_SET resref_wav_total = 0
-OUTER_SET resref_door_8start = 0
-OUTER_SET resref_door_6start = 0
-OUTER_SET resref_door_7start = 0
-OUTER_SET resref_door_5start = 0
-OUTER_SET resref_door_total = 0
-OUTER_SET resref_exit_8start = 0
-OUTER_SET resref_exit_6start = 0
-OUTER_SET resref_exit_7start = 0
-OUTER_SET resref_exit_5start = 0
-OUTER_SET resref_exit_total = 0
-OUTER_SET resref_bmp_total = 0
-OUTER_SET resref_mos_total = 0
+/////                                                  \\\\\
+///// Preparing MUS variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing STATE variables                        \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_state BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing PRO IDS variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing Kit IDS variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing Class IDS variables                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing CHAPTER variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY array_chapter_sourceDest BEGIN
+	~0~ , ~0~ , ~1~ , ~1~ => ~tutu_prologue~
+	~1~ , ~1~ , ~1~ , ~2~ => ~tutu_chapter_1~
+	~2~ , ~2~ , ~2~ , ~3~ => ~tutu_chapter_2~
+	~3~ , ~3~ , ~3~ , ~4~ => ~tutu_chapter_3~
+	~4~ , ~4~ , ~4~ , ~5~ => ~tutu_chapter_4~
+	~5~ , ~5~ , ~5~ , ~6~ => ~tutu_chapter_5~
+	~6~ , ~6~ , ~6~ , ~7~ => ~tutu_chapter_6~
+	~7~ , ~7~ , ~7~ , ~8~ => ~tutu_chapter_7~
+END
+
+ACTION_PHP_EACH array_chapter_sourceDest AS source => dest BEGIN
+	ACTION_IF (platform = 1) BEGIN //BGEE
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_chapter BEGIN
+			~%source%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 2) BEGIN //EET
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_chapter BEGIN
+			~%source_1%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_chapter BEGIN
+			~%source_3%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_chapter BEGIN
+			~%source_2%~ => ~%dest%~
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// Preparing DV variables                           \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY array_dv_sourceDest BEGIN
+	~imoen~ , ~imoen2~ , ~imoen~ , ~imoen2~ => ~IMOEN_DV~
+END
+
+ACTION_PHP_EACH array_dv_sourceDest AS source => dest BEGIN
+	ACTION_IF (platform = 1) BEGIN //BGEE
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dv BEGIN
+			~%source%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 2) BEGIN //EET
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dv BEGIN
+			~%source_1%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dv BEGIN
+			~%source_3%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dv BEGIN
+			~%source_2%~ => ~%dest%~
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// Preparing GLOBAL variables (BCS/BAF/DLG/D)       \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY array_var_sourceDest BEGIN
+	~KickedOut~ , ~KickedOut~ , ~KickedOut~ , ~IWasKickedOut~ => ~KICKED_OUT~
+	~DREAM~, ~BG1DREAM~ , ~DREAM~ , ~BG1DREAM~ => ~bgdreams~
+END
+
+ACTION_PHP_EACH array_var_sourceDest AS source => dest BEGIN
+	ACTION_IF (platform = 1) BEGIN //BGEE
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_var BEGIN
+			~%source%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 2) BEGIN //EET
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_var BEGIN
+			~%source_1%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_var BEGIN
+			~%source_3%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_var BEGIN
+			~%source_2%~ => ~%dest%~
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// Preparing 2DA variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_2da BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing ARE/WED/MOS variables                  \\\\\
+/////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY array_are_sourceDest BEGIN
 	~AR0002~ , ~BG0002~ , ~FW0002~ , ~ARA002~ => ~NBaldursGate_TempleofHelm~
@@ -513,20 +622,36 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY array_are_sourceDest BEGIN
 	~AR1010~ , ~BG1010~ , ~FW1010~ , ~ARU010~ => ~IceIslandMaze_L2~
 END
 
-OUTER_SET resref_are_total = 0
 ACTION_PHP_EACH array_are_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_are_total = resref_are_total + 1
 	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_are_source%resref_are_total%" "%source%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_are BEGIN
+			~%source%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_are_source%resref_are_total%" "%source_1%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_are BEGIN
+			~%source_1%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_are_source%resref_are_total%" "%source_3%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_are BEGIN
+			~%source_3%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_are_source%resref_are_total%" "%source_2%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_are BEGIN
+			~%source_2%~ => ~%dest%~
+		END
 	END
-	OUTER_SPRINT EVAL "resref_are_dest%resref_are_total%" "%%dest%%"
 END
+
+/////                                                  \\\\\
+///// Preparing BAM / VVC variables                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing BCS variables                          \\\\\
+/////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY array_bcs_sourceDest BEGIN
 	~AR0002~ , ~BG0002~ , ~_AR0002~ , ~ARA002~ => ~NBaldursGate_TempleofHelm_BCS~
@@ -1042,20 +1167,67 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY array_bcs_sourceDest BEGIN
 	~RASAAD~ , ~RASAAD_~ , ~RASAAD~ , ~RASAAD~ => ~RASAAD_BCS~
 END
 
-OUTER_SET resref_bcs_total = 0
 ACTION_PHP_EACH array_bcs_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_bcs_total = resref_bcs_total + 1
 	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_bcs_source%resref_bcs_total%" "%source%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bcs BEGIN
+			~%source%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_bcs_source%resref_bcs_total%" "%source_1%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bcs BEGIN
+			~%source_1%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_bcs_source%resref_bcs_total%" "%source_3%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bcs BEGIN
+			~%source_3%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_bcs_source%resref_bcs_total%" "%source_2%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bcs BEGIN
+			~%source_2%~ => ~%dest%~
+		END
 	END
-	OUTER_SPRINT EVAL "resref_bcs_dest%resref_bcs_total%" "%%dest%%"
 END
+
+/////                                                  \\\\\
+///// Preparing BMP variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bmp BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing CRE variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY array_cre_sourceDest BEGIN
+	~skelwa02~ , ~skelwa2_~ , ~_kelwa02~ , ~bgskel02~ => ~tutu_skeleton_warrior2~
+	~skelwa03~ , ~skelwa3_~ , ~_kelwa03~ , ~bgskel03~ => ~tutu_skeleton_warrior3~
+	~imoen6~ , ~imoen6_~ , ~_imoen6~ , ~imoen61~ => ~tutu_imoen6~
+	~viconi6~ , ~viconi6_~ , ~_viconi6~ , ~viconi61~ => ~tutu_viconi6~
+END
+
+ACTION_PHP_EACH array_cre_sourceDest AS source => dest BEGIN
+	ACTION_IF (platform = 1) BEGIN //BGEE
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
+			~%source%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 2) BEGIN //EET
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
+			~%source_1%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
+			~%source_3%~ => ~%dest%~
+		END
+	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
+			~%source_2%~ => ~%dest%~
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// Preparing DLG variables                          \\\\\
+/////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY array_dlg_sourceDest BEGIN
 	~AJANTP~ , ~AJANTP~ , ~_AJANTP~ , ~AJANTP~ => ~AJANTIS_POST~
@@ -1141,123 +1313,148 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY array_dlg_sourceDest BEGIN
 	~RASAADJ~ , ~RASAADJ_~ , ~RASAADJ~ , ~RASAADJ~ => ~RASAAD_JOINED~
 END
 
-OUTER_SET resref_dlg_total = 0
 ACTION_PHP_EACH array_dlg_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_dlg_total = resref_dlg_total + 1
 	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_dlg_source%resref_dlg_total%" "%source%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+			~%source%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_dlg_source%resref_dlg_total%" "%source_1%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+			~%source_1%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_dlg_source%resref_dlg_total%" "%source_3%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+			~%source_3%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_dlg_source%resref_dlg_total%" "%source_2%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+			~%source_2%~ => ~%dest%~
+		END
 	END
-	OUTER_SPRINT EVAL "resref_dlg_dest%resref_dlg_total%" "%%dest%%"
 END
 
-ACTION_DEFINE_ASSOCIATIVE_ARRAY array_dv_sourceDest BEGIN
-	~imoen~ , ~imoen2~ , ~imoen~ , ~imoen2~ => ~IMOEN_DV~
+/////                                                  \\\\\
+///// Preparing EFF variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN
 END
 
-OUTER_SET resref_dv_total = 0
-ACTION_PHP_EACH array_dv_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_dv_total = resref_dv_total + 1
-	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_dv_source%resref_dv_total%" "%source%"
-	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_dv_source%resref_dv_total%" "%source_1%"
-	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_dv_source%resref_dv_total%" "%source_3%"
-	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_dv_source%resref_dv_total%" "%source_2%"
-	END
-	OUTER_SPRINT EVAL "resref_dv_dest%resref_dv_total%" "%%dest%%"
-END
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY array_cre_sourceDest BEGIN
-	~skelwa02~ , ~skelwa2_~ , ~_kelwa02~ , ~bgskel02~ => ~tutu_skeleton_warrior2~
-	~skelwa03~ , ~skelwa3_~ , ~_kelwa03~ , ~bgskel03~ => ~tutu_skeleton_warrior3~
-	~imoen6~ , ~imoen6_~ , ~_imoen6~ , ~imoen61~ => ~tutu_imoen6~
-	~viconi6~ , ~viconi6_~ , ~_viconi6~ , ~viconi61~ => ~tutu_viconi6~
-END
-
-OUTER_SET resref_cre_total = 0
-ACTION_PHP_EACH array_cre_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_cre_total = resref_cre_total + 1
-	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_cre_source%resref_cre_total%" "%source%"
-	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_cre_source%resref_cre_total%" "%source_1%"
-	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_cre_source%resref_cre_total%" "%source_3%"
-	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_cre_source%resref_cre_total%" "%source_2%"
-	END
-	OUTER_SPRINT EVAL "resref_cre_dest%resref_cre_total%" "%%dest%%"
-END
+/////                                                  \\\\\
+///// Preparing ITM variables                          \\\\\
+/////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY array_itm_sourceDest BEGIN
 	~MIHP1~ , ~MIHP1~ , ~TAZOKHP1~ , ~MINHP1~ => ~tazokminhp~
 END
 
-OUTER_SET resref_itm_total = 0
 ACTION_PHP_EACH array_itm_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_itm_total = resref_itm_total + 1
 	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_itm_source%resref_itm_total%" "%source%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
+			~%source%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_itm_source%resref_itm_total%" "%source_1%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
+			~%source_1%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_itm_source%resref_itm_total%" "%source_3%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
+			~%source_3%~ => ~%dest%~
+		END
 	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_itm_source%resref_itm_total%" "%source_2%"
+		ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
+			~%source_2%~ => ~%dest%~
+		END
 	END
-	OUTER_SPRINT EVAL "resref_itm_dest%resref_itm_total%" "%%dest%%"
 END
 
-ACTION_DEFINE_ASSOCIATIVE_ARRAY array_var_sourceDest BEGIN
-	~KickedOut~ , ~KickedOut~ , ~KickedOut~ , ~IWasKickedOut~ => ~KICKED_OUT~
-	~DREAM~, ~BG1DREAM~ , ~DREAM~ , ~BG1DREAM~ => ~bgdreams~
+/////                                                  \\\\\
+///// Preparing MOS variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mos BEGIN
 END
 
-OUTER_SET resref_var_total = 0
-ACTION_PHP_EACH array_var_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_var_total = resref_var_total + 1
-	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_var_source%resref_var_total%" "%source%"
-	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_var_source%resref_var_total%" "%source_1%"
-	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_var_source%resref_var_total%" "%source_3%"
-	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_var_source%resref_var_total%" "%source_2%"
-	END
-	OUTER_SPRINT EVAL "resref_var_dest%resref_var_total%" "%%dest%%"
+/////                                                  \\\\\
+///// Preparing MVE variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mve BEGIN
 END
 
-ACTION_DEFINE_ASSOCIATIVE_ARRAY array_chapter_sourceDest BEGIN
-	~0~ , ~0~ , ~1~ , ~1~ => ~tutu_prologue~
-	~1~ , ~1~ , ~1~ , ~2~ => ~tutu_chapter_1~
-	~2~ , ~2~ , ~2~ , ~3~ => ~tutu_chapter_2~
-	~3~ , ~3~ , ~3~ , ~4~ => ~tutu_chapter_3~
-	~4~ , ~4~ , ~4~ , ~5~ => ~tutu_chapter_4~
-	~5~ , ~5~ , ~5~ , ~6~ => ~tutu_chapter_5~
-	~6~ , ~6~ , ~6~ , ~7~ => ~tutu_chapter_6~
-	~7~ , ~7~ , ~7~ , ~8~ => ~tutu_chapter_7~
+/////                                                  \\\\\
+///// Preparing PRO variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_pro BEGIN
 END
 
-OUTER_SET resref_chapter_total = 0
-ACTION_PHP_EACH array_chapter_sourceDest AS source => dest BEGIN
-	OUTER_SET resref_chapter_total = resref_chapter_total + 1
-	ACTION_IF (platform = 1) BEGIN //BGEE
-		OUTER_SPRINT EVAL "resref_chapter_source%resref_chapter_total%" "%source%"
-	END ELSE ACTION_IF (platform = 2) BEGIN //EET
-		OUTER_SPRINT EVAL "resref_chapter_source%resref_chapter_total%" "%source_1%"
-	END ELSE ACTION_IF (platform = 3) BEGIN //BGT
-		OUTER_SPRINT EVAL "resref_chapter_source%resref_chapter_total%" "%source_3%"
-	END ELSE ACTION_IF (platform = 4) BEGIN //Tutu
-		OUTER_SPRINT EVAL "resref_chapter_source%resref_chapter_total%" "%source_2%"
-	END
-	OUTER_SPRINT EVAL "resref_chapter_dest%resref_chapter_total%" "%%dest%%"
+/////                                                  \\\\\
+///// Preparing SPL variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing SPL res variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splRes BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing SPL name variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing STO variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sto BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing TIS variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_tis BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing VEF variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_vef BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing WAV / WFX variables                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_wav BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing door name variables                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_door BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing entrance name variables                \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_exit BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing DLG EXTERN variables                   \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ARRAY remapped_dlgext BEGIN
 END

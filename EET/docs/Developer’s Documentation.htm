@@ -507,7 +507,7 @@ This document is divided into a number of sections to allow quick reference for 
 <hr />
 <a id="Random treasure" name="Random treasure"></a>
 <h3>Random treasure</h3>
-<p>Due to limitations of original RND*.2DA files EET uses new EE <a href="http://gibberlings3.net/forums/index.php?showtopic=27199">engine feature</a> to add BG1 random treasures to the game. RNDTRES.2DA is expanded with all random tables present in vanilla BG:EE. Name of the dummy files used as random loot reference remains mostly unchanged – the only difference is added "_" at the end of filename (standard EET naming convention for conflicting resources) and due to 8 characters limit "0" has been dropped (this is standard <a href="#Resource naming convention">EET naming convention</a> for 8 letters conflicting resources). Read the linked information about this functionality and open up RNDTRES.2DA modified by EET to see how exactly it works.</p>
+<p>Due to limitations of original RND*.2DA files EET uses new EE <a href="http://gibberlings3.net/forums/index.php?showtopic=27199">engine feature</a> to add BG1 random treasures to the game. RNDTRES.2DA is expanded with all random tables present in vanilla BG:EE. Name of the dummy files used as random loot reference remains mostly unchanged – the only difference is changed prefix from "RT" to "BG". Refer to the linked information about this functionality and check out RNDTRES.2DA modified by EET to see how exactly it works.</p>
 
 <hr />
 <a id="Starting the game" name="Starting the game"></a>
@@ -575,9 +575,9 @@ This document is divided into a number of sections to allow quick reference for 
 <hr />
 <a id="Resource naming convention" name="Resource naming convention"></a>
 <h3>Resource naming convention</h3>
-<p>For other resources, EET keeps the original BG:EE resource name as strictly as possible. If it doesn’t conflict with BG2:EE content than the name of imported file is not changed. For conflicting resources BG1 ones have suffix with the underscore (_) added to make them unique. Since the engine only supports 8.3 filenames, 8-character resources from BG1 have "0" character removed if replacing the last character would result in overlapping resource names - only 2 cre files: skelwa02.cre => skelwa2_.cre, skelwa03.cre => skelwa3_.cre, also used for <a href="#Random treasure">random item tables</a> (example: RNDWEP01 => RNDWEP1_).</p>
+<p>For other resources, EET keeps the original BG:EE resource name as strictly as possible. If it doesn’t conflict with BG2:EE content than the name of imported file is not changed. For conflicting resources BG1 ones have suffix with the underscore (_) added to make them unique. Since the engine only supports 8.3 filenames, 8-character resources from BG1 have "0" character removed if replacing the last character would result in overlapping resource names - this is tru only for 2 cre files: skelwa02.cre => skelwa2_.cre, skelwa03.cre => skelwa3_.cre.</p>
 
-<p>Conflicting spells from BG:EE uses a little different naming convention - "BG" letters replaces first 2 letters of the spell (so SPWI becomes BGWI etc). The reason behind this is limitation of the engine which expects maximum 7 character spell names for some spell effects. This convention adopted from BGT makes the rename spells still easy to identify.</p>
+<p>Conflicting spells from BG:EE uses a little different naming convention - "BG" letters replaces first 2 letters of the spell (so SPWI becomes BGWI etc). The reason behind this is limitation of the engine which expects maximum 7 character spell names for some spell effects. This convention adopted from BGT makes the rename spells still easy to identify. Same rule is also used for random item tables ("RN" replaced with "BG").</p>
 
 <hr />
 <a id="NPC Join/Post/Banter files" name="NPC Join/Post/Banter files"></a>
@@ -1194,7 +1194,7 @@ END
 
 <div class="important">
 <pre>
-<<<<<<<< EET-inlined/SPRITEISDEAD-eb.baf
+<<<<<<<< .../SPRITEISDEAD-eb.baf
 IF
   Global("K#Dead%dv_1%","%area%",0)
   OR(2)
@@ -1221,7 +1221,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_bg2bcs_dvArea BEGIN
 END
 
 ACTION_PHP_EACH table_bg2bcs_dvArea AS dv => area BEGIN
-  EXTEND_BOTTOM ~%area%.BCS~ ~EET-inlined/SPRITEISDEAD-eb.baf~ EVALUATE_BUFFER
+  EXTEND_BOTTOM ~%area%.BCS~ ~.../SPRITEISDEAD-eb.baf~ EVALUATE_BUFFER
 END
 </pre>
 </div>

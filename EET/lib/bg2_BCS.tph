@@ -3,7 +3,7 @@
 /////                                                  \\\\\
 
 //currently disabled due to bug in Multiplayer mode, probably related to this: http://forum.baldursgate.com/discussion/comment/191406
-/*<<<<<<<< EET-inlined/DAYNITE_NITEDAY-eb.baf
+/*<<<<<<<< .../DAYNITE_NITEDAY-eb.baf
 IF
   Time(DUSK_END)
   !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
@@ -27,7 +27,7 @@ COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 	READ_BYTE 0x48 flags
 	PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
 		INNER_ACTION BEGIN
-			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~EET-inlined/DAYNITE_NITEDAY-eb.baf~
+			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~
 			PRINT ~DAYNITE/NITEDAY movies added to %SOURCE_RES%.BCS~
 		END
 	END
@@ -37,7 +37,7 @@ BUT_ONLY*/
 ///// Set SPRITEISDEAD if BG2 version of DV dies       \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/SPRITEISDEAD-eb.baf
+<<<<<<<< .../SPRITEISDEAD-eb.baf
 IF
   Global("K#Dead%dv_1%","%area%",0)
   OR(2)
@@ -64,7 +64,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_bg2bcs_dvArea" BEGIN
 END
 
 ACTION_PHP_EACH "table_bg2bcs_dvArea" AS dv => area BEGIN
-	EXTEND_BOTTOM ~%area%.BCS~ ~EET-inlined/SPRITEISDEAD-eb.baf~ EVALUATE_BUFFER
+	EXTEND_BOTTOM ~%area%.BCS~ ~.../SPRITEISDEAD-eb.baf~ EVALUATE_BUFFER
 END
 
 /////                                                  \\\\\
@@ -87,7 +87,7 @@ COPY_EXISTING ~TANARI.BCS~ ~override/TANARI_.BCS~
 ///// BALDUR.BCS / BALDUR25.BCS                        \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/BALDUR-eb.baf
+<<<<<<<< .../BALDUR-eb.baf
 //code from BG:EE
 IF
   Global("TanariXP","GLOBAL",1)
@@ -208,9 +208,9 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~BALDUR.BCS~ ~EET-inlined/BALDUR-eb.baf~
+EXTEND_BOTTOM ~BALDUR.BCS~ ~.../BALDUR-eb.baf~
 
-<<<<<<<< EET-inlined/timers-et.baf
+<<<<<<<< .../timers-et.baf
 //counts how many REAL hours you have been playing
 IF
   Global("K#TotalPlayTimeActive","GLOBAL",0)
@@ -241,15 +241,15 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~BALDUR.BCS~ ~EET-inlined/timers-et.baf~
-EXTEND_TOP ~BALDUR25.BCS~ ~EET-inlined/timers-et.baf~
+EXTEND_TOP ~BALDUR.BCS~ ~.../timers-et.baf~
+EXTEND_TOP ~BALDUR25.BCS~ ~.../timers-et.baf~
 
 /////                                                  \\\\\
 ///// DS3483.BCS (Town Crier)                          \\\\\
 /////                                                  \\\\\
 
 //workaround for CalanderDay trigger used in TOWNC01.DLG
-<<<<<<<< EET-inlined/DS3483-eb.baf
+<<<<<<<< .../DS3483-eb.baf
 IF
   Global("K#DoOnce","LOCALS",0)
   Global("K#TOWNC01_cnt","GLOBAL",0)
@@ -273,7 +273,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~DS3483.BCS~ ~EET-inlined/DS3483-eb.baf~
+EXTEND_BOTTOM ~DS3483.BCS~ ~.../DS3483-eb.baf~
 
 /////                                                  \\\\\
 ///// DPLAYER2.BCS                                     \\\\\
@@ -322,7 +322,7 @@ COPY_EXISTING ~DPLAYER2.BCS~ ~override~
 		END
 	END
 
-<<<<<<<< EET-inlined/DPLAYER2-et.baf
+<<<<<<<< .../DPLAYER2-et.baf
 IF
   GlobalTimerExpired("PoisonParty","GLOBAL")
   GlobalLT("PoisonWarning","GLOBAL",9)
@@ -348,7 +348,7 @@ THEN
 END
 >>>>>>>>
 
-<<<<<<<< EET-inlined/DPLAYER2-eb.baf
+<<<<<<<< .../DPLAYER2-eb.baf
 IF
   GlobalLT("ENDOFBG1","GLOBAL",2)
   !InParty(Myself)
@@ -419,8 +419,8 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~DPLAYER2.BCS~ ~EET-inlined/DPLAYER2-et.baf~
-EXTEND_BOTTOM ~DPLAYER2.BCS~ ~EET-inlined/DPLAYER2-eb.baf~
+EXTEND_TOP ~DPLAYER2.BCS~ ~.../DPLAYER2-et.baf~
+EXTEND_BOTTOM ~DPLAYER2.BCS~ ~.../DPLAYER2-eb.baf~
 
 /////                                                  \\\\\
 ///// DPLAYER3.BCS                                     \\\\\
@@ -439,7 +439,7 @@ COPY_EXISTING ~DPLAYER3.BCS~ ~override~
 		END
 	END
 
-<<<<<<<< EET-inlined/DPLAYER3-eb.baf
+<<<<<<<< .../DPLAYER3-eb.baf
 IF
   //GlobalLT("ENDOFBG1","GLOBAL",2)
   Global("Infected","GLOBAL",1)
@@ -456,13 +456,13 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~DPLAYER3.BCS~ ~EET-inlined/DPLAYER3-eb.baf~
+EXTEND_BOTTOM ~DPLAYER3.BCS~ ~.../DPLAYER3-eb.baf~
              
 /////                                                  \\\\\
 ///// PLAYER1D.BCS                                     \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/PLAYER1D-et.baf
+<<<<<<<< .../PLAYER1D-et.baf
 IF
   Global("ENDOFBG1","GLOBAL",0)
   Global("BG1DREAM","GLOBAL",0)
@@ -642,7 +642,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~PLAYER1D.BCS~ ~EET-inlined/PLAYER1D-et.baf~
+EXTEND_TOP ~PLAYER1D.BCS~ ~.../PLAYER1D-et.baf~
 
 /////                                                  \\\\\
 ///// Imoen death variable changes                     \\\\\
@@ -669,7 +669,7 @@ BUT_ONLY
 ///// Jaheira Harpers Call spell                       \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/JAHEIRA-eb.baf
+<<<<<<<< .../JAHEIRA-eb.baf
 IF
   Global("JaheiraHarpersCall","GLOBAL",0)
   Global("JaheiraPartyBG1","GLOBAL",1)
@@ -682,13 +682,13 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~JAHEIRA.BCS~ ~EET-inlined/JAHEIRA-eb.baf~
+EXTEND_BOTTOM ~JAHEIRA.BCS~ ~.../JAHEIRA-eb.baf~
 
 /////                                                  \\\\\
 ///// AR0304 (Edwin spawn)                             \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/AR0304-eb.baf
+<<<<<<<< .../AR0304-eb.baf
 IF
   Global("EdwinImport","GLOBAL",0)
   Global("EdwinPartyBG1","GLOBAL",0)
@@ -761,7 +761,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~AR0304.BCS~ ~EET-inlined/AR0304-eb.baf~
+EXTEND_BOTTOM ~AR0304.BCS~ ~.../AR0304-eb.baf~
 
 /////                                                  \\\\\
 ///// AR0602 (newgame, Minsc, Jaheira, Imoen spawn)    \\\\\
@@ -795,7 +795,7 @@ COPY_EXISTING ~AR0602.BCS~ ~override~
 	END
 BUT_ONLY
 
-<<<<<<<< EET-inlined/AR0602-et.baf
+<<<<<<<< .../AR0602-et.baf
 IF
   Global("ImoenImport","GLOBAL",0)
   Global("Imoen2PartyBG1","GLOBAL",0)
@@ -949,13 +949,13 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~AR0602.BCS~ ~EET-inlined/AR0602-et.baf~
+EXTEND_TOP ~AR0602.BCS~ ~.../AR0602-et.baf~
 
 /////                                                  \\\\\
 ///// AR1000 (Viconia spawn)                           \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/AR1000-eb.baf
+<<<<<<<< .../AR1000-eb.baf
 IF
   Global("K#ViconiaSpawn","AR1000",0)
   Global("ENDOFBG2","GLOBAL",0)
@@ -1049,7 +1049,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~AR1000.BCS~ ~EET-inlined/AR1000-eb.baf~
+EXTEND_BOTTOM ~AR1000.BCS~ ~.../AR1000-eb.baf~
 
 /////                                                  \\\\\
 ///// AR0900 (Dorn spawn)                              \\\\\
@@ -1137,7 +1137,7 @@ COPY_EXISTING ~AR2000.BCS~ ~override~
 	END
 BUT_ONLY
 
-<<<<<<<< EET-inlined/AR2000-eb.baf
+<<<<<<<< .../AR2000-eb.baf
 IF
   HasDLC("Rasaad")
   Global("RasaadPartyBG1","GLOBAL",1)
@@ -1154,7 +1154,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~AR2000.BCS~ ~EET-inlined/AR2000-eb.baf~
+EXTEND_BOTTOM ~AR2000.BCS~ ~.../AR2000-eb.baf~
 
 //OHR_JOIN.BCS
 COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
@@ -1223,7 +1223,7 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 	END
 BUT_ONLY
 
-<<<<<<<< EET-inlined/OHR_JOIN-eb.baf
+<<<<<<<< .../OHR_JOIN-eb.baf
 IF
   Global("OHR_PLOT","GLOBAL",0)
   Global("RasaadImport","GLOBAL",0)
@@ -1239,7 +1239,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~OHR_JOIN.BCS~ ~EET-inlined/OHR_JOIN-eb.baf~
+EXTEND_BOTTOM ~OHR_JOIN.BCS~ ~.../OHR_JOIN-eb.baf~
 
 /////                                                  \\\\\
 ///// AR2800 (Suldanesselar)                           \\\\\
@@ -1292,7 +1292,7 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 	END
 BUT_ONLY
 
-<<<<<<<< EET-inlined/AR4000-et.baf
+<<<<<<<< .../AR4000-et.baf
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
   Global("ENDOFBG1","GLOBAL",0) //New Game started in ToB
@@ -1305,7 +1305,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~AR4000.BCS~ ~EET-inlined/AR4000-et.baf~
+EXTEND_TOP ~AR4000.BCS~ ~.../AR4000-et.baf~
 
 /////                                                  \\\\\
 ///// AR4500 (Pocket Plane)                            \\\\\
@@ -1507,7 +1507,7 @@ COPY_EXISTING ~BEAR.BCS~ ~override~
 	END
 BUT_ONLY
 
-<<<<<<<< EET-inlined/BEAR-et.baf
+<<<<<<<< .../BEAR-et.baf
 IF
   Range([GOODCUTOFF],7)
   Allegiance(Myself,NEUTRAL)
@@ -1527,7 +1527,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~BEAR.BCS~ ~EET-inlined/BEAR-et.baf~
+EXTEND_TOP ~BEAR.BCS~ ~.../BEAR-et.baf~
 
 //CBEAR.BCS
 COPY_EXISTING ~CBEAR.BCS~ ~override~
@@ -1544,7 +1544,7 @@ COPY_EXISTING ~CBEAR.BCS~ ~override~
 BUT_ONLY
 
 //CCRAWLER.BCS
-<<<<<<<< EET-inlined/CCRAWLER-et.baf
+<<<<<<<< .../CCRAWLER-et.baf
 IF
   AreaCheck("BG0226")
   Dead("SewerOgre")  // SewerOgre
@@ -1577,7 +1577,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~CCRAWLER.BCS~ ~EET-inlined/CCRAWLER-et.baf~
+EXTEND_TOP ~CCRAWLER.BCS~ ~.../CCRAWLER-et.baf~
 
 //CUTTUTOR.BCS
 COPY_EXISTING ~CUTTUTOR.BCS~ ~override~
@@ -1710,7 +1710,7 @@ COPY_EXISTING ~GIBBER.BCS~ ~override~
 BUT_ONLY
 
 //INITDLG.BCS, INITDLG2.BCS, INITMAIN.BCS
-<<<<<<<< EET-inlined/INITx-et.baf
+<<<<<<<< .../INITx-et.baf
 IF
   See([PC])
   AttackedBy([GOODCUTOFF],DEFAULT)
@@ -1736,7 +1736,7 @@ COPY_EXISTING ~INITDLG.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~INITDLG.BCS~ ~EET-inlined/INITx-et.baf~
+EXTEND_TOP ~INITDLG.BCS~ ~.../INITx-et.baf~
 
 COPY_EXISTING ~INITDLG2.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -1752,7 +1752,7 @@ COPY_EXISTING ~INITDLG2.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~INITDLG2.BCS~ ~EET-inlined/INITx-et.baf~
+EXTEND_TOP ~INITDLG2.BCS~ ~.../INITx-et.baf~
 
 COPY_EXISTING ~INITMAIN.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -1768,7 +1768,7 @@ COPY_EXISTING ~INITMAIN.BCS~ ~override~
 	END
 BUT_ONLY
 
-EXTEND_TOP ~INITMAIN.BCS~ ~EET-inlined/INITx-et.baf~
+EXTEND_TOP ~INITMAIN.BCS~ ~.../INITx-et.baf~
 
 //LBASILSK.BCS
 COPY_EXISTING ~LBASILSK.BCS~ ~override~
@@ -1945,7 +1945,7 @@ COPY_EXISTING ~PRIEST4.BCS~ ~override~
 BUT_ONLY
 
 //QUASIT01.BCS
-<<<<<<<< EET-inlined/QUASIT01-et.baf
+<<<<<<<< .../QUASIT01-et.baf
 IF
   See(NearestEnemyOf(Myself))
   !GlobalTimerNotExpired("Prep","LOCALS")
@@ -2005,7 +2005,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~QUASIT01.BCS~ ~EET-inlined/QUASIT01-et.baf~
+EXTEND_TOP ~QUASIT01.BCS~ ~.../QUASIT01-et.baf~
 
 //RUNENEMY.BCS
 //needed due to "multiplayer cloning bug": http://forum.baldursgate.com/discussion/10389/bug-random-commoners-appear-final-fight-thief-maze-werewolf-island/p1
@@ -2065,7 +2065,7 @@ COPY_EXISTING ~SHADFI02.BCS~ ~override~
 BUT_ONLY
 
 //SHOUT.BCS
-<<<<<<<< EET-inlined/SHOUT-et.baf
+<<<<<<<< .../SHOUT-et.baf
 IF
   OR(2)
     StateCheck(Myself,STATE_STONE_DEATH)
@@ -2076,7 +2076,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~SHOUT.BCS~ ~EET-inlined/SHOUT-et.baf~
+EXTEND_TOP ~SHOUT.BCS~ ~.../SHOUT-et.baf~
 
 //SIRSPELL.BCS
 COPY_EXISTING ~SIRSPELL.BCS~ ~override~
@@ -2133,7 +2133,7 @@ COPY_EXISTING ~WTASIGHT.BCS~ ~override~
 	END
 BUT_ONLY
 
-<<<<<<<< EET-inlined/WTASIGHT-eb.baf
+<<<<<<<< .../WTASIGHT-eb.baf
 IF
   ActionListEmpty()
   See(NearestEnemyOf(Myself))
@@ -2143,7 +2143,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~WTASIGHT.BCS~ ~EET-inlined/WTASIGHT-eb.baf~
+EXTEND_BOTTOM ~WTASIGHT.BCS~ ~.../WTASIGHT-eb.baf~
 
 //WTRUNSGT.BCS
 COPY_EXISTING ~WTRUNSGT.BCS~ ~override~
@@ -2185,7 +2185,7 @@ BUT_ONLY
 ///// STATE_PANIC                                      \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/STATE_PANIC-et.baf
+<<<<<<<< .../STATE_PANIC-et.baf
 IF
   StateCheck(Myself,STATE_PANIC)
 THEN
@@ -2195,5 +2195,5 @@ END
 >>>>>>>>
 
 ACTION_FOR_EACH script IN ANKHEG BEAR CCRAWLER CDRYAD DIREWOLF ETTERCAP GBASILSK GIBBER GNOLLF HAMA HOBGOBF KOBOLDF LBASILSK OGRE PRIEST1 PRIEST2 PRIEST3 PRIEST4 PRIEST5 PSPIDER WARDOG WDARSGT WDASIGHT WILDDOG WTARSGT WTASIGHT WYVERN XVART BEGIN
-	EXTEND_TOP ~%script%.BCS~ ~EET-inlined/STATE_PANIC-et.baf~
+	EXTEND_TOP ~%script%.BCS~ ~.../STATE_PANIC-et.baf~
 END

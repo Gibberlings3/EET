@@ -22,7 +22,7 @@ END
 
 //Disable Dynaheir's End Cutscene (EET implements different transition, so just like in BGT case this cutscene should be disabled)
 ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #12 ~) BEGIN
-<<<<<<<< EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf
+<<<<<<<< .../EET/compat/bg1npc/baf/ar0125-rbOld.baf
 IF
   InParty("dynaheir")
   !Dead("dynaheir")
@@ -76,7 +76,7 @@ END
 		DayNight(MIDNIGHT)
 		StartCutScene("X#DYDEAD")~
 		END
-		REPLACE_BCS_BLOCK ~EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf~ ~EET-inlined/blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/EET/compat/bg1npc/baf/ar0125-rbOld.baf in %SOURCE_FILE%.~ END
+		REPLACE_BCS_BLOCK ~.../EET/compat/bg1npc/baf/ar0125-rbOld.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching .../EET/compat/bg1npc/baf/ar0125-rbOld.baf in %SOURCE_FILE%.~ END
 	BUT_ONLY
 END
 

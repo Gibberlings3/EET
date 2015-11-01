@@ -3,7 +3,7 @@
 /////                                                  \\\\\
 
 //currently disabled due to bug in Multiplayer mode, probably related to this: http://forum.baldursgate.com/discussion/comment/191406
-/*<<<<<<<< EET-inlined/BGSUNRIS_BGSUNSET-eb.baf
+/*<<<<<<<< .../BGSUNRIS_BGSUNSET-eb.baf
 IF
   Time(DUSK_END)
   !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
@@ -28,7 +28,7 @@ ACTION_BASH_FOR ~%patch_dir%/are~ ~^.+\.are$~ BEGIN
 		READ_BYTE 0x48 flags
 		PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
 			INNER_ACTION BEGIN
-				EXTEND_BOTTOM ~%BASH_FOR_RES%.BCS~ ~EET-inlined/BGSUNRIS_BGSUNSET-eb.baf~
+				EXTEND_BOTTOM ~%BASH_FOR_RES%.BCS~ ~.../BGSUNRIS_BGSUNSET-eb.baf~
 				PRINT ~BGSUNRIS/BGSUNSET movies added to %BASH_FOR_RES%.BCS~
 			END
 		END
@@ -39,7 +39,7 @@ END*/
 /////                                                  \\\\\
 
 //local scripts
-<<<<<<<< EET-inlined/BG1DestroySelf-et.baf
+<<<<<<<< .../BG1DestroySelf-et.baf
 IF
   GlobalGT("ENDOFBG1","GLOBAL",0)
 THEN
@@ -49,11 +49,11 @@ END
 >>>>>>>>
 
 ACTION_FOR_EACH script IN BELT FLAM10 BEGIN
-	EXTEND_TOP ~%script%.BCS~ ~EET-inlined/BG1DestroySelf-et.baf~
+	EXTEND_TOP ~%script%.BCS~ ~.../BG1DestroySelf-et.baf~
 END
 
 //area scripts
-<<<<<<<< EET-inlined/BG1DestroySelfDV-eb.baf
+<<<<<<<< .../BG1DestroySelfDV-eb.baf
 IF
   Exists("%DV%")
   GlobalGT("ENDOFBG1","GLOBAL",0)
@@ -107,7 +107,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_BG1BCS2_scriptDV BEGIN
 END
 
 ACTION_PHP_EACH table_BG1BCS2_scriptDV AS script => DV BEGIN
-	EXTEND_BOTTOM ~%script_1%.BCS~ ~EET-inlined/BG1DestroySelfDV-eb.baf~ EVALUATE_BUFFER
+	EXTEND_BOTTOM ~%script_1%.BCS~ ~.../BG1DestroySelfDV-eb.baf~ EVALUATE_BUFFER
 END
 
 /////                                                  \\\\\
@@ -117,7 +117,7 @@ END
 //BG2:EE can't run script on 'Unselectable' NPCs, so resurrection in BP1 is broken
 
 //BPHUBA.BCS
-<<<<<<<< EET-inlined/BPHUBA-eb.baf
+<<<<<<<< .../BPHUBA-eb.baf
 IF
   GlobalLT("T3_B5","GLOBAL",1)
   HitBy([PC],CRUSHING)
@@ -133,10 +133,10 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~BPHUBA.BCS~ ~EET-inlined/BPHUBA-eb.baf~
+EXTEND_BOTTOM ~BPHUBA.BCS~ ~.../BPHUBA-eb.baf~
 
 //BPPLOT.BCS
-<<<<<<<< EET-inlined/BPPLOT-rbClear.baf
+<<<<<<<< .../BPPLOT-rbClear.baf
 IF
   OR(2)
   SpellCastOnMe([ANYONE],CLERIC_RESURRECTION)
@@ -268,11 +268,11 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~BPPLOT.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET-inlined/BPPLOT-rbClear.baf~ ~EET-inlined/blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/BPPLOT-rbClear.baf in %SOURCE_FILE%.~ END
+	REPLACE_BCS_BLOCK ~.../BPPLOT-rbClear.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../BPPLOT-rbClear.baf in %SOURCE_FILE%.~ END
 BUT_ONLY
 
 //OH9310.BCS, OH9350.BCS
-<<<<<<<< EET-inlined/OH9310-rbOld.baf
+<<<<<<<< .../OH9310-rbOld.baf
 IF
   Delay(5)
   Global("BPISDEAD","OH9310",0)
@@ -410,7 +410,7 @@ THEN
 END
 >>>>>>>>
 
-<<<<<<<< EET-inlined/OH93x0-rbNew.baf
+<<<<<<<< .../OH93x0-rbNew.baf
 IF
   NumInPartyAlive(0)
 THEN
@@ -421,7 +421,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~OH9310.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET-inlined/OH9310-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/OH9310-rbOld.baf in %SOURCE_FILE%.~ END
+	REPLACE_BCS_BLOCK ~.../OH9310-rbOld.baf~ ~.../OH93x0-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OH9310-rbOld.baf in %SOURCE_FILE%.~ END
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~\(StateCheck(Player6,STATE_REALLY_DEAD)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal("BATTLE_COMPLETE","GLOBAL",2)[%newline%]*\)SetGlobal("BP_AUTOSAVE","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -431,12 +431,12 @@ COPY_EXISTING ~OH9310.BCS~ ~override~
     SetGlobal("BAELOTH_FACING","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
 
-<<<<<<<< EET-inlined/OH9350-rbOld.baf
+<<<<<<<< .../OH9350-rbOld.baf
 IF
   Delay(5)
   Global("BPISDEAD","OH9350",0)
@@ -557,7 +557,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~OH9350.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~EET-inlined/OH9350-rbOld.baf~ ~EET-inlined/OH93x0-rbNew.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching EET-inlined/OH9350-rbOld.baf in %SOURCE_FILE%.~ END
+	REPLACE_BCS_BLOCK ~.../OH9350-rbOld.baf~ ~.../OH93x0-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OH9350-rbOld.baf in %SOURCE_FILE%.~ END
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~\(StateCheck(Player6,STATE_REALLY_DEAD)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal("BATTLE_COMPLETE","GLOBAL",2)[%newline%]*SetGlobal("BP_AUTOSAVE","GLOBAL",1)\)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -578,7 +578,7 @@ COPY_EXISTING ~OH9350.BCS~ ~override~
     SetGlobal("BPTRAP04_TRIGGERED","OH9350",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -594,7 +594,7 @@ COPY_EXISTING ~BG0705.BCS~ ~override~
 	END
 BUT_ONLY
 ACTION_IF (num_matches = 0) BEGIN
-<<<<<<<< EET-inlined/BG0705-et.baf
+<<<<<<<< .../BG0705-et.baf
 IF
   Global("EnteredElfsong","GLOBAL",0)
 THEN
@@ -603,7 +603,7 @@ THEN
     SetGlobal("EnteredElfsong","GLOBAL",1)
 END
 >>>>>>>>
-	EXTEND_TOP ~BG0705.BCS~ ~EET-inlined/BG0705-et.baf~
+	EXTEND_TOP ~BG0705.BCS~ ~.../BG0705-et.baf~
 END
 
 //BG3300.BCS
@@ -618,7 +618,7 @@ COPY_EXISTING ~BG3300.BCS~ ~override~
     SetGlobal("EnteredBeregost","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END	ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -627,7 +627,7 @@ BUT_ONLY
 ///// Skip to tutorial/BG2, starting weapon            \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/BG2600-et.baf
+<<<<<<<< .../BG2600-et.baf
 //STWEAPON.2DA that exists in BG:EE doesn't seem to work in BG2:EE
 IF
   Global("K#NewGame","BG2600",0)
@@ -725,13 +725,13 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~BG2600.BCS~ ~EET-inlined/BG2600-et.baf~
+EXTEND_TOP ~BG2600.BCS~ ~.../BG2600-et.baf~
 
 /////                                                  \\\\\
 ///// Dummy BG1->BG2 link area encounter               \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< EET-inlined/BG5400-et.baf
+<<<<<<<< .../BG5400-et.baf
 IF
   Global("K#BG0000","BG5400",0)
 THEN
@@ -741,7 +741,7 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~BG5400.BCS~ ~EET-inlined/BG5400-et.baf~
+EXTEND_TOP ~BG5400.BCS~ ~.../BG5400-et.baf~
 
 /////                                                  \\\\\
 /////existing in BG2:EE, replace them if not used      \\\\\
@@ -760,7 +760,7 @@ COPY_EXISTING ~FTOWBAZ.BCS~ ~override~
   Global("DukeThanks","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)~
@@ -770,7 +770,7 @@ COPY_EXISTING ~FTOWBAZ.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -788,7 +788,7 @@ COPY_EXISTING ~FTOWBEZ.BCS~ ~override~
   GlobalGT("Chapter","GLOBAL",2)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1013,7 +1013,7 @@ COPY_EXISTING ~CH1CUT01.BCS~ ~override~
     TakeItemListPartyNum("K#PLOT",99)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1028,7 +1028,7 @@ COPY_EXISTING ~BG0100.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1043,7 +1043,7 @@ COPY_EXISTING ~BG0101.BCS~ ~override~
   !Exists("Bip")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1058,7 +1058,7 @@ COPY_EXISTING ~BG0112.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1073,7 +1073,7 @@ COPY_EXISTING ~BG0114.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1088,7 +1088,7 @@ COPY_EXISTING ~BG0119.BCS~ ~override~
   !Exists("Delthyr")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1103,7 +1103,7 @@ COPY_EXISTING ~BG0149.BCS~ ~override~
   !Exists("PIlmater")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1118,7 +1118,7 @@ COPY_EXISTING ~BG0153.BCS~ ~override~
   !Exists("DENKOD")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1133,7 +1133,7 @@ COPY_EXISTING ~BG0200.BCS~ ~override~
   Global("Capture200","GLOBAL",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1148,7 +1148,7 @@ COPY_EXISTING ~BG0300.BCS~ ~override~
   Global("Capture300","GLOBAL",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1163,7 +1163,7 @@ COPY_EXISTING ~BG0600.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1178,7 +1178,7 @@ COPY_EXISTING ~BG0607.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1193,7 +1193,7 @@ COPY_EXISTING ~BG0608.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1208,7 +1208,7 @@ COPY_EXISTING ~BG0612.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1223,7 +1223,7 @@ COPY_EXISTING ~BG0613.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1239,7 +1239,7 @@ COPY_EXISTING ~BG0614.BCS~ ~override~
   Global("WirthiSpawn","GLOBAL",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Global("removemerchants","BG0614",0)~
@@ -1249,7 +1249,7 @@ COPY_EXISTING ~BG0614.BCS~ ~override~
   Global("removemerchants","BG0614",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1264,7 +1264,7 @@ COPY_EXISTING ~BG0615.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1279,7 +1279,7 @@ COPY_EXISTING ~BG0616.BCS~ ~override~
   Global("ENDOFBG1","GLOBAL",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1294,7 +1294,7 @@ COPY_EXISTING ~BG0700.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1309,7 +1309,7 @@ COPY_EXISTING ~BG0800.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1324,7 +1324,7 @@ COPY_EXISTING ~BG0900.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1339,7 +1339,7 @@ COPY_EXISTING ~BG1100.BCS~ ~override~
   Exists("Aldeth")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Global("KaellaSpawn","GLOBAL",0)~
@@ -1350,7 +1350,7 @@ COPY_EXISTING ~BG1100.BCS~ ~override~
   Global("KaellaSpawn","GLOBAL",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~Global("Chapter","GLOBAL",7)[%newline%]*Global("Capture1100","GLOBAL",0)~
@@ -1361,7 +1361,7 @@ COPY_EXISTING ~BG1100.BCS~ ~override~
   Global("Capture1100","GLOBAL",0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~!Exists("Tamoko")~
@@ -1371,7 +1371,7 @@ COPY_EXISTING ~BG1100.BCS~ ~override~
   !Exists("Tamoko")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1386,7 +1386,7 @@ COPY_EXISTING ~BG1200.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1401,7 +1401,7 @@ COPY_EXISTING ~BG1300.BCS~ ~override~
   Global("Chapter","GLOBAL",7)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1416,7 +1416,7 @@ COPY_EXISTING ~BG2600.BCS~ ~override~
     IncrementChapter("CHPTXT0_")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1430,7 +1430,7 @@ COPY_EXISTING ~TU0018.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1448,7 +1448,7 @@ COPY_EXISTING ~BG0125.BCS~ ~override~
     CreateCreatureObjectOffScreen("K#TELBGT",Player1,0,0,0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~StartMovie("ENDMOVIE")~
@@ -1476,7 +1476,7 @@ COPY_EXISTING ~BG0125.BCS~ ~override~
 	//EraseJournalEntry()//The impending war~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1492,7 +1492,7 @@ COPY_EXISTING ~SAREVOK_.BCS~ ~override~
 		EndCutSceneMode()~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
