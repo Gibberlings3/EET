@@ -73,6 +73,8 @@ OUTER_SPRINT biff_dir ~EET/temp/biff~
 OUTER_SPRINT backup_dir ~EET/backup~
 OUTER_SPRINT arch_var ~~
 
+OUTER_SPRINT log_remapped_kit ~~
+OUTER_SPRINT log_remapped_class ~~
 OUTER_SPRINT log_remapped_mus ~~
 OUTER_SPRINT log_remapped_itm ~~
 OUTER_SPRINT log_remapped_spl ~~
@@ -682,7 +684,7 @@ END
 AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/CHR" --biff-get-rest "^.*\.CHR$"~
 LAM bash_log
 
-ACTION_FOR_EACH file IN animate.ids anisnd.ids gtimes.ids kit.ids bgee.sql BEGIN
+ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids race.ids bgee.sql BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
 	END ELSE BEGIN
@@ -1258,13 +1260,15 @@ PRINT ~PCU conversion...~
 
 //print and append variables generated during installation
 PRINT ~Additional variables created during installation, not listed in lib/pcu_dict.tph:~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END~
 
 COPY + ~.../blank.txt~ ~EET/temp/new_vars.tph~
-APPEND_OUTER + ~EET/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%~
+APPEND_OUTER + ~EET/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%~
 
 /*COPY ~EET/lib/pcu_dict.tph~ ~EET/lib~
 	APPEND_FILE ~EET/temp/new_vars.tph~*/
@@ -2852,7 +2856,6 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 			"Full Screen" => "Window"//set only for now due to unknown problem with TIS/WED
 			"Scale UI" => "Graphics"//set only for now due to unknown problem with TIS/WED
 			"Cheats" => "Game Options"
-			"Wild Surge Keys" => "Game Options"
 			"Logging On" => "Program Options"
 			"Debug Mode" => "Program Options"
 			"WOTC" => "MOVIES"
@@ -2896,7 +2899,6 @@ INSERT INTO options ROWS (
 	'MOVIES',	'WOTC',	'1',
 	'Program Options',	'Debug Mode',	'1',
 	'Program Options',	'Logging On',	'1',
-	'Game Options',	'Wild Surge Keys',	'1',
 	'Game Options',	'Cheats',	'1',
 	'Language',	'Text',	'%LANGUAGE_BG2%'
 );
