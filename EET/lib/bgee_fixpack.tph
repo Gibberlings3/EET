@@ -1,5 +1,14 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
+//https://forums.beamdog.com/discussion/40059/killing-winski-perorate
+//Killing Winski Perorate in the Thieves' Maze yields reputation loss
+COPY_EXISTING ~WINSKI2.CRE~ ~override~
+	READ_BYTE 0x273 ~class~
+	PATCH_IF (class = 155) BEGIN //INNOCENT
+		WRITE_BYTE 0x273 ~1~ //MAGE
+	END
+BUT_ONLY
+
 //Tanari Aec'Letec is able follow you upstairs during fight due to "improved" (not at all) pathfinding added in BG2:EE patch 1.3, which allows for cheesy tactics. This code prevents such situation by disabling stairs during this fight
 COPY_EXISTING ~BG1002.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
