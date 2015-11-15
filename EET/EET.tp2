@@ -1556,6 +1556,18 @@ APPEND_OUTER + ~EET/temp/are.tph~ ~%logged%~
 COPY_EXISTING ~OH1000.ARE~ ~override/BG0000.ARE~
 	WRITE_ASCII 0x94 ~BG0000~ #8
 
+/*COPY_EXISTING ~TU0015.are~ ~override~
+	~TU0016.are~ ~override~
+	~TU0017.are~ ~override~
+	~TU0018.are~ ~override~
+	READ_BYTE 0x14 "flags"
+	PATCH_IF (~%flags%~ BAND BIT0) BEGIN
+	END ELSE BEGIN
+		SET flags = flags + BIT0
+		WRITE_BYTE 0x14 "flags"
+	END
+BUT_ONLY*/
+
 /////                                                  \\\\\
 ///// BAM                                              \\\\\
 /////                                                  \\\\\
@@ -1610,21 +1622,21 @@ INCLUDE ~EET/lib/bg1_BCS.tph~
 
 ////////////////////////
 // K#TELBG2.BCS
+// K#TELTOB.BCS
 ////////////////////////
 
-// Skip BG1 to BG2
-<<<<<<<< .../K#TELBG2-et.baf
+<<<<<<<< .../K#TEL-et.baf
 IF
-  Global("K#GenSplState%spl_id%","GLOBAL",0)
-  GlobalGT("K#GenSplLvl%spl_lvl%","GLOBAL",0)
+  Global("K#GenSplState%spl_id%","LOCALS",0)
+  GlobalGT("K#GenSplLvl%spl_lvl%","LOCALS",0)
   !Kit(Player1,%spl_kit%)
   NextTriggerObject(Player1)
   !HaveSpellRES("%spl_id%")
 THEN
   RESPONSE #100
-	ActionOverride(Player1,AddSpecialAbility("%spl_id%"))
-    AddGlobals("K#GenSplLvl%spl_lvl%","K#GenSplGlobal-1")
-	SetGlobal("K#GenSplState%spl_id%","GLOBAL",1)
+    ActionOverride(Player1,AddSpecialAbility("%spl_id%"))
+    IncrementGlobal("K#GenSplLvl%spl_lvl%","LOCALS",-1)
+    SetGlobal("K#GenSplState%spl_id%","LOCALS",1)
 END
 >>>>>>>>
 
@@ -1687,7 +1699,8 @@ COPY_EXISTING - ~SPLAUTOP.2DA~ ~override~
 						END
 					BUT_ONLY
 					OUTER_SPRINT ~spl_list~ ~%spl_list%%WNL%%spl_id%.SPL%TAB%%spl_name%%TAB%%spl_lvl%%TAB%%spl_primschool%%TAB%%spl_opschool%~
-					EXTEND_TOP ~K#TELBG2.BCS~ ~.../K#TELBG2-et.baf~ EVALUATE_BUFFER
+					EXTEND_TOP ~K#TELBG2.BCS~ ~.../K#TEL-et.baf~ EVALUATE_BUFFER
+					EXTEND_TOP ~K#TELTOB.BCS~ ~.../K#TEL-et.baf~ EVALUATE_BUFFER
 				END
 			END
 		END
@@ -1705,12 +1718,14 @@ ACTION_PHP_EACH table_EET_IDprimschool AS spl_id => spl_primschool BEGIN
 		COPY_EXISTING - ~%spl_id%.SPL~ ~override~
 			READ_STRREF 0x8 "spl_name"
 			READ_LONG 0x34 "spl_lvl" ELSE 0
-		EXTEND_TOP ~K#TELBG2.BCS~ ~.../K#TELBG2-et.baf~ EVALUATE_BUFFER
+		EXTEND_TOP ~K#TELBG2.BCS~ ~.../K#TEL-et.baf~ EVALUATE_BUFFER
+		EXTEND_TOP ~K#TELTOB.BCS~ ~.../K#TEL-et.baf~ EVALUATE_BUFFER
 		OUTER_SPRINT ~spl_list~ ~%spl_list%%WNL%%spl_id%.SPL%TAB%%spl_name%%TAB%%spl_lvl%%TAB%%spl_primschool%#(Wildmage)%TAB%none~
 	END
 END
 
 COPY_EXISTING ~K#TELBG2.BCS~ ~override~
+	~K#TELTOB.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE_TEXTUALLY ~!Kit(Player1,0)~ ~~
 		REPLACE_TEXTUALLY ~!Kit(Player1,WILDMAGE)~ ~Kit(Player1,WILDMAGE)~
@@ -1725,7 +1740,7 @@ COPY + ~EET/temp/splautop_ref.2da~ ~EET/temp~
 	REPLACE_TEXTUALLY ~#~ ~ ~
 	PATCH_LOG ~%spl_list%~
 
-<<<<<<<< .../K#TELBG2-et2.baf
+<<<<<<<< .../K#TELBG2-et.baf
 IF
   Global("K#AdvanceTimeOneYear","LOCALS",0)
 THEN
@@ -1738,34 +1753,23 @@ THEN
 END
 
 IF
-  Global("K#GenSplState","GLOBAL",0)
+  Global("K#GenSplState","LOCALS",0)
   Class(Player1,MAGE_ALL)
-  OR(10)
-    Kit(Player1,0)
-    Kit(Player1,MAGESCHOOL_ABJURER)
-    Kit(Player1,MAGESCHOOL_CONJURER)
-    Kit(Player1,MAGESCHOOL_DIVINER)
-    Kit(Player1,MAGESCHOOL_ENCHANTER)
-    Kit(Player1,MAGESCHOOL_ILLUSIONIST)
-    Kit(Player1,MAGESCHOOL_INVOKER)
-    Kit(Player1,MAGESCHOOL_NECROMANCER)
-    Kit(Player1,MAGESCHOOL_TRANSMUTER)
-	Kit(Player1,WILDMAGE)
+  !Class(Player1,SORCERER)
   XPLT(Player1,2500)
 THEN
   RESPONSE #100
     ReallyForceSpellRES("K#REMSPL",Player1)
-    SetGlobal("K#GenSplGlobal-1","GLOBAL",-1)
-    SetGlobal("K#GenSplState","GLOBAL",1)
-    SetGlobal("K#GenSplLvl1","GLOBAL",5)
-	SetGlobal("K#GenSplLvl2","GLOBAL",4)
-	SetGlobal("K#GenSplLvl3","GLOBAL",3)
-	SetGlobal("K#GenSplLvl4","GLOBAL",2)
-	Wait(2)
+    SetGlobal("K#GenSplState","LOCALS",1)
+    SetGlobal("K#GenSplLvl1","LOCALS",5)
+    SetGlobal("K#GenSplLvl2","LOCALS",4)
+    SetGlobal("K#GenSplLvl3","LOCALS",3)
+    SetGlobal("K#GenSplLvl4","LOCALS",2)
+    Wait(2)
 END
 
 IF
-  Global("K#GenSplState","GLOBAL",1)
+  Global("K#GenSplState","LOCALS",1)
   Class(Player1,MAGE_ALL)
   OR(9)
     Kit(Player1,MAGESCHOOL_ABJURER)
@@ -1776,19 +1780,81 @@ IF
     Kit(Player1,MAGESCHOOL_INVOKER)
     Kit(Player1,MAGESCHOOL_NECROMANCER)
     Kit(Player1,MAGESCHOOL_TRANSMUTER)
-	Kit(Player1,WILDMAGE)
+    Kit(Player1,WILDMAGE)
   XPLT(Player1,2500)
 THEN
   RESPONSE #100
-    SetGlobal("K#GenSplState","GLOBAL",2)
-    IncrementGlobal("K#GenSplLvl1","GLOBAL",1)
-	IncrementGlobal("K#GenSplLvl2","GLOBAL",1)
-	IncrementGlobal("K#GenSplLvl3","GLOBAL",1)
-	IncrementGlobal("K#GenSplLvl4","GLOBAL",1)
+    SetGlobal("K#GenSplState","LOCALS",2)
+    IncrementGlobal("K#GenSplLvl1","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl2","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl3","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl4","LOCALS",1)
 END
 >>>>>>>>
 
-EXTEND_TOP ~K#TELBG2.BCS~ ~.../K#TELBG2-et2.baf~
+EXTEND_TOP ~K#TELBG2.BCS~ ~.../K#TELBG2-et.baf~
+
+<<<<<<<< .../K#TELTOB-et.baf
+IF
+  Global("K#AdvanceTimeOneYear","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#AdvanceTimeOneYear","LOCALS",1)
+    SetGlobal("K#temp","GLOBAL",364)
+    AddGlobals("K#DaysPassed","K#temp")
+    AdvanceTime(ONE_YEAR)
+    Continue()
+END
+
+IF
+  Global("K#GenSplState","LOCALS",0)
+  Class(Player1,MAGE_ALL)
+  !Class(Player1,SORCERER)
+  XPLT(Player1,2500)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#REMSPL",Player1)
+    SetGlobal("K#GenSplState","LOCALS",1)
+    SetGlobal("K#GenSplLvl1","LOCALS",6)
+    SetGlobal("K#GenSplLvl2","LOCALS",6)
+    SetGlobal("K#GenSplLvl3","LOCALS",6)
+    SetGlobal("K#GenSplLvl4","LOCALS",6)
+    SetGlobal("K#GenSplLvl5","LOCALS",6)
+    SetGlobal("K#GenSplLvl6","LOCALS",4)
+    SetGlobal("K#GenSplLvl7","LOCALS",3)
+    SetGlobal("K#GenSplLvl8","LOCALS",2)
+    Wait(2)
+END
+
+IF
+  Global("K#GenSplState","LOCALS",1)
+  Class(Player1,MAGE_ALL)
+  OR(9)
+    Kit(Player1,MAGESCHOOL_ABJURER)
+    Kit(Player1,MAGESCHOOL_CONJURER)
+    Kit(Player1,MAGESCHOOL_DIVINER)
+    Kit(Player1,MAGESCHOOL_ENCHANTER)
+    Kit(Player1,MAGESCHOOL_ILLUSIONIST)
+    Kit(Player1,MAGESCHOOL_INVOKER)
+    Kit(Player1,MAGESCHOOL_NECROMANCER)
+    Kit(Player1,MAGESCHOOL_TRANSMUTER)
+    Kit(Player1,WILDMAGE)
+  XPLT(Player1,2500)
+THEN
+  RESPONSE #100
+    SetGlobal("K#GenSplState","LOCALS",2)
+    IncrementGlobal("K#GenSplLvl1","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl2","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl3","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl4","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl5","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl6","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl7","LOCALS",1)
+    IncrementGlobal("K#GenSplLvl8","LOCALS",1)
+END
+>>>>>>>>
+
+EXTEND_TOP ~K#TELTOB.BCS~ ~.../K#TELTOB-et.baf~
 
 /////                                                  \\\\\
 ///// BMP                                              \\\\\
@@ -2121,6 +2187,7 @@ COPY_EXISTING ~BPRNG1.ITM~ ~override~
 BUT_ONLY
 
 COPY ~EET/base/itm/K#TELBG2.ITM~ ~override~
+	~EET/base/itm/K#TELTOB.ITM~ ~override~
 	~EET/base/itm/K#TELTUT.ITM~ ~override~
 
 /////                                                  \\\\\
@@ -3087,7 +3154,12 @@ INCLUDE ~EET/lib/bgee_fixpack.tph~
 /////                                                  \\\\\
 
 COPY ~Baldur.exe~ ~Baldur.exe~
-	REPLACE_TEXTUALLY ~INTRO15F~ ~INTROBG1~ //changes hardcoded movie reference
+	//REPLACE_TEXTUALLY ~TOBTEMP.BMP~ ~EETTEMP.BMP~ //saves created during ToB are accessible from normal saves window
+	//REPLACE_TEXTUALLY ~AR4000~ ~TU0015~ //ToB button now sends you into Tutorial
+	//REPLACE_TEXTUALLY ~INTRO~ ~DUMMY~ //disables hardcoded movie playback after clicking ToB button
+	//REPLACE_TEXTUALLY ~DUMMY15F~ ~INTROBG1~ //changes hardcoded BG1 movie reference
+	REPLACE_TEXTUALLY ~INTRO15F~ ~INTROBG1~ //changes hardcoded BG1 movie reference
+	REPLACE_TEXTUALLY ~WORLDM25~ ~WORLDMAP~ //changes default worldmap in ToB
 BUT_ONLY
 
 /////                                                  \\\\\

@@ -128,6 +128,13 @@ THEN
     SetPlayerSound(Myself,93366,EXISTANCE3) // I will leave our enemies a gift.
     SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
     SetPlayerSound(Myself,91841,EXISTANCE5) // The half-orc blackguard is a man more comfortable with action than words. When pressed, he gruffly alludes to an act of betrayal that set him upon a bloody path of vengeance with the assistance of his patron, Ur-Gothoz. Since eliminating those who betrayed him, he has continued to spread chaos, death, and destruction at his dark patron's behest. While Dorn seems to revel in carnage and bloodshed, when he speaks of his work for Ur-Gothoz, you believe you detect a note of dissatisfaction in his voice.
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
     SetDialog("DORN")
     SetNumTimesTalkedTo(0)
     SetGlobal("K#PDIALOG","LOCALS",0)

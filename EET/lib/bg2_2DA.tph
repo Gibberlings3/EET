@@ -1727,8 +1727,8 @@ BUT_ONLY
 ///// STARTARE.2DA                                     \\\\\
 /////                                                  \\\\\
 
-//APPEND ~STARTARE.2DA~ ~START_MP_XP             2500000~ UNLESS ~START_MP_XP~
-//APPEND ~STARTARE.2DA~ ~START_MP_XP_CAP         8000000~ UNLESS ~START_MP_XP_CAP~
+APPEND ~STARTARE.2DA~ ~START_MP_XP             2500000~ UNLESS ~START_MP_XP~
+//APPEND ~STARTARE.2DA~ ~START_MP_XP_CAP         8000000~ UNLESS ~START_MP_XP_CAP~ //doesn't work, START_XP_CAP still overwrites this value
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_startare BEGIN
 	"START_AREA" => "BG2600"
@@ -1740,8 +1740,13 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_startare BEGIN
 	"START_AREA_MP" => "AR4000"
 	"START_XPOS_MP" => "1311"
 	"START_YPOS_MP" => "2347"
+	//"START_AREA_MP" => "AR0015"
+	//"START_XPOS_MP" => "607"
+	//"START_YPOS_MP" => "660"
 	"START_XP" => "1"
 	"START_XP_CAP" => "8000000"
+	"START_MP_XP" => "2500000"
+	//"START_MP_XP" => "1"
 END
 
 COPY_EXISTING ~STARTARE.2DA~ ~override~
@@ -1773,36 +1778,20 @@ COPY_EXISTING ~STARTPOS.2DA~ ~override~
 	SET_2DA_ENTRY 2 4 6 ~742~ //3068
 	SET_2DA_ENTRY 2 5 6 ~585~ //2447
 	SET_2DA_ENTRY 2 6 6 ~490~ //2479
+	/*SET_2DA_ENTRY 5 1 6 ~607~ //1300
+	SET_2DA_ENTRY 5 2 6 ~607~ //1300
+	SET_2DA_ENTRY 5 3 6 ~607~ //1300
+	SET_2DA_ENTRY 5 4 6 ~607~ //1300
+	SET_2DA_ENTRY 5 5 6 ~607~ //1300
+	SET_2DA_ENTRY 5 6 6 ~607~ //1300
+	SET_2DA_ENTRY 6 1 6 ~660~ //1840
+	SET_2DA_ENTRY 6 2 6 ~607~ //1840
+	SET_2DA_ENTRY 6 3 6 ~607~ //1840
+	SET_2DA_ENTRY 6 4 6 ~607~ //1840
+	SET_2DA_ENTRY 6 5 6 ~607~ //1840
+	SET_2DA_ENTRY 6 6 6 ~607~ //1840*/
 	PRETTY_PRINT_2DA
 BUT_ONLY
-
-/*
-//MP and tutorial entries are skipped
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_startbp BEGIN
-	"START_AREA" => "OH9310"
-	"START_XPOS" => "1080"
-	"START_YPOS" => "530"
-	"START_AREA_TUTORIAL" => "TU0015"
-	"START_XPOS_TUTORIAL" => "607"
-	"START_YPOS_TUTORIAL" => "660"
-	"START_AREA_MP" => "OH8000"
-	"START_XPOS_MP" => "2"
-	"START_YPOS_MP" => "2"
-	"START_XP" => "0"//500000 in BP2 - add via script
-	"START_XP_CAP" => "8000000"//600000 in BP1 - add via script
-END
-
-COPY_EXISTING ~STARTBP.2DA~ ~override~
-	PHP_EACH table_2DA_startbp AS entry => value BEGIN
-		FOR (cnt=0; cnt<13; cnt=cnt+1) BEGIN
-			READ_2DA_ENTRY cnt 0 1 "row_name"
-			PATCH_IF (("%row_name%" STRING_EQUAL_CASE "%entry%")=1) BEGIN
-				SET_2DA_ENTRY cnt 1 1 ~%value%~
-			END
-		END
-	END
-BUT_ONLY
-*/
 
 /////                                                  \\\\\
 ///// TBPPARTY.2DA                                     \\\\\

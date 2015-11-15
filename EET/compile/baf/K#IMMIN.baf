@@ -139,6 +139,13 @@ THEN
     SetPlayerSound(Myself,34744,EXISTANCE3) // 
     SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
     SetPlayerSound(Myself,10185,EXISTANCE5) // When asked about his past, MINSC proclaims that he is a berserker warrior from the nation of Rashemen in the Utter East, though his affinity for animals speaks to his skill as a ranger as well. He originally came to the Sword Coast on a dajemma, a ritual journey to manhood, as the bodyguard of a young Wychlaran of Rashemen named Dynaheir. To his shame, Dynaheir is now dead, and he fears that the doors of the honored Ice Dragon Berserker Lodge are forever closed to him. This personal tragedy has obviously not strengthened Minsc's hold on reality, as evidenced by his continued dependence on his animal companion "Boo," a creature that he claims is a miniature giant space hamster. Apparently such things do exist somewhere in the Realms, but Minsc has surely taken too many blows to the head.
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
     SetDialog("MINSCA")
     SetNumTimesTalkedTo(0)
     SetGlobal("K#PDIALOG","LOCALS",0)

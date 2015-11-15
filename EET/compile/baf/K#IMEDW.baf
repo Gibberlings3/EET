@@ -157,6 +157,13 @@ THEN
     SetPlayerSound(Myself,30725,EXISTANCE3) // I prefer to attack more directly, but a trap will do for now.
     SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
     SetPlayerSound(Myself,10216,EXISTANCE5) // When asked about how he came to be in the employ of the Shadow Thieves, EDWIN sneers that it is none of your business. In his opinion, you are lucky enough to have encountered him at all, and further inquiries beyond this initial boon will only serve to tempt the fates. Despite his obstinate nature, there is a hint that his present circumstance is not all that favorable, and his willingness to join with you contradicts his supposed distaste for the company of others. Edwin ignores speculation about his recent past, but he does appear to have placed less emphasis on the Red Wizard colors he has so brazenly displayed in the past. It is an understandable act for a wizard traveler in mage-fearing Amn.
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
     SetDialog("Edwin")
     SetNumTimesTalkedTo(0)
     SetGlobal("K#PDIALOG","LOCALS",0)

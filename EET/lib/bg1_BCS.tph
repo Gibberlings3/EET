@@ -624,7 +624,7 @@ COPY_EXISTING ~BG3300.BCS~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
-///// Skip to tutorial/BG2, starting weapon            \\\\\
+///// Starting weapon                                  \\\\\
 /////                                                  \\\\\
 
 <<<<<<<< .../BG2600-et.baf
@@ -716,16 +716,50 @@ IF
   Global("K#NewGame","BG2600",0)
 THEN
   RESPONSE #100
-	TakeItemListPartyNum("K#PLOT",99)
-    GiveItemCreate("K#TELTUT",Player1,1,1,0)
-	GiveItemCreate("K#TELBG2",Player1,1,1,0)
+    TakeItemListPartyNum("K#PLOT",99)
+    GiveItemCreate("K#TELBG2",Player1,1,1,0)
+	GiveItemCreate("K#TELTUT",Player1,1,1,0)
+    //GiveItemCreate("K#TELTOB",Player1,1,1,0)
     CreateCreatureObject("K#BIO",Player1,0,0,0)
-	SetGlobal("K#NewGame","BG2600",1)
+    SetGlobal("K#NewGame","BG2600",1)
     Continue()
 END
 >>>>>>>>
 
 EXTEND_TOP ~BG2600.BCS~ ~.../BG2600-et.baf~
+
+/////                                                  \\\\\
+///// Skip tutorial area code during ToB transition    \\\\\
+/////                                                  \\\\\
+
+/*
+<<<<<<<< .../TU0015-et.baf
+IF
+  Global("K#OneFrameDelay","TU0015",0)
+  GlobalGT("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OneFrameDelay","TU0015",1)
+END
+
+IF
+  Global("K#NewGame","TU0015",0)
+  Global("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,JumpToPoint([607.660]))
+    ActionOverride(Player2,JumpToPoint([607.607]))
+    ActionOverride(Player3,JumpToPoint([607.607]))
+    ActionOverride(Player4,JumpToPoint([607.607]))
+    ActionOverride(Player5,JumpToPoint([607.607]))
+    ActionOverride(Player6,JumpToPoint([607.607]))
+    SetGlobal("K#NewGame","TU0015",1)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~TU0015.BCS~ ~.../TU0015-et.baf~
+*/
 
 /////                                                  \\\\\
 ///// Dummy BG1->BG2 link area encounter               \\\\\
@@ -1464,16 +1498,16 @@ COPY_EXISTING ~BG0125.BCS~ ~override~
     Wait(1)
     EraseJournalEntry(@31475)
     AddJournalEntry(@31475,QUEST_DONE)
-	//DisplayStringNoName(Player1,@)
-	//EraseJournalEntry()//Kill Sarevok
-	//EraseJournalEntry()//The new Duke
-	//EraseJournalEntry()//Scar's assassination
-	//EraseJournalEntry()//Re-investigate the Iron Throne
-	//EraseJournalEntry()//Investigate Duke Eltan's healer, Rashad
-	//EraseJournalEntry()//Endgame
-	//EraseJournalEntry()//Investigate the Flaming Fist headquarters
-	//EraseJournalEntry()//Price on my head
-	//EraseJournalEntry()//The impending war~
+    //DisplayStringNoName(Player1,@)
+    //EraseJournalEntry()//Kill Sarevok
+    //EraseJournalEntry()//The new Duke
+    //EraseJournalEntry()//Scar's assassination
+    //EraseJournalEntry()//Re-investigate the Iron Throne
+    //EraseJournalEntry()//Investigate Duke Eltan's healer, Rashad
+    //EraseJournalEntry()//Endgame
+    //EraseJournalEntry()//Investigate the Flaming Fist headquarters
+    //EraseJournalEntry()//Price on my head
+    //EraseJournalEntry()//The impending war~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~

@@ -136,6 +136,13 @@ THEN
     SetPlayerSound(Myself,88552,EXISTANCE3) // Ha! Can't wait to see what happens.
     SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
     SetPlayerSound(Myself,93710,EXISTANCE5) // When asked about her past, NEERA shrugs. She says that, before coming to Athkatla, she wandered the Sword Coast enjoying an adventurer's life while evading the Order of Eight Staves, an organization dedicated to hunting wild mages. She talks less about her distant past, but does not hide the fact she was banished from the High Forest for her wild magic. She is quick to laugh and to chatter, perhaps a little glibly, but lashes out whenever she senses a threat to her autonomy. She is deeply invested in protecting other wild mages and seems willing to risk almost everything to do so.
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
     SetDialog("NEERA")
     SetNumTimesTalkedTo(0)
     SetGlobal("K#PDIALOG","LOCALS",0)

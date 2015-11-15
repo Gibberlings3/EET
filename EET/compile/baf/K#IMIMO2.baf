@@ -30,6 +30,13 @@ THEN
     SetPlayerSound(Myself,30762,BATTLE_CRY3) // Oh, I'll show you a fight!
     SetPlayerSound(Myself,30764,HURT) // I'm weak enough without my wounds. Someone give me a hand over here, please?
     SetPlayerSound(Myself,74276,EXISTANCE5) // IMOEN chuckles when you ask her about her past, assuming you are just trying to keep her mind on happier times and places. She indulges you, and certainly does cheer up when speaking of how you spent your youths together in Candlekeep. She arrived there the same as you, in the company of your foster father Gorion, but despite this similarity, she grew up much more carefree than you did. Indeed, her lighthearted outlook has long kept her immune to the hardships of the world, though the horrors she has endured have definitely taken their toll.
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
     SetDialog("IMOEN2")
     SetNumTimesTalkedTo(0)
     SetGlobal("K#PDIALOG","LOCALS",0)

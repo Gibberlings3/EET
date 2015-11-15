@@ -606,6 +606,31 @@ END
 EXTEND_BOTTOM ~JAHEIRA.BCS~ ~.../JAHEIRA-eb.baf~
 
 /////                                                  \\\\\
+///// ToB transition                                   \\\\\
+/////                                                  \\\\\
+
+/*COPY_EXISTING ~CUT100A.BCS~ ~override~
+	~CUT100B.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~MoveToExpansion()~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~MoveToExpansion()
+    LeaveAreaLUAPanic("AR4000","",[1300.1840],W)
+    LeaveAreaLUA("AR4000","",[1300.1840],W)
+    ActionOverride(Player2,LeaveAreaLUA("AR4000","",[1300.1840],W))
+    ActionOverride(Player3,LeaveAreaLUA("AR4000","",[1300.1840],W))
+    ActionOverride(Player4,LeaveAreaLUA("AR4000","",[1300.1840],SW))
+    ActionOverride(Player5,LeaveAreaLUA("AR4000","",[1300.1840],S))
+    ActionOverride(Player6,LeaveAreaLUA("AR4000","",[1300.1840],S))~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY*/
+
+/////                                                  \\\\\
 ///// AR0304 (Edwin spawn)                             \\\\\
 /////                                                  \\\\\
 
@@ -1193,23 +1218,23 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("TurnDay","AR4000",1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("ENDOFBG2","GLOBAL",2)
-    SetWorldmap("WORLDMAP")
+    RevealAreaOnMap("BG0000")
+    RevealAreaOnMap("AR4000")
     CreateCreatureObject("K#FAMREM",Player1,0,0,0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
-		SPRINT textToReplace ~SetGlobal("FORCETOBPARTYMOVE4000","GLOBAL",1)~
+		/*SPRINT textToReplace ~Global("FORCETOBPARTYMOVE4000","GLOBAL",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RevealAreaOnMap("BG0000")
-    RevealAreaOnMap("AR4000")
-    SetGlobal("FORCETOBPARTYMOVE4000","GLOBAL",1)~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("FORCETOBPARTYMOVE4000","GLOBAL",0)
+    False()~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+		END*/
 	END
 BUT_ONLY
 

@@ -138,6 +138,13 @@ THEN
     SetPlayerSound(Myself,30539,EXISTANCE3) // 
     SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
     SetPlayerSound(Myself,10217,EXISTANCE5) // When you ask about her recent past, VICONIA snarls that it is not your place to know such things of her. There is still pride in her voice when she speaks about her Underdark home of Menzoberranzan, but you get the feeling that there is nothing left for her there, her family and House most likely victims of typically vicious drow "politics." She has continued in her worship of the night goddess Shar, but that appears to have been the only boon to her exile. She seems sullen and bitter, and has certainly learned much of the intolerance she must face while living amongst surface peoples. Her natural abilities as a drow have faded with time, also contributing to her lost sense of belonging. 
+	Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
     SetDialog("VICONI")
     SetNumTimesTalkedTo(0)
     SetGlobal("K#PDIALOG","LOCALS",0)

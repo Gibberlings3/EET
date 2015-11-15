@@ -136,6 +136,13 @@ THEN
     SetPlayerSound(Myself,86776,EXISTANCE3) // This should make our enemies think twice.
     SetPlayerSound(Myself,-1,EXISTANCE4) // No such index
     SetPlayerSound(Myself,86676,EXISTANCE5) // A worshipper of the moon goddess Selûne, the taciturn monk Rasaad's life in service to the Sun Soul order ended in tragedy. He speaks of his brother Gamaz in reverent tones, even though Gamaz betrayed the Sun Soul by joining the Dark Moon sect, where he learned to worship Shar at the feet of a man named Alorgoth. Though it was his own hand that slew Gamaz, Rasaad holds Alorgoth responsible for his brother's death. He has committed himself to avenging Gamaz, and it's obvious there is little he won't sacrifice to achieve that goal.
+    Continue()
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
     SetDialog("RASAAD")
     SetNumTimesTalkedTo(0)
     SetGlobal("K#PDIALOG","LOCALS",0)
