@@ -1,5 +1,35 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
+//https://forums.beamdog.com/discussion/44775/neeras-stuck-initiating-the-dialog
+//Neera's stuck initiating the dialog
+<<<<<<<< .../oNEERA.baf
+IF
+  Global("RedWizards","BG3300",3)
+  !ActuallyInCombat()
+  !Detect("NETHAY01")
+  !Detect("NETHGUA1")
+  !Detect("NETHGUA2")
+THEN
+  RESPONSE #100
+    SetGlobal("RedWizards","BG3300",4)
+    ChangeEnemyAlly("NEERA",NEUTRAL)
+    ActionOverride("NEERA",StartDialogueNoSetInterrupt(Player1))
+END
+>>>>>>>> 
+
+<<<<<<<< .../nNEERA.baf
+>>>>>>>>
+
+COPY_EXISTING ~NEERA_.bcs~ ~override~
+R_B_B ~.../oNEERA.baf~ ~.../nNEERA.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oNEERA.baf in %SOURCE_FILE%~ END
+
+//Changes Thayan Bodyguards Alignment from NEUTRAL to NEUTRAL_EVIL in order to prevent shouts from making commoners hostile
+//related to this topic: https://forums.beamdog.com/discussion/33842/shout-bcs-broken-ai-behavior
+COPY_EXISTING ~NETHGUA1.CRE~ ~override~
+	~NETHGUA2.CRE~ ~override~
+	WRITE_BYTE 0x27b ~35~ //Alignment
+BUT_ONLY
+
 //https://forums.beamdog.com/discussion/40059/killing-winski-perorate
 //Killing Winski Perorate in the Thieves' Maze yields reputation loss
 COPY_EXISTING ~WINSKI2.CRE~ ~override~

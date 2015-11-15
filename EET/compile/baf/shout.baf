@@ -1,0 +1,105 @@
+// tweaked enhanced-edition version, also used by SCS
+
+IF
+  OR(2)
+    StateCheck(Myself,STATE_STONE_DEATH)
+    StateCheck(Myself,STATE_FROZEN_DEATH)
+THEN
+  RESPONSE #100
+    SmallWait(5)
+END
+
+IF
+  AttackedBy([GOODCUTOFF],DEFAULT)
+  !GlobalTimerNotExpired("shouted","LOCALS")
+THEN
+  RESPONSE #100
+    Shout(99)
+    SetGlobalTimer("shouted","LOCALS",ONE_ROUND)
+    SmallWait(5)
+    Enemy()
+END
+
+IF
+  HitBy([GOODCUTOFF],CRUSHING)
+  !GlobalTimerNotExpired("shouted","LOCALS")
+THEN
+  RESPONSE #100
+    Shout(99)
+    SetGlobalTimer("shouted","LOCALS",ONE_ROUND)
+    Continue()
+END
+
+IF
+  !Class(Myself,INNOCENT)
+  Heard([NOTEVIL],99)
+  !Detect(NearestEnemyOf(Myself))
+  OR(6)
+    Alignment(Myself,LAWFUL_GOOD)
+    Alignment(Myself,CHAOTIC_GOOD)
+    Alignment(Myself,NEUTRAL_GOOD)
+    Alignment(Myself,LAWFUL_NEUTRAL)
+    Alignment(Myself,CHAOTIC_NEUTRAL)
+    Alignment(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    Enemy()
+    MoveToObject(LastHeardBy(Myself))
+END
+
+IF
+  !Class(Myself,INNOCENT)
+  Heard([NOTGOOD],99)
+  !Detect(NearestEnemyOf(Myself))
+  OR(3)
+    Alignment(Myself,CHAOTIC_EVIL)
+    Alignment(Myself,NEUTRAL_EVIL)
+    Alignment(Myself,LAWFUL_EVIL)
+THEN
+  RESPONSE #100
+    Enemy()
+    MoveToObject(LastHeardBy(Myself))
+END
+
+IF
+  Class(Myself,INNOCENT)
+  Heard([NOTEVIL],99)
+  OR(6)
+    Alignment(Myself,LAWFUL_GOOD)
+    Alignment(Myself,CHAOTIC_GOOD)
+    Alignment(Myself,NEUTRAL_GOOD)
+    Alignment(Myself,LAWFUL_NEUTRAL)
+    Alignment(Myself,CHAOTIC_NEUTRAL)
+    Alignment(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  Class(Myself,INNOCENT)
+  Heard([NOTGOOD],99)
+  OR(3)
+    Alignment(Myself,CHAOTIC_EVIL)
+    Alignment(Myself,NEUTRAL_EVIL)
+    Alignment(Myself,LAWFUL_EVIL)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  Class(Myself,INNOCENT)
+  Heard([ANYONE],99)
+THEN
+  RESPONSE #100
+    RunAwayFromNoLeaveArea(LastHeardBy(Myself),180)
+END
+
+IF
+  Heard(NearestMyGroupOfType,99)
+  Allegiance(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    Enemy()
+END
