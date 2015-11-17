@@ -1533,10 +1533,10 @@ COPY + ~%patch_dir%/are~ ~%patch_dir%/are~
 				END
 			END ELSE BEGIN
 				PATCH_PRINT ~%SOURCE_FILE% - Missing area Script (%SOURCE_RES%.BCS) created and assigned~
+				WRITE_ASCIIE 0x94 ~%SOURCE_RES%~ #8
 				INNER_ACTION BEGIN
 					COPY + ~EET/base/blank.bcs~ ~%patch_dir%/bcs/%SOURCE_RES%.BCS~
 				END
-				WRITE_ASCIIE 0x94 ~%SOURCE_RES%~ #8
 			END
 		END
 	END
@@ -2110,9 +2110,9 @@ END
 
 PRINT ~Installing INI files...~
 
-COPY ~EET/base/ini~ ~override~
+//COPY ~EET/base/ini~ ~override~ //disabled for now until all values from IWD:EE are compared with hardcoded BG2:EE ones
 
-//changes in files compared to IWD:EE
+//changes in INI files compared to IWD:EE
 /*
 //C000.INI (ABAT bat_inside)
 ellipse=12 -> 0
@@ -2167,11 +2167,11 @@ hit02_c -> hit_02c
 hit03_d -> hit_03d
 hit02_b -> hit_02b
 
-//9000.INI (MOGR ogre)
+//2200.INI (MOGM ogre_mage), 9000.INI (MOGR ogre)
 ellipse=24 -> 16
 personal_space=5 -> 3
 
-2200.INI (MOGM ogre_mage)
+//7200.INI (MBER_BL bear_black), 7201.INI (MBER bear_brown), 7202.INI (MBER_CA bear_cave), 7203.INI (MBER_PO bear_polar)
 ellipse=24 -> 16
 personal_space=5 -> 3
 */
