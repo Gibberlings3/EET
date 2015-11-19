@@ -1,5 +1,86 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
+//https://forums.beamdog.com/discussion/44826/bugged-dopplegangers-in-ar2619
+//Bugged ELMINS4.DLG if you kill either TETHTO3 or GORION3 before dialogue is triggered, also fix for 1-hit KO doppleganger change
+COPY_EXISTING ~GDCHANGE.BCS~ ~override~
+	~LDCHANGE.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~AttackedBy(\[ANYONE\],DEFAULT)~ ~AttackedBy([ANYONE],DEFAULT)
+  HPGT(Myself,0)~ //this will prevent change if the first attack was fatal
+	END
+BUT_ONLY
+
+<<<<<<<< .../oELMINS4.baf
+IF
+  See([PC])
+  NumTimesTalkedTo(0)
+THEN
+  RESPONSE #100
+    SmallWait(2)
+    StartDialog("elmins4",[PC])
+END
+>>>>>>>> 
+
+<<<<<<<< .../nELMINS4.baf
+IF
+  Global("K#DOPPLEGANGER_CHANGE","BG2619",0)
+  !Dead("GORION3")
+  !Dead("TETHTO3")
+  See([PC])
+  NumTimesTalkedTo(0)
+THEN
+  RESPONSE #100
+    SmallWait(2)
+    StartDialog("elmins4",[PC])
+    SetGlobal("K#DOPPLEGANGER_CHANGE","BG2619",1) //disable code added in BG2619.BCS
+END
+>>>>>>>>
+
+COPY_EXISTING ~ELMINS4.bcs~ ~override~
+R_B_B ~.../oELMINS4.baf~ ~.../nELMINS4.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oELMINS4.baf in %SOURCE_FILE%~ END //skips the dialogue if you killed one of them
+
+<<<<<<<< .../BG2619-et.baf
+IF
+  Global("K#DOPPLEGANGER_CHANGE","BG2619",0)
+  !Dead("GORION3")
+  OR(2)
+    Dead("TETHTO3")
+    Dead("ELMINS4")
+THEN
+  RESPONSE #100
+    SetGlobal("K#DOPPLEGANGER_CHANGE","BG2619",1)
+    ActionOverride("GORION3",ApplySpell(Myself,DOPPLEGANGER_CHANGE_DEFAULT_LESSER))
+    Continue() //variable won't be set until next frame
+END
+
+IF
+  Global("K#DOPPLEGANGER_CHANGE","BG2619",0)
+  !Dead("TETHTO3")
+  OR(2)
+    Dead("GORION3")
+    Dead("ELMINS4")
+THEN
+  RESPONSE #100
+    SetGlobal("K#DOPPLEGANGER_CHANGE","BG2619",1)
+    ActionOverride("TETHTO3",ApplySpell(Myself,DOPPLEGANGER_CHANGE_DEFAULT_LESSER))
+    Continue()
+END
+
+IF
+  Global("K#DOPPLEGANGER_CHANGE","BG2619",0)
+  !Dead("ELMINS4")
+  OR(2)
+    Dead("GORION3")
+    Dead("TETHTO3")
+THEN
+  RESPONSE #100
+    SetGlobal("K#DOPPLEGANGER_CHANGE","BG2619",1)
+    ActionOverride("ELMINS4",ApplySpell(Myself,DOPPLEGANGER_CHANGE_DEFAULT))
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BG2619.BCS~ ~.../BG2619-et.baf~ //DOPPLEGANGER_CHANGE if dialogue was not triggered
+
 //https://forums.beamdog.com/discussion/44775/neeras-stuck-initiating-the-dialog
 //Neera's stuck initiating the dialog
 <<<<<<<< .../oNEERA.baf
