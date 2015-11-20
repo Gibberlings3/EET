@@ -18,8 +18,10 @@ II. Becoming a mod friendly platform with additional modding possibilities that 
 
 -------------
 
-note: obviously Siege of Dragonspear is not yet implemented. Development on it is made on private repository, due to NDA restrictions. Finished version of EET will be available day-and-date with the patch 1.4 release for BG2:EE (probably close to SoD expansion release).
+note: obviously Siege of Dragonspear is not yet implemented. Any development related to it will be done on private repository due NDA restrictions.
 
-Feel free to test the current version - it should be stable and playable from start to finish. There are no known bugs at this time. Things missing that will be added once new patch is released (code already implemented in private repo):
+Finished version of EET is planned to be released day-and-date with the patch 1.4 release for BG2:EE (probably close to SoD expansion release).
+
+Feel free to test the current beta version. Keep in mind that it is not representative to how the mod will work on release. Things missing that will be added once new patch is released (code already implemented in private repo):
 - Above mentioned united journal system,
-- Chapter 7+ delay for travelling to old areas in BG2 will be removed.
+- No restrictions for travelling to old areas.
