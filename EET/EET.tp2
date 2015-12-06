@@ -3059,13 +3059,17 @@ COPY_EXISTING - ~worldm25.wmp~ ~override~
 		output_strings = "EET/temp/map_tob_trans.tra"
 	END
 
-//change area flags
+//change area flags and AR4000 coordinates
 COPY + ~EET/temp/map_bg2_areas.tbl~ ~EET/temp~
 	REPLACE_TEXTUALLY ~\(AR0700[ ]+\)15 ~ ~\13  ~
 
 COPY + ~EET/temp/map_tob_areas.tbl~ ~EET/temp~
 	REPLACE_TEXTUALLY ~\(AR3000[ ]+\)7 ~ ~\13 ~
 	REPLACE_TEXTUALLY ~\(AR4000[ ]+\)7 ~ ~\13 ~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AR4000[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
+		SET MATCH2 = MATCH2 + 50
+		SET MATCH4 = MATCH4 + 50
+	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
 
 //merge worldmap files
 COPY + ~EET/tbl/map_mods_areas.tbl~ ~EET/temp/map_bgee_areas.tbl~
