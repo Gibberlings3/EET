@@ -1902,6 +1902,20 @@ COPY_EXISTING ~XPBONUS.2DA~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// XPLEVEL.2DA                                      \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~XPLEVEL.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_COLS "cntcol"
+	COUNT_2DA_ROWS cntcol "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		SET_2DA_ENTRY cnt (cntcol - 1) cntcol "-1"
+	END
+	PRETTY_PRINT_2DA
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// XPLIST.2DA                                       \\\\\
 /////                                                  \\\\\
 

@@ -2114,26 +2114,21 @@ PRINT ~Installing INI files...~
 
 //changes in INI files compared to IWD:EE
 /*
-//C000.INI (ABAT bat_inside)
-ellipse=12 -> 0
-[ambient] -> [flying]
+//2200.INI (MOGM ogre_mage)
+//7200.INI (MBER_BL bear_black)
+//7201.INI (MBER bear_brown)
+//7202.INI (MBER_CA bear_cave)
+//7203.INI (MBER_PO bear_polar)
+//7F11.INI (MUMB umber_hulk)
+//7F32.INI (MSLY slayer)
+//9000.INI (MOGR ogre)
+ellipse=24 -> 16
+personal_space=5 -> 3
 
 //7A00.INI (MSPI_GI spider_giant)
-ellipse=24 -> 16
-personal_space=4 -> 3
-
 //7A01.INI (MSPI_HU spider_huge)
-ellipse=24 -> 16
-personal_space=4 -> 3
-
 //7A02.INI (MSPI_PH spider_phase)
-ellipse=24 -> 16
-personal_space=4 -> 3
-
 //7A03.INI (MSPI_SW spider_sword)
-ellipse=24 -> 16
-personal_space=4 -> 3
-
 //7A04.INI (MSPI_WR spider_wraith)
 ellipse=24 -> 16
 personal_space=4 -> 3
@@ -2145,16 +2140,16 @@ personal_space=5 -> 6
 //7F07.INI (MGLC golem_clay)
 ellipse=24 -> 16
 
-//E0F0 MGIC golem_ice
+//E0F0 (MGIC golem_ice)
 ellipse=32 -> 16
 personal_space=5 -> 3
 
-//7F32.INI (MSLY slayer)
-ellipse=24 -> 16
-personal_space=5 -> 3
+//C000.INI (ABAT bat_inside)
+ellipse=12 -> 0
+[ambient] -> [flying]
 
-//6405.INI and 6406.INI (MDGU doom_guard, MDGU doom_guard_larger)
-//corrected sound references:
+//6405.INI (MDGU doom_guard)
+//6406.INI (MDGU doom_guard_larger)
 hit02c -> hit_02c
 hit02a -> hit_02a
 hit03a -> hit_03a
@@ -2166,14 +2161,6 @@ hit01_c -> hit_01c
 hit02_c -> hit_02c
 hit03_d -> hit_03d
 hit02_b -> hit_02b
-
-//2200.INI (MOGM ogre_mage), 9000.INI (MOGR ogre)
-ellipse=24 -> 16
-personal_space=5 -> 3
-
-//7200.INI (MBER_BL bear_black), 7201.INI (MBER bear_brown), 7202.INI (MBER_CA bear_cave), 7203.INI (MBER_PO bear_polar)
-ellipse=24 -> 16
-personal_space=5 -> 3
 */
 
 /////                                                  \\\\\
@@ -3071,6 +3058,14 @@ COPY_EXISTING - ~worldm25.wmp~ ~override~
 		output_links = "EET/temp/map_tob_links.tbl"
 		output_strings = "EET/temp/map_tob_trans.tra"
 	END
+
+//change area flags
+COPY + ~EET/temp/map_bg2_areas.tbl~ ~EET/temp~
+	REPLACE_TEXTUALLY ~\(AR0700[ ]+\)15 ~ ~\13  ~
+
+COPY + ~EET/temp/map_tob_areas.tbl~ ~EET/temp~
+	REPLACE_TEXTUALLY ~\(AR3000[ ]+\)7 ~ ~\13 ~
+	REPLACE_TEXTUALLY ~\(AR4000[ ]+\)7 ~ ~\13 ~
 
 //merge worldmap files
 COPY + ~EET/tbl/map_mods_areas.tbl~ ~EET/temp/map_bgee_areas.tbl~
