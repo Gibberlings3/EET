@@ -5,6 +5,8 @@ ACTION_BASH_FOR ~EET/base/2da~ ~.*\.2DA$~ BEGIN
 	END
 END
 
+COPY ~EET/base/2da/SPELLS.2DA~ ~override~ //no point in patching it, assign max spells per level instead
+
 /////                                                  \\\\\
 ///// KITLIST.2DA                                      \\\\\
 /////                                                  \\\\\
@@ -722,6 +724,25 @@ COPY + ~EET/temp/array/HATERACE.2DA~ ~EET/temp/array~
 /////                                                  \\\\\
 ///// HIDESPL.2DA                                      \\\\\
 /////                                                  \\\\\
+
+COPY_EXISTING_REGEXP - GLOB ~SPWI[1-9][5-9][0-9]\.SPL~ ~override~ //Wizard level 1-9 spells index 50+
+	~SPPR[1-7][5-9][0-9]\.SPL~ ~override~ //Priest level 1-7 spells index 50+
+	INNER_ACTION BEGIN
+		ACTION_IF (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
+			APPEND ~HIDESPL.2DA~ ~%SOURCE_RES% 1 0~ UNLESS ~%SOURCE_RES%~
+		END
+	END
+
+ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPWI[1-9][5-9][0-9]\.SPL~ BEGIN //Wizard level 1-9 spells index 50+
+	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
+		APPEND_OUTER + ~EET/temp/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0~ UNLESS ~%BASH_FOR_RES%~
+	END
+END
+ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPPR[1-7][5-9][0-9]\.SPL~ BEGIN //Priest level 1-7 spells index 50+
+	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
+		APPEND_OUTER + ~EET/temp/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0~ UNLESS ~%BASH_FOR_RES%~
+	END
+END
 
 COPY_EXISTING ~HIDESPL.2DA~ ~override~
 	PRETTY_PRINT_2DA
@@ -1537,7 +1558,11 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_songlist BEGIN
 	"BF2" => "BF4"
 	"BP1" => "BP3"
 	"BP2" => "BP4"
-	"THEME" => "NEWTHM"
+	"TAV1" => "TAV5"
+	"TAV2" => "TAV6"
+	"TAV3" => "TAV7"
+	"TAV4" => "TAV8"
+	"THEME" => "BGTHEME"
 END
 
 COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
@@ -1588,6 +1613,7 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 						OUTER_SPRINT log_remapped_mus ~%log_remapped_mus%%TAB%%col1%%TAB%=>%TAB%%last_entry%%TAB%%slash%%slash%%col2%%LNL%~
 					END
 					APPEND ~SONGLIST.2DA~ ~%last_entry% %col2% %col3%~
+					APPEND ~SONGLIST.IDS~ ~%last_entry% %col2%~
 					PRINT ~Appended %last_entry% %col2% %col3% music reference~
 					OUTER_SET last_entry = last_entry + 1
 				END
@@ -1636,6 +1662,15 @@ COPY + ~EET/temp/array/SPAWNGRP.2DA~ ~EET/temp/array~
 		END
 	END
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
+
+/////                                                  \\\\\
+///// SPELLS.2DA                                       \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~SPELLS.2DA~ ~override~
+	REPLACE_TEXTUALLY ~50~ ~99~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 

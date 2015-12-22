@@ -43,10 +43,10 @@ ACTION_IF GAME_IS "eet" BEGIN
 
 	OUTER_SPRINT "tutu_imoen6" "imoen6_"
 	OUTER_SPRINT "tutu_viconi6" "viconi6_"
+	OUTER_SPRINT "tutu_skeleton_warrior" "bgskel" //exception for the '_' suffix renaming convention due to 8 characters limit (SKELWA02.CRE => BGSKEL02.CRE, SKELWA03.CRE => BGSKEL03.CRE)
 
 	/* EET naming convention */
-	OUTER_SPRINT "eet_var" "_"//EET '_' suffix for conflicting resources with 7 or less characters, otherwise '0' is dropped
-	OUTER_SPRINT "eet_script0" ""//used to remove "0" in conflicting resources with 8 letters, you should also add %eet_var% at the end (SKELWA02.CRE => SKELWA2_.CRE, SKELWA03.CRE => SKELWA3_.CRE, also used for random item tables (RNDEQU / RNDMAG / RNDSCR / RNDTRE / RNDWEP - example: RNDWEP01 => RNDWEP1_)
+	OUTER_SPRINT "eet_var" "_" //EET '_' suffix for conflicting resources with 7 or less characters
 
 	/* EET Worldmap*/
 	OUTER_SET wmp_xCoord_BG1 = 373 //in relation to BG1/Tutu WORLDMAP.WMP add 373 px correction to X coordinate
@@ -78,7 +78,7 @@ ACTION_IF GAME_IS "eet" BEGIN
 		OUTER_SET bg2_chapter_8 = 22
 		OUTER_SET bg2_chapter_9 = 23
 		OUTER_SET bg2_chapter_10 = 24
-	END ELSE BEGIN //compatible with current public EET version
+	END ELSE BEGIN //compatible with current EET beta
 		OUTER_SET sod_chapter_1 = 1
 		OUTER_SET sod_chapter_2 = 2
 		OUTER_SET sod_chapter_3 = 3

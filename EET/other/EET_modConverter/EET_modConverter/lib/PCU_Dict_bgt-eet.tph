@@ -33,12 +33,6 @@ END
 ACTION_IF (songlist != 5) BEGIN
 	COPY - ~%file%~ ~%file%~
 		PRETTY_PRINT_2DA
-		REPLACE_TEXTUALLY ~ BGTheme\.mus~ ~ oldthm.mus~
-		REPLACE_TEXTUALLY ~ TAV5\.MUS~ ~ TAV1.MUS~
-		REPLACE_TEXTUALLY ~ TAV6\.MUS~ ~ TAV2.MUS~
-		REPLACE_TEXTUALLY ~ TAV7\.MUS~ ~ TAV3.MUS~
-		REPLACE_TEXTUALLY ~ TAV8\.MUS~ ~ TAV4.MUS~
-		PRETTY_PRINT_2DA
 		SPRINT log_remapped_mus ~~
 		COUNT_2DA_ROWS 3 "cntrow"
 		FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -677,7 +671,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN
 	"IPLAT06"	=>	"IPLAT06_"
 	"IPLAT09"	=>	"IPLAT09_"
 	"IPLAT18"	=>	"IPLAT18_"
-	"ISHLD04"	=>	"ISHLD04_"
+	"ISW1H06"	=>	"ISW1HRN"
 	"ISW1H08"	=>	"ISW1H08_"
 	"ISW1H09"	=>	"ISW1H09_"
 	"ISW1H10"	=>	"ISW1H10_"
@@ -1234,8 +1228,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
 	"BGSHOP07"	=>	"SHOP07_"
 	"BGSHOP08"	=>	"SHOP08_"
 	"BGSKELWA"	=>	"SKELWA_"
-	"BGSKEL02"	=>	"SKELWA2_"
-	"BGSKEL03"	=>	"SKELWA3_"
+	//"BGSKEL02"	=>	"BGSKEL02"
+	//"BGSKEL03"	=>	"BGSKEL03"
 	"BGSTALKE"	=>	"STALKE_"
 	"BGTARNOR"	=>	"TARNOR_"
 	"BGTAZOK"	=>	"TAZOK_"
@@ -1346,19 +1340,19 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
 	"BGRING12"	=>	"RING12"
 	"BGRING16"	=>	"RING16"
 	"BGSCRL3I"	=>	"SCRL3I"
-//BGT uses old system for BG1 random items which is limited to 9 rows for each of RNDxxx.2DA files. This is why it had to move first BG1 RNDTREAS.2DA to RNDMAG.2DA (even more rearrangements if CtB is installed). EET uses new RNDTRES.2DA, so it doesn't have to worry about compatibility or different numbers. All it does to old dummy items is dropping the 0 and adding _ at the end
-	"RNDSCR04"	=>	"RNDSCR1_"
-	"RNDSCR05"	=>	"RNDSCR2_"
-	"RNDSCR06"	=>	"RNDSCR3_"
-	"RNDSCR07"	=>	"RNDSCR4_"
-	"RNDMAG03"	=>	"RNDMAG1_"
-	"RNDMAG04"	=>	"RNDMAG2_"
-	"RNDMAG05"	=>	"RNDMAG3_"
-	"RNDMAG06"	=>	"RNDTRE1_"
-	"RNDTRE06"	=>	"RNDTRE2_"
-	"RNDTRE07"	=>	"RNDTRE3_"
-	"RNDTRE08"	=>	"RNDTRE4_"
-	"RNDTRE09"	=>	"RNDTRE5_"
+//BGT uses old system for BG1 random items which is limited to 9 rows for each of RNDxxx.2DA files. This is why it had to move first BG1 RNDTREAS.2DA to RNDMAG.2DA (even more rearrangements if CtB is installed). EET uses RNDTRES.2DA, so it doesn't have to worry about compatibility or different numbers. All it does to old dummy items is replacing RN prefix with BG
+	"RNDSCR04"	=>	"BGDSCR01"
+	"RNDSCR05"	=>	"BGDSCR02"
+	"RNDSCR06"	=>	"BGDSCR03"
+	"RNDSCR07"	=>	"BGDSCR04"
+	"RNDMAG03"	=>	"BGDMAG01"
+	"RNDMAG04"	=>	"BGDMAG02"
+	"RNDMAG05"	=>	"BGDMAG03"
+	"RNDMAG06"	=>	"BGDTRE01"
+	"RNDTRE06"	=>	"BGDTRE02"
+	"RNDTRE07"	=>	"BGDTRE03"
+	"RNDTRE08"	=>	"BGDTRE04"
+	"RNDTRE09"	=>	"BGDTRE05"
 //BGT doesn't have items equivalents with 2 sets of icons like BG:EE/BG2:EE
 	"SHLD01A"	=>	"SHLD01"
 	"SHLD02A"	=>	"SHLD02"

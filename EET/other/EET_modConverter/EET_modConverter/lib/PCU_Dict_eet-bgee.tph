@@ -12,10 +12,14 @@ COPY - ~EET_modConverter/lib/songlist_eet.2da~ ~EET_modConverter/lib~
 	REPLACE_TEXTUALLY ~ BF4\.MUS~ ~ BF2.MUS~
 	REPLACE_TEXTUALLY ~ BP3\.MUS~ ~ BP1.MUS~
 	REPLACE_TEXTUALLY ~ BP4\.MUS~ ~ BP2.MUS~
-	REPLACE_TEXTUALLY ~ NEWTHM\.MUS~ ~ THEME.MUS~
+	REPLACE_TEXTUALLY ~ TAV5\.MUS~ ~ TAV1.MUS~
+	REPLACE_TEXTUALLY ~ TAV6\.MUS~ ~ TAV2.MUS~
+	REPLACE_TEXTUALLY ~ TAV7\.MUS~ ~ TAV3.MUS~
+	REPLACE_TEXTUALLY ~ TAV8\.MUS~ ~ TAV4.MUS~
+	REPLACE_TEXTUALLY ~ BGTHEME\.MUS~ ~ THEME.MUS~
 	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 3 "cntrow"
 	SPRINT log_remapped_mus ~~
+	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 3 "col1"
@@ -26,27 +30,31 @@ COPY - ~EET_modConverter/lib/songlist_eet.2da~ ~EET_modConverter/lib~
 				PRETTY_PRINT_2DA
 				COUNT_2DA_ROWS 3 "cntrow2"
 				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 3 "compareCol1"
 					READ_2DA_ENTRY cnt2 2 3 "compareCol3"
 					PATCH_IF (("%col3%" STRING_EQUAL_CASE "%compareCol3%")=1) BEGIN
-						DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
-							~%col1%~ => ~%compareCol1%~
+						READ_2DA_ENTRY cnt2 0 3 "compareCol1"
+						PATCH_IF (NOT VARIABLE_IS_SET $remapped_mus(~%col1%~)) BEGIN
+							DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
+								~%col1%~ => ~%compareCol1%~
+							END
+							SPRINT log_remapped_mus ~%log_remapped_mus%%TAB%%col1%%TAB%=>%TAB%%compareCol1%%TAB%%slash%%slash%%col2%%LNL%~
 						END
-						SPRINT log_remapped_mus ~%log_remapped_mus%%TAB%%col1%%TAB%=>%TAB%%compareCol1%%TAB%%slash%%slash%%col2%%LNL%~
 						SET cnt2 = cntrow2
 						SET noupdate = 1
 					END
 				END
 			ACTION_IF ("%noupdate%" = 0) BEGIN
-				PRINT ~%col3% doesn't exist within %SOURCE_FILESPEC%~
-				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
-					~%col1%~ => ~0~
+				ACTION_IF (NOT VARIABLE_IS_SET $remapped_mus(~%col1%~)) BEGIN
+					ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
+						~%col1%~ => ~0~
+					END
+					OUTER_SPRINT log_remapped_mus ~%log_remapped_mus%%TAB%%col1%%TAB%=>%TAB%0%TAB%%slash%%slash%%col2%%LNL%~
 				END
-				OUTER_SPRINT log_remapped_mus ~%log_remapped_mus%%TAB%%col1%%TAB%=>%TAB%%0%%TAB%%slash%%slash%%col2%%LNL%~
+				PRINT ~%col3% referenced in SONGLIST.2DA does not exist~
 			END
 		END
 	END
-PRINT ~%log_remapped_mus%%LNL%~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END~
 
 /*ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
 	"107"	=>	"1"	//CDay1
@@ -81,12 +89,12 @@ PRINT ~%log_remapped_mus%%LNL%~
 	"0"	=>	"30"	//Unused03
 	"134"	=>	"31"	//Fort
 	"135"	=>	"32"	//Chapter
-	"136"	=>	"33"	//NEWTHM
-	"41"	=>	"34"	//Tav1
-	"41"	=>	"35"	//Tav1_d
-	"42"	=>	"36"	//Tav2
-	"43"	=>	"37"	//Tav3
-	"44"	=>	"38"	//Tav4
+	"136"	=>	"33"	//BGTHEME
+	"66"	=>	"34"	//TAV5
+	"66"	=>	"35"	//Tav1_d
+	"67"	=>	"36"	//TAV6
+	"137"	=>	"37"	//TAV7
+	"138"	=>	"38"	//TAV8
 	"0"	=>	"39"	//Unused05
 	"0"	=>	"40"	//Unused06
 	"0"	=>	"41"	//Unused07
@@ -112,8 +120,8 @@ PRINT ~%log_remapped_mus%%LNL%~
 	"0"	=>	"61"	//Unused27
 	"0"	=>	"62"	//Unused28
 	"0"	=>	"63"	//Unused29
-	"137"	=>	"64"	//Fort2
-	"138"	=>	"65"	//INite
+	"139"	=>	"64"	//Fort2
+	"140"	=>	"65"	//INite
 	"0"	=>	"66"	//Unused30
 	"0"	=>	"67"	//Unused31
 	"0"	=>	"68"	//Unused32
@@ -130,16 +138,16 @@ PRINT ~%log_remapped_mus%%LNL%~
 	"0"	=>	"79"	//Unused43
 	"0"	=>	"80"	//Unused44
 	"136"	=>	"81"	//NewTheme
-	"139"	=>	"82"	//OldTheme
+	"141"	=>	"82"	//OldTheme
 	"0"	=>	"83"	//Unused45
 	"102"	=>	"84"	//BPC1
 	"103"	=>	"85"	//BPC2
 	"104"	=>	"86"	//BPC3
 	"105"	=>	"87"	//BPStg
 	"106"	=>	"88"	//BPTheme
-	"140"	=>	"89"	//NAdoys
-	"141"	=>	"90"	//NGoblin
-	"142"	=>	"91"	//RPeaks
+	"142"	=>	"89"	//NAdoys
+	"143"	=>	"90"	//NGoblin
+	"144"	=>	"91"	//RPeaks
 END*/
 
 /////                                                  \\\\\
@@ -742,7 +750,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN
 	"IPLAT06_"	=>	"IPLAT06"
 	"IPLAT09_"	=>	"IPLAT09"
 	"IPLAT18_"	=>	"IPLAT18"
-	"ISHLD04_"	=>	"ISHLD04"
+	"ISW1HRN"	=>	"ISW1H06"
 	"ISW1H08_"	=>	"ISW1H08"
 	"ISW1H09_"	=>	"ISW1H09"
 	"ISW1H10_"	=>	"ISW1H10"
@@ -1304,8 +1312,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
 	"SHOP07_"	=>	"SHOP07"
 	"SHOP08_"	=>	"SHOP08"
 	"SKELWA_"	=>	"SKELWA"
-	"SKELWA2_"	=>	"SKELWA02"
-	"SKELWA3_"	=>	"SKELWA03"
+	"BGSKEL02"	=>	"SKELWA02"
+	"BGSKEL03"	=>	"SKELWA03"
 	"STALKE_"	=>	"STALKE"
 	"TARNOR_"	=>	"TARNOR"
 	"TAZOK_"	=>	"TAZOK"

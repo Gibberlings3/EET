@@ -2,121 +2,21 @@
 ///// Preparing MUS variables                          \\\\\
 /////                                                  \\\\\
 
-/*ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
-	"1"	=>	"107"	//CDay1
-	"2"	=>	"108"	//CDay2
-	"3"	=>	"109"	//CNite
-	"4"	=>	"110"	//Chants
-	"5"	=>	"111"	//Dream
-	"6"	=>	"0"	//Unused01
-	"7"	=>	"112"	//FDay
-	"8"	=>	"113"	//FNite
-	"9"	=>	"114"	//PDay
-	"10"	=>	"115"	//PNite
-	"11"	=>	"116"	//Temple
-	"12"	=>	"0"	//Unused02
-	"13"	=>	"117"	//TDay1
-	"14"	=>	"118"	//TDay2
-	"15"	=>	"119"	//TNite
-	"16"	=>	"120"	//Dung1
-	"17"	=>	"121"	//Dung2
-	"18"	=>	"122"	//Dung3
-	"19"	=>	"123"	//BC3
-	"20"	=>	"124"	//BC4
-	"21"	=>	"125"	//BD4
-	"22"	=>	"126"	//BD5
-	"23"	=>	"127"	//BL1
-	"24"	=>	"128"	//BL2
-	"25"	=>	"129"	//BF3
-	"26"	=>	"130"	//BF4
-	"27"	=>	"131"	//BP3
-	"28"	=>	"132"	//BP4
-	"29"	=>	"133"	//BW1
-	"30"	=>	"0"	//Unused03
-	"31"	=>	"134"	//Fort
-	"32"	=>	"135"	//Chapter
-	"33"	=>	"136"	//NEWTHM
-	"34"	=>	"41"	//Tav1
-	"35"	=>	"41"	//Tav1_d
-	"36"	=>	"42"	//Tav2
-	"37"	=>	"43"	//Tav3
-	"38"	=>	"44"	//Tav4
-	"39"	=>	"0"	//Unused05
-	"40"	=>	"0"	//Unused06
-	"41"	=>	"0"	//Unused07
-	"42"	=>	"0"	//Unused08
-	"43"	=>	"0"	//Unused09
-	"44"	=>	"0"	//Unused10
-	"45"	=>	"0"	//Unused11
-	"46"	=>	"0"	//Unused12
-	"47"	=>	"0"	//Unused13
-	"48"	=>	"0"	//Unused14
-	"49"	=>	"0"	//Unused15
-	"50"	=>	"0"	//Unused16
-	"51"	=>	"0"	//Unused17
-	"52"	=>	"0"	//Unused18
-	"53"	=>	"0"	//Unused19
-	"54"	=>	"0"	//Unused20
-	"55"	=>	"0"	//Unused21
-	"56"	=>	"0"	//Unused22
-	"57"	=>	"0"	//Unused23
-	"58"	=>	"0"	//Unused24
-	"59"	=>	"0"	//Unused25
-	"60"	=>	"0"	//Unused26
-	"61"	=>	"0"	//Unused27
-	"62"	=>	"0"	//Unused28
-	"63"	=>	"0"	//Unused29
-	"64"	=>	"137"	//Fort2
-	"65"	=>	"138"	//INite
-	"66"	=>	"0"	//Unused30
-	"67"	=>	"0"	//Unused31
-	"68"	=>	"0"	//Unused32
-	"69"	=>	"0"	//Unused33
-	"70"	=>	"0"	//Unused34
-	"71"	=>	"0"	//Unused35
-	"72"	=>	"0"	//Unused36
-	"73"	=>	"0"	//Unused37
-	"74"	=>	"0"	//Unused38
-	"75"	=>	"0"	//Unused39
-	"76"	=>	"0"	//Unused40
-	"77"	=>	"0"	//Unused41
-	"78"	=>	"0"	//Unused42
-	"79"	=>	"0"	//Unused43
-	"80"	=>	"0"	//Unused44
-	"81"	=>	"136"	//NewTheme
-	"82"	=>	"139"	//OldTheme
-	"83"	=>	"0"	//Unused45
-	"84"	=>	"102"	//BPC1
-	"85"	=>	"103"	//BPC2
-	"86"	=>	"104"	//BPC3
-	"87"	=>	"105"	//BPStg
-	"88"	=>	"106"	//BPTheme
-	"89"	=>	"140"	//NAdoys
-	"90"	=>	"141"	//NGoblin
-	"91"	=>	"142"	//RPeaks
-END*/
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
-END
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_songlist BEGIN
-	"BC1" => "BC3"
-	"BC2" => "BC4"
-	"BD1" => "BD4"
-	"BD2" => "BD5"
-	"BF1" => "BF3"
-	"BF2" => "BF4"
-	"BP1" => "BP3"
-	"BP2" => "BP4"
-	"THEME" => "NEWTHM"
-END
-
 COPY - ~EET_modConverter/lib/songlist_ee.2da~ ~EET_modConverter/lib~
 	PRETTY_PRINT_2DA
-	PHP_EACH table_2DA_songlist AS oldName => newName BEGIN
-		REPLACE_TEXTUALLY ~ %oldName% ~ ~ %newName% ~
-		REPLACE_TEXTUALLY ~ %oldName%\.MUS~ ~ %newName%.MUS~
-	END
+	REPLACE_TEXTUALLY ~ BC1\.MUS~ ~ BC3.MUS~
+	REPLACE_TEXTUALLY ~ BC2\.MUS~ ~ BC4.MUS~
+	REPLACE_TEXTUALLY ~ BD1\.MUS~ ~ BD4.MUS~
+	REPLACE_TEXTUALLY ~ BD2\.MUS~ ~ BD5.MUS~
+	REPLACE_TEXTUALLY ~ BF1\.MUS~ ~ BF3.MUS~
+	REPLACE_TEXTUALLY ~ BF2\.MUS~ ~ BF4.MUS~
+	REPLACE_TEXTUALLY ~ BP1\.MUS~ ~ BP3.MUS~
+	REPLACE_TEXTUALLY ~ BP2\.MUS~ ~ BP4.MUS~
+	REPLACE_TEXTUALLY ~ TAV1\.MUS~ ~ TAV5.MUS~
+	REPLACE_TEXTUALLY ~ TAV2\.MUS~ ~ TAV6.MUS~
+	REPLACE_TEXTUALLY ~ TAV3\.MUS~ ~ TAV7.MUS~
+	REPLACE_TEXTUALLY ~ TAV4\.MUS~ ~ TAV8.MUS~
+	REPLACE_TEXTUALLY ~ THEME\.MUS~ ~ BGTHEME.MUS~
 	PRETTY_PRINT_2DA
 	SPRINT log_remapped_mus ~~
 	COUNT_2DA_ROWS 3 "cntrow"
@@ -155,6 +55,100 @@ COPY - ~EET_modConverter/lib/songlist_ee.2da~ ~EET_modConverter/lib~
 		END
 	END
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END~
+
+/*ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
+	"1"	=>	"107"	//CDay1
+	"2"	=>	"108"	//CDay2
+	"3"	=>	"109"	//CNite
+	"4"	=>	"110"	//Chants
+	"5"	=>	"111"	//Dream
+	"6"	=>	"0"	//Unused01
+	"7"	=>	"112"	//FDay
+	"8"	=>	"113"	//FNite
+	"9"	=>	"114"	//PDay
+	"10"	=>	"115"	//PNite
+	"11"	=>	"116"	//Temple
+	"12"	=>	"0"	//Unused02
+	"13"	=>	"117"	//TDay1
+	"14"	=>	"118"	//TDay2
+	"15"	=>	"119"	//TNite
+	"16"	=>	"120"	//Dung1
+	"17"	=>	"121"	//Dung2
+	"18"	=>	"122"	//Dung3
+	"19"	=>	"123"	//BC3
+	"20"	=>	"124"	//BC4
+	"21"	=>	"125"	//BD4
+	"22"	=>	"126"	//BD5
+	"23"	=>	"127"	//BL1
+	"24"	=>	"128"	//BL2
+	"25"	=>	"129"	//BF3
+	"26"	=>	"130"	//BF4
+	"27"	=>	"131"	//BP3
+	"28"	=>	"132"	//BP4
+	"29"	=>	"133"	//BW1
+	"30"	=>	"0"	//Unused03
+	"31"	=>	"134"	//Fort
+	"32"	=>	"135"	//Chapter
+	"33"	=>	"136"	//BGTHEME
+	"34"	=>	"66"	//TAV5
+	"35"	=>	"66"	//Tav1_d
+	"36"	=>	"67"	//TAV6
+	"37"	=>	"137"	//TAV7
+	"38"	=>	"138"	//TAV8
+	"39"	=>	"0"	//Unused05
+	"40"	=>	"0"	//Unused06
+	"41"	=>	"0"	//Unused07
+	"42"	=>	"0"	//Unused08
+	"43"	=>	"0"	//Unused09
+	"44"	=>	"0"	//Unused10
+	"45"	=>	"0"	//Unused11
+	"46"	=>	"0"	//Unused12
+	"47"	=>	"0"	//Unused13
+	"48"	=>	"0"	//Unused14
+	"49"	=>	"0"	//Unused15
+	"50"	=>	"0"	//Unused16
+	"51"	=>	"0"	//Unused17
+	"52"	=>	"0"	//Unused18
+	"53"	=>	"0"	//Unused19
+	"54"	=>	"0"	//Unused20
+	"55"	=>	"0"	//Unused21
+	"56"	=>	"0"	//Unused22
+	"57"	=>	"0"	//Unused23
+	"58"	=>	"0"	//Unused24
+	"59"	=>	"0"	//Unused25
+	"60"	=>	"0"	//Unused26
+	"61"	=>	"0"	//Unused27
+	"62"	=>	"0"	//Unused28
+	"63"	=>	"0"	//Unused29
+	"64"	=>	"139"	//Fort2
+	"65"	=>	"140"	//INite
+	"66"	=>	"0"	//Unused30
+	"67"	=>	"0"	//Unused31
+	"68"	=>	"0"	//Unused32
+	"69"	=>	"0"	//Unused33
+	"70"	=>	"0"	//Unused34
+	"71"	=>	"0"	//Unused35
+	"72"	=>	"0"	//Unused36
+	"73"	=>	"0"	//Unused37
+	"74"	=>	"0"	//Unused38
+	"75"	=>	"0"	//Unused39
+	"76"	=>	"0"	//Unused40
+	"77"	=>	"0"	//Unused41
+	"78"	=>	"0"	//Unused42
+	"79"	=>	"0"	//Unused43
+	"80"	=>	"0"	//Unused44
+	"81"	=>	"136"	//NewTheme
+	"82"	=>	"141"	//OldTheme
+	"83"	=>	"0"	//Unused45
+	"84"	=>	"102"	//BPC1
+	"85"	=>	"103"	//BPC2
+	"86"	=>	"104"	//BPC3
+	"87"	=>	"105"	//BPStg
+	"88"	=>	"106"	//BPTheme
+	"89"	=>	"142"	//NAdoys
+	"90"	=>	"143"	//NGoblin
+	"91"	=>	"144"	//RPeaks
+END*/
 
 /////                                                  \\\\\
 ///// Preparing STATE variables                        \\\\\
@@ -756,7 +750,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN
 	"IPLAT06"	=>	"IPLAT06_"
 	"IPLAT09"	=>	"IPLAT09_"
 	"IPLAT18"	=>	"IPLAT18_"
-	"ISHLD04"	=>	"ISHLD04_"
+	"ISW1H06"	=>	"ISW1HRN"
 	"ISW1H08"	=>	"ISW1H08_"
 	"ISW1H09"	=>	"ISW1H09_"
 	"ISW1H10"	=>	"ISW1H10_"
@@ -1318,8 +1312,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
 	"SHOP07"	=>	"SHOP07_"
 	"SHOP08"	=>	"SHOP08_"
 	"SKELWA"	=>	"SKELWA_"
-	"SKELWA02"	=>	"SKELWA2_"
-	"SKELWA03"	=>	"SKELWA3_"
+	"SKELWA02"	=>	"BGSKEL02"
+	"SKELWA03"	=>	"BGSKEL03"
 	"STALKE"	=>	"STALKE_"
 	"TARNOR"	=>	"TARNOR_"
 	"TAZOK"	=>	"TAZOK_"

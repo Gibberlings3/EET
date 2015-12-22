@@ -75,7 +75,10 @@ OUTER_SPRINT arch_var ~~
 
 OUTER_SPRINT log_remapped_kit ~~
 OUTER_SPRINT log_remapped_class ~~
+OUTER_SPRINT log_remapped_ipro ~~
 OUTER_SPRINT log_remapped_mus ~~
+OUTER_SPRINT log_remapped_bam ~~
+OUTER_SPRINT log_remapped_eff ~~
 OUTER_SPRINT log_remapped_itm ~~
 OUTER_SPRINT log_remapped_spl ~~
 OUTER_SPRINT log_remapped_splName ~~
@@ -633,7 +636,7 @@ ACTION_FOR_EACH dir IN "%biff_dir%" "%biff_dir%/eetMis0" BEGIN
 	END
 END
 
-ACTION_FOR_EACH var IN are bcs cre dlg eff itm spl sto vvc BEGIN
+ACTION_FOR_EACH var IN are bcs cre dlg eff ini itm pro spl sto vef vvc /*wed*/ BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
@@ -642,7 +645,9 @@ ACTION_FOR_EACH var IN are bcs cre dlg eff itm spl sto vvc BEGIN
 	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/%var%~
 	END
-	INCLUDE ~EET/lib/prep_%var%.tph~
+	ACTION_IF FILE_EXISTS ~EET/lib/prep_%var%.tph~ BEGIN
+		INCLUDE ~EET/lib/prep_%var%.tph~
+	END
 END
 
 ACTION_FOR_EACH file IN baldur.gam worldmap.wmp BEGIN
@@ -660,10 +665,9 @@ END
 
 MKDIR ~EET/temp/array~
 	~%bgee_dir%/lang/%LANGUAGE%/override~
-	~EET/temp/wav~
 	~EET/temp/chr~
 
-ACTION_FOR_EACH var IN 2da bam pro wav BEGIN
+ACTION_FOR_EACH var IN 2da /*plt*/ bam wav wfx BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~EET/temp/%var%~
@@ -678,13 +682,15 @@ ACTION_FOR_EACH var IN 2da bam pro wav BEGIN
 			COPY + ~%BASH_FOR_FILESPEC%~ ~EET/temp/wav~
 		END
 	END
-	INCLUDE ~EET/lib/prep_%var%.tph~
+	ACTION_IF FILE_EXISTS ~EET/lib/prep_%var%.tph~ BEGIN
+		INCLUDE ~EET/lib/prep_%var%.tph~
+	END
 END
 
 AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/CHR" --biff-get-rest "^.*\.CHR$"~
 LAM bash_log
 
-ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids race.ids bgee.sql BEGIN
+ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids spell.ids bgee.sql BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
 	END ELSE BEGIN
@@ -970,8 +976,100 @@ COPY_EXISTING ~BGEE.SQL~ ~override~
 	REPLACE_TEXTUALLY ~[%newline%]*append_journals_quests_here~ ~~
 
 /////                                                  \\\\\
+///// ADD_PROJECTILE                                   \\\\\
+/////                                                  \\\\\
+
+PRINT ~Adding projectiles...~
+
+COPY_EXISTING ~projectl.ids~ ~override~
+	~missile.ids~ ~override~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+BUT_ONLY
+
+COPY + ~EET/temp/array/missile.ids~ ~EET/temp/array~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+
+COPY + ~EET/temp/array/projectl.ids~ ~EET/temp/array~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	COUNT_2DA_ROWS 2 cntrow
+	FOR (cnt = 1; cnt <= "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		SET pro_num_int = col1
+		SET pro_num_int_mis = pro_num_int + 1
+		READ_2DA_ENTRY cnt 1 2 "col2"
+		SPRINT match ~%col2%~ SPRINT res ~pro~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+		INNER_ACTION BEGIN
+			COPY_EXISTING ~projectl.ids~ ~override~
+				REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+				COUNT_REGEXP_INSTANCES ~^%col1% %col2%$~ num_matches
+				PATCH_IF (num_matches = 0) BEGIN
+					COUNT_REGEXP_INSTANCES ~^%pro_num_int% %col2%$~ num_matches
+				END
+				COUNT_REGEXP_INSTANCES ~ %col2%$~ num_matches2
+			BUT_ONLY
+			ACTION_IF (num_matches > 0) BEGIN
+			END ELSE ACTION_IF (num_matches2 > 0) BEGIN
+				COPY_EXISTING - ~projectl.ids~ ~.../projectl.ids~
+					SET updated = 0
+					REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Za-z0-9]+\) %col2%$~ BEGIN
+						PATCH_IF (updated = 0) BEGIN
+							SPRINT pro_num2 ~%MATCH1%~
+							SET pro_num_int2 = pro_num2 + 1
+							PATCH_IF (pro_num_int_mis != pro_num_int2) BEGIN
+								DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN
+									~%pro_num_int_mis%~ => ~%pro_num_int2%~
+								END
+								SPRINT log_remapped_ipro ~%log_remapped_ipro%%TAB%%pro_num_int_mis%%TAB%=>%TAB%%pro_num_int2%%TAB%%slash%%slash%%col2%%LNL%~
+							END
+							SET updated = 1
+						END
+					END ~~
+			END ELSE ACTION_IF (NOT FILE_EXISTS ~%patch_dir%/pro/%col2%.pro~) BEGIN
+				WARN ~WARNING: %patch_dir%/pro/%col2%.pro doesn't exist~
+			END ELSE BEGIN //for some reason ADD_PROJECTILE can't add pro staring with 1
+				ADD_PROJECTILE ~%patch_dir%/pro/%col2%.pro~
+				OUTER_SPRINT ret EVAL ~%%col2%%~
+				/*COPY + ~%backup_dir%/0/UNINSTALL.0~ ~%backup_dir%/0~ //the file is not patched yet
+					REPLACE_TEXTUALLY ~override.%ret%.pro~ ~~
+				DELETE + ~override/%col2%.pro~*/
+				COPY - ~EET/temp/array/missile.ids~ ~.../temp/array/missile.ids~
+					SET updated = 0
+					REPLACE_EVALUATE CASE_INSENSITIVE ~^%pro_num_int_mis% \(.+\)$~ BEGIN
+						PATCH_IF (updated = 0) BEGIN
+							SPRINT mis_anme ~%MATCH1%~
+							PATCH_IF (pro_num_int_mis != ret) BEGIN
+								DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN
+									~%pro_num_int_mis%~ => ~%ret%~
+								END
+								SPRINT log_remapped_ipro ~%log_remapped_ipro%%TAB%%pro_num_int_mis%%TAB%=>%TAB%%ret%%TAB%%slash%%slash%%col2%%LNL%~
+							END
+							SET updated = 1
+						END
+					END ~~
+				ACTION_IF (updated = 1) AND (NOT ~%col2%~ STRING_EQUAL_CASE ~%mis_anme%~) BEGIN
+					COPY_EXISTING ~missile.ids~ ~override~
+						REPLACE_TEXTUALLY ~^%ret% %col2%$~ ~%ret% %mis_anme%~
+					BUT_ONLY
+					PRINT ~Changed MISSILE.IDS reference name: %col2% -> %mis_anme%~
+				END
+			END
+		END
+	END
+
+/////                                                  \\\\\
 ///// Convert junk level 9 wizard spells to innate     \\\\\
 /////                                                  \\\\\
+
+PRINT ~SPWI to SPIN level 9 junk wiz spells conversion...~
 
 COPY_EXISTING ~SPELL.IDS~ ~override~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~ //ADD_SPELL breaks regexp new lines detection
@@ -982,7 +1080,18 @@ COPY_EXISTING ~SPELL.IDS~ ~override~
 	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~ //WIZARD_COMET dupe
 BUT_ONLY
 
-//SPWI926-999 converted to SPIN301-360
+//SPWI924-925 converted to SPIN301-302
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_numName BEGIN
+	~924~ => ~BERESH_CHANGE~
+	~925~ => ~KAISHAS_CHANGE~
+END
+ACTION_PHP_EACH table_EET_numName AS num => spell_name BEGIN
+	ADD_SPELL ~%patch_dir%/spl/SPWI%num%.spl~ 3 3 ~%spell_name%~
+	LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
+	MOVE + ~%patch_dir%/spl/SPWI%num%.spl~ ~%patch_dir%/spl/%spell_res%.spl~
+END
+
+//SPWI926-999 converted to SPIN303-362
 MKDIR ~EET/temp/junk~
 OUTER_FOR (i=926; i<=999; i=i+1) BEGIN
     LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~SPWI%i%~ RET spell_name spell_num END
@@ -1018,17 +1127,6 @@ OUTER_FOR (i=926; i<=999; i=i+1) BEGIN
     END
 END
 
-//missing BERESH_CHANGE and KAISHAS_CHANGE leftovers from BG1
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_numName BEGIN
-	~924~ => ~BERESH_CHANGE~
-	~925~ => ~KAISHAS_CHANGE~
-END
-ACTION_PHP_EACH table_EET_numName AS num => spell_name BEGIN
-	ADD_SPELL ~%patch_dir%/spl/SPWI%num%.spl~ 3 3 ~%spell_name%~
-	LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
-	MOVE + ~%patch_dir%/spl/SPWI%num%.spl~ ~%patch_dir%/spl/%spell_res%.spl~
-END
-
 //update compiled scripts and dialogues
 COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
 	~.+\.BCS~ ~override~
@@ -1053,6 +1151,208 @@ COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
 		END ~%MATCH1%%MATCH2%)~
 	END
 BUT_ONLY
+
+/////                                                  \\\\\
+///// ADD_SPELL                                        \\\\\
+/////                                                  \\\\\
+
+PRINT ~Adding spells...~
+
+COPY_EXISTING ~spell.ids~ ~override~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+BUT_ONLY
+
+OUTER_SPRINT log ~~
+COPY + ~EET/temp/array/spell.ids~ ~EET/temp/array~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	COUNT_2DA_ROWS 2 cntrow
+	FOR (cnt = 0; cnt <= "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 number
+		READ_2DA_ENTRY cnt 1 2 spell_name
+		PATCH_IF (number >= 4000) BEGIN
+			SPRINT type ~SPCL~
+			SET spell_type = 4
+		END ELSE PATCH_IF (number >= 3000) BEGIN
+			SPRINT type ~SPIN~
+			SET spell_type = 3
+		END ELSE PATCH_IF (number >= 2000) BEGIN
+			SPRINT type ~SPWI~
+			SET spell_type = 2
+		END ELSE BEGIN
+			SPRINT type ~SPPR~
+			SET spell_type = 1
+		END
+		INNER_PATCH_SAVE source_res ~%number%~ BEGIN
+			REPLACE_TEXTUALLY ~^[1-4]~ ~%type%~
+		END
+		INNER_PATCH_SAVE spell_level ~%number%~ BEGIN
+			REPLACE_TEXTUALLY ~^.\(.\).+$~ ~\1~
+		END
+		INNER_ACTION BEGIN
+			ACTION_IF (NOT FILE_EXISTS ~%patch_dir%/spl/%source_res%.spl~) BEGIN
+				PRINT ~Skipping SPELL.IDS reference: %source_res%%TAB%%number%%TAB%%spell_name%~
+			END ELSE BEGIN
+				OUTER_SET ref_exists = 0
+				ACTION_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~ %spell_name%$~)) BEGIN
+					LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
+					ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%spell_res%.spl~) BEGIN
+						PRINT ~Resource from SPELL.IDS is referenced but doesn't exist in game: %source_res%%TAB%%number%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%~
+					END ELSE ACTION_IF (~%number%~ STRING_EQUAL_CASE ~%spell_num%~) BEGIN
+						PRINT ~Resource from SPELL.IDS already exists in game: %source_res%%TAB%%number%%TAB%%spell_name%~
+						OUTER_SET ref_exists = 1
+					END ELSE BEGIN
+						PRINT ~Resource from SPELL.IDS already exists in game under different ID: %source_res%%TAB%%number%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%~
+						OUTER_SPRINT log ~%log%%source_res%%TAB%%number%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%%LNL%~
+						OUTER_SET ref_exists = 1
+					END
+					ACTION_IF (ref_exists = 1) BEGIN
+						ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ BEGIN
+							ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+								OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
+									REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
+								END
+								DELETE + ~%BASH_FOR_FILESPEC%~
+								ACTION_IF (NOT ~%BASH_FOR_RES%~ STRING_EQUAL_CASE ~%res%~) BEGIN
+									ACTION_IF ~%BASH_FOR_EXT%~ STRING_EQUAL_CASE ~spl~ BEGIN
+										ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN
+											~%BASH_FOR_RES%~ => ~%res%~
+										END
+										OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+									END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STRING_EQUAL_CASE ~eff~ BEGIN
+										ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN
+											~%BASH_FOR_RES%~ => ~%res%~
+										END
+										OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+									END
+								END
+							END
+						END
+					END
+				END
+				ACTION_IF (ref_exists = 0) BEGIN
+					/*ACTION_IF (spell_type = 3) AND (spell_level = 1) BEGIN
+						OUTER_SET spell_level = 2 //not enough level 1 slots
+					END
+					ACTION_IF ~%source_res%~ STRING_EQUAL_CASE ~name_of_the_spell~ BEGIN
+						OUTER_SET spell_level = 0 //not enough level 7 slots
+					END*/
+					PRINT ~ADD_SPELL: %patch_dir%/spl/%source_res%.spl %spell_type% %spell_level% %spell_name%~
+					ADD_SPELL ~%patch_dir%/spl/%source_res%.spl~ spell_type spell_level ~%spell_name%~
+					LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
+					PRINT ~Renamed spell: %source_res% -> %spell_res%~
+					OUTER_SPRINT EVAL ~%spell_name%_RES~ ~%spell_res%~
+					ACTION_IF ~%spell_res%~ STRING_CONTAINS_REGEXP ~[A-Z]+[0-9]+~ BEGIN
+						PRINT ~ADD_SPELL failed to add %patch_dir%/spl/%source_res%.spl~
+					END ELSE BEGIN
+						/*COPY + ~%backup_dir%/0/UNINSTALL.0~ ~%backup_dir%/0~ //the file is not patched yet
+							REPLACE_TEXTUALLY ~override.%spell_res%.spl~ ~~
+						DELETE + ~override/%spell_res%.spl~*/
+						ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
+							MKDIR ~%dir%/ADD_SPELL~
+							ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+								OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
+									REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
+								END
+								ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
+									MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
+								END ELSE BEGIN
+									WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
+								END
+								ACTION_IF (NOT ~%BASH_FOR_RES%~ STRING_EQUAL_CASE ~%res%~) BEGIN
+									ACTION_IF ~%BASH_FOR_EXT%~ STRING_EQUAL_CASE ~spl~ BEGIN
+										ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN
+											~%BASH_FOR_RES%~ => ~%res%~
+										END
+										OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+									END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STRING_EQUAL_CASE ~eff~ BEGIN
+										ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN
+											~%BASH_FOR_RES%~ => ~%res%~
+										END
+										OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+									END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STRING_EQUAL_CASE ~bam~ BEGIN
+										ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN
+											~%BASH_FOR_RES%~ => ~%res%~
+										END
+										OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+									END
+								END
+							END
+						END
+					END
+					COPY_EXISTING ~spell.ids~ ~override~
+						REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~ //just to be sure that ADD_SPELL didn't brake it
+					BUT_ONLY
+				END
+			END
+		END
+	END
+
+//below code need to be done after all new spells are already present within spell.ids
+
+//expand remaining PCU variables
+COPY + ~.../blank.txt~ ~EET/temp/add_spell_temp.txt~
+APPEND_OUTER + ~EET/temp/add_spell_temp.txt~ ~%log%~
+COPY + ~EET/temp/add_spell_temp.txt~ ~EET/temp~
+	COUNT_2DA_ROWS 3 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 3 "col1" //file name
+		READ_2DA_ENTRY cnt 1 3 "col2" //IDS num
+		READ_2DA_ENTRY cnt 2 3 "col3" //IDS name
+		INNER_ACTION BEGIN
+			ACTION_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~^%col2% ~)) BEGIN
+				LAF RES_NAME_OF_SPELL_NUM INT_VAR spell_num = col2 RET spell_name END
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
+					~%spell_name%~ => ~%col3%~
+				END
+				OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_name%%TAB%=>%TAB%%col3%%TAB%%slash%%slash%%col3%%LNL%~
+			END ELSE BEGIN
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
+					~%col2%~ => ~%col3%~
+				END
+				OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%col2%%TAB%=>%TAB%%col3%%TAB%%slash%%slash%%col3%%LNL%~
+			END
+		END
+	END
+
+ACTION_BASH_FOR ~%patch_dir%/spl/ADD_SPELL~ ~^[A-Z]+[1-4][0-9][0-9].spl$~ BEGIN //loop only through spells added by ADD_SPELL (ignores those just renamed)
+	LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~%BASH_FOR_RES%~ RET spell_num spell_name END
+	OUTER_SET spell_num_sav = spell_num
+	OUTER_SPRINT spell_name_sav ~%spell_name%~
+	COPY - ~EET/temp/array/spell.ids~ ~.../temp/array/spell.ids~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([0-9]+\) %spell_name%$~ BEGIN
+			PATCH_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~^%MATCH1% ~)) BEGIN
+				INNER_ACTION BEGIN
+					LAF RES_NAME_OF_SPELL_NUM INT_VAR spell_num = MATCH1 RET spell_name END
+					ACTION_IF (NOT ~%spell_name%~ STRING_EQUAL_CASE ~%spell_name_sav%~) BEGIN
+						ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
+							~%spell_name%~ => ~%spell_name_sav%~
+						END
+						OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_name%%TAB%=>%TAB%%spell_name_sav%%TAB%%slash%%slash%%spell_name_sav%%LNL%~
+					END
+				END
+			END ELSE PATCH_IF (MATCH1 != spell_num_sav) BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
+					~%MATCH1%~ => ~%spell_name_sav%~
+				END
+				SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%MATCH1%%TAB%=>%TAB%%spell_name_sav%%TAB%%slash%%slash%%spell_name_sav%%LNL%~
+			END
+		END ~~
+END
+
+ACTION_FOR_EACH dir IN ~%biff_dir%~ ~%patch_dir%/eff~ ~%patch_dir%/spl~ BEGIN
+	ACTION_BASH_FOR ~%dir%/ADD_SPELL~ ~^.*$~ BEGIN
+		ACTION_IF (FILE_EXISTS ~%dir%/%BASH_FOR_FILE%~) BEGIN
+			WARN ~WARNING: %BASH_FOR_FILESPEC% already exists in %dir%~
+		END
+		COPY + ~%BASH_FOR_FILESPEC%~ ~%dir%~
+	END
+END
 
 /////                                                  \\\\\
 ///// Patching each group of BG2:EE resources          \\\\\
@@ -1262,16 +1562,19 @@ PRINT ~PCU conversion...~
 PRINT ~Additional variables created during installation, not listed in lib/pcu_dict.tph:~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN%LNL%%log_remapped_ipro%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN%LNL%%log_remapped_bam%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END~
 
 COPY + ~.../blank.txt~ ~EET/temp/new_vars.tph~
-APPEND_OUTER + ~EET/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%~
+APPEND_OUTER + ~EET/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN%LNL%%log_remapped_ipro%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN%LNL%%log_remapped_bam%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%~
 
-/*COPY ~EET/lib/pcu_dict.tph~ ~EET/lib~
-	APPEND_FILE ~EET/temp/new_vars.tph~*/
+COPY ~EET/lib/pcu_dict.tph~ ~EET/lib~
+	APPEND_FILE ~EET/temp/new_vars.tph~
 
 //FOR variables
 OUTER_SET count = 0
@@ -1305,7 +1608,7 @@ OUTER_SET ren_check = 0
 
 //create file list for conversion
 COPY + ~.../blank.txt~ ~EET/temp/Filelist.txt~
-ACTION_FOR_EACH var IN ARE BCS BCS_APP CRE DLG EFF ITM SPL STO VVC WED "" BEGIN
+ACTION_FOR_EACH var IN are bcs bcs_app cre dlg eff ini itm pro spl sto vef vvc wed "" BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		APPEND_OUTER + ~EET/temp/Filelist.txt~ ~%var%/%BASH_FOR_FILE%~
 	END
@@ -1491,6 +1794,53 @@ COPY + ~EET/temp/2da/TOSCEND.2DA~ ~EET/temp/2da~
 	PRETTY_PRINT_2DA
 
 COPY ~EET/temp/2da~ ~override~
+
+/////                                                  \\\\\
+///// ACM / MUS                                        \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing ACM/MUS files...~
+
+ACTION_FOR_EACH dir IN BC1 BC2 BD1 BD2 BF1 BF2 BL1 BL2 BP1 BP2 BW1 CDAY1 CDAY2 CHANTS CHAPTER CNITE DREAM DUNG1 DUNG2 DUNG3 FDAY FNITE FORT FORT2 INITE NADOYS NGOBLIN OLDTHM PDAY PNITE RPEAKS TAV1 TAV2 TAV3 TAV4 TDAY1 TDAY2 TEMPLE THEME TNITE BEGIN
+	ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BC1~) BEGIN
+		OUTER_SPRINT dest_dir ~BC3~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BC2~) BEGIN
+		OUTER_SPRINT dest_dir ~BC4~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BD1~) BEGIN
+		OUTER_SPRINT dest_dir ~BD4~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BD2~) BEGIN
+		OUTER_SPRINT dest_dir ~BD5~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BF1~) BEGIN
+		OUTER_SPRINT dest_dir ~BF3~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BF2~) BEGIN
+		OUTER_SPRINT dest_dir ~BF4~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BP1~) BEGIN
+		OUTER_SPRINT dest_dir ~BP3~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~BP2~) BEGIN
+		OUTER_SPRINT dest_dir ~BP4~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~TAV1~) BEGIN
+		OUTER_SPRINT dest_dir ~TAV5~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~TAV2~) BEGIN
+		OUTER_SPRINT dest_dir ~TAV6~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~TAV3~) BEGIN
+		OUTER_SPRINT dest_dir ~TAV7~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~TAV4~) BEGIN
+		OUTER_SPRINT dest_dir ~TAV8~
+	END ELSE ACTION_IF (~%dir%~ STRING_EQUAL_CASE ~THEME~) BEGIN
+		OUTER_SPRINT dest_dir ~BGTHEME~
+	END ELSE BEGIN
+		OUTER_SPRINT dest_dir ~%dir%~
+	END
+	COPY ~%bgee_dir%/music/%dir%.mus~ ~music/%dest_dir%.mus~
+		REPLACE_TEXTUALLY ~%dir%~ ~%dest_dir%~
+	MKDIR ~music/%dest_dir%~
+	ACTION_BASH_FOR ~%bgee_dir%/music/%dir%~ ~^.+\.ACM$~ BEGIN
+		OUTER_PATCH_SAVE dest_file ~%BASH_FOR_FILE%~ BEGIN
+			REPLACE_TEXTUALLY ~^%dir%~ ~%dest_dir%~
+		END
+		COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~music/%dest_dir%/%dest_file%~
+	END
+END
 
 /////                                                  \\\\\
 ///// ARE                                              \\\\\
@@ -2110,7 +2460,8 @@ END
 
 PRINT ~Installing INI files...~
 
-//COPY ~EET/base/ini~ ~override~ //disabled for now until all values from IWD:EE are compared with hardcoded BG2:EE ones
+COPY ~%patch_dir%/ini~ ~override~
+	//~EET/base/ini~ ~override~ //disabled for now until all values from IWD:EE are compared with hardcoded BG2:EE ones
 
 //changes in INI files compared to IWD:EE
 /*
@@ -2186,425 +2537,12 @@ COPY ~EET/base/itm/K#TELBG2.ITM~ ~override~
 	~EET/base/itm/K#TELTUT.ITM~ ~override~
 
 /////                                                  \\\\\
-///// MUS / ACM                                        \\\\\
-/////                                                  \\\\\
-
-PRINT ~Installing MUS/ACM files...~
-
-COPY ~%bgee_dir%/music/bl1.mus~ ~music~
-	~%bgee_dir%/music/bl2.mus~ ~music~
-	~%bgee_dir%/music/bw1.mus~ ~music~
-	~%bgee_dir%/music/cday1.mus~ ~music~
-	~%bgee_dir%/music/cday2.mus~ ~music~
-	~%bgee_dir%/music/chants.mus~ ~music~
-	~%bgee_dir%/music/chapter.mus~ ~music~
-	~%bgee_dir%/music/cnite.mus~ ~music~
-	~%bgee_dir%/music/dream.mus~ ~music~
-	~%bgee_dir%/music/dung1.mus~ ~music~
-	~%bgee_dir%/music/dung2.mus~ ~music~
-	~%bgee_dir%/music/dung3.mus~ ~music~
-	~%bgee_dir%/music/fday.mus~ ~music~
-	~%bgee_dir%/music/fnite.mus~ ~music~
-	~%bgee_dir%/music/fort.mus~ ~music~
-	~%bgee_dir%/music/fort2.mus~ ~music~
-	~%bgee_dir%/music/inite.mus~ ~music~
-	~%bgee_dir%/music/nadoys.mus~ ~music~
-	~%bgee_dir%/music/ngoblin.mus~ ~music~
-	~%bgee_dir%/music/oldthm.mus~ ~music~
-	~%bgee_dir%/music/pday.mus~ ~music~
-	~%bgee_dir%/music/pnite.mus~ ~music~
-	~%bgee_dir%/music/rpeaks.mus~ ~music~
-	~%bgee_dir%/music/tday1.mus~ ~music~
-	~%bgee_dir%/music/tday2.mus~ ~music~
-	~%bgee_dir%/music/temple.mus~ ~music~
-	~%bgee_dir%/music/tnite.mus~ ~music~
-
-COPY ~%bgee_dir%/music/bc1.mus~ ~music/bc3.mus~
-	REPLACE_TEXTUALLY ~BC1~ ~BC3~
-COPY ~%bgee_dir%/music/bc2.mus~ ~music/bc4.mus~
-	REPLACE_TEXTUALLY ~BC2~ ~BC4~
-COPY ~%bgee_dir%/music/bd1.mus~ ~music/bd4.mus~
-	REPLACE_TEXTUALLY ~BD1~ ~BD4~
-COPY ~%bgee_dir%/music/bd2.mus~ ~music/bd5.mus~
-	REPLACE_TEXTUALLY ~BD2~ ~BD5~
-COPY ~%bgee_dir%/music/bf1.mus~ ~music/bf3.mus~
-	REPLACE_TEXTUALLY ~BF1~ ~BF3~
-COPY ~%bgee_dir%/music/bf2.mus~ ~music/bf4.mus~
-	REPLACE_TEXTUALLY ~BF2~ ~BF4~
-COPY ~%bgee_dir%/music/bp1.mus~ ~music/bp3.mus~
-	REPLACE_TEXTUALLY ~BP1~ ~BP3~
-COPY ~%bgee_dir%/music/bp2.mus~ ~music/bp4.mus~
-	REPLACE_TEXTUALLY ~BP2~ ~BP4~
-COPY ~%bgee_dir%/music/theme.mus~ ~music/newthm.mus~
-	REPLACE_TEXTUALLY ~THEME~ ~NEWTHM~
-
-MKDIR ~music/bc3~
-	~music/bc4~
-	~music/bd4~
-	~music/bd5~
-	~music/bf3~
-	~music/bf4~
-	~music/bl1~
-	~music/bl2~
-	~music/bp3~
-	~music/bp4~
-	~music/bw1~
-	~music/cday1~
-	~music/cday2~
-	~music/chants~
-	~music/cnite~
-	~music/dream~
-	~music/dung1~
-	~music/dung2~
-	~music/dung3~
-	~music/fday~
-	~music/fnite~
-	~music/fort~
-	~music/fort2~
-	~music/inite~
-	~music/nadoys~
-	~music/ngoblin~
-	~music/oldthm~
-	~music/pday~
-	~music/pnite~
-	~music/rpeaks~
-	~music/tday1~
-	~music/tday2~
-	~music/temple~
-	~music/newthm~
-	~music/tnite~
-
-COPY ~%bgee_dir%/music/bl1~ ~music/bl1~
-	~%bgee_dir%/music/bl2~ ~music/bl2~
-	~%bgee_dir%/music/bw1~ ~music/bw1~
-	~%bgee_dir%/music/cday1~ ~music/cday1~
-	~%bgee_dir%/music/cday2~ ~music/cday2~
-	~%bgee_dir%/music/chants~ ~music/chants~
-	~%bgee_dir%/music/cnite~ ~music/cnite~
-	~%bgee_dir%/music/dream~ ~music/dream~
-	~%bgee_dir%/music/dung1~ ~music/dung1~
-	~%bgee_dir%/music/dung2~ ~music/dung2~
-	~%bgee_dir%/music/dung3~ ~music/dung3~
-	~%bgee_dir%/music/fday~ ~music/fday~
-	~%bgee_dir%/music/fnite~ ~music/fnite~
-	~%bgee_dir%/music/fort~ ~music/fort~
-	~%bgee_dir%/music/fort2~ ~music/fort2~
-	~%bgee_dir%/music/inite~ ~music/inite~
-	~%bgee_dir%/music/nadoys~ ~music/nadoys~
-	~%bgee_dir%/music/ngoblin~ ~music/ngoblin~
-	~%bgee_dir%/music/oldthm~ ~music/oldthm~
-	~%bgee_dir%/music/pday~ ~music/pday~
-	~%bgee_dir%/music/pnite~ ~music/pnite~
-	~%bgee_dir%/music/rpeaks~ ~music/rpeaks~
-	~%bgee_dir%/music/tday1~ ~music/tday1~
-	~%bgee_dir%/music/tday2~ ~music/tday2~
-	~%bgee_dir%/music/temple~ ~music/temple~
-	~%bgee_dir%/music/tnite~ ~music/tnite~
-
-COPY ~%bgee_dir%/music/bc1/bc1a1.acm~ ~music/bc3/bc3a1.acm~
-	~%bgee_dir%/music/bc1/bc1a2.acm~ ~music/bc3/bc3a2.acm~
-	~%bgee_dir%/music/bc1/bc1a3.acm~ ~music/bc3/bc3a3.acm~
-	~%bgee_dir%/music/bc1/bc1a4.acm~ ~music/bc3/bc3a4.acm~
-	~%bgee_dir%/music/bc1/bc1b1.acm~ ~music/bc3/bc3b1.acm~
-	~%bgee_dir%/music/bc1/bc1b2.acm~ ~music/bc3/bc3b2.acm~
-	~%bgee_dir%/music/bc1/bc1b3.acm~ ~music/bc3/bc3b3.acm~
-	~%bgee_dir%/music/bc1/bc1c1.acm~ ~music/bc3/bc3c1.acm~
-	~%bgee_dir%/music/bc1/bc1d1.acm~ ~music/bc3/bc3d1.acm~
-	~%bgee_dir%/music/bc1/bc1d1a.acm~ ~music/bc3/bc3d1a.acm~
-	~%bgee_dir%/music/bc1/bc1d2.acm~ ~music/bc3/bc3d2.acm~
-	~%bgee_dir%/music/bc1/bc1d2a.acm~ ~music/bc3/bc3d2a.acm~
-	~%bgee_dir%/music/bc1/bc1d3.acm~ ~music/bc3/bc3d3.acm~
-	~%bgee_dir%/music/bc1/bc1d4.acm~ ~music/bc3/bc3d4.acm~
-	~%bgee_dir%/music/bc1/bc1e1.acm~ ~music/bc3/bc3e1.acm~
-	~%bgee_dir%/music/bc1/bc1e2.acm~ ~music/bc3/bc3e2.acm~
-	~%bgee_dir%/music/bc1/bc1e3.acm~ ~music/bc3/bc3e3.acm~
-	~%bgee_dir%/music/bc1/bc1e4.acm~ ~music/bc3/bc3e4.acm~
-	~%bgee_dir%/music/bc1/bc1enda1.acm~ ~music/bc3/bc3enda1.acm~
-	~%bgee_dir%/music/bc1/bc1enda4.acm~ ~music/bc3/bc3enda4.acm~
-	~%bgee_dir%/music/bc1/bc1endb1.acm~ ~music/bc3/bc3endb1.acm~
-	~%bgee_dir%/music/bc1/bc1endb2.acm~ ~music/bc3/bc3endb2.acm~
-	~%bgee_dir%/music/bc1/bc1endb3.acm~ ~music/bc3/bc3endb3.acm~
-	~%bgee_dir%/music/bc1/bc1endc1.acm~ ~music/bc3/bc3endc1.acm~
-	~%bgee_dir%/music/bc1/bc1endd1.acm~ ~music/bc3/bc3endd1.acm~
-	~%bgee_dir%/music/bc1/bc1endd2.acm~ ~music/bc3/bc3endd2.acm~
-	~%bgee_dir%/music/bc1/bc1endd4.acm~ ~music/bc3/bc3endd4.acm~
-	~%bgee_dir%/music/bc1/bc1ende1.acm~ ~music/bc3/bc3ende1.acm~
-	~%bgee_dir%/music/bc1/bc1ende2.acm~ ~music/bc3/bc3ende2.acm~
-	~%bgee_dir%/music/bc1/bc1ende4.acm~ ~music/bc3/bc3ende4.acm~
-	~%bgee_dir%/music/bc1/bc1endf2.acm~ ~music/bc3/bc3endf2.acm~
-	~%bgee_dir%/music/bc1/bc1endf4.acm~ ~music/bc3/bc3endf4.acm~
-	~%bgee_dir%/music/bc1/bc1endg2.acm~ ~music/bc3/bc3endg2.acm~
-	~%bgee_dir%/music/bc1/bc1endg3.acm~ ~music/bc3/bc3endg3.acm~
-	~%bgee_dir%/music/bc1/bc1endh2.acm~ ~music/bc3/bc3endh2.acm~
-	~%bgee_dir%/music/bc1/bc1endh3.acm~ ~music/bc3/bc3endh3.acm~
-	~%bgee_dir%/music/bc1/bc1endh4.acm~ ~music/bc3/bc3endh4.acm~
-	~%bgee_dir%/music/bc1/bc1endi1.acm~ ~music/bc3/bc3endi1.acm~
-	~%bgee_dir%/music/bc1/bc1f1.acm~ ~music/bc3/bc3f1.acm~
-	~%bgee_dir%/music/bc1/bc1f2.acm~ ~music/bc3/bc3f2.acm~
-	~%bgee_dir%/music/bc1/bc1f3.acm~ ~music/bc3/bc3f3.acm~
-	~%bgee_dir%/music/bc1/bc1f4.acm~ ~music/bc3/bc3f4.acm~
-	~%bgee_dir%/music/bc1/bc1g1.acm~ ~music/bc3/bc3g1.acm~
-	~%bgee_dir%/music/bc1/bc1g2.acm~ ~music/bc3/bc3g2.acm~
-	~%bgee_dir%/music/bc1/bc1g3.acm~ ~music/bc3/bc3g3.acm~
-	~%bgee_dir%/music/bc1/bc1h1.acm~ ~music/bc3/bc3h1.acm~
-	~%bgee_dir%/music/bc1/bc1h2.acm~ ~music/bc3/bc3h2.acm~
-	~%bgee_dir%/music/bc1/bc1h3.acm~ ~music/bc3/bc3h3.acm~
-	~%bgee_dir%/music/bc1/bc1h4.acm~ ~music/bc3/bc3h4.acm~
-	~%bgee_dir%/music/bc1/bc1i1.acm~ ~music/bc3/bc3i1.acm~
-	~%bgee_dir%/music/bc1/bc1i1a.acm~ ~music/bc3/bc3i1a.acm~
-	~%bgee_dir%/music/bc1/bc1i2a.acm~ ~music/bc3/bc3i2a.acm~
-	
-COPY ~%bgee_dir%/music/bc2/bc2a1.acm~ ~music/bc4/bc4a1.acm~
-	~%bgee_dir%/music/bc2/bc2a2.acm~ ~music/bc4/bc4a2.acm~
-	~%bgee_dir%/music/bc2/bc2a3.acm~ ~music/bc4/bc4a3.acm~
-	~%bgee_dir%/music/bc2/bc2b1.acm~ ~music/bc4/bc4b1.acm~
-	~%bgee_dir%/music/bc2/bc2b2.acm~ ~music/bc4/bc4b2.acm~
-	~%bgee_dir%/music/bc2/bc2c1.acm~ ~music/bc4/bc4c1.acm~
-	~%bgee_dir%/music/bc2/bc2c2.acm~ ~music/bc4/bc4c2.acm~
-	~%bgee_dir%/music/bc2/bc2d1.acm~ ~music/bc4/bc4d1.acm~
-	~%bgee_dir%/music/bc2/bc2d2.acm~ ~music/bc4/bc4d2.acm~
-	~%bgee_dir%/music/bc2/bc2e1.acm~ ~music/bc4/bc4e1.acm~
-	~%bgee_dir%/music/bc2/bc2e2.acm~ ~music/bc4/bc4e2.acm~
-	~%bgee_dir%/music/bc2/bc2enda.acm~ ~music/bc4/bc4enda.acm~
-	~%bgee_dir%/music/bc2/bc2endb.acm~ ~music/bc4/bc4endb.acm~
-	~%bgee_dir%/music/bc2/bc2endc.acm~ ~music/bc4/bc4endc.acm~
-	~%bgee_dir%/music/bc2/bc2f1.acm~ ~music/bc4/bc4f1.acm~
-	~%bgee_dir%/music/bc2/bc2f2.acm~ ~music/bc4/bc4f2.acm~
-	~%bgee_dir%/music/bc2/bc2g1.acm~ ~music/bc4/bc4g1.acm~
-	~%bgee_dir%/music/bc2/bc2g2.acm~ ~music/bc4/bc4g2.acm~
-	~%bgee_dir%/music/bc2/bc2g3.acm~ ~music/bc4/bc4g3.acm~
-	~%bgee_dir%/music/bc2/bc2h1.acm~ ~music/bc4/bc4h1.acm~
-	~%bgee_dir%/music/bc2/bc2h2.acm~ ~music/bc4/bc4h2.acm~
-	~%bgee_dir%/music/bc2/bc2h3.acm~ ~music/bc4/bc4h3.acm~
-	~%bgee_dir%/music/bc2/bc2h4.acm~ ~music/bc4/bc4h4.acm~
-	~%bgee_dir%/music/bc2/bc2i1.acm~ ~music/bc4/bc4i1.acm~
-	~%bgee_dir%/music/bc2/bc2i2.acm~ ~music/bc4/bc4i2.acm~
-	~%bgee_dir%/music/bc2/bc2i3.acm~ ~music/bc4/bc4i3.acm~
-	~%bgee_dir%/music/bc2/bc2i4.acm~ ~music/bc4/bc4i4.acm~
-	~%bgee_dir%/music/bc2/bc2j1.acm~ ~music/bc4/bc4j1.acm~
-	~%bgee_dir%/music/bc2/bc2j2.acm~ ~music/bc4/bc4j2.acm~
-	~%bgee_dir%/music/bc2/bc2j3.acm~ ~music/bc4/bc4j3.acm~
-	~%bgee_dir%/music/bc2/bc2j4.acm~ ~music/bc4/bc4j4.acm~
-	~%bgee_dir%/music/bc2/bc2k1.acm~ ~music/bc4/bc4k1.acm~
-	~%bgee_dir%/music/bc2/bc2k2.acm~ ~music/bc4/bc4k2.acm~
-	~%bgee_dir%/music/bc2/bc2k3.acm~ ~music/bc4/bc4k3.acm~
-	~%bgee_dir%/music/bc2/bc2xa1.acm~ ~music/bc4/bc4xa1.acm~
-	
-COPY ~%bgee_dir%/music/bd1/bd1a1.acm~ ~music/bd4/bd4a1.acm~
-	~%bgee_dir%/music/bd1/bd1a2.acm~ ~music/bd4/bd4a2.acm~
-	~%bgee_dir%/music/bd1/bd1b1.acm~ ~music/bd4/bd4b1.acm~
-	~%bgee_dir%/music/bd1/bd1b2.acm~ ~music/bd4/bd4b2.acm~
-	~%bgee_dir%/music/bd1/bd1b3.acm~ ~music/bd4/bd4b3.acm~
-	~%bgee_dir%/music/bd1/bd1b4.acm~ ~music/bd4/bd4b4.acm~
-	~%bgee_dir%/music/bd1/bd1c1.acm~ ~music/bd4/bd4c1.acm~
-	~%bgee_dir%/music/bd1/bd1c2.acm~ ~music/bd4/bd4c2.acm~
-	~%bgee_dir%/music/bd1/bd1d1.acm~ ~music/bd4/bd4d1.acm~
-	~%bgee_dir%/music/bd1/bd1d2.acm~ ~music/bd4/bd4d2.acm~
-	~%bgee_dir%/music/bd1/bd1d3.acm~ ~music/bd4/bd4d3.acm~
-	~%bgee_dir%/music/bd1/bd1e1.acm~ ~music/bd4/bd4e1.acm~
-	~%bgee_dir%/music/bd1/bd1e2.acm~ ~music/bd4/bd4e2.acm~
-	~%bgee_dir%/music/bd1/bd1e3.acm~ ~music/bd4/bd4e3.acm~
-	~%bgee_dir%/music/bd1/bd1e4.acm~ ~music/bd4/bd4e4.acm~
-	~%bgee_dir%/music/bd1/bd1enda.acm~ ~music/bd4/bd4enda.acm~
-	~%bgee_dir%/music/bd1/bd1endb.acm~ ~music/bd4/bd4endb.acm~
-	~%bgee_dir%/music/bd1/bd1endc.acm~ ~music/bd4/bd4endc.acm~
-	~%bgee_dir%/music/bd1/bd1f1.acm~ ~music/bd4/bd4f1.acm~
-	~%bgee_dir%/music/bd1/bd1f2.acm~ ~music/bd4/bd4f2.acm~
-	~%bgee_dir%/music/bd1/bd1f3.acm~ ~music/bd4/bd4f3.acm~
-	~%bgee_dir%/music/bd1/bd1g1.acm~ ~music/bd4/bd4g1.acm~
-	~%bgee_dir%/music/bd1/bd1g2.acm~ ~music/bd4/bd4g2.acm~
-	~%bgee_dir%/music/bd1/bd1g3a.acm~ ~music/bd4/bd4g3a.acm~
-	~%bgee_dir%/music/bd1/bd1g4a.acm~ ~music/bd4/bd4g4a.acm~
-	~%bgee_dir%/music/bd1/bd1h1.acm~ ~music/bd4/bd4h1.acm~
-	~%bgee_dir%/music/bd1/bd1h2.acm~ ~music/bd4/bd4h2.acm~
-	~%bgee_dir%/music/bd1/bd1h3.acm~ ~music/bd4/bd4h3.acm~
-	~%bgee_dir%/music/bd1/bd1i12.acm~ ~music/bd4/bd4i12.acm~
-	~%bgee_dir%/music/bd1/bd1xa1.acm~ ~music/bd4/bd4xa1.acm~
-	
-COPY ~%bgee_dir%/music/bd2/bd2a1.acm~ ~music/bd5/bd5a1.acm~
-	~%bgee_dir%/music/bd2/bd2a2.acm~ ~music/bd5/bd5a2.acm~
-	~%bgee_dir%/music/bd2/bd2a3.acm~ ~music/bd5/bd5a3.acm~
-	~%bgee_dir%/music/bd2/bd2b1.acm~ ~music/bd5/bd5b1.acm~
-	~%bgee_dir%/music/bd2/bd2b2.acm~ ~music/bd5/bd5b2.acm~
-	~%bgee_dir%/music/bd2/bd2b2b.acm~ ~music/bd5/bd5b2b.acm~
-	~%bgee_dir%/music/bd2/bd2c1.acm~ ~music/bd5/bd5c1.acm~
-	~%bgee_dir%/music/bd2/bd2c2.acm~ ~music/bd5/bd5c2.acm~
-	~%bgee_dir%/music/bd2/bd2c3.acm~ ~music/bd5/bd5c3.acm~
-	~%bgee_dir%/music/bd2/bd2c4.acm~ ~music/bd5/bd5c4.acm~
-	~%bgee_dir%/music/bd2/bd2d1.acm~ ~music/bd5/bd5d1.acm~
-	~%bgee_dir%/music/bd2/bd2d2.acm~ ~music/bd5/bd5d2.acm~
-	~%bgee_dir%/music/bd2/bd2d3.acm~ ~music/bd5/bd5d3.acm~
-	~%bgee_dir%/music/bd2/bd2d4.acm~ ~music/bd5/bd5d4.acm~
-	~%bgee_dir%/music/bd2/bd2e1.acm~ ~music/bd5/bd5e1.acm~
-	~%bgee_dir%/music/bd2/bd2e2.acm~ ~music/bd5/bd5e2.acm~
-	~%bgee_dir%/music/bd2/bd2e3.acm~ ~music/bd5/bd5e3.acm~
-	~%bgee_dir%/music/bd2/bd2e4.acm~ ~music/bd5/bd5e4.acm~
-	~%bgee_dir%/music/bd2/bd2enda1.acm~ ~music/bd5/bd5enda1.acm~
-	~%bgee_dir%/music/bd2/bd2enda2.acm~ ~music/bd5/bd5enda2.acm~
-	~%bgee_dir%/music/bd2/bd2endb1.acm~ ~music/bd5/bd5endb1.acm~
-	~%bgee_dir%/music/bd2/bd2endb2.acm~ ~music/bd5/bd5endb2.acm~
-	~%bgee_dir%/music/bd2/bd2endd1.acm~ ~music/bd5/bd5endd1.acm~
-	~%bgee_dir%/music/bd2/bd2ende1.acm~ ~music/bd5/bd5ende1.acm~
-	~%bgee_dir%/music/bd2/bd2endg3.acm~ ~music/bd5/bd5endg3.acm~
-	~%bgee_dir%/music/bd2/bd2f1.acm~ ~music/bd5/bd5f1.acm~
-	~%bgee_dir%/music/bd2/bd2f2.acm~ ~music/bd5/bd5f2.acm~
-	~%bgee_dir%/music/bd2/bd2f3.acm~ ~music/bd5/bd5f3.acm~
-	~%bgee_dir%/music/bd2/bd2f4.acm~ ~music/bd5/bd5f4.acm~
-	~%bgee_dir%/music/bd2/bd2g1a.acm~ ~music/bd5/bd5g1a.acm~
-	~%bgee_dir%/music/bd2/bd2g2b.acm~ ~music/bd5/bd5g2b.acm~
-	~%bgee_dir%/music/bd2/bd2g3.acm~ ~music/bd5/bd5g3.acm~
-	~%bgee_dir%/music/bd2/bd2h2b.acm~ ~music/bd5/bd5h2b.acm~
-	
-COPY ~%bgee_dir%/music/bf1/bf1a1.acm~ ~music/bf3/bf3a1.acm~
-	~%bgee_dir%/music/bf1/bf1a2.acm~ ~music/bf3/bf3a2.acm~
-	~%bgee_dir%/music/bf1/bf1a3.acm~ ~music/bf3/bf3a3.acm~
-	~%bgee_dir%/music/bf1/bf1b1.acm~ ~music/bf3/bf3b1.acm~
-	~%bgee_dir%/music/bf1/bf1b2.acm~ ~music/bf3/bf3b2.acm~
-	~%bgee_dir%/music/bf1/bf1c1.acm~ ~music/bf3/bf3c1.acm~
-	~%bgee_dir%/music/bf1/bf1d1.acm~ ~music/bf3/bf3d1.acm~
-	~%bgee_dir%/music/bf1/bf1d2.acm~ ~music/bf3/bf3d2.acm~
-	~%bgee_dir%/music/bf1/bf1e1.acm~ ~music/bf3/bf3e1.acm~
-	~%bgee_dir%/music/bf1/bf1e2.acm~ ~music/bf3/bf3e2.acm~
-	~%bgee_dir%/music/bf1/bf1enda.acm~ ~music/bf3/bf3enda.acm~
-	~%bgee_dir%/music/bf1/bf1endb.acm~ ~music/bf3/bf3endb.acm~
-	~%bgee_dir%/music/bf1/bf1endc.acm~ ~music/bf3/bf3endc.acm~
-	~%bgee_dir%/music/bf1/bf1endd.acm~ ~music/bf3/bf3endd.acm~
-	~%bgee_dir%/music/bf1/bf1ende.acm~ ~music/bf3/bf3ende.acm~
-	~%bgee_dir%/music/bf1/bf1endf.acm~ ~music/bf3/bf3endf.acm~
-	~%bgee_dir%/music/bf1/bf1endg.acm~ ~music/bf3/bf3endg.acm~
-	~%bgee_dir%/music/bf1/bf1f1.acm~ ~music/bf3/bf3f1.acm~
-	~%bgee_dir%/music/bf1/bf1f2.acm~ ~music/bf3/bf3f2.acm~
-	~%bgee_dir%/music/bf1/bf1f3.acm~ ~music/bf3/bf3f3.acm~
-	~%bgee_dir%/music/bf1/bf1g1.acm~ ~music/bf3/bf3g1.acm~
-	~%bgee_dir%/music/bf1/bf1g2.acm~ ~music/bf3/bf3g2.acm~
-	~%bgee_dir%/music/bf1/bf1g3.acm~ ~music/bf3/bf3g3.acm~
-	~%bgee_dir%/music/bf1/bf1h1.acm~ ~music/bf3/bf3h1.acm~
-	~%bgee_dir%/music/bf1/bf1h2.acm~ ~music/bf3/bf3h2.acm~
-	~%bgee_dir%/music/bf1/bf1i1.acm~ ~music/bf3/bf3i1.acm~
-	~%bgee_dir%/music/bf1/bf1i2.acm~ ~music/bf3/bf3i2.acm~
-	~%bgee_dir%/music/bf1/bf1i3.acm~ ~music/bf3/bf3i3.acm~
-	~%bgee_dir%/music/bf1/bf1j1.acm~ ~music/bf3/bf3j1.acm~
-	~%bgee_dir%/music/bf1/bf1j2.acm~ ~music/bf3/bf3j2.acm~
-	~%bgee_dir%/music/bf1/bf1j3.acm~ ~music/bf3/bf3j3.acm~
-	~%bgee_dir%/music/bf1/bf1j4.acm~ ~music/bf3/bf3j4.acm~
-	~%bgee_dir%/music/bf1/bf1j5.acm~ ~music/bf3/bf3j5.acm~
-	
-COPY ~%bgee_dir%/music/bf2/bf2a1.acm~ ~music/bf4/bf4a1.acm~
-	~%bgee_dir%/music/bf2/bf2a2.acm~ ~music/bf4/bf4a2.acm~
-	~%bgee_dir%/music/bf2/bf2a3.acm~ ~music/bf4/bf4a3.acm~
-	~%bgee_dir%/music/bf2/bf2a4.acm~ ~music/bf4/bf4a4.acm~
-	~%bgee_dir%/music/bf2/bf2b1.acm~ ~music/bf4/bf4b1.acm~
-	~%bgee_dir%/music/bf2/bf2b2.acm~ ~music/bf4/bf4b2.acm~
-	~%bgee_dir%/music/bf2/bf2b3.acm~ ~music/bf4/bf4b3.acm~
-	~%bgee_dir%/music/bf2/bf2b4.acm~ ~music/bf4/bf4b4.acm~
-	~%bgee_dir%/music/bf2/bf2c1.acm~ ~music/bf4/bf4c1.acm~
-	~%bgee_dir%/music/bf2/bf2c2.acm~ ~music/bf4/bf4c2.acm~
-	~%bgee_dir%/music/bf2/bf2c3.acm~ ~music/bf4/bf4c3.acm~
-	~%bgee_dir%/music/bf2/bf2c4.acm~ ~music/bf4/bf4c4.acm~
-	~%bgee_dir%/music/bf2/bf2d1.acm~ ~music/bf4/bf4d1.acm~
-	~%bgee_dir%/music/bf2/bf2d2.acm~ ~music/bf4/bf4d2.acm~
-	~%bgee_dir%/music/bf2/bf2d3.acm~ ~music/bf4/bf4d3.acm~
-	~%bgee_dir%/music/bf2/bf2d4.acm~ ~music/bf4/bf4d4.acm~
-	~%bgee_dir%/music/bf2/bf2e1.acm~ ~music/bf4/bf4e1.acm~
-	~%bgee_dir%/music/bf2/bf2e2.acm~ ~music/bf4/bf4e2.acm~
-	~%bgee_dir%/music/bf2/bf2enda1.acm~ ~music/bf4/bf4enda1.acm~
-	~%bgee_dir%/music/bf2/bf2enda2.acm~ ~music/bf4/bf4enda2.acm~
-	~%bgee_dir%/music/bf2/bf2enda3.acm~ ~music/bf4/bf4enda3.acm~
-	~%bgee_dir%/music/bf2/bf2enda4.acm~ ~music/bf4/bf4enda4.acm~
-	~%bgee_dir%/music/bf2/bf2endc1.acm~ ~music/bf4/bf4endc1.acm~
-	~%bgee_dir%/music/bf2/bf2endd1.acm~ ~music/bf4/bf4endd1.acm~
-	~%bgee_dir%/music/bf2/bf2endd2.acm~ ~music/bf4/bf4endd2.acm~
-	~%bgee_dir%/music/bf2/bf2endd4.acm~ ~music/bf4/bf4endd4.acm~
-	~%bgee_dir%/music/bf2/bf2endf1.acm~ ~music/bf4/bf4endf1.acm~
-	~%bgee_dir%/music/bf2/bf2endf2.acm~ ~music/bf4/bf4endf2.acm~
-	~%bgee_dir%/music/bf2/bf2endf3.acm~ ~music/bf4/bf4endf3.acm~
-	~%bgee_dir%/music/bf2/bf2endg3.acm~ ~music/bf4/bf4endg3.acm~
-	~%bgee_dir%/music/bf2/bf2endg4.acm~ ~music/bf4/bf4endg4.acm~
-	~%bgee_dir%/music/bf2/bf2endh4.acm~ ~music/bf4/bf4endh4.acm~
-	~%bgee_dir%/music/bf2/bf2f1.acm~ ~music/bf4/bf4f1.acm~
-	~%bgee_dir%/music/bf2/bf2f2.acm~ ~music/bf4/bf4f2.acm~
-	~%bgee_dir%/music/bf2/bf2f3.acm~ ~music/bf4/bf4f3.acm~
-	~%bgee_dir%/music/bf2/bf2f4.acm~ ~music/bf4/bf4f4.acm~
-	~%bgee_dir%/music/bf2/bf2g1.acm~ ~music/bf4/bf4g1.acm~
-	~%bgee_dir%/music/bf2/bf2g2.acm~ ~music/bf4/bf4g2.acm~
-	~%bgee_dir%/music/bf2/bf2g3.acm~ ~music/bf4/bf4g3.acm~
-	~%bgee_dir%/music/bf2/bf2g4.acm~ ~music/bf4/bf4g4.acm~
-	~%bgee_dir%/music/bf2/bf2h1.acm~ ~music/bf4/bf4h1.acm~
-	~%bgee_dir%/music/bf2/bf2h2.acm~ ~music/bf4/bf4h2.acm~
-	~%bgee_dir%/music/bf2/bf2h3.acm~ ~music/bf4/bf4h3.acm~
-	~%bgee_dir%/music/bf2/bf2h4.acm~ ~music/bf4/bf4h4.acm~
-	
-COPY ~%bgee_dir%/music/bp1/bp1a1.acm~ ~music/bp3/bp3a1.acm~
-	~%bgee_dir%/music/bp1/bp1a2.acm~ ~music/bp3/bp3a2.acm~
-	~%bgee_dir%/music/bp1/bp1a3.acm~ ~music/bp3/bp3a3.acm~
-	~%bgee_dir%/music/bp1/bp1b1.acm~ ~music/bp3/bp3b1.acm~
-	~%bgee_dir%/music/bp1/bp1b2.acm~ ~music/bp3/bp3b2.acm~
-	~%bgee_dir%/music/bp1/bp1b3.acm~ ~music/bp3/bp3b3.acm~
-	~%bgee_dir%/music/bp1/bp1c1.acm~ ~music/bp3/bp3c1.acm~
-	~%bgee_dir%/music/bp1/bp1c2.acm~ ~music/bp3/bp3c2.acm~
-	~%bgee_dir%/music/bp1/bp1d1.acm~ ~music/bp3/bp3d1.acm~
-	~%bgee_dir%/music/bp1/bp1d2.acm~ ~music/bp3/bp3d2.acm~
-	~%bgee_dir%/music/bp1/bp1d3.acm~ ~music/bp3/bp3d3.acm~
-	~%bgee_dir%/music/bp1/bp1enda1.acm~ ~music/bp3/bp3enda1.acm~
-	~%bgee_dir%/music/bp1/bp1enda2.acm~ ~music/bp3/bp3enda2.acm~
-	~%bgee_dir%/music/bp1/bp1endb1.acm~ ~music/bp3/bp3endb1.acm~
-	~%bgee_dir%/music/bp1/bp1endb2.acm~ ~music/bp3/bp3endb2.acm~
-	~%bgee_dir%/music/bp1/bp1endc2.acm~ ~music/bp3/bp3endc2.acm~
-	~%bgee_dir%/music/bp1/bp1endd1.acm~ ~music/bp3/bp3endd1.acm~
-	~%bgee_dir%/music/bp1/bp1endd2.acm~ ~music/bp3/bp3endd2.acm~
-	~%bgee_dir%/music/bp1/bp1endz1.acm~ ~music/bp3/bp3endz1.acm~
-	
-COPY ~%bgee_dir%/music/bp2/bp2a1.acm~ ~music/bp4/bp4a1.acm~
-	~%bgee_dir%/music/bp2/bp2a2.acm~ ~music/bp4/bp4a2.acm~
-	~%bgee_dir%/music/bp2/bp2a3.acm~ ~music/bp4/bp4a3.acm~
-	~%bgee_dir%/music/bp2/bp2b1.acm~ ~music/bp4/bp4b1.acm~
-	~%bgee_dir%/music/bp2/bp2b2.acm~ ~music/bp4/bp4b2.acm~
-	~%bgee_dir%/music/bp2/bp2c1.acm~ ~music/bp4/bp4c1.acm~
-	~%bgee_dir%/music/bp2/bp2c2.acm~ ~music/bp4/bp4c2.acm~
-	~%bgee_dir%/music/bp2/bp2d1.acm~ ~music/bp4/bp4d1.acm~
-	~%bgee_dir%/music/bp2/bp2d2.acm~ ~music/bp4/bp4d2.acm~
-	~%bgee_dir%/music/bp2/bp2d3.acm~ ~music/bp4/bp4d3.acm~
-	~%bgee_dir%/music/bp2/bp2d4.acm~ ~music/bp4/bp4d4.acm~
-	~%bgee_dir%/music/bp2/bp2e1.acm~ ~music/bp4/bp4e1.acm~
-	~%bgee_dir%/music/bp2/bp2e2.acm~ ~music/bp4/bp4e2.acm~
-	~%bgee_dir%/music/bp2/bp2e3.acm~ ~music/bp4/bp4e3.acm~
-	~%bgee_dir%/music/bp2/bp2e4.acm~ ~music/bp4/bp4e4.acm~
-	~%bgee_dir%/music/bp2/bp2e5.acm~ ~music/bp4/bp4e5.acm~
-	~%bgee_dir%/music/bp2/bp2enda1.acm~ ~music/bp4/bp4enda1.acm~
-	~%bgee_dir%/music/bp2/bp2endc1.acm~ ~music/bp4/bp4endc1.acm~
-	~%bgee_dir%/music/bp2/bp2endc2.acm~ ~music/bp4/bp4endc2.acm~
-	~%bgee_dir%/music/bp2/bp2endd1.acm~ ~music/bp4/bp4endd1.acm~
-	~%bgee_dir%/music/bp2/bp2endd2.acm~ ~music/bp4/bp4endd2.acm~
-	~%bgee_dir%/music/bp2/bp2endd3.acm~ ~music/bp4/bp4endd3.acm~
-	~%bgee_dir%/music/bp2/bp2endf1.acm~ ~music/bp4/bp4endf1.acm~
-	~%bgee_dir%/music/bp2/bp2endf4.acm~ ~music/bp4/bp4endf4.acm~
-	~%bgee_dir%/music/bp2/bp2endg4.acm~ ~music/bp4/bp4endg4.acm~
-	~%bgee_dir%/music/bp2/bp2endh1.acm~ ~music/bp4/bp4endh1.acm~
-	~%bgee_dir%/music/bp2/bp2endh3.acm~ ~music/bp4/bp4endh3.acm~
-	~%bgee_dir%/music/bp2/bp2endz1.acm~ ~music/bp4/bp4endz1.acm~
-	~%bgee_dir%/music/bp2/bp2f1.acm~ ~music/bp4/bp4f1.acm~
-	~%bgee_dir%/music/bp2/bp2f2.acm~ ~music/bp4/bp4f2.acm~
-	~%bgee_dir%/music/bp2/bp2f3.acm~ ~music/bp4/bp4f3.acm~
-	~%bgee_dir%/music/bp2/bp2f4.acm~ ~music/bp4/bp4f4.acm~
-	~%bgee_dir%/music/bp2/bp2g1.acm~ ~music/bp4/bp4g1.acm~
-	~%bgee_dir%/music/bp2/bp2g2.acm~ ~music/bp4/bp4g2.acm~
-	~%bgee_dir%/music/bp2/bp2g3.acm~ ~music/bp4/bp4g3.acm~
-	~%bgee_dir%/music/bp2/bp2g4.acm~ ~music/bp4/bp4g4.acm~
-	~%bgee_dir%/music/bp2/bp2h1.acm~ ~music/bp4/bp4h1.acm~
-	~%bgee_dir%/music/bp2/bp2h2.acm~ ~music/bp4/bp4h2.acm~
-	~%bgee_dir%/music/bp2/bp2h3.acm~ ~music/bp4/bp4h3.acm~
-	~%bgee_dir%/music/bp2/bp2xa1.acm~ ~music/bp4/bp4xa1.acm~
-	~%bgee_dir%/music/bp2/bp2z1.acm~ ~music/bp4/bp4z1.acm~
-
-COPY ~%bgee_dir%/music/theme/themea.acm~ ~music/newthm/newthma.acm~
-
-/////                                                  \\\\\
 ///// PRO                                              \\\\\
 /////                                                  \\\\\
 
 PRINT ~Installing PRO files...~
 
-COPY ~EET/temp/pro~ ~override~
+COPY ~%patch_dir%/pro~ ~override~
 
 /////                                                  \\\\\
 ///// SPL                                              \\\\\
@@ -2691,13 +2629,6 @@ ACTION_PHP_EACH table_EET_portraitID AS portrait => ID BEGIN
 	WRITE_ASCIIE ~0xde~ ~%portrait%M~ #8 // Medium portrait
 END
 
-//ADD_SPELL "%patch_dir%/spl/SPCL101.SPL" 4 1 "DARK_GIFT"//appends also to spell selection screen during character generation which should not be the case
-APPEND ~SPELL.IDS~ ~4101 DARK_GIFT~ UNLESS ~DARK_GIFT~
-/*ACTION_IF (NOT FILE_EXISTS_IN_GAME ~add_spell.ids~) BEGIN
-	COPY ~.../blank.txt~ ~override/add_spell.ids~
-END
-APPEND ~add_spell.IDS~ ~4101 DARK_GIFT~ UNLESS ~DARK_GIFT~//information for the weidu unistall*/
-
 OUTER_SPRINT logged ~~
 COPY ~%patch_dir%/spl~ ~override~
 	LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff STR_VAR array = table_traify_strOldstrNew RET log END
@@ -2719,6 +2650,14 @@ COPY ~%patch_dir%/sto~ ~override~
 COPY + ~.../blank.txt~ ~EET/temp/sto.tph~
 	PATCH_LOG ~%logged%~
 APPEND_OUTER + ~EET/temp/sto.tph~ ~%logged%~
+
+/////                                                  \\\\\
+///// VEF                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing VEF files...~
+
+COPY ~%patch_dir%/vef~ ~override~
 
 /////                                                  \\\\\
 ///// VVC                                              \\\\\
@@ -2979,6 +2918,14 @@ END
 PRINT ~Installing WED files...~
 
 COPY ~%patch_dir%/wed~ ~override~
+
+/////                                                  \\\\\
+///// WFX                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing WFX files...~
+
+COPY ~EET/temp/wfx~ ~override~
 
 /////                                                  \\\\\
 ///// WMP                                              \\\\\
