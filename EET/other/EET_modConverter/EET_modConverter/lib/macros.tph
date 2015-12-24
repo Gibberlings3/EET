@@ -3708,50 +3708,50 @@ END
 
 DEFINE_PATCH_MACRO ~D_DLG_replace~ BEGIN
 	//PHP_EACH remapped_dlg AS source => dest BEGIN
-	//	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]+[~"]?\)%source%\(?:$|[~" %TAB%]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - BEGIN~ END ~\1#d#%dest%\2~
+	//	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]*[~"]?\)%source%\(?:$|[~" %TAB%]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - BEGIN~ END ~\1#d#%dest%\2~
 	//END
 	//why \(?:$|[~" %TAB%]\) doesn't work?
 	//why !@$ characters don't work inside []?
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPEND[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPEND_EARLY[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(EXTEND_TOP[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(EXTEND_BOTTOM[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ADD_STATE_TRIGGER[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ADD_TRANS_TRIGGER[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ADD_TRANS_ACTION[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRANS_ACTION[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRANS_TRIGGER[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ALTER_TRANS[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(SET_WEIGHT[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_SAY[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_STATE_TRIGGER[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRIGGER_TEXT[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRIGGER_TEXT_REGEXP[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT_REGEXP[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT_PROCESS[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT_PROCESS_REGEXP[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(R_A_T_P_R[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS2[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS3[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS4[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T2[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T3[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T4[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(END[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(EXTERN[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(COPY_TRANS[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPENDI[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(==[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\2~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(CHAIN[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(THEN[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPEND[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPEND_EARLY[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(EXTEND_TOP[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(EXTEND_BOTTOM[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ADD_STATE_TRIGGER[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ADD_TRANS_TRIGGER[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ADD_TRANS_ACTION[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRANS_ACTION[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRANS_TRIGGER[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(ALTER_TRANS[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(SET_WEIGHT[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_SAY[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_STATE_TRIGGER[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRIGGER_TEXT[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_TRIGGER_TEXT_REGEXP[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT_REGEXP[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT_PROCESS[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(REPLACE_ACTION_TEXT_PROCESS_REGEXP[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(R_A_T_P_R[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS2[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS3[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(INTERJECT_COPY_TRANS4[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T2[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T3[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(I_C_T4[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(END[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(EXTERN[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(COPY_TRANS[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPENDI[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(==[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(CHAIN[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(THEN[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
 	/* THEN correction is used for the beginning CHAIN */
-	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(CHAIN2[ %TAB%]+[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(CHAIN2[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
 	/* exitFilename for CHAIN2 cannot be corrected using this method */
 END
 
