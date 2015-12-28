@@ -3712,6 +3712,7 @@ DEFINE_PATCH_MACRO ~D_DLG_replace~ BEGIN
 	//END
 	//why \(?:$|[~" %TAB%]\) doesn't work?
 	//why !@$ characters don't work inside []?
+	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(IF_FILE_EXISTS[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPEND[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(APPEND_EARLY[ %TAB%]*[~"]?\)\([A-Za-z0-9#_-]+\)~~~~~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%~
