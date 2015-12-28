@@ -2983,7 +2983,7 @@ COPY - ~%patch_dir%/worldmap.wmp~ ~%patch_dir%~
 COPY_EXISTING - ~worldmap.wmp~ ~override~
 	LPF ~dump_wmp~
 	INT_VAR
-		move_y = 953
+		move_y = 953 //+ 1330
 		compare_bams = 1
 	STR_VAR
 		2da_links_array = "wmp_bg2_2da_links_array"
@@ -2997,7 +2997,7 @@ COPY_EXISTING - ~worldm25.wmp~ ~override~
 	LPF ~dump_wmp~
 	INT_VAR
 		move_x = 893
-		move_y = 1681
+		move_y = 1681 //+ 1330
 		compare_bams = 1
 	STR_VAR
 		icons_array = "wmp_tob_icons_array"
@@ -3006,7 +3006,7 @@ COPY_EXISTING - ~worldm25.wmp~ ~override~
 		output_strings = "EET/temp/map_tob_trans.tra"
 	END
 
-//change area flags and AR4000 coordinates
+//manual edits
 COPY + ~EET/temp/map_bg2_areas.tbl~ ~EET/temp~
 	REPLACE_TEXTUALLY ~\(AR0700[ ]+\)15 ~ ~\13  ~
 
@@ -3014,9 +3014,13 @@ COPY + ~EET/temp/map_tob_areas.tbl~ ~EET/temp~
 	REPLACE_TEXTUALLY ~\(AR3000[ ]+\)7 ~ ~\13 ~
 	REPLACE_TEXTUALLY ~\(AR4000[ ]+\)7 ~ ~\13 ~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AR4000[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
-		SET MATCH2 = MATCH2 + 50
-		SET MATCH4 = MATCH4 + 50
+		SET MATCH2 = MATCH2 + 80
+		SET MATCH4 = MATCH4 + 20
 	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
+
+COPY + ~EET/temp/map_tob_trans.tra~ ~EET/temp~
+	REPLACE_TEXTUALLY ~^@AR4000.*[%newline%]*~ ~~
+	REPLACE_TEXTUALLY ~^@AR6400.*[%newline%]*~ ~~
 
 //merge worldmap files
 COPY + ~EET/tbl/map_mods_areas.tbl~ ~EET/temp/map_bgee_areas.tbl~
@@ -3048,9 +3052,10 @@ END
 
 //EET worldmap
 COPY + ~EET/tbl/map_eet_areas.tbl~ ~EET/temp~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Za-z0-9#_-]+[ %TAB%]+[A-Za-z0-9#_-]+[ %TAB%]+[A-Za-z0-9#_-]+[ %TAB%]+[0-9]+[ %TAB%]+[0-9]+[ %TAB%]+\)\([0-9\-]+\)~ BEGIN
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Za-z0-9#_-]+[ %TAB%]+[A-Za-z0-9#_-]+[ %TAB%]+[A-Za-z0-9#_-]+[ %TAB%]+[0-9]+[ %TAB%]+[0-9]+[ %TAB%]+\)\([0-9\-]+\)\([ %TAB%]+\)\([0-9\-]+\)~ BEGIN
 		SET MATCH2 = MATCH2 + 373
-	END ~%MATCH1%%MATCH2%~
+		//SET MATCH4 = MATCH4 + 1330
+	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
 	APPEND_FILE ~EET/temp/map_bg2_areas.tbl~
 	APPEND_FILE ~EET/temp/map_tob_areas.tbl~
 	LPF fix_table END
@@ -3077,7 +3082,7 @@ COPY_EXISTING ~worldmap.wmp~ ~override~
 	READ_LONG 0xc wmap_off
 	WRITE_ASCII wmap_off ~WORLDMAP~ #8
 	WRITE_LONG wmap_off + 0x8 ~1550~
-	WRITE_LONG wmap_off + 0xc ~2160~
+	WRITE_LONG wmap_off + 0xc ~2160~ //3490
 	WRITE_ASCII wmap_off + 0x30 ~MAPICONS~ #8
 BUT_ONLY
 
