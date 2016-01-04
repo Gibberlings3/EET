@@ -31,6 +31,16 @@ END ELSE BEGIN
 	END
 END
 
+OUTER_SPRINT bgt_lite ~~
+ACTION_IF (option = 3) BEGIN
+	OUTER_WHILE NOT (IS_AN_INT %bgt_lite%) || (bgt_lite > 2) || (bgt_lite < 1) BEGIN
+		PRINT ~Should the conversion take into account BG1 unique items and BAM icons that are not unique in BGT?
+ 1. No (skips usually unneeded changes)
+ 2. Yes~
+		ACTION_READLN bgt_lite
+	END
+END
+
 PRINT ~~
 PRINT ~PCU conversion...~
 

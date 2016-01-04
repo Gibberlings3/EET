@@ -2235,13 +2235,10 @@ ACTION_IF (NOT DIRECTORY_EXISTS ~%USER_DIRECTORY%/characters~) BEGIN
 	MKDIR ~%USER_DIRECTORY%/characters~
 END
 
-//BG:EE default CHR files
 ACTION_BASH_FOR ~EET/temp/chr~ ~^.+\.chr$~ BEGIN
-	ACTION_IF (NOT FILE_EXISTS ~%USER_DIRECTORY%/characters/%BASH_FOR_FILE%~) BEGIN
-		COPY ~%BASH_FOR_FILESPEC%~ ~%USER_DIRECTORY%/characters~
-			LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff RET log END
-			PATCH_LOG ~%log%~
-	END
+	COPY ~%BASH_FOR_FILESPEC%~ ~%USER_DIRECTORY%/characters~
+		LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff RET log END
+		PATCH_LOG ~%log%~
 END
 
 /////                                                  \\\\\

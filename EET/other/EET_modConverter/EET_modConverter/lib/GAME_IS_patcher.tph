@@ -46,7 +46,7 @@ COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
 					REPLACE_TEXTUALLY ~GAME_IS~ ~%WNL%GAME_IS~ //workaround for weidu bug
-					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ 	]+\)\([A-Za-z0-9]+\)~ BEGIN
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ %TAB%]*\)\([A-Za-z0-9]+\)~ BEGIN
 						PATCH_IF (patched = 0) BEGIN
 							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
 						END
@@ -56,20 +56,20 @@ COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 						SET patched = 1
 					END
 					~%MATCH1%%tilde%%MATCH2%%tilde%~
-					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ 	]+\)\([ 	"%tilde%A-Z0-9]+\)~ BEGIN
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ %TAB%]*\)\([ %TAB%"%tilde%A-Z0-9]+\)~ BEGIN
 						SPRINT MATCH2_new ~%MATCH2%~
 						PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~%game%~)=0)/*first contain second*/ BEGIN
 							INNER_PATCH_SAVE MATCH2_new ~%MATCH2_new%~ BEGIN
 								REPLACE_TEXTUALLY ~\(%game%\)~ ~\1 eet~
 							END
+							PATCH_IF (patched = 0) BEGIN
+								PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
+							END
+							SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2% => %MATCH1%%MATCH2_new%~
+							SPRINT log ~%log%%log_temp%%LNL%~
+							PATCH_PRINT ~%log_temp%~
+							SET patched = 1
 						END
-						PATCH_IF (patched = 0) BEGIN
-							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
-						END
-						SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2% => %MATCH1%%MATCH2_new%~
-						SPRINT log ~%log%%log_temp%%LNL%~
-						PATCH_PRINT ~%log_temp%~
-						SET patched = 1
 					END
 					~%MATCH1%%MATCH2_new%~
 					REPLACE_TEXTUALLY ~%WNL%GAME_IS~ ~GAME_IS~ //workaround for weidu bug
