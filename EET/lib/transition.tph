@@ -905,3 +905,19 @@ ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.
 		stringPosDV = "Mazzy"
 	END
 END
+
+/////                                                  \\\\\
+///// White                                            \\\\\
+/////                                                  \\\\\
+
+ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~WHITE\.TP2~) BEGIN
+	LAF ~EET_NPC_TRANSITION~
+		INT_VAR
+		type = 1
+		STR_VAR
+		dv = "V#1WHI"
+		override_BG1 = "V#1WHI"
+		string = "@5000010"
+		stringPosDV = "WILSON"
+	END
+END

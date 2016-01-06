@@ -871,6 +871,7 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 		compare_bams = 0
 		skip_areas = 0
 		skip_links = 0
+		skip_strings = 0
 	STR_VAR
 		2da_links_array = ""
 		icons_array = ""
@@ -893,112 +894,123 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 		READ_LONG ("%wmap_off%"+0xb8*cnt+0x28) lo
 		FOR (i=0;i<na;++i) BEGIN
 			READ_ASCII ao + 0xf0*i area
-			PATCH_IF (skip_areas = 0) BEGIN
-				READ_LONG ao + 0xf0*i + 0x30 flags
-				READ_LONG ao + 0xf0*i + 0x34 bam
+			READ_LONG ao + 0xf0*i + 0x30 flags
+			READ_LONG ao + 0xf0*i + 0x34 bam
+			PHP_EACH "%icons_array%" AS "compare" => "icon" BEGIN
+				PATCH_IF (~%area%~ STRING_EQUAL_CASE ~%compare%~) BEGIN
+					SPRINT area_log ~%area_log% %area%~
+					PATCH_PRINT ~%area% wmp icon patching: %bam% -> %icon%~
+					SET bam = icon
+				END
+			END
+			PATCH_IF (compare_bams = 1) BEGIN
 				PHP_EACH "%icons_array%" AS "compare" => "icon" BEGIN
-					PATCH_IF (~%area%~ STRING_EQUAL_CASE ~%compare%~) BEGIN
+					PATCH_IF (~%bam%~ STRING_EQUAL_CASE ~%compare_1%~) AND (~%area_log%~ STRING_CONTAINS_REGEXP ~%area%~) BEGIN
 						SPRINT area_log ~%area_log% %area%~
 						PATCH_PRINT ~%area% wmp icon patching: %bam% -> %icon%~
 						SET bam = icon
 					END
 				END
-				PATCH_IF (compare_bams = 1) BEGIN
-					PHP_EACH "%icons_array%" AS "compare" => "icon" BEGIN
-						PATCH_IF (~%bam%~ STRING_EQUAL_CASE ~%compare_1%~) AND (~%area_log%~ STRING_CONTAINS_REGEXP ~%area%~) BEGIN
-							SPRINT area_log ~%area_log% %area%~
-							PATCH_PRINT ~%area% wmp icon patching: %bam% -> %icon%~
-							SET bam = icon
-						END
-					END
-				END
-				READ_LONG ao + 0xf0*i + 0x38 xcor
-				SET xcor = xcor + move_x
-				READ_LONG ao + 0xf0*i + 0x3c ycor
-				SET ycor = ycor + move_y
-				//READ_ASCII ao + 0xf0*i + 0x48 load
-				SPRINT load N
-				READ_LONG ao + 0xf0*i + 0x40 name
-				READ_LONG ao + 0xf0*i + 0x44 tool
-				PATCH_IF (tra_read = 0) BEGIN
-					PATCH_IF (name < 0) BEGIN
-						SPRINT name ~~
-						SPRINT tool ~~
-					END ELSE BEGIN
-						READ_STRREF ao + 0xf0*i + 0x40 name
-						READ_STRREF ao + 0xf0*i + 0x44 tool
-					END
+			END
+			READ_LONG ao + 0xf0*i + 0x38 xcor
+			SET xcor = xcor + move_x
+			READ_LONG ao + 0xf0*i + 0x3c ycor
+			SET ycor = ycor + move_y
+			//READ_ASCII ao + 0xf0*i + 0x48 load
+			SPRINT load N
+			READ_LONG ao + 0xf0*i + 0x40 name
+			READ_LONG ao + 0xf0*i + 0x44 tool
+			PATCH_IF (tra_read = 0) BEGIN
+				PATCH_IF (name < 0) BEGIN
+					SPRINT name ~~
+					SPRINT tool ~~
 				END ELSE BEGIN
-					INNER_ACTION BEGIN
-						ACTION_IF (FILE_CONTAINS_EVALUATED (~%tra%~ ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~)) BEGIN
-							COPY - ~%tra%~ ~%tra%~
-								REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~ BEGIN
+					READ_STRREF ao + 0xf0*i + 0x40 name
+					READ_STRREF ao + 0xf0*i + 0x44 tool
+				END
+			END ELSE BEGIN
+				INNER_ACTION BEGIN
+					ACTION_IF (name > 0) AND (FILE_CONTAINS_EVALUATED (~%tra%~ ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~)) BEGIN
+						COPY - ~%tra%~ ~%tra%~
+							REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~ BEGIN
+								PATCH_IF (name = tool) BEGIN
 									SPRINT name "%MATCH1%"
 									SPRINT tool "%MATCH1%"
+								END ELSE BEGIN
+									SPRINT name "%MATCH1%"
 								END
-								~~
+							END ~~
+					END ELSE ACTION_IF (name = tool) BEGIN
+						OUTER_SPRINT name ~~
+						OUTER_SPRINT tool ~~
+					END ELSE BEGIN
+						OUTER_SPRINT name ~~
+					END
+					ACTION_IF (IS_AN_INT ~%tool%~) BEGIN //not set yet
+						ACTION_IF (tool > 0) AND (FILE_CONTAINS_EVALUATED (~%tra%~ ~^[ %TAB%]*@%tool%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~)) BEGIN
+							COPY - ~%tra%~ ~%tra%~
+								REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*@%tool%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~ BEGIN
+									SPRINT tool "%MATCH1%"
+								END ~~
 						END ELSE BEGIN
-							OUTER_SPRINT name ~~
 							OUTER_SPRINT tool ~~
 						END
 					END
 				END
-				SET doOnce = 0
-				PATCH_FOR_EACH var IN name tool BEGIN
-					SPRINT content EVAL "%%var%%"
-					PATCH_IF ("%content%" STRING_EQUAL_CASE "") BEGIN
-						SPRINT EVAL "%var%" N
-					END ELSE BEGIN
-						INNER_PATCH_SAVE content "%content%" BEGIN
-							REPLACE_TEXTUALLY " " "###"
-						END
-						PATCH_IF (doOnce = 0) BEGIN
-							SPRINT trans_string "%trans_string%@%area% = %quote%%content%%quote%%LNL%"
-							SET doOnce = 1
-						END
-						SPRINT EVAL "%var%" "@%area%"
-					END
-				END
-				SPRINT area_string "%area_string%%area% %area% %area% %flags% %bam% %xcor% %ycor% %name% %tool% %load%%LNL%"
 			END
-			PATCH_IF (skip_links = 0) BEGIN
-				PATCH_FOR_EACH j IN 0 3 2 1 BEGIN
-					READ_LONG ao + 0xf0*i + 0x50 + 0x8*j li
-					READ_LONG ao + 0xf0*i + 0x54 + 0x8*j nl
-					FOR (k=0;k<nl;++k) BEGIN
-						READ_LONG lo + 0xd8*(li + k) target
-						READ_ASCII ao + 0xf0*target target_are
-						READ_ASCII lo + 0xd8*(li + k) + 0x4 entry (32) NULL
-						READ_LONG lo + 0xd8*(li + k) + 0x24 time
-						READ_LONG lo + 0xd8*(li + k) + 0x28 flags
-						READ_ASCII lo + 0xd8*(li + k) + 0x2c enc1
-						READ_ASCII lo + 0xd8*(li + k) + 0x34 enc2
-						READ_ASCII lo + 0xd8*(li + k) + 0x3c enc3
-						READ_ASCII lo + 0xd8*(li + k) + 0x44 enc4
-						READ_ASCII lo + 0xd8*(li + k) + 0x4c enc5
-						READ_LONG lo + 0xd8*(li + k) + 0x54 prob
-						PATCH_FOR_EACH var IN entry enc1 enc2 enc3 enc4 enc5 BEGIN
-							SPRINT content EVAL "%%var%%"
-							PATCH_IF ("%content%" STRING_EQUAL_CASE "") BEGIN
-								SPRINT EVAL "%var%" N
-							END ELSE BEGIN
-								INNER_PATCH_SAVE content "%content%" BEGIN
-									REPLACE_TEXTUALLY " " "###"
-								END
-								SPRINT EVAL "%var%" "%content%"
-							END
-						END
-						INNER_PATCH_SAVE nesw "%j%" BEGIN
-							REPLACE_TEXTUALLY 0 N
-							REPLACE_TEXTUALLY 1 W
-							REPLACE_TEXTUALLY 2 S
-							REPLACE_TEXTUALLY 3 E
-						END
-						PATCH_IF (("%link_string%" STRING_CONTAINS_REGEXP "%area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%")=0) BEGIN
-							PATCH_PRINT ~Skipping duplicated link: %area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%~
+			SET doOnce = 0
+			PATCH_FOR_EACH var IN name tool BEGIN
+				SPRINT content EVAL "%%var%%"
+				PATCH_IF ("%content%" STRING_EQUAL_CASE "") BEGIN
+					SPRINT EVAL "%var%" N
+				END ELSE BEGIN
+					INNER_PATCH_SAVE content "%content%" BEGIN
+						REPLACE_TEXTUALLY " " "###"
+					END
+					PATCH_IF (doOnce = 0) BEGIN
+						SPRINT trans_string "%trans_string%@%area% = %quote%%content%%quote%%LNL%"
+						SET doOnce = 1
+					END
+					SPRINT EVAL "%var%" "@%area%"
+				END
+			END
+			SPRINT area_string "%area_string%%area% %area% %area% %flags% %bam% %xcor% %ycor% %name% %tool% %load%%LNL%"
+			PATCH_FOR_EACH j IN 0 3 2 1 BEGIN
+				READ_LONG ao + 0xf0*i + 0x50 + 0x8*j li
+				READ_LONG ao + 0xf0*i + 0x54 + 0x8*j nl
+				FOR (k=0;k<nl;++k) BEGIN
+					READ_LONG lo + 0xd8*(li + k) target
+					READ_ASCII ao + 0xf0*target target_are
+					READ_ASCII lo + 0xd8*(li + k) + 0x4 entry (32) NULL
+					READ_LONG lo + 0xd8*(li + k) + 0x24 time
+					READ_LONG lo + 0xd8*(li + k) + 0x28 flags
+					READ_ASCII lo + 0xd8*(li + k) + 0x2c enc1
+					READ_ASCII lo + 0xd8*(li + k) + 0x34 enc2
+					READ_ASCII lo + 0xd8*(li + k) + 0x3c enc3
+					READ_ASCII lo + 0xd8*(li + k) + 0x44 enc4
+					READ_ASCII lo + 0xd8*(li + k) + 0x4c enc5
+					READ_LONG lo + 0xd8*(li + k) + 0x54 prob
+					PATCH_FOR_EACH var IN entry enc1 enc2 enc3 enc4 enc5 BEGIN
+						SPRINT content EVAL "%%var%%"
+						PATCH_IF ("%content%" STRING_EQUAL_CASE "") BEGIN
+							SPRINT EVAL "%var%" N
 						END ELSE BEGIN
-							SPRINT link_string "%link_string%%area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%%LNL%"
+							INNER_PATCH_SAVE content "%content%" BEGIN
+								REPLACE_TEXTUALLY " " "###"
+							END
+							SPRINT EVAL "%var%" "%content%"
 						END
+					END
+					INNER_PATCH_SAVE nesw "%j%" BEGIN
+						REPLACE_TEXTUALLY 0 N
+						REPLACE_TEXTUALLY 1 W
+						REPLACE_TEXTUALLY 2 S
+						REPLACE_TEXTUALLY 3 E
+					END
+					PATCH_IF (("%link_string%" STRING_CONTAINS_REGEXP "%area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%")=0) BEGIN
+						PATCH_PRINT ~Skipping duplicated link: %area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%~
+					END ELSE BEGIN
+						SPRINT link_string "%link_string%%area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%%LNL%"
 					END
 				END
 			END
@@ -1033,9 +1045,6 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 				WRITE_ASCIIE 0 "%area_string%"
 				PRETTY_PRINT_2DA
 				REPLACE_TEXTUALLY ~^[ ]+~ ~~
-			COPY + ~...blank~ ~%output_strings%~
-				INSERT_BYTES 0 STRING_LENGTH "%trans_string%"
-				WRITE_ASCIIE 0 "%trans_string%"
 		END
 		ACTION_IF (skip_links = 0) BEGIN
 			COPY + ~...blank~ ~%output_links%~
@@ -1043,6 +1052,11 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 				WRITE_ASCIIE 0 "%link_string%"
 				PRETTY_PRINT_2DA
 				REPLACE_TEXTUALLY ~^[ ]+~ ~~
+		END
+		ACTION_IF (skip_strings = 0) BEGIN
+			COPY + ~...blank~ ~%output_strings%~
+				INSERT_BYTES 0 STRING_LENGTH "%trans_string%"
+				WRITE_ASCIIE 0 "%trans_string%"
 		END
 	END
 END
