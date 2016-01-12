@@ -1,7 +1,7 @@
 BACKUP ~EET/backup~
 AUTHOR ~K4thos (swit)~
 VERSION ~beta 0.9~
-//README ~EET/docs/[%LANGUAGE%]readme.htm~ ~EET/docs/[en_US]readme.htm~
+README ~EET/lang/%LANGUAGE%/readme.html~ ~EET/readme-EET.html~
 
 LANGUAGE ~English~
 	~en_US~
@@ -3310,8 +3310,8 @@ COPY ~.../blank.txt~ ~override/EET.flag~
 APPEND ~EET.flag~ ~dummy~ //just to make it detectable by WeiDU
 PRINT ~'EET.flag' file is used by weidu to recognize the installation as EET~
 
-ACTION_IF (FILE_EXISTS ~EET/docs/[%LANGUAGE%]readme.htm~) BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[%LANGUAGE%]readme.htm~
+/*ACTION_IF (FILE_EXISTS ~EET/lang/%LANGUAGE%/readme.html~) BEGIN
+	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%lang%os_slash%%LANGUAGE%%os_slash%readme.html~
 END ELSE BEGIN
-	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[en_US]readme.htm~
-END
+	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[en_US]readme.html~
+END*/

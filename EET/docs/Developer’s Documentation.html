@@ -364,8 +364,8 @@
 <p class="about">Contributors: Crevs Daak, WhiteAgnus</p>
 
 <p class="about">
-	<a href="http://www.spellholdstudios.net/">Mod Website</a> ·
-	<a href="http://www.shsforums.net/">Mod Forum</a> ·
+	<a href="http://www.gibberlings3.net/eet/">Mod Website</a> ·
+	<a href="http://gibberlings3.net/forums/index.php?showforum=195">Mod Forum</a> ·
 	<a href="https://github.com/K4thos/EET">Source Code</a>
 </p>
 
@@ -582,7 +582,7 @@ This document is divided into a number of sections to allow quick reference for 
 <hr />
 <a id="NPC Join/Post/Banter files" name="NPC Join/Post/Banter files"></a>
 <h3>NPC Join/Post/Banter files</h3>
-<p>Unlike BGT, Join (file that has all NPC normal dialogues) and Post (conversation when NPC is leaving the party) dialogue files are NOT appended with BG2 counterparts. They use standard EET renaming convention (underscore suffix) to prevent conflicts with BG2 files (only implemented for Dorn, Edwin, Imoen, Jaheira, Minsc, Neera, Rasaad, Viconia because other NPCs don’t use conflicting dialogue files). This approach allows modders to write/edit NPC dialogues without worrying about conflicts between games and eliminates a problem with finding correct dialogue block numbers within the file. Additional code has been added to NPC override script, that <a href="#Workaround for PDIALOG.2DA forced dialogues">forces dialogue change</a> during BG1 portion of the game, instead of using the one assigned via PDIALOG.2DA.</p>
+<p>Unlike BGT, Join (file that has all NPC normal dialogues) and Post (conversation when NPC is leaving the party) dialogue files are NOT appended with BG2 counterparts. They use standard EET renaming convention (underscore suffix) to prevent conflicts with BG2 files (only implemented for Dorn, Edwin, Imoen, Jaheira, Minsc, Neera, Rasaad, Viconia because other NPCs don’t use conflicting dialogue files). This approach allows modders to write/edit NPC dialogues without worrying about conflicts between games and eliminates a problem with finding correct dialogue block numbers within the file. More information bout dialogue swap system can be found <a href="#Workaround for PDIALOG.2DA forced dialogue swaps">here</a>.</p>
 
 <p>Only BANTER dialogues are appended to BG2 files (engine limitation). During installation banter files are patched to add proper filtering between games. EET determines what state number will be the first state of the Baldur’s Gate: Enhanced Edition banter dialogue for these conflicting, appended files, and stores that inside variables contained in EET\FluidStates.tpa. Other states of the BG:EE dialogue can be calculated relative to the state number representing the first state. The .tpa file can be utilised simply by using the WeiDU function INCLUDE (it's automatically included if you use EET <a href="#Adding support for EET chapters/journal system">cpmvars</a>).</p>
 
@@ -617,7 +617,7 @@ This document is divided into a number of sections to allow quick reference for 
 	<li><a href="#Adding support for shattering items (iron crisis) system in BG1 portion of the game">Adding support for shattering items (iron crisis) system in BG1 portion of the game</a></li>
 	<li><a href="#Importing more items to BG2">Importing more items to BG2</a></li>
 	<li><a href="#Adding support for NPC transition system">Adding support for NPC transition system</a></li>
-	<li><a href="#Workaround for PDIALOG.2DA forced dialogues">Workaround for PDIALOG.2DA forced dialogues</a></li>
+	<li><a href="#Workaround for PDIALOG.2DA forced dialogue swaps">Workaround for PDIALOG.2DA forced dialogue swaps</a></li>
 	<li><a href="#Workaround for CalanderDay command in SoD/BG2 portion of the game">Workaround for CalanderDay command in SoD/BG2 portion of the game</a></li>
 	<li><a href="#Adding new animations">Adding new animations</a></li>
 	<li><a href="#Adding support for EET Worldmap">Adding support for EET Worldmap</a></li>
@@ -916,6 +916,7 @@ LAF ~EET_NPC_TRANSITION~
     face = 6 //NPC facing on SoA transition destination ARE
     create_SoA = 0 //controls if new CRE should be spawned in SoA if NPC was killed in BG1 (no by default - 0)
     default_ToB = 0 //controls if NPC should be spawnable in ToB when the game has been started in ToB (no by default - 0)
+    clean_ToB = 0 //cleans out existing EET code in FATESP.DLG, AR4000.BCS, AR4500.BCS for DV specified in clean_ToB_DV
   STR_VAR
     dv = "IMOEN2" //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
     are = "AR0602" //ARE file name where NPC should be moved during SoA transition
@@ -932,6 +933,7 @@ LAF ~EET_NPC_TRANSITION~
       //variable not set (default) = NPC name appended at the end of summoning list
     SummonedVar = "" //set it only if you want to use different var name than %dv%Summoned (useless in most cases)
     SpawnPlaneVar = "" //set it only if you want use different var name than %dv%SpawnPlane (useless in most cases)
+    clean_ToB_DV = "" //if clean_ToB = 1 existing code for this DV will be removed from FATESP.DLG, AR4000.BCS, AR4500.BCS
 END
 </pre>
 </div>
@@ -1225,8 +1227,8 @@ END
 </div>
 
 <hr />
-<a id="Workaround for PDIALOG.2DA forced dialogues" name="Workaround for PDIALOG.2DA forced dialogues"></a>
-<h3>Workaround for PDIALOG.2DA forced dialogues</h3>
+<a id="Workaround for PDIALOG.2DA forced dialogue swaps" name="Workaround for PDIALOG.2DA forced dialogue swaps"></a>
+<h3>Workaround for PDIALOG.2DA forced dialogue swaps</h3>
 <p>Some mods adding BG1 NPCs to BG2, claims to be compatible with BGT, but uses different Death Variables (script names) through both games. There is no way to alter DV during transition, which means such mods must create new creatures for BG2 portion of the game, instead of providing continuity using existing BG1 files. I'm not quite sure why modders decides for such solution, but if it's related to PDIALOG.2DA that forces to use the same JOIN (main dialogue), POST and BANTER files, than I'd like to share a hint how to bypass this limitation:</p>
 
 <ul>
@@ -1244,19 +1246,25 @@ BUT_ONLY
 </div>
 
 <ul>
-<li><strong>Use EET workaround to separate JOIN and POST dialogues between games</strong> - this eliminates potential problems with BG1 dialogues triggering in BG2 and other way around. Also less stress when it comes to mod compatibility. The end result is shorter and easier to analizę dialogue file. Paste this code at the beginning of NPC override script (either BG1 script if you are adding new unique BG2 dialogues, or other way around) to overwrite PDIALOG.2DA behaviour:</li>
+<li><strong>Use EET workaround to separate JOIN and POST dialogues between games</strong> - this eliminates potential problems with BG1 dialogues triggering in BG2 and other way around. Also less stress when it comes to mod compatibility. The end result is shorter and easier to analyse dialogue file.</li>
+
+<p>First of all PDIALOG.2DA file should not have POST_DIALOG_FILE and JOIN_DIALOG_FILE entries referenced. Let's take Jaheira as an example:</p>
 </ul>
 <div class="important">
 <pre>
-//true on save reload
-IF
-  OnCreation()
-THEN
-  RESPONSE #100
-    SetGlobal("K#PDIALOG","LOCALS",0)
-END
+2DA V1.0
+*
+         POST_DIALOG_FILE JOIN_DIALOG_FILE DREAM_SCRIPT_FILE 25POST_DIALOG_FILE 25JOIN_DIALOG_FILE 25DREAM_SCRIPT_FILE 25OVERRIDE_SCRIPT_FILE
+JAHEIRA  *                *                JAHEIRAD          JAHEI25P           JAHEI25J           JAHEI25D            JAHE25
+</pre>
+</div>
 
-//overwrites PDIALOG.2DA JOIN dialogue file
+<ul>
+<p>Instead of letting the engine swap these dialogue files automatically we will do it manually with this code added on top of both BG1 and BG2 NPC Override local scripts (you can add additional filtering if your NPC uses the same script in both parts of the story):</p>
+</ul>
+<div class="important">
+<pre>
+//assigns JOIN dialogue file
 IF
   Global("K#PDIALOG","LOCALS",0)
   InPartyAllowDead(Myself)
@@ -1267,7 +1275,7 @@ THEN
     Continue()
 END
 
-//overwrites PDIALOG.2DA POST dialogue file
+//assigns POST dialogue file
 IF
   Global("K#PDIALOG","LOCALS",1)
   !InPartyAllowDead(Myself)
@@ -1280,7 +1288,49 @@ END
 </pre>
 </div>
 
-<p>If you are using the same override script in BG1 and BG2 than you should add ENDOFBG1 filtering to above code. Remember that you can also use SetDialog to assign new starting dialogue when the NPC is first met in BG2 portion of the game and ChangeAIScript to overwrite any local script currently assign to the NPC.</p>
+<ul>
+<p>This workaround also needs your NPC DV Name appended to following block within DPLAYER2.BCS</p>
+</ul>
+<div class="important">
+<pre>
+IF
+  Global("K#PDIALOG","LOCALS",0)
+  GlobalLT("ENDOFBG2","GLOBAL",2)
+  !InParty(Myself)
+  NumInParty(6)
+  ActionListEmpty()
+  OR(8)
+    Name("Dorn",Myself)
+    Name("Edwin",Myself)
+    Name("Imoen2",Myself)
+    Name("Jaheira",Myself)
+    Name("Minsc",Myself)
+    Name("Neera",Myself)
+    Name("Rasaad",Myself)
+    Name("Viconia",Myself)
+THEN
+  RESPONSE #100
+    DisplayStringHead(Myself,3)
+    SetGlobal("K#PDIALOG","LOCALS",1)
+END
+</pre>
+</div>
+<ul>
+<p>You can expand above mentioned DPLAYER2.BCS block with your NPC DV Name using this weidu code:</p>
+</ul>
+<div class="important">
+<pre>
+COPY_EXISTING ~DPLAYER2.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_EVALUATE CASE_INSENSITIVE ~(\NumInParty(6)[%WNL%%LNL%%MNL%%TAB% ]*ActionListEmpty()[%WNL%%LNL%%MNL%%TAB% ]*\)OR(\([0-9]+\))~ BEGIN
+      SET MATCH2 = MATCH2 + 1
+    END ~%MATCH1%
+  OR(%MATCH2%)
+    Name("DV")~ //replace DV with the one used by your NPC
+  END
+BUT_ONLY
+</pre>
+</div>
 
 <hr />
 <a id="Workaround for CalanderDay command in SoD/BG2 portion of the game" name="Workaround for CalanderDay command in SoD/BG2 portion of the game"></a>
@@ -1365,11 +1415,11 @@ BUT_ONLY
 //either use cpmvars that have these variables set or add this variable declaration somewhere in your tp2 code
 ACTION_IF GAME_IS ~eet~ BEGIN
   OUTER_SET wmp_xCoord_BG1 = 373 //in relation to BG1/Tutu WORLDMAP.WMP add 373 px correction to X coordinate
-  OUTER_SET wmp_yCoord_BG1 = 0 //in relation to BG1/Tutu WORLDMAP.WMP add 0 px correction to Y coordinate
+  OUTER_SET wmp_yCoord_BG1 = 1330 //in relation to BG1/Tutu WORLDMAP.WMP add 1330 px correction to Y coordinate
   OUTER_SET wmp_xCoord_SoA = 0 //in relation to BG2/BG2:EE WORLDMAP.WMP add 0 px correction to X coordinate
-  OUTER_SET wmp_yCoord_SoA = 953 //in relation to BG2/BG2:EE WORLDMAP.WMP add 953 px correction to Y coordinate
+  OUTER_SET wmp_yCoord_SoA = 2283 //in relation to BG2/BG2:EE WORLDMAP.WMP add 2283 px correction to Y coordinate
   OUTER_SET wmp_xCoord_ToB = 893 //in relation to BG2/BG2:EE WORLDM25.WMP add 893 px correction to X coordinate
-  OUTER_SET wmp_yCoord_ToB = 1681 //in relation to BG2/BG2:EE WORLDM25.WMP add 1681 px correction to Y coordinate
+  OUTER_SET wmp_yCoord_ToB = 3011 //in relation to BG2/BG2:EE WORLDM25.WMP add 1681 px correction to Y coordinate
   OUTER_SET wmp_mapIcon_BG1 = 29 //in relation to Tutu YAC22MAP.BAM add 29 cycles correction to map icon
   OUTER_SET wmp_mapIcon_ToB = 85 //in relation to BG2 25MAPIC.BAM add 85 cycles correction to map icon
   OUTER_SPRINT wmp_worldmap_ToB "worldmap" //when editing ToB worldmap use WORLDMAP.WMP instead of WORLDM25.WMP
@@ -2158,7 +2208,7 @@ END
 
 <h6><a href="#" onclick="toggle('1.0'); return false;">Version 1.0 (no date yet)</a></h6>
 
-<ul class="vlisthide" id="1.0">
+<ul class="hidelist" id="1.0">
 	<li>First public release</li>
 </ul>
 
@@ -2185,7 +2235,7 @@ END
 
       elements = document.getElementsByTagName('*');
       for ( var i = 0; i < elements.length; i++ ) {
-        if ( elements[i].className == 'vlisthide' ) {
+        if ( elements[i].className == 'hidelist' ) {
           elements[i].style.display = 'none';
         }
       }

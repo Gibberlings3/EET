@@ -263,6 +263,7 @@ END
     face = 6 //NPC facing on SoA transition destination ARE
     create_SoA = 0 //controls if new CRE should be spawned in SoA if NPC was killed in BG1 (no by default - 0)
     default_ToB = 0 //controls if NPC should be spawnable in ToB when the game has been started in ToB (no by default - 0)
+    clean_ToB = 0 //cleans out existing EET code in FATESP.DLG, AR4000.BCS, AR4500.BCS for DV specified in clean_ToB_DV
   STR_VAR
     dv = "IMOEN2" //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
     are = "AR0602" //ARE file name where NPC should be moved during SoA transition
@@ -279,6 +280,7 @@ END
       //variable not set (default) = NPC name appended at the end of summoning list
     SummonedVar = "" //set it only if you want to use different var name than %dv%Summoned (useless in most cases)
     SpawnPlaneVar = "" //set it only if you want use different var name than %dv%SpawnPlane (useless in most cases)
+    clean_ToB_DV = "" //if clean_ToB = 1 existing code for this DV will be removed from FATESP.DLG, AR4000.BCS, AR4500.BCS
 END*/
 
 DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
@@ -289,6 +291,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 		face = "-1"
 		create_SoA = 0
 		default_ToB = 0
+		clean_ToB = 0
 	STR_VAR
 		dv = ""
 		are = ""
@@ -301,6 +304,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 		stringPosDV = ""
 		SummonedVar = ""
 		SpawnPlaneVar = ""
+		clean_ToB_DV = ""
 	BEGIN
 	//Check if all needed variables are set
 	OUTER_SET skip = 0
@@ -346,6 +350,29 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 
 	ACTION_IF (skip = 0) BEGIN
 		OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
+
+		//Clean existing code in FATESP.DLG, AR4000.BCS and 45000.BCS
+		ACTION_IF (clean_ToB = 1) BEGIN
+			COPY_EXISTING ~AR4000.BCS~ ~override~
+				DECOMPILE_AND_PATCH BEGIN
+					REPLACE_TEXTUALLY ~IF[%newline%]*InParty("%clean_ToB_DV%")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*Global(".+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG1","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*Continue()[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~SetGlobal("%clean_ToB_DV%PartyBG2","GLOBAL",1)~ ~~
+				END
+			BUT_ONLY
+			COPY_EXISTING ~AR4500.BCS~ ~override~
+				DECOMPILE_AND_PATCH BEGIN
+					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CreateVisualEffect("SPPORTAL",\[.+\])[%newline%]*Wait(2)[%newline%]*MoveGlobal("AR4500","%clean_ToB_DV%",\[.+\])[%newline%]*ActionOverride("%clean_ToB_DV%",Face(.+))[%newline%]*ActionOverride("%clean_ToB_DV%",SetNumTimesTalkedTo(0))[%newline%]*ActionOverride("%clean_ToB_DV%",JoinParty())[%newline%]*MoveToExpansion()[%newline%]*SetGlobal(".+","GLOBAL",-1)[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",-1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*XPLT("%clean_ToB_DV%",2500000)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeStat(Myself,XP,[0-9]+,SET))[%newline%]*Continue()[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",-1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",LeaveParty())[%newline%]*ActionOverride("%clean_ToB_DV%",SetBeenInPartyFlags())[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*ActionOverride("%clean_ToB_DV%",SetDialogu?e?(".+"))[%newline%]*ActionOverride("%clean_ToB_DV%",SetGlobal("KickedOut","LOCALS",0))[%newline%]*SetGlobal(".+","GLOBAL",1)[%newline%]*SetGlobal(".+","GLOBAL",1)[%newline%]*Continue()[%newline%]*END~ ~~
+				END
+			BUT_ONLY
+			COPY_EXISTING ~FATESP.DLG~ ~override~
+				DECOMPILE_AND_PATCH BEGIN
+					REPLACE_TEXTUALLY ~IF .  Global(".+","GLOBAL",0)[%newline%]*Dead("%clean_ToB_DV%")[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal(".+","GLOBAL",2)[%newline%]*. GOTO 10[%newline%]*  IF .  Global(".+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",0)[%newline%]*!Dead("%clean_ToB_DV%")[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal(".+","GLOBAL",2)[%newline%]*. GOTO 7[%newline%]*  IF .  Global(".+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",1)[%newline%]*!Dead("%clean_ToB_DV%")[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal(".+","GLOBAL",1)[%newline%]*. GOTO 9~ ~~
+				END
+			BUT_ONLY
+		END
 
 		// SummonedVar / SpawnPlaneVar
 		ACTION_IF (~%SummonedVar%~ STRING_EQUAL_CASE ~~) BEGIN
@@ -479,7 +506,50 @@ END
 		ACTION_IF (num_matches > 0) BEGIN
 			PRINT ~FATESP.DLG already has %dv% references. Patching not needed (unless some mod messed it up)~
 		END ELSE BEGIN
-			ACTION_IF (~%stringPosDV%~ STRING_EQUAL_CASE ~~) BEGIN
+			OUTER_SET match = 0
+			ACTION_IF ((~%stringPosDV%~ STRING_EQUAL_CASE ~~)=0) BEGIN
+				COPY_EXISTING - ~FATESP.DLG~ ~override~
+					DECOMPILE_AND_PATCH BEGIN
+						SPRINT tilde "~"
+						SET match = 0
+						SET position = 1 //first is already taken by exit response
+						REPLACE_EVALUATE CASE_INSENSITIVE ~\(IF[ ]+.[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*Dead("\)\([^"]+\)\(")\)~ BEGIN
+							PATCH_IF (match = 0) BEGIN
+								PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~%stringPosDV%~) BEGIN
+									SET position = position + 3
+								END ELSE BEGIN
+									SET match = 1
+								END
+							END
+						END ~%MATCH1%%MATCH2%%MATCH3%~
+					END
+				BUT_ONLY
+				ACTION_IF (match = 0) BEGIN
+					WARN ~%stringPosDV% position not found within FATESP.DLG~
+				END ELSE BEGIN
+<<<<<<<< .../FATESP-et.d
+EXTEND_TOP FATESP 6 #%position%
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
+~ GOTO 10
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",0)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
+~ GOTO 7
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",1)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",1)
+~ GOTO 9
+END
+>>>>>>>>
+					PRINT ~Patching FATESP.DLG: position %position%~
+					COMPILE ~.../FATESP-et.d~ EVALUATE_BUFFER
+				END
+			END
+			ACTION_IF (match = 0) BEGIN
 <<<<<<<< .../FATESP-eb.d
 EXTEND_BOTTOM FATESP 6
   IF ~  Global("%SummonedVar%","GLOBAL",0)
@@ -512,47 +582,6 @@ EXTEND_BOTTOM FATESP 6
 END
 >>>>>>>>
 				COMPILE ~.../FATESP-eb.d~ EVALUATE_BUFFER
-			END ELSE BEGIN
-				COPY_EXISTING - ~FATESP.DLG~ ~override~
-					DECOMPILE_AND_PATCH BEGIN
-						SPRINT tilde "~"
-						SET match = 0
-						SET position = 1 //first is already taken by exit response
-						REPLACE_EVALUATE CASE_INSENSITIVE ~\(IF[ ]+.[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*Dead("\)\([^"]+\)\(")\)~ BEGIN
-							PATCH_IF (match = 0) BEGIN
-								PATCH_IF (~%MATCH2%~ STRING_EQUAL_CASE ~%stringPosDV%~) BEGIN
-									SET match = 1
-								END ELSE BEGIN
-									SET position = position + 3
-								END
-							END
-						END ~%MATCH1%%MATCH2%%MATCH3%~
-					END
-				BUT_ONLY
-				ACTION_IF (match = 0) BEGIN
-					WARN ~%stringPosDV% position not found within FATESP.DLG~
-				END ELSE BEGIN
-<<<<<<<< .../FATESP-et.d
-EXTEND_TOP FATESP 6 #%position%
-  IF ~  Global("%SummonedVar%","GLOBAL",0)
-Dead("%dv%")
-~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
-~ GOTO 10
-  IF ~  Global("%SummonedVar%","GLOBAL",0)
-Global("%dv%PartyBG2","GLOBAL",0)
-!Dead("%dv%")
-~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
-~ GOTO 7
-  IF ~  Global("%SummonedVar%","GLOBAL",0)
-Global("%dv%PartyBG2","GLOBAL",1)
-!Dead("%dv%")
-~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",1)
-~ GOTO 9
-END
->>>>>>>>
-					PRINT ~Patching FATESP.DLG: position %position%~
-					COMPILE ~.../FATESP-et.d~ EVALUATE_BUFFER
-				END
 			END
 		END
 

@@ -1678,23 +1678,18 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Worldmap TBL patching
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*areas.*\.tbl$")=0) OR
 	(("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*links.*\.tbl$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching tbl file %patch_name%...~
 
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([ %TAB%]+\)\([^ %TAB%]+\)\([ %TAB%]+\)~ BEGIN
-			SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res
-		END ~\1#d#%match%\3~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ %TAB%]+\)\([ %TAB%]+\)~ BEGIN
-			SPRINT match ~%MATCH1%~ SPRINT res ~are~ LPM EET_PCU_match_res
-		END ~#d#%match%\2~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Z0-9#_]+\)~ BEGIN
+			SPRINT match ~%MATCH1%~ SPRINT res ~exit~ LPM EET_PCU_match_8675
+		END ~%match%~
 
-		PHP_EACH remapped_exit AS source => dest BEGIN
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ %TAB%]+\)%source%\([ %TAB%]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - ENTRY_NAME~ END ~\1#d#%dest%\2~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ %TAB%]+\)%source%\([A-Za-z0-9#_-][A-Za-z0-9#_-]\)\([ %TAB%]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source%%MATCH2% => %dest%%MATCH2% - ENTRY_NAME~ END ~\1#d#%dest%\2\3~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ %TAB%]+\)%source%\([A-Za-z0-9#_-]\)\([ %TAB%]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source%%MATCH2% => %dest%%MATCH2% - ENTRY_NAME~ END ~\1#d#%dest%\2\3~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\([ %TAB%]+\)%source%\([A-Za-z0-9#_-][A-Za-z0-9#_-][A-Za-z0-9#_-]\)\([ %TAB%]+\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source%%MATCH2% => %dest%%MATCH2% - ENTRY_NAME~ END ~\1#d#%dest%\2\3~
-		END
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Z0-9#_]+\)~ BEGIN
+			SPRINT match ~%MATCH1%~ SPRINT res ~are~ LPM EET_PCU_match_res
+		END ~%match%~
 
 		REPLACE_TEXTUALLY ~#d#~ ~~
 
