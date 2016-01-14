@@ -1772,6 +1772,8 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 			SET off = ("%info_off%"+0xc4*cnt) SPRINT res ~door~ LPM EET_PCU_off_8675
 			//0x38 destination ARE resref
 			SET off = ("%info_off%"+0xc4*cnt+0x38) SPRINT res ~are~ LPM EET_PCU_off_res
+			//0x40 entrance name in destination area (for travel regions)
+			SET off = ("%info_off%"+0xc4*cnt+0x40) SPRINT res ~exit~ LPM EET_PCU_off_8675
 			//0x7c region BCS resref
 			SET off = ("%info_off%"+0xc4*cnt+0x7c) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0xbc trigger DLG resref for prox triggers
