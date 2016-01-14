@@ -1080,7 +1080,7 @@ COPY_EXISTING ~SPELL.IDS~ ~override~
 	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~ //WIZARD_COMET dupe
 BUT_ONLY
 
-//SPWI924-925 converted to SPIN301-302
+//SPWI924-925 converted to SPIN
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_numName BEGIN
 	~924~ => ~BERESH_CHANGE~
 	~925~ => ~KAISHAS_CHANGE~
@@ -1092,7 +1092,8 @@ ACTION_PHP_EACH table_EET_numName AS num => spell_name BEGIN
 END
 
 //SPWI926-999 converted to SPIN303-362
-MKDIR ~EET/temp/junk~
+//code not used due to mod incompatibilities
+/*MKDIR ~EET/temp/junk~
 OUTER_FOR (i=926; i<=999; i=i+1) BEGIN
     LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~SPWI%i%~ RET spell_name spell_num END
 	COPY_EXISTING ~HIDESPL.2DA~ ~override~
@@ -1125,7 +1126,7 @@ OUTER_FOR (i=926; i<=999; i=i+1) BEGIN
 			END
         END
     END
-END
+END*/
 
 //update compiled scripts and dialogues
 COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
