@@ -3,7 +3,7 @@
 -------------
 
 THIS IS BETA VERSION OF THE MOD
-It's missing crucial things that can't be added before BG2:EE patch 1.4 and Siege of Dragonspear are released, so what hangs here is not representative to how the mod will work after it's officially released. If you are not interested in participating in beta tests and just want to play the game than I suggest to choose vanilla EE games for now.
+It's missing crucial things that can't be added before BG2:EE patch 1.4 and Siege of Dragonspear are released, so what hangs here is not representative to how the mod will work after it's officially released.
 
 -------------
 

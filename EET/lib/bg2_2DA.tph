@@ -732,6 +732,10 @@ COPY_EXISTING_REGEXP - GLOB ~SPWI[1-9][5-9][0-9]\.SPL~ ~override~ //Wizard level
 			APPEND ~HIDESPL.2DA~ ~%SOURCE_RES% 1 0~ UNLESS ~%SOURCE_RES%~
 		END
 	END
+COPY_EXISTING_REGEXP - GLOB ~SPWI0[0-9]+\.SPL~ ~override~ //Wizard level 0 spells all indexes (they can be assigned as level 9 spells via SPELLS.2DA)
+	INNER_ACTION BEGIN
+		APPEND ~HIDESPL.2DA~ ~%SOURCE_RES% 1 0~ UNLESS ~%SOURCE_RES%~
+	END
 
 ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPWI[1-9][5-9][0-9]\.SPL~ BEGIN //Wizard level 1-9 spells index 50+
 	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
@@ -1676,6 +1680,7 @@ BUT_ONLY
 
 COPY_EXISTING ~SPELLS.2DA~ ~override~
 	REPLACE_TEXTUALLY ~50~ ~99~
+	SET_2DA_ENTRY 1 9 3 ~199~ //the cap for level 9 spells can be set to 199, for which spells 100-199 refer to SPWI0**.SPL
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
