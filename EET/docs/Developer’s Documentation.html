@@ -121,17 +121,17 @@ This document is divided into a number of sections to allow quick reference for 
 </ul>
 
 <a id="Character continuity between BG1 and SoD" name="Character continuity between BG1 and SoD"></a>
-<h5>Character continuity between BG1 and SoD</h5>
+<h3>Character continuity between BG1 and SoD</h3>
 
 <p>Details on Siege of Dragonspear continuity are not yet available.</p>
 
 <a id="Character continuity between SoD and BG2" name="Character continuity between SoD and BG2"></a>
-<h5>Character continuity between SoD and BG2</h5>
+<h3>Character continuity between SoD and BG2</h3>
 
 <p>Character continuity is handled by K#TELBGT.BCS (local script attached to invisible creature (currently spawned after killing Sarevok, but in future transition will start after finishing SoD expansion). Some characters are not continuous (those without BG2 content) and are disabled immediately, whereas others appear in Shadows of Amn and so continuity is required. Continuity only occurs when a joinable NPC was in your party at any point during BG1 (even if you didn't had that character in your end party he/she is still valid for transition) and is not dead. A global variable is set to indicate continuity of that NPC, and then the joinable NPC is moved to the appropriate BG2 area where the area script checks the global variable to see if the joinable NPC was imported. If no, the appropriate level of the Shadows of Amn-resident joinable NPC is created, or character doesn't show up at all, if NPC has been killed during BG1 (except Imoen and Edwin due to plot requirements). During EET installation, continuous joinable BG2 NPCs are replaced by BG1 versions in BALDUR.GAM.</p>
 
 <a id="Character continuity between BG2 and ToB" name="Character continuity between BG2 and ToB"></a>
-<h5>Character continuity between BG2 and ToB</h5>
+<h3>Character continuity between BG2 and ToB</h3>
 
 <p>Like in vanilla game at the end of BG2 your party migrates to ToB. What has been changed is Fate Spirit old party member summoning mechanics. It no longer spawns new versions of creatures but moves characters from BG2 areas to Pocket Plane via MoveGlobal(). Fate Spirit summoning NPC list is created dynamically depending on who you met during your BG1 and BG2 travels. For continuity sake NPCs that you don't know won't even show up on the list. During Fate Spirit dialogue you can receive one of 3 responses to your request:</p>
 <ul>
@@ -141,28 +141,28 @@ This document is divided into a number of sections to allow quick reference for 
 </ul>
 
 <a id="Dynamic biography" name="Dynamic biography"></a>
-<h5>Dynamic biography</h5>
+<h3>Dynamic biography</h3>
 <p>The biography at the start of the game is dynamic. Specifically, the biography consists of two paragraphs, the first of which is sensitive to the class of the protagonist, and the second of which is sensitive to the race of the protagonist. Baldur's Gate II: Enhanced Edition does not support this functionality. To emulate this effect in Baldur's Gate: Enhanced Edition Trilogy, all possible first and second paragraph combinations are added to dialog.tlk. The code for this can be found in tp2 file. To prevent spoilers by clicking the revert button in the biography screen, the string reference containing the Shadows of Amn biography (#33347) is cleared and move to an unused string reference (#15881). This has the effect of changing the revert button to a second cancel button. Fixing this would require hacking the executable.</p>
 
 <p>When a new character is generated, BG2600.BCS spawns an invisible creature with K#BIO.BCS override script attached, which detects the player's class and race, and sets the biography accordingly. Setting the biography in this manner overwrites any custom-written biography, so it is important not to set a custom biography until after the biography has been set by script. Finally, a new character generated for a Shadows of Amn game has their biography set accordingly to StrRef #15881, otherwise they would have an empty biography (StrRef #33347).</p>
 
 <a id="Familiars" name="Familiars"></a>
-<h5>Familiars</h5>
+<h3>Familiars</h3>
 <p>Due to limitations of vanilla familiar mechanics, familiar summoning is now completely scripted and no longer uses hard-coded Find Familiar Spell Effect. After using Find Familiar spell invisible creature (K#FAMSUM) will be spawned to simulate all the benefits and summon appropriate creature based on your character alignment. Familiar creature files have been patched to also summon invisible creature on death that will apply penalties. All is done via spell effects and not scripts, so the solution is very mod friendly. Take a look at <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> for some examples what changes are now possible thanks to this implementation.</p>
 
 <p>Familiars in BG1 portion of the game uses files from BG:EE, which are far weaker than their equivalents that can be summoned once you reach BG2 and ToB.</p>
 
 
 <a id="Item importation" name="Item importation"></a>
-<h5>Item importation</h5>
+<h3>Item importation</h3>
 <p>Transition script also takes care of item importation. In order to record items from the whole party and not only Player1, it need to be done before migrating to Irenicus Dungeon. Before pary is made to lose all inventory using the DropInventory() command, additional code is used to preserve items that should be imported. If the party has a particular item, an invisible creature will take it and return it back to player1 after all inventory is dropped. This way modders can easily add other importable items and implementation itself is fully compatible with code present in Irenicus Dungeon (AR0602.BCS).</p>
 
 <a id="Item shattering" name="Item shattering"></a>
-<h5>Item shattering</h5>
+<h3>Item shattering</h3>
 <p>Item shattering is controlled differently than in BG:EE. Instead of unique spells added to each item type, breakable items now uses common spell to summon invisible creature that will replace the item with braked version if needed (only during BG1). Additionally, by default, Iron Crisis now affects not only normal iron weapons (0.5% chance for each attack in EET, compared to 1% in BG1) but armours (0.2% on hit), shields (0.2%) and helmets (0.1%) too. The effect is true for your party and enemies. It can be considered more a restoration rather than tweak, as from game files it's pretty clear that at least armours and shields were meant to break since they have corresponding flags set and unused icons are present too. If you don't like this feature you can adjust it via <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> components.</p>
 
 <a id="Journal system and Chapters" name="Journal system and Chapters"></a>
-<h5>Journal system and Chapters</h5>
+<h3>Journal system and Chapters</h3>
 <p>Currently during BG1 -> BG2 transition all quest journal entries are removed from the journal. Transition script (K#TELBGT.BCS) reads them directly from SQL file during installation, so it also covers all entries added by mods installed on BG:EE previous to installing EET on BG2:EE.</p>
 
 <p>After patch 1.4 release for BG2:EE above mentioned implementation will be replaced with united journal system that keeps track of all 24 chapters of your journey:</p>
@@ -176,22 +176,22 @@ This document is divided into a number of sections to allow quick reference for 
 <p>Obviously modders interested in creating mods compatible with EET should adopt the newer implementation with continuous journal system.</p>
 
 <a id="Language support" name="Language support"></a>
-<h5>Language support</h5>
+<h3>Language support</h3>
 <p>For now EET is available in English, Polish and German. Whole BG:EE portion of the game is dynamically translated using dialog.tlk file exported directly from the BG:EE. There are not many additional lines (just a few KB), so hopefully more languages will be supported soon. Other than this the mod comes with vanilla BG1 movies converted to HD format. If you are interested in helping with translation you can use EET/tra/en_US tra files as a base. If BG1 has been fully localized in your country and you have access to it, send us all MVE files present there and we will convert them to WBM format used in Enhanced Edition engine.</p>
 
 <a id="Mod support" name="Mod support"></a>
-<h5>Mod support</h5>
-<p>As a result of the conversion method explained in first section of this document, EET provides limited support for mods installed on BG:EE previous to installing EET on BG2:EE. Theoretically it could support almost any BG:EE mod with little to no work needed (for example adjusting BG1NPC Project to work with this method required just a few lines of code. Many mods don't need anything changed at all) as the mod resources are treated like vanilla content and patched "on the fly" during EET installation if needed. To ensure that BG:EE mods not intervene with BG2:EE portion of the game EET prevents starting the installation when unrecognised mod is detected. List of supported mods can be found in the <a href="[en_US]readme.htm">EET readme</a> file.
-<p>When it comes to mods that alters only BG2 and ToB content than from technical perspective it's very easy to make them compatible. If the mod uses GAME_IS WeiDU command than it should be updated to take into account ~eet~ in the command parameters declaration. After patch 1.4 for BG2:EE, EET will use new continuous journal system that appends BG2 journal numbers instead of going back to number 1, which also need changes in mod code. Both things can be implemented automatically using EET conversion tool as explained <a href="#Detecting EET within WeiDU code">here</a> and <a href="#Adding support for EET chapters/journal system">here</a>, so we hope that at some point most BG2:EE mods will be updated as it's really a matter of minutes. A list of BG2:EE mods that already supports EET will posted in EET release topic - this way compatibility list can be updated frequently without need to re-upload whole mod just to edit the readme file.</p>
+<h3>Mod support</h3>
+<p>As a result of the conversion method explained in first section of this document, EET provides limited support for mods installed on BG:EE previous to installing EET on BG2:EE. Theoretically it could support almost any BG:EE mod with little to no work needed (for example adjusting BG1NPC Project to work with this method required just a few lines of code. Many mods don't need anything changed at all) as the mod resources are treated like vanilla content and patched "on the fly" during EET installation if needed. To ensure that BG:EE mods not intervene with BG2:EE portion of the game EET prevents starting the installation when unrecognised mod is detected. List of supported mods can be found in <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">this forum topic</a>.</p>
+<p>When it comes to mods that alters only BG2 and ToB content than from technical perspective it's very easy to make them compatible. If the mod uses GAME_IS WeiDU command than it should be updated to take into account ~eet~ in the command parameters declaration. After patch 1.4 for BG2:EE, EET will use new continuous journal system that appends BG2 journal numbers instead of going back to number 1, which also need changes in mod code. Both things can be implemented automatically using EET conversion tool as explained <a href="#Detecting EET within WeiDU code">here</a> and <a href="#Adding support for EET chapters/journal system">here</a>, so we hope that at some point most BG2:EE mods will be updated as it's really a matter of minutes. A list of BG2:EE mods that already supports EET can be found in <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">this forum topic</a>.</p>
 
 <p>Mods designed to affect BG:EE resources or both BG:EE and BG2:EE resources at the same time, installed after EET, should take into account <a href="#convention">naming convention</a> used by this mod. It's recommended to read <a href="#mods">Creating mods for EET</a> section of this document, if you are interested in adding EET native support for your mod.</p>
 
 <a id="Random treasure" name="Random treasure"></a>
-<h5>Random treasure</h5>
+<h3>Random treasure</h3>
 <p>Due to limitations of original RND*.2DA files EET uses new EE <a href="http://gibberlings3.net/forums/index.php?showtopic=27199">engine feature</a> to add BG1 random treasures to the game. RNDTRES.2DA is expanded with all random tables present in vanilla BG:EE. Name of the dummy files used as random loot reference remains mostly unchanged - the only difference is changed prefix from "RT" to "BG". Refer to the linked information about this functionality and check out RNDTRES.2DA modified by EET to see how exactly it works.</p>
 
 <a id="Starting the game" name="Starting the game"></a>
-<h5>Starting the game</h5>
+<h3>Starting the game</h3>
 <p>As a result of GUI limitations (max 3 game slots, disabled worldmap during BP campaign, hardcoded button that points to ToB, which uses different global script) EET currently uses rather awkward way to start the game.</p>
 <ul>
 	<li>Baldur's Gate - first icon in main menu (choosing this option allows you to play whole saga from start to finish - BG1, TotSC, Siege of Dragonspear (not yet), BG2:SoA, BG2: ToB)</li>
@@ -203,22 +203,22 @@ This document is divided into a number of sections to allow quick reference for 
 </ul>
 
 <a id="Song reference" name="Song reference"></a>
-<h5>Song reference</h5>
+<h3>Song reference</h3>
 <p>EET uses all music files present in BG:EE and BG2:EE. The mod is meant to be installed on clean installation of BG2:EE, which allows it to set a common standard for song numbers for mods installed later. All BG2:EE song references are kept as they were, BG:EE songs that were missing in BG2:EE become appended to songlist.2da during EET installation. Use this new songlist.2da as a reference if your mod is designed to use music missing in vanilla BG2:EE release. It's also easy to patch areas from BG:EE and BGT mods to use EET common standard for song numbers thanks to <a href="../other/EET_modConverter">EET_modConverter</a> tool, as has been explained <a href="#Adopting EET naming conventions for BG1 resources">here</a>.</p>
 
 <a id="Story progression" name="Story progression"></a>
-<h5>Story progression</h5>
+<h3>Story progression</h3>
 <p>You start the game in Candlekeep and continue the BG1 storyline up until defeating Sarevok. Instead of end credits you can continue playing. After returning to Baldur's Gate, Siege Of Dragonspear expansion starts seamlessly and allows you to experience new questline up until the party is captured by Irenicus (or at least that is how we hope Siege Of Dragonspear ends). After that you end up in Irenicus Dungeon. In current version access to BG1 areas during BG2 is blocked until you reach chapter 7 (entering Suldanessellar for the first time), but after patch 1.4 release you will be able to travel back as soon as chapter 2 starts. Nothing changes on how ToB expansion progress. The only difference is that you have free access to previously visited areas as soon as you leave Saradush.</p>
 
 <a id="Visiting old areas" name="Visiting old areas"></a>
-<h5>Visiting old areas</h5>
+<h3>Visiting old areas</h3>
 <p>This feature has been implemented via BG000.ARE area that have links connecting it with BG1 and BG2 areas. The area itself doesn't have icon on map. At the time you visit it as a "random" (not really) area encounter during BG1, game establishes these new connections between areas. When you leave it the area becomes hidden via HideAreaOnMap action and later reviled in BG2 portion of the game, which restores connections between BG1 and BG2 areas. As for ToB, all areas are already connected with each other via Watcher's Keep. The same WMP file is used during whole game, so previously visited areas are not removed even after starting ToB. Keep in mind that links between areas are established dynamically during your play through so player won't be able to come back to BG1 areas if he/she started the game in BG2, or to BG2 and BG1 areas if the game was started in ToB while skipping rest of the story. Visiting all old areas is a feature only for players that play whole story, from start to finish.</p>
 
 <p>EET handles things that doesn't make sense story or content wise by either adding <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">additional filtering</a> via global variable (this way topics regarding iron crisis doesn't show up when you visit these areas in BG2/ToB, tavern rumours won't mention irrelevant events etc.) or by removing creatures from areas after certain point (for example BG1 NPCs without additional story for BG2 portion of the game won't show up when you visit the BG1 area where you left them. Same for Iron Throne antagonists etc.)</p>
 </p>
 
 <a id="Worldmap" name="Worldmap"></a>
-<h5>Worldmap</h5>
+<h3>Worldmap</h3>
 <p>EET is fully compatible with BP-BGT Worldmap mod (refer to that mod documentation to understand how to work with it), so mods that are dependent on it can still work with EET. Additionally EET comes with its own unique worldmap that covers all supported games (Siege of Dragonspear is not supported yet).</p>
 
 <p>Whole game is using a single worldmap that doesn't change even in ToB (new EE command is used to change it back from WORLDM25.WMP to WORLDMAP.WMP, so none of your explored area flags are lost). To make modders life easier the map itself is basically BG1, BG2, ToB maps merged together and edited to fill blank areas in BG2 map style.</p>
@@ -239,27 +239,27 @@ This document is divided into a number of sections to allow quick reference for 
 </ul>
 
 <a id="Areas naming convention" name="Areas naming convention"></a>
-<h5>Areas naming convention</h5>
+<h3>Areas naming convention</h3>
 <p>All area resources have been renamed to have new area codes because there is considerable overlap in area filenames between Baldur's Gate: Enahanced Edition and Baldur's Gate II: Enhanced Edition. It is a straightforward system of renaming all resources related to area (ARE, WED, TIS, MOS, BMP, BCS). The numbers are untouched, but the prefix "AR" is changed to "BG". This maintains the consistency and validity of area references from a number of public documents, including walkthroughs, travel maps, and the like. Therefore, these documents can be referred to for an area number guide to EET, except that the prefix change from "AR" to "BG" must be considered when, for example, using the CLUAConsole, or when developing modifications that affects Baldur's Gate: Enhanced Edition areas.</p>
 
 <a id="Resource naming convention" name="Resource naming convention"></a>
-<h5>Resource naming convention</h5>
+<h3>Resource naming convention</h3>
 <p>For other resources, EET keeps the original BG:EE resource name as strictly as possible. If it doesn't conflict with BG2:EE content than the name of imported file is not changed. For conflicting resources BG1 ones have suffix with the underscore (_) added to make them unique. Since the engine only supports 8.3 filenames, there are 2 resources that couldn't use this convention and adopted BGT one instead (skelwa02.cre => bgskel02.cre, skelwa03.cre => bgskel03.cre).</p>
 
 <p>Conflicting spells from BG:EE uses a little different naming convention - "BG" letters replaces first 2 letters of the spell (so SPWI becomes BGWI etc). The reason behind this is limitation of the engine which expects maximum 7 character spell names for some spell effects. This convention adopted from BGT makes the rename spells still easy to identify. Same rule is also used for random item tables ("RN" replaced with "BG").</p>
 
 <a id="NPC Join/Post/Banter files" name="NPC Join/Post/Banter files"></a>
-<h5>NPC Join/Post/Banter files</h5>
+<h3>NPC Join/Post/Banter files</h3>
 <p>Unlike BGT, Join (file that has all NPC normal dialogues) and Post (conversation when NPC is leaving the party) dialogue files are NOT appended with BG2 counterparts. They use standard EET renaming convention (underscore suffix) to prevent conflicts with BG2 files (only implemented for Dorn, Edwin, Imoen, Jaheira, Minsc, Neera, Rasaad, Viconia because other NPCs don't use conflicting dialogue files). This approach allows modders to write/edit NPC dialogues without worrying about conflicts between games and eliminates a problem with finding correct dialogue block numbers within the file. More information bout dialogue swap system can be found <a href="#Workaround for PDIALOG.2DA forced dialogue swaps">here</a>.</p>
 
 <p>Only BANTER dialogues are appended to BG2 files (engine limitation). During installation banter files are patched to add proper filtering between games. EET determines what state number will be the first state of the Baldur's Gate: Enhanced Edition banter dialogue for these conflicting, appended files, and stores that inside variables contained in EET\FluidStates.tpa. Other states of the BG:EE dialogue can be calculated relative to the state number representing the first state. The .tpa file can be utilised simply by using the WeiDU function INCLUDE (it's automatically included if you use EET <a href="#Adding support for EET chapters/journal system">cpmvars</a>).</p>
 
 <a id="Naming convention for new files" name="Naming convention for new files"></a>
-<h5>Naming convention for new files</h5>
+<h3>Naming convention for new files</h3>
 <p>New files added by EET have "K#" prefix to distinguish them from vanilla BG:EE and BG2:EE content. List of new resources can be found in <a href="#resources">this section</a>.</p>
 
 <a id="BG1 resource naming reference table" name="BG1 resource naming reference table"></a>
-<h5>BG1 resource naming reference table</h5>
+<h3>BG1 resource naming reference table</h3>
 <p>For more convenient viewing, the BG1 resource naming reference table has been moved to <a href="BG1 reference table.htm">external file</a>. Even though it's in HTML format it's basically a spreadsheet file, so you can also open it for example in Microsoft Excel (which has been used to create it). The file is separated into several worksheets named after extensions of files listed there. Columns show naming conventions used in BG:EE, EET and BGT. Tutu reference has not been included because it renames pretty much every single resource in game which would bloat the table.</p>
 
 </div>
@@ -285,7 +285,7 @@ This document is divided into a number of sections to allow quick reference for 
 </ul>
 
 <a id="Adopting EET naming conventions for BG1 resources" name="Adopting EET naming conventions for BG1 resources"></a>
-<h5>Adopting EET naming conventions for BG1 resources</h5>
+<h3>Adopting EET naming conventions for BG1 resources</h3>
 <p>If your mod is designed to work not only with EET but also other platforms you should consider using either:</p>
 <ul>
 <li><a href="../other/cpmvars">cpmvars variable libraries</a> - a set of variable declaration for BG:EE/BGT/Tutu/EET. INCLUDE each of these TPA files using GAME_IS WeiDU command, depending on each platform. These will cover all area names, area scripts, NPC dialogue and some other differences, allowing you to code everything with the same WeiDU code (by replacing resource name with variable). If some resource is not implemented here you can expand it to cover all your needs. It's a well known way of coding, with plenty of examples in released mods, so let's focus only on new additions related to EET.<br>
@@ -299,7 +299,7 @@ This document is divided into a number of sections to allow quick reference for 
 <p>You can also patch files directly using <a href="../other/EET_modConverter">EET_modConverter</a> tool that has custom version of Platform Conversion Utility in it, specialized in converting BG:EE and BGT code and resources to adopt EET naming convention. The tool will print all changes it makes into the log file, so you can review them if they are really needed. "Patching (...)" in log means that the input file has been patched and has been copied to output directory of the tool. "Analyzing (...)" means that the tool found an instance of the resource in tp2/tph/tpp/tpa files that didn't have extension provided. In such case the file is not patched but you should manually check if suggested change is warranted. Keep in mind that PCU part of this tool is designed for mods with BG1/BG:EE content only. You should not use it for mods with BG2 resources/code, unless you really know you're doing. Supported files that this tool can automatically convert: TBL, GAM, ARE, BAF, BCS, CRE, D, DLG, EFF, ITM, SPL, STO, TRA, TP2, TPH, TPP, TPA, VVC, WED, WMP. Other than renaming and patching files to use EET naming convention it will also handle converting ARE Song references to use EET song playlist.</p>
 
 <a id="Adding support for EET chapters/journal system" name="Adding support for EET chapters/journal system"></a>
-<h5>Adding support for EET chapters/journal system</h5>
+<h3>Adding support for EET chapters/journal system</h3>
 <p>As explained in <a href="#Journal system and Chapters">this section</a> after patch 1.4 for BG2:EE, EET will use continuous journal/chapters system through whole game instead of resetting them over after each campaign. Sounds like a nightmare compatibility wise, right? Well... not really. All changes to your code can be implemented automatically without any effort on your part. There are 2 ways do it:</p>
 <ul>
 <li><a href="../other/EET_modConverter">EET_modConverter</a> - this tool can be used to automatically convert any SoD, BG2 and ToB code to use cpmvars like system for chapters. It will patch all BAF, D, TP2, TPH, TPP, TPA files to use variables instead of numbers whenever SetGlobal, Global, GlobalGT, GlobalLT related to chapter number is used in your code. Variable declaration depending on platform will be also automatically added to ALWAYS section of tp2 file (you can remove this additional code if you already use <a href="../other/cpmvars">cpmvars</a> variable libraries).</li>
@@ -324,7 +324,7 @@ END
 </div>
 
 <a id="Detecting EET within WeiDU code" name="Detecting EET within WeiDU code"></a>
-<h5>Detecting EET within WeiDU code</h5>
+<h3>Detecting EET within WeiDU code</h3>
 
 <ul>
 <li>There is a new WeiDU parameter used with GAME_IS command for EET detection: <strong>GAME_IS ~eet~</strong></li>
@@ -334,7 +334,7 @@ END
 <p>Once again <a href="../other/EET_modConverter">EET_modConverter</a> may be handy if you need to replace many instances of GAME_IS command in your code, as the tool has an option to do it automatically.</p>
 
 <a id="Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB" name="Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB"></a>
-<h5>Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</h5>
+<h3>Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</h3>
 <p>EET uses following GLOBAL in-game variable filters for vanilla campaigns to shut off content that no longer should show up after certain point of the story.</p>
 <ul>
 <li><strong>CHAPTER</strong> - that's an obvious way to handle things. Unlike BGT, EET will soon use continuous journal/chapter system, so the game will consist of 24 chapters in total. You can use this variable reliably for this purpose (after patch 1.4 is released for BG2:EE).</li>
@@ -351,7 +351,7 @@ END
 <p>If you need more precision with detecting areas you can also use additional AreaCheck(S:ResRef*) triggers.</p>
 
 <a id="Adding AreaType to BG1 ARE files" name="Adding AreaType to BG1 ARE files"></a>
-<h5>Adding AreaType to BG1 ARE files</h5>
+<h3>Adding AreaType to BG1 ARE files</h3>
 <p>Either patch area with this WeiDU code during your mod installation:</p>
 <div class="code">
 <pre>
@@ -371,7 +371,7 @@ END
 </div>
 
 <a id="Detecting mods installed on BG:EE" name="Detecting mods installed on BG:EE"></a>
-<h5>Detecting mods installed on BG:EE</h5>
+<h3>Detecting mods installed on BG:EE</h3>
 
 <p>EET has <a href="#Mod support">limited support for BG:EE mods installed on BG:EE</a> previous to installing EET on BG2:EE. Mods installed this way are treated exactly the same as vanilla resources and end up part of the BG2:EE EET installation. So, how can other mods detect if a particular mod has been installed on BG:EE? There are 2 ways to do it:</p>
 
@@ -403,11 +403,11 @@ END
 </ul>
 
 <a id="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE" name="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE"></a>
-<h5>Adding support for mods installable on BG:EE previous to installing EET on BG2:EE</h5>
+<h3>Adding support for mods installable on BG:EE previous to installing EET on BG2:EE</h3>
 <p>If you're not planning to convert your BG:EE mod to work natively with EET, you may be interested in a solution that treats mods installed on BG:EE (previous to installing EET on BG2:EE) as vanilla content, which means all new BG:EE resources are converted on the fly with vanilla files. For more information how to achieve this please take a look at <a href="../other/BGEE_to_EET_mod_checker">BGEE_to_EET_mod_checker</a> tool readme file.</p>
 
 <a id="Adding support for shattering items (iron crisis) system in BG1 portion of the game" name="Adding support for shattering items (iron crisis) system in BG1 portion of the game"></a>
-<h5>Adding support for shattering items (iron crisis) system in BG1 portion of the game</h5>
+<h3>Adding support for shattering items (iron crisis) system in BG1 portion of the game</h3>
 <p>Patch items that you want to add into iron crisis shattering pool with following action function, available within <a href="../other/EET_functions">EET_functions.tph</a>. It will remove BG:EE/Tutu/BGT/EET implementation (if already present) and add <a href="#Item shattering">EET item shattering system</a> to weapons, armors, shield and helmets listed in the array.</p>
 
 <div class="code">
@@ -421,7 +421,7 @@ END
 </div>
 
 <a id="Importing more items to BG2" name="Importing more items to BG2"></a>
-<h5>Importing more items to BG2</h5>
+<h3>Importing more items to BG2</h3>
 <p>As explained in <a href="#Item importation">Item importation</a> description it's easy to import more items to BG2, using the same AR0602.BCS code that works in vanilla BG2. All you need to do is:</p>
 
 <ul>
@@ -484,7 +484,7 @@ END
 <p>And so forth. As long as the dummy K#TELBGT.CRE, that has transition script attached to it, will get the item from the party, you will end up with it in BG2 (CRE returns all acquired items once the party drop all inventory).</p>
 
 <a id="Adding support for NPC transition system" name="Adding support for NPC transition system"></a>
-<h5>Adding support for NPC transition system</h5>
+<h3>Adding support for NPC transition system</h3>
 <p>As <a href="#Character continuity between BG1 and SoD">already explained</a> EET uses new system for NPC transition from Siege of Dragonspear expansion to Shadows of Amn (currently transition starts after killing Sarevok, but it will be changed once SoD support is implemented) and from Shadows of Amn to Throne of Bhaal expansion. In order to make modder's life easier we've prepared a function designed to automatically add both types of transition to any kind of NPC mod. All you need to do to make your NPC fully compatible with EET is disabling your normal patching code for AR4000.BCS, AR4500.BCS, FATESP.DLG and using EET_TRANSITION function instead.</p>
 <p>If your BG2 NPC is meant to have BG1->BG2 transition than you should add additional <strong>Global("%dv%PartyBG1","GLOBAL",0)</strong> trigger (where %DV% is death variable of your CRE) in the code that spawns new version of CRE file into BG2 area. This way such block won't trigger if the NPC is valid for migration from BG1 to BG2. For example:</p>
 
@@ -878,7 +878,7 @@ END
 </div>
 
 <a id="Workaround for PDIALOG.2DA forced dialogue swaps" name="Workaround for PDIALOG.2DA forced dialogue swaps"></a>
-<h5>Workaround for PDIALOG.2DA forced dialogue swaps</h5>
+<h3>Workaround for PDIALOG.2DA forced dialogue swaps</h3>
 <p>Some mods adding BG1 NPCs to BG2, claims to be compatible with BGT, but uses different Death Variables (script names) through both games. There is no way to alter DV during transition, which means such mods must create new creatures for BG2 portion of the game, instead of providing continuity using existing BG1 files. I'm not quite sure why modders decides for such solution, but if it's related to PDIALOG.2DA that forces to use the same JOIN (main dialogue), POST and BANTER files, than I'd like to share a hint how to bypass this limitation:</p>
 
 <ul>
@@ -983,7 +983,7 @@ BUT_ONLY
 </div>
 
 <a id="Workaround for CalanderDay command in SoD/BG2 portion of the game" name="Workaround for CalanderDay command in SoD/BG2 portion of the game"></a>
-<h5>Workaround for CalanderDay command in SoD/BG2 portion of the game</h5>
+<h3>Workaround for CalanderDay command in SoD/BG2 portion of the game</h3>
 <p>CalanderDay(I:Day*) / CalanderDayGT(I:Day*) / CalanderDayLT(I:Day*) triggers can be used to detect if the current day is the day specified / after the day specified / before the day specified. What about situations when you need to use it in Siege of Dragonspear or Baldur's Gate 2 portion of the game? We don't know how many days it will take CHARNAME party to finish first 7 chapters, so the vanilla command becomes less useful. That is why EET introduced days counter that can be used as a workaround here. For easier explanation let's take a look at how EET resolved this problem for Town Crier in Athkatla, who should tell something new each 3 passing days.
 
 <p>Town Crier local script (DS3483.BCS) has been expanded with the below code that assigns K#TOWNC01_day variable to use K#DaysPassed value (in EET this variable counts passed in-game days). From now after each day the value of K#TOWNC01_cnt will be increased by 1. You don't need to be near NPC to make it work - the K#TOWNC01_cnt variable will be updated correctly as soon as you return to area with this NPC.</p>
@@ -1026,7 +1026,7 @@ BUT_ONLY
 <p>There you go - a working workaround for CalanderDayLT. You can adjust the code to easily create workarounds for CalanderDay and CalanderDayGT too. In this example K#TOWNC01_cnt is a GLOBAL variable due to multiple instances of TOWNC01.CRE in different areas and we want them all to use the same days passed counter. You can change it to use LOCALS variable instead if the counter should be tracked only for 1 instance of NPC.</p>
 
 <a id="Adding new animations" name="Adding new animations"></a>
-<h5>Adding new animations</h5>
+<h3>Adding new animations</h3>
 <p>Unlike classic games Infinity Engine distributed with Enhanced Edition games doesn't have hardcoded limit for animations, so assigning new animations to existing vanilla slots is considered a bad practice now. There are 2 ways to implement new animations to the game:</p>
 <ul>
 <li><strong>INI files</strong> - engine feature introduced in IWD:EE and BG2:EE (patch 1.3). INI files, named afer the offset used for particular animation, contains code that was previously hardcoded within EXE file. Unfortunately they are not documented on <a href="http://gemrb.org/iesdp/main.htm">IESDP</a> yet, but many options available are pretty self-explanatory. EET distributes INI files from IWD:EE that cover all vanilla BG:EE and BG2:EE animations (you can get INI files for animations added by IWD:EE if you install separate mod called IWD-in-EET). Please refer to them for example usage. Probably the most interesting thing about them is optional "new_palette=" entry under [general] section that allows us to assign external palette BMP files that will be used with animation, which means there is no point in distributing animation with mod if it's just a re-palleted version of existing one - INI file with new offset and palette reference will do the job.</li>
@@ -1052,7 +1052,7 @@ BUT_ONLY
 </div>
 
 <a id="Adding support for EET Worldmap" name="Adding support for EET Worldmap"></a>
-<h5>Adding support for EET Worldmap</h5>
+<h3>Adding support for EET Worldmap</h3>
 <p>EET Worldmap consists of BG1, BG2, ToB maps merged together (after SoD release it will be expanded to also cover land added by this expansion). Thanks to such implementation it's easy to add new areas to it, sharing the same code as BG1/Tutu worldmap (BG:EE one uses a little different coordinates for icons), BG2/BG2:EE and ToB worldmaps. For EET you can use the same coordinates as in vanilla maps but with added X and Y correction that represents where the old map starts compared to the upper-left corner of the EET map. Preferable way of doing so is using <a href="../other/cpmvars">cpmvars variable libraries</a> (this way updating X/Y coordinate correction after EET Worldmap is expanded will be a matter of replacing an external file). BG1 and ToB icons have been appended to MAPICONS.BAM file, so you also need to take it into account. EET uses the same icon numbers as BP-BGT Worldmap.
 
 <p>Here is an example code that is compatible with different platforms at the same time:</p>
