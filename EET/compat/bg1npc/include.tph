@@ -2,6 +2,9 @@
 
 ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
 	EXTEND_TOP ~REDDEATH.BCS~ ~EET/compat/bg1npc/baf/X#BRDWI.BAF~ EVALUATE_BUFFER //Interjection scripting changes, BG1 NPCs
+	
+	//delete files existing in BG2:EE
+	DELETE + ~%patch_dir%/dlg/PLAYER1.dlg~
 END
 
 //Compatibility with BG1NPC Banters, Quests, and Interjections
@@ -16,6 +19,30 @@ ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.
 	COPY_EXISTING ~BEARBR.CRE~ ~override~
 		WRITE_ASCII 0x280 ~bearbr~ #32 //death variable
 	BUT_ONLY
+	
+	//delete files existing in BG2:EE
+	DELETE + ~%patch_dir%/itm/dagg11.itm~
+			 ~EET/temp/wav/imppp04.wav~
+			 ~EET/temp/wav/itemharp.wav~
+			 ~%patch_dir%/itm/misc3m.itm~
+			 ~%patch_dir%/itm/misc3n.itm~
+			 ~%patch_dir%/itm/misc3o.itm~
+			 ~%patch_dir%/itm/sahbolt.itm~
+			 ~%patch_dir%/itm/scrl8i.itm~
+			 ~%patch_dir%/itm/scrl9h.itm~
+			 ~%patch_dir%/itm/seeinvis.itm~
+			 ~%patch_dir%/itm/vamp.itm~
+			 ~%patch_dir%/itm/vamp1.itm~
+			 ~%patch_dir%/itm/vamp2.itm~
+			 ~%patch_dir%/itm/vamp3.itm~
+			 ~%patch_dir%/itm/vampreg2.itm~
+END
+
+//Compatibility with BG1NPC "The BG1 NPC Project: Add Non-Joinable NPC portraits to quests and dialogues" component
+
+ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #8 ~) BEGIN
+	//delete files existing in BG2:EE
+	DELETE + ~%biff_dir%/sarevoks.bmp~
 END
 
 //Compatibility with BG1NPC "Dynaheir's Romance Core (teen content)" component
@@ -78,34 +105,22 @@ END
 		END
 		REPLACE_BCS_BLOCK ~.../EET/compat/bg1npc/baf/ar0125-rbOld.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching .../EET/compat/bg1npc/baf/ar0125-rbOld.baf in %SOURCE_FILE%.~ END
 	BUT_ONLY
+	
+	//delete files existing in BG2:EE
+	DELETE + ~%patch_dir%/itm/brac25.itm~
+			 ~EET/temp/wav/IRENIC01.wav~
+			 ~EET/temp/wav/IRENIC03.wav~
+			 ~EET/temp/wav/IRENIC04.wav~
+			 ~EET/temp/wav/IRENIC05.wav~
+			 ~EET/temp/wav/IRENIC06.wav~
+			 ~%patch_dir%/itm/minhp20.itm~
 END
 
-//delete files existing in BG2:EE
-DELETE + ~%patch_dir%/itm/brac25.itm~
-	~%patch_dir%/itm/dagg11.itm~
-	~%patch_dir%/itm/dragred1.itm~
-	~%patch_dir%/itm/dragring.itm~
-	~%patch_dir%/itm/dragsil1.itm~
-	~EET/temp/wav/imppp04.wav~
-	~EET/temp/wav/IRENIC01.wav~
-	~EET/temp/wav/IRENIC03.wav~
-	~EET/temp/wav/IRENIC04.wav~
-	~EET/temp/wav/IRENIC05.wav~
-	~EET/temp/wav/IRENIC06.wav~
-	~EET/temp/wav/itemharp.wav~
-	~%patch_dir%/itm/minhp20.itm~
-	~%patch_dir%/itm/misc3m.itm~
-	~%patch_dir%/itm/misc3n.itm~
-	~%patch_dir%/itm/misc3o.itm~
-	~%patch_dir%/dlg/PLAYER1.dlg~
-	~%patch_dir%/itm/plot05d.itm~
-	~%patch_dir%/itm/sahbolt.itm~
-	~%biff_dir%/sarevoks.bmp~
-	~%patch_dir%/itm/scrl8i.itm~
-	~%patch_dir%/itm/scrl9h.itm~
-	~%patch_dir%/itm/seeinvis.itm~
-	~%patch_dir%/itm/vamp.itm~
-	~%patch_dir%/itm/vamp1.itm~
-	~%patch_dir%/itm/vamp2.itm~
-	~%patch_dir%/itm/vamp3.itm~
-	~%patch_dir%/itm/vampreg2.itm~
+//Compatibility with BG1NPC "The BG1 NPC Project: Female Romance Challenges, Ajantis vs Xan vs Coran" component
+ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #15 ~) BEGIN
+	//delete files existing in BG2:EE
+	DELETE + ~%patch_dir%/itm/dragred1.itm~
+			 ~%patch_dir%/itm/dragring.itm~
+			 ~%patch_dir%/itm/dragsil1.itm~
+			 ~%patch_dir%/itm/plot05d.itm~
+END
