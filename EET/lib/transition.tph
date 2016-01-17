@@ -33,6 +33,13 @@ COPY_EXISTING ~K#TELBGT.BCS~ ~override~
 
 <<<<<<<< .../DIALOG_FILE-et.baf
 IF
+	OnCreation()
+	THEN
+		RESPONSE #100
+		SetGlobal("K#PDIALOG","LOCALS",0)
+END
+
+IF
   Global("K#PDIALOG","LOCALS",0)
   InPartyAllowDead(Myself)
 THEN
