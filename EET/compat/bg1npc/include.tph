@@ -1,6 +1,6 @@
 //Compatibility with BG1NPC Required Modifications
 
-ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
 	EXTEND_TOP ~REDDEATH.BCS~ ~EET/compat/bg1npc/baf/X#BRDWI.BAF~ EVALUATE_BUFFER //Interjection scripting changes, BG1 NPCs
 	
 	//delete files existing in BG2:EE
@@ -9,7 +9,7 @@ END
 
 //Compatibility with BG1NPC Banters, Quests, and Interjections
 
-ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #1 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #1 ~) BEGIN
 	EXTEND_TOP ~NIEMAIN.BCS~ ~EET/compat/bg1npc/baf/X#NIEMAIN.BAF~ EVALUATE_BUFFER
 
 	COPY_EXISTING ~BEARBL.CRE~ ~override~
@@ -40,7 +40,7 @@ END
 
 //Compatibility with BG1NPC "The BG1 NPC Project: Add Non-Joinable NPC portraits to quests and dialogues" component
 
-ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #8 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #8 ~) BEGIN
 	//delete files existing in BG2:EE
 	DELETE + ~%biff_dir%/sarevoks.bmp~
 END
@@ -48,7 +48,7 @@ END
 //Compatibility with BG1NPC "Dynaheir's Romance Core (teen content)" component
 
 //Disable Dynaheir's End Cutscene (EET implements different transition, so just like in BGT case this cutscene should be disabled)
-ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #12 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #12 ~) BEGIN
 <<<<<<<< .../EET/compat/bg1npc/baf/ar0125-rbOld.baf
 IF
   InParty("dynaheir")
@@ -105,7 +105,22 @@ END
 		END
 		REPLACE_BCS_BLOCK ~.../EET/compat/bg1npc/baf/ar0125-rbOld.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching .../EET/compat/bg1npc/baf/ar0125-rbOld.baf in %SOURCE_FILE%.~ END
 	BUT_ONLY
-	
+<<<<<<<< .../EET/compat/bg1npc/baf/ar2700-rbOld.baf
+IF
+  OR(2)
+    Global("X#DynaDeath","GLOBAL",6)
+    Global("endofbg1","GLOBAL",2)
+THEN
+  RESPONSE #100
+    SetGlobal("endofbg1","GLOBAL",3)
+    StartMovie("ENDCRDIT")
+    EndCredits()
+END
+>>>>>>>>
+	COPY + ~%patch_dir%/bcs/BG2700.bcs~ ~%patch_dir%/bcs~
+		REPLACE_BCS_BLOCK ~.../EET/compat/bg1npc/baf/ar2700-rbOld.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~Warning REPLACE_BCS_BLOCK: could not find block matching .../EET/compat/bg1npc/baf/ar2700-rbOld.baf in %SOURCE_FILE%.~ END
+	BUT_ONLY
+
 	//delete files existing in BG2:EE
 	DELETE + ~%patch_dir%/itm/brac25.itm~
 			 ~EET/temp/wav/IRENIC01.wav~
@@ -117,7 +132,7 @@ END
 END
 
 //Compatibility with BG1NPC "The BG1 NPC Project: Female Romance Challenges, Ajantis vs Xan vs Coran" component
-ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #15 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #15 ~) BEGIN
 	//delete files existing in BG2:EE
 	DELETE + ~%patch_dir%/itm/dragred1.itm~
 			 ~%patch_dir%/itm/dragring.itm~

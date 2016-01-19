@@ -1,7 +1,7 @@
 BACKUP ~EET/backup~
 AUTHOR ~K4thos (swit)~
 VERSION ~beta 0.9~
-README ~EET/lang/%LANGUAGE%/readme.html~ ~EET/readme-EET.html~
+README ~EET/lang/%LANGUAGE%/readme-EET.html~ ~EET/readme-EET.html~
 
 LANGUAGE ~English~
 	~en_US~
@@ -251,18 +251,18 @@ COPY ~.../bgee_dir.txt~ ~EET/bgee_dir.txt~ EVALUATE_BUFFER
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	COPY ~%bgee_dir%/WeiDU.log~ ~override~ //store the file in override, so other mods could check if components have been installed on BG:EE
-		REPLACE_TEXTUALLY ~^//.*~ ~~//removes "Recently uninstalled" lines
-	ACTION_IF (FILE_CONTAINS ~override/WeiDU.log~ "^~SOA/SETUP-SOA\.TP2~ #[0-9]+ #1 ") BEGIN
+	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGEE.log~
+		REPLACE_TEXTUALLY ~^//.*~ ~~ //removes "Recently uninstalled" lines
+	ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~SOA/SETUP-SOA\.TP2~ #[0-9]+ #1 ") BEGIN
 		FAIL ~You've installed wrong The Stone of Askavar component. EET is compatible with Default version (option 1 during installation).~
 	END
-	ACTION_IF (FILE_CONTAINS ~override/WeiDU.log~ "^~DRIZZTSAGA/DRIZZTSAGA\.TP2~ #[0-9]+ #1 ") BEGIN
+	ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~DRIZZTSAGA/DRIZZTSAGA\.TP2~ #[0-9]+ #1 ") BEGIN
 		FAIL ~You've installed wrong Drizzt Saga component. EET is compatible with Default version (option 1 during installation).~
 	END
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~
 		REPLACE_TEXTUALLY ~^.~ ~~
-		REPLACE_TEXTUALLY ~^.*/\(.*.TP2\)~ ~\1~
+		REPLACE_TEXTUALLY ~^.*[/\\]\(.*.TP2\)~ ~\1~
 		REPLACE_TEXTUALLY ~\.TP2.~ ~~
 		REPLACE_TEXTUALLY ~SETUP-~ ~~
 		COUNT_2DA_ROWS 3 "cntrow"
@@ -3028,9 +3028,17 @@ COPY + ~EET/temp/map_bg2_areas.tbl~ ~EET/temp~
 COPY + ~EET/temp/map_tob_areas.tbl~ ~EET/temp~
 	REPLACE_TEXTUALLY ~\(AR3000[ ]+\)7 ~ ~\13 ~
 	REPLACE_TEXTUALLY ~\(AR4000[ ]+\)7 ~ ~\13 ~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AR3000[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
+		SET MATCH2 = MATCH2 - 182
+		SET MATCH4 = MATCH4 - 157
+	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AR4000[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
-		SET MATCH2 = MATCH2 + 80
-		SET MATCH4 = MATCH4 + 20
+		SET MATCH2 = MATCH2 - 420
+		SET MATCH4 = MATCH4 - 60
+	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\(OH6400[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
+		SET MATCH2 = MATCH2 + 15
+		SET MATCH4 = MATCH4 - 33
 	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
 
 COPY + ~EET/temp/map_tob_trans.tra~ ~EET/temp~

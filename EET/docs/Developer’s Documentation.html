@@ -377,19 +377,19 @@ END
 
 <ul>
 <li><strong>dummy files</strong> are often used by mods to make them detectable by other mods. They are copied to EET override directory during installation, so can be normally detected via FILE_EXISTS_IN_GAME WeiDU command.</li>
-<li><strong>WeiDU.log file</strong> from BG:EE is copied to EET override directory which allows modders to use workarounds for existing WeiDU functions. Here are few examples using BG1 NPC Project component 0, any language:</li>
+<li><strong>WeiDU.log file</strong> from BG:EE is copied to main directory as "WeiDU-BGEE.log", which allows modders to use workarounds for existing WeiDU functions. Here are few examples using BG1 NPC Project component 0, any language:</li>
 </ul>
 
 <div class="code">
 <pre>
 //works the same as REQUIRE_COMPONENT
-REQUIRE_PREDICATE ((FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
+REQUIRE_PREDICATE ((FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
 
 //works the same as FORBID_COMPONENT
-REQUIRE_PREDICATE ((!FILE_EXISTS ~override/WeiDU.log~) OR (!FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
+REQUIRE_PREDICATE ((!FILE_EXISTS ~WeiDU-BGEE.log~) OR (!FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
 
 //works the same as MOD_IS_INSTALLED
-ACTION_IF (FILE_EXISTS ~override/WeiDU.log~) AND (FILE_CONTAINS ~override/WeiDU.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
     //do something if component has been detected
 END ELSE BEGIN
     //do something if component has NOT been detected
@@ -914,6 +914,14 @@ JAHEIRA  *                *                JAHEIRAD          JAHEI25P           
 </ul>
 <div class="code">
 <pre>
+//reset on game reload
+IF
+  OnCreation()
+THEN
+  RESPONSE #100
+    SetGlobal("K#PDIALOG","LOCALS",0)
+END
+
 //assigns JOIN dialogue file
 IF
   Global("K#PDIALOG","LOCALS",0)

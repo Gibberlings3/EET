@@ -14,9 +14,9 @@
     <strong>Author</strong>: <a href="http://gibberlings3.net/forums/index.php?showuser=6804">K4thos</a><br>
 	<strong>Contributors</strong>: <a href="http://gibberlings3.net/forums/index.php?showuser=2909">WhiteAgnus</a>, <a href="http://gibberlings3.net/forums/index.php?showuser=7356">CrevsDaak</a></p>
   <p><strong>On the web: </strong><a href="http://www.gibberlings3.net/eet/"><strong>Home page</strong></a> and <a href="http://gibberlings3.net/forums/index.php?showforum=195"><strong>discussion forum</strong></a></p>
-  <p><strong>Version beta 0.9</strong><br />
-    <strong>Languages: </strong>English, Polish, German <br />
-    <strong>Platforms: </strong>Windows, Mac OS X </p>
+  <p><strong>Version beta 0.9 (static numer until the mod is released)</strong><br />
+    <strong>Languages: </strong>English, Polish, German<br />
+    <strong>Platforms: </strong>Windows, Mac OS X</p>
 </div>
 
 <!-- ================== T a b l e ================== --><a id="table" name="Table of Contents"></a>
@@ -82,7 +82,7 @@
 
 <p>The BG2:EE installation (patch v1.3 is required) should be a "clean" installation. Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
 
-<p>The BG:EE installation (patch v1.3.2053 is required) should be either "clean" installation or with any combination of mods listed in the <a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">F.A.Q</a> section.</p>
+<p>The BG:EE installation (patch v1.3.2053 is required) should be either "clean" installation or with any combination of mods listed in <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">this forum topic</a> (fist part of the post only).</p>
 
 <p>Siege of Dragonspear expansion installed on BG:EE will be required after patch v1.4 for BG2:EE is released (currently EET is installable without it).</p>
 
@@ -216,15 +216,15 @@
 
 <a id="How to add EET compatibility for other mods?" name="How to add EET compatibility for other mods?"></a>
 <h3>How to add EET compatibility for other mods?</h3>
-<p>Adopting existing mods to conventions and technical features used by EET is relatively easy and intuitive thanks to modder's resources and tools included in EET package that can be used to drastically reduce time needed for such conversion. Please refer to the <a href="Developer's Documentation.html">EET developer's documentation</a> for more information.</p>
+<p>Adopting existing mods to conventions and technical features used by EET is relatively easy and intuitive thanks to modder's resources and tools included in EET package that can be used to drastically reduce time needed for such conversion. Brief explanation of the scope of needed changes is available in <a href="">this forum topic</a>, where we also provide support for modders converting their mods to support EET. Please refer to the <a href="docs/Developer's Documentation.html">EET developer's documentation</a> for detailed information regarding this task.</p>
 
 <a id="What about compatibility with saves?" name="What about compatibility with saves?"></a>
 <h3>What about compatibility with saves?</h3>
-<p>Old save games from original BG:EE and BG2:EE are not directly supported - you need to start a new game. You can import a character or use "save import" feature though. As for the save compatibility with different installations of EET, before removing current installation you should consider coping old <strong>dialog.tlk</strong> (also dialogF.tlk in some languages) to appropriate <em>lang</em> subdirectory in your new installation folder. Usually this step is enough to make your saves fully functional, even if you change installation order or use slightly different mod selection.</p>
+<p>Old save games from original BG:EE and BG2:EE are not directly supported - you need to start a new game. You can import a character or use "save import" feature though. As for the save compatibility with different installations of EET, before removing current installation you should consider coping old <strong>dialog.tlk</strong> (also dialogF.tlk in some languages) to appropriate <em>lang</em> subdirectory in your new installation folder. Usually this step is enough to make your saves fully functional, even if you change installation order.</p>
 
 <a id="How does NPC continuity work in EET?" name="How does NPC continuity work in EET?"></a>
 <h3>How does NPC continuity work in EET?</h3>
-<p>Character migration to BG2 currently starts right after killing Sarevok, but in future transition will start after finishing SoD expansion. Some characters are not continuous (those without BG2 content) and are destroyed immediately, whereas others appear in Shadows of Amn and so continuity is required. Continuity only occurs when a joinable NPC was in your party at any point during BG1 (even if you didn't had that character in your end-game party he/she is still valid for transition) and is not dead. After character is moved to appropriate area some adjustments are being made if applicable (attribute changes, alignment, portrait, soundset, item, XP, dialogue and script updates). Otherwise, the appropriate level of the Shadows of Amn-resident joinable NPC is created or character doesn't show up at all if NPC has been killed during BG1 (except Imoen and Edwin due to plot requirements).</p>
+<p>Character migration to BG2 currently starts right after killing Sarevok, but in future transition will start after finishing SoD expansion. Some characters are not continuous (those without BG2 content) and are disabled immediately, whereas others appear in Shadows of Amn and so continuity is required. Continuity only occurs when a joinable NPC was in your party at any point during BG1 (even if you didn't had that character in your end-game party he/she is still valid for transition) and is not dead. After character is moved to appropriate area some adjustments are being made if applicable (attribute changes, alignment, portrait, soundset, item, XP, dialogue and script updates). Otherwise, the appropriate level of the Shadows of Amn-resident joinable NPC is created or character doesn't show up at all if NPC has been killed during BG1 (except Imoen and Edwin due to plot requirements).</p>
 
 <p>Like in vanilla game at the end of BG2 your party migrates to ToB. What has been changed is Fate Spirit old party member summoning mechanics. It no longer spawns new versions of creatures but moves characters from BG2 areas to Pocket Plane. Fate Spirit summoning NPC list is created dynamically depending on who you met during your BG1 and BG2 travels. For continuity sake NPCs that you don't know won't even show up on the list. During Fate Spirit dialogue you can receive one of 3 responses to your request:</p>
 <ul>
@@ -239,7 +239,7 @@
 
 <a id="Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!" name="Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!"></a>
 <h3>Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!</h3>
-<p>Once the patch 1.4 for BG2:EE hits, EET will by default remove the current delay for visiting old areas (due to technical matters it is currently delayed to chapter 7+). Free access to old areas indeed can unbalance early BG2 game, as it will be easier to get good items that the party could store somewhere during BG1 portion of the game, which creates another way to exploit the game for players that cannot refrain themselves from taking advantage of it. For this reason, once the functionality is fully implemented you will be able to install new <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> component that can block access to them entirely or delay it for the chapter of your choice. The reason why such tweak is an opt-out option (you need to install separate component to get rid of it) instead of opt-in option (the other way around) is mostly related to the above mentioned second goal of the EET. Optional open travelling by default would drastically reduce amount of people playing with it (that's always the case for optional stuff) which is an equivalent of smaller player base for mods that aims to add new content to BG1 areas in early/mid BG2 portion of the game. So the end result would be smaller chance that anyone would be even interested in creating such content. Personally we would love to see stuff like for example an option to ask Grand Dukes of the Baldur's Gate city for help with gaining money to fee Imoen and other stuff that makes sense lore wise. If someone will take advantage of these new possibilities remains to be seen. Leaving the base game without such limitations will hopefully positively contribute to achieve this goal.</p>
+<p>Once the patch 1.4 for BG2:EE hits, EET will by default remove the current delay for visiting old areas (due to technical matters it is currently delayed to chapter 7+). Free access to old areas indeed can unbalance early BG2 game, as it will be easier to get good items that the party could store somewhere during BG1 portion of the game, which creates another way to exploit the game for players that cannot refrain themselves from taking advantage of it. For this reason, once the functionality is fully implemented you will be able to install new <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> component that can block access to them entirely or delay it for the chapter of your choice. The reason why such tweak is an opt-out option (you need to install separate component to get rid of it) instead of opt-in option is mostly related to the above mentioned second goal of the EET. Optional open travelling by default would drastically reduce amount of people playing with it (that's always the case for optional stuff) which is an equivalent of smaller player base for mods that aims to add new content to BG1 areas in BG2 portion of the game. So the end result would be smaller chance that anyone would be even interested in creating such content. Personally we would love to see stuff like for example an option to ask Grand Dukes of the Baldur's Gate city for help with gaining money to fee Imoen and other stuff that makes sense lore wise. If someone will take advantage of these new possibilities remains to be seen. Leaving the base game without such limitations will hopefully positively contribute to achieve this goal.</p>
 
 <a id="Can I play EET in cooperative multiplayer?" name="Can I play EET in cooperative multiplayer?"></a>
 <h3>Can I play EET in cooperative multiplayer?</h3>
@@ -262,7 +262,7 @@
 
 <p><strong>I have Baldur's Gate: Enhanced Edition installed, but the installation does not accept the directory that I type in.</strong></p>
 
-<p>The most likely scenario is that your installation is broken. Try reinstalling Baldur's Gate: Enhanced Edition. Also you can try parsing the BG:EE directory using command line as described in the installation section.</p>
+<p>The most likely scenario is that your installation is broken. Try reinstalling Baldur's Gate: Enhanced Edition. Also you can try parsing the BG:EE directory using command line as described in the <a href="#installation">installation section</a>.</p>
 
 <p><strong>WeiDU stopped the installation because of error.</strong></p>
 
@@ -279,7 +279,7 @@
 
 <p><strong>The mod finished installing successfully, but the message is "Installed with Warnings".</strong></p>
 
-<p>There are several additional precautions added into EET installation code to inform the player if something went wrong. Open up SETUP-EET.DEBUG located in your Baldur's Gate II: Enhanced Edition installation directory and search (ctrl+F) for the word "warning". If you can't figure out how to fix the problem post this debug file in the <a href="http://gibberlings3.net/forums/index.php?showforum=195">mod forum</a>. Playing with installation that showed warning is not recommended.</p>
+<p>There are several additional precautions added into EET installation code to inform the player if something went wrong. Open up SETUP-EET.DEBUG located in your Baldur's Gate II: Enhanced Edition installation directory and search (ctrl+F) for the word "warning". If you can't figure out how to fix the problem post this debug file in the <a href="http://gibberlings3.net/forums/index.php?showforum=195">mod forum</a>. Playing with installation that showed warnings is not recommended.</p>
 
 <h3>In-game problems</h3>
 
@@ -306,18 +306,18 @@
 	<li>Many thanks to Beamdog for creating Enhanced Editions of Infinity Engine games</li>
 	<li>Many thanks to Bioware and Black Isle Studios for creating Baldur's Gate series</li>
 	<li>Many thanks to Children of Bhaal forum for hosting and support</li>
-	<li>Many thanks to Crevs Daak for GitHub contribution to the project</li>
+	<li>Many thanks to Crevs Daak for GitHub contributions to the project</li>
 	<li>Many thanks to Fouinto for beta testing</li>
-	<li>Many thanks to The Gibberlings 3 Modding Community for hosting</li>
-	<li>Many thanks to Kirara for enhancing worldmap art</li>
-	<li>Many thanks to Mike1072 for tooltip.2da patching code</li>
+	<li>Many thanks to Gibberlings 3 Modding Community for hosting</li>
+	<li>Many thanks to Kirara for worldmap art</li>
+	<li>Many thanks to Mike1072 for tooltip.2da patching code and support</li>
 	<li>Many thanks to Miloch for Sword Coast Map Labels</li>
 	<li>Many thanks to Pecca (Renegade) for permission to use his GUI resources</li>
 	<li>Many thanks to Roxanne for beta testing</li>
 	<li>Many thanks to Sai for beta testing</li>
 	<li>Many thanks to Sam. for converting English BG1 movies to HD</li>
 	<li>Many thanks to Weimer for creating the WeiDU utility</li>
-	<li>Many thanks to WhiteAgnus for GitHub contribution to the project and German translation</li>
+	<li>Many thanks to WhiteAgnus for GitHub contributions to the project and German translation</li>
 	<li>Many thanks to Wisp for the Enhanced Edition WeiDU development and the involvement in adding BP-BGT Worldmap support for BG2:EE</li>
 	<li>Many thanks to Yacomo, King Diamond, Erebusant, Weigo for BP-BGT Worldmap macros and icons</li>
 	<li>Many thanks to you and all the other players who have contributed to the completeness of this modification</li>
@@ -337,7 +337,7 @@
 
 <p>1998 BioWare Corp. All Rights Reserved. BioWare, the BioWare Infinity Engine and the BioWare logo are trademarks of Bioware Corp. Black Isle Studios and the Black Isle Studios logo are trademarks of Interplay Entertainment Corp.</p>
 
-<p>2012 - 2014 Beamdog. All Rights Reserved.</p>
+<p>2012 - 2016 Beamdog. All Rights Reserved.</p>
 
 <p><strong>USE THIS MODIFICATION AT YOUR OWN RISK. This modification is not developed, supported, or endorsed by BioWare Corp., Hasbro, Beamdog.</strong></p>
 
@@ -358,9 +358,9 @@
 <h2>Version History</h2>
 <div class="section">
 
-<p><a href="#" onclick="toggle('1.0'); return false;">Expand/Collapse All</a></p>
+<p><a href="#" onclick="toggle('1.0'); return false;">Expand/Collapse older history</a></p>
 
-<h3><a href="#" onclick="toggle('1.0'); return false;">Version 1.0 (no date yet)</a></h3>
+<h3><a href="#" onclick="toggle('1.0'); return false;">Version 1.0 (no date yet, still beta status)</a></h3>
 
 <ul class="hidelist" id="1.0">
 	<li>First public release</li>

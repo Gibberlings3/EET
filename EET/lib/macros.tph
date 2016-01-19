@@ -2080,6 +2080,7 @@ CO") BEGIN
 
 				PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 				OR ("%fx_type%" = 169) //Prevent Special Effect Icon
+				OR ("%fx_type%" = 240) //Remove Special Effect Icon
 				BEGIN
 					SET off = ("%fx_off%"+0x108*cnt+0x18) LPM EET_PCU_off_state
 				END
@@ -2309,6 +2310,7 @@ CO") BEGIN
 
 		PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 		OR ("%fx_type%" = 169) //Prevent Special Effect Icon
+		OR ("%fx_type%" = 240) //Remove Special Effect Icon
 		BEGIN
 			SET off = 0x20 LPM EET_PCU_off_state
 		END
@@ -2489,13 +2491,16 @@ CO") BEGIN
 			SET offset = ("%fx_off%"+0x30*cnt+0x14)
 
 			PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
-			OR ("%fx_type%" = 169) BEGIN //Prevent Special Effect Icon
+			OR ("%fx_type%" = 169) //Prevent Special Effect Icon
+			OR ("%fx_type%" = 240) //Remove Special Effect Icon
+			BEGIN
 				SET off = ("%fx_off%"+0x30*cnt+0x8) LPM EET_PCU_off_state
 			END
 
 			PATCH_IF ("%fx_type%" = 214) //Select Spell
 			OR ("%fx_type%" = 127) //Monster Summoning
-			OR ("%fx_type%" = 331) BEGIN //Random Monster Summoning
+			OR ("%fx_type%" = 331) //Random Monster Summoning
+			BEGIN
 				SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 			END
 
@@ -2711,13 +2716,16 @@ CO") BEGIN
 			SET offset = ("%fx_off%"+0x30*cnt+0x14)
 
 			PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
-			OR ("%fx_type%" = 169) BEGIN //Prevent Special Effect Icon
+			OR ("%fx_type%" = 169) //Prevent Special Effect Icon
+			OR ("%fx_type%" = 240) //Remove Special Effect Icon
+			BEGIN
 				SET off = ("%fx_off%"+0x30*cnt+0x8) LPM EET_PCU_off_state
 			END
 
 			PATCH_IF ("%fx_type%" = 214) //Select Spell
 			OR ("%fx_type%" = 127) //Monster Summoning
-			OR ("%fx_type%" = 331) BEGIN //Random Monster Summoning
+			OR ("%fx_type%" = 331) //Random Monster Summoning
+			BEGIN
 				SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 			END
 
