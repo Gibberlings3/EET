@@ -488,3 +488,13 @@ ALTER_TRANS VICONJ BEGIN 14 END BEGIN 0 END BEGIN ~EPILOGUE~ ~EXTERN RSDMNK06 m2
 >>>>>>>>
 
 COMPILE ~.../dlgfix.d~
+
+//Fixed not running blocks in BG5400.bcs
+//http://gibberlings3.net/forums/index.php?showtopic=27774&page=2#entry241327
+COPY_EXISTING ~BG5400.bcs~ ~override~
+DECOMPILE_AND_PATCH BEGIN
+REPLACE_TEXTUALLY ~TriggerActivation("Door5401",FALSE)~ ~TriggerActivation("Door5401",FALSE)
+Continue()~
+REPLACE_TEXTUALLY ~TriggerActivation("Door5401",TRUE)~ ~TriggerActivation("Door5401",TRUE)
+Continue()~
+END
