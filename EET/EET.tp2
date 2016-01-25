@@ -3324,3 +3324,83 @@ PRINT ~'EET.flag' file is used by weidu to recognize the installation as EET~
 END ELSE BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[en_US]readme.html~
 END*/
+
+BEGIN ~Day/Nitemovies patch (Baldur.exe patch, be careful)~
+REQUIRE_PREDICATE GAME_IS ~eet~ ~You need to install the main component~
+
+<<<<<<<< .../DAYNITE_NITEDAY-eb.baf
+IF
+  Time(DUSK_END)
+  !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("DAYNITE")
+    SetGlobalTimer("K#TimerSunset","GLOBAL",ONE_HOUR)
+END
+
+IF
+  Time(DAWN_END)
+  !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("NITEDAY")
+    SetGlobalTimer("K#TimerSunrise","GLOBAL",ONE_HOUR)
+END
+>>>>>>>>
+
+COPY_EXISTING_REGEXP GLOB ~AR.*\.are~ ~override~
+	READ_BYTE 0x48 flags
+	PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
+		INNER_ACTION BEGIN
+			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~
+			PRINT ~DAYNITE/NITEDAY movies added to %SOURCE_RES%.BCS~
+		END
+	END
+BUT_ONLY
+COPY_EXISTING_REGEXP GLOB ~OH.*\.are~ ~override~
+	READ_BYTE 0x48 flags
+	PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
+		INNER_ACTION BEGIN
+			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~
+			PRINT ~DAYNITE/NITEDAY movies added to %SOURCE_RES%.BCS~
+		END
+	END
+BUT_ONLY
+
+<<<<<<<< .../BGSUNRIS_BGSUNSET-eb.baf
+IF
+  Time(DUSK_END)
+  !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("BGSUNSET")
+    SetGlobalTimer("K#TimerSunset","GLOBAL",ONE_HOUR)
+END
+
+IF
+  Time(DAWN_END)
+  !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
+THEN
+  RESPONSE #100
+    StartMovie("BGSUNRIS")
+    SetGlobalTimer("K#TimerSunrise","GLOBAL",ONE_HOUR)
+END
+>>>>>>>>
+
+COPY_EXISTING_REGEXP GLOB ~BG.*\.are~ ~override~
+	READ_BYTE 0x48 flags
+	PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
+		INNER_ACTION BEGIN
+			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../BGSUNRIS_BGSUNSET-eb.baf~
+			PRINT ~BGSUNRIS/BGSUNSET movies added to %BASH_FOR_RES%.BCS~
+		END
+	END
+BUT_ONLY
+
+MOVE ~lang/%LANGUAGE%/movies/DAYNITE.wbm~ ~lang/%LANGUAGE%/movies/BGSUNSET.wbm~
+MOVE ~lang/%LANGUAGE%/movies/NITEDAY.wbm~ ~lang/%LANGUAGE%/movies/BGSUNRIS.wbm~
+
+COPY ~baldur.exe~ ~baldur.exe~
+REPLACE_TEXTUALLY ~NITEDAY~ ~~ (7)
+REPLACE_TEXTUALLY ~DAYNITE~ ~~ (7)
+BUT_ONLY
