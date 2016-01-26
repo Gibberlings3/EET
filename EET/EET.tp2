@@ -3022,24 +3022,41 @@ COPY + ~EET/temp/map_bgee_trans.tra~ ~EET/temp~
 	END ~%MATCH1%%MATCH2%~
 	APPEND_FILE ~EET/lang/%LANGUAGE%/map_mods_trans.tra~
 
+ACTION_DEFINE_ASSOCIATIVE_ARRAY wmp_soa_xy_array BEGIN //little fixes for misplaced Athkatla icons (useful also for vanilla BG2 worldmap)
+	1 , "-1" , "-4" => AR0800
+	2 , "3" , "5" => AR0400
+	3 , "0" , "4" => AR0700
+	4 , "3" , "-3" => AR0300
+	5 , "-1" , "1" => AR0020
+	6 , "-6" , "1" => AR0500
+	7 , "0" , "3" => AR1000
+	8 , "4" , "2" => AR0900
+END
+
 COPY + ~EET/temp/map_bg2_areas.tbl~ ~EET/temp~
 	REPLACE_TEXTUALLY ~\(AR0700[ ]+\)15 ~ ~\13  ~
+	PHP_EACH wmp_soa_xy_array AS xy => area BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(%area%[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
+			SET MATCH2 = MATCH2 + xy_1
+			SET MATCH4 = MATCH4 + xy_2
+		END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
+	END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY wmp_tob_xy_array BEGIN //move icons to lore friendly coordinates
+	1 , "-182" , "-157" => AR3000
+	2 , "-420" , "-60" => AR4000
+	3 , "15" , "-33" => OH6400
+END
 
 COPY + ~EET/temp/map_tob_areas.tbl~ ~EET/temp~
 	REPLACE_TEXTUALLY ~\(AR3000[ ]+\)7 ~ ~\13 ~
 	REPLACE_TEXTUALLY ~\(AR4000[ ]+\)7 ~ ~\13 ~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AR3000[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
-		SET MATCH2 = MATCH2 - 182
-		SET MATCH4 = MATCH4 - 157
-	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AR4000[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
-		SET MATCH2 = MATCH2 - 420
-		SET MATCH4 = MATCH4 - 60
-	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(OH6400[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
-		SET MATCH2 = MATCH2 + 15
-		SET MATCH4 = MATCH4 - 33
-	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
+	PHP_EACH wmp_tob_xy_array AS xy => area BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(%area%[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
+			SET MATCH2 = MATCH2 + xy_1
+			SET MATCH4 = MATCH4 + xy_2
+		END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
+	END
 
 COPY + ~EET/temp/map_tob_trans.tra~ ~EET/temp~
 	REPLACE_TEXTUALLY ~^@AR4000.*[%newline%]*~ ~~
@@ -3075,33 +3092,103 @@ COPY + ~EET/tbl/map_eet_areas.tbl~ ~EET/temp~
 	END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
 	APPEND_FILE ~EET/temp/map_bg2_areas.tbl~
 	APPEND_FILE ~EET/temp/map_tob_areas.tbl~
-	LPF fix_table END
-	LPM read_area_array_from_2da
 
 COPY + ~Worldmap/map_mods_links.tbl~ ~EET/temp/map_eet_links.tbl~
 	APPEND_FILE ~EET/temp/map_bg2_links.tbl~
 	APPEND_FILE ~EET/tbl/map_ar3000_links.tbl~ //for some reason BG2:EE doesn't have links to Watcher's Keep (XL3000.2DA only has links from it)
 	APPEND_FILE ~EET/temp/map_tob_links.tbl~
-    LPF fix_table END
-    LPM read_link_array_from_2da
 
 COPY + ~Worldmap/map_mods_trans.tra~ ~EET/temp/map_eet_trans.tra~
 	APPEND_FILE ~EET/temp/map_bg2_trans.tra~
 	APPEND_FILE ~EET/temp/map_tob_trans.tra~
-    LPF fix_table END
-    LPM read_trans_array_from_2da
 
-LAM merge_in_translations
+COPY ~EET/base/worldmap.wmp~ ~override~
 
-INCLUDE ~EET/lib/build_worldmap.tpa~
-
-COPY_EXISTING ~worldmap.wmp~ ~override~
-	READ_LONG 0xc wmap_off
-	WRITE_ASCII wmap_off ~WORLDMAP~ #8
-	WRITE_LONG wmap_off + 0x8 ~1550~
-	WRITE_LONG wmap_off + 0xc ~3490~
-	WRITE_ASCII wmap_off + 0x30 ~MAPICONS~ #8
-BUT_ONLY
+//awful code as a workaround for a bug: http://www.shsforums.net/topic/45358-nearinfinity/page-34#entry586098
+//I will write something better with arrays in future
+COPY - ~EET/temp/map_eet_areas.tbl~ ~.../EET/temp~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([0-9\-]+\)[ %TAB%]+\([0-9\-]+\)[ %TAB%]+\([A-Z0-9#_@]+\)[ %TAB%]+\([A-Z0-9#_@]+\)~ BEGIN
+		SPRINT are_areName ~%MATCH1%~
+		PATCH_FOR_EACH var IN MATCH8 MATCH9 BEGIN
+			SPRINT match EVAL ~%%var%%~
+			PATCH_IF ~%match%~ STRING_EQUAL_CASE ~N~ BEGIN
+				SPRINT EVAL ~%var%~ ~~
+			END ELSE BEGIN
+				INNER_ACTION BEGIN
+					COPY - ~EET/temp/map_eet_trans.tra~ ~.../EET/temp~
+						REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^\([ %TAB%]*%match%[ %TAB%]*=[ %TAB%]*[~"]\)\([^~^"]+\)\([~"]\)~~~~~ BEGIN
+							INNER_PATCH_SAVE string "%MATCH2%" BEGIN
+								REPLACE_TEXTUALLY "###" " "
+							END
+							SPRINT EVAL ~%var%~ ~%string%~
+						END ~~
+				END
+			END
+		END
+		SPRINT are_strName ~%MATCH8%~
+		SPRINT are_strDesc ~%MATCH9%~
+		SET are_visible = 0
+		SET are_visibleAdjacent = 0
+		SET are_reachable = 0
+		SET are_visited = 0
+		PATCH_IF (MATCH4 BAND BIT0) BEGIN
+			SET are_visible = 1
+		END
+		PATCH_IF (MATCH4 BAND BIT1) BEGIN
+			SET are_visibleAdjacent = 1
+		END
+		PATCH_IF (MATCH4 BAND BIT2) BEGIN
+			SET are_reachable = 1
+		END
+		PATCH_IF (MATCH4 BAND BIT3) BEGIN
+			SET are_visited = 1
+		END
+		INNER_ACTION BEGIN
+			LAF sc#addWmpAre
+				INT_VAR
+				mapIcon = MATCH5
+				xCoord  = MATCH6
+				yCoord  = MATCH7
+				visible = are_visible
+				visibleAdjacent = are_visibleAdjacent
+				reachable = are_reachable
+				visited = are_visited
+				STR_VAR
+				areName = EVAL "%are_areName%"
+				strName = EVAL "%are_strName%"
+				strDesc = EVAL "%are_strDesc%"
+			END
+		END
+	END ~~
+COPY - ~EET/temp/map_eet_links.tbl~ ~.../EET/temp~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([0-9]+\)~ BEGIN
+		PATCH_FOR_EACH var IN MATCH7 MATCH8 MATCH9 MATCH10 MATCH11 BEGIN
+			SPRINT match EVAL ~%%var%%~
+			PATCH_IF ~%match%~ STRING_EQUAL_CASE ~N~ BEGIN
+				SPRINT EVAL ~%var%~ ~~
+			END
+		END
+		INNER_ACTION BEGIN
+			COPY_EXISTING ~worldmap.wmp~ ~override~
+				LPF ADD_WORLDMAP_LINKS
+					INT_VAR
+					distance_scale = MATCH5
+					default_entry = MATCH6
+					encounter_probability = MATCH12
+					STR_VAR
+					from_area = EVAL ~%MATCH1%~
+					from_node = EVAL ~%MATCH2%~
+					to_area = EVAL ~%MATCH3%~
+					entry = EVAL ~%MATCH4%~
+					random_area1 = EVAL ~%MATCH7%~
+					random_area2 = EVAL ~%MATCH8%~
+					random_area3 = EVAL ~%MATCH9%~
+					random_area4 = EVAL ~%MATCH10%~
+					random_area5 = EVAL ~%MATCH11%~
+				END
+			BUT_ONLY
+		END
+	END ~~
 
 /////                                                  \\\\\
 ///// Iron Crisis (item shattering)                    \\\\\
