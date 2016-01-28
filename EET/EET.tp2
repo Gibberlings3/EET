@@ -3163,7 +3163,7 @@ COPY - ~EET/temp/map_eet_areas.tbl~ ~.../EET/temp~
 	END ~~
 COPY - ~EET/temp/map_eet_links.tbl~ ~.../EET/temp~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([0-9]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([A-Z0-9#_]+\)[ %TAB%]+\([0-9]+\)~ BEGIN
-		PATCH_FOR_EACH var IN MATCH6 MATCH7 MATCH8 MATCH9 MATCH10 MATCH11 BEGIN
+		PATCH_FOR_EACH var IN MATCH4 MATCH7 MATCH8 MATCH9 MATCH10 MATCH11 BEGIN
 			SPRINT match EVAL ~%%var%%~
 			PATCH_IF ~%match%~ STRING_EQUAL_CASE ~N~ BEGIN
 				SPRINT EVAL ~%var%~ ~~
