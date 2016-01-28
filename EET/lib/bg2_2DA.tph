@@ -799,6 +799,17 @@ COPY ~.../blank.txt~ ~EET/temp/HIDESPL.txt~
 APPEND_OUTER ~EET/temp/HIDESPL.txt~ ~%logHide%~
 
 /////                                                  \\\\\
+///// IMPORT1-3.2DA                                    \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~IMPORT01.2DA~ ~override~
+	~IMPORT02.2DA~ ~override~
+	~IMPORT03.2DA~ ~override~
+	SET_2DA_ENTRY 1 0 1 ~*~
+	PRETTY_PRINT_2DA
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// INTERDIA.2DA                                     \\\\\
 /////                                                  \\\\\
 
@@ -1290,11 +1301,6 @@ COPY + ~EET/temp/array/PDIALOG.2DA~ ~EET/temp/array~
 		END
 	END
 COPY_EXISTING ~PDIALOG.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	SET_2DA_ENTRY 1 0 1 "*"
-	PATCH_FOR_EACH dv IN DORN EDWIN IMOEN IMOEN2 JAHEIRA MINSC NEERA RASAAD VICONIA BEGIN
-		REPLACE_TEXTUALLY ~^%dv%[ %TAB%]+[A-Za-z0-9]+[ %TAB%]+[A-Za-z0-9]+~ ~%dv% * *~
-	END
 	PRETTY_PRINT_2DA
 BUT_ONLY
 

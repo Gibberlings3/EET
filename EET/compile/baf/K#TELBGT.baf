@@ -1,64 +1,3 @@
-//for some reason TakeItemListPartyNum takes item even if party don't have it, workaround below
-IF
-  Global("K#DoOnceItemList","LOCALS",0)
-  OR(5)
-    PartyHasItem("LEAT03") // Protector of the Second +2
-    PartyHasItem("CHAN03") // Mail of the Dead +2
-    PartyHasItem("PLAT02") // Plate Mail +1
-    PartyHasItem("LEAT06") // Armor of Missile Attraction +2
-    PartyHasItem("CHAN07") // Chain Mail +3
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("IMPORT01",1)
-    Continue()
-END
-
-IF
-  Global("K#DoOnceItemList","LOCALS",0)
-  OR(11)
-    PartyHasItem("SW1H24") // The Burning Earth +1
-    PartyHasItem("HAMM03") // Ashideena +2
-    PartyHasItem("AX1H07") // Bala's Axe, Wizard Slayer
-    PartyHasItem("HALB03") // Suryris's Blade +2
-    PartyHasItem("DAGG04") // The Grave Binder +2
-    PartyHasItem("STAF07") // Staff Spear +2
-    PartyHasItem("STAF06") // Staff Mace +2
-    PartyHasItem("SLNG05") // Arla's Dragonbane +3
-    PartyHasItem("SW1H06") // Varscona +2
-    PartyHasItem("BLUN11") // Mace
-    PartyHasItem("BLUN09") // Kiel's Morning Star
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("IMPORT02",1)
-    Continue()
-END
-
-IF
-  Global("K#DoOnceItemList","LOCALS",0)
-  OR(4)
-    PartyHasItem("HELM07") // Helm of Balduran
-    PartyHasItem("MISC72") // The Claw of Kazgaroth
-    PartyHasItem("MISC73") // The Horn of Kazgaroth
-    PartyHasItem("RING25") // Koveras's Ring of Protection
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("IMPORT03",1)
-    Continue()
-END
-
-IF
-  Global("K#DoOnceItemList","LOCALS",0)
-THEN
-  RESPONSE #100
-    SetGlobal("K#DoOnceItemList","LOCALS",1)
-    TakePartyItem("MISC47") // Golden Pantaloons
-    TakePartyItem("CHAN06") // Mithral Chain Mail +4
-    TakePartyItem("SW1H15") // Icingdeath +3
-    TakePartyItem("SW1H16") // Twinkle +3
-    //TakePartyGold(2147483647)
-    Continue()
-END
-
 IF
   Global("K#AdvanceTimeOneMonth","LOCALS",0)
   //GlobalLT("K#DaysPassed","GLOBAL",365)
@@ -71,12 +10,15 @@ THEN
     Continue()
 END
 
-//at this place code is expanded via EET_NPC_TRANSITION
-
 IF
   Global("K#FRAMEDELAY","LOCALS",0)
 THEN
   RESPONSE #100
+    TakeItemListPartyNum("IMPORT01",1)
+    TakeItemListPartyNum("IMPORT02",1)
+    TakeItemListPartyNum("IMPORT03",1)
+    TakeItemListPartyNum("K#IMPORT",99)
+    //TakePartyGold(2147483647)
     ActionOverride(Player1,DropInventory())
     ActionOverride(Player2,DropInventory())
     ActionOverride(Player3,DropInventory())
@@ -85,6 +27,8 @@ THEN
     ActionOverride(Player6,DropInventory())
     SetGlobal("K#FRAMEDELAY","LOCALS",1) //loop delay needed by !Name blocks
 END
+
+//at this place code is expanded via EET_NPC_TRANSITION function
 
 IF
   InPartyAllowDead(Player2)

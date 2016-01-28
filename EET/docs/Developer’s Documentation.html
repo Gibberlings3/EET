@@ -290,7 +290,7 @@ This document is divided into a number of sections to allow quick reference for 
 
 <a id="Item importation" name="Item importation"></a>
 <h3>Item importation</h3>
-<p>Transition script also takes care of item importation. In order to record items from the whole party and not only Player1, it need to be done before migrating to Irenicus Dungeon. Before pary is made to lose all inventory using the DropInventory() command, additional code is used to preserve items that should be imported. If the party has a particular item, an invisible creature will take it and return it back to player1 after all inventory is dropped. This way modders can easily add other importable items and implementation itself is fully compatible with code present in Irenicus Dungeon (AR0602.BCS).</p>
+<p>Transition script also takes care of item importation. In order to record items from the whole party and not only Player1, it needs to be done before migrating to Irenicus Dungeon. Before pary is made to lose all inventory using the DropInventory() command, additional code is used to preserve items that should be imported. If the party has a particular item, an invisible creature will take it and return it back to player1 after all inventory is dropped. This way modders can easily add other importable items and implementation itself is fully compatible with code present in Irenicus Dungeon (AR0602.BCS).</p>
 
 <a id="Item shattering" name="Item shattering"></a>
 <h3>Item shattering</h3>
@@ -557,66 +557,7 @@ END
 
 <a id="Importing more items to BG2" name="Importing more items to BG2"></a>
 <h3>Importing more items to BG2</h3>
-<p>As explained in <a href="#Item importation">Item importation</a> description it's easy to import more items to BG2, using the same AR0602.BCS code that works in vanilla BG2. All you need to do is:</p>
-
-<ul>
-	<li><strong>REPLACE_TEXTUALLY K#TELBGT.BCS</strong> to add additional items into existing block in EET transition script, for example:</li>
-</ul>
-
-<div class="code">
-<pre>
-COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-  REPLACE_TEXTUALLY ~SetGlobal("K#DoOnceItemList","LOCALS",1)~ ~SetGlobal("K#DoOnceItemList","LOCALS",1)
-    TakePartyItem("MISC47") // Golden Pantaloons
-    TakePartyItem("CHAN06") // Mithral Chain Mail +4
-    TakePartyItem("SW1H15") // Icingdeath +3
-    TakePartyItem("SW1H16") // Twinkle +3~
-</pre>
-</div>
-
-<ul>
-	<li>Alternatively you could <strong>EXTEND_TOP K#TELBGT.BCS</strong> with the code that will preserve items during transition. Here are few examples:</li>
-</ul>
-
-<div class="code">
-<pre>
-//setting global variable if party had particular item
-IF
-  Global("BG1DrizztItem","GLOBAL",0)
-  OR(3)
-    PartyHasItem("CHAN06") // Mithral Chain Mail +4
-    PartyHasItem("SW1H15") // Icingdeath +3
-    PartyHasItem("SW1H16") // Twinkle +3
-THEN
-  RESPONSE #100
-    SetGlobal("BG1DrizztItem","GLOBAL",1)
-    Continue()
-END
-
-//this code will ensure that CHARNAME will start BG2 with this item (so code in AR0602.BCS will be able to check it)
-IF
-  PartyHasItem("MISC47") // Golden Pantaloons
-THEN
-  RESPONSE #100
-    TakePartyItem("MISC47") // Golden Pantaloons
-    Continue()
-END
-
-//as above but saves the item using TakeItemListPartyNum action (in EE engine you can use any 2da file with this action)
-IF
-  Global("variableNameOfYourChoice","LOCALS",0)
-THEN
-  RESPONSE #100
-    SetGlobal("variableNameOfYourChoice","LOCALS",1)
-    TakeItemListPartyNum("IMPORT02",1)
-    TakeItemListPartyNum("IMPORT01",1)
-    TakeItemListPartyNum("IMPORT03",1)
-    Continue()
-END
-</pre>
-</div>
-
-<p>And so forth. As long as the dummy K#TELBGT.CRE, that has transition script attached to it, will get the item from the party, you will end up with it in BG2 (CRE returns all acquired items once the party drop all inventory).</p>
+<p>As explained in <a href="#Item importation">Item importation</a> description it's easy to import more items to BG2, using the same AR0602.BCS code that works in vanilla BG2. In order to prevent the item to be dropped during transition you should append it to K#IMPORT.2DA file.</p>
 
 <a id="Adding support for NPC transition system" name="Adding support for NPC transition system"></a>
 <h3>Adding support for NPC transition system</h3>
@@ -678,7 +619,6 @@ THEN
     SetPlayerSound(Myself,30759,MORALE)
     SetDialog("IMOEN10")
     SetNumTimesTalkedTo(0)
-    SetGlobal("K#PDIALOG","LOCALS",0)
     SetGlobal("KickedOut","LOCALS",0)
     ChangeAIScript("NPCMAGE1",CLASS)
     ChangeAIScript("",RACE)
@@ -1018,7 +958,6 @@ END
 
 <ul>
 <li><strong>Appending new dialogues to existing files</strong> - just add proper <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">trigger filtering</a> for your dialogues. This is the only known way to share BANTER dialogues although it can be also used for JOIN and POST files. In case you want to append BG2 dialogue files to vanilla BG1 dialogues consider using this code on the already existing dialogue file, which will automatically add ENDOFBG1 filtering to all relevant dialogue states:</li>
-</ul>
 <div class="code">
 <pre>
 COPY_EXISTING ~dialogName.DLG~ ~override~
@@ -1029,100 +968,36 @@ COPY_EXISTING ~dialogName.DLG~ ~override~
 BUT_ONLY
 </pre>
 </div>
+</ul>
 
 <ul>
-<li><strong>Use EET workaround to separate JOIN and POST dialogues between games</strong> - this eliminates potential problems with BG1 dialogues triggering in BG2 and other way around. Also less stress when it comes to mod compatibility. The end result is shorter and easier to analyse dialogue file.</li>
+<li><strong>Use EET workaround to separate JOIN and POST dialogues between games</strong> - this can eliminate potential problems with BG1 dialogues triggering in BG2 and other way around. Also less stress when it comes to mod compatibility as well as shorter and easier to analyse dialogue files. Instead of letting the engine swap these dialogue files automatically we will do it manually with this code added on top of NPC Override local scripts:</li>
 
-<p>First of all PDIALOG.2DA file should not have POST_DIALOG_FILE and JOIN_DIALOG_FILE entries referenced. Let's take Jaheira as an example:</p>
-</ul>
 <div class="code">
 <pre>
-2DA V1.0
-*
-         POST_DIALOG_FILE JOIN_DIALOG_FILE DREAM_SCRIPT_FILE 25POST_DIALOG_FILE 25JOIN_DIALOG_FILE 25DREAM_SCRIPT_FILE 25OVERRIDE_SCRIPT_FILE
-JAHEIRA  *                *                JAHEIRAD          JAHEI25P           JAHEI25J           JAHEI25D            JAHE25
-</pre>
-</div>
-
-<ul>
-<p>Instead of letting the engine swap these dialogue files automatically we will do it manually with this code added on top of both BG1 and BG2 NPC Override local scripts (you can add additional filtering if your NPC uses the same script in both parts of the story):</p>
-</ul>
-<div class="code">
-<pre>
-//reset on game reload
-IF
-  OnCreation()
-THEN
-  RESPONSE #100
-    SetGlobal("K#PDIALOG","LOCALS",0)
-END
-
 //assigns JOIN dialogue file
 IF
-  Global("K#PDIALOG","LOCALS",0)
+  ActionListEmpty()
   InPartyAllowDead(Myself)
 THEN
   RESPONSE #100
-    SetDialog("JOINDLG")
-    SetGlobal("K#PDIALOG","LOCALS",1)
+    SetDialog("%dlg%")
     Continue()
 END
 
 //assigns POST dialogue file
 IF
-  Global("K#PDIALOG","LOCALS",1)
+  ActionListEmpty()
   !InPartyAllowDead(Myself)
+  GlobalGT("HASBEENINPARTY","LOCALS",0)
 THEN
   RESPONSE #100
-    SetDialog("POSTDLG")
-    SetGlobal("K#PDIALOG","LOCALS",0)
+    SetDialog("%dlg_1%")
     Continue()
 END
 </pre>
 </div>
-
-<ul>
-<p>This workaround also needs your NPC DV Name appended to following block within DPLAYER2.BCS</p>
 </ul>
-<div class="code">
-<pre>
-IF
-  Global("K#PDIALOG","LOCALS",0)
-  GlobalLT("ENDOFBG2","GLOBAL",2)
-  !InParty(Myself)
-  NumInParty(6)
-  ActionListEmpty()
-  OR(8)
-    Name("Dorn",Myself)
-    Name("Edwin",Myself)
-    Name("Imoen2",Myself)
-    Name("Jaheira",Myself)
-    Name("Minsc",Myself)
-    Name("Neera",Myself)
-    Name("Rasaad",Myself)
-    Name("Viconia",Myself)
-THEN
-  RESPONSE #100
-    SetGlobal("K#PDIALOG","LOCALS",1)
-END
-</pre>
-</div>
-<ul>
-<p>You can expand above mentioned DPLAYER2.BCS block with your NPC DV Name using this weidu code:</p>
-</ul>
-<div class="code">
-<pre>
-COPY_EXISTING ~DPLAYER2.BCS~ ~override~
-  DECOMPILE_AND_PATCH BEGIN
-    REPLACE_EVALUATE CASE_INSENSITIVE ~(\NumInParty(6)[%WNL%%LNL%%MNL%%TAB% ]*ActionListEmpty()[%WNL%%LNL%%MNL%%TAB% ]*\)OR(\([0-9]+\))~ BEGIN
-      SET MATCH2 = MATCH2 + 1
-    END ~%MATCH1%
-  OR(%MATCH2%)
-    Name("DV")~ //replace DV with the one used by your NPC
-  END
-BUT_ONLY
-</pre>
-</div>
 
 <a id="Workaround for CalanderDay command in SoD/BG2 portion of the game" name="Workaround for CalanderDay command in SoD/BG2 portion of the game"></a>
 <h3>Workaround for CalanderDay command in SoD/BG2 portion of the game</h3>

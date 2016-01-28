@@ -33,51 +33,35 @@ COPY_EXISTING ~K#TELBGT.BCS~ ~override~
 
 <<<<<<<< .../DIALOG_FILE-et.baf
 IF
-  OnCreation()
-THEN
-  RESPONSE #100
-    SetGlobal("K#PDIALOG","LOCALS",0)
-END
-
-IF
-  Global("K#PDIALOG","LOCALS",0)
+  ActionListEmpty()
   InPartyAllowDead(Myself)
 THEN
   RESPONSE #100
     SetDialog("%dlg%")
-    SetGlobal("K#PDIALOG","LOCALS",1)
     Continue()
 END
 
 IF
-  Global("K#PDIALOG","LOCALS",1)
+  ActionListEmpty()
   !InPartyAllowDead(Myself)
+  GlobalGT("HASBEENINPARTY","LOCALS",0)
 THEN
   RESPONSE #100
     SetDialog("%dlg_1%")
-    SetGlobal("K#PDIALOG","LOCALS",0)
     Continue()
 END
 >>>>>>>>
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_transition_DIALOG_FILE BEGIN
 	DORNJ_   , DORNP_   => DORN_    //BG1 Dorn
-	DORNJ    , DORNP    => DORN     //BG2 Dorn
 	EDWINJ_  , EDWINP_  => EDWIN_   //BG1 Edwin
-	EDWINJ   , EDWINP   => EDWIN    //BG2 Edwin
 	IMOEN2_  , IMOENP_  => IMOEN_   //BG1 Imoen
-	IMOENJ   , IMOENP   => IMOEN    //BG2 Irenicus Dungeon Imoen
-	IMOEN2J  , IMOEN2P  => IMOEN2   //BG2 Imoen
+	IMOENJ   , IMOENP   => IMOEN    //BG2 Imoen (Irenicus Dungeon)
 	JAHEIJ   , JAHEIP   => JAHEIRA_ //BG1 Jaheira
-	JAHEIRAJ , JAHEIRAP => JAHEIRA  //BG2 Jaheira
 	MINSCJ_  , MINSCP_  => MINSC_   //BG1 Minsc
-	MINSCJ   , MINSCP   => MINSC    //BG2 Minsc
 	NEERAJ_  , NEERAP_  => NEERA_   //BG1 Neera
-	NEERAJ   , NEERAP   => NEERA    //BG2 Neera
 	RASAADJ_ , RASAADP_ => RASAAD_  //BG1 Rasaad
-	RASAADJ  , RASAADP  => RASAAD   //BG2 Rasaad
 	VICONJ   , VICONP   => VICONIA_ //BG1 Viconia
-	VICONIJ  , VICONIP  => VICONIA  //BG2 Viconia
 END
 
 ACTION_PHP_EACH table_transition_DIALOG_FILE AS dlg => res BEGIN

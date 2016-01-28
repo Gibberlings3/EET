@@ -3146,17 +3146,18 @@ COPY - ~EET/temp/map_eet_areas.tbl~ ~.../EET/temp~
 		INNER_ACTION BEGIN
 			LAF sc#addWmpAre
 				INT_VAR
-				mapIcon = MATCH5
-				xCoord  = MATCH6
-				yCoord  = MATCH7
+				mapIcon = MATCH5 //BAM_ANIM
+				xCoord  = MATCH6 //X_POS
+				yCoord  = MATCH7 //Y_POS
+				//FLAGS
 				visible = are_visible
 				visibleAdjacent = are_visibleAdjacent
 				reachable = are_reachable
 				visited = are_visited
 				STR_VAR
-				areName = EVAL "%are_areName%"
-				strName = EVAL "%are_strName%"
-				strDesc = EVAL "%are_strDesc%"
+				areName = EVAL "%are_areName%" //SHORT_NAME, CONTENT, LONG_NAME
+				strName = EVAL "%are_strName%" //NAME (string)
+				strDesc = EVAL "%are_strDesc%" //TOOLTIP (string)
 			END
 		END
 	END ~~
@@ -3172,19 +3173,19 @@ COPY - ~EET/temp/map_eet_links.tbl~ ~.../EET/temp~
 			COPY_EXISTING ~worldmap.wmp~ ~override~
 				LPF ADD_WORLDMAP_LINKS
 					INT_VAR
-					distance_scale = MATCH5
-					default_entry = MATCH6
-					encounter_probability = MATCH12
+					distance_scale = MATCH5 //TRV_TIME
+					default_entry = MATCH6 //DEF_ENTRY
+					encounter_probability = MATCH12 //ENC_PROB
 					STR_VAR
-					from_area = EVAL ~%MATCH1%~
-					from_node = EVAL ~%MATCH2%~
-					to_area = EVAL ~%MATCH3%~
-					entry = EVAL ~%MATCH4%~
-					random_area1 = EVAL ~%MATCH7%~
-					random_area2 = EVAL ~%MATCH8%~
-					random_area3 = EVAL ~%MATCH9%~
-					random_area4 = EVAL ~%MATCH10%~
-					random_area5 = EVAL ~%MATCH11%~
+					from_area = EVAL ~%MATCH1%~ //SRC_AREA
+					from_node = EVAL ~%MATCH2%~ //SRC_NWSE
+					to_area = EVAL ~%MATCH3%~ //TARGET_ARE
+					entry = EVAL ~%MATCH4%~ //ENTRY_NAME
+					random_area1 = EVAL ~%MATCH7%~ //ENC1
+					random_area2 = EVAL ~%MATCH8%~ //ENC2
+					random_area3 = EVAL ~%MATCH9%~ //ENC3
+					random_area4 = EVAL ~%MATCH10%~ //ENC4
+					random_area5 = EVAL ~%MATCH11%~ //ENC5
 				END
 			BUT_ONLY
 		END

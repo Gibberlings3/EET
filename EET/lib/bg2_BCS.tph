@@ -267,26 +267,6 @@ THEN
     Kill(Player2)
     Kill(Player1)
 END
-
-IF
-  Global("K#PDIALOG","LOCALS",0)
-  GlobalLT("ENDOFBG2","GLOBAL",2)
-  !InParty(Myself)
-  NumInParty(6)
-  ActionListEmpty()
-  OR(8)
-    Name("Dorn",Myself)
-    Name("Edwin",Myself)
-    Name("Imoen2",Myself)
-    Name("Jaheira",Myself)
-    Name("Minsc",Myself)
-    Name("Neera",Myself)
-    Name("Rasaad",Myself)
-    Name("Viconia",Myself)
-THEN
-  RESPONSE #100
-    SetGlobal("K#PDIALOG","LOCALS",1)
-END
 >>>>>>>>
 
 <<<<<<<< .../DPLAYER2-eb.baf
