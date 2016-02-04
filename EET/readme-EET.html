@@ -79,7 +79,9 @@
 
 <h3>Requirements</h3>
 
-<p>The BG2:EE installation (patch v1.3 is required) should be a "clean" installation. Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
+<p>Core EET component (setup-EET) requires "clean" BG2:EE installation with latest patch (currently v1.3). Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
+
+<p>Final EET component (setup-EET_end) should be installed at the end, after any other mod.</p>
 
 <p>The BG:EE installation (patch v1.3.2053 is required) should be either "clean" installation or with any combination of mods listed in <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">this forum topic</a> (fist part of the post only).</p>
 
@@ -97,13 +99,22 @@
 
 <p>Alternatively, the files can be extracted from the archive using <a href="http://www.rarlab.com/">WinRAR</a> or <a href="http://www.7-zip.org/">7zip</a> and moved to your game folder. Your game folder should then contain a EET folder and setup-EET.exe. To install, double-click setup-EET.exe and follow the instructions on screen.</p>
 
-<p>Please run setup-EET.exe in your game folder to reinstall, uninstall, or otherwise change components.</p>
+<div class="code">
+<p><strong>After the core component is installed your game folder should then contain additional setup-EET_end.exe file. It should be installed after all other mods (always keep it as the last component in your installation order).</strong></p>
+</div>
+
+<p>Please run setup-EET.exe in your game folder to reinstall or uninstall whole EET.</p>
+<p>Once both EET components are installed and you decide to integrate more mods you can safely uninstall the last component by running setup-EET_end.exe and than install it again once you are satisfied with your mod selection.</p>
 
 <p>If you are planning to use other mods than you should consider using <a href="https://bitbucket.org/BigWorldSetup/">Big World Setup</a> (support for EET will added to BWS soon) to download, extract and install EET and other mods. This approach will save you a lot of time and ensure that selected mods are compatible with EET and installed in the correct order.</p>
 
 <h3>Mac OS X</h3>
 
 <p>EET is packaged and installed with WeiDU and is distributed as a compressed archive. Extract the contents of the archive and move them to your game folder. Your game folder should then contain a EET folder, setup-EET, and setup-EET.command. To install, simply double-click <strong>setup-EET.command</strong> and follow the instructions on screen.</p>
+
+<div class="code">
+<p><strong>After the core component is installed your game folder should then contain additional setup-EET_end.command file. It should be installed after all other mods (always keep it as the last component in your installation order).</strong></p>
+</div>
 
 <h3>Auto-installation (for expert users)</h3>
 
@@ -178,14 +189,12 @@
 <h3>How to start the game?</h3>
 <ul>
 	<li><strong>Baldur's Gate</strong> - first icon in main menu (choosing this option allows you to play whole saga from start to finish - BG1, TotSC, SoD, BG2:SoA, BG2:ToB)</li>
-	<li><strong>Baldur's Gate II: Throne of Bhaal</strong> - second icon in main menu</li>
+	<li><strong>Baldur's Gate II: Shadows of Amn</strong> - second icon in main menu</li>
 	<li><strong>Black Pits II: Gladiators of Thay</strong> - third icon in main menu</li>
 	<li><strong>Black Pits</strong> - start Black Pits II and choose new dialogue response during the first conversation in tavern: "You can tell a ballad with more subtleties and nuances if you have experienced something first hand. Listen to my story." (after finishing Black Pits portion you will again end up in Black Pits 2 tavern, so you can continue this adventure with the same party.)</li>
-	<li><strong>Baldur's Gate II: Shadows of Amn</strong> - start Baldur's Gate, equip a book (darker one) that has been added to your inventory and use it in game (your character will receive missing XP if it's below 95k and Bhaal powers. Mages will automatically receive memorized spells appropriate to BG2 starting level, in the same way as if you would choose "pick for me" during character generation)</li>
+	<li><strong>Baldur's Gate II: Throne of Bhaal</strong> - start Baldur's Gate, equip a book (darker one) that has been added to your inventory and use it in game (your character will receive missing XP if it's below ToB starting point. Mages will automatically receive memorized spells appropriate to BG2 starting level, in the same way as if you would choose "pick for me" during character generation)</li>
 	<li><strong>Tutorial</strong> - start Baldur's Gate, equip a book (brighter one) that has been added to your inventory and use it in game</li>
 </ul>
-
-<p>I'd like to change how the above works to get rid of Black Pits from the main menu and use the slot for Baldur's Gate 2 instead. Unfortunately worldmap GUI button is disabled when the BP game is started and changing it would require exe patching. If someone is interested in helping out with this task than please <a href="http://gibberlings3.net/forums/index.php?showuser=6804">contact me</a>.</p>
 
 <a id="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?"></a>
 <h3>What are the differences between EET and the original Baldur's Gate: Enhanced Edition?</h3>

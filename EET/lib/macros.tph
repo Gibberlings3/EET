@@ -1892,7 +1892,6 @@ CO") BEGIN
 		REPLACE_TEXTUALLY ~#d#~ ~~
 		LAUNCH_PATCH_MACRO ~D_traifyDLG_replace~
 		LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
-		LAUNCH_PATCH_MACRO ~D_DLGext_replace~
 
 		SET d_check += 1
 		SET checked = 1
@@ -1936,7 +1935,6 @@ CO") BEGIN
 			REPLACE_TEXTUALLY ~#d#~ ~~
 			LAUNCH_PATCH_MACRO ~D_traifyDLG_replace~
 			LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
-			LAUNCH_PATCH_MACRO ~D_DLGext_replace~
 		END
 
 		SET dlg_check += 1
@@ -3455,14 +3453,6 @@ DEFINE_PATCH_MACRO ~D_traifyBCS_replace~ BEGIN
 	REPLACE_TEXTUALLY ~\(DisplayStringNoNameHead([^,]+\),~ ~\1,@~
 	REPLACE_TEXTUALLY ~\(DisplayStringNoNameDlg([^,]+\),~ ~\1,@~
 	REPLACE_TEXTUALLY ~@-1~ ~-1~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~D_DLGext_replace~ BEGIN
-	PHP_EACH remapped_dlgext AS index => source BEGIN
-		REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(EXTERN[ %TAB%]+[~"]\)%source%\([~"][ %TAB%]+\)~~~~~ BEGIN SET updated = 1 END ~\1%source%\2s~ //~
-	END
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

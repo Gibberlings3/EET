@@ -1,19 +1,19 @@
-//move, create if not existing, rename scripts that will be automatically appended
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_prepBCS_BG1bcsBG2bcs" BEGIN
-	"DORND" => "DORND"
-	"EDWIND" => "EDWIND"
-	"IMOEND" => "IMOEN2D"
-	"JAHEID" => "JAHEIRAD"
-	"MINSCD" => "MINSCD"
-	"NEERAD" => "NEERAD"
-	"RASAADD" => "RASAADD"
-	"VICOND" => "VICOND"
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_prepBCS_rename BEGIN
+	"DORND" => "DORND_"
+	"EDWIND" => "EDWIND_"
+	"IMOEND" => "IMOEND_"
+	"JAHEID" => "JAHEID"
+	"MINSCD" => "MINSCD_"
+	"NEERAD" => "NEERAD_"
+	"RASAADD" => "RASAADD_"
+	"VICOND" => "VICOND_"
 END
-ACTION_PHP_EACH "table_prepBCS_BG1bcsBG2bcs" AS "BG1bcs" => "BG2bcs" BEGIN
-	ACTION_IF (FILE_EXISTS ~%patch_dir%/bcs/%BG1bcs%.BCS~) BEGIN
-		MOVE + ~%patch_dir%/bcs/%BG1bcs%.BCS~ ~%patch_dir%/bcs_app/%BG2bcs%.BCS~
+
+ACTION_PHP_EACH table_prepBCS_rename AS source => dest BEGIN
+	ACTION_IF FILE_EXISTS ~%patch_dir%/bcs/%source%.BCS~ BEGIN
+		MOVE + ~%patch_dir%/bcs/%source%.BCS~ ~%patch_dir%/bcs/%dest%.BCS~
 	END ELSE BEGIN
-		COPY + ~EET/base/blank.bcs~ ~%patch_dir%/bcs_app/%BG2bcs%.BCS~
+		COPY + ~EET/base/blank.bcs~ ~%patch_dir%/bcs/%dest%.BCS~
 	END
 END
 
@@ -33,7 +33,7 @@ MOVE + ~%patch_dir%/bcs/BRANWEN.BCS~ ~%patch_dir%/bcs/BRANWEN_.BCS~
 	~%patch_dir%/bcs/SAREVOK.BCS~ ~%patch_dir%/bcs/SAREVOK_.BCS~
 	~%patch_dir%/bcs/SENDAI.BCS~ ~%patch_dir%/bcs/SENDAI_.BCS~
 	~%patch_dir%/bcs/SKIE.BCS~ ~%patch_dir%/bcs/SKIE_.BCS~
-	//~%patch_dir%/bcs/TANARI.BCS~ ~%patch_dir%/bcs/TANARI_.BCS~//BG2:EE version used as a base
+	~%patch_dir%/bcs/TANARI.BCS~ ~%patch_dir%/bcs/TANARI_.BCS~
 	~%patch_dir%/bcs/VICONIA.BCS~ ~%patch_dir%/bcs/VICONIA_.BCS~
 
 //rename area scripts
@@ -49,7 +49,6 @@ DELETE + ~%patch_dir%/bcs/BALDUR.BCS~
 	~%patch_dir%/bcs/DPLAYER2.BCS~
 	~%patch_dir%/bcs/DPLAYER3.BCS~
 //delete script that will use BG2:EE version as a base
-	~%patch_dir%/bcs/TANARI.BCS~//BG1 version uses BG2 one as a base
 	~%patch_dir%/bcs/AMNISE.BCS~
 	~%patch_dir%/bcs/ANKHEG.BCS~
 	~%patch_dir%/bcs/BALOR01.BCS~

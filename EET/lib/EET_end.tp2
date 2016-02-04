@@ -1,0 +1,162 @@
+BACKUP ~EET/backup/end~
+AUTHOR ~K4thos (swit)~
+
+BEGIN ~Baldur's Gate: Enhanced Edition Trilogy (EET) - this should be last component in install order~
+REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ ~You must have EET core component installed~
+
+CLEAR_ARRAYS
+
+OUTER_SPRINT ~newline~ ~%WNL%%LNL%%MNL%%TAB% ~
+
+MKDIR ~EET/temp/append/dlg~
+	~EET/temp/append/bcs~
+
+<<<<<<<< .../end.txt
+
+END
+>>>>>>>>
+
+<<<<<<<< .../blank.d
+BEGIN ~%file%~
+>>>>>>>>
+
+<<<<<<<< .../blank.txt
+>>>>>>>>
+
+INCLUDE ~EET/lib/EET_end.tph~
+
+ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%file%.dlg~ BEGIN
+		ACTION_IF ~%file_1%~ STRING_EQUAL_CASE ~~ BEGIN //source file
+			COPY_EXISTING ~%file%.dlg~ ~override~
+				READ_LONG 0x8 num_states
+				SPRINT EVAL ~num_states_%file%~ ~%num_states%~
+				DECOMPILE_AND_PATCH BEGIN
+					PATCH_PRINT ~Preparing %file%.dlg source file (%num_states% states starting from 0)~
+					REPLACE_EVALUATE CASE_SENSITIVE ~^\(IF .*  \)\(.*\)$~ BEGIN
+						SPRINT trigger ~~
+						PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
+							SPRINT trigger ~%var%%LNL%~
+						END
+					END ~%MATCH1%%trigger%%MATCH2%~
+				END
+			BUT_ONLY
+		END ELSE BEGIN //appended file
+			COPY_EXISTING ~%file%.dlg~ ~EET/temp/append/dlg/%file%.d~
+				READ_LONG 0x8 num_states
+				SET num_states_src = EVAL ~num_states_%file_1%~
+				PATCH_PRINT ~Appending %file_1%.dlg to %file%.dlg (%num_states% appended states starting from %num_states_src%)~
+				SET EVAL ~num_states_%file_1%~ = num_states_src + num_states
+				DEFINE_ASSOCIATIVE_ARRAY remapped_state BEGIN
+					~%file%~ , ~%file_1%~ => ~%num_states_src%~
+				END
+				DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+					~%file%~ => ~%file_1%~
+				END
+				DECOMPILE_DLG_TO_D
+				REPLACE_EVALUATE CASE_SENSITIVE ~^\(IF .*  \)\(.*\)$~ BEGIN
+					SPRINT trigger ~~
+					PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
+						SPRINT trigger ~%var%%LNL%~
+					END
+				END ~%MATCH1%%trigger%%MATCH2%~
+				REPLACE_TEXTUALLY CASE_SENSITIVE ~THEN BEGIN \([0-9]+\)~ ~THEN BEGIN %file%\1~
+				REPLACE_TEXTUALLY CASE_SENSITIVE ~GOTO \([0-9]+\)~ ~GOTO %file%\1~
+				REPLACE_TEXTUALLY ~~~~~^BEGIN \(~\)%SOURCE_RES%\(~\)$~~~~~ ~APPEND \1%file_1%\2~
+				APPEND_FILE ~.../end.txt~
+			COMPILE ~EET/temp/append/dlg/%file%.d~
+			COMPILE EVAL ~.../blank.d~
+		END
+	END
+END
+
+ACTION_PHP_EACH table_append_bcs AS file => var BEGIN
+	ACTION_IF FILE_EXISTS_IN_GAME ~%file%.bcs~ BEGIN
+		ACTION_IF ~%file_1%~ STRING_EQUAL_CASE ~~ BEGIN //source file
+			COPY_EXISTING ~%file%.bcs~ ~override~
+				DECOMPILE_AND_PATCH BEGIN
+					PATCH_PRINT ~Preparing %file%.bcs source file~
+					REPLACE_EVALUATE CASE_SENSITIVE ~^\(IF[%newline%]*\)\(.*\)$~ BEGIN
+						SPRINT trigger ~~
+						PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
+							SPRINT trigger ~%var%%LNL%~
+						END
+					END ~%MATCH1%%trigger%%MATCH2%~
+				END
+			BUT_ONLY
+		END ELSE BEGIN //appended file
+			COPY_EXISTING ~%file%.bcs~ ~EET/temp/append/bcs/%file%.baf~
+				DECOMPILE_BCS_TO_BAF
+				REPLACE_EVALUATE CASE_SENSITIVE ~^\(IF[%newline%]*\)\(.*\)$~ BEGIN
+					SPRINT trigger ~~
+					PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
+						SPRINT trigger ~%var%%LNL%~
+					END
+				END ~%MATCH1%%trigger%%MATCH2%~
+			EXTEND_BOTTOM ~%file_1%.bcs~ ~EET/temp/append/bcs/%file%.baf~
+			COPY - ~.../blank.txt~ ~.../%file%.baf~
+			COMPILE ~.../%file%.baf~
+		END
+	END
+END
+
+INCLUDE ~EET/lib/macros.tph~
+
+COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		PHP_EACH remapped_state AS file => state BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\( EXTERN .\)%file%\(. \)\([0-9]+\)~ BEGIN
+				SET match = state + MATCH3
+				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %file% => %file_1% - dlg; %MATCH3% => %match% - state~
+			END ~%MATCH1%%file_1%%MATCH2%%match%~
+		END
+		LPM BAF_DLG_replace
+		REPLACE_TEXTUALLY ~#d#~ ~~
+	END
+BUT_ONLY
+
+COPY_EXISTING_REGEXP GLOB ~.+\.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		LPM BAF_DLG_replace
+		REPLACE_TEXTUALLY ~#d#~ ~~
+	END
+BUT_ONLY
+
+COPY_EXISTING_REGEXP GLOB ~.+\.CRE~ ~override~
+	LPF ~FJ_CRE_VALIDITY~ RET valid END
+	PATCH_IF valid = 1 BEGIN
+		SET off = 0x2cc SPRINT res ~dlg~ LPM EET_PCU_off_res
+	END
+BUT_ONLY
+
+COPY_EXISTING ~PDIALOG.2DA~ ~override~
+	READ_2DA_ENTRIES_NOW pdialog 8
+	FOR (i=0; i < pdialog; ++i) BEGIN
+		READ_2DA_ENTRY_FORMER pdialog i 0 dv
+		READ_2DA_ENTRY_FORMER pdialog i 1 post
+		READ_2DA_ENTRY_FORMER pdialog i 2 join
+		READ_2DA_ENTRY_FORMER pdialog i 3 dream
+		READ_2DA_ENTRY_FORMER pdialog i 4 25post
+		READ_2DA_ENTRY_FORMER pdialog i 5 25join
+		READ_2DA_ENTRY_FORMER pdialog i 6 25dream
+		READ_2DA_ENTRY_FORMER pdialog i 7 25override
+		SET_2DA_ENTRY i 4 8 ~%post%~
+		SET_2DA_ENTRY i 5 8 ~%join%~
+		SET_2DA_ENTRY i 6 8 ~%dream%~
+		SET_2DA_ENTRY i 7 8 ~***~
+	END
+	PRETTY_PRINT_2DA
+BUT_ONLY
+
+COPY_EXISTING ~INTERDIA.2DA~ ~override~
+	READ_2DA_ENTRIES_NOW interdia 3
+	FOR (i=0; i < interdia; ++i) BEGIN
+		READ_2DA_ENTRY_FORMER interdia i 0 dv
+		READ_2DA_ENTRY_FORMER interdia i 1 banter
+		READ_2DA_ENTRY_FORMER interdia i 2 25banter
+		SET_2DA_ENTRY i 2 3 ~%banter%~
+	END
+	PRETTY_PRINT_2DA
+BUT_ONLY
+
+COPY ~EET/base/gui/START3EE.MOS~ ~override~

@@ -49,6 +49,54 @@ THEN
 END
 
 IF
+  XPLT(Player1,2500000)
+THEN
+  RESPONSE #100
+    ChangeStat(Player1,XP,2500000,SET)
+    Continue()
+END
+
+IF
+  XPLT(Player2,2500000)
+THEN
+  RESPONSE #100
+    ChangeStat(Player2,XP,2500000,SET)
+    Continue()
+END
+
+IF
+  XPLT(Player3,2500000)
+THEN
+  RESPONSE #100
+    ChangeStat(Player3,XP,2500000,SET)
+    Continue()
+END
+
+IF
+  XPLT(Player4,2500000)
+THEN
+  RESPONSE #100
+    ChangeStat(Player4,XP,2500000,SET)
+    Continue()
+END
+
+IF
+  XPLT(Player5,2500000)
+THEN
+  RESPONSE #100
+    ChangeStat(Player5,XP,2500000,SET)
+    Continue()
+END
+
+IF
+  XPLT(Player6,2500000)
+THEN
+  RESPONSE #100
+    ChangeStat(Player6,XP,2500000,SET)
+    Continue()
+END
+
+IF
   True()
 THEN
   RESPONSE #100
@@ -82,7 +130,6 @@ THEN
     ActionOverride(Player5,ApplySpellRES("K#DISPEL",Myself))
     ActionOverride(Player6,ApplySpellRES("K#DISPEL",Myself))
     ActionOverride(Player1,SetPlayerSound(Myself,15881,EXISTANCE5))//Your history is nearly as unknown as your future (...)
-	MoveToExpansion()
     ActionOverride(Player1,LeaveAreaLUAPanic("AR4000","",[1300.1840],W))
     ActionOverride(Player1,LeaveAreaLUA("AR4000","",[1300.1840],W))
     ActionOverride(Player2,LeaveAreaLUA("AR4000","",[1300.1840],W))

@@ -164,6 +164,7 @@ a:hover.spoiler {
 			<li><a href="#Item importation">Item importation</a></li>
 			<li><a href="#Item shattering">Item shattering</a></li>
 			<li><a href="#Journal system and Chapters">Journal system and Chapters</a></li>
+			<li><a href="#Throne of Bhaal integration">Throne of Bhaal integration</a></li>
 			<li><a href="#Language support">Language support</a></li>
 			<li><a href="#Mod support">Mod support</a></li>
 			<li><a href="#Random treasure">Random treasure</a></li>
@@ -177,7 +178,6 @@ a:hover.spoiler {
 		<ul>
 			<li><a href="#Areas naming convention">Areas naming convention</a></li>
 			<li><a href="#Resource naming convention">Resource naming convention</a></li>
-			<li><a href="#NPC Join/Post/Banter files">NPC Join/Post/Banter files</a></li>
 			<li><a href="#Naming convention for new files">Naming convention for new files</a></li>
 			<li><a href="#BG1 resource naming reference table">BG1 resource naming reference table</a></li>
 		</ul>
@@ -185,6 +185,7 @@ a:hover.spoiler {
 		<ul>
 			<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
 			<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
+			<li><a href="#Working with files that are automatically merged during installation">Working with files that are automatically merged during installation</a></li>
 			<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
 			<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
 			<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
@@ -193,7 +194,6 @@ a:hover.spoiler {
 			<li><a href="#Adding support for shattering items (iron crisis) system in BG1 portion of the game">Adding support for shattering items (iron crisis) system in BG1 portion of the game</a></li>
 			<li><a href="#Importing more items to BG2">Importing more items to BG2</a></li>
 			<li><a href="#Adding support for NPC transition system">Adding support for NPC transition system</a></li>
-			<li><a href="#Workaround for PDIALOG.2DA forced dialogue swaps">Workaround for PDIALOG.2DA forced dialogue swaps</a></li>
 			<li><a href="#Workaround for CalanderDay command in SoD/BG2 portion of the game">Workaround for CalanderDay command in SoD/BG2 portion of the game</a></li>
 			<li><a href="#Adding new animations">Adding new animations</a></li>
 			<li><a href="#Adding support for EET Worldmap">Adding support for EET Worldmap</a></li>
@@ -245,6 +245,7 @@ This document is divided into a number of sections to allow quick reference for 
 	<li><a href="#Item importation">Item importation</a></li>
 	<li><a href="#Item shattering">Item shattering</a></li>
 	<li><a href="#Journal system and Chapters">Journal system and Chapters</a></li>
+	<li><a href="#Throne of Bhaal integration">Throne of Bhaal integration</a></li>
 	<li><a href="#Language support">Language support</a></li>
 	<li><a href="#Mod support">Mod support</a></li>
 	<li><a href="#Random treasure">Random treasure</a></li>
@@ -287,7 +288,6 @@ This document is divided into a number of sections to allow quick reference for 
 
 <p>Familiars in BG1 portion of the game uses files from BG:EE, which are far weaker than their equivalents that can be summoned once you reach BG2 and ToB.</p>
 
-
 <a id="Item importation" name="Item importation"></a>
 <h3>Item importation</h3>
 <p>Transition script also takes care of item importation. In order to record items from the whole party and not only Player1, it needs to be done before migrating to Irenicus Dungeon. Before pary is made to lose all inventory using the DropInventory() command, additional code is used to preserve items that should be imported. If the party has a particular item, an invisible creature will take it and return it back to player1 after all inventory is dropped. This way modders can easily add other importable items and implementation itself is fully compatible with code present in Irenicus Dungeon (AR0602.BCS).</p>
@@ -309,6 +309,10 @@ This document is divided into a number of sections to allow quick reference for 
 </ul>
 
 <p>Obviously modders interested in creating mods compatible with EET should adopt the newer implementation with continuous journal system.</p>
+
+<a id="Throne of Bhaal integration" name="Throne of Bhaal integration"></a>
+<h3>Throne of Bhaal integration</h3>
+<p>In EET Throne of Bhaal expansion is no longer treated like separate campaign. Other than continuity aspect (explained in different section of this document), EET no longer depends on MoveToExpansion() action, which means ToB saves are no longer separated from the main game and ToB variants of BALDUR25.BCS and WORLDM25.WMP are no longer used. Please check <a href="#Working with files that are automatically merged during installation">this section</a> for details regarding "25" variants of files normally controlled by PDIALOG.2DA and INTERDIA.2DA.</p>
 
 <a id="Language support" name="Language support"></a>
 <h3>Language support</h3>
@@ -368,7 +372,6 @@ This document is divided into a number of sections to allow quick reference for 
 <ul>
 	<li><a href="#Areas naming convention">Areas naming convention</a></li>
 	<li><a href="#Resource naming convention">Resource naming convention</a></li>
-	<li><a href="#NPC Join/Post/Banter files">NPC Join/Post/Banter files</a></li>
 	<li><a href="#Naming convention for new files">Naming convention for new files</a></li>
 	<li><a href="#BG1 resource naming reference table">BG1 resource naming reference table</a></li>
 </ul>
@@ -382,12 +385,6 @@ This document is divided into a number of sections to allow quick reference for 
 <p>For other resources, EET keeps the original BG:EE resource name as strictly as possible. If it doesn't conflict with BG2:EE content than the name of imported file is not changed. For conflicting resources BG1 ones have suffix with the underscore (_) added to make them unique. Since the engine only supports 8.3 filenames, there are 2 resources that couldn't use this convention and adopted BGT one instead (skelwa02.cre => bgskel02.cre, skelwa03.cre => bgskel03.cre).</p>
 
 <p>Conflicting spells from BG:EE uses a little different naming convention - "BG" letters replaces first 2 letters of the spell (so SPWI becomes BGWI etc). The reason behind this is limitation of the engine which expects maximum 7 character spell names for some spell effects. This convention adopted from BGT makes the rename spells still easy to identify. Same rule is also used for random item tables ("RN" replaced with "BG").</p>
-
-<a id="NPC Join/Post/Banter files" name="NPC Join/Post/Banter files"></a>
-<h3>NPC Join/Post/Banter files</h3>
-<p>Unlike BGT, Join (file that has all NPC normal dialogues) and Post (conversation when NPC is leaving the party) dialogue files are NOT appended with BG2 counterparts. They use standard EET renaming convention (underscore suffix) to prevent conflicts with BG2 files (only implemented for Dorn, Edwin, Imoen, Jaheira, Minsc, Neera, Rasaad, Viconia because other NPCs don't use conflicting dialogue files). This approach allows modders to write/edit NPC dialogues without worrying about conflicts between games and eliminates a problem with finding correct dialogue block numbers within the file. More information bout dialogue swap system can be found <a href="#Workaround for PDIALOG.2DA forced dialogue swaps">here</a>.</p>
-
-<p>Only BANTER dialogues are appended to BG2 files (engine limitation). During installation banter files are patched to add proper filtering between games. EET determines what state number will be the first state of the Baldur's Gate: Enhanced Edition banter dialogue for these conflicting, appended files, and stores that inside variables contained in EET\FluidStates.tpa. Other states of the BG:EE dialogue can be calculated relative to the state number representing the first state. The .tpa file can be utilised simply by using the WeiDU function INCLUDE (it's automatically included if you use EET <a href="#Adding support for EET chapters/journal system">cpmvars</a>).</p>
 
 <a id="Naming convention for new files" name="Naming convention for new files"></a>
 <h3>Naming convention for new files</h3>
@@ -405,6 +402,7 @@ This document is divided into a number of sections to allow quick reference for 
 <ul>
 	<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
 	<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
+	<li><a href="#Working with files that are automatically merged during installation">Working with files that are automatically merged during installation</a></li>
 	<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
 	<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
 	<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
@@ -413,7 +411,6 @@ This document is divided into a number of sections to allow quick reference for 
 	<li><a href="#Adding support for shattering items (iron crisis) system in BG1 portion of the game">Adding support for shattering items (iron crisis) system in BG1 portion of the game</a></li>
 	<li><a href="#Importing more items to BG2">Importing more items to BG2</a></li>
 	<li><a href="#Adding support for NPC transition system">Adding support for NPC transition system</a></li>
-	<li><a href="#Workaround for PDIALOG.2DA forced dialogue swaps">Workaround for PDIALOG.2DA forced dialogue swaps</a></li>
 	<li><a href="#Workaround for CalanderDay command in SoD/BG2 portion of the game">Workaround for CalanderDay command in SoD/BG2 portion of the game</a></li>
 	<li><a href="#Adding new animations">Adding new animations</a></li>
 	<li><a href="#Adding support for EET Worldmap">Adding support for EET Worldmap</a></li>
@@ -439,8 +436,6 @@ This document is divided into a number of sections to allow quick reference for 
 <ul>
 <li><a href="../other/EET_modConverter">EET_modConverter</a> - this tool can be used to automatically convert any SoD, BG2 and ToB code to use cpmvars like system for chapters. It will patch all BAF, D, TP2, TPH, TPP, TPA files to use variables instead of numbers whenever SetGlobal, Global, GlobalGT, GlobalLT related to chapter number is used in your code. Variable declaration depending on platform will be also automatically added to ALWAYS section of tp2 file (you can remove this additional code if you already use <a href="../other/cpmvars">cpmvars</a> variable libraries).</li>
 <li><a href="../other/EET_functions">EET_functions.tph</a> - this file contains several functions related to EET compatibility patching. Among other things it contains an action function called EET_JOURNAL which can be used in your code to patch files designed for other platforms on the fly during mod installation. Here is example how it's meant to be used:</li>
-</ul>
-
 <div class="code">
 <pre>
 ACTION_DEFINE_ARRAY arrayName BEGIN ~modDir/AERIE.d~ ~%var%/ALARM25.baf~ ~modDir/code.tph~ ~override/AERIE.bcs~ END
@@ -453,10 +448,29 @@ LAF ~EET_JOURNAL~
 END
 </pre>
 </div>
-
 <div class="code">
 <strong>Even though the current publicly available version of EET doesn't use new journal/chapters system yet, you should already convert your code to support it. EET_JOURNAL function, cpmvars and EET_modConverter, checks if the EET_JOURNAL text is present within EET.flag and sets variable values accordingly, making the code compatible with both current and future version of EET.</strong>
 </div>
+</ul>
+
+<a id="Working with files that are automatically merged during installation" name="Working with files that are automatically merged during installation"></a>
+<h3>Working with files that are automatically merged during installation</h3>
+
+<p>EET is installed in two steps - main component on a clean BG2:EE, and second component at the end, after any other mods. This second step is used to automatically merge BG1, SoD, BG2, ToB files that are normally controlled by PDIALOG.2DA and INTERDIA.2DA. You need to know following things when working natively with EET:</p>
+<ul>
+<li><strong>BALDUR.BCS / BALDUR25.BCS</strong> - the game now uses BALDUR.BCS global script during whole game. BALDUR25.BCS is no longer used even in Throne of Bhaal. The vanilla script has been expanded with all relevant content from BG:EE global script (4 new blocks) as well as ToB "25" version of it (6 new blocks) using standard <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">trigger filtering</a>. Your mod should no longer patch BALDUR25.BCS - use BALDUR.BCS instead.</li><br />
+<li><strong>JOIN / POST / BANTER dialogues and DREAM scripts</strong> - these files are normally automatically assigned by PDIALOG.2DA and INTERDIA.2DA. In EET it's also true but the platform doesn't use ToB and BG1 variants of these files. To not introduce changes in how cross-platform coding is usually handled, EET does the merging of vanilla content as well as updating state numbers in dialogues and references in scripts and cre files automatically at the end. <strong>Files should be patched exactly the same as you would do in vanilla games</strong>. No need to worry about state numbers (same as in vanilla games) or additional trigger filtering. For example when you want to add content to BG1, BG2 and ToB Neera join dialogue files than you should do it by patching NEERAJ_.DLG (BG1 file uses <a href="#Resource naming convention">standard renaming</a> due to conflict with BG2 file), NEERAJ.DLG and NEERA25J.DLG. When all other mods are installed and files have already all relevant changes, EET second component will convert them to use this system.</li>
+
+<p>New BG1 NPCs added by mods don't need any merging. If your mod adds BG2 joinable NPC with separate JOIN / POST / BANTER dialogue files and DREAM scripts for SoA and ToB than you can add EET compatibility in 2 ways:
+<ol>
+<li>Merge them yourself using proper trigger filtering, so they are relevant only during part of the story (not really worth it if your mod supports cross-platform coding)</li>
+<li>Or use pre-made EET_NPC_ENDMERGE action function, available within <a href="../other/EET_functions">EET_functions.tph</a>, that will generate code based on what has been included in PDIALOG.2DA and INTERDIA.2DA and than append the array to EET/lib/EET_end.tph file. This way your NPC will be converted to use this system at the end of installation (after all other mods are installed).</li>
+<div class="code">
+<pre>
+LAF ~EET_NPC_ENDMERGE~ STR_VAR dv = "NPCDeathVariable" END
+</pre>
+</div>
+</ul>
 
 <a id="Detecting EET within WeiDU code" name="Detecting EET within WeiDU code"></a>
 <h3>Detecting EET within WeiDU code</h3>
@@ -513,8 +527,6 @@ END
 <ul>
 <li><strong>dummy files</strong> are often used by mods to make them detectable by other mods. They are copied to EET override directory during installation, so can be normally detected via FILE_EXISTS_IN_GAME WeiDU command.</li>
 <li><strong>WeiDU.log file</strong> from BG:EE is copied to main directory as "WeiDU-BGEE.log", which allows modders to use workarounds for existing WeiDU functions. Here are few examples using BG1 NPC Project component 0, any language:</li>
-</ul>
-
 <div class="code">
 <pre>
 //works the same as REQUIRE_COMPONENT
@@ -531,10 +543,8 @@ END ELSE BEGIN
 END
 </pre>
 </div>
-
-<ul>
-	<p>Of course if your mod is meant to also detect the mod installed natively than you should nest above mentioned code with vanilla WeiDU commands used for mod detection.</p>
-	<p>Overall this workaround doesn't sound like a very useful thing because BG:EE mods usually don't affect BG2:EE content, so the need for additional check for them in BG2:EE mods is not common. The ones affected are usually installed on BG:EE too, so any WeiDU mod detection command works correctly at that time. And the more complicated mods (such as BG1 NPC Project) already uses dummy files, so they are detectable without any hassle anyway.</p>
+<p>Of course if your mod is meant to also detect the mod installed natively than you should nest above mentioned code with vanilla WeiDU commands used for mod detection.</p>
+<p>Overall this workaround doesn't sound like a very useful thing because BG:EE mods usually don't affect BG2:EE content, so the need for additional check for them in BG2:EE mods is not common. The ones affected are usually installed on BG:EE too, so any WeiDU mod detection command works correctly at that time. And the more complicated mods (such as BG1 NPC Project) already uses dummy files, so they are detectable without any hassle anyway.</p>
 </ul>
 
 <a id="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE" name="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE"></a>
@@ -622,7 +632,7 @@ THEN
     SetGlobal("KickedOut","LOCALS",0)
     ChangeAIScript("NPCMAGE1",CLASS)
     ChangeAIScript("",RACE)
-    ChangeAIScript("IMOEN",OVERRIDE) //this one will end the script
+    ChangeAIScript("IMOEN",OVERRIDE) //this action will end the script
 END
 </pre>
 </div>
@@ -732,7 +742,6 @@ END
 <p>You can see more examples in EET/lib/transition.tph file. It is preferable to use EET_TRANSITION than manually patching files. This way if anything regarding transition will be changed in future you won't need to edit your code but just replace TPH file with updated function declaration. For those interested how exactly it works or those who need to include additional REPLACE_TEXTUALLY patching within outcome code, here is an explanation what the function does:</p>
 <ul>
 <li><strong>K#TELBGT.BCS</strong> (SoD -> BG2 transition script) is expanded if type = 1 or 3:</li>
-</ul>
 
 <div class="code">
 <pre>
@@ -786,10 +795,10 @@ THEN
 END
 </pre>
 </div>
+</ul>
 
 <ul>
 <li><strong>BG1 and/or BG2 local script</strong> are extend top with this code, which will flag the NPC with variable detectable during ToB transition and disable NPC that should no longer exist after certain part of the story:</li>
-</ul>
 
 <div class="code">
 <pre>
@@ -812,11 +821,10 @@ THEN
 END
 </pre>
 </div>
+</ul>
 
 <ul>
 <li><strong>FATESP.DLG</strong> Fate Spirit summoning dialogue responses are expanded with following code:</li>
-</ul>
-
 <div class="code">
 <pre>
   IF ~  Global("%SummonedVar%","GLOBAL",0)
@@ -836,10 +844,10 @@ Global("%dv%PartyBG2","GLOBAL",1)
 END
 </pre>
 </div>
+</ul>
 
 <ul>
 <li><strong>AR4000.BCS</strong> has additional code that will check if the NPC is currently in party or were at party at some point during BG1 and BG2. Setting %SummonedVar% to 2 removes NPC from Fate Spirit summon list. default_ToB set to 1 can be used to make NPC summonable by default in new game started in ToB expansion (in such case NEWGAME_TOB variable is set to 1) - this will REPLACE_TEXTUALLY first block in AR4000.BCS setting %dv%PartyBG2 variable to 1, which is not shown in below code.</li>
-</ul>
 
 <div class="code">
 <pre>
@@ -848,6 +856,7 @@ IF
   Global("%SummonedVar%","GLOBAL",0)
 THEN
   RESPONSE #100
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
     SetGlobal("%SummonedVar%","GLOBAL",2)
 END
 
@@ -862,13 +871,22 @@ THEN
 END
 </pre>
 </div>
+</ul>
 
 <ul>
-<li><strong>AR4500.BCS</strong> is extended bottom with the code that migrate NPC from BG2 area to Pocket Plane:</li>
-</ul>
+<li><strong>AR4500.BCS</strong> is extended bottom with the code that migrates NPC from BG2 area to Pocket Plane:</li>
 
 <div class="code">
 <pre>
+IF
+  InParty("%dv%")
+  Global("%SummonedVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
+    SetGlobal("%SummonedVar%","GLOBAL",2)
+END
+
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
   Global("%SummonedVar%","GLOBAL",1)
@@ -880,124 +898,16 @@ THEN
     MoveGlobal("AR4500","%dv%",[1999.1218])
     ActionOverride("%dv%",Face(S))
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
-    ActionOverride("%dv%",JoinParty())
-    MoveToExpansion()
-    SetGlobal("%SummonedVar%","GLOBAL",-1)
-END
-
-IF
-  Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%SummonedVar%","GLOBAL",-1)
-  Global("%SpawnPlaneVar%","GLOBAL",0)
-  XPLT("%dv%",2500000)
-THEN
-  RESPONSE #100
-    ActionOverride("%dv%",ChangeStat(Myself,XP,2500000,SET))
-    Continue()
-END
-
-IF
-  Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%SummonedVar%","GLOBAL",-1)
-  Global("%SpawnPlaneVar%","GLOBAL",0)
-THEN
-  RESPONSE #100
-    ActionOverride("%dv%",LeaveParty())
-    ActionOverride("%dv%",SetBeenInPartyFlags())
     ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
     ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
-    SetGlobal("%SummonedVar%","GLOBAL",1)
-    Continue()
 END
 </pre>
 </div>
+</ul>
 
 <p>Depending on which variables you set in EET_TRANSITION code, different combination of above patching will take place.</p>
-
-<p>If your mod changes BG2 plot to introduce Ajantis, Coran, Faldorn, Khalid, Safana, Tiax or Xzar as joinable NPCs in BG2 portion of the game than keep in mind that EET uses following code to properly set <a href="http://www.shsforums.net/topic/15817-dead-and-sprite-is-dead-varisbles/">SPRITEISDEAD variable</a> when BG2 version of them dies. Depending on how your mod is written you may need to clean changes made by EET in area scripts, implemented by this code:</p>
-
-<div class="code">
-<pre>
-<<<<<<<< .../SPRITEISDEAD-eb.baf
-IF
-  Global("K#Dead%dv_1%","%area%",0)
-  OR(2)
-    Dead("%dv%")
-    StateCheck("%dv%",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    SetGlobal("K#Dead%dv_1%","%area%",1)
-    SetGlobal("SPRITEISDEAD%dv_1%","GLOBAL",1)
-    Continue()
-END
->>>>>>>>
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_bg2bcs_dvArea BEGIN
-  palkni04 , Ajantis => AR1200
-  c6coran , Coran => AR2600
-  cefaldor , Faldorn => AR1901
-  cefald01 , Faldorn => AR1901
-  DeadKhalid , Khalid => AR0603
-  c6safa , Safana => AR2600
-  pptiax , Tiax => AR1515
-  pptiax2 , Tiax => AR1515
-  Lyros , Xzar => AR0300
-END
-
-ACTION_PHP_EACH table_bg2bcs_dvArea AS dv => area BEGIN
-  EXTEND_BOTTOM ~%area%.BCS~ ~.../SPRITEISDEAD-eb.baf~ EVALUATE_BUFFER
-END
-</pre>
-</div>
-
-<a id="Workaround for PDIALOG.2DA forced dialogue swaps" name="Workaround for PDIALOG.2DA forced dialogue swaps"></a>
-<h3>Workaround for PDIALOG.2DA forced dialogue swaps</h3>
-<p>Some mods adding BG1 NPCs to BG2, claims to be compatible with BGT, but uses different Death Variables (script names) through both games. There is no way to alter DV during transition, which means such mods must create new creatures for BG2 portion of the game, instead of providing continuity using existing BG1 files. I'm not quite sure why modders decides for such solution, but if it's related to PDIALOG.2DA that forces to use the same JOIN (main dialogue), POST and BANTER files, than I'd like to share a hint how to bypass this limitation:</p>
-
-<ul>
-<li><strong>Appending new dialogues to existing files</strong> - just add proper <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">trigger filtering</a> for your dialogues. This is the only known way to share BANTER dialogues although it can be also used for JOIN and POST files. In case you want to append BG2 dialogue files to vanilla BG1 dialogues consider using this code on the already existing dialogue file, which will automatically add ENDOFBG1 filtering to all relevant dialogue states:</li>
-<div class="code">
-<pre>
-COPY_EXISTING ~dialogName.DLG~ ~override~
-  DECOMPILE_AND_PATCH BEGIN
-    REPLACE_TEXTUALLY CASE_SENSITIVE ~\(^IF .*\)  ~ ~\1GlobalLT("ENDOFBG1","GLOBAL",2)
-~
-  END
-BUT_ONLY
-</pre>
-</div>
-</ul>
-
-<ul>
-<li><strong>Use EET workaround to separate JOIN and POST dialogues between games</strong> - this can eliminate potential problems with BG1 dialogues triggering in BG2 and other way around. Also less stress when it comes to mod compatibility as well as shorter and easier to analyse dialogue files. Instead of letting the engine swap these dialogue files automatically we will do it manually with this code added on top of NPC Override local scripts:</li>
-
-<div class="code">
-<pre>
-//assigns JOIN dialogue file
-IF
-  ActionListEmpty()
-  InPartyAllowDead(Myself)
-THEN
-  RESPONSE #100
-    SetDialog("%dlg%")
-    Continue()
-END
-
-//assigns POST dialogue file
-IF
-  ActionListEmpty()
-  !InPartyAllowDead(Myself)
-  GlobalGT("HASBEENINPARTY","LOCALS",0)
-THEN
-  RESPONSE #100
-    SetDialog("%dlg_1%")
-    Continue()
-END
-</pre>
-</div>
-</ul>
 
 <a id="Workaround for CalanderDay command in SoD/BG2 portion of the game" name="Workaround for CalanderDay command in SoD/BG2 portion of the game"></a>
 <h3>Workaround for CalanderDay command in SoD/BG2 portion of the game</h3>

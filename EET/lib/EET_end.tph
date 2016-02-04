@@ -1,0 +1,186 @@
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN //columns: modified dialogue, dialogue appended to, trigger filtering
+//source join/post
+	AERIEJ   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	AERIEP   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	ANOMENJ  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	ANOMENP  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	CERNDJ   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	CERNDP   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	DORNJ    , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	DORNP    , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	EDWINJ   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	EDWINP   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	HAERDAJ  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	HAERDAP  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	HEXXATJ  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	HEXXATP  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	IMOEN2J  , ~~       => ~GlobalLT("ENDOFBG2","GLOBAL",2)%LNL%GlobalGT("CHAPTER","GLOBAL",3)~
+	IMOEN2P  , ~~       => ~GlobalLT("ENDOFBG2","GLOBAL",2)%LNL%GlobalGT("CHAPTER","GLOBAL",3)~
+	JAHEIRAJ , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	JAHEIRAP , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	JANJ     , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	JANP     , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	KELDORJ  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	KELDORP  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	KORGANJ  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	KORGANP  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	MAZZYJ   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	MAZZYP   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	MINSCJ   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	MINSCP   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	NALIAJ   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	NALIAP   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	NEERAJ   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	NEERAP   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	RASAADJ  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	RASAADP  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	VALYGARJ , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	VALYGARP , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	VICONIJ  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	VICONIP  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+//source banter
+	BAERIE   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BANOMEN  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BCERND   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BEDWIN   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BHAERDA  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BJAHEIR  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BJAN     , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BKELDOR  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BKORGAN  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BMAZZY   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BMINSC   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BNALIA   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BVALYGA  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BVICONI  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BIMOEN2  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BRASAAD  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BDORN    , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BHEXXAT  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	BNEERA   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+//BG1 banter
+	BDORN_   , BDORN    => ~Global("ENDOFBG1","GLOBAL",0)~
+	BEDWIN_  , BEDWIN   => ~Global("ENDOFBG1","GLOBAL",0)~
+	BIMOEN   , BIMOEN2  => ~Global("ENDOFBG1","GLOBAL",0)~
+	BJAHEI   , BJAHEIR  => ~Global("ENDOFBG1","GLOBAL",0)~
+	BMINSC_  , BMINSC   => ~Global("ENDOFBG1","GLOBAL",0)~
+	BNEERA_  , BNEERA   => ~Global("ENDOFBG1","GLOBAL",0)~
+	BRASAAD_ , BRASAAD  => ~Global("ENDOFBG1","GLOBAL",0)~
+	BVICON   , BVICONI  => ~Global("ENDOFBG1","GLOBAL",0)~
+//ToB banter
+	BAERIE25 , BAERIE   => ~Global("ENDOFBG2","GLOBAL",2)~
+	BANOME25 , BANOMEN  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BCERND25 , BCERND   => ~Global("ENDOFBG2","GLOBAL",2)~
+	BEDWIN25 , BEDWIN   => ~Global("ENDOFBG2","GLOBAL",2)~
+	BHAERD25 , BHAERDA  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BJAHEI25 , BJAHEIR  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BJAN25   , BJAN     => ~Global("ENDOFBG2","GLOBAL",2)~
+	BKELDO25 , BKELDOR  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BKORGA25 , BKORGAN  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BMAZZY25 , BMAZZY   => ~Global("ENDOFBG2","GLOBAL",2)~
+	BMINSC25 , BMINSC   => ~Global("ENDOFBG2","GLOBAL",2)~
+	BNALIA25 , BNALIA   => ~Global("ENDOFBG2","GLOBAL",2)~
+	BVALYG25 , BVALYGA  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BVICON25 , BVICONI  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BIMOEN25 , BIMOEN2  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BRASAA25 , BRASAAD  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BDORN25  , BDORN    => ~Global("ENDOFBG2","GLOBAL",2)~
+	BHEXXA25 , BHEXXAT  => ~Global("ENDOFBG2","GLOBAL",2)~
+	BNEERA25 , BNEERA   => ~Global("ENDOFBG2","GLOBAL",2)~
+//BG2 Irenicus Dungeon Imoen
+	IMOENJ   , IMOEN2J  => ~Global("ENDOFBG1","GLOBAL",2)%LNL%Global("CHAPTER","GLOBAL",1)~
+	IMOENP   , IMOEN2P  => ~Global("ENDOFBG1","GLOBAL",2)%LNL%Global("CHAPTER","GLOBAL",1)~
+//BG1 Join
+    DORNJ_   , DORNJ    => ~Global("ENDOFBG1","GLOBAL",0)~
+    EDWINJ_  , EDWINJ   => ~Global("ENDOFBG1","GLOBAL",0)~
+    IMOEN2_  , IMOEN2J  => ~Global("ENDOFBG1","GLOBAL",0)~
+    JAHEIJ   , JAHEIRAJ => ~Global("ENDOFBG1","GLOBAL",0)~
+    MINSCJ_  , MINSCJ   => ~Global("ENDOFBG1","GLOBAL",0)~
+    NEERAJ_  , NEERAJ   => ~Global("ENDOFBG1","GLOBAL",0)~
+    RASAADJ_ , RASAADJ  => ~Global("ENDOFBG1","GLOBAL",0)~
+    VICONJ   , VICONIJ  => ~Global("ENDOFBG1","GLOBAL",0)~
+//BG1 Post
+    DORNP_   , DORNP    => ~Global("ENDOFBG1","GLOBAL",0)~
+    EDWINP_  , EDWINP   => ~Global("ENDOFBG1","GLOBAL",0)~
+    IMOENP_  , IMOEN2P  => ~Global("ENDOFBG1","GLOBAL",0)~
+    JAHEIP   , JAHEIRAP => ~Global("ENDOFBG1","GLOBAL",0)~
+    MINSCP_  , MINSCP   => ~Global("ENDOFBG1","GLOBAL",0)~
+    NEERAP_  , NEERAP   => ~Global("ENDOFBG1","GLOBAL",0)~
+    RASAADP_ , RASAADP  => ~Global("ENDOFBG1","GLOBAL",0)~
+    VICONP   , VICONIP  => ~Global("ENDOFBG1","GLOBAL",0)~
+//ToB Join
+	AERIE25J , AERIEJ   => ~Global("ENDOFBG2","GLOBAL",2)~
+	ANOME25J , ANOMENJ  => ~Global("ENDOFBG2","GLOBAL",2)~
+	CERND25J , CERNDJ   => ~Global("ENDOFBG2","GLOBAL",2)~
+	EDWIN25J , EDWINJ   => ~Global("ENDOFBG2","GLOBAL",2)~
+	HAERD25J , HAERDAJ  => ~Global("ENDOFBG2","GLOBAL",2)~
+	IMOEN25J , IMOEN2J  => ~Global("ENDOFBG2","GLOBAL",2)~
+	JAHEI25J , JAHEIRAJ => ~Global("ENDOFBG2","GLOBAL",2)~
+	JAN25J   , JANJ     => ~Global("ENDOFBG2","GLOBAL",2)~
+	KELDO25J , KELDORJ  => ~Global("ENDOFBG2","GLOBAL",2)~
+	KORGA25J , KORGANJ  => ~Global("ENDOFBG2","GLOBAL",2)~
+	MAZZY25J , MAZZYJ   => ~Global("ENDOFBG2","GLOBAL",2)~
+	MINSC25J , MINSCJ   => ~Global("ENDOFBG2","GLOBAL",2)~
+	NALIA25J , NALIAJ   => ~Global("ENDOFBG2","GLOBAL",2)~
+	VALYG25J , VALYGARJ => ~Global("ENDOFBG2","GLOBAL",2)~
+	VICON25J , VICONIJ  => ~Global("ENDOFBG2","GLOBAL",2)~
+	RASAA25J , RASAADJ  => ~Global("ENDOFBG2","GLOBAL",2)~
+	DORN25J  , DORNJ    => ~Global("ENDOFBG2","GLOBAL",2)~
+	HEXXA25J , HEXXATJ  => ~Global("ENDOFBG2","GLOBAL",2)~
+	NEERA25J , NEERAJ   => ~Global("ENDOFBG2","GLOBAL",2)~
+//ToB Post
+	AERIE25P , AERIEP   => ~Global("ENDOFBG2","GLOBAL",2)~
+	ANOME25P , ANOMENP  => ~Global("ENDOFBG2","GLOBAL",2)~
+	CERND25P , CERNDP   => ~Global("ENDOFBG2","GLOBAL",2)~
+	EDWIN25P , EDWINP   => ~Global("ENDOFBG2","GLOBAL",2)~
+	HAERD25P , HAERDAP  => ~Global("ENDOFBG2","GLOBAL",2)~
+	IMOEN25P , IMOEN2P  => ~Global("ENDOFBG2","GLOBAL",2)~
+	JAHEI25P , JAHEIRAP => ~Global("ENDOFBG2","GLOBAL",2)~
+	JAN25P   , JANP     => ~Global("ENDOFBG2","GLOBAL",2)~
+	KELDO25P , KELDORP  => ~Global("ENDOFBG2","GLOBAL",2)~
+	KORGA25P , KORGANP  => ~Global("ENDOFBG2","GLOBAL",2)~
+	MAZZY25P , MAZZYP   => ~Global("ENDOFBG2","GLOBAL",2)~
+	MINSC25P , MINSCP   => ~Global("ENDOFBG2","GLOBAL",2)~
+	NALIA25P , NALIAP   => ~Global("ENDOFBG2","GLOBAL",2)~
+	VALYG25P , VALYGARP => ~Global("ENDOFBG2","GLOBAL",2)~
+	VICON25P , VICONIP  => ~Global("ENDOFBG2","GLOBAL",2)~
+	RASAA25P , RASAADP  => ~Global("ENDOFBG2","GLOBAL",2)~
+	DORN25P  , DORNP    => ~Global("ENDOFBG2","GLOBAL",2)~
+	HEXXA25P , HEXXATP  => ~Global("ENDOFBG2","GLOBAL",2)~
+	NEERA25P , NEERAP   => ~Global("ENDOFBG2","GLOBAL",2)~
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_append_bcs BEGIN
+//source
+	AERIED   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	ANOMEND  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	DORND    , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	EDWIND   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	HEXXATD  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	IMOEN2D  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	JAHEIRAD , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	MINSCD   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	NEERAD   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	RASAADD  , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+	VICOND   , ~~       => ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+//BG2 Irenicus Dungeon Imoen
+	IMOEND   , IMOEN2D  => ~Global("ENDOFBG1","GLOBAL",2)%LNL%Global("CHAPTER","GLOBAL",1)~
+//BG1
+	DORND_   , DORND    => ~Global("ENDOFBG1","GLOBAL",0)~
+	EDWIND_  , EDWIND   => ~Global("ENDOFBG1","GLOBAL",0)~
+	IMOEND_  , IMOEN2D  => ~Global("ENDOFBG1","GLOBAL",0)~
+	JAHEID   , JAHEIRAD => ~Global("ENDOFBG1","GLOBAL",0)~
+	MINSCD_  , MINSCD   => ~Global("ENDOFBG1","GLOBAL",0)~
+	NEERAD_  , NEERAD   => ~Global("ENDOFBG1","GLOBAL",0)~
+	RASAADD_ , RASAADD  => ~Global("ENDOFBG1","GLOBAL",0)~
+	VICOND_  , VICOND   => ~Global("ENDOFBG1","GLOBAL",0)~
+//ToB
+	AERIE25D , AERIED   => ~Global("ENDOFBG2","GLOBAL",2)~
+	ANOME25D , ANOMEND  => ~Global("ENDOFBG2","GLOBAL",2)~
+	JAHEI25D , JAHEIRAD => ~Global("ENDOFBG2","GLOBAL",2)~
+	VICON25D , VICOND   => ~Global("ENDOFBG2","GLOBAL",2)~
+	RASAA25D , RASAADD  => ~Global("ENDOFBG2","GLOBAL",2)~
+	DORN25D  , DORND    => ~Global("ENDOFBG2","GLOBAL",2)~
+	HEXXA25D , HEXXATD  => ~Global("ENDOFBG2","GLOBAL",2)~
+	NEERA25D , NEERAD   => ~Global("ENDOFBG2","GLOBAL",2)~
+END

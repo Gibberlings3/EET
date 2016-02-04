@@ -34,57 +34,7 @@ COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 BUT_ONLY*/
 
 /////                                                  \\\\\
-///// Set SPRITEISDEAD if BG2 version of DV dies       \\\\\
-/////                                                  \\\\\
-
-<<<<<<<< .../SPRITEISDEAD-eb.baf
-IF
-  Global("K#Dead%dv_1%","%area%",0)
-  OR(2)
-    Dead("%dv%")
-    StateCheck("%dv%",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    SetGlobal("K#Dead%dv_1%","%area%",1)
-    SetGlobal("SPRITEISDEAD%dv_1%","GLOBAL",1)
-    Continue()
-END
->>>>>>>>
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY "table_bg2bcs_dvArea" BEGIN
-	palkni04 , Ajantis => AR1200
-	c6coran , Coran => AR2600
-	cefaldor , Faldorn => AR1901
-	cefald01 , Faldorn => AR1901
-	DeadKhalid , Khalid => AR0603
-	c6safa , Safana => AR2600
-	pptiax , Tiax => AR1515
-	pptiax2 , Tiax => AR1515
-	Lyros , Xzar => AR0300
-END
-
-ACTION_PHP_EACH "table_bg2bcs_dvArea" AS dv => area BEGIN
-	EXTEND_BOTTOM ~%area%.BCS~ ~.../SPRITEISDEAD-eb.baf~ EVALUATE_BUFFER
-END
-
-/////                                                  \\\\\
-///// BG:EE Tanari (BG2:EE version used as a base)     \\\\\
-/////                                                  \\\\\
-
-COPY_EXISTING ~TANARI.BCS~ ~override/TANARI_.BCS~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ForceSpell(\([^,]*\),TANARI_DEATH_GAZE)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpellRES("SPIN996_",\1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-
-/////                                                  \\\\\
-///// BALDUR.BCS / BALDUR25.BCS                        \\\\\
+///// BALDUR.BCS                                       \\\\\
 /////                                                  \\\\\
 
 <<<<<<<< .../BALDUR-eb.baf
@@ -127,6 +77,72 @@ THEN
     ReputationInc(2)
     SetGlobal("BaelothJoinedParty","GLOBAL",0)
 END
+
+//code from ToB
+IF
+  Global("UseSmith","GLOBAL",1)
+THEN
+  RESPONSE #100
+    CreateCreatureObject("botsmith",Player1,0,0,0) // Cespenar
+    SetGlobal("UseSmith","GLOBAL",0)
+END
+
+IF
+  Dead("gromnir")
+  Global("DeathOfGromnir","GLOBAL",0)
+  CombatCounter(0)
+  !AreaCheck("AR4500")
+THEN
+  RESPONSE #100
+    ClearAllActions()
+    StartCutSceneMode()
+    SetGlobal("DeathOfGromnir","GLOBAL",1)
+    CreateCreatureObjectEffect("MEL01","SPFLESHS",Player1)
+    Wait(1)
+    PlaySong(79)
+    ActionOverride("mel01",StartDialogueNoSet(Player1))
+    EndCutSceneMode()
+END
+
+IF
+  Global("OHD_inscribed_noober","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("OHD_inscribed_noober","GLOBAL",2)
+    SetGlobalTimer("OHD_noober_timer","GLOBAL",FOURTEEN_DAYS)
+END
+
+IF
+  Global("OHD_inscribed_noober","GLOBAL",2)
+  GlobalTimerExpired("OHD_noober_timer","GLOBAL")
+  CombatCounter(0)
+  !AreaCheck("AR4500")
+  !AreaType(DUNGEON)
+THEN
+  RESPONSE #100
+    SetGlobal("OHD_inscribed_noober","GLOBAL",3)
+    CreateCreatureOffScreen("OHDNOOB",SW) // Noober
+END
+
+IF
+  Global("OHH_hexxatmortal","GLOBAL",3)
+  Global("OHH_finaljournal","GLOBAL",0)
+  !Global("HexxatRomanceActive","GLOBAL",2)
+THEN
+  RESPONSE #100
+    AddJournalEntry(86507,INFO) // The mystery of L has been solved, though in truth I'd be happier if it weren't. The mighty lich Larloch fulfilled his promise to Hexxat, but doing so exacted a terrible price.
+    SetGlobal("OHH_finaljournal","GLOBAL",1)
+END
+
+IF
+  Global("OHH_hexxatmortal","GLOBAL",3)
+  Global("OHH_finaljournal","GLOBAL",0)
+  Global("HexxatRomanceActive","GLOBAL",2)
+THEN
+  RESPONSE #100
+    AddJournalEntry(86508,INFO) // The mystery of L has been solved, though in truth I'd be happier if it weren't. The mighty lich Larloch fulfilled his promise to Hexxat, but doing so exacted a terrible price. I know this was what she desired, but a selfish part of me will always wish otherwise.
+    SetGlobal("OHH_finaljournal","GLOBAL",1)
+END
 >>>>>>>>
 
 EXTEND_BOTTOM ~BALDUR.BCS~ ~.../BALDUR-eb.baf~
@@ -163,7 +179,7 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~BALDUR.BCS~ ~.../timers-et.baf~
-EXTEND_TOP ~BALDUR25.BCS~ ~.../timers-et.baf~
+//COPY ~EET/base/blank.bcs~ ~override/BALDUR25.BCS~
 
 /////                                                  \\\\\
 ///// DS3483.BCS (Town Crier)                          \\\\\
@@ -609,14 +625,21 @@ EXTEND_BOTTOM ~JAHEIRA.BCS~ ~.../JAHEIRA-eb.baf~
 ///// ToB transition                                   \\\\\
 /////                                                  \\\\\
 
-/*COPY_EXISTING ~CUT100A.BCS~ ~override~
+COPY_EXISTING ~CUT100A.BCS~ ~override~
 	~CUT100B.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~StartMovie("INTRO")~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~StartMovie("INTROTOB")~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 		SPRINT textToReplace ~MoveToExpansion()~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~MoveToExpansion()
-    LeaveAreaLUAPanic("AR4000","",[1300.1840],W)
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~LeaveAreaLUAPanic("AR4000","",[1300.1840],W)
     LeaveAreaLUA("AR4000","",[1300.1840],W)
     ActionOverride(Player2,LeaveAreaLUA("AR4000","",[1300.1840],W))
     ActionOverride(Player3,LeaveAreaLUA("AR4000","",[1300.1840],W))
@@ -628,7 +651,7 @@ EXTEND_BOTTOM ~JAHEIRA.BCS~ ~.../JAHEIRA-eb.baf~
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
-BUT_ONLY*/
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// AR0304 (Edwin spawn)                             \\\\\
@@ -718,13 +741,11 @@ COPY_EXISTING ~AR0602.BCS~ ~override~
 		SPRINT textToReplace ~SetGlobal("NewGame","AR0602",1)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("ENDOFBG1","GLOBAL",2)
-    SetGlobal("NewGame","AR0602",1)
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("NewGame","AR0602",1)
     ActionOverride(Player1,SetPlayerSound(Myself,15881,EXISTANCE5))
     SetCursorState(TRUE)
     MoveViewPoint([0.0],INSTANT)
-    SmallWait(10)
-    StartMovie("INTRO15F")~
+    SmallWait(10)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -891,6 +912,72 @@ THEN
   RESPONSE #100
     CreateCreature("Minsc12",[4029.2759],6) // Minsc
     SetGlobal("MinscImport","GLOBAL",1)
+    Continue()
+END
+
+IF
+  Global("K#NewGame","AR0602",1)
+  Global("MoveScreen","AR0602",1)
+  ReputationGT(Player1,9)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","AR0602",2)
+    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Leczenie lekkich ran
+    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Spowolnienie trucizny
+    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Spowolnienie trucizny
+    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Przywołanie boskiej mocy
+    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Przywołanie boskiej mocy
+    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Leczenie lekkich ran
+    Continue()
+END
+
+IF
+  Global("K#NewGame","AR0602",1)
+  Global("MoveScreen","AR0602",1)
+  ReputationLT(Player1,10)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","AR0602",2)
+    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Pomniejsze drążenie Larlocha
+    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Groza
+    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Groza
+    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Wampiryczne dotknięcie
+    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Wampiryczne dotknięcie
+    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Pomniejsze drążenie Larlocha
+    Continue()
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("K#NewGame","AR0602",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","AR0602",1)
+    SetGlobal("ENDOFBG1","GLOBAL",2)
+    SetGlobal("NEWGAME_SOA","GLOBAL",1)
+    SetGlobal("K#temp","GLOBAL",364)
+    AddGlobals("K#DaysPassed","K#temp")
+    AdvanceTime(ONE_YEAR)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0602","",[3744.2801],S))
+    ActionOverride(Player1,LeaveAreaLUA("AR0602","",[3744.2801],S))
+    ActionOverride(Player2,LeaveAreaLUA("AR0602","",[3585.2917],SWW))
+    ActionOverride(Player3,LeaveAreaLUA("AR0602","",[3532.2956],NW))
+    ActionOverride(Player4,LeaveAreaLUA("AR0602","",[3374.3068],NNE))
+    ActionOverride(Player5,LeaveAreaLUA("AR0602","",[3824.2447],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0602","",[3889.2479],SSE))
+    TakeItemListPartyNum("K#PLOT",99)
+    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
+    Continue()
+END
+
+IF
+  !Global("ENDOFBG1","GLOBAL",0)
+  Global("K#NewGame","AR0602",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","AR0602",2)
+    SetGlobal("ENDOFBG1","GLOBAL",2)
+    StartMovie("INTRO")
     Continue()
 END
 >>>>>>>>
@@ -1212,41 +1299,42 @@ BUT_ONLY
 
 COPY_EXISTING ~AR4000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SetGlobal("TurnDay","AR4000",1)~
+		SPRINT textToReplace ~IF[%newline%]*InParty(".+")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("TurnDay","AR4000",1)
-    SetGlobal("ENDOFBG1","GLOBAL",2)
-    SetGlobal("ENDOFBG2","GLOBAL",2)
-    RevealAreaOnMap("BG0000")
-    RevealAreaOnMap("AR4000")
-    CreateCreatureObject("K#FAMREM",Player1,0,0,0)~
+		PATCH_IF (num_matches < 21) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~Warning: could not find 21 matches for %textToReplace% in %SOURCE_FILESPEC%~
 		END
-
-		/*SPRINT textToReplace ~Global("FORCETOBPARTYMOVE4000","GLOBAL",0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("FORCETOBPARTYMOVE4000","GLOBAL",0)
-    False()~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
 	END
 BUT_ONLY
 
 <<<<<<<< .../AR4000-et.baf
 IF
-  Global("NEWGAME_TOB","GLOBAL",0)
-  Global("ENDOFBG1","GLOBAL",0) //New Game started in ToB
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("K#NewGame","AR4000",0)
 THEN
   RESPONSE #100
+    SetGlobal("K#NewGame","AR4000",1)
+    SetGlobal("ENDOFBG1","GLOBAL",2)
+    SetGlobal("ENDOFBG2","GLOBAL",2)
+    SetGlobal("NEWGAME_TOB","GLOBAL",1)
+    StartMovie("INTROTOB")
     TakeItemListPartyNum("K#PLOT",99)
-    SetGlobal("SPRITE_IS_DEADYoshimo","GLOBAL",1)
-    SetGlobal("NEWGAME_TOB","GLOBAL",1) //used to determinate if NPCs not met in BG2 should be spawned
+    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
+    Continue()
+END
+
+IF
+  !Global("ENDOFBG1","GLOBAL",0)
+  Global("K#NewGame","AR4000",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","AR4000",1)
+    SetGlobal("ENDOFBG1","GLOBAL",2)
+    SetGlobal("ENDOFBG2","GLOBAL",2)
+    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
     Continue()
 END
 >>>>>>>>

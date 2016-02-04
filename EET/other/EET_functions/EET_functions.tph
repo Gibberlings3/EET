@@ -355,16 +355,15 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 		ACTION_IF (clean_ToB = 1) BEGIN
 			COPY_EXISTING ~AR4000.BCS~ ~override~
 				DECOMPILE_AND_PATCH BEGIN
-					REPLACE_TEXTUALLY ~IF[%newline%]*InParty("%clean_ToB_DV%")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*InParty("%clean_ToB_DV%")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~ ~~
 					REPLACE_TEXTUALLY ~IF[%newline%]*Global(".+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG1","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*Continue()[%newline%]*END~ ~~
 					REPLACE_TEXTUALLY ~SetGlobal("%clean_ToB_DV%PartyBG2","GLOBAL",1)~ ~~
 				END
 			BUT_ONLY
 			COPY_EXISTING ~AR4500.BCS~ ~override~
 				DECOMPILE_AND_PATCH BEGIN
-					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CreateVisualEffect("SPPORTAL",\[.+\])[%newline%]*Wait(2)[%newline%]*MoveGlobal("AR4500","%clean_ToB_DV%",\[.+\])[%newline%]*ActionOverride("%clean_ToB_DV%",Face(.+))[%newline%]*ActionOverride("%clean_ToB_DV%",SetNumTimesTalkedTo(0))[%newline%]*ActionOverride("%clean_ToB_DV%",JoinParty())[%newline%]*MoveToExpansion()[%newline%]*SetGlobal(".+","GLOBAL",-1)[%newline%]*END~ ~~
-					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",-1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*XPLT("%clean_ToB_DV%",2500000)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeStat(Myself,XP,[0-9]+,SET))[%newline%]*Continue()[%newline%]*END~ ~~
-					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",-1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",LeaveParty())[%newline%]*ActionOverride("%clean_ToB_DV%",SetBeenInPartyFlags())[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*ActionOverride("%clean_ToB_DV%",SetDialogu?e?(".+"))[%newline%]*ActionOverride("%clean_ToB_DV%",SetGlobal("KickedOut","LOCALS",0))[%newline%]*SetGlobal(".+","GLOBAL",1)[%newline%]*SetGlobal(".+","GLOBAL",1)[%newline%]*Continue()[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*InParty("%clean_ToB_DV%")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CreateVisualEffect("SPPORTAL",\[.+\])[%newline%]*Wait(2)[%newline%]*MoveGlobal("AR4500","%clean_ToB_DV%",\[.+\])[%newline%]*ActionOverride("%clean_ToB_DV%",Face(.+))[%newline%]*ActionOverride("%clean_ToB_DV%",SetNumTimesTalkedTo(0))[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*ActionOverride("%clean_ToB_DV%",SetDialogu?e?(".+"))[%newline%]*ActionOverride("%clean_ToB_DV%",SetGlobal("KickedOut","LOCALS",0))[%newline%]*SetGlobal(".+","GLOBAL",1)[%newline%]*END~ ~~
 				END
 			BUT_ONLY
 			COPY_EXISTING ~FATESP.DLG~ ~override~
@@ -593,8 +592,7 @@ END
 					PATCH_IF (num_matches > 0) BEGIN
 						PATCH_PRINT ~AR4000.BCS already has "%dv%PartyBG2" reference. Patching not needed~
 					END ELSE BEGIN
-						REPLACE_TEXTUALLY ~\(SetGlobal("NEWGAME_TOB","GLOBAL",1)\)~ ~SetGlobal("%dv%PartyBG2","GLOBAL",1)
-    \1~
+						REPLACE_TEXTUALLY ~\(SetGlobal("NEWGAME_TOB","GLOBAL",1)\)~ ~SetGlobal("%dv%PartyBG2","GLOBAL",1)%LNL%\1~
 					END
 				END
 				COUNT_REGEXP_INSTANCES ~SetGlobal("%SummonedVar%","GLOBAL",2)~ num_matches
@@ -603,23 +601,24 @@ END
 		BUT_ONLY
 		ACTION_IF (num_matches > 0) BEGIN
 			PRINT ~AR4000.BCS already has %SummonedVar% reference. Patching not needed (unless some mod messed it up)~
-		END ELSE BEGIN
+		END ELSE ACTION_IF (type != 1) /*not BG1 NPC without BG2 content*/ BEGIN
 <<<<<<<< .../AR4000-eb1.baf
 IF
   InParty("%dv%")
   Global("%SummonedVar%","GLOBAL",0)
 THEN
   RESPONSE #100
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
     SetGlobal("%SummonedVar%","GLOBAL",2)
 END
 >>>>>>>>
-				PRINT ~Patching AR4000.BCS: %SummonedVar%~
-				EXTEND_BOTTOM ~AR4000.BCS~ ~.../AR4000-eb1.baf~ EVALUATE_BUFFER
-			END
+			PRINT ~Patching AR4000.BCS: %SummonedVar%~
+			EXTEND_BOTTOM ~AR4000.BCS~ ~.../AR4000-eb1.baf~ EVALUATE_BUFFER
+		END
 
-			ACTION_IF (num_matches2 > 0) BEGIN
-				PRINT ~AR4000.BCS already has %dv%Party reference. Patching not needed (unless some mod messed it up)~
-			END ELSE BEGIN
+		ACTION_IF (num_matches2 > 0) BEGIN
+			PRINT ~AR4000.BCS already has %dv%Party reference. Patching not needed (unless some mod messed it up)~
+		END ELSE BEGIN
 <<<<<<<< .../AR4000-eb2.baf
 IF
   Global("%SummonedVar%","GLOBAL",0)
@@ -647,6 +646,15 @@ END
 			END ELSE BEGIN
 <<<<<<<< .../AR4500-eb.baf
 IF
+  InParty("%dv%")
+  Global("%SummonedVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
+    SetGlobal("%SummonedVar%","GLOBAL",2)
+END
+
+IF
   Global("NEWGAME_TOB","GLOBAL",0)
   Global("%SummonedVar%","GLOBAL",1)
   Global("%SpawnPlaneVar%","GLOBAL",0)
@@ -657,37 +665,10 @@ THEN
     MoveGlobal("AR4500","%dv%",[1999.1218])
     ActionOverride("%dv%",Face(S))
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
-    ActionOverride("%dv%",JoinParty())
-    MoveToExpansion()
-    SetGlobal("%SummonedVar%","GLOBAL",-1)
-    //Continue()
-END
-
-IF
-  Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%SummonedVar%","GLOBAL",-1)
-  Global("%SpawnPlaneVar%","GLOBAL",0)
-  XPLT("%dv%",2500000)
-THEN
-  RESPONSE #100
-    ActionOverride("%dv%",ChangeStat(Myself,XP,2500000,SET))
-    Continue()
-END
-
-IF
-  Global("NEWGAME_TOB","GLOBAL",0)
-  Global("%SummonedVar%","GLOBAL",-1)
-  Global("%SpawnPlaneVar%","GLOBAL",0)
-THEN
-  RESPONSE #100
-    ActionOverride("%dv%",LeaveParty())
-    ActionOverride("%dv%",SetBeenInPartyFlags())
     ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
     ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
-    SetGlobal("%SummonedVar%","GLOBAL",1)
-    Continue()
 END
 >>>>>>>>
 				PRINT ~Patching AR4500.BCS~
@@ -695,4 +676,88 @@ END
 			END
 		END
 	END
+END
+
+/////                                                  \\\\\
+///// Action function: EET_NPC_ENDMERGE                \\\\\
+/////                                                  \\\\\
+
+DEFINE_ACTION_FUNCTION ~EET_NPC_ENDMERGE~
+	STR_VAR
+		dv = ""
+	BEGIN
+	OUTER_SPRINT t "~"
+	COPY_EXISTING ~PDIALOG.2DA~ ~override~
+		SET append_dlg = 0
+		SET append_bcs = 0
+		PATCH_FOR_EACH var IN append_join append_25join append_post append_25post append_dream append_25dream append_banter append_25banter BEGIN
+			SPRINT EVAL ~%var%~ ~~
+		END
+		READ_2DA_ENTRIES_NOW pdialog 8
+		FOR (i=0; i < pdialog; ++i) BEGIN
+			READ_2DA_ENTRY_FORMER pdialog i 0 npc
+			PATCH_IF ~%npc%~ STRING_EQUAL_CASE ~%dv%~ BEGIN
+				READ_2DA_ENTRY_FORMER pdialog i 1 post
+				READ_2DA_ENTRY_FORMER pdialog i 2 join
+				READ_2DA_ENTRY_FORMER pdialog i 3 dream
+				READ_2DA_ENTRY_FORMER pdialog i 4 25post
+				READ_2DA_ENTRY_FORMER pdialog i 5 25join
+				READ_2DA_ENTRY_FORMER pdialog i 6 25dream
+				PATCH_IF (NOT ~%join%~ STRING_EQUAL_CASE ~%25join%~) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) BEGIN
+					SET append_dlg = 1
+					SPRINT append_join ~%t%%join%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
+					SPRINT append_25join ~%t%%25join%%t% , %t%%join%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
+				END
+				PATCH_IF (NOT ~%post%~ STRING_EQUAL_CASE ~%25post%~) AND (FILE_EXISTS_IN_GAME ~%25post%.dlg~) BEGIN
+					SET append_dlg = 1
+					SPRINT append_post ~%t%%post%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
+					SPRINT append_25post ~%t%%25post%%t% , %t%%post%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
+				END
+				PATCH_IF (NOT ~%dream%~ STRING_EQUAL_CASE ~%25dream%~) AND (FILE_EXISTS_IN_GAME ~%25dream%.bcs~) BEGIN
+					SET append_bcs = 1
+					SPRINT append_dream ~%t%%dream%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
+					SPRINT append_25dream ~%t%%25dream%%t% , %t%%dream%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
+				END
+			END
+		END
+	BUT_ONLY
+	COPY_EXISTING ~INTERDIA.2DA~ ~override~
+		READ_2DA_ENTRIES_NOW interdia 3
+		FOR (i=0; i < interdia; ++i) BEGIN
+			READ_2DA_ENTRY_FORMER interdia i 0 npc
+			PATCH_IF ~%npc%~ STRING_EQUAL_CASE ~%dv%~ BEGIN
+				READ_2DA_ENTRY_FORMER interdia i 1 banter
+				READ_2DA_ENTRY_FORMER interdia i 2 25banter
+				PATCH_IF (NOT ~%banter%~ STRING_EQUAL_CASE ~%25banter%~) AND (FILE_EXISTS_IN_GAME ~%25banter%.dlg~) BEGIN
+					SET append_dlg = 1
+					SPRINT append_banter ~%t%%banter%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
+					SPRINT append_25banter ~%t%%25banter%%t% , %t%%banter%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
+				END
+			END
+		END
+	BUT_ONLY
+<<<<<<<< .../append_dlg.txt
+//appended by %dv% NPC
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN
+%append_join%
+%append_25join%
+%append_post%
+%append_25post%
+%append_banter%
+%append_25banter%
+END
+>>>>>>>>
+<<<<<<<< .../append_bcs.txt
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_append_bcs BEGIN
+%append_dream%
+%append_25dream%
+END
+>>>>>>>>
+	COPY ~EET/lib/EET_end.tph~ ~EET/lib~
+		PATCH_IF append_dlg = 1 BEGIN
+			APPEND_FILE ~.../append_dlg.txt~ EVALUATE_BUFFER
+		END
+		PATCH_IF append_bcs = 1 BEGIN
+			APPEND_FILE ~.../append_bcs.txt~ EVALUATE_BUFFER
+		END
 END

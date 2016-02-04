@@ -586,6 +586,14 @@ APPEND ~SNDSLOT.IDS~ ~74 BIO~     UNLESS ~ BIO~
 APPEND ~SONGLIST.IDS~ ~106 BPTHEME~ UNLESS ~ BPTHEME~
 //BG1 ones are added during songlist.2da patching
 
+COPY_EXISTING ~SONGLIST.IDS~ ~override~
+	//rearrangements to change music played in menu
+	REPLACE_TEXTUALLY ~BG2Theme~ ~pasteOldTheme~
+	REPLACE_TEXTUALLY ~ThemeT~ ~BG2Theme~
+	REPLACE_TEXTUALLY ~OldTheme~ ~ThemeT~
+	REPLACE_TEXTUALLY ~pasteOldTheme~ ~OldTheme~
+BUT_ONLY
+
 /////                                                  \\\\\
 ///// SOUNDOFF.IDS                                     \\\\\
 /////                                                  \\\\\

@@ -587,7 +587,7 @@ ACTION_BASH_FOR ~%biff_dir%~ ~^.+\.tis$~ BEGIN
 		ACTION_IF ( BASH_FOR_SIZE + currentTotal > 30000000 /* 30M */ && currentTotal > 0 ) BEGIN
 			OUTER_SET currentFile = currentFile + 1
 			OUTER_SET currentTotal = 0
-			MKDIR ~EET/temp/biff/eetMis%currentFile%~
+			MKDIR ~%biff_dir%/eetMis%currentFile%~
 		END
 		PRINT ~tis2bg2 conversion: %BASH_FOR_RES% => eetMis%currentFile%/%BASH_FOR_RES%~
 		AT_NOW ~%tis2bg2% -d -h -l -s "%BASH_FOR_RES%" "eetMis%currentFile%%os_slash%%BASH_FOR_RES%"~
@@ -627,8 +627,7 @@ LAM bash_log
 ///// prepare BG:EE resources for PCU conversion       \\\\\
 /////                                                  \\\\\
 
-MKDIR ~%patch_dir%/bcs_app~
-	~%patch_dir%/wed~
+MKDIR ~%patch_dir%/wed~
 
 ACTION_FOR_EACH dir IN "%biff_dir%" "%biff_dir%/eetMis0" BEGIN
 	ACTION_BASH_FOR ~%dir%~ ~^.+\.wed$~ BEGIN
@@ -1477,75 +1476,21 @@ ACTION_IF FILE_EXISTS ~EET/temp/WeiDU.log~ BEGIN
 		END
 END
 
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// Dialogue resolving                               \\\\\
-/////                                                  \\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-
-PRINT ~~
-PRINT ~Dialogue resolving...~
-
-/////                                                  \\\\\
-///// Decompile BG:EE DLG files                        \\\\\
+///// Decompile BCS / DLG files                        \\\\\
 /////                                                  \\\\\
 
-COPY + ~%patch_dir%/dlg~ ~%patch_dir%/dlg~
-	DECOMPILE_DLG_TO_D
-	//REPLACE_TEXTUALLY CASE_SENSITIVE ~~~~~^BEGIN \(~\).*%SOURCE_RES%\(~\)$~~~~~ ~BEGIN \1%SOURCE_RES%\2~
-	REPLACE_TEXTUALLY ~EET/TEMP/PATCH/DLG/~ ~~
+ACTION_BASH_FOR ~%patch_dir%/bcs~ ~.*~ BEGIN
+	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
+	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
+		DECOMPILE_BCS_TO_BAF
+END
 
 ACTION_BASH_FOR ~%patch_dir%/dlg~ ~.*~ BEGIN
 	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
-END
-
-/////                                                  \\\\\
-///// BG:EE DLG patching                               \\\\\
-/////                                                  \\\\\
-
-//SAREVO.D - replaces a reference to Angelo who isn't actually in the Duchal Palace, # will be changed to @ during PCU conversion
-COPY + ~%patch_dir%/dlg/SAREVO.D~ ~%patch_dir%/dlg~
-	REPLACE_TEXTUALLY ~THEN BEGIN 9[%newline%]*SAY #2317~ ~THEN BEGIN 9
-  SAY #1000300~
-	REPLACE_TEXTUALLY ~THEN BEGIN 24[%newline%]*SAY #17334~ ~THEN BEGIN 24
-  SAY #1000300~
-BUT_ONLY
-
-COPY + ~%patch_dir%/dlg/BPNAJIM.D~ ~%patch_dir%/dlg~
-	REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]GoToStartScreen()~ ~ClearAllActions()
-CreateCreatureObject("K#FAMREM",Player1,0,0,0)
-StartCutScene("K#CUTBP2")~
-BUT_ONLY
-
-/////                                                  \\\\\
-///// Resolve BG:EE <-> BG2:EE dialogue conflicts      \\\\\
-/////                                                  \\\\\
-
-ACTION_FOR_EACH file IN BDORN BEDWIN BIMOEN2 BJAHEIR BMINSC BNEERA BRASAAD BVICONI BEGIN
-	//BG2:EE files
-	COPY_EXISTING ~%file%.DLG~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-			REPLACE_TEXTUALLY CASE_SENSITIVE ~\(^IF .*\)  ~ ~\1Global("ENDOFBG1","GLOBAL",2)
-~
-//			REPLACE_TEXTUALLY CASE_SENSITIVE ~~~~~\(^IF [^~]*~\)\([^~]\)~~~~~ ~\1Global("ENDOFBG1","GLOBAL",2)
-//\2~/*~*/
-		END
-	//BG:EE files
-<<<<<<<< .../end.txt
-
-END
->>>>>>>>
-	COPY + ~%patch_dir%/dlg/%file%.D~ ~%patch_dir%/dlg~
-		REPLACE_TEXTUALLY CASE_SENSITIVE ~\(^IF .*\)  ~ ~\1GlobalLT("ENDOFBG1","GLOBAL",2)
-~
-//		REPLACE_TEXTUALLY CASE_SENSITIVE ~~~~~\(^IF [^~]*~\)\([^~]\)~~~~~ ~\1GlobalLT("ENDOFBG1","GLOBAL",2)
-//\2~/*~*/
-		REPLACE_TEXTUALLY CASE_SENSITIVE ~THEN BEGIN \([0-9]+\)~ ~THEN BEGIN s\1~
-		REPLACE_TEXTUALLY CASE_SENSITIVE ~GOTO \([0-9]+\)~ ~GOTO s\1~
-		REPLACE_TEXTUALLY ~~~~~^BEGIN \(~\)%SOURCE_RES%\(~\)$~~~~~ ~APPEND \1%SOURCE_RES%\2~
-		APPEND_FILE ~.../end.txt~
+	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
+		DECOMPILE_DLG_TO_D
+		REPLACE_TEXTUALLY ~EET/TEMP/PATCH/DLG/~ ~~
 END
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -1609,7 +1554,7 @@ OUTER_SET ren_check = 0
 
 //create file list for conversion
 COPY + ~.../blank.txt~ ~EET/temp/Filelist.txt~
-ACTION_FOR_EACH var IN are bcs bcs_app cre dlg eff ini itm pro spl sto vef vvc wed "" BEGIN
+ACTION_FOR_EACH var IN are bcs cre dlg eff ini itm pro spl sto vef vvc wed "" BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		APPEND_OUTER + ~EET/temp/Filelist.txt~ ~%var%/%BASH_FOR_FILE%~
 	END
@@ -1933,39 +1878,8 @@ COPY_LARGE + ~EET/base/bam~ ~%biff_dir%~
 
 PRINT ~Installing BCS files...~
 
-// PDIALOG.2DA dream script merging
-ACTION_BASH_FOR ~%patch_dir%/bcs_app~ ~.*\.BAF$~ BEGIN
-	COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
-		REPLACE_TEXTUALLY ~^IF~ ~IF
-  Global("ENDOFBG1","GLOBAL",0)~
-		REPLACE_TEXTUALLY ~Global("ENDOFBG1","GLOBAL",0)[%newline%]*Global("ENDOFBG1","GLOBAL",0)~ ~Global("ENDOFBG1","GLOBAL",0)~
-	ACTION_IF (FILE_EXISTS_IN_GAME ~%BASH_FOR_RES%.BCS~) BEGIN
-		COPY_EXISTING ~%BASH_FOR_RES%.BCS~ ~override~
-			DECOMPILE_AND_PATCH BEGIN
-				REPLACE_TEXTUALLY ~^IF~ ~IF
-  Global("ENDOFBG1","GLOBAL",2)~
-				REPLACE_TEXTUALLY ~Global("ENDOFBG1","GLOBAL",2)[%newline%]*Global("ENDOFBG1","GLOBAL",2)~ ~Global("ENDOFBG1","GLOBAL",2)~
-			END
-		EXTEND_TOP ~%BASH_FOR_RES%.BCS~ ~%BASH_FOR_FILESPEC%~
-	END ELSE BEGIN
-		COMPILE ~%BASH_FOR_FILESPEC%~
-	END
-END
-
-//decompile all bcs
-COPY + ~%patch_dir%/bcs~ ~%patch_dir%/bcs~
-	~%patch_dir%/bcs_app~ ~%patch_dir%/bcs_app~
-	DECOMPILE_BCS_TO_BAF
-
-ACTION_FOR_EACH dir IN BCS BCS_APP BEGIN
-	ACTION_BASH_FOR ~%patch_dir%/%dir%~ ~.*\.BCS~ BEGIN
-		MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
-	END
-END
-
 //compile scripts
 COMPILE ~%patch_dir%/bcs~
-	~%patch_dir%/bcs_app~
 	~EET/compile/baf~
 
 //patching BG:EE scripts
@@ -2274,30 +2188,19 @@ END
 
 PRINT ~Installing DLG files...~
 
-//Fluid State Compatibility
+//replaces a reference to Angelo who isn't actually in the Duchal Palace
+COPY + ~%patch_dir%/dlg/SAREVO.D~ ~%patch_dir%/dlg~
+	REPLACE_TEXTUALLY ~THEN BEGIN 9[%newline%]*SAY #2317~ ~THEN BEGIN 9
+  SAY @1000300~
+	REPLACE_TEXTUALLY ~THEN BEGIN 24[%newline%]*SAY #17334~ ~THEN BEGIN 24
+  SAY @1000300~
+BUT_ONLY
 
-<<<<<<<< .../FluidStates.tpa
-//Dialogues always appended by EET (this file has been generated automatically during EET installation):
->>>>>>>>
-COPY ~.../FluidStates.tpa~ ~EET/FluidStates.tpa~
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_BG1dlgBG2dlg BEGIN
-	"BDORN" => "BDORN"
-	"BEDWIN" => "BEDWIN"
-	"BIMOEN" => "BIMOEN2"
-	"BJAHEI" => "BJAHEIR"
-	"BMINSC" => "BMINSC"
-	"BNEERA" => "BNEERA"
-	"BRASAAD" => "BRASAAD"
-	"BVICON" => "BVICONI"
-END
-ACTION_PHP_EACH table_EET_BG1dlgBG2dlg AS BG1dlg => BG2dlg BEGIN
-	ACTION_IF (FILE_EXISTS_IN_GAME ~%BG2dlg%.DLG~) BEGIN
-		COPY_EXISTING - ~%BG2dlg%.DLG~ ~override~
-			READ_LONG 0x8 BG1NPC_num_states
-		APPEND_OUTER ~EET/FluidStates.tpa~ ~OUTER_SET bgt%BG1dlg%state0 = %BG1NPC_num_states%~
-	END
-END
+COPY + ~%patch_dir%/dlg/BPNAJIM.D~ ~%patch_dir%/dlg~
+	REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]GoToStartScreen()~ ~ClearAllActions()
+CreateCreatureObject("K#FAMREM",Player1,0,0,0)
+StartCutScene("K#CUTBP2")~
+BUT_ONLY
 
 COMPILE ~%patch_dir%/dlg~
 	~EET/compile/d~
@@ -2426,8 +2329,10 @@ COPY_EXISTING ~BGEE.GUI~ ~override~
 	REPLACE_TEXTUALLY ~SELECT 450, 20, 120, 16~ ~SELECT 903, 18, 120, 16~ //move build version to the upper right corner
 BUT_ONLY
 
-COPY_LARGE ~EET/base/gui/DLCP1.bmp~ ~EET/temp/biff~
-	~EET/base/gui/DLCV1.bmp~ ~EET/temp/biff~
+COPY_LARGE + ~EET/base/gui/DLCP1.bmp~ ~%biff_dir%~
+	~EET/base/gui/DLCV1.bmp~ ~%biff_dir%~
+
+COPY_LARGE ~EET/base/gui/STRTINFO.MOS~ ~override/START3EE.mos~ //tile informing that installation is not finished
 
 ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mbc$~ BEGIN
 	AT_NOW ~%tileconv% -e -j %jobs% -q %quality% -o "EET%os_slash%temp%os_slash%biff%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
@@ -2441,7 +2346,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileIndex BEGIN
 	"WORLDMAP" , "MOS" => "20"
 END
 ACTION_PHP_EACH table_EET_fileIndex AS file => index BEGIN
-	COPY ~EET/base/gui/%file%.%file_1%~ ~%biff_dir%~
+	COPY + ~EET/base/gui/%file%.%file_1%~ ~%biff_dir%~
 		LPF ~UPDATE_PVRZ_INDICES~ RET original_base_index new_base_index END
 	ACTION_IF original_base_index >= 0 AND new_base_index >= 0 BEGIN
 		ACTION_BASH_FOR ~EET/base/gui~ ~mos%index%.*\.pvrz~ BEGIN
@@ -2800,16 +2705,7 @@ PRINT ~Installing WBM files...~
 
 MKDIR ~lang/%LANGUAGE_BG2%/movies~
 
-//resolve BG2 movies conflicts
-
-//renamed (using name from the vanilla game) to prevent from playing in Start Screen
-//COPY_LARGE used instead of MOVE to prevent file deletion upon uninstalling
-//disabled - EXE is patched instead
-/*ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~) BEGIN
-	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/BG2INTRO.wbm~
-END ELSE BEGIN
-	COPY_LARGE ~movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/BG2INTRO.wbm~
-END*/
+//BG2 movies
 
 //renamed to bypass hardcoded day/niteday movies when area has 'city' and 'extended nights' flags day/night movies are now triggered via area scripts
 //currently disabled due to bug in Multiplayer mode, probably related to this: http://forum.baldursgate.com/discussion/comment/191406
@@ -2820,6 +2716,15 @@ AND (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/NITEDAY.wbm~) BEGIN
 END
 MOVE ~movies/DAYNITE.wbm~ ~movies/DAYNITE_.wbm~
 MOVE ~movies/NITEDAY.wbm~ ~movies/NITEDAY_.wbm~*/
+
+//COPY_LARGE used instead of MOVE to prevent file deletion upon uninstalling
+ACTION_IF (FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~) BEGIN
+	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/INTRO.wbm~ ~lang/%LANGUAGE_BG2%/movies/INTROTOB.wbm~
+	COPY_LARGE ~lang/%LANGUAGE_BG2%/movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/INTRO.wbm~
+END ELSE BEGIN
+	COPY_LARGE ~movies/INTRO.wbm~ ~lang/%LANGUAGE_BG2%/movies/INTROTOB.wbm~
+	COPY_LARGE ~movies/INTRO15F.wbm~ ~lang/%LANGUAGE_BG2%/movies/INTRO.wbm~
+END
 
 //copy movies from BG:EE
 
@@ -2863,8 +2768,9 @@ ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.ini~) BEGIN
 			"Debug Mode" => "Program Options"
 			"WOTC" => "MOVIES"
 			"TSRLOGO" => "MOVIES"
-			"INTRO15F" => "MOVIES"
+			"INTRO" => "MOVIES"
 			"INTROBG1" => "MOVIES"
+			"INTROTOB" => "MOVIES"
 			"INFELOGO" => "MOVIES"
 			"CREDITS_" => "MOVIES"
 			"BWDRAGON" => "MOVIES"
@@ -2896,8 +2802,9 @@ INSERT INTO options ROWS (
 	'MOVIES',	'BWDRAGON',	'1',
 	'MOVIES',	'CREDITS_',	'1',
 	'MOVIES',	'INFELOGO',	'1',
-	'MOVIES',	'INTRO15F',	'1',
+	'MOVIES',	'INTRO',	'1',
 	'MOVIES',	'INTROBG1',	'1',
+	'MOVIES',	'INTROTOB',	'1',
 	'MOVIES',	'TSRLOGO',	'1',
 	'MOVIES',	'WOTC',	'1',
 	'Program Options',	'Debug Mode',	'1',
@@ -3217,12 +3124,12 @@ INCLUDE ~EET/lib/bgee_fixpack.tph~
 ///// Exe patching                                     \\\\\
 /////                                                  \\\\\
 
-COPY ~Baldur.exe~ ~Baldur.exe~
-	//REPLACE_TEXTUALLY ~TOBTEMP.BMP~ ~EETTEMP.BMP~ //saves created during ToB are accessible from normal saves window
-	//REPLACE_TEXTUALLY ~AR4000~ ~TU0015~ //ToB button now sends you into Tutorial
-	//REPLACE_TEXTUALLY ~INTRO~ ~DUMMY~ //disables hardcoded movie playback after clicking ToB button
-	//REPLACE_TEXTUALLY ~DUMMY15F~ ~INTROBG1~ //changes hardcoded BG1 movie reference
+COPY ~Baldur%exe%~ ~Baldur%exe%~
+	REPLACE_TEXTUALLY ~AR4000~ ~AR0602~ //ToB button now sends to Irenicus Dungeon
+	REPLACE_TEXTUALLY ~BALDUR25~ ~BALDUR~ (8) //BALDUR25.BCS no longer used as global script
 	REPLACE_TEXTUALLY ~INTRO15F~ ~INTROBG1~ //changes hardcoded BG1 movie reference
+	//REPLACE_TEXTUALLY ~TOBTEMP.BMP~ ~EETTEMP.BMP~ //saves created during ToB are accessible from normal saves window
+	REPLACE_TEXTUALLY ~-Save-TOB~ ~-Save-BG2~
 	REPLACE_TEXTUALLY ~WORLDM25~ ~WORLDMAP~ //changes default worldmap in ToB
 BUT_ONLY
 
@@ -3233,168 +3140,168 @@ BUT_ONLY
 // Biff graphic resources and wav files
 ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Bb]~ = 1) BEGIN //b not dected in –args-list
 	PRINT ~Biffing graphic resources and wav files~
-	MAKE_BIFF ~eetTU00~ BEGIN ~EET/temp/biff/eetTU00~ ~^.*$~ END
-	MAKE_BIFF ~eetOH2~ BEGIN ~EET/temp/biff/eetOH2~ ~^.*$~ END
-	MAKE_BIFF ~eetOH3~ BEGIN ~EET/temp/biff/eetOH3~ ~^.*$~ END
-	MAKE_BIFF ~eetOH9~ BEGIN ~EET/temp/biff/eetOH9~ ~^.*$~ END
-	MAKE_BIFF ~eetAR00~ BEGIN ~EET/temp/biff/eetAR00~ ~^.*$~ END
-	MAKE_BIFF ~eetAR01~ BEGIN ~EET/temp/biff/eetAR01~ ~^.*$~ END
-	MAKE_BIFF ~eetAR02~ BEGIN ~EET/temp/biff/eetAR02~ ~^.*$~ END
-	MAKE_BIFF ~eetAR03~ BEGIN ~EET/temp/biff/eetAR03~ ~^.*$~ END
-	MAKE_BIFF ~eetAR04~ BEGIN ~EET/temp/biff/eetAR04~ ~^.*$~ END
-	MAKE_BIFF ~eetAR05~ BEGIN ~EET/temp/biff/eetAR05~ ~^.*$~ END
-	MAKE_BIFF ~eetAR06~ BEGIN ~EET/temp/biff/eetAR06~ ~^.*$~ END
-	MAKE_BIFF ~eetAR07~ BEGIN ~EET/temp/biff/eetAR07~ ~^.*$~ END
-	MAKE_BIFF ~eetAR08~ BEGIN ~EET/temp/biff/eetAR08~ ~^.*$~ END
-	MAKE_BIFF ~eetAR09~ BEGIN ~EET/temp/biff/eetAR09~ ~^.*$~ END
-	MAKE_BIFF ~eetAR10~ BEGIN ~EET/temp/biff/eetAR10~ ~^.*$~ END
-	MAKE_BIFF ~eetAR11~ BEGIN ~EET/temp/biff/eetAR11~ ~^.*$~ END
-	MAKE_BIFF ~eetAR12~ BEGIN ~EET/temp/biff/eetAR12~ ~^.*$~ END
-	MAKE_BIFF ~eetAR13~ BEGIN ~EET/temp/biff/eetAR13~ ~^.*$~ END
-	MAKE_BIFF ~eetAR14~ BEGIN ~EET/temp/biff/eetAR14~ ~^.*$~ END
-	MAKE_BIFF ~eetAR15~ BEGIN ~EET/temp/biff/eetAR15~ ~^.*$~ END
-	MAKE_BIFF ~eetAR16~ BEGIN ~EET/temp/biff/eetAR16~ ~^.*$~ END
-	MAKE_BIFF ~eetAR17~ BEGIN ~EET/temp/biff/eetAR17~ ~^.*$~ END
-	MAKE_BIFF ~eetAR18~ BEGIN ~EET/temp/biff/eetAR18~ ~^.*$~ END
-	MAKE_BIFF ~eetAR19~ BEGIN ~EET/temp/biff/eetAR19~ ~^.*$~ END
-	MAKE_BIFF ~eetAR20~ BEGIN ~EET/temp/biff/eetAR20~ ~^.*$~ END
-	MAKE_BIFF ~eetAR21~ BEGIN ~EET/temp/biff/eetAR21~ ~^.*$~ END
-	MAKE_BIFF ~eetAR22~ BEGIN ~EET/temp/biff/eetAR22~ ~^.*$~ END
-	MAKE_BIFF ~eetAR23~ BEGIN ~EET/temp/biff/eetAR23~ ~^.*$~ END
-	MAKE_BIFF ~eetAR24~ BEGIN ~EET/temp/biff/eetAR24~ ~^.*$~ END
-	MAKE_BIFF ~eetAR26~ BEGIN ~EET/temp/biff/eetAR26~ ~^.*$~ END
-	MAKE_BIFF ~eetAR27~ BEGIN ~EET/temp/biff/eetAR27~ ~^.*$~ END
-	MAKE_BIFF ~eetAR28~ BEGIN ~EET/temp/biff/eetAR28~ ~^.*$~ END
-	MAKE_BIFF ~eetAR29~ BEGIN ~EET/temp/biff/eetAR29~ ~^.*$~ END
-	MAKE_BIFF ~eetAR30~ BEGIN ~EET/temp/biff/eetAR30~ ~^.*$~ END
-	MAKE_BIFF ~eetAR31~ BEGIN ~EET/temp/biff/eetAR31~ ~^.*$~ END
-	MAKE_BIFF ~eetAR32~ BEGIN ~EET/temp/biff/eetAR32~ ~^.*$~ END
-	MAKE_BIFF ~eetAR33~ BEGIN ~EET/temp/biff/eetAR33~ ~^.*$~ END
-	MAKE_BIFF ~eetAR34~ BEGIN ~EET/temp/biff/eetAR34~ ~^.*$~ END
-	MAKE_BIFF ~eetAR35~ BEGIN ~EET/temp/biff/eetAR35~ ~^.*$~ END
-	MAKE_BIFF ~eetAR36~ BEGIN ~EET/temp/biff/eetAR36~ ~^.*$~ END
-	MAKE_BIFF ~eetAR37~ BEGIN ~EET/temp/biff/eetAR37~ ~^.*$~ END
-	MAKE_BIFF ~eetAR38~ BEGIN ~EET/temp/biff/eetAR38~ ~^.*$~ END
-	MAKE_BIFF ~eetAR39~ BEGIN ~EET/temp/biff/eetAR39~ ~^.*$~ END
-	MAKE_BIFF ~eetAR40~ BEGIN ~EET/temp/biff/eetAR40~ ~^.*$~ END
-	MAKE_BIFF ~eetAR41~ BEGIN ~EET/temp/biff/eetAR41~ ~^.*$~ END
-	MAKE_BIFF ~eetAR42~ BEGIN ~EET/temp/biff/eetAR42~ ~^.*$~ END
-	MAKE_BIFF ~eetAR43~ BEGIN ~EET/temp/biff/eetAR43~ ~^.*$~ END
-	MAKE_BIFF ~eetAR44~ BEGIN ~EET/temp/biff/eetAR44~ ~^.*$~ END
-	MAKE_BIFF ~eetAR45~ BEGIN ~EET/temp/biff/eetAR45~ ~^.*$~ END
-	MAKE_BIFF ~eetAR46~ BEGIN ~EET/temp/biff/eetAR46~ ~^.*$~ END
-	MAKE_BIFF ~eetAR47~ BEGIN ~EET/temp/biff/eetAR47~ ~^.*$~ END
-	MAKE_BIFF ~eetAR48~ BEGIN ~EET/temp/biff/eetAR48~ ~^.*$~ END
-	MAKE_BIFF ~eetAR49~ BEGIN ~EET/temp/biff/eetAR49~ ~^.*$~ END
-	MAKE_BIFF ~eetAR50~ BEGIN ~EET/temp/biff/eetAR50~ ~^.*$~ END
-	MAKE_BIFF ~eetAR51~ BEGIN ~EET/temp/biff/eetAR51~ ~^.*$~ END
-	MAKE_BIFF ~eetAR52~ BEGIN ~EET/temp/biff/eetAR52~ ~^.*$~ END
-	MAKE_BIFF ~eetAR53~ BEGIN ~EET/temp/biff/eetAR53~ ~^.*$~ END
-	MAKE_BIFF ~eetAR54~ BEGIN ~EET/temp/biff/eetAR54~ ~^.*$~ END
-	MAKE_BIFF ~eetAR55~ BEGIN ~EET/temp/biff/eetAR55~ ~^.*$~ END
-	MAKE_BIFF ~eetAR56~ BEGIN ~EET/temp/biff/eetAR56~ ~^.*$~ END
-	MAKE_BIFF ~eetAR57~ BEGIN ~EET/temp/biff/eetAR57~ ~^.*$~ END
-	MAKE_BIFF ~eetAR58~ BEGIN ~EET/temp/biff/eetAR58~ ~^.*$~ END
-	MAKE_BIFF ~eetAR59~ BEGIN ~EET/temp/biff/eetAR59~ ~^.*$~ END
-	MAKE_BIFF ~eetAR60~ BEGIN ~EET/temp/biff/eetAR60~ ~^.*$~ END
-	MAKE_BIFF ~eetAR61~ BEGIN ~EET/temp/biff/eetAR61~ ~^.*$~ END
+	MAKE_BIFF ~eetTU00~ BEGIN ~%biff_dir%/eetTU00~ ~^.*$~ END
+	MAKE_BIFF ~eetOH2~ BEGIN ~%biff_dir%/eetOH2~ ~^.*$~ END
+	MAKE_BIFF ~eetOH3~ BEGIN ~%biff_dir%/eetOH3~ ~^.*$~ END
+	MAKE_BIFF ~eetOH9~ BEGIN ~%biff_dir%/eetOH9~ ~^.*$~ END
+	MAKE_BIFF ~eetAR00~ BEGIN ~%biff_dir%/eetAR00~ ~^.*$~ END
+	MAKE_BIFF ~eetAR01~ BEGIN ~%biff_dir%/eetAR01~ ~^.*$~ END
+	MAKE_BIFF ~eetAR02~ BEGIN ~%biff_dir%/eetAR02~ ~^.*$~ END
+	MAKE_BIFF ~eetAR03~ BEGIN ~%biff_dir%/eetAR03~ ~^.*$~ END
+	MAKE_BIFF ~eetAR04~ BEGIN ~%biff_dir%/eetAR04~ ~^.*$~ END
+	MAKE_BIFF ~eetAR05~ BEGIN ~%biff_dir%/eetAR05~ ~^.*$~ END
+	MAKE_BIFF ~eetAR06~ BEGIN ~%biff_dir%/eetAR06~ ~^.*$~ END
+	MAKE_BIFF ~eetAR07~ BEGIN ~%biff_dir%/eetAR07~ ~^.*$~ END
+	MAKE_BIFF ~eetAR08~ BEGIN ~%biff_dir%/eetAR08~ ~^.*$~ END
+	MAKE_BIFF ~eetAR09~ BEGIN ~%biff_dir%/eetAR09~ ~^.*$~ END
+	MAKE_BIFF ~eetAR10~ BEGIN ~%biff_dir%/eetAR10~ ~^.*$~ END
+	MAKE_BIFF ~eetAR11~ BEGIN ~%biff_dir%/eetAR11~ ~^.*$~ END
+	MAKE_BIFF ~eetAR12~ BEGIN ~%biff_dir%/eetAR12~ ~^.*$~ END
+	MAKE_BIFF ~eetAR13~ BEGIN ~%biff_dir%/eetAR13~ ~^.*$~ END
+	MAKE_BIFF ~eetAR14~ BEGIN ~%biff_dir%/eetAR14~ ~^.*$~ END
+	MAKE_BIFF ~eetAR15~ BEGIN ~%biff_dir%/eetAR15~ ~^.*$~ END
+	MAKE_BIFF ~eetAR16~ BEGIN ~%biff_dir%/eetAR16~ ~^.*$~ END
+	MAKE_BIFF ~eetAR17~ BEGIN ~%biff_dir%/eetAR17~ ~^.*$~ END
+	MAKE_BIFF ~eetAR18~ BEGIN ~%biff_dir%/eetAR18~ ~^.*$~ END
+	MAKE_BIFF ~eetAR19~ BEGIN ~%biff_dir%/eetAR19~ ~^.*$~ END
+	MAKE_BIFF ~eetAR20~ BEGIN ~%biff_dir%/eetAR20~ ~^.*$~ END
+	MAKE_BIFF ~eetAR21~ BEGIN ~%biff_dir%/eetAR21~ ~^.*$~ END
+	MAKE_BIFF ~eetAR22~ BEGIN ~%biff_dir%/eetAR22~ ~^.*$~ END
+	MAKE_BIFF ~eetAR23~ BEGIN ~%biff_dir%/eetAR23~ ~^.*$~ END
+	MAKE_BIFF ~eetAR24~ BEGIN ~%biff_dir%/eetAR24~ ~^.*$~ END
+	MAKE_BIFF ~eetAR26~ BEGIN ~%biff_dir%/eetAR26~ ~^.*$~ END
+	MAKE_BIFF ~eetAR27~ BEGIN ~%biff_dir%/eetAR27~ ~^.*$~ END
+	MAKE_BIFF ~eetAR28~ BEGIN ~%biff_dir%/eetAR28~ ~^.*$~ END
+	MAKE_BIFF ~eetAR29~ BEGIN ~%biff_dir%/eetAR29~ ~^.*$~ END
+	MAKE_BIFF ~eetAR30~ BEGIN ~%biff_dir%/eetAR30~ ~^.*$~ END
+	MAKE_BIFF ~eetAR31~ BEGIN ~%biff_dir%/eetAR31~ ~^.*$~ END
+	MAKE_BIFF ~eetAR32~ BEGIN ~%biff_dir%/eetAR32~ ~^.*$~ END
+	MAKE_BIFF ~eetAR33~ BEGIN ~%biff_dir%/eetAR33~ ~^.*$~ END
+	MAKE_BIFF ~eetAR34~ BEGIN ~%biff_dir%/eetAR34~ ~^.*$~ END
+	MAKE_BIFF ~eetAR35~ BEGIN ~%biff_dir%/eetAR35~ ~^.*$~ END
+	MAKE_BIFF ~eetAR36~ BEGIN ~%biff_dir%/eetAR36~ ~^.*$~ END
+	MAKE_BIFF ~eetAR37~ BEGIN ~%biff_dir%/eetAR37~ ~^.*$~ END
+	MAKE_BIFF ~eetAR38~ BEGIN ~%biff_dir%/eetAR38~ ~^.*$~ END
+	MAKE_BIFF ~eetAR39~ BEGIN ~%biff_dir%/eetAR39~ ~^.*$~ END
+	MAKE_BIFF ~eetAR40~ BEGIN ~%biff_dir%/eetAR40~ ~^.*$~ END
+	MAKE_BIFF ~eetAR41~ BEGIN ~%biff_dir%/eetAR41~ ~^.*$~ END
+	MAKE_BIFF ~eetAR42~ BEGIN ~%biff_dir%/eetAR42~ ~^.*$~ END
+	MAKE_BIFF ~eetAR43~ BEGIN ~%biff_dir%/eetAR43~ ~^.*$~ END
+	MAKE_BIFF ~eetAR44~ BEGIN ~%biff_dir%/eetAR44~ ~^.*$~ END
+	MAKE_BIFF ~eetAR45~ BEGIN ~%biff_dir%/eetAR45~ ~^.*$~ END
+	MAKE_BIFF ~eetAR46~ BEGIN ~%biff_dir%/eetAR46~ ~^.*$~ END
+	MAKE_BIFF ~eetAR47~ BEGIN ~%biff_dir%/eetAR47~ ~^.*$~ END
+	MAKE_BIFF ~eetAR48~ BEGIN ~%biff_dir%/eetAR48~ ~^.*$~ END
+	MAKE_BIFF ~eetAR49~ BEGIN ~%biff_dir%/eetAR49~ ~^.*$~ END
+	MAKE_BIFF ~eetAR50~ BEGIN ~%biff_dir%/eetAR50~ ~^.*$~ END
+	MAKE_BIFF ~eetAR51~ BEGIN ~%biff_dir%/eetAR51~ ~^.*$~ END
+	MAKE_BIFF ~eetAR52~ BEGIN ~%biff_dir%/eetAR52~ ~^.*$~ END
+	MAKE_BIFF ~eetAR53~ BEGIN ~%biff_dir%/eetAR53~ ~^.*$~ END
+	MAKE_BIFF ~eetAR54~ BEGIN ~%biff_dir%/eetAR54~ ~^.*$~ END
+	MAKE_BIFF ~eetAR55~ BEGIN ~%biff_dir%/eetAR55~ ~^.*$~ END
+	MAKE_BIFF ~eetAR56~ BEGIN ~%biff_dir%/eetAR56~ ~^.*$~ END
+	MAKE_BIFF ~eetAR57~ BEGIN ~%biff_dir%/eetAR57~ ~^.*$~ END
+	MAKE_BIFF ~eetAR58~ BEGIN ~%biff_dir%/eetAR58~ ~^.*$~ END
+	MAKE_BIFF ~eetAR59~ BEGIN ~%biff_dir%/eetAR59~ ~^.*$~ END
+	MAKE_BIFF ~eetAR60~ BEGIN ~%biff_dir%/eetAR60~ ~^.*$~ END
+	MAKE_BIFF ~eetAR61~ BEGIN ~%biff_dir%/eetAR61~ ~^.*$~ END
 	MAKE_BIFF ~eetWAV~ BEGIN ~EET/temp/wav~ ~^.*$~ END
 	MAKE_BIFF ~eetBAM~ BEGIN ~EET/temp/bam~ ~^.*$~ END
 	//OUTER_SET currentTotal = 0
 	//OUTER_SET currentFile = 0
-	//MKDIR ~EET/temp/biff/eetMis0~ //already created
+	//MKDIR ~%biff_dir%/eetMis0~ //already created
 	OUTER_SET biff_temp = currentFile
 	OUTER_WHILE (biff_temp > 0) BEGIN
 		OUTER_SET biff_temp = biff_temp - 1
-		MAKE_BIFF ~eetMis%biff_temp%~ BEGIN ~EET/temp/biff/eetMis%biff_temp%~ ~^.*$~ END
+		MAKE_BIFF ~eetMis%biff_temp%~ BEGIN ~%biff_dir%/eetMis%biff_temp%~ ~^.*$~ END
 	END
-	ACTION_BASH_FOR ~EET/temp/biff~ ~^.*$~ BEGIN
+	ACTION_BASH_FOR ~%biff_dir%~ ~^.*$~ BEGIN
 		ACTION_IF ( BASH_FOR_SIZE + currentTotal > 30000000 /* 30M */ && currentTotal > 0 ) BEGIN
-			MAKE_BIFF ~eetMis%currentFile%~ BEGIN ~EET/temp/biff/eetMis%currentFile%~ ~^.*$~ END
+			MAKE_BIFF ~eetMis%currentFile%~ BEGIN ~%biff_dir%/eetMis%currentFile%~ ~^.*$~ END
 			OUTER_SET currentFile = currentFile + 1
 			OUTER_SET currentTotal = 0
-			MKDIR ~EET/temp/biff/eetMis%currentFile%~
+			MKDIR ~%biff_dir%/eetMis%currentFile%~
 		END
-		MOVE + ~%BASH_FOR_FILESPEC%~ ~EET/temp/biff/eetMis%currentFile%~
+		MOVE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%/eetMis%currentFile%~
 		OUTER_SET currentTotal = currentTotal + BASH_FOR_SIZE
 	END
 	ACTION_IF ( currentTotal > 0 ) BEGIN
-		MAKE_BIFF ~eetMis%currentFile%~ BEGIN ~EET/temp/biff/eetMis%currentFile%~ ~^.*$~ END
+		MAKE_BIFF ~eetMis%currentFile%~ BEGIN ~%biff_dir%/eetMis%currentFile%~ ~^.*$~ END
 	END
 END ELSE BEGIN
 	PRINT ~Copying graphic resources and wav files to override. This will take a while...~
-	COPY_LARGE ~EET/temp/biff/eetTU00~ ~override~
-		~EET/temp/biff/eetOH2~ ~override~
-		~EET/temp/biff/eetOH3~ ~override~
-		~EET/temp/biff/eetOH9~ ~override~
-		~EET/temp/biff/eetAR00~ ~override~
-		~EET/temp/biff/eetAR01~ ~override~
-		~EET/temp/biff/eetAR02~ ~override~
-		~EET/temp/biff/eetAR03~ ~override~
-		~EET/temp/biff/eetAR04~ ~override~
-		~EET/temp/biff/eetAR05~ ~override~
-		~EET/temp/biff/eetAR06~ ~override~
-		~EET/temp/biff/eetAR07~ ~override~
-		~EET/temp/biff/eetAR08~ ~override~
-		~EET/temp/biff/eetAR09~ ~override~
-		~EET/temp/biff/eetAR10~ ~override~
-		~EET/temp/biff/eetAR11~ ~override~
-		~EET/temp/biff/eetAR12~ ~override~
-		~EET/temp/biff/eetAR13~ ~override~
-		~EET/temp/biff/eetAR14~ ~override~
-		~EET/temp/biff/eetAR15~ ~override~
-		~EET/temp/biff/eetAR16~ ~override~
-		~EET/temp/biff/eetAR17~ ~override~
-		~EET/temp/biff/eetAR18~ ~override~
-		~EET/temp/biff/eetAR19~ ~override~
-		~EET/temp/biff/eetAR20~ ~override~
-		~EET/temp/biff/eetAR21~ ~override~
-		~EET/temp/biff/eetAR22~ ~override~
-		~EET/temp/biff/eetAR23~ ~override~
-		~EET/temp/biff/eetAR24~ ~override~
-		~EET/temp/biff/eetAR26~ ~override~
-		~EET/temp/biff/eetAR27~ ~override~
-		~EET/temp/biff/eetAR28~ ~override~
-		~EET/temp/biff/eetAR29~ ~override~
-		~EET/temp/biff/eetAR30~ ~override~
-		~EET/temp/biff/eetAR31~ ~override~
-		~EET/temp/biff/eetAR32~ ~override~
-		~EET/temp/biff/eetAR33~ ~override~
-		~EET/temp/biff/eetAR34~ ~override~
-		~EET/temp/biff/eetAR35~ ~override~
-		~EET/temp/biff/eetAR36~ ~override~
-		~EET/temp/biff/eetAR37~ ~override~
-		~EET/temp/biff/eetAR38~ ~override~
-		~EET/temp/biff/eetAR39~ ~override~
-		~EET/temp/biff/eetAR40~ ~override~
-		~EET/temp/biff/eetAR41~ ~override~
-		~EET/temp/biff/eetAR42~ ~override~
-		~EET/temp/biff/eetAR43~ ~override~
-		~EET/temp/biff/eetAR44~ ~override~
-		~EET/temp/biff/eetAR45~ ~override~
-		~EET/temp/biff/eetAR46~ ~override~
-		~EET/temp/biff/eetAR47~ ~override~
-		~EET/temp/biff/eetAR48~ ~override~
-		~EET/temp/biff/eetAR49~ ~override~
-		~EET/temp/biff/eetAR50~ ~override~
-		~EET/temp/biff/eetAR51~ ~override~
-		~EET/temp/biff/eetAR52~ ~override~
-		~EET/temp/biff/eetAR53~ ~override~
-		~EET/temp/biff/eetAR54~ ~override~
-		~EET/temp/biff/eetAR55~ ~override~
-		~EET/temp/biff/eetAR56~ ~override~
-		~EET/temp/biff/eetAR57~ ~override~
-		~EET/temp/biff/eetAR58~ ~override~
-		~EET/temp/biff/eetAR59~ ~override~
-		~EET/temp/biff/eetAR60~ ~override~
-		~EET/temp/biff/eetAR61~ ~override~
+	COPY_LARGE ~%biff_dir%/eetTU00~ ~override~
+		~%biff_dir%/eetOH2~ ~override~
+		~%biff_dir%/eetOH3~ ~override~
+		~%biff_dir%/eetOH9~ ~override~
+		~%biff_dir%/eetAR00~ ~override~
+		~%biff_dir%/eetAR01~ ~override~
+		~%biff_dir%/eetAR02~ ~override~
+		~%biff_dir%/eetAR03~ ~override~
+		~%biff_dir%/eetAR04~ ~override~
+		~%biff_dir%/eetAR05~ ~override~
+		~%biff_dir%/eetAR06~ ~override~
+		~%biff_dir%/eetAR07~ ~override~
+		~%biff_dir%/eetAR08~ ~override~
+		~%biff_dir%/eetAR09~ ~override~
+		~%biff_dir%/eetAR10~ ~override~
+		~%biff_dir%/eetAR11~ ~override~
+		~%biff_dir%/eetAR12~ ~override~
+		~%biff_dir%/eetAR13~ ~override~
+		~%biff_dir%/eetAR14~ ~override~
+		~%biff_dir%/eetAR15~ ~override~
+		~%biff_dir%/eetAR16~ ~override~
+		~%biff_dir%/eetAR17~ ~override~
+		~%biff_dir%/eetAR18~ ~override~
+		~%biff_dir%/eetAR19~ ~override~
+		~%biff_dir%/eetAR20~ ~override~
+		~%biff_dir%/eetAR21~ ~override~
+		~%biff_dir%/eetAR22~ ~override~
+		~%biff_dir%/eetAR23~ ~override~
+		~%biff_dir%/eetAR24~ ~override~
+		~%biff_dir%/eetAR26~ ~override~
+		~%biff_dir%/eetAR27~ ~override~
+		~%biff_dir%/eetAR28~ ~override~
+		~%biff_dir%/eetAR29~ ~override~
+		~%biff_dir%/eetAR30~ ~override~
+		~%biff_dir%/eetAR31~ ~override~
+		~%biff_dir%/eetAR32~ ~override~
+		~%biff_dir%/eetAR33~ ~override~
+		~%biff_dir%/eetAR34~ ~override~
+		~%biff_dir%/eetAR35~ ~override~
+		~%biff_dir%/eetAR36~ ~override~
+		~%biff_dir%/eetAR37~ ~override~
+		~%biff_dir%/eetAR38~ ~override~
+		~%biff_dir%/eetAR39~ ~override~
+		~%biff_dir%/eetAR40~ ~override~
+		~%biff_dir%/eetAR41~ ~override~
+		~%biff_dir%/eetAR42~ ~override~
+		~%biff_dir%/eetAR43~ ~override~
+		~%biff_dir%/eetAR44~ ~override~
+		~%biff_dir%/eetAR45~ ~override~
+		~%biff_dir%/eetAR46~ ~override~
+		~%biff_dir%/eetAR47~ ~override~
+		~%biff_dir%/eetAR48~ ~override~
+		~%biff_dir%/eetAR49~ ~override~
+		~%biff_dir%/eetAR50~ ~override~
+		~%biff_dir%/eetAR51~ ~override~
+		~%biff_dir%/eetAR52~ ~override~
+		~%biff_dir%/eetAR53~ ~override~
+		~%biff_dir%/eetAR54~ ~override~
+		~%biff_dir%/eetAR55~ ~override~
+		~%biff_dir%/eetAR56~ ~override~
+		~%biff_dir%/eetAR57~ ~override~
+		~%biff_dir%/eetAR58~ ~override~
+		~%biff_dir%/eetAR59~ ~override~
+		~%biff_dir%/eetAR60~ ~override~
+		~%biff_dir%/eetAR61~ ~override~
 		~EET/temp/wav~ ~override~
 		~EET/temp/bam~ ~override~
-		~EET/temp/biff~ ~override~
-		~EET/temp/biff/eetMis0~ ~override~
+		~%biff_dir%~ ~override~
+		~%biff_dir%/eetMis0~ ~override~
 	OUTER_SET biff_temp = currentFile
 	OUTER_WHILE (biff_temp > 0) BEGIN
-		COPY_LARGE ~EET/temp/biff/eetMis%biff_temp%~ ~override~
+		COPY_LARGE ~%biff_dir%/eetMis%biff_temp%~ ~override~
 		OUTER_SET biff_temp = biff_temp - 1
 	END
 END
@@ -3407,13 +3314,18 @@ COPY ~.../blank.txt~ ~override/EET.flag~
 APPEND ~EET.flag~ ~dummy~ //just to make it detectable by WeiDU
 PRINT ~'EET.flag' file is used by weidu to recognize the installation as EET~
 
+COPY ~%WEIDU_EXECUTABLE%~ ~setup-EET_end%exe%~
+	~EET/lib/EET_end.tp2~ ~setup-EET_end.tp2~
+
 /*ACTION_IF (FILE_EXISTS ~EET/lang/%LANGUAGE%/readme.html~) BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%lang%os_slash%%LANGUAGE%%os_slash%readme.html~
 END ELSE BEGIN
 	AT_INTERACTIVE_EXIT ~VIEW EET%os_slash%docs%os_slash%[en_US]readme.html~
 END*/
 
-BEGIN ~Day/Nitemovies patch (Baldur.exe patch, be careful)~
+
+
+BEGIN ~Day/Nite movies patch (Baldur.exe patch, be careful)~
 REQUIRE_PREDICATE GAME_IS ~eet~ ~You need to install the main component~
 
 <<<<<<<< .../DAYNITE_NITEDAY-eb.baf
