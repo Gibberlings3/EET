@@ -458,18 +458,19 @@ END
 
 <p>EET is installed in two steps - main component on a clean BG2:EE, and second component at the end, after any other mods. This second step is used to automatically merge BG1, SoD, BG2, ToB files that are normally controlled by PDIALOG.2DA and INTERDIA.2DA. You need to know following things when working natively with EET:</p>
 <ul>
-<li><strong>BALDUR.BCS / BALDUR25.BCS</strong> - the game now uses BALDUR.BCS global script during whole game. BALDUR25.BCS is no longer used even in Throne of Bhaal. The vanilla script has been expanded with all relevant content from BG:EE global script (4 new blocks) as well as ToB "25" version of it (6 new blocks) using standard <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">trigger filtering</a>. Your mod should no longer patch BALDUR25.BCS - use BALDUR.BCS instead.</li><br />
+<li><strong>BALDUR.BCS / BALDUR25.BCS</strong> - the game now uses BALDUR.BCS global script during whole game. BALDUR25.BCS is no longer used even in Throne of Bhaal. The vanilla script has been expanded with all relevant content from BG:EE global script (4 new blocks) as well as ToB "25" version of it (6 new blocks) using standard <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">trigger filtering</a>.</li><br />
 <li><strong>JOIN / POST / BANTER dialogues and DREAM scripts</strong> - these files are normally automatically assigned by PDIALOG.2DA and INTERDIA.2DA. In EET it's also true but the platform doesn't use ToB and BG1 variants of these files. To not introduce changes in how cross-platform coding is usually handled, EET does the merging of vanilla content as well as updating state numbers in dialogues and references in scripts and cre files automatically at the end. <strong>Files should be patched exactly the same as you would do in vanilla games</strong>. No need to worry about state numbers (same as in vanilla games) or additional trigger filtering. For example when you want to add content to BG1, BG2 and ToB Neera join dialogue files than you should do it by patching NEERAJ_.DLG (BG1 file uses <a href="#Resource naming convention">standard renaming</a> due to conflict with BG2 file), NEERAJ.DLG and NEERA25J.DLG. When all other mods are installed and files have already all relevant changes, EET second component will convert them to use this system.</li>
 
 <p>New BG1 NPCs added by mods don't need any merging. If your mod adds BG2 joinable NPC with separate JOIN / POST / BANTER dialogue files and DREAM scripts for SoA and ToB than you can add EET compatibility in 2 ways:
 <ol>
 <li>Merge them yourself using proper trigger filtering, so they are relevant only during part of the story (not really worth it if your mod supports cross-platform coding)</li>
-<li>Or use pre-made EET_NPC_ENDMERGE action function, available within <a href="../other/EET_functions">EET_functions.tph</a>, that will generate code based on what has been included in PDIALOG.2DA and INTERDIA.2DA and than append the array to EET/lib/EET_end.tph file. This way your NPC will be converted to use this system at the end of installation (after all other mods are installed).</li>
+<li>Or use pre-made EET_NPC_ENDMERGE action function, available within <a href="../other/EET_functions">EET_functions.tph</a>:</li>
 <div class="code">
 <pre>
 LAF ~EET_NPC_ENDMERGE~ STR_VAR dv = "NPCDeathVariable" END
 </pre>
 </div>
+<p>Above code will generate array based on what has been included in PDIALOG.2DA and INTERDIA.2DA and than append it to EET/lib/EET_end.tph file. This way your NPC will be converted to use this system at the end of installation (after all other mods are installed).</p>
 </ul>
 
 <a id="Detecting EET within WeiDU code" name="Detecting EET within WeiDU code"></a>
