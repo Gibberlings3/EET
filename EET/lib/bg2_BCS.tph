@@ -218,15 +218,6 @@ EXTEND_BOTTOM ~DS3483.BCS~ ~.../DS3483-eb.baf~
 
 COPY_EXISTING ~DPLAYER2.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(!InParty(Myself)[%newline%]*HPGT(Myself,0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*\)SetLeavePartyDialogueFile()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
 		SPRINT textToReplace ~!InParty(Myself)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN

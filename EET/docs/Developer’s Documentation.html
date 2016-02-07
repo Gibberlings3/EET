@@ -185,7 +185,7 @@ a:hover.spoiler {
 		<ul>
 			<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
 			<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
-			<li><a href="#Working with files that are automatically merged during installation">Working with files that are automatically merged during installation</a></li>
+			<li><a href="#Working with files that are merged during installation">Working with files that are merged during installation</a></li>
 			<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
 			<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
 			<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
@@ -312,7 +312,7 @@ This document is divided into a number of sections to allow quick reference for 
 
 <a id="Throne of Bhaal integration" name="Throne of Bhaal integration"></a>
 <h3>Throne of Bhaal integration</h3>
-<p>In EET Throne of Bhaal expansion is no longer treated like separate campaign. Other than continuity aspect (explained in different section of this document), EET no longer depends on MoveToExpansion() action, which means ToB saves are no longer separated from the main game and ToB variants of BALDUR25.BCS and WORLDM25.WMP are no longer used. Please check <a href="#Working with files that are automatically merged during installation">this section</a> for details regarding "25" variants of files normally controlled by PDIALOG.2DA and INTERDIA.2DA.</p>
+<p>In EET Throne of Bhaal expansion is no longer treated like separate campaign. Other than continuity aspect (explained in different section of this document), EET no longer depends on MoveToExpansion() action, which means ToB saves are no longer separated from the main game and ToB variants of BALDUR25.BCS and WORLDM25.WMP are no longer used. Please check <a href="#Working with files that are merged during installation">this section</a> for details regarding "25" variants of files normally controlled by PDIALOG.2DA and INTERDIA.2DA.</p>
 
 <a id="Language support" name="Language support"></a>
 <h3>Language support</h3>
@@ -402,7 +402,7 @@ This document is divided into a number of sections to allow quick reference for 
 <ul>
 	<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
 	<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
-	<li><a href="#Working with files that are automatically merged during installation">Working with files that are automatically merged during installation</a></li>
+	<li><a href="#Working with files that are merged during installation">Working with files that are merged during installation</a></li>
 	<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
 	<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
 	<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
@@ -453,12 +453,12 @@ END
 </div>
 </ul>
 
-<a id="Working with files that are automatically merged during installation" name="Working with files that are automatically merged during installation"></a>
-<h3>Working with files that are automatically merged during installation</h3>
+<a id="Working with files that are merged during installation" name="Working with files that are merged during installation"></a>
+<h3>Working with files that are merged during installation</h3>
 
 <p>EET is installed in two steps - main component on a clean BG2:EE, and second component at the end, after any other mods. This second step is used to automatically merge BG1, SoD, BG2, ToB files that are normally controlled by PDIALOG.2DA and INTERDIA.2DA. You need to know following things when working natively with EET:</p>
 <ul>
-<li><strong>BALDUR.BCS / BALDUR25.BCS</strong> - the game now uses BALDUR.BCS global script during whole game. BALDUR25.BCS is no longer used even in Throne of Bhaal. The vanilla script has been expanded with all relevant content from BG:EE global script (4 new blocks) as well as ToB "25" version of it (6 new blocks) using standard <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">trigger filtering</a>.</li><br />
+<li><strong>BALDUR.BCS / BALDUR25.BCS</strong> - the game now uses BALDUR.BCS global script during whole game. BALDUR25.BCS is no longer used even in Throne of Bhaal. The vanilla script has been expanded with all relevant content from BG:EE global script (4 new blocks) as well as ToB "25" version of it (6 new blocks) using standard <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">trigger filtering</a>. Mods that supports EET should always patch BALDUR.BCS instead of BALDUR25.BCS</li><br />
 <li><strong>JOIN / POST / BANTER dialogues and DREAM scripts</strong> - these files are normally automatically assigned by PDIALOG.2DA and INTERDIA.2DA. In EET it's also true but the platform doesn't use ToB and BG1 variants of these files. To not introduce changes in how cross-platform coding is usually handled, EET does the merging of vanilla content as well as updating state numbers in dialogues and references in scripts and cre files automatically at the end. <strong>Files should be patched exactly the same as you would do in vanilla games</strong>. No need to worry about state numbers (same as in vanilla games) or additional trigger filtering. For example when you want to add content to BG1, BG2 and ToB Neera join dialogue files than you should do it by patching NEERAJ_.DLG (BG1 file uses <a href="#Resource naming convention">standard renaming</a> due to conflict with BG2 file), NEERAJ.DLG and NEERA25J.DLG. When all other mods are installed and files have already all relevant changes, EET second component will convert them to use this system.</li>
 
 <p>New BG1 NPCs added by mods don't need any merging. If your mod adds BG2 joinable NPC with separate JOIN / POST / BANTER dialogue files and DREAM scripts for SoA and ToB than you can add EET compatibility in 2 ways:

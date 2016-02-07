@@ -1,6 +1,70 @@
+//DEFAULT AI script with additional HotKeys assigned for easier testing
+
+IF
+  HotKey(S)
+THEN
+  RESPONSE #100
+    Continue()
+END
+
 IF
   HotKey(D)
 THEN
   RESPONSE #100
     Continue()
+END
+
+IF
+  HotKey(F)
+THEN
+  RESPONSE #100
+    Continue()
+END
+
+IF
+  HotKey(G)
+THEN
+  RESPONSE #100
+    Continue()
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  OR(2)
+    InWeaponRange(NearestEnemyOf(Myself))
+    Range(NearestEnemyOf(Myself),5)
+  ActionListEmpty()
+THEN
+  RESPONSE #100
+    AttackOneRound(NearestEnemyOf(Myself))
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  !InWeaponRange(NearestEnemyOf(Myself))
+  !Range(NearestEnemyOf(Myself),5)
+  ActionListEmpty()
+THEN
+  RESPONSE #100
+    MoveToObject(NearestEnemyOf(Myself))
+END
+
+IF
+  AttackedBy([ANYONE],DEFAULT)
+  See(LastAttackerOf(Myself))
+  Range(LastAttackerOf(Myself),5)
+  ActionListEmpty()
+THEN
+  RESPONSE #100
+    AttackOneRound(LastAttackerOf(Myself))
+END
+
+IF
+  AttackedBy([ANYONE],DEFAULT)
+  See(LastAttackerOf(Myself))
+  !Range(LastAttackerOf(Myself),5)
+  ActionListEmpty()
+THEN
+  RESPONSE #100
+    MoveToObject(LastAttackerOf(Myself))
 END
