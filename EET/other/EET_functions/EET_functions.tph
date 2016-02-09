@@ -682,60 +682,76 @@ END
 ///// Action function: EET_NPC_ENDMERGE                \\\\\
 /////                                                  \\\\\
 
+//Action function that can be used in mods to automatically add the NPC JOIN/POST/BANTER dialogues and DREAM script to merging pool (done on the fly by setup-EET_end.exe after all other mods are installed). Arrays are generated based on what is found in PDIALOG.2DA, INTERDIA.2DA. Example usage:
+/*LAF ~EET_NPC_ENDMERGE~
+  STR_VAR
+    dv = "IMOEN2" //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
+    var = ~~ //variables used to filter non ToB files. Separate them with %LNL%. Default: Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)
+    25var = ~~ //variables used to filter ToB files. Separate them with %LNL%. Default: Global("ENDOFBG2","GLOBAL",2)
+	external = ~~ //path to external file with pre-made arrays ready for appending. Using this optional STR_VAR will disable reading from 2DA files
+END*/
+
 DEFINE_ACTION_FUNCTION ~EET_NPC_ENDMERGE~
 	STR_VAR
 		dv = ""
+		var = ~Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)~
+		25var = ~Global("ENDOFBG2","GLOBAL",2)~
+		external = ""
 	BEGIN
-	OUTER_SPRINT t "~"
-	COPY_EXISTING ~PDIALOG.2DA~ ~override~
-		SET append_dlg = 0
-		SET append_bcs = 0
-		PATCH_FOR_EACH var IN append_join append_25join append_post append_25post append_dream append_25dream append_banter append_25banter BEGIN
-			SPRINT EVAL ~%var%~ ~~
-		END
-		READ_2DA_ENTRIES_NOW pdialog 8
-		FOR (i=0; i < pdialog; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER pdialog i 0 npc
-			PATCH_IF ~%npc%~ STRING_EQUAL_CASE ~%dv%~ BEGIN
-				READ_2DA_ENTRY_FORMER pdialog i 1 post
-				READ_2DA_ENTRY_FORMER pdialog i 2 join
-				READ_2DA_ENTRY_FORMER pdialog i 3 dream
-				READ_2DA_ENTRY_FORMER pdialog i 4 25post
-				READ_2DA_ENTRY_FORMER pdialog i 5 25join
-				READ_2DA_ENTRY_FORMER pdialog i 6 25dream
-				PATCH_IF (NOT ~%join%~ STRING_EQUAL_CASE ~%25join%~) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) BEGIN
-					SET append_dlg = 1
-					SPRINT append_join ~%t%%join%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
-					SPRINT append_25join ~%t%%25join%%t% , %t%%join%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
-				END
-				PATCH_IF (NOT ~%post%~ STRING_EQUAL_CASE ~%25post%~) AND (FILE_EXISTS_IN_GAME ~%25post%.dlg~) BEGIN
-					SET append_dlg = 1
-					SPRINT append_post ~%t%%post%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
-					SPRINT append_25post ~%t%%25post%%t% , %t%%post%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
-				END
-				PATCH_IF (NOT ~%dream%~ STRING_EQUAL_CASE ~%25dream%~) AND (FILE_EXISTS_IN_GAME ~%25dream%.bcs~) BEGIN
-					SET append_bcs = 1
-					SPRINT append_dream ~%t%%dream%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
-					SPRINT append_25dream ~%t%%25dream%%t% , %t%%dream%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
+	ACTION_IF ~%external%~ STRING_EQUAL_CASE ~~ BEGIN
+		COPY ~EET/lib/EET_end.tph~ ~EET/lib~
+			APPEND_FILE ~%external%~
+	END ELSE BEGIN
+		OUTER_SPRINT t "~"
+		COPY_EXISTING ~PDIALOG.2DA~ ~override~
+			SET append_dlg = 0
+			SET append_bcs = 0
+			PATCH_FOR_EACH variable IN append_join append_25join append_post append_25post append_dream append_25dream append_banter append_25banter BEGIN
+				SPRINT EVAL ~%variable%~ ~~
+			END
+			READ_2DA_ENTRIES_NOW pdialog 8
+			FOR (i=0; i < pdialog; ++i) BEGIN
+				READ_2DA_ENTRY_FORMER pdialog i 0 npc
+				PATCH_IF ~%npc%~ STRING_EQUAL_CASE ~%dv%~ BEGIN
+					READ_2DA_ENTRY_FORMER pdialog i 1 post
+					READ_2DA_ENTRY_FORMER pdialog i 2 join
+					READ_2DA_ENTRY_FORMER pdialog i 3 dream
+					READ_2DA_ENTRY_FORMER pdialog i 4 25post
+					READ_2DA_ENTRY_FORMER pdialog i 5 25join
+					READ_2DA_ENTRY_FORMER pdialog i 6 25dream
+					PATCH_IF (NOT ~%join%~ STRING_EQUAL_CASE ~%25join%~) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) BEGIN
+						SET append_dlg = 1
+						SPRINT append_join ~%t%%join%%t% , %t%%t% => %t%%var%%t%~
+						SPRINT append_25join ~%t%%25join%%t% , %t%%join%%t% => %t%%25var%%t%~
+					END
+					PATCH_IF (NOT ~%post%~ STRING_EQUAL_CASE ~%25post%~) AND (FILE_EXISTS_IN_GAME ~%25post%.dlg~) BEGIN
+						SET append_dlg = 1
+						SPRINT append_post ~%t%%post%%t% , %t%%t% => %t%%var%%t%~
+						SPRINT append_25post ~%t%%25post%%t% , %t%%post%%t% => %t%%25var%%t%~
+					END
+					PATCH_IF (NOT ~%dream%~ STRING_EQUAL_CASE ~%25dream%~) AND (FILE_EXISTS_IN_GAME ~%25dream%.bcs~) BEGIN
+						SET append_bcs = 1
+						SPRINT append_dream ~%t%%dream%%t% , %t%%t% => %t%%var%%t%~
+						SPRINT append_25dream ~%t%%25dream%%t% , %t%%dream%%t% => %t%%25var%%t%~
+					END
 				END
 			END
-		END
-	BUT_ONLY
-	COPY_EXISTING ~INTERDIA.2DA~ ~override~
-		READ_2DA_ENTRIES_NOW interdia 3
-		FOR (i=0; i < interdia; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER interdia i 0 npc
-			PATCH_IF ~%npc%~ STRING_EQUAL_CASE ~%dv%~ BEGIN
-				READ_2DA_ENTRY_FORMER interdia i 1 banter
-				READ_2DA_ENTRY_FORMER interdia i 2 25banter
-				PATCH_IF (NOT ~%banter%~ STRING_EQUAL_CASE ~%25banter%~) AND (FILE_EXISTS_IN_GAME ~%25banter%.dlg~) BEGIN
-					SET append_dlg = 1
-					SPRINT append_banter ~%t%%banter%%t% , %t%%t% => %t%Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)%t%~
-					SPRINT append_25banter ~%t%%25banter%%t% , %t%%banter%%t% => %t%Global("ENDOFBG2","GLOBAL",2)%t%~
+		BUT_ONLY
+		COPY_EXISTING ~INTERDIA.2DA~ ~override~
+			READ_2DA_ENTRIES_NOW interdia 3
+			FOR (i=0; i < interdia; ++i) BEGIN
+				READ_2DA_ENTRY_FORMER interdia i 0 npc
+				PATCH_IF ~%npc%~ STRING_EQUAL_CASE ~%dv%~ BEGIN
+					READ_2DA_ENTRY_FORMER interdia i 1 banter
+					READ_2DA_ENTRY_FORMER interdia i 2 25banter
+					PATCH_IF (NOT ~%banter%~ STRING_EQUAL_CASE ~%25banter%~) AND (FILE_EXISTS_IN_GAME ~%25banter%.dlg~) BEGIN
+						SET append_dlg = 1
+						SPRINT append_banter ~%t%%banter%%t% , %t%%t% => %t%%var%%t%~
+						SPRINT append_25banter ~%t%%25banter%%t% , %t%%banter%%t% => %t%%25var%%t%~
+					END
 				END
 			END
-		END
-	BUT_ONLY
+		BUT_ONLY
 <<<<<<<< .../append_dlg.txt
 //appended by %dv% NPC
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN
@@ -753,11 +769,12 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_append_bcs BEGIN
 %append_25dream%
 END
 >>>>>>>>
-	COPY ~EET/lib/EET_end.tph~ ~EET/lib~
-		PATCH_IF append_dlg = 1 BEGIN
-			APPEND_FILE ~.../append_dlg.txt~ EVALUATE_BUFFER
-		END
-		PATCH_IF append_bcs = 1 BEGIN
-			APPEND_FILE ~.../append_bcs.txt~ EVALUATE_BUFFER
-		END
+		COPY ~EET/lib/EET_end.tph~ ~EET/lib~
+			PATCH_IF append_dlg = 1 BEGIN
+				APPEND_FILE ~.../append_dlg.txt~ EVALUATE_BUFFER
+			END
+			PATCH_IF append_bcs = 1 BEGIN
+				APPEND_FILE ~.../append_bcs.txt~ EVALUATE_BUFFER
+			END
+	END
 END
