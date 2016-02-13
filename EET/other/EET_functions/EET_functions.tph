@@ -688,7 +688,7 @@ END
     dv = "IMOEN2" //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
     var = ~~ //variables used to filter non ToB files. Separate them with %LNL%. Default: Global("ENDOFBG1","GLOBAL",2)%LNL%GlobalLT("ENDOFBG2","GLOBAL",2)
     25var = ~~ //variables used to filter ToB files. Separate them with %LNL%. Default: Global("ENDOFBG2","GLOBAL",2)
-	external = ~~ //path to external file with pre-made arrays ready for appending. Using this optional STR_VAR will disable reading from 2DA files
+    external = ~~ //path to external file with pre-made arrays ready for appending. Using this optional STR_VAR will disable reading from 2DA files
 END*/
 
 DEFINE_ACTION_FUNCTION ~EET_NPC_ENDMERGE~
@@ -700,7 +700,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_ENDMERGE~
 	BEGIN
 	ACTION_IF ~%external%~ STRING_EQUAL_CASE ~~ BEGIN
 		COPY ~EET/lib/EET_end.tph~ ~EET/lib~
-			APPEND_FILE ~%external%~
+			APPEND_FILE_EVALUATE ~%external%~
 	END ELSE BEGIN
 		OUTER_SPRINT t "~"
 		COPY_EXISTING ~PDIALOG.2DA~ ~override~
@@ -771,10 +771,10 @@ END
 >>>>>>>>
 		COPY ~EET/lib/EET_end.tph~ ~EET/lib~
 			PATCH_IF append_dlg = 1 BEGIN
-				APPEND_FILE ~.../append_dlg.txt~ EVALUATE_BUFFER
+				APPEND_FILE_EVALUATE ~.../append_dlg.txt~
 			END
 			PATCH_IF append_bcs = 1 BEGIN
-				APPEND_FILE ~.../append_bcs.txt~ EVALUATE_BUFFER
+				APPEND_FILE_EVALUATE ~.../append_bcs.txt~
 			END
 	END
 END

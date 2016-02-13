@@ -370,9 +370,149 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			END
 		END
 	END
-	SPRINT ~log~ ~COPY "%SOURCE_FILESPEC%" "override"%LNL%~
+	SPRINT log ~COPY "%SOURCE_FILESPEC%" "override"%LNL%~
 	//ARE
 	PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~are~) BEGIN
+		//Actors
+		READ_LONG 0x54 "actors_off"
+		READ_SHORT 0x58 "actors_cnt"
+		FOR (cnt=0; cnt<"%actors_cnt%"; cnt=cnt+1) BEGIN
+			//CRE structure (embedded CRE files)
+			READ_LONG ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			PATCH_IF (actors_flags = 0) BEGIN
+				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
+				PATCH_IF (actors_emb_off != 0) BEGIN
+					PATCH_FOR_EACH offset IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
+						SET offset = ("%actors_emb_off%"+"%offset%")
+						READ_LONG offset "StrRef"
+						PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+							SAY offset ( AT "StrRef" )
+							SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
+						END
+					END
+					FOR (cnt2=0; cnt2<99; cnt2=cnt2+1) BEGIN
+						SET offset = ("%actors_emb_off%"+0xa4+0x4*cnt2)
+						READ_LONG offset "StrRef"
+						PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+							SAY offset ( AT "StrRef" )
+							SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
+						END
+					END
+					READ_LONG ("%actors_emb_off%"+0x2c4) "fx_off"
+					READ_LONG ("%actors_emb_off%"+0x2c8) "fx_cnt"
+					READ_BYTE ("%actors_emb_off%"+0x33) "eff_ver"
+					FOR (cnt2=0; cnt2<"%fx_cnt%"; cnt2=cnt2+1) BEGIN
+						PATCH_IF (eff_ver = 0) BEGIN //EFF v1
+							READ_SHORT ("%fx_off%"+0x30*cnt2) "fx_type"
+							PATCH_IF ("%fx_type%" = 103) //Change Name
+							OR ("%fx_type%" = 139) //Display String
+							OR ("%fx_type%" = 180) //Can't Use Item
+							OR ("%fx_type%" = 206) //Protection from Spell
+							OR ("%fx_type%" = 253) //Add Map Marker
+							OR ("%fx_type%" = 254) //Remove Map Marker
+							OR ("%fx_type%" = 267) //Protection from Display Specific String
+							OR ("%fx_type%" = 290) //Change Title
+							OR ("%fx_type%" = 330) //Float text
+							OR ("%fx_type%" = 338) //Disable rest or save
+							BEGIN
+								SET offset = ("%fx_off%"+0x30*cnt2+0x4)
+								READ_LONG offset "StrRef"
+								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+									SET str_updated = 0
+									PATCH_IF ("%fx_type%" = 267) BEGIN
+										PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
+											PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+												PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
+													//SAY offset ( AT "StrRef" )
+													SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+												END ELSE BEGIN
+													WRITE_LONG offset "%strNew%"
+													SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+												END
+												SET str_updated = 1
+											END
+										END
+									END
+									PATCH_IF (str_updated = 0) BEGIN
+										SAY offset ( AT "StrRef" )
+										SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+									END
+								END
+							END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+								SET offset = ("%fx_off%"+0x30*cnt2+0x2c)
+								READ_LONG offset "StrRef"
+								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+									SAY offset ( AT "StrRef" )
+									SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+								END
+								READ_LONG ("%fx_off%"+0x30*cnt2+0x8) "ids_target"
+								PATCH_IF (ids_target = 10) BEGIN //Actor's name
+									SET offset = ("%fx_off%"+0x30*cnt2+0x4)
+									READ_LONG offset "StrRef"
+									PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+										SAY offset ( AT "StrRef" )
+										SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+									END
+								END
+							END
+						END ELSE BEGIN //EFF v2
+							READ_LONG ("%fx_off%"+0x108*cnt2+0x8) "fx_type"
+							PATCH_IF ("%fx_type%" = 103) //Change Name
+							OR ("%fx_type%" = 139) //Display String
+							OR ("%fx_type%" = 180) //Can't Use Item
+							OR ("%fx_type%" = 206) //Protection from Spell
+							OR ("%fx_type%" = 253) //Add Map Marker
+							OR ("%fx_type%" = 254) //Remove Map Marker
+							OR ("%fx_type%" = 267) //Protection from Display Specific String
+							OR ("%fx_type%" = 290) //Change Title
+							OR ("%fx_type%" = 330) //Float text
+							OR ("%fx_type%" = 338) //Disable rest or save
+							BEGIN
+								SET offset = ("%fx_off%"+0x108*cnt2+0x14)
+								READ_LONG offset "StrRef"
+								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+									SET str_updated = 0
+									PATCH_IF ("%fx_type%" = 267) BEGIN
+										PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
+											PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
+												PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
+													//SAY offset ( AT "StrRef" )
+													SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+												END ELSE BEGIN
+													WRITE_LONG offset "%strNew%"
+													SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+												END
+												SET str_updated = 1
+											END
+										END
+									END
+									PATCH_IF (str_updated = 0) BEGIN
+										SAY offset ( AT "StrRef" )
+										SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+									END
+								END
+							END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+								SET offset = ("%fx_off%"+0x108*cnt2+0x40)
+								READ_LONG offset "StrRef"
+								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+									SAY offset ( AT "StrRef" )
+									SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+								END
+								READ_LONG ("%fx_off%"+0x108*cnt2+0x18) "ids_target"
+								PATCH_IF (ids_target = 10) BEGIN //Actor's name
+									SET offset = ("%fx_off%"+0x108*cnt2+0x14)
+									READ_LONG offset "StrRef"
+									PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+										SAY offset ( AT "StrRef" )
+										SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+									END
+								END
+							END
+						END
+					END
+				END
+			END
+		END
 		//Info points, trigger points, and exit (regions/triggers)
 		READ_LONG 0x5c "info_off"
 		READ_SHORT 0x5a "info_cnt"
@@ -382,7 +522,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+					SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 				END
 			END
 		END
@@ -394,19 +534,19 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 		//Doors
 		READ_LONG 0xa8 "door_off"
-		READ_SHORT 0xa4 "door_cnt"
+		READ_LONG 0xa4 "door_cnt"
 		FOR (cnt=0; cnt<"%door_cnt%"; cnt=cnt+1) BEGIN
 			PATCH_FOR_EACH ~add_off~ IN 0x98 0xb4 BEGIN
 				SET offset = ("%door_off%"+0xc8*cnt+"%add_off%") //Lockpick string, Dialog speaker name
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+					SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 				END
 			END
 		END
@@ -418,7 +558,22 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
+			END
+		END
+		//Projectile traps
+		READ_LONG 0xcc "pro_off"
+		READ_LONG 0xd0 "pro_cnt"
+		FOR (cnt=0; cnt<"%pro_cnt%"; cnt=cnt+1) BEGIN
+			//PRO structure (embedded PRO files)
+			READ_LONG ("%pro_off%"+0x1c*cnt+0x8) "pro_emb_off"
+			PATCH_IF (pro_emb_off != 0) BEGIN
+				SET offset = ("%pro_emb_off%"+0x30) //String
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
+				END
 			END
 		END
 		//Rest Interruptions
@@ -428,7 +583,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 	//CHR
@@ -438,16 +593,16 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 	//CRE
 	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~cre~) BEGIN
-		PATCH_FOR_EACH ~offset~ IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
+		PATCH_FOR_EACH offset IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 		FOR (cnt=0; cnt<99; cnt=cnt+1) BEGIN
@@ -455,7 +610,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 		READ_LONG 0x2c4 "fx_off"
@@ -477,15 +632,15 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SET str_updated = 0
-					PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+					PATCH_IF ("%fx_type%" = 267) BEGIN
 						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
 							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
 								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 									//SAY offset ( AT "StrRef" )
-									SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+									SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 								END ELSE BEGIN
 									WRITE_LONG offset "%strNew%"
-									SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+									SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 								END
 								SET str_updated = 1
 							END
@@ -493,7 +648,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 					END
 					PATCH_IF (str_updated = 0) BEGIN
 						SAY offset ( AT "StrRef" )
-						SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 					END
 				END
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -501,7 +656,16 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
+				READ_LONG ("%fx_off%"+0x108*cnt+0x18) "ids_target"
+				PATCH_IF (ids_target = 10) BEGIN //Actor's name
+					SET offset = ("%fx_off%"+0x108*cnt+0x14)
+					READ_LONG offset "StrRef"
+					PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+						SAY offset ( AT "StrRef" )
+						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					END
 				END
 			END
 		END
@@ -523,15 +687,15 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SET str_updated = 0
-				PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+				PATCH_IF ("%fx_type%" = 267) BEGIN
 					PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
 						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
 							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 								//SAY offset ( AT "StrRef" )
-								SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 							END ELSE BEGIN
 								WRITE_LONG offset "%strNew%"
-								SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+								SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 							END
 							SET str_updated = 1
 						END
@@ -539,7 +703,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				END
 				PATCH_IF (str_updated = 0) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 				END
 			END
 		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -547,16 +711,25 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+			END
+			READ_LONG 0x20 "ids_target"
+			PATCH_IF (ids_target = 10) BEGIN //Actor's name
+				SET offset = 0x1c
+				READ_LONG offset "StrRef"
+				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+					SAY offset ( AT "StrRef" )
+					SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
 			END
 		END
 	//ITM
 	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~itm~) BEGIN
-		PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
+		PATCH_FOR_EACH offset IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 		READ_LONG 0x64 "abil_off"
@@ -584,15 +757,15 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SET str_updated = 0
-					PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+					PATCH_IF ("%fx_type%" = 267) BEGIN
 						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
 							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
 								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 									//SAY offset ( AT "StrRef" )
-									SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+									SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 								END ELSE BEGIN
 									WRITE_LONG offset "%strNew%"
-									SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+									SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 								END
 								SET str_updated = 1
 							END
@@ -600,7 +773,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 					END
 					PATCH_IF (str_updated = 0) BEGIN
 						SAY offset ( AT "StrRef" )
-						SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 					END
 				END
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -608,7 +781,16 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_target"
+				PATCH_IF (ids_target = 10) BEGIN //Actor's name
+					SET offset = ("%fx_off%"+0x30*cnt+0x4)
+					READ_LONG offset "StrRef"
+					PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+						SAY offset ( AT "StrRef" )
+						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					END
 				END
 			END
 		END
@@ -618,15 +800,15 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 		END
 	//SPL
 	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~spl~) BEGIN
-		PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
+		PATCH_FOR_EACH offset IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 		READ_LONG 0x64 "abil_off"
@@ -654,15 +836,15 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SET str_updated = 0
-					PATCH_IF ("%fx_type%" = 267) /*OR ("%fx_type%" = 139)*/ BEGIN
+					PATCH_IF ("%fx_type%" = 267) BEGIN
 						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
 							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
 								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
 									//SAY offset ( AT "StrRef" )
-									SPRINT ~log~ ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+									SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 								END ELSE BEGIN
 									WRITE_LONG offset "%strNew%"
-									SPRINT ~log~ ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
+									SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
 								END
 								SET str_updated = 1
 							END
@@ -670,7 +852,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 					END
 					PATCH_IF (str_updated = 0) BEGIN
 						SAY offset ( AT "StrRef" )
-						SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 					END
 				END
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -678,7 +860,16 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+				END
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_target"
+				PATCH_IF (ids_target = 10) BEGIN //Actor's name
+					SET offset = ("%fx_off%"+0x30*cnt+0x4)
+					READ_LONG offset "StrRef"
+					PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
+						SAY offset ( AT "StrRef" )
+						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
+					END
 				END
 			END
 		END
@@ -688,7 +879,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 		READ_LONG offset "StrRef"
 		PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 			SAY offset ( AT "StrRef" )
-			SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+			SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 		END
 		READ_LONG 0x4c "drink_off"
 		READ_SHORT 0x50 "drink_cnt"
@@ -697,13 +888,11 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 				SAY offset ( AT "StrRef" )
-				SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+				SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 			END
 		END
 	//WMP
 	END ELSE PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~wmp~) BEGIN
-		// possibility of more than one world map?
-		//READ_LONG 0x8 "mapentry_num"
 		READ_LONG 0xc "mapentry_off"
 		READ_LONG ("%mapentry_off%"+0x20) "areaentry_num"
 		READ_LONG ("%mapentry_off%"+0x24) "areaentry_off"
@@ -713,7 +902,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 					SAY offset ( AT "StrRef" )
-					SPRINT ~log~ ~%log%  SAY %offset% @%StrRef%%LNL%~
+					SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
 				END
 			END
 		END
@@ -1321,10 +1510,9 @@ END
 
 DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//Worldmap TBL patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Worldmap TBL patching                                                                            //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*areas.*\.tbl$")=0) OR
 	(("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*links.*\.tbl$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching tbl file %patch_name%...~
@@ -1343,15 +1531,15 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//GAM patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//GAM patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.GAM$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching gam version 1.1 file %patch_name%...~
 
-		///////////////////////
+		//////
 		//NPCS
-		///////////////////////
+		//////
 		READ_LONG 0x30 npcs_off
 		READ_LONG 0x34 npcs_cnt
 		FOR (cnt=0; cnt<"%npcs_cnt%"; cnt=cnt+1) BEGIN
@@ -1365,9 +1553,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//ARE patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ARE patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "AREAV1.0") AND (SOURCE_SIZE > 0x11b) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching area version 1.0 file %patch_name%...~
 
@@ -1384,9 +1572,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		//0x94 BCS resref
 		SET off = 0x94 SPRINT res ~are~ LPM EET_PCU_off_res //bcs
 
-		///////////////////////
+		////////
 		//Actors
-		///////////////////////
+		////////
 		READ_LONG 0x54 "actors_off"
 		READ_SHORT 0x58 "actors_cnt"
 		FOR (cnt=0; cnt<"%actors_cnt%"; cnt=cnt+1) BEGIN
@@ -1406,6 +1594,343 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 			SET off = ("%actors_off%"+0x110*cnt+0x78) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0x80 CRE resref
 			SET off = ("%actors_off%"+0x110*cnt+0x80) SPRINT res ~cre~ LPM EET_PCU_off_res
+
+			////////////////////////////////////
+			//CRE structure (embedded CRE files)
+			////////////////////////////////////
+			READ_LONG ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			PATCH_IF (actors_flags = 0) BEGIN
+				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
+				PATCH_IF (actors_emb_off != 0) BEGIN
+					//0x34 small portrait BMP resref
+					SET off = ("%actors_emb_off%"+0x34) SPRINT res ~bmp~ LPM EET_PCU_off_res
+
+					//0x3c large portrait BMP resref
+					SET off = ("%actors_emb_off%"+0x3c) SPRINT res ~bmp~ LPM EET_PCU_off_res
+
+					//0x244 kit internal number
+					SET off = ("%actors_emb_off%"+0x244) LPM EET_PCU_off_kit
+
+					//0x248 override BCS resref
+					SET off = ("%actors_emb_off%"+0x248) SPRINT res ~bcs~ LPM EET_PCU_off_res
+
+					//0x250 class BCS resref
+					SET off = ("%actors_emb_off%"+0x250) SPRINT res ~bcs~ LPM EET_PCU_off_res
+
+					//0x258 race BCS resref
+					SET off = ("%actors_emb_off%"+0x258) SPRINT res ~bcs~ LPM EET_PCU_off_res
+
+					//0x260 general BCS resref
+					SET off = ("%actors_emb_off%"+0x260) SPRINT res ~bcs~ LPM EET_PCU_off_res
+
+					//0x268 default BCS resref
+					SET off = ("%actors_emb_off%"+0x268) SPRINT res ~bcs~ LPM EET_PCU_off_res
+
+					//0x273 Class number
+					SET off = ("%actors_emb_off%"+0x273) LPM EET_PCU_off_class
+
+					//0x280 Death Variable
+					SET off = ("%actors_emb_off%"+0x280) SPRINT res ~dv~ LPM EET_PCU_off_32
+
+					//0x2cc DLG resref
+					SET off = ("%actors_emb_off%"+0x2cc) SPRINT res ~dlg~ LPM EET_PCU_off_res
+
+					//////////////
+					//Known Spells
+					//////////////
+					READ_LONG ("%actors_emb_off%"+0x2a0) "kspell_off"
+					READ_SHORT ("%actors_emb_off%"+0x2a4) "kspell_cnt"
+					FOR (cnt2=0; cnt2<"%kspell_cnt%"; cnt2=cnt2+1) BEGIN
+						//0x0 SPL resref
+						SET off = ("%kspell_off%"+0xc*cnt2) SPRINT res ~spl~ LPM EET_PCU_off_res
+					END
+
+					//////////////////
+					//Memorised Spells
+					//////////////////
+					READ_LONG ("%actors_emb_off%"+0x2b0) "mspell_off"
+					READ_SHORT ("%actors_emb_off%"+0x2b4) "mspell_cnt"
+					FOR (cnt2=0; cnt2<"%mspell_cnt%"; cnt2=cnt2+1) BEGIN
+						//0x0 SPL resref
+						SET off = ("%mspell_off%"+0xc*cnt2) SPRINT res ~spl~ LPM EET_PCU_off_res
+					END
+
+					///////
+					//Items
+					///////
+					READ_LONG ("%actors_emb_off%"+0x2bc) "item_off"
+					READ_SHORT ("%actors_emb_off%"+0x2c0) "item_cnt"
+					FOR (cnt2=0; cnt2<"%item_cnt%"; cnt2=cnt2+1) BEGIN
+						//0x0 ITM resref
+						SET off = ("%item_off%"+0x14*cnt2) SPRINT res ~itm~ LPM EET_PCU_off_res
+					END
+
+					/////////
+					//Effects
+					/////////
+					READ_LONG ("%actors_emb_off%"+0x2c4) "fx_off"
+					READ_LONG ("%actors_emb_off%"+0x2c8) "fx_cnt"
+					READ_BYTE ("%actors_emb_off%"+0x33) "eff_ver"
+					FOR (cnt2=0; cnt2<"%fx_cnt%"; cnt2=cnt2+1) BEGIN
+						PATCH_IF (eff_ver = 0) BEGIN //EFF v1
+							READ_SHORT ("%fx_off%"+0x30*cnt2) "fx_type"
+							SET offset = ("%fx_off%"+0x30*cnt2+0x14)
+
+							PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
+							OR ("%fx_type%" = 169) //Prevent Special Effect Icon
+							OR ("%fx_type%" = 240) //Remove Special Effect Icon
+							BEGIN
+								SET off = ("%fx_off%"+0x30*cnt2+0x8) LPM EET_PCU_off_state
+							END
+
+							PATCH_IF ("%fx_type%" = 214) //Select Spell
+							OR ("%fx_type%" = 127) //Monster Summoning
+							OR ("%fx_type%" = 331) //Random Monster Summoning
+							BEGIN
+								SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 186) BEGIN //MoveToArea
+								SET off = offset SPRINT res ~are~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 68) //Unsummon creature
+							OR ("%fx_type%" = 215) //Play 3D Effect
+							OR ("%fx_type%" = 296) //Protection from Specific Animation
+							OR ("%fx_type%" = 336) //Seven eyes overlay
+							BEGIN
+								SET off = offset SPRINT res ~bam~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 82) BEGIN //Set AI Script
+								SET off = offset SPRINT res ~bcs~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 107) BEGIN //Change Portrait
+								SET off = offset SPRINT res ~bmp~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 67) //Summon Creature
+							OR ("%fx_type%" = 135) //Polymorph into Specific
+							OR ("%fx_type%" = 151) //Replace Creature
+							OR ("%fx_type%" = 168) //Remove Creature
+							BEGIN
+								SET off = offset SPRINT res ~cre~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+								READ_LONG ("%fx_off%"+0x30*cnt2+0x8) "ids_target"
+								PATCH_IF (ids_target = 11) BEGIN //Actor's script name
+									SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+								END
+							END
+
+							PATCH_IF ("%fx_type%" = 177) //Use EFF File
+							OR ("%fx_type%" = 272) //Apply Repeating EFF
+							OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+							OR ("%fx_type%" = 248) //Set Melee Effect
+							OR ("%fx_type%" = 249) //Set Ranged Effect
+							BEGIN
+								SET off = offset SPRINT res ~eff~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
+							OR ("%fx_type%" = 112) //Remove Item
+							OR ("%fx_type%" = 122) //Create Inventory Item
+							OR ("%fx_type%" = 123) //Remove Inventory Item
+							OR ("%fx_type%" = 143) //Create Item in Slot
+							OR ("%fx_type%" = 180) //Cannot Use Item
+							OR ("%fx_type%" = 255) //Create Inventory Item (days)
+							BEGIN
+								SET off = offset SPRINT res ~itm~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 152) BEGIN //Play Movie
+								SET off = offset SPRINT res ~mve~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 146) //Cast Spell (at Creature)
+							OR ("%fx_type%" = 147) //Learn Spell
+							OR ("%fx_type%" = 148) //Cast Spell (at Point)
+							OR ("%fx_type%" = 171) //Give Innate Ability
+							OR ("%fx_type%" = 172) //Remove Spell
+							OR ("%fx_type%" = 183) //Apply Effect Itemtype (SPL ResRef?)
+							OR ("%fx_type%" = 206) //Protection from Spell
+							OR ("%fx_type%" = 207) //Bounce Specified Spell
+							OR ("%fx_type%" = 232) //Cast Spell on Condition
+							OR ("%fx_type%" = 251) //Change Bard Song Effect
+							OR ("%fx_type%" = 252) //Set Trap
+							OR ("%fx_type%" = 256) //Spell sequencer
+							OR ("%fx_type%" = 258) //Activate spell sequencer
+							OR ("%fx_type%" = 266) //Remove Protection from Spell
+							OR ("%fx_type%" = 313) //High-Level Ability Denotation
+							OR ("%fx_type%" = 318) //Immunity to Spell
+							OR ("%fx_type%" = 321) //Effects specified by Resource
+							OR ("%fx_type%" = 324) //Immunity to spell and message
+							OR ("%fx_type%" = 326) //Apply effects list
+							OR ("%fx_type%" = 333) //Static Charge
+							OR ("%fx_type%" = 335) //Seven Eyes
+							OR ("%fx_type%" = 340) //Change Backstab Effect
+							OR ("%fx_type%" = 341) //Change Critical Hit Effect
+							BEGIN
+								SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 187) //Store Local Variable
+							OR ("%fx_type%" = 265) //Modify Global Variable
+							OR ("%fx_type%" = 309) //Modify Local Variable
+							BEGIN
+								SET off = offset SPRINT res ~var~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 174) BEGIN //Play Sound
+								SET off = offset SPRINT res ~wav~ LPM EET_PCU_off_res
+							END
+						END ELSE BEGIN //EFF v2
+							READ_LONG ("%fx_off%"+0x108*cnt2+0x8) "fx_type"
+							SET offset = ("%fx_off%"+0x108*cnt2+0x28) //Resource
+							SET offset2 = ("%fx_off%"+0x108*cnt2+0x68) //Resource 2 (VVC field)
+							SET offset3 = ("%fx_off%"+0x108*cnt2+0x70) //Resource 3
+
+							PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
+							OR ("%fx_type%" = 169) //Prevent Special Effect Icon
+							OR ("%fx_type%" = 240) //Remove Special Effect Icon
+							BEGIN
+								SET off = ("%fx_off%"+0x108*cnt2+0x18) LPM EET_PCU_off_state
+							END
+
+							PATCH_IF ("%fx_type%" = 127) BEGIN //Monster Summoning
+								SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
+								SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 214) BEGIN //Select Spell
+								SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 331) BEGIN //Random Monster Summoning
+								SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
+								SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
+								SET off = offset3 SPRINT res ~bam~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 186) BEGIN //MoveToArea
+								SET off = offset SPRINT res ~are~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 68) //Unsummon creature
+							OR ("%fx_type%" = 215) //Play 3D Effect
+							OR ("%fx_type%" = 296) //Protection from Specific Animation
+							OR ("%fx_type%" = 336) //Seven eyes overlay
+							BEGIN
+								SET off = offset SPRINT res ~bam~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 82) BEGIN //Set AI Script
+								SET off = offset SPRINT res ~bcs~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 107) BEGIN //Change Portrait
+								SET off = offset SPRINT res ~bmp~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 67) BEGIN //Summon Creature
+								SET off = offset SPRINT res ~cre~ LPM EET_PCU_off_res
+								SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 135) //Polymorph into Specific
+							OR ("%fx_type%" = 151) //Replace Creature
+							OR ("%fx_type%" = 168) //Remove Creature
+							BEGIN
+								SET off = offset SPRINT res ~cre~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+								READ_LONG ("%fx_off%"+0x108*cnt2+0x18) "ids_target"
+								PATCH_IF (ids_target = 11) BEGIN //Actor's script name
+									SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+								END
+							END
+
+							PATCH_IF ("%fx_type%" = 177) //Use EFF File
+							OR ("%fx_type%" = 272) //Apply Repeating EFF
+							OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+							OR ("%fx_type%" = 248) //Set Melee Effect
+							OR ("%fx_type%" = 249) //Set Ranged Effect
+							BEGIN
+								SET off = offset SPRINT res ~eff~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
+							OR ("%fx_type%" = 112) //Remove Item
+							OR ("%fx_type%" = 122) //Create Inventory Item
+							OR ("%fx_type%" = 123) //Remove Inventory Item
+							OR ("%fx_type%" = 143) //Create Item in Slot
+							OR ("%fx_type%" = 180) //Cannot Use Item
+							OR ("%fx_type%" = 255) //Create Inventory Item (days)
+							BEGIN
+								SET off = offset SPRINT res ~itm~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 152) BEGIN //Play Movie
+								SET off = offset SPRINT res ~mve~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 146) //Cast Spell (at Creature)
+							OR ("%fx_type%" = 147) //Learn Spell
+							OR ("%fx_type%" = 148) //Cast Spell (at Point)
+							OR ("%fx_type%" = 171) //Give Innate Ability
+							OR ("%fx_type%" = 172) //Remove Spell
+							OR ("%fx_type%" = 183) //Apply Effect Itemtype (SPL ResRef?)
+							OR ("%fx_type%" = 206) //Protection from Spell
+							OR ("%fx_type%" = 207) //Bounce Specified Spell
+							OR ("%fx_type%" = 232) //Cast Spell on Condition
+							OR ("%fx_type%" = 251) //Change Bard Song Effect
+							OR ("%fx_type%" = 252) //Set Trap
+							OR ("%fx_type%" = 258) //Activate spell sequencer
+							OR ("%fx_type%" = 266) //Remove Protection from Spell
+							OR ("%fx_type%" = 313) //High-Level Ability Denotation
+							OR ("%fx_type%" = 318) //Immunity to Spell
+							OR ("%fx_type%" = 321) //Effects specified by Resource
+							OR ("%fx_type%" = 324) //Immunity to spell and message
+							OR ("%fx_type%" = 326) //Apply effects list
+							OR ("%fx_type%" = 333) //Static Charge
+							OR ("%fx_type%" = 335) //Seven Eyes
+							OR ("%fx_type%" = 340) //Change Backstab Effect
+							OR ("%fx_type%" = 341) //Change Critical Hit Effect
+							BEGIN
+								SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 256) BEGIN //Spell sequencer
+								SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
+								SET off = offset2 SPRINT res ~spl~ LPM EET_PCU_off_res
+								SET off = offset3 SPRINT res ~spl~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 187) //Store Local Variable
+							OR ("%fx_type%" = 265) //Modify Global Variable
+							OR ("%fx_type%" = 309) //Modify Local Variable
+							BEGIN
+								//READ_ASCII offset "str1" (8) NULL
+								//READ_ASCII offset2 "str2" (8) NULL
+								//READ_ASCII offset3 "str3" (8) NULL
+								//SPRINT str123 ~%str1%%str2%%str3%~
+								//SPRINT match ~%str123%~
+								SET off = offset SPRINT res ~var~ LPM EET_PCU_off_res
+							END
+
+							PATCH_IF ("%fx_type%" = 174) BEGIN //Play Sound
+								SET off = offset SPRINT res ~wav~ LPM EET_PCU_off_res
+							END
+
+							//0x8c source spell SPL resref
+							SET off = ("%fx_off%"+0x108*cnt2+0x8c) SPRINT res ~spl~ LPM EET_PCU_off_res
+						END
+					END
+				END
+			END
 		END
 
 		///////////////////////////////////////
@@ -1426,11 +1951,11 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 			SET off = ("%info_off%"+0xc4*cnt+0xbc) SPRINT res ~dlg~ LPM EET_PCU_off_res
 		END
 
-		//////////////
+		///////////
 		//Entrances
-		//////////////
+		///////////
 		READ_LONG 0x68 "entry_off"
-		READ_SHORT 0x6c "entry_cnt"
+		READ_LONG 0x6c "entry_cnt"
 		FOR (cnt=0; cnt<"%entry_cnt%"; cnt=cnt+1) BEGIN
 			//0x0 entrance name (contains area numbers)
 			SET off = ("%entry_off%"+0x68*cnt) SPRINT res ~exit~ LPM EET_PCU_off_8675
@@ -1440,7 +1965,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		//Spawn points
 		//////////////
 		READ_LONG 0x60 "spawn_off"
-		READ_SHORT 0x64 "spawn_cnt"
+		READ_LONG 0x64 "spawn_cnt"
 		FOR (cnt=0; cnt<"%spawn_cnt%"; cnt=cnt+1) BEGIN
 			//0x24 spawn CRE resref 1
 			//0x2c spawn CRE resref 2
@@ -1502,11 +2027,21 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 			END
 		END
 
+		///////////
+		//Variables
+		///////////
+		READ_LONG 0x88 "var_off"
+		READ_LONG 0x8c "var_cnt"
+		FOR (cnt=0; cnt<"%var_cnt%"; cnt=cnt+1) BEGIN
+			//0x0 variable name
+			SET off = ("%var_off%"+0x54*cnt) SPRINT res ~var~ LPM EET_PCU_off_32
+		END
+
 		///////
 		//Doors
 		///////
 		READ_LONG 0xa8 "door_off"
-		READ_SHORT 0xa4 "door_cnt"
+		READ_LONG 0xa4 "door_cnt"
 		FOR (cnt=0; cnt<"%door_cnt%"; cnt=cnt+1) BEGIN
 			//0x58 door open WAV resref
 			SET off = ("%door_off%"+0xc8*cnt+0x58) SPRINT res ~wav~ LPM EET_PCU_off_res
@@ -1524,10 +2059,73 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		//Animations
 		////////////
 		READ_LONG 0xb0 "anim_off"
-		READ_SHORT 0xac "anim_cnt"
+		READ_LONG 0xac "anim_cnt"
 		FOR (cnt=0; cnt<"%anim_cnt%"; cnt=cnt+1) BEGIN
 			//0x28 BAM resref
 			SET off = ("%anim_off%"+0x4c*cnt+0x28) SPRINT res ~bam~ LPM EET_PCU_off_res
+		END
+
+		//////////////////
+		//Projectile traps
+		//////////////////
+		READ_LONG 0xcc "pro_off"
+		READ_LONG 0xd0 "pro_cnt"
+		FOR (cnt=0; cnt<"%pro_cnt%"; cnt=cnt+1) BEGIN
+			//0x0 projectile resref
+			SET off = ("%pro_off%"+0x1c*cnt) SPRINT res ~pro~ LPM EET_PCU_off_res
+			//0xe projectile animation (projectl.ids/missile.ids)
+			SET off = ("%pro_off%"+0x1c*cnt+0xe) LPM EET_PCU_off_ipro
+			////////////////////////////////////
+			//PRO structure (embedded PRO files)
+			////////////////////////////////////
+			READ_LONG ("%pro_off%"+0x1c*cnt+0x8) "pro_emb_off"
+			READ_SHORT ("%pro_off%"+0x1c*cnt+0xc) "pro_emb_size"
+			PATCH_IF (pro_emb_off != 0) BEGIN
+				//0x10 fire sound WAV resref
+				SET off = ("%pro_emb_off%"+0x10) SPRINT res ~wav~ LPM EET_PCU_off_res
+				//0x18 impact sound WAV resref
+				SET off = ("%pro_emb_off%"+0x18) SPRINT res ~wav~ LPM EET_PCU_off_res
+				//0x20 source animation VVC/BAM resref
+				SET off = ("%pro_emb_off%"+0x20) SPRINT res ~bam~ LPM EET_PCU_off_res
+				//0x44 default spell SPL resref
+				SET off = ("%pro_emb_off%"+0x44) SPRINT res ~spl~ LPM EET_PCU_off_res
+				//0x4c success spell SPL resref
+				SET off = ("%pro_emb_off%"+0x4c) SPRINT res ~spl~ LPM EET_PCU_off_res
+				/////////////////
+				//Projectile info
+				/////////////////
+				//0x104 projectile animation BAM resref
+				SET off = ("%pro_emb_off%"+0x104) SPRINT res ~bam~ LPM EET_PCU_off_res
+				//0x10c shadow animation BAM resref
+				SET off = ("%pro_emb_off%"+0x10c) SPRINT res ~bam~ LPM EET_PCU_off_res
+				//0x11c palette BMP resref
+				SET off = ("%pro_emb_off%"+0x11c) SPRINT res ~bmp~ LPM EET_PCU_off_res
+				//0x136 traveling animation 1 BAM resref
+				SET off = ("%pro_emb_off%"+0x136) SPRINT res ~bam~ LPM EET_PCU_off_res
+				//0x13e traveling animation 2 BAM resref
+				SET off = ("%pro_emb_off%"+0x13e) SPRINT res ~bam~ LPM EET_PCU_off_res
+				//0x146 traveling animation 3 BAM resref
+				SET off = ("%pro_emb_off%"+0x146) SPRINT res ~bam~ LPM EET_PCU_off_res
+				///////////
+				//Area info
+				///////////
+				PATCH_IF (pro_emb_size >= 768) BEGIN
+					//0x208 explosion sound WAV resref
+					SET off = ("%pro_emb_off%"+0x208) SPRINT res ~wav~ LPM EET_PCU_off_res
+					//0x214 secondary projectile PRO resref
+					SET off = ("%pro_emb_off%"+0x214) SPRINT res ~pro~ LPM EET_PCU_off_res
+					//0x21a explosion projectile PRO resref
+					SET off = ("%pro_emb_off%"+0x21a) SPRINT res ~pro~ LPM EET_PCU_off_res
+					//0x21c explosion animation VVC/BAM resref
+					SET off = ("%pro_emb_off%"+0x21c) SPRINT res ~bam~ LPM EET_PCU_off_res
+					//0x228 speed animation VVC/BAM resref
+					SET off = ("%pro_emb_off%"+0x228) SPRINT res ~bam~ LPM EET_PCU_off_res
+					//0x230 ring animation VVC/BAM resref
+					SET off = ("%pro_emb_off%"+0x230) SPRINT res ~bam~ LPM EET_PCU_off_res
+					//0x238 area sound WAV resref
+					SET off = ("%pro_emb_off%"+0x238) SPRINT res ~wav~ LPM EET_PCU_off_res
+				END
+			END
 		END
 
 		///////
@@ -1577,9 +2175,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//BAF patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//BAF patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.BAF$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching script source file %patch_name%...~
 
@@ -1607,9 +2205,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//BCS patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//BCS patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SC
 CR
 CO") BEGIN
@@ -1641,9 +2239,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//CRE patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//CRE patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ BEGIN
 		//Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
 		LPF ~FJ_CRE_VALIDITY~ RET vl=valid END
@@ -1703,9 +2301,9 @@ CO") BEGIN
 				SET off = ("%mspell_off%"+0xc*cnt) SPRINT res ~spl~ LPM EET_PCU_off_res
 			END
 
-			//////////////
+			///////
 			//Items
-			//////////////
+			///////
 			READ_LONG 0x2bc "item_off"
 			READ_SHORT 0x2c0 "item_cnt"
 			FOR (cnt=0; cnt<"%item_cnt%"; cnt=cnt+1) BEGIN
@@ -1713,9 +2311,9 @@ CO") BEGIN
 				SET off = ("%item_off%"+0x14*cnt) SPRINT res ~itm~ LPM EET_PCU_off_res
 			END
 
-			//////////////
+			/////////
 			//Effects
-			//////////////
+			/////////
 			READ_LONG 0x2c4 "fx_off"
 			READ_LONG 0x2c8 "fx_cnt"
 			FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
@@ -1779,7 +2377,10 @@ CO") BEGIN
 				END
 
 				PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-					SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+					READ_LONG ("%fx_off%"+0x108*cnt+0x18) "ids_target"
+					PATCH_IF (ids_target = 11) BEGIN //Actor's script name
+						SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+					END
 				END
 
 				PATCH_IF ("%fx_type%" = 177) //Use EFF File
@@ -1842,11 +2443,11 @@ CO") BEGIN
 				OR ("%fx_type%" = 265) //Modify Global Variable
 				OR ("%fx_type%" = 309) //Modify Local Variable
 				BEGIN
-					/*READ_ASCII offset "str1" (8) NULL
-					READ_ASCII offset2 "str2" (8) NULL
-					READ_ASCII offset3 "str3" (8) NULL
-					SPRINT str123 ~%str1%%str2%%str3%~
-					SPRINT match ~%str123%~*/
+					//READ_ASCII offset "str1" (8) NULL
+					//READ_ASCII offset2 "str2" (8) NULL
+					//READ_ASCII offset3 "str3" (8) NULL
+					//SPRINT str123 ~%str1%%str2%%str3%~
+					//SPRINT match ~%str123%~
 					SET off = offset SPRINT res ~var~ LPM EET_PCU_off_res
 				END
 
@@ -1865,9 +2466,9 @@ CO") BEGIN
 		END
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//D patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//D patching                                                                                       //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.D$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching dialog source file %patch_name%...~
 
@@ -1897,15 +2498,15 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//DLG patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//DLG patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "DLG V1.0") AND (SOURCE_SIZE > 0x33) BEGIN //protects against invalid files
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching dialog version 1.0 file %patch_name%...~
 
-		//////////////
+		///////////
 		//Responses
-		//////////////
+		///////////
 		READ_LONG 0x14 "resp_off"
 		READ_SHORT 0x10 "resp_cnt"
 		FOR (cnt=0; cnt<"%resp_cnt%"; cnt=cnt+1) BEGIN
@@ -1941,9 +2542,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//EFF patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//EFF patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "EFF V2.0") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching effect version 2.0 file %patch_name%...~
 
@@ -2007,7 +2608,10 @@ CO") BEGIN
 		END
 
 		PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-			SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+			READ_LONG 0x20 "ids_target"
+			PATCH_IF (ids_target = 11) BEGIN //Actor's script name
+				SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+			END
 		END
 
 		PATCH_IF ("%fx_type%" = 177) //Use EFF File
@@ -2070,11 +2674,11 @@ CO") BEGIN
 		OR ("%fx_type%" = 265) //Modify Global Variable
 		OR ("%fx_type%" = 309) //Modify Local Variable
 		BEGIN
-			/*READ_ASCII offset "str1" (8) NULL
-			READ_ASCII offset2 "str2" (8) NULL
-			READ_ASCII offset3 "str3" (8) NULL
-			SPRINT str123 ~%str1%%str2%%str3%~
-			SPRINT match ~%str123%~*/
+			//READ_ASCII offset "str1" (8) NULL
+			//READ_ASCII offset2 "str2" (8) NULL
+			//READ_ASCII offset3 "str3" (8) NULL
+			//SPRINT str123 ~%str1%%str2%%str3%~
+			//SPRINT match ~%str123%~
 			SET off = offset SPRINT res ~var~ LPM EET_PCU_off_res
 		END
 
@@ -2089,9 +2693,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//ITM patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ITM patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "ITM V1  ") AND (SOURCE_SIZE > 0x71) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching item version 1.0 file %patch_name%...~
 
@@ -2107,9 +2711,9 @@ CO") BEGIN
 		//0x58 description icon BAM resref
 		SET off = 0x58 SPRINT res ~bam~ LPM EET_PCU_off_res
 
-		//////////////
+		///////////
 		//Abilities
-		//////////////
+		///////////
 		READ_LONG 0x64 "abil_off"
 		READ_SHORT 0x68 "abil_cnt"
 		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
@@ -2119,9 +2723,9 @@ CO") BEGIN
 			SET off = ("%abil_off%"+0x38*cnt+0x2a) LPM EET_PCU_off_ipro
 		END
 
-		//////////////
+		/////////
 		//Effects
-		//////////////
+		/////////
 		READ_LONG 0x6a "fx_off"
 		READ_SHORT 0x70 "fx_cnt"
 
@@ -2177,7 +2781,10 @@ CO") BEGIN
 			END
 
 			PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-				SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_target"
+				PATCH_IF (ids_target = 11) BEGIN //Actor's script name
+					SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+				END
 			END
 
 			PATCH_IF ("%fx_type%" = 177) //Use EFF File
@@ -2247,9 +2854,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//PRO patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//PRO patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "PRO V1.0") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching PRO version 1.0 file %patch_name%...~
 
@@ -2268,9 +2875,9 @@ CO") BEGIN
 		//0x4c success spell SPL resref
 		SET off = 0x4c SPRINT res ~spl~ LPM EET_PCU_off_res
 
-		//////////////
+		/////////////////
 		//Projectile info
-		//////////////
+		/////////////////
 
 		//0x104 projectile animation BAM resref
 		SET off = 0x104 SPRINT res ~bam~ LPM EET_PCU_off_res
@@ -2290,9 +2897,9 @@ CO") BEGIN
 		//0x146 traveling animation 3 BAM resref
 		SET off = 0x146 SPRINT res ~bam~ LPM EET_PCU_off_res
 
-		//////////////
+		///////////
 		//Area info
-		//////////////
+		///////////
 		PATCH_IF (~%SOURCE_SIZE%~ >= 768) BEGIN
 			//0x208 explosion sound WAV resref
 			SET off = 0x208 SPRINT res ~wav~ LPM EET_PCU_off_res
@@ -2320,9 +2927,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//SPL patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//SPL patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SPL V1  ") AND (SOURCE_SIZE > 0x71) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching spell version 1.0 file %patch_name%...~
 
@@ -2332,9 +2939,9 @@ CO") BEGIN
 		//0x3a spellbook icon BAM resref
 		SET off = 0x3a SPRINT res ~bam~ LPM EET_PCU_off_res
 
-		//////////////
+		///////////
 		//Abilities
-		//////////////
+		///////////
 		READ_LONG 0x64 "abil_off"
 		READ_SHORT 0x68 "abil_cnt"
 		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
@@ -2344,9 +2951,9 @@ CO") BEGIN
 			SET off = ("%abil_off%"+0x28*cnt+0x26) LPM EET_PCU_off_ipro
 		END
 
-		//////////////
+		/////////
 		//Effects
-		//////////////
+		/////////
 		READ_LONG 0x6a "fx_off"
 		READ_SHORT 0x70 "fx_cnt"
 
@@ -2402,7 +3009,10 @@ CO") BEGIN
 			END
 
 			PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-				SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_target"
+				PATCH_IF (ids_target = 11) BEGIN //Actor's script name
+					SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+				END
 			END
 
 			PATCH_IF ("%fx_type%" = 177) //Use EFF File
@@ -2472,9 +3082,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//STO patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//STO patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "STORV1.0") AND (SOURCE_SIZE > 0x9b) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching store version 1.0 file %patch_name%...~
 
@@ -2484,9 +3094,9 @@ CO") BEGIN
 		//0x54 temple rumours DLG resref
 		SET off = 0x54 SPRINT res ~dlg~ LPM EET_PCU_off_res
 
-		//////////////
+		////////////////
 		//Items for Sale
-		//////////////
+		////////////////
 		READ_LONG 0x34 "item_off"
 		READ_SHORT 0x38 "item_cnt"
 		FOR (cnt=0; cnt<"%item_cnt%"; cnt=cnt+1) BEGIN
@@ -2494,9 +3104,9 @@ CO") BEGIN
 			SET off = ("%item_off%"+0x1c*cnt) SPRINT res ~itm~ LPM EET_PCU_off_res
 		END
 
-		//////////////
+		/////////////////
 		//Drinks for Sale
-		//////////////
+		/////////////////
 		READ_LONG 0x4c "drink_off"
 		READ_SHORT 0x50 "drink_cnt"
 		FOR (cnt=0; cnt<"%drink_cnt%"; cnt=cnt+1) BEGIN
@@ -2504,9 +3114,9 @@ CO") BEGIN
 			SET off = ("%drink_off%"+0x14*cnt) SPRINT res ~dlg~ LPM EET_PCU_off_res
 		END
 
-		//////////////
+		////////////////
 		//Cures for Sale
-		//////////////
+		////////////////
 		READ_LONG 0x70 "cure_off"
 		READ_SHORT 0x74 "cure_cnt"
 		FOR (cnt=0; cnt<"%cure_cnt%"; cnt=cnt+1) BEGIN
@@ -2518,9 +3128,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//TRA patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//TRA patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TRA$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching WeiDU translation file %patch_name%...~
 
@@ -2537,9 +3147,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//TP2/TPH/TPP/TPA patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//TP2/TPH/TPP/TPA patching                                                                         //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TP2$")=0) OR (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TPH$")=0) OR (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TPP$")=0) OR (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TPA$")=0) BEGIN
 
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching WeiDU script file %patch_name%...~
@@ -2693,15 +3303,15 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//VEF patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//VEF patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VEF V1.0") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching VEF version 1.0 file %patch_name%...~
 
-		//////////
+		////////////
 		//Components
-		//////////
+		////////////
 		READ_LONG 0x8 "components1_off"
 		READ_LONG 0xc "components1_num"
 		READ_LONG 0x14 "components2_num"
@@ -2723,9 +3333,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//VVC patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//VVC patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VVC V1.0") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching VVC version 1.0 file %patch_name%...~
 
@@ -2745,9 +3355,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//WED patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//WED patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WED V1.3") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching WED version 1.3 file %patch_name%...~
 
@@ -2765,14 +3375,12 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//WMP patching
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//WMP patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WMAPV1.0") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching worldmap version 1.0 file %patch_name%...~
 
-		// possibility of more than one world map?
-		//READ_LONG 0x8 "mapentry_num"
 		READ_LONG 0xc "mapentry_off"
 
 		//0x0 map resource MOS resref
@@ -2824,9 +3432,9 @@ CO") BEGIN
 		SET checked = 1
 	END
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//0-byte files
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//0-byte files                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "Ignoring 0 byte file") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% %filetype% %patch_name%...~
 

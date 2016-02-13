@@ -517,7 +517,7 @@ COPY - ~EET/temp/array/CHARSND.2DA~ ~EET/temp/array~
 						READ_2DA_ENTRY_FORMER table_charsnd cnt4 0 "index2"
 						READ_2DA_ENTRY_FORMER table_charsnd cnt4 (cnt2 + 1) "string"
 						PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~CHARSND.2DA~ ~^%index2%~)) BEGIN
-							APPEND_FILE ~.../CHARSND.txt~ EVALUATE_BUFFER
+							APPEND_FILE_EVALUATE ~.../CHARSND.txt~
 						END
 						PATCH_IF (string > 0) BEGIN
 							REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 999%string%~
