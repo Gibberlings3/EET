@@ -698,7 +698,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_ENDMERGE~
 		25var = ~Global("ENDOFBG2","GLOBAL",2)~
 		external = ""
 	BEGIN
-	ACTION_IF ~%external%~ STRING_EQUAL_CASE ~~ BEGIN
+	ACTION_IF !(~%external%~ STRING_EQUAL_CASE ~~) BEGIN
 		COPY ~EET/lib/EET_end.tph~ ~EET/lib~
 			APPEND_FILE_EVALUATE ~%external%~
 	END ELSE BEGIN
