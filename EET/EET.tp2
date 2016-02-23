@@ -1065,94 +1065,6 @@ COPY + ~EET/temp/array/projectl.ids~ ~EET/temp/array~
 	END
 
 /////                                                  \\\\\
-///// Convert junk level 9 wizard spells to innate     \\\\\
-/////                                                  \\\\\
-
-PRINT ~SPWI to SPIN level 9 junk wiz spells conversion...~
-
-COPY_EXISTING ~SPELL.IDS~ ~override~
-	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~ //ADD_SPELL breaks regexp new lines detection
-	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
-	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
-	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
-	REPLACE_TEXTUALLY ~2924 BERESH_CHANGE%LNL%~ ~~ //WIZARD_SUMMON_PLANATAR_EVIL dupe
-	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~ //WIZARD_COMET dupe
-BUT_ONLY
-
-//SPWI924-925 converted to SPIN
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_numName BEGIN
-	~924~ => ~BERESH_CHANGE~
-	~925~ => ~KAISHAS_CHANGE~
-END
-ACTION_PHP_EACH table_EET_numName AS num => spell_name BEGIN
-	ADD_SPELL ~%patch_dir%/spl/SPWI%num%.spl~ 3 3 ~%spell_name%~
-	LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
-	MOVE + ~%patch_dir%/spl/SPWI%num%.spl~ ~%patch_dir%/spl/%spell_res%.spl~
-END
-
-//SPWI926-999 converted to SPIN303-362
-//code not used due to mod incompatibilities
-/*MKDIR ~EET/temp/junk~
-OUTER_FOR (i=926; i<=999; i=i+1) BEGIN
-    LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~SPWI%i%~ RET spell_name spell_num END
-	COPY_EXISTING ~HIDESPL.2DA~ ~override~
-		PRETTY_PRINT_2DA
-		REPLACE_TEXTUALLY ~^SPWI%i% .+%LNL%~ ~~
-	BUT_ONLY
-    COPY_EXISTING ~SPELL.IDS~ ~override~
-		REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
-		REPLACE_TEXTUALLY ~^%spell_num% %spell_name%%LNL%~ ~~
-	BUT_ONLY
-	ACTION_IF (NOT IS_AN_INT ~%spell_name%~) BEGIN //only true if spell has IDS name (so it skips SPWI938)
-		ACTION_IF (FILE_EXISTS_IN_GAME ~SPWI%i%.spl~) BEGIN
-			COPY_EXISTING + ~SPWI%i%.spl~ ~EET/temp/junk~
-            ACTION_IF (FILE_EXISTS ~override/SPWI%i%.spl~) BEGIN
-                DELETE ~override/SPWI%i%.spl~
-            END
-            DISABLE_FROM_KEY ~SPWI%i%.spl~ //Removes file from the chitin.key, while leaving the containing bif file itself untouched
-            ADD_SPELL ~EET/temp/junk/SPWI%i%.spl~ 3 3 ~%spell_name%~
-			LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
-			ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN
-				~SPWI%i%~ => ~%spell_res%~
-			END
-			OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%SPWI%i%%TAB%=>%TAB%%spell_res%%TAB%%slash%%slash%%spell_name%%LNL%~
-			ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
-				~%spell_num%~ => ~%spell_name%~
-			END
-			OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_num%%TAB%=>%TAB%%spell_name%%TAB%%slash%%slash%%spell_res%%LNL%~
-			ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_junkNumName BEGIN
-				~%spell_num%~ => ~%spell_name%~
-			END
-        END
-    END
-END*/
-
-//update compiled scripts and dialogues
-COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
-	~.+\.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		//HaveSpell, RemoveSpell, HaveSpellParty
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+Spell[A-Za-z]*(\)\(29[0-9]+\))~ BEGIN
-			PHP_EACH table_EET_junkNumName AS num => spell_name BEGIN
-				PATCH_IF (IS_AN_INT ~%MATCH2%~) AND (MATCH2 = num) BEGIN
-					PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %num% => %spell_name%~
-					SPRINT MATCH2 ~%spell_name%~
-				END
-			END
-		END ~%MATCH1%%MATCH2%)~
-		//SpellCast, SpellCastOnMe, SpellCastPriest, SpellCastInnate, Spell, ForceSpell, ApplySpell, ReallyForceSpell, SpellPoint, ForceSpellPoint, ReallyForceSpellPoint, SpellNoDec, SpellPointNoDec, ReallyForceSpellDead, ForceSpellRange, ForceSpellPointRange
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Spell[A-Za-z]*([^,]+,\)\(29[0-9]+\))~ BEGIN
-			PHP_EACH table_EET_junkNumName AS num => spell_name BEGIN
-				PATCH_IF (IS_AN_INT ~%MATCH2%~) AND (MATCH2 = num) BEGIN
-					PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %num% => %spell_name%~
-					SPRINT MATCH2 ~%spell_name%~
-				END
-			END
-		END ~%MATCH1%%MATCH2%)~
-	END
-BUT_ONLY
-
-/////                                                  \\\\\
 ///// ADD_SPELL                                        \\\\\
 /////                                                  \\\\\
 
@@ -1163,6 +1075,8 @@ COPY_EXISTING ~spell.ids~ ~override~
 	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
 	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
 	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	REPLACE_TEXTUALLY ~2924 BERESH_CHANGE%LNL%~ ~~ //WIZARD_SUMMON_PLANATAR_EVIL dupe
+	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~ //WIZARD_COMET dupe
 BUT_ONLY
 
 OUTER_SPRINT log ~~
