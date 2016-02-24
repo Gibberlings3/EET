@@ -1292,7 +1292,7 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IF[%newline%]*InParty(".+")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches < 21) BEGIN
+		PATCH_IF (num_matches >= 21) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN

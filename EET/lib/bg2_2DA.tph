@@ -725,18 +725,19 @@ COPY + ~EET/temp/array/HATERACE.2DA~ ~EET/temp/array~
 ///// HIDESPL.2DA                                      \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING_REGEXP - GLOB ~SPWI[1-9][5-9][0-9]\.SPL~ ~override~ //Wizard level 1-9 spells index 50+
+COPY_EXISTING_REGEXP GLOB ~SPWI[1-9][5-9][0-9]\.SPL~ ~override~ //Wizard level 1-9 spells index 50+
 	~SPPR[1-7][5-9][0-9]\.SPL~ ~override~ //Priest level 1-7 spells index 50+
 	INNER_ACTION BEGIN
 		ACTION_IF (~%SOURCE_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
 			APPEND ~HIDESPL.2DA~ ~%SOURCE_RES% 1 0~ UNLESS ~%SOURCE_RES%~
 		END
 	END
-COPY_EXISTING_REGEXP - GLOB ~SPWI0[0-9]+\.SPL~ ~override~ //Wizard level 0 spells all indexes (they can be assigned as level 9 spells via SPELLS.2DA)
+BUT_ONLY
+COPY_EXISTING_REGEXP GLOB ~SPWI0[0-9]+\.SPL~ ~override~ //Wizard level 0 spells all indexes (they can be assigned as level 9 spells via SPELLS.2DA)
 	INNER_ACTION BEGIN
 		APPEND ~HIDESPL.2DA~ ~%SOURCE_RES% 1 0~ UNLESS ~%SOURCE_RES%~
 	END
-
+BUT_ONLY
 ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPWI[1-9][5-9][0-9]\.SPL~ BEGIN //Wizard level 1-9 spells index 50+
 	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
 		APPEND_OUTER + ~EET/temp/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0~ UNLESS ~%BASH_FOR_RES%~
@@ -755,7 +756,7 @@ BUT_ONLY
 OUTER_SPRINT logHide ~~
 COPY + ~EET/temp/array/HIDESPL.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
-	FOR (i=926; i<=999; i=i+1) BEGIN
+	FOR (i=924; i<=999; i=i+1) BEGIN
 		REPLACE_TEXTUALLY ~^SPWI%i% .+%LNL%~ ~~
     END
 	COUNT_2DA_ROWS 3 "cntrow"
