@@ -46,17 +46,30 @@ It is safe to abort this installation by closing this window or pressing Ctrl+C.
 /*@n = ~Repertoire BG:EE invalide ou installation BG:EE incorrecte.
 Vous pouvez abandonner l'installation en fermant la fenetre ou en tapant Ctrl+C.~*/
 
+/*@n = ~BG:EE directory used for this installation:
+%bgee_dir%~*/
+/*@n = ~Repertoire BG:EE retenu pour cette installation :
+%bgee_dir%~*/
+
+//@n = ~You've installed wrong The Stone of Askavar component. EET is compatible with Default version (option 1 during installation).~
+//@n = ~Vous avez intalle le mauvais composant de Stone of Askavar. EET est compatible avec la version par defaut (option 1 pendant l'installation).~
+
+//@n = ~You've installed wrong Drizzt Saga component. EET is compatible with Default version (option 1 during installation).~
+//@n = ~Vous avez intalle le mauvais composant de Drizzt Saga. EET est compatible avec la version par defaut (option 1 pendant l'installation).~
+
+//@n = ~%cntrow% BG:EE mods detected. Checking compatibility with EET...~
+//@n = ~%cntrow% mods BG:EE detectes. Verification de la compatibilite avec EET...~
+
+//@n = ~%col1% BG:EE component detected~
+//@n = ~composant BG:EE de %col1% detecte~ // %col1% désigne la première colonne de EET/tbl/compatibility.tbl, un nom de mod
+
+//@n = ~Warning: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
+//@n = ~Attention : le mod BGEE %col1% n'est pas reconnu par EET, mais l'option M/m est demandee alors l'installation va se poursuivre~
+
+//@n = ~%col1% BG:EE mod is not recognized by EET, so it can't be installed on BG2:EE~
+//@n = ~le mod BGEE %col1% n'est pas reconnu par EET, aussi il n'est pas possible de l'installer avec BG2:EE~
+
 /*
-@n = ~BG:EE directory used for this installation:
-%bgee_dir%~
-@n = ~You've installed wrong The Stone of Askavar component. EET is compatible with Default version (option 1 during installation).~
-@n = ~You've installed wrong Drizzt Saga component. EET is compatible with Default version (option 1 during installation).~
-@n = ~%cntrow% BG:EE mods detected. Checking compatibility with EET...~
-
-@n = ~%col1% BG:EE component detected~
-@n = ~Warning: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
-@n = ~%col1% BG:EE mod is not recognized by EET, so it can't be installed on BG2:EE~
-
 @n = ~weidu.conf created within BG:EE directory and set to %LANGUAGEcase%~
 @n = ~%dir%/weidu.conf detected with the same language setting as the installation: %LANGUAGEcase%~
 @n = ~%dir%/weidu.conf file has %compareWith% language set instead of %LANGUAGEcase%.
@@ -165,7 +178,7 @@ WMP %wmp_check%
 @n = ~BGSUNRIS/BGSUNSET movies added to %BASH_FOR_RES%.BCS~
 */
 /*
-et bien d'autres...
+et peut-être d'autres dans des fichiers tph appelés depuis le tp2...
 Il faudra s'assurer que l'encodage est en CP1252 car l'installateur utilise HANDLE_CHARSETS de manière à passer en UTF-8.
 La présence de caractères spéciaux dans ce commentaire a pour but de permettre de forcer cet encodage dans notepad++.
 */
