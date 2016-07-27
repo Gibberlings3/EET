@@ -3,7 +3,7 @@ ACTION_IF GAME_IS "eet" BEGIN
 	/* tp2, d, and baf parsing variables */
 	OUTER_SPRINT "tutorbgt" "eet"
 	OUTER_SPRINT "tutubgtbgee" "eet"
-	OUTER_SPRINT "bgdreams" "BG1DREAM"
+	OUTER_SPRINT "bgdreams" "DREAM"
 	OUTER_SPRINT "bgdream1" "2"
 	OUTER_SPRINT "bgdream2" "3"
 	OUTER_SPRINT "bgdream3" "4"
@@ -59,43 +59,16 @@ ACTION_IF GAME_IS "eet" BEGIN
 	OUTER_SPRINT wmp_worldmap_ToB "worldmap" //when editing ToB worldmap use WORLDMAP.WMP instead of WORLDM25.WMP
 
 	/* EET continuous journal/chapters system */
-	ACTION_IF (FILE_CONTAINS ~override/EET.flag~ ~EET_JOURNAL~) BEGIN //EET version that will be available after patch 1.4 for BG2:EE release
-		OUTER_SET sod_chapter_1 = 8
-		OUTER_SET sod_chapter_2 = 9
-		OUTER_SET sod_chapter_3 = 10
-		OUTER_SET sod_chapter_4 = 11
-		OUTER_SET sod_chapter_5 = 12
-		OUTER_SET sod_chapter_6 = 13
-		OUTER_SET sod_chapter_7 = 14
-		OUTER_SET bg2_chapter_1 = 15
-		OUTER_SET bg2_chapter_2 = 16
-		OUTER_SET bg2_chapter_3 = 17
-		OUTER_SET bg2_chapter_4 = 18
-		OUTER_SET bg2_chapter_5 = 19
-		OUTER_SET bg2_chapter_6 = 20
-		OUTER_SET bg2_chapter_7 = 21
-		OUTER_SET bg2_chapter_8 = 22
-		OUTER_SET bg2_chapter_9 = 23
-		OUTER_SET bg2_chapter_10 = 24
-	END ELSE BEGIN //compatible with current EET beta
-		OUTER_SET sod_chapter_1 = 1
-		OUTER_SET sod_chapter_2 = 2
-		OUTER_SET sod_chapter_3 = 3
-		OUTER_SET sod_chapter_4 = 4
-		OUTER_SET sod_chapter_5 = 5
-		OUTER_SET sod_chapter_6 = 6
-		OUTER_SET sod_chapter_7 = 7
-		OUTER_SET bg2_chapter_1 = 1
-		OUTER_SET bg2_chapter_2 = 2
-		OUTER_SET bg2_chapter_3 = 3
-		OUTER_SET bg2_chapter_4 = 4
-		OUTER_SET bg2_chapter_5 = 5
-		OUTER_SET bg2_chapter_6 = 6
-		OUTER_SET bg2_chapter_7 = 7
-		OUTER_SET bg2_chapter_8 = 8
-		OUTER_SET bg2_chapter_9 = 9
-		OUTER_SET bg2_chapter_10 = 10
-	END
+	OUTER_SET bg2_chapter_1 = 13
+	OUTER_SET bg2_chapter_2 = 14
+	OUTER_SET bg2_chapter_3 = 15
+	OUTER_SET bg2_chapter_4 = 16
+	OUTER_SET bg2_chapter_5 = 17
+	OUTER_SET bg2_chapter_6 = 18
+	OUTER_SET bg2_chapter_7 = 19
+	OUTER_SET bg2_chapter_8 = 20
+	OUTER_SET bg2_chapter_9 = 21
+	OUTER_SET bg2_chapter_10 = 22
 
 	/* BGT/EET shutdown of D and BAF after BG1 content */
 	OUTER_SPRINT ~BGT_VAR~ ~GlobalLT("ENDOFBG1","GLOBAL",2)~

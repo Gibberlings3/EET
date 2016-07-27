@@ -23,7 +23,8 @@ THEN
 END
 
 IF
-  GlobalGT("K#FAMID","GLOBAL",0)
+  NextTriggerObject(LastSummonerOf(Myself))
+  GlobalGT("K#FAMID","LOCALS",0)
   OR(8)
     Dead("fampsd")
     Dead("famfair")
@@ -35,11 +36,11 @@ IF
     Dead("famquas")
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",0)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
 END
 
 IF
-  GlobalGT("K#FAMID","GLOBAL",0)
+  GlobalGT("K#FAMSUM","GLOBAL",0)
 THEN
   RESPONSE #100
     DisplayStringNoName(Myself,8537) // A familiar has already been summoned.
@@ -47,446 +48,503 @@ THEN
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
+  GlobalGT("Chapter","GLOBAL",19)
   OR(2)
-    Alignment(Player1,LAWFUL_GOOD)
-    Alignment(Player1,NEUTRAL_GOOD)
+    Alignment(LastSummonerOf(Myself),LAWFUL_GOOD)
+    Alignment(LastSummonerOf(Myself),NEUTRAL_GOOD)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",21)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",21))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMPSD25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","fampsd")
     SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
     ActionOverride("fampsd",SetNumTimesTalkedTo(0))
-    ActionOverride("fampsd",MakeGlobal())
+    ActionOverride("fampsd",MakeGlobalOverride())
     ActionOverride("fampsd",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("fampsd",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Player1,CHAOTIC_GOOD)
+  GlobalGT("Chapter","GLOBAL",19)
+  Alignment(LastSummonerOf(Myself),CHAOTIC_GOOD)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",22)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",22))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMFAI25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfair")
     SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
     ActionOverride("famfair",SetNumTimesTalkedTo(0))
-    ActionOverride("famfair",MakeGlobal())
+    ActionOverride("famfair",MakeGlobalOverride())
     ActionOverride("famfair",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famfair",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Player1,LAWFUL_NEUTRAL)
+  GlobalGT("Chapter","GLOBAL",19)
+  Alignment(LastSummonerOf(Myself),LAWFUL_NEUTRAL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",23)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",23))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMFER25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfer")
     SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
     ActionOverride("famfer",SetNumTimesTalkedTo(0))
-    ActionOverride("famfer",MakeGlobal())
+    ActionOverride("famfer",MakeGlobalOverride())
     ActionOverride("famfer",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famfer",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Player1,NEUTRAL)
+  GlobalGT("Chapter","GLOBAL",19)
+  Alignment(LastSummonerOf(Myself),NEUTRAL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",24)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",24))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMRAB25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famrab")
     SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
     ActionOverride("famrab",SetNumTimesTalkedTo(0))
-    ActionOverride("famrab",MakeGlobal())
+    ActionOverride("famrab",MakeGlobalOverride())
     ActionOverride("famrab",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famrab",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Player1,CHAOTIC_NEUTRAL)
+  GlobalGT("Chapter","GLOBAL",19)
+  Alignment(LastSummonerOf(Myself),CHAOTIC_NEUTRAL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",25)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",25))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMCAT25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famcat")
     SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
     ActionOverride("famcat",SetNumTimesTalkedTo(0))
-    ActionOverride("famcat",MakeGlobal())
+    ActionOverride("famcat",MakeGlobalOverride())
     ActionOverride("famcat",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famcat",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Player1,LAWFUL_EVIL)
+  GlobalGT("Chapter","GLOBAL",19)
+  Alignment(LastSummonerOf(Myself),LAWFUL_EVIL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",26)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",26))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMIMP25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famimp")
     SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
     ActionOverride("famimp",SetNumTimesTalkedTo(0))
-    ActionOverride("famimp",MakeGlobal())
+    ActionOverride("famimp",MakeGlobalOverride())
     ActionOverride("famimp",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famimp",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Player1,NEUTRAL_EVIL)
+  GlobalGT("Chapter","GLOBAL",19)
+  Alignment(LastSummonerOf(Myself),NEUTRAL_EVIL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",27)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",27))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMDUS25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famdust")
     SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
     ActionOverride("famdust",SetNumTimesTalkedTo(0))
-    ActionOverride("famdust",MakeGlobal())
+    ActionOverride("famdust",MakeGlobalOverride())
     ActionOverride("famdust",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famdust",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",7)
-  Alignment(Player1,CHAOTIC_EVIL)
+  GlobalGT("Chapter","GLOBAL",19)
+  Alignment(LastSummonerOf(Myself),CHAOTIC_EVIL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",28)
-    ChangeStat(Player1,MAXHITPOINTS,24,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE24",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",28))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,24,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE24",Myself))
     CreateCreatureObject("FAMQUA25",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famquas")
     SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
     ActionOverride("famquas",SetNumTimesTalkedTo(0))
-    ActionOverride("famquas",MakeGlobal())
+    ActionOverride("famquas",MakeGlobalOverride())
     ActionOverride("famquas",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famquas",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",2)
+  GlobalLT("Chapter","GLOBAL",13)
   OR(2)
-    Alignment(Player1,LAWFUL_GOOD)
-    Alignment(Player1,NEUTRAL_GOOD)
+    Alignment(LastSummonerOf(Myself),LAWFUL_GOOD)
+    Alignment(LastSummonerOf(Myself),NEUTRAL_GOOD)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",11)
-    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE12",Myself))
-    CreateCreatureObject("FAMPSD",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","fampsd")
-    SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
-    ActionOverride("fampsd",SetNumTimesTalkedTo(0))
-    ActionOverride("fampsd",MakeGlobal())
-    ActionOverride("fampsd",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("fampsd",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Player1,CHAOTIC_GOOD)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",12)
-    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE12",Myself))
-    CreateCreatureObject("FAMFAIR",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","famfair")
-    SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
-    ActionOverride("famfair",SetNumTimesTalkedTo(0))
-    ActionOverride("famfair",MakeGlobal())
-    ActionOverride("famfair",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("famfair",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Player1,LAWFUL_NEUTRAL)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",13)
-    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE12",Myself))
-    CreateCreatureObject("FAMFER",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","famfer")
-    SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
-    ActionOverride("famfer",SetNumTimesTalkedTo(0))
-    ActionOverride("famfer",MakeGlobal())
-    ActionOverride("famfer",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("famfer",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Player1,NEUTRAL)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",14)
-    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE12",Myself))
-    CreateCreatureObject("FAMRAB",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","famrab")
-    SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
-    ActionOverride("famrab",SetNumTimesTalkedTo(0))
-    ActionOverride("famrab",MakeGlobal())
-    ActionOverride("famrab",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("famrab",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Player1,CHAOTIC_NEUTRAL)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",15)
-    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE12",Myself))
-    CreateCreatureObject("FAMCAT",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","famcat")
-    SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
-    ActionOverride("famcat",SetNumTimesTalkedTo(0))
-    ActionOverride("famcat",MakeGlobal())
-    ActionOverride("famcat",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("famcat",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Player1,LAWFUL_EVIL)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",16)
-    ChangeStat(Player1,MAXHITPOINTS,9,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE9",Myself))
-    CreateCreatureObject("FAMIMP",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","famimp")
-    SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
-    ActionOverride("famimp",SetNumTimesTalkedTo(0))
-    ActionOverride("famimp",MakeGlobal())
-    ActionOverride("famimp",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("famimp",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Player1,NEUTRAL_EVIL)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",17)
-    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE12",Myself))
-    CreateCreatureObject("FAMDUST",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","famdust")
-    SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
-    ActionOverride("famdust",SetNumTimesTalkedTo(0))
-    ActionOverride("famdust",MakeGlobal())
-    ActionOverride("famdust",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("famdust",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",2)
-  Alignment(Player1,CHAOTIC_EVIL)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",18)
-    ChangeStat(Player1,MAXHITPOINTS,12,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE12",Myself))
-    CreateCreatureObject("FAMQUAS",Myself,0,0,0)
-    CreateVisualEffectObject("spanisum","famquas")
-    SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
-    ActionOverride("famquas",SetNumTimesTalkedTo(0))
-    ActionOverride("famquas",MakeGlobal())
-    ActionOverride("famquas",ChangeEnemyAlly(Myself,FAMILIAR))
-    ActionOverride("famquas",AddFamiliar())
-    DestroySelf()
-END
-
-IF
-  OR(2)
-    Alignment(Player1,LAWFUL_GOOD)
-    Alignment(Player1,NEUTRAL_GOOD)
-THEN
-  RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",1)
-    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE6",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",1))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,6,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE6",Myself))
     CreateCreatureObject("FAMPSD_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","fampsd")
     SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
     ActionOverride("fampsd",SetNumTimesTalkedTo(0))
-    ActionOverride("fampsd",MakeGlobal())
+    ActionOverride("fampsd",MakeGlobalOverride())
     ActionOverride("fampsd",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("fampsd",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Alignment(Player1,CHAOTIC_GOOD)
+  GlobalLT("Chapter","GLOBAL",13)
+  Alignment(LastSummonerOf(Myself),CHAOTIC_GOOD)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",2)
-    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE6",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",2))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,6,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE6",Myself))
     CreateCreatureObject("FAMFAIR_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfair")
     SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
     ActionOverride("famfair",SetNumTimesTalkedTo(0))
-    ActionOverride("famfair",MakeGlobal())
+    ActionOverride("famfair",MakeGlobalOverride())
     ActionOverride("famfair",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famfair",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Alignment(Player1,LAWFUL_NEUTRAL)
+  GlobalLT("Chapter","GLOBAL",13)
+  Alignment(LastSummonerOf(Myself),LAWFUL_NEUTRAL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",3)
-    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE6",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",3))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,6,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE6",Myself))
     CreateCreatureObject("FAMFER_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famfer")
     SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
     ActionOverride("famfer",SetNumTimesTalkedTo(0))
-    ActionOverride("famfer",MakeGlobal())
+    ActionOverride("famfer",MakeGlobalOverride())
     ActionOverride("famfer",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famfer",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Alignment(Player1,NEUTRAL)
+  GlobalLT("Chapter","GLOBAL",13)
+  Alignment(LastSummonerOf(Myself),NEUTRAL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",4)
-    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE6",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",4))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,6,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE6",Myself))
     CreateCreatureObject("FAMRAB_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famrab")
     SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
     ActionOverride("famrab",SetNumTimesTalkedTo(0))
-    ActionOverride("famrab",MakeGlobal())
+    ActionOverride("famrab",MakeGlobalOverride())
     ActionOverride("famrab",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famrab",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Alignment(Player1,CHAOTIC_NEUTRAL)
+  GlobalLT("Chapter","GLOBAL",13)
+  Alignment(LastSummonerOf(Myself),CHAOTIC_NEUTRAL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",5)
-    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE6",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",5))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,6,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE6",Myself))
     CreateCreatureObject("FAMCAT_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famcat")
     SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
     ActionOverride("famcat",SetNumTimesTalkedTo(0))
-    ActionOverride("famcat",MakeGlobal())
+    ActionOverride("famcat",MakeGlobalOverride())
     ActionOverride("famcat",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famcat",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Alignment(Player1,LAWFUL_EVIL)
+  GlobalLT("Chapter","GLOBAL",13)
+  Alignment(LastSummonerOf(Myself),LAWFUL_EVIL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",6)
-    ChangeStat(Player1,MAXHITPOINTS,4,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE4",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",6))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,4,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE4",Myself))
     CreateCreatureObject("FAMIMP_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famimp")
     SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
     ActionOverride("famimp",SetNumTimesTalkedTo(0))
-    ActionOverride("famimp",MakeGlobal())
+    ActionOverride("famimp",MakeGlobalOverride())
     ActionOverride("famimp",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famimp",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Alignment(Player1,NEUTRAL_EVIL)
+  GlobalLT("Chapter","GLOBAL",13)
+  Alignment(LastSummonerOf(Myself),NEUTRAL_EVIL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",7)
-    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE6",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",7))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,6,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE6",Myself))
     CreateCreatureObject("FAMDUST_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famdust")
     SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
     ActionOverride("famdust",SetNumTimesTalkedTo(0))
-    ActionOverride("famdust",MakeGlobal())
+    ActionOverride("famdust",MakeGlobalOverride())
     ActionOverride("famdust",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famdust",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Alignment(Player1,CHAOTIC_EVIL)
+  GlobalLT("Chapter","GLOBAL",13)
+  Alignment(LastSummonerOf(Myself),CHAOTIC_EVIL)
 THEN
   RESPONSE #100
-    SetGlobal("K#FAMID","GLOBAL",8)
-    ChangeStat(Player1,MAXHITPOINTS,6,ADD)
-    ActionOverride(Player1,ApplySpellRES("K#CURE6",Myself))
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",8))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,6,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE6",Myself))
     CreateCreatureObject("FAMQUAS_",Myself,0,0,0)
     CreateVisualEffectObject("spanisum","famquas")
     SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
     ActionOverride("famquas",SetNumTimesTalkedTo(0))
-    ActionOverride("famquas",MakeGlobal())
+    ActionOverride("famquas",MakeGlobalOverride())
     ActionOverride("famquas",ChangeEnemyAlly(Myself,FAMILIAR))
     ActionOverride("famquas",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  True()
+  OR(2)
+    Alignment(LastSummonerOf(Myself),LAWFUL_GOOD)
+    Alignment(LastSummonerOf(Myself),NEUTRAL_GOOD)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",11))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,12,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE12",Myself))
+    CreateCreatureObject("FAMPSD",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","fampsd")
+    SetGlobal("SPRITE_IS_DEADfampsd","GLOBAL",0)
+    ActionOverride("fampsd",SetNumTimesTalkedTo(0))
+    ActionOverride("fampsd",MakeGlobalOverride())
+    ActionOverride("fampsd",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("fampsd",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
+    DestroySelf()
+END
+
+IF
+  Alignment(LastSummonerOf(Myself),CHAOTIC_GOOD)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",12))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,12,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE12",Myself))
+    CreateCreatureObject("FAMFAIR",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfair")
+    SetGlobal("SPRITE_IS_DEADfamfair","GLOBAL",0)
+    ActionOverride("famfair",SetNumTimesTalkedTo(0))
+    ActionOverride("famfair",MakeGlobalOverride())
+    ActionOverride("famfair",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfair",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
+    DestroySelf()
+END
+
+IF
+  Alignment(LastSummonerOf(Myself),LAWFUL_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",13))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,12,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE12",Myself))
+    CreateCreatureObject("FAMFER",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famfer")
+    SetGlobal("SPRITE_IS_DEADfamfer","GLOBAL",0)
+    ActionOverride("famfer",SetNumTimesTalkedTo(0))
+    ActionOverride("famfer",MakeGlobalOverride())
+    ActionOverride("famfer",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famfer",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
+    DestroySelf()
+END
+
+IF
+  Alignment(LastSummonerOf(Myself),NEUTRAL)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",14))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,12,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE12",Myself))
+    CreateCreatureObject("FAMRAB",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famrab")
+    SetGlobal("SPRITE_IS_DEADfamrab","GLOBAL",0)
+    ActionOverride("famrab",SetNumTimesTalkedTo(0))
+    ActionOverride("famrab",MakeGlobalOverride())
+    ActionOverride("famrab",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famrab",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
+    DestroySelf()
+END
+
+IF
+  Alignment(LastSummonerOf(Myself),CHAOTIC_NEUTRAL)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",15))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,12,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE12",Myself))
+    CreateCreatureObject("FAMCAT",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famcat")
+    SetGlobal("SPRITE_IS_DEADfamcat","GLOBAL",0)
+    ActionOverride("famcat",SetNumTimesTalkedTo(0))
+    ActionOverride("famcat",MakeGlobalOverride())
+    ActionOverride("famcat",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famcat",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
+    DestroySelf()
+END
+
+IF
+  Alignment(LastSummonerOf(Myself),LAWFUL_EVIL)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",16))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,9,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE9",Myself))
+    CreateCreatureObject("FAMIMP",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famimp")
+    SetGlobal("SPRITE_IS_DEADfamimp","GLOBAL",0)
+    ActionOverride("famimp",SetNumTimesTalkedTo(0))
+    ActionOverride("famimp",MakeGlobalOverride())
+    ActionOverride("famimp",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famimp",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
+    DestroySelf()
+END
+
+IF
+  Alignment(LastSummonerOf(Myself),NEUTRAL_EVIL)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",17))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,12,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE12",Myself))
+    CreateCreatureObject("FAMDUST",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famdust")
+    SetGlobal("SPRITE_IS_DEADfamdust","GLOBAL",0)
+    ActionOverride("famdust",SetNumTimesTalkedTo(0))
+    ActionOverride("famdust",MakeGlobalOverride())
+    ActionOverride("famdust",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famdust",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
+    DestroySelf()
+END
+
+IF
+  Alignment(LastSummonerOf(Myself),CHAOTIC_EVIL)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",18))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,12,ADD)
+    ActionOverride(LastSummonerOf(Myself),ApplySpellRES("K#CURE12",Myself))
+    CreateCreatureObject("FAMQUAS",Myself,0,0,0)
+    CreateVisualEffectObject("spanisum","famquas")
+    SetGlobal("SPRITE_IS_DEADfamquas","GLOBAL",0)
+    ActionOverride("famquas",SetNumTimesTalkedTo(0))
+    ActionOverride("famquas",MakeGlobalOverride())
+    ActionOverride("famquas",ChangeEnemyAlly(Myself,FAMILIAR))
+    ActionOverride("famquas",AddFamiliar())
+    SetGlobal("K#FAMSUM","GLOBAL",1)
+    SetInterrupt(TRUE)
     DestroySelf()
 END

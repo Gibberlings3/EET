@@ -1,349 +1,415 @@
 IF
-  Global("K#FAMID","GLOBAL",0)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",0)
 THEN
   RESPONSE #100
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",1)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",1)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    TakePartyItem("FAMPSD_")
-    DestroyItem("FAMPSD_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-6,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMPSD_")) // Familiar
     ActionOverride("fampsd",DropInventory())
     ActionOverride("fampsd",DestroySelf())
     ActionOverride("fampsd",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",11)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",11)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    TakePartyItem("FAMPSD")
-    DestroyItem("FAMPSD")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-12,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMPSD")) // Familiar
     ActionOverride("fampsd",DropInventory())
     ActionOverride("fampsd",DestroySelf())
     ActionOverride("fampsd",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",21)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",21)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMPSD25")
-    DestroyItem("FAMPSD25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMPSD25")) // Familiar
     ActionOverride("fampsd",DropInventory())
     ActionOverride("fampsd",DestroySelf())
     ActionOverride("fampsd",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",2)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",2)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    TakePartyItem("FAMFAIR_")
-    DestroyItem("FAMFAIR_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-6,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMFAIR_")) // Familiar
     ActionOverride("famfair",DropInventory())
     ActionOverride("famfair",DestroySelf())
     ActionOverride("famfair",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",12)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",12)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    TakePartyItem("FAMFAIR")
-    DestroyItem("FAMFAIR")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-12,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMFAIR")) // Familiar
     ActionOverride("famfair",DropInventory())
     ActionOverride("famfair",DestroySelf())
     ActionOverride("famfair",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",22)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",22)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMFAI25")
-    DestroyItem("FAMFAI25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMFAI25")) // Familiar
     ActionOverride("famfair",DropInventory())
     ActionOverride("famfair",DestroySelf())
     ActionOverride("famfair",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",3)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",3)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    TakePartyItem("FAMFER_")
-    DestroyItem("FAMFER_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-6,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMFER_")) // Familiar
     ActionOverride("famfer",DropInventory())
     ActionOverride("famfer",DestroySelf())
     ActionOverride("famfer",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",13)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",13)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    TakePartyItem("FAMFER")
-    DestroyItem("FAMFER")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-12,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMFER")) // Familiar
     ActionOverride("famfer",DropInventory())
     ActionOverride("famfer",DestroySelf())
     ActionOverride("famfer",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",23)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",23)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMFER25")
-    DestroyItem("FAMFER25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMFER25")) // Familiar
     ActionOverride("famfer",DropInventory())
     ActionOverride("famfer",DestroySelf())
     ActionOverride("famfer",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",4)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",4)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    TakePartyItem("FAMRAB_")
-    DestroyItem("FAMRAB_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-6,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMRAB_")) // Familiar
     ActionOverride("famrab",DropInventory())
     ActionOverride("famrab",DestroySelf())
     ActionOverride("famrab",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",14)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",14)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    TakePartyItem("FAMRAB")
-    DestroyItem("FAMRAB")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-12,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMRAB")) // Familiar
     ActionOverride("famrab",DropInventory())
     ActionOverride("famrab",DestroySelf())
     ActionOverride("famrab",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",24)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",24)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMRAB25")
-    DestroyItem("FAMRAB25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMRAB25")) // Familiar
     ActionOverride("famrab",DropInventory())
     ActionOverride("famrab",DestroySelf())
     ActionOverride("famrab",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",5)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",5)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    TakePartyItem("FAMCAT_")
-    DestroyItem("FAMCAT_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-6,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMCAT_")) // Familiar
     ActionOverride("famcat",DropInventory())
     ActionOverride("famcat",DestroySelf())
     ActionOverride("famcat",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",15)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",15)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    TakePartyItem("FAMCAT")
-    DestroyItem("FAMCAT")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-12,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMCAT")) // Familiar
     ActionOverride("famcat",DropInventory())
     ActionOverride("famcat",DestroySelf())
     ActionOverride("famcat",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",25)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",25)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMCAT25")
-    DestroyItem("FAMCAT25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMCAT25")) // Familiar
     ActionOverride("famcat",DropInventory())
     ActionOverride("famcat",DestroySelf())
     ActionOverride("famcat",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",6)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",6)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-4,ADD)
-    TakePartyItem("FAMIMP_")
-    DestroyItem("FAMIMP_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-4,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMIMP_")) // Familiar
     ActionOverride("famimp",DropInventory())
     ActionOverride("famimp",DestroySelf())
     ActionOverride("famimp",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",16)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",16)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-9,ADD)
-    TakePartyItem("FAMIMP")
-    DestroyItem("FAMIMP")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-9,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMIMP")) // Familiar
     ActionOverride("famimp",DropInventory())
     ActionOverride("famimp",DestroySelf())
     ActionOverride("famimp",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",26)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",26)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMIMP25")
-    DestroyItem("FAMIMP25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMIMP25")) // Familiar
     ActionOverride("famimp",DropInventory())
     ActionOverride("famimp",DestroySelf())
     ActionOverride("famimp",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",7)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",7)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    TakePartyItem("FAMDUST_")
-    DestroyItem("FAMDUST_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-6,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMDUST_")) // Familiar
     ActionOverride("famdust",DropInventory())
     ActionOverride("famdust",DestroySelf())
     ActionOverride("famdust",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",17)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",17)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    TakePartyItem("FAMDUST")
-    DestroyItem("FAMDUST")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-12,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMDUST")) // Familiar
     ActionOverride("famdust",DropInventory())
     ActionOverride("famdust",DestroySelf())
     ActionOverride("famdust",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",27)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",27)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMDUS25")
-    DestroyItem("FAMDUS25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMDUS25")) // Familiar
     ActionOverride("famdust",DropInventory())
     ActionOverride("famdust",DestroySelf())
     ActionOverride("famdust",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",8)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",8)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    TakePartyItem("FAMQUAS_")
-    DestroyItem("FAMQUAS_")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-6,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMQUAS_")) // Familiar
     ActionOverride("famquas",DropInventory())
     ActionOverride("famquas",DestroySelf())
     ActionOverride("famquas",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",18)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",18)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    TakePartyItem("FAMQUAS")
-    DestroyItem("FAMQUAS")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-12,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMQUAS")) // Familiar
     ActionOverride("famquas",DropInventory())
     ActionOverride("famquas",DestroySelf())
     ActionOverride("famquas",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",28)
+  NextTriggerObject(LastSummonerOf(Myself))
+  Global("K#FAMID","LOCALS",28)
 THEN
   RESPONSE #100
-    ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    TakePartyItem("FAMQUA25")
-    DestroyItem("FAMQUA25")
+    SetInterrupt(FALSE)
+    ActionOverride(LastSummonerOf(Myself),SetGlobal("K#FAMID","LOCALS",0))
+    ChangeStat(LastSummonerOf(Myself),MAXHITPOINTS,-24,ADD)
+    ActionOverride(LastSummonerOf(Myself),DestroyItem("FAMQUA25")) // Familiar
     ActionOverride("famquas",DropInventory())
     ActionOverride("famquas",DestroySelf())
     ActionOverride("famquas",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
-    DestroySelf()
-END
-
-IF
-  True()
-THEN
-  RESPONSE #100
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END

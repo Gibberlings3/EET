@@ -1,33 +1,4 @@
 /////                                                  \\\\\
-///// EraseJournalEntry during transition              \\\\\
-/////                                                  \\\\\
-
-COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-	DECOMPILE_BCS_TO_BAF //saves time with patching
-COPY - ~EET/temp/array/BGEE.SQL~ ~EET/temp/array~
-	REPLACE_TEXTUALLY ~,~ ~ ~
-	COUNT_2DA_ROWS 4 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 2 4 "col3"
-		PATCH_IF (("%col3%" STRING_EQUAL_CASE "journals_quests")=1) BEGIN
-			SET journals_quests_row = cnt
-		END ELSE PATCH_IF (("%col3%" STRING_EQUAL_CASE "portraits")=1) BEGIN
-			SET portraits_row = cnt
-			SET cnt = "%cntrow%"
-		END
-	END
-	FOR (cnt = "%portraits_row%" - 1; cnt > "%journals_quests_row%"; cnt = cnt - 1) BEGIN
-		READ_2DA_ENTRY cnt 0 4 "col1"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-				REPLACE_TEXTUALLY ~Wait(3)~ ~EraseJournalEntry(@%col1%)
-    Wait(3)~
-		END
-	END
-COPY_EXISTING ~K#TELBGT.BCS~ ~override~
-	COMPILE_BAF_TO_BCS
-
-/////                                                  \\\\\
 ///// Aerie                                            \\\\\
 /////                                                  \\\\\
 
@@ -95,6 +66,7 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Baeloth"
 	override_BG1 = "BAELOTH"
+	override_SoD = "BDBAELOT"
 	string = "@1000002"
 END
 
@@ -137,7 +109,21 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Coran"
 	override_BG1 = "CORAN"
+	//override_SoD = "BDCORAN"
 	string = "@1000004"
+END
+
+/////                                                  \\\\\
+///// Corwin                                            \\\\\
+/////                                                  \\\\\
+
+LAF ~EET_NPC_TRANSITION~
+	INT_VAR
+	type = 1
+	STR_VAR
+	dv = "CORWIN"
+	override_SoD = "BDCORWIN"
+	string = "@1000021"
 END
 
 /////                                                  \\\\\
@@ -147,15 +133,11 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 2550
-	posY = 3394
-	face = 12
 	default_ToB = 1
 	STR_VAR
 	dv = "Dorn"
-	are = "AR0900"
-	transition_SoA = "K#IMDOR"
 	override_BG1 = "DORN_"
+	override_SoD = "BDDORN"
 	override_SoA = "DORN"
 	override_ToB = "DORN25"
 	dialog_ToB = "DORN25A"
@@ -174,6 +156,7 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Dynaheir"
 	override_BG1 = "DYNAHEIR"
+	override_SoD = "BDDYNAHE"
 	string = "@1000005"
 END
 
@@ -184,16 +167,12 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 852
-	posY = 340
-	face = 4
 	create_SoA = 1
 	default_ToB = 1
 	STR_VAR
 	dv = "Edwin"
-	are = "AR0304"
-	transition_SoA = "K#IMEDW"
 	override_BG1 = "EDWIN_"
+	override_SoD = "BDEDWIN"
 	override_SoA = "EDWIN"
 	override_ToB = "EDWI25"
 	dialog_ToB = "EDWIN25A"
@@ -236,7 +215,21 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Garrick"
 	override_BG1 = "GARRICK_"
+	//override_SoD = "BDGARRIC"
 	string = "@1000008"
+END
+
+/////                                                  \\\\\
+///// Glint                                            \\\\\
+/////                                                  \\\\\
+
+LAF ~EET_NPC_TRANSITION~
+	INT_VAR
+	type = 1
+	STR_VAR
+	dv = "Glint"
+	override_SoD = "BDGLINT"
+	string = "@1000022"
 END
 
 /////                                                  \\\\\
@@ -280,17 +273,13 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 3198
-	posY = 2837
-	face = 6
 	create_SoA = 1
 	default_ToB = 1
 	STR_VAR
 	dv = "Imoen2"
-	are = "AR0602"
-	transition_SoA = "K#IMIMO"
 	override_BG1 = "IMOEN_"
-	override_SoA = "IMOEN2" //also IMOEN in Irenicus Dungeon
+	override_SoD = "BDIMOEN" //not really needed
+	override_SoA = "IMOEN2" //IMOEN.BCS in Irenicus Dungeon
 	override_ToB = "IMOE25"
 	dialog_ToB = "IMOEN25A"
 	string = "#65017"
@@ -305,15 +294,11 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 3898
-	posY = 2676
-	face = 6
 	default_ToB = 1
 	STR_VAR
 	dv = "Jaheira"
-	are = "AR0602"
-	transition_SoA = "K#IMJAH"
 	override_BG1 = "JAHEIRA_"
+	override_SoD = "BDJAHEIR"
 	override_SoA = "JAHEIRA"
 	override_ToB = "JAHE25"
 	dialog_ToB = "JAHEI25A"
@@ -375,6 +360,7 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Khalid"
 	override_BG1 = "KHALID"
+	override_SoD = "BDKHALID"
 	string = "@1000010"
 END
 
@@ -408,6 +394,19 @@ LAF ~EET_NPC_TRANSITION~
 END
 
 /////                                                  \\\\\
+///// M'Khiin                                          \\\\\
+/////                                                  \\\\\
+
+LAF ~EET_NPC_TRANSITION~
+	INT_VAR
+	type = 1
+	STR_VAR
+	dv = "MKHIIN"
+	override_SoD = "BDMKHIIN"
+	string = "@1000023"
+END
+
+/////                                                  \\\\\
 ///// Mazzy                                            \\\\\
 /////                                                  \\\\\
 
@@ -430,15 +429,11 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 4029
-	posY = 2759
-	face = 6
 	default_ToB = 1
 	STR_VAR
 	dv = "Minsc"
-	are = "AR0602"
-	transition_SoA = "K#IMMIN"
 	override_BG1 = "MINSC_"
+	override_SoD = "BDMINSC"
 	override_SoA = "MINSC"
 	override_ToB = "MINS25"
 	dialog_ToB = "MINSC25A"
@@ -481,15 +476,11 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 993
-	posY = 3534
-	face = 0
 	default_ToB = 1
 	STR_VAR
 	dv = "Neera"
-	are = "OH6000"
-	transition_SoA = "K#IMNEE"
 	override_BG1 = "NEERA_"
+	override_SoD = "BDNEERA"
 	override_SoA = "NEERA"
 	override_ToB = "NEER25"
 	dialog_ToB = "NEERA25A"
@@ -518,15 +509,11 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 500
-	posY = 500
-	face = 0
 	default_ToB = 1
 	STR_VAR
 	dv = "Rasaad"
-	are = "BG0000" //later moved by OHR_JOIN.BCS, part of vanilla implementation
-	transition_SoA = "K#IMRAS"
 	override_BG1 = "RASAAD_"
+	override_SoD = "BDRASAAD"
 	override_SoA = "RASAAD"
 	override_ToB = "RASA25"
 	dialog_ToB = "RASAA25A"
@@ -545,6 +532,7 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Safana"
 	override_BG1 = "SAFANA"
+	override_SoD = "BDSAFANA"
 	string = "@1000014"
 END
 
@@ -571,6 +559,7 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Skie"
 	override_BG1 = "SKIE_"
+	//override_SoD = "BDSKIE"
 	string = "@1000016"
 END
 
@@ -584,6 +573,7 @@ LAF ~EET_NPC_TRANSITION~
 	STR_VAR
 	dv = "Tiax"
 	override_BG1 = "TIAX"
+	//override_SoD = "BDTIAX"
 	string = "@1000017"
 END
 
@@ -610,19 +600,28 @@ END
 LAF ~EET_NPC_TRANSITION~
 	INT_VAR
 	type = 3
-	posX = 1821
-	posY = 1081
-	face = 11
 	default_ToB = 1
 	STR_VAR
 	dv = "Viconia"
-	are = "AR1000"
-	transition_SoA = "K#IMVIC"
 	override_BG1 = "VICONIA_"
+	override_SoD = "BDVICONI"
 	override_SoA = "VICONIA"
 	override_ToB = "VICO25"
 	dialog_ToB = "VICON25A"
 	string = "#65023"
+END
+
+/////                                                  \\\\\
+///// Voghiln                                          \\\\\
+/////                                                  \\\\\
+
+LAF ~EET_NPC_TRANSITION~
+	INT_VAR
+	type = 1
+	STR_VAR
+	dv = "VOGHILN"
+	override_SoD = "BDVOGHIL"
+	string = "@1000024"
 END
 
 /////                                                  \\\\\

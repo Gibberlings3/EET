@@ -1,4 +1,37 @@
-MOVE + ~EET/temp/wav/BLACK01.WAV~ ~EET/temp/wav/BLACK01_.WAV~
+//only in Polish version
+ACTION_IF FILE_EXISTS ~EET/temp/wav/IMOEN29.WAV~ BEGIN
+	DELETE + ~EET/temp/wav/IMOEN29.WAV~
+END
+
+COPY ~EET/temp/wav/MAINF03.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFa.wav~
+	~EET/temp/wav/MAINF08.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFb.wav~
+	~EET/temp/wav/MAINF09.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFc.wav~
+	~EET/temp/wav/MAINF10.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFd.wav~
+	~EET/temp/wav/MAINF11.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFe.wav~
+	~EET/temp/wav/MAINF17.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFf.wav~
+	~EET/temp/wav/MAINF18.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFg.wav~
+	~EET/temp/wav/MAINF19.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFh.wav~
+	~EET/temp/wav/MAINF20.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFi.wav~
+	~EET/temp/wav/MAINF21.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFj.wav~
+	~EET/temp/wav/MAINF22.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFk.wav~
+	~EET/temp/wav/MAINF38.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFl.wav~
+	~EET/temp/wav/MAINF39.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainFm.wav~
+	~EET/temp/wav/MAINM03.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMa.wav~
+	~EET/temp/wav/MAINM08.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMb.wav~
+	~EET/temp/wav/MAINM09.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMc.wav~
+	~EET/temp/wav/MAINM10.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMd.wav~
+	~EET/temp/wav/MAINM11.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMe.wav~
+	~EET/temp/wav/MAINM17.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMf.wav~
+	~EET/temp/wav/MAINM18.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMg.wav~
+	~EET/temp/wav/MAINM19.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMh.wav~
+	~EET/temp/wav/MAINM20.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMi.wav~
+	~EET/temp/wav/MAINM21.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMj.wav~
+	~EET/temp/wav/MAINM22.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMk.wav~
+	~EET/temp/wav/MAINM38.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMl.wav~
+	~EET/temp/wav/MAINM39.WAV~ ~lang/%LANGUAGE_BG2%/sounds/BGMainMm.wav~
+
+MOVE + ~EET/temp/wav/EFF_M46.WAV~ ~EET/temp/wav/EFF_M46_.WAV~
+	~EET/temp/wav/BLACK01.WAV~ ~EET/temp/wav/BLACK01_.WAV~
 	~EET/temp/wav/BLACK02.WAV~ ~EET/temp/wav/BLACK02_.WAV~
 	~EET/temp/wav/BLACK03.WAV~ ~EET/temp/wav/BLACK03_.WAV~
 	~EET/temp/wav/BLACK04.WAV~ ~EET/temp/wav/BLACK04_.WAV~
@@ -116,188 +149,6 @@ MOVE + ~EET/temp/wav/BLACK01.WAV~ ~EET/temp/wav/BLACK01_.WAV~
 	~EET/temp/wav/UMBER02.WAV~ ~EET/temp/wav/UMBER02_.WAV~
 	~EET/temp/wav/UMBER05.WAV~ ~EET/temp/wav/UMBER05_.WAV~
 	~EET/temp/wav/UMBER06.WAV~ ~EET/temp/wav/UMBER06_.WAV~
-	/*~EET/temp/wav/MAINF03.WAV~ ~EET/temp/wav/BGMAINFA.WAV~
-	~EET/temp/wav/MAINF08.WAV~ ~EET/temp/wav/BGMAINFB.WAV~
-	~EET/temp/wav/MAINF09.WAV~ ~EET/temp/wav/BGMAINFC.WAV~
-	~EET/temp/wav/MAINF10.WAV~ ~EET/temp/wav/BGMAINFD.WAV~
-	~EET/temp/wav/MAINF11.WAV~ ~EET/temp/wav/BGMAINFE.WAV~
-	~EET/temp/wav/MAINF17.WAV~ ~EET/temp/wav/BGMAINFF.WAV~
-	~EET/temp/wav/MAINF18.WAV~ ~EET/temp/wav/BGMAINFG.WAV~
-	~EET/temp/wav/MAINF19.WAV~ ~EET/temp/wav/BGMAINFH.WAV~
-	~EET/temp/wav/MAINF20.WAV~ ~EET/temp/wav/BGMAINFI.WAV~
-	~EET/temp/wav/MAINF21.WAV~ ~EET/temp/wav/BGMAINFJ.WAV~
-	~EET/temp/wav/MAINF22.WAV~ ~EET/temp/wav/BGMAINFK.WAV~
-	~EET/temp/wav/MAINF38.WAV~ ~EET/temp/wav/BGMAINFL.WAV~
-	~EET/temp/wav/MAINF39.WAV~ ~EET/temp/wav/BGMAINFM.WAV~
-	~EET/temp/wav/MAINM03.WAV~ ~EET/temp/wav/BGMAINMA.WAV~
-	~EET/temp/wav/MAINM08.WAV~ ~EET/temp/wav/BGMAINMB.WAV~
-	~EET/temp/wav/MAINM09.WAV~ ~EET/temp/wav/BGMAINMC.WAV~
-	~EET/temp/wav/MAINM10.WAV~ ~EET/temp/wav/BGMAINMD.WAV~
-	~EET/temp/wav/MAINM11.WAV~ ~EET/temp/wav/BGMAINME.WAV~
-	~EET/temp/wav/MAINM17.WAV~ ~EET/temp/wav/BGMAINMF.WAV~
-	~EET/temp/wav/MAINM18.WAV~ ~EET/temp/wav/BGMAINMG.WAV~
-	~EET/temp/wav/MAINM19.WAV~ ~EET/temp/wav/BGMAINMH.WAV~
-	~EET/temp/wav/MAINM20.WAV~ ~EET/temp/wav/BGMAINMI.WAV~
-	~EET/temp/wav/MAINM21.WAV~ ~EET/temp/wav/BGMAINMJ.WAV~
-	~EET/temp/wav/MAINM22.WAV~ ~EET/temp/wav/BGMAINMK.WAV~
-	~EET/temp/wav/MAINM38.WAV~ ~EET/temp/wav/BGMAINML.WAV~
-	~EET/temp/wav/MAINM39.WAV~ ~EET/temp/wav/BGMAINMM.WAV~
-	~EET/temp/wav/FEMALE1A.WAV~ ~EET/temp/wav/BGFEML1A.WAV~
-	~EET/temp/wav/FEMALE1B.WAV~ ~EET/temp/wav/BGFEML1B.WAV~
-	~EET/temp/wav/FEMALE1C.WAV~ ~EET/temp/wav/BGFEML1C.WAV~
-	~EET/temp/wav/FEMALE1D.WAV~ ~EET/temp/wav/BGFEML1D.WAV~
-	~EET/temp/wav/FEMALE1E.WAV~ ~EET/temp/wav/BGFEML1E.WAV~
-	~EET/temp/wav/FEMALE1F.WAV~ ~EET/temp/wav/BGFEML1F.WAV~
-	~EET/temp/wav/FEMALE1G.WAV~ ~EET/temp/wav/BGFEML1G.WAV~
-	~EET/temp/wav/FEMALE1H.WAV~ ~EET/temp/wav/BGFEML1H.WAV~
-	~EET/temp/wav/FEMALE1I.WAV~ ~EET/temp/wav/BGFEML1I.WAV~
-	~EET/temp/wav/FEMALE1J.WAV~ ~EET/temp/wav/BGFEML1J.WAV~
-	~EET/temp/wav/FEMALE1K.WAV~ ~EET/temp/wav/BGFEML1K.WAV~
-	~EET/temp/wav/FEMALE1L.WAV~ ~EET/temp/wav/BGFEML1L.WAV~
-	~EET/temp/wav/FEMALE1M.WAV~ ~EET/temp/wav/BGFEML1M.WAV~
-	~EET/temp/wav/FEMALE2A.WAV~ ~EET/temp/wav/BGFEML2A.WAV~
-	~EET/temp/wav/FEMALE2B.WAV~ ~EET/temp/wav/BGFEML2B.WAV~
-	~EET/temp/wav/FEMALE2C.WAV~ ~EET/temp/wav/BGFEML2C.WAV~
-	~EET/temp/wav/FEMALE2D.WAV~ ~EET/temp/wav/BGFEML2D.WAV~
-	~EET/temp/wav/FEMALE2E.WAV~ ~EET/temp/wav/BGFEML2E.WAV~
-	~EET/temp/wav/FEMALE2F.WAV~ ~EET/temp/wav/BGFEML2F.WAV~
-	~EET/temp/wav/FEMALE2G.WAV~ ~EET/temp/wav/BGFEML2G.WAV~
-	~EET/temp/wav/FEMALE2H.WAV~ ~EET/temp/wav/BGFEML2H.WAV~
-	~EET/temp/wav/FEMALE2I.WAV~ ~EET/temp/wav/BGFEML2I.WAV~
-	~EET/temp/wav/FEMALE2J.WAV~ ~EET/temp/wav/BGFEML2J.WAV~
-	~EET/temp/wav/FEMALE2K.WAV~ ~EET/temp/wav/BGFEML2K.WAV~
-	~EET/temp/wav/FEMALE2L.WAV~ ~EET/temp/wav/BGFEML2L.WAV~
-	~EET/temp/wav/FEMALE2M.WAV~ ~EET/temp/wav/BGFEML2M.WAV~
-	~EET/temp/wav/FEMALE3A.WAV~ ~EET/temp/wav/BGFEML3A.WAV~
-	~EET/temp/wav/FEMALE3B.WAV~ ~EET/temp/wav/BGFEML3B.WAV~
-	~EET/temp/wav/FEMALE3C.WAV~ ~EET/temp/wav/BGFEML3C.WAV~
-	~EET/temp/wav/FEMALE3D.WAV~ ~EET/temp/wav/BGFEML3D.WAV~
-	~EET/temp/wav/FEMALE3E.WAV~ ~EET/temp/wav/BGFEML3E.WAV~
-	~EET/temp/wav/FEMALE3F.WAV~ ~EET/temp/wav/BGFEML3F.WAV~
-	~EET/temp/wav/FEMALE3G.WAV~ ~EET/temp/wav/BGFEML3G.WAV~
-	~EET/temp/wav/FEMALE3H.WAV~ ~EET/temp/wav/BGFEML3H.WAV~
-	~EET/temp/wav/FEMALE3I.WAV~ ~EET/temp/wav/BGFEML3I.WAV~
-	~EET/temp/wav/FEMALE3J.WAV~ ~EET/temp/wav/BGFEML3J.WAV~
-	~EET/temp/wav/FEMALE3K.WAV~ ~EET/temp/wav/BGFEML3K.WAV~
-	~EET/temp/wav/FEMALE3L.WAV~ ~EET/temp/wav/BGFEML3L.WAV~
-	~EET/temp/wav/FEMALE3M.WAV~ ~EET/temp/wav/BGFEML3M.WAV~
-	~EET/temp/wav/FEMALE4A.WAV~ ~EET/temp/wav/BGFEML4A.WAV~
-	~EET/temp/wav/FEMALE4B.WAV~ ~EET/temp/wav/BGFEML4B.WAV~
-	~EET/temp/wav/FEMALE4C.WAV~ ~EET/temp/wav/BGFEML4C.WAV~
-	~EET/temp/wav/FEMALE4D.WAV~ ~EET/temp/wav/BGFEML4D.WAV~
-	~EET/temp/wav/FEMALE4E.WAV~ ~EET/temp/wav/BGFEML4E.WAV~
-	~EET/temp/wav/FEMALE4F.WAV~ ~EET/temp/wav/BGFEML4F.WAV~
-	~EET/temp/wav/FEMALE4G.WAV~ ~EET/temp/wav/BGFEML4G.WAV~
-	~EET/temp/wav/FEMALE4H.WAV~ ~EET/temp/wav/BGFEML4H.WAV~
-	~EET/temp/wav/FEMALE4I.WAV~ ~EET/temp/wav/BGFEML4I.WAV~
-	~EET/temp/wav/FEMALE4J.WAV~ ~EET/temp/wav/BGFEML4J.WAV~
-	~EET/temp/wav/FEMALE4K.WAV~ ~EET/temp/wav/BGFEML4K.WAV~
-	~EET/temp/wav/FEMALE4L.WAV~ ~EET/temp/wav/BGFEML4L.WAV~
-	~EET/temp/wav/FEMALE4M.WAV~ ~EET/temp/wav/BGFEML4M.WAV~
-	~EET/temp/wav/FEMALE5A.WAV~ ~EET/temp/wav/BGFEML5A.WAV~
-	~EET/temp/wav/FEMALE5B.WAV~ ~EET/temp/wav/BGFEML5B.WAV~
-	~EET/temp/wav/FEMALE5C.WAV~ ~EET/temp/wav/BGFEML5C.WAV~
-	~EET/temp/wav/FEMALE5D.WAV~ ~EET/temp/wav/BGFEML5D.WAV~
-	~EET/temp/wav/FEMALE5E.WAV~ ~EET/temp/wav/BGFEML5E.WAV~
-	~EET/temp/wav/FEMALE5F.WAV~ ~EET/temp/wav/BGFEML5F.WAV~
-	~EET/temp/wav/FEMALE5G.WAV~ ~EET/temp/wav/BGFEML5G.WAV~
-	~EET/temp/wav/FEMALE5H.WAV~ ~EET/temp/wav/BGFEML5H.WAV~
-	~EET/temp/wav/FEMALE5I.WAV~ ~EET/temp/wav/BGFEML5I.WAV~
-	~EET/temp/wav/FEMALE5J.WAV~ ~EET/temp/wav/BGFEML5J.WAV~
-	~EET/temp/wav/FEMALE5K.WAV~ ~EET/temp/wav/BGFEML5K.WAV~
-	~EET/temp/wav/FEMALE5L.WAV~ ~EET/temp/wav/BGFEML5L.WAV~
-	~EET/temp/wav/FEMALE5M.WAV~ ~EET/temp/wav/BGFEML5M.WAV~
-	~EET/temp/wav/FEMALE6A.WAV~ ~EET/temp/wav/BGFEML6A.WAV~
-	~EET/temp/wav/FEMALE6B.WAV~ ~EET/temp/wav/BGFEML6B.WAV~
-	~EET/temp/wav/FEMALE6C.WAV~ ~EET/temp/wav/BGFEML6C.WAV~
-	~EET/temp/wav/FEMALE6D.WAV~ ~EET/temp/wav/BGFEML6D.WAV~
-	~EET/temp/wav/FEMALE6E.WAV~ ~EET/temp/wav/BGFEML6E.WAV~
-	~EET/temp/wav/FEMALE6F.WAV~ ~EET/temp/wav/BGFEML6F.WAV~
-	~EET/temp/wav/FEMALE6G.WAV~ ~EET/temp/wav/BGFEML6G.WAV~
-	~EET/temp/wav/FEMALE6H.WAV~ ~EET/temp/wav/BGFEML6H.WAV~
-	~EET/temp/wav/FEMALE6I.WAV~ ~EET/temp/wav/BGFEML6I.WAV~
-	~EET/temp/wav/FEMALE6J.WAV~ ~EET/temp/wav/BGFEML6J.WAV~
-	~EET/temp/wav/FEMALE6K.WAV~ ~EET/temp/wav/BGFEML6K.WAV~
-	~EET/temp/wav/FEMALE6L.WAV~ ~EET/temp/wav/BGFEML6L.WAV~
-	~EET/temp/wav/FEMALE6M.WAV~ ~EET/temp/wav/BGFEML6M.WAV~
-	~EET/temp/wav/MALE1A.WAV~ ~EET/temp/wav/BGMALE1A.WAV~
-	~EET/temp/wav/MALE1B.WAV~ ~EET/temp/wav/BGMALE1B.WAV~
-	~EET/temp/wav/MALE1C.WAV~ ~EET/temp/wav/BGMALE1C.WAV~
-	~EET/temp/wav/MALE1D.WAV~ ~EET/temp/wav/BGMALE1D.WAV~
-	~EET/temp/wav/MALE1E.WAV~ ~EET/temp/wav/BGMALE1E.WAV~
-	~EET/temp/wav/MALE1F.WAV~ ~EET/temp/wav/BGMALE1F.WAV~
-	~EET/temp/wav/MALE1G.WAV~ ~EET/temp/wav/BGMALE1G.WAV~
-	~EET/temp/wav/MALE1H.WAV~ ~EET/temp/wav/BGMALE1H.WAV~
-	~EET/temp/wav/MALE1I.WAV~ ~EET/temp/wav/BGMALE1I.WAV~
-	~EET/temp/wav/MALE1J.WAV~ ~EET/temp/wav/BGMALE1J.WAV~
-	~EET/temp/wav/MALE1K.WAV~ ~EET/temp/wav/BGMALE1K.WAV~
-	~EET/temp/wav/MALE1L.WAV~ ~EET/temp/wav/BGMALE1L.WAV~
-	~EET/temp/wav/MALE1M.WAV~ ~EET/temp/wav/BGMALE1M.WAV~
-	~EET/temp/wav/MALE2A.WAV~ ~EET/temp/wav/BGMALE2A.WAV~
-	~EET/temp/wav/MALE2B.WAV~ ~EET/temp/wav/BGMALE2B.WAV~
-	~EET/temp/wav/MALE2C.WAV~ ~EET/temp/wav/BGMALE2C.WAV~
-	~EET/temp/wav/MALE2D.WAV~ ~EET/temp/wav/BGMALE2D.WAV~
-	~EET/temp/wav/MALE2E.WAV~ ~EET/temp/wav/BGMALE2E.WAV~
-	~EET/temp/wav/MALE2F.WAV~ ~EET/temp/wav/BGMALE2F.WAV~
-	~EET/temp/wav/MALE2G.WAV~ ~EET/temp/wav/BGMALE2G.WAV~
-	~EET/temp/wav/MALE2H.WAV~ ~EET/temp/wav/BGMALE2H.WAV~
-	~EET/temp/wav/MALE2I.WAV~ ~EET/temp/wav/BGMALE2I.WAV~
-	~EET/temp/wav/MALE2J.WAV~ ~EET/temp/wav/BGMALE2J.WAV~
-	~EET/temp/wav/MALE2K.WAV~ ~EET/temp/wav/BGMALE2K.WAV~
-	~EET/temp/wav/MALE2L.WAV~ ~EET/temp/wav/BGMALE2L.WAV~
-	~EET/temp/wav/MALE2M.WAV~ ~EET/temp/wav/BGMALE2M.WAV~
-	~EET/temp/wav/MALE3A.WAV~ ~EET/temp/wav/BGMALE3A.WAV~
-	~EET/temp/wav/MALE3B.WAV~ ~EET/temp/wav/BGMALE3B.WAV~
-	~EET/temp/wav/MALE3C.WAV~ ~EET/temp/wav/BGMALE3C.WAV~
-	~EET/temp/wav/MALE3D.WAV~ ~EET/temp/wav/BGMALE3D.WAV~
-	~EET/temp/wav/MALE3E.WAV~ ~EET/temp/wav/BGMALE3E.WAV~
-	~EET/temp/wav/MALE3F.WAV~ ~EET/temp/wav/BGMALE3F.WAV~
-	~EET/temp/wav/MALE3G.WAV~ ~EET/temp/wav/BGMALE3G.WAV~
-	~EET/temp/wav/MALE3H.WAV~ ~EET/temp/wav/BGMALE3H.WAV~
-	~EET/temp/wav/MALE3I.WAV~ ~EET/temp/wav/BGMALE3I.WAV~
-	~EET/temp/wav/MALE3J.WAV~ ~EET/temp/wav/BGMALE3J.WAV~
-	~EET/temp/wav/MALE3K.WAV~ ~EET/temp/wav/BGMALE3K.WAV~
-	~EET/temp/wav/MALE3L.WAV~ ~EET/temp/wav/BGMALE3L.WAV~
-	~EET/temp/wav/MALE3M.WAV~ ~EET/temp/wav/BGMALE3M.WAV~
-	~EET/temp/wav/MALE4A.WAV~ ~EET/temp/wav/BGMALE4A.WAV~
-	~EET/temp/wav/MALE4B.WAV~ ~EET/temp/wav/BGMALE4B.WAV~
-	~EET/temp/wav/MALE4C.WAV~ ~EET/temp/wav/BGMALE4C.WAV~
-	~EET/temp/wav/MALE4D.WAV~ ~EET/temp/wav/BGMALE4D.WAV~
-	~EET/temp/wav/MALE4E.WAV~ ~EET/temp/wav/BGMALE4E.WAV~
-	~EET/temp/wav/MALE4F.WAV~ ~EET/temp/wav/BGMALE4F.WAV~
-	~EET/temp/wav/MALE4G.WAV~ ~EET/temp/wav/BGMALE4G.WAV~
-	~EET/temp/wav/MALE4H.WAV~ ~EET/temp/wav/BGMALE4H.WAV~
-	~EET/temp/wav/MALE4I.WAV~ ~EET/temp/wav/BGMALE4I.WAV~
-	~EET/temp/wav/MALE4J.WAV~ ~EET/temp/wav/BGMALE4J.WAV~
-	~EET/temp/wav/MALE4K.WAV~ ~EET/temp/wav/BGMALE4K.WAV~
-	~EET/temp/wav/MALE4L.WAV~ ~EET/temp/wav/BGMALE4L.WAV~
-	~EET/temp/wav/MALE4M.WAV~ ~EET/temp/wav/BGMALE4M.WAV~
-	~EET/temp/wav/MALE5A.WAV~ ~EET/temp/wav/BGMALE5A.WAV~
-	~EET/temp/wav/MALE5B.WAV~ ~EET/temp/wav/BGMALE5B.WAV~
-	~EET/temp/wav/MALE5C.WAV~ ~EET/temp/wav/BGMALE5C.WAV~
-	~EET/temp/wav/MALE5D.WAV~ ~EET/temp/wav/BGMALE5D.WAV~
-	~EET/temp/wav/MALE5E.WAV~ ~EET/temp/wav/BGMALE5E.WAV~
-	~EET/temp/wav/MALE5F.WAV~ ~EET/temp/wav/BGMALE5F.WAV~
-	~EET/temp/wav/MALE5G.WAV~ ~EET/temp/wav/BGMALE5G.WAV~
-	~EET/temp/wav/MALE5H.WAV~ ~EET/temp/wav/BGMALE5H.WAV~
-	~EET/temp/wav/MALE5I.WAV~ ~EET/temp/wav/BGMALE5I.WAV~
-	~EET/temp/wav/MALE5J.WAV~ ~EET/temp/wav/BGMALE5J.WAV~
-	~EET/temp/wav/MALE5K.WAV~ ~EET/temp/wav/BGMALE5K.WAV~
-	~EET/temp/wav/MALE5L.WAV~ ~EET/temp/wav/BGMALE5L.WAV~
-	~EET/temp/wav/MALE5M.WAV~ ~EET/temp/wav/BGMALE5M.WAV~
-	~EET/temp/wav/MALE6A.WAV~ ~EET/temp/wav/BGMALE6A.WAV~
-	~EET/temp/wav/MALE6B.WAV~ ~EET/temp/wav/BGMALE6B.WAV~
-	~EET/temp/wav/MALE6C.WAV~ ~EET/temp/wav/BGMALE6C.WAV~
-	~EET/temp/wav/MALE6D.WAV~ ~EET/temp/wav/BGMALE6D.WAV~
-	~EET/temp/wav/MALE6E.WAV~ ~EET/temp/wav/BGMALE6E.WAV~
-	~EET/temp/wav/MALE6F.WAV~ ~EET/temp/wav/BGMALE6F.WAV~
-	~EET/temp/wav/MALE6G.WAV~ ~EET/temp/wav/BGMALE6G.WAV~
-	~EET/temp/wav/MALE6H.WAV~ ~EET/temp/wav/BGMALE6H.WAV~
-	~EET/temp/wav/MALE6I.WAV~ ~EET/temp/wav/BGMALE6I.WAV~
-	~EET/temp/wav/MALE6J.WAV~ ~EET/temp/wav/BGMALE6J.WAV~
-	~EET/temp/wav/MALE6K.WAV~ ~EET/temp/wav/BGMALE6K.WAV~
-	~EET/temp/wav/MALE6L.WAV~ ~EET/temp/wav/BGMALE6L.WAV~
-	~EET/temp/wav/MALE6M.WAV~ ~EET/temp/wav/BGMALE6M.WAV~*/
 
 //delete wavs also existing in BG2:EE
 DELETE + ~EET/temp/wav/ACT_01.WAV~
@@ -1410,6 +1261,32 @@ DELETE + ~EET/temp/wav/ACT_01.WAV~
 	~EET/temp/wav/LIZON04B.WAV~
 	~EET/temp/wav/LIZON07.WAV~
 	~EET/temp/wav/LIZON09.WAV~
+	~EET/temp/wav/MAINF03.WAV~
+	~EET/temp/wav/MAINF08.WAV~
+	~EET/temp/wav/MAINF09.WAV~
+	~EET/temp/wav/MAINF10.WAV~
+	~EET/temp/wav/MAINF11.WAV~
+	~EET/temp/wav/MAINF17.WAV~
+	~EET/temp/wav/MAINF18.WAV~
+	~EET/temp/wav/MAINF19.WAV~
+	~EET/temp/wav/MAINF20.WAV~
+	~EET/temp/wav/MAINF21.WAV~
+	~EET/temp/wav/MAINF22.WAV~
+	~EET/temp/wav/MAINF38.WAV~
+	~EET/temp/wav/MAINF39.WAV~
+	~EET/temp/wav/MAINM03.WAV~
+	~EET/temp/wav/MAINM08.WAV~
+	~EET/temp/wav/MAINM09.WAV~
+	~EET/temp/wav/MAINM10.WAV~
+	~EET/temp/wav/MAINM11.WAV~
+	~EET/temp/wav/MAINM17.WAV~
+	~EET/temp/wav/MAINM18.WAV~
+	~EET/temp/wav/MAINM19.WAV~
+	~EET/temp/wav/MAINM20.WAV~
+	~EET/temp/wav/MAINM21.WAV~
+	~EET/temp/wav/MAINM22.WAV~
+	~EET/temp/wav/MAINM38.WAV~
+	~EET/temp/wav/MAINM39.WAV~
 	~EET/temp/wav/MANCO01.WAV~
 	~EET/temp/wav/MANCO02.WAV~
 	~EET/temp/wav/MANCO03.WAV~
@@ -2349,3 +2226,995 @@ DELETE + ~EET/temp/wav/ACT_01.WAV~
 	~EET/temp/wav/ZOMBI06.WAV~
 	~EET/temp/wav/ZOMBI08.WAV~
 	~EET/temp/wav/ZOMBI09.WAV~
+//new in patch 2.0
+	~EET/temp/wav/ARE_M03.WAV~
+	~EET/temp/wav/ARE_P25.WAV~
+	~EET/temp/wav/BDETHER.WAV~
+	~EET/temp/wav/BDRAISED.WAV~
+	~EET/temp/wav/EFF_M93.WAV~
+//SoD
+	~EET/temp/wav/1AMERC01.WAV~
+	~EET/temp/wav/1AMERC02.WAV~
+	~EET/temp/wav/1AMERC03.WAV~
+	~EET/temp/wav/1AMERC04.WAV~
+	~EET/temp/wav/1AMERC05.WAV~
+	~EET/temp/wav/1AMERC11.WAV~
+	~EET/temp/wav/1AMONK01.WAV~
+	~EET/temp/wav/1AMONK02.WAV~
+	~EET/temp/wav/1AMONK03.WAV~
+	~EET/temp/wav/1AMONK04.WAV~
+	~EET/temp/wav/1AMONK05.WAV~
+	~EET/temp/wav/1AMONK06.WAV~
+	~EET/temp/wav/1AMONK10.WAV~
+	~EET/temp/wav/2AMERC02.WAV~
+	~EET/temp/wav/2AMERC04.WAV~
+	~EET/temp/wav/2AMERC05.WAV~
+	~EET/temp/wav/2AMERC11.WAV~
+	~EET/temp/wav/2AMONK01.WAV~
+	~EET/temp/wav/2AMONK02.WAV~
+	~EET/temp/wav/2AMONK03.WAV~
+	~EET/temp/wav/2AMONK04.WAV~
+	~EET/temp/wav/2AMONK05.WAV~
+	~EET/temp/wav/2AMONK06.WAV~
+	~EET/temp/wav/2AMONK12.WAV~
+	~EET/temp/wav/3AMERC01.WAV~
+	~EET/temp/wav/3AMERC02.WAV~
+	~EET/temp/wav/3AMERC03.WAV~
+	~EET/temp/wav/3AMERC04.WAV~
+	~EET/temp/wav/3AMERC05.WAV~
+	~EET/temp/wav/3AMERC06.WAV~
+	~EET/temp/wav/3AMONK02.WAV~
+	~EET/temp/wav/3AMONK03.WAV~
+	~EET/temp/wav/3AMONK04.WAV~
+	~EET/temp/wav/3AMONK05.WAV~
+	~EET/temp/wav/3AMONK06.WAV~
+	~EET/temp/wav/4AMERC01.WAV~
+	~EET/temp/wav/4AMERC02.WAV~
+	~EET/temp/wav/4AMERC03.WAV~
+	~EET/temp/wav/4AMERC04.WAV~
+	~EET/temp/wav/4AMERC05.WAV~
+	~EET/temp/wav/4AMERC06.WAV~
+	~EET/temp/wav/4AMERC07.WAV~
+	~EET/temp/wav/AFT_M01.WAV~
+	~EET/temp/wav/AFT_M02.WAV~
+	~EET/temp/wav/AFT_P01.WAV~
+	~EET/temp/wav/AFT_P10.WAV~
+	~EET/temp/wav/ALARM1.WAV~
+	~EET/temp/wav/AM0700.WAV~
+	~EET/temp/wav/AM5000.WAV~
+	~EET/temp/wav/AMARCH01.WAV~
+	~EET/temp/wav/AMARCH03.WAV~
+	~EET/temp/wav/AMARCH04.WAV~
+	~EET/temp/wav/AMARCH05.WAV~
+	~EET/temp/wav/AMARCH06.WAV~
+	~EET/temp/wav/AMARCH07.WAV~
+	~EET/temp/wav/AMARCH08.WAV~
+	~EET/temp/wav/AMARCH10.WAV~
+	~EET/temp/wav/AMASAN01.WAV~
+	~EET/temp/wav/AMASAN02.WAV~
+	~EET/temp/wav/AMASAN03.WAV~
+	~EET/temp/wav/AMASAN04.WAV~
+	~EET/temp/wav/AMASAN05.WAV~
+	~EET/temp/wav/AMASAN06.WAV~
+	~EET/temp/wav/AMASAN07.WAV~
+	~EET/temp/wav/AMCARR01.WAV~
+	~EET/temp/wav/AMCARR02.WAV~
+	~EET/temp/wav/AMCARR03.WAV~
+	~EET/temp/wav/AMCARR04.WAV~
+	~EET/temp/wav/AMCARR05.WAV~
+	~EET/temp/wav/AMCARR06.WAV~
+	~EET/temp/wav/AMCARR12.WAV~
+	~EET/temp/wav/AMCLER01.WAV~
+	~EET/temp/wav/AMCLER02.WAV~
+	~EET/temp/wav/AMCLER04.WAV~
+	~EET/temp/wav/AMCLER05.WAV~
+	~EET/temp/wav/AMCLER06.WAV~
+	~EET/temp/wav/AMGRDX01.WAV~
+	~EET/temp/wav/AMGRDX02.WAV~
+	~EET/temp/wav/AMGRDX03.WAV~
+	~EET/temp/wav/AMGRDX04.WAV~
+	~EET/temp/wav/AMGRDX05.WAV~
+	~EET/temp/wav/AMMAYO02.WAV~
+	~EET/temp/wav/AMMAYO04.WAV~
+	~EET/temp/wav/AMMAYO05.WAV~
+	~EET/temp/wav/AMMAYO06.WAV~
+	~EET/temp/wav/ARDULA01.WAV~
+	~EET/temp/wav/ARDULA02.WAV~
+	~EET/temp/wav/ARDULA03.WAV~
+	~EET/temp/wav/ARDULA04.WAV~
+	~EET/temp/wav/ARDULA05.WAV~
+	~EET/temp/wav/ARDULA06.WAV~
+	~EET/temp/wav/ARDULA07.WAV~
+	~EET/temp/wav/ARDULA13.WAV~
+	~EET/temp/wav/ARDULA26.WAV~
+	~EET/temp/wav/BALTHA01.WAV~
+	~EET/temp/wav/BALTHA02.WAV~
+	~EET/temp/wav/BALTHA03.WAV~
+	~EET/temp/wav/BALTHA04.WAV~
+	~EET/temp/wav/BALTHA05.WAV~
+	~EET/temp/wav/BALTHA06.WAV~
+	~EET/temp/wav/BARONP01.WAV~
+	~EET/temp/wav/BARONP03.WAV~
+	~EET/temp/wav/BARONP04.WAV~
+	~EET/temp/wav/BARONP05.WAV~
+	~EET/temp/wav/BODHIX01.WAV~
+	~EET/temp/wav/BODHIX04.WAV~
+	~EET/temp/wav/BODHIX05.WAV~
+	~EET/temp/wav/BODHIX06.WAV~
+	~EET/temp/wav/BODHIX07.WAV~
+	~EET/temp/wav/BONEG05B.WAV~
+	~EET/temp/wav/BONEG08.WAV~
+	~EET/temp/wav/BONEG11.WAV~
+	~EET/temp/wav/BOTSM03.WAV~
+	~EET/temp/wav/BOTSM04.WAV~
+	~EET/temp/wav/BOTSM05.WAV~
+	~EET/temp/wav/BOTSM06.WAV~
+	~EET/temp/wav/BOTSM07.WAV~
+	~EET/temp/wav/BOTSM08.WAV~
+	~EET/temp/wav/BOTSM09.WAV~
+	~EET/temp/wav/CHILF01.WAV~
+	~EET/temp/wav/CHILF02.WAV~
+	~EET/temp/wav/CHILF03.WAV~
+	~EET/temp/wav/CHILF04.WAV~
+	~EET/temp/wav/CHILF05.WAV~
+	~EET/temp/wav/CHILF06.WAV~
+	~EET/temp/wav/CHILF07.WAV~
+	~EET/temp/wav/CHILM01.WAV~
+	~EET/temp/wav/CHILM02.WAV~
+	~EET/temp/wav/CHILM03.WAV~
+	~EET/temp/wav/CHILM04.WAV~
+	~EET/temp/wav/CHILM05.WAV~
+	~EET/temp/wav/CHILM06.WAV~
+	~EET/temp/wav/CHILM07.WAV~
+	~EET/temp/wav/COR01.WAV~
+	~EET/temp/wav/COR03.WAV~
+	~EET/temp/wav/COR20.WAV~
+	~EET/temp/wav/COR21.WAV~
+	~EET/temp/wav/CORGEI01.WAV~
+	~EET/temp/wav/CORGEI03.WAV~
+	~EET/temp/wav/CORGEI04.WAV~
+	~EET/temp/wav/CORGEI05.WAV~
+	~EET/temp/wav/CORGEI20.WAV~
+	~EET/temp/wav/CORNU01.WAV~
+	~EET/temp/wav/CORNU02.WAV~
+	~EET/temp/wav/CORNU03.WAV~
+	~EET/temp/wav/CORNU04.WAV~
+	~EET/temp/wav/CORNU07.WAV~
+	~EET/temp/wav/CORNU08.WAV~
+	~EET/temp/wav/CORNU09.WAV~
+	~EET/temp/wav/CORNU10.WAV~
+	~EET/temp/wav/DEMIN01.WAV~
+	~EET/temp/wav/DEMIN03.WAV~
+	~EET/temp/wav/DEMIN05.WAV~
+	~EET/temp/wav/DEMIN06.WAV~
+	~EET/temp/wav/DEMO01.WAV~
+	~EET/temp/wav/DEMO01A.WAV~
+	~EET/temp/wav/DEMO01B.WAV~
+	~EET/temp/wav/DEMO02.WAV~
+	~EET/temp/wav/DEMO03.WAV~
+	~EET/temp/wav/DEMO04.WAV~
+	~EET/temp/wav/DEMO05.WAV~
+	~EET/temp/wav/DEMO06.WAV~
+	~EET/temp/wav/DEMO07.WAV~
+	~EET/temp/wav/DEMOG01.WAV~
+	~EET/temp/wav/DEMOG02.WAV~
+	~EET/temp/wav/DEMOG03.WAV~
+	~EET/temp/wav/DEMOG04.WAV~
+	~EET/temp/wav/DEMOG05.WAV~
+	~EET/temp/wav/DEMONV01.WAV~
+	~EET/temp/wav/DEMONV02.WAV~
+	~EET/temp/wav/DEMONV03.WAV~
+	~EET/temp/wav/DEMONV04.WAV~
+	~EET/temp/wav/DEMONV05.WAV~
+	~EET/temp/wav/DEMONV06.WAV~
+	~EET/temp/wav/DEMONV07.WAV~
+	~EET/temp/wav/DEMONV08.WAV~
+	~EET/temp/wav/DEMSON01.WAV~
+	~EET/temp/wav/DEMSON03.WAV~
+	~EET/temp/wav/DEMSON04.WAV~
+	~EET/temp/wav/DEMSON05.WAV~
+	~EET/temp/wav/DERILX01.WAV~
+	~EET/temp/wav/DERILX03.WAV~
+	~EET/temp/wav/DERILX04.WAV~
+	~EET/temp/wav/DERILX05.WAV~
+	~EET/temp/wav/DERMIN01.WAV~
+	~EET/temp/wav/DERMIN03.WAV~
+	~EET/temp/wav/DERMIN04.WAV~
+	~EET/temp/wav/DERMIN05.WAV~
+	~EET/temp/wav/DESHAR01.WAV~
+	~EET/temp/wav/DESHAR02.WAV~
+	~EET/temp/wav/DESHAR03.WAV~
+	~EET/temp/wav/DESHAR04.WAV~
+	~EET/temp/wav/DESHAR05.WAV~
+	~EET/temp/wav/DESHAR06.WAV~
+	~EET/temp/wav/DPJON156.WAV~
+	~EET/temp/wav/DRFEM101.WAV~
+	~EET/temp/wav/DRFEM102.WAV~
+	~EET/temp/wav/DRFEM103.WAV~
+	~EET/temp/wav/DRFEM104.WAV~
+	~EET/temp/wav/DRFEM105.WAV~
+	~EET/temp/wav/DRFEM106.WAV~
+	~EET/temp/wav/DRFEM107.WAV~
+	~EET/temp/wav/DRMEN101.WAV~
+	~EET/temp/wav/DRMEN102.WAV~
+	~EET/temp/wav/DRMEN103.WAV~
+	~EET/temp/wav/DRMEN104.WAV~
+	~EET/temp/wav/DRMEN105.WAV~
+	~EET/temp/wav/DRMEN106.WAV~
+	~EET/temp/wav/DRMEN107.WAV~
+	~EET/temp/wav/DRPRIS01.WAV~
+	~EET/temp/wav/DRPRIS02.WAV~
+	~EET/temp/wav/DRPRIS03.WAV~
+	~EET/temp/wav/DRPRIS04.WAV~
+	~EET/temp/wav/DRPRIS05.WAV~
+	~EET/temp/wav/DRPRIS06.WAV~
+	~EET/temp/wav/DRPRIS07.WAV~
+	~EET/temp/wav/DRSLV101.WAV~
+	~EET/temp/wav/DRSLV102.WAV~
+	~EET/temp/wav/DRSLV103.WAV~
+	~EET/temp/wav/DRSLV104.WAV~
+	~EET/temp/wav/DRSLV105.WAV~
+	~EET/temp/wav/DRSLV106.WAV~
+	~EET/temp/wav/DRSOL101.WAV~
+	~EET/temp/wav/DRSOL102.WAV~
+	~EET/temp/wav/DRSOL103.WAV~
+	~EET/temp/wav/DRSOL104.WAV~
+	~EET/temp/wav/DRSOL105.WAV~
+	~EET/temp/wav/DRSOL106.WAV~
+	~EET/temp/wav/DRSOL107.WAV~
+	~EET/temp/wav/EFF_108.WAV~
+	~EET/temp/wav/EFF_M18.WAV~
+	~EET/temp/wav/EFF_M54.WAV~
+	~EET/temp/wav/EFF_M74B.WAV~
+	~EET/temp/wav/EFF_M75.WAV~
+	~EET/temp/wav/EFF_M109.WAV~
+	~EET/temp/wav/EFF_P09.WAV~
+	~EET/temp/wav/EFF_P35.WAV~
+	~EET/temp/wav/EFF_P35A.WAV~
+	~EET/temp/wav/EFF_P52.WAV~
+	~EET/temp/wav/EFF_P53.WAV~
+	~EET/temp/wav/EFF_P57.WAV~
+	~EET/temp/wav/EFF_P64.WAV~
+	~EET/temp/wav/EFF_P68.WAV~
+	~EET/temp/wav/EFF_P78.WAV~
+	~EET/temp/wav/EFF_P79.WAV~
+	~EET/temp/wav/EFF_P84.WAV~
+	~EET/temp/wav/EFF_P86.WAV~
+	~EET/temp/wav/EFF_P94.WAV~
+	~EET/temp/wav/ELHAN101.WAV~
+	~EET/temp/wav/ELHAN102.WAV~
+	~EET/temp/wav/ELHAN103.WAV~
+	~EET/temp/wav/ELHAN104.WAV~
+	~EET/temp/wav/ELHAN105.WAV~
+	~EET/temp/wav/ELHAN106.WAV~
+	~EET/temp/wav/ELSOL101.WAV~
+	~EET/temp/wav/ELSOL102.WAV~
+	~EET/temp/wav/ELSOL103.WAV~
+	~EET/temp/wav/ELSOL104.WAV~
+	~EET/temp/wav/ELSOL105.WAV~
+	~EET/temp/wav/ELSOL106.WAV~
+	~EET/temp/wav/EPRIF01.WAV~
+	~EET/temp/wav/EPRIF02.WAV~
+	~EET/temp/wav/EPRIF03.WAV~
+	~EET/temp/wav/EPRIF04.WAV~
+	~EET/temp/wav/EPRIF05.WAV~
+	~EET/temp/wav/EPRIF06.WAV~
+	~EET/temp/wav/EPRIF07.WAV~
+	~EET/temp/wav/EPRIF08.WAV~
+	~EET/temp/wav/EPRIM01.WAV~
+	~EET/temp/wav/EPRIM02.WAV~
+	~EET/temp/wav/EPRIM03.WAV~
+	~EET/temp/wav/EPRIM04.WAV~
+	~EET/temp/wav/EPRIM05.WAV~
+	~EET/temp/wav/EPRIM06.WAV~
+	~EET/temp/wav/EPRIM07.WAV~
+	~EET/temp/wav/EPRIM08.WAV~
+	~EET/temp/wav/ETTIN08.WAV~
+	~EET/temp/wav/ETTIN09B.WAV~
+	~EET/temp/wav/ETTIN11.WAV~
+	~EET/temp/wav/FANATF01.WAV~
+	~EET/temp/wav/FANATF02.WAV~
+	~EET/temp/wav/FANATF03.WAV~
+	~EET/temp/wav/FANATF04.WAV~
+	~EET/temp/wav/FANATF05.WAV~
+	~EET/temp/wav/FANATF06.WAV~
+	~EET/temp/wav/FANATF07.WAV~
+	~EET/temp/wav/FANATF08.WAV~
+	~EET/temp/wav/FANATM01.WAV~
+	~EET/temp/wav/FANATM02.WAV~
+	~EET/temp/wav/FANATM03.WAV~
+	~EET/temp/wav/FANATM04.WAV~
+	~EET/temp/wav/FANATM05.WAV~
+	~EET/temp/wav/FANATM06.WAV~
+	~EET/temp/wav/FANATM07.WAV~
+	~EET/temp/wav/FANATM08.WAV~
+	~EET/temp/wav/FEMELF01.WAV~
+	~EET/temp/wav/FEMELF02.WAV~
+	~EET/temp/wav/FEMELF04.WAV~
+	~EET/temp/wav/FEMELF05.WAV~
+	~EET/temp/wav/FEMELF06.WAV~
+	~EET/temp/wav/FEMER01.WAV~
+	~EET/temp/wav/FEMER02.WAV~
+	~EET/temp/wav/FEMER03.WAV~
+	~EET/temp/wav/FEMER04.WAV~
+	~EET/temp/wav/FEMER05.WAV~
+	~EET/temp/wav/FEMER06.WAV~
+	~EET/temp/wav/FEMSAL01.WAV~
+	~EET/temp/wav/FEMSAL02.WAV~
+	~EET/temp/wav/FEMSAL03.WAV~
+	~EET/temp/wav/FEMSAL04.WAV~
+	~EET/temp/wav/FEMSAL05.WAV~
+	~EET/temp/wav/FEMSAL06.WAV~
+	~EET/temp/wav/FIRE.WAV~
+	~EET/temp/wav/GAELEN01.WAV~
+	~EET/temp/wav/GAELEN03.WAV~
+	~EET/temp/wav/GAELEN04.WAV~
+	~EET/temp/wav/GAELEN05.WAV~
+	~EET/temp/wav/GAELEN06.WAV~
+	~EET/temp/wav/GAELEN35.WAV~
+	~EET/temp/wav/GAELEN50.WAV~
+	~EET/temp/wav/GAHOUSE2.WAV~
+	~EET/temp/wav/GAM_13.WAV~
+	~EET/temp/wav/GAM_14.WAV~
+	~EET/temp/wav/GAM_15.WAV~
+	~EET/temp/wav/GAM_16.WAV~
+	~EET/temp/wav/GAM_17.WAV~
+	~EET/temp/wav/GAM_18.WAV~
+	~EET/temp/wav/GAM_20.WAV~
+	~EET/temp/wav/GAM_21.WAV~
+	~EET/temp/wav/GAM_22.WAV~
+	~EET/temp/wav/GAM_23.WAV~
+	~EET/temp/wav/GAM_25.WAV~
+	~EET/temp/wav/GAM_26.WAV~
+	~EET/temp/wav/GAM_27.WAV~
+	~EET/temp/wav/GAM_28.WAV~
+	~EET/temp/wav/GAM_29.WAV~
+	~EET/temp/wav/GAM_30.WAV~
+	~EET/temp/wav/GAM_31.WAV~
+	~EET/temp/wav/GAM_32.WAV~
+	~EET/temp/wav/GAM_33.WAV~
+	~EET/temp/wav/GAM_34.WAV~
+	~EET/temp/wav/GAM_35.WAV~
+	~EET/temp/wav/GAM_37.WAV~
+	~EET/temp/wav/GAM_39.WAV~
+	~EET/temp/wav/GAM_40.WAV~
+	~EET/temp/wav/GAM_41.WAV~
+	~EET/temp/wav/GARREN01.WAV~
+	~EET/temp/wav/GARREN03.WAV~
+	~EET/temp/wav/GARREN04.WAV~
+	~EET/temp/wav/GARREN05.WAV~
+	~EET/temp/wav/GATRCH01.WAV~
+	~EET/temp/wav/GATRCH02.WAV~
+	~EET/temp/wav/GATRCH03.WAV~
+	~EET/temp/wav/GATRCH04.WAV~
+	~EET/temp/wav/GATRCH05.WAV~
+	~EET/temp/wav/GDWARF01.WAV~
+	~EET/temp/wav/GDWARF02.WAV~
+	~EET/temp/wav/GDWARF03.WAV~
+	~EET/temp/wav/GDWARF04.WAV~
+	~EET/temp/wav/GFIRE01.WAV~
+	~EET/temp/wav/GFIRE02.WAV~
+	~EET/temp/wav/GFIRE03A.WAV~
+	~EET/temp/wav/GFIRE03B.WAV~
+	~EET/temp/wav/GFIRE04A.WAV~
+	~EET/temp/wav/GFIRE04B.WAV~
+	~EET/temp/wav/GFIRE07.WAV~
+	~EET/temp/wav/GFIRE08.WAV~
+	~EET/temp/wav/GFIRE09.WAV~
+	~EET/temp/wav/GFIRE10.WAV~
+	~EET/temp/wav/GGFEM01.WAV~
+	~EET/temp/wav/GGFEM02.WAV~
+	~EET/temp/wav/GGFEM03.WAV~
+	~EET/temp/wav/GGFEM04.WAV~
+	~EET/temp/wav/GGFEM05.WAV~
+	~EET/temp/wav/GGMAL01.WAV~
+	~EET/temp/wav/GGMAL02.WAV~
+	~EET/temp/wav/GGMAL03.WAV~
+	~EET/temp/wav/GGMAL04.WAV~
+	~EET/temp/wav/GHOUL03A.WAV~
+	~EET/temp/wav/GHOUL03B.WAV~
+	~EET/temp/wav/GHOUL04A.WAV~
+	~EET/temp/wav/GHOUL04B.WAV~
+	~EET/temp/wav/GHOUL07.WAV~
+	~EET/temp/wav/GHOUL10.WAV~
+	~EET/temp/wav/GHOUL11.WAV~
+	~EET/temp/wav/GLABR01.WAV~
+	~EET/temp/wav/GLABR02.WAV~
+	~EET/temp/wav/GLABR03.WAV~
+	~EET/temp/wav/GLABR04.WAV~
+	~EET/temp/wav/GLABR07.WAV~
+	~EET/temp/wav/GLABR08.WAV~
+	~EET/temp/wav/GLABR09.WAV~
+	~EET/temp/wav/GLABR10.WAV~
+	~EET/temp/wav/GNFEM01.WAV~
+	~EET/temp/wav/GNFEM02.WAV~
+	~EET/temp/wav/GNFEM03.WAV~
+	~EET/temp/wav/GNFEM04.WAV~
+	~EET/temp/wav/GNMAL01.WAV~
+	~EET/temp/wav/GNMAL02.WAV~
+	~EET/temp/wav/GNMAL03.WAV~
+	~EET/temp/wav/GNMAL201.WAV~
+	~EET/temp/wav/GNMAL202.WAV~
+	~EET/temp/wav/GNMAL203.WAV~
+	~EET/temp/wav/GNOMEF01.WAV~
+	~EET/temp/wav/GNOMEF02.WAV~
+	~EET/temp/wav/GNOMEF03.WAV~
+	~EET/temp/wav/GNOMEF04.WAV~
+	~EET/temp/wav/GNOMEF05.WAV~
+	~EET/temp/wav/GNOMEF06.WAV~
+	~EET/temp/wav/GNOMEF07.WAV~
+	~EET/temp/wav/GNOMEF08.WAV~
+	~EET/temp/wav/GNOMEM01.WAV~
+	~EET/temp/wav/GNOMEM02.WAV~
+	~EET/temp/wav/GNOMEM03.WAV~
+	~EET/temp/wav/GNOMEM04.WAV~
+	~EET/temp/wav/GNOMEM05.WAV~
+	~EET/temp/wav/GNOMEM06.WAV~
+	~EET/temp/wav/GNOMEM07.WAV~
+	~EET/temp/wav/GNOMEM08.WAV~
+	~EET/temp/wav/GOBAXE8.WAV~
+	~EET/temp/wav/GOBAXE10.WAV~
+	~EET/temp/wav/GOBAXE11.WAV~
+	~EET/temp/wav/GOLDAN03.WAV~
+	~EET/temp/wav/GOLDAN04.WAV~
+	~EET/temp/wav/GOLDAN05.WAV~
+	~EET/temp/wav/GOLDAN06.WAV~
+	~EET/temp/wav/GORBAT01.WAV~
+	~EET/temp/wav/GORBAT02.WAV~
+	~EET/temp/wav/GORBAT03.WAV~
+	~EET/temp/wav/GORBAT04.WAV~
+	~EET/temp/wav/GORBAT05.WAV~
+	~EET/temp/wav/GORBAT06.WAV~
+	~EET/temp/wav/GORBAT08.WAV~
+	~EET/temp/wav/GORCAM01.WAV~
+	~EET/temp/wav/GORCAM02.WAV~
+	~EET/temp/wav/GORCAM03.WAV~
+	~EET/temp/wav/GORCAM04.WAV~
+	~EET/temp/wav/GORCAM05.WAV~
+	~EET/temp/wav/GORCAM06.WAV~
+	~EET/temp/wav/GORCAM08.WAV~
+	~EET/temp/wav/GORCAM09.WAV~
+	~EET/temp/wav/GORCAM10.WAV~
+	~EET/temp/wav/GORCAM14.WAV~
+	~EET/temp/wav/GORCAR01.WAV~
+	~EET/temp/wav/GORCAR02.WAV~
+	~EET/temp/wav/GORCAR04.WAV~
+	~EET/temp/wav/GORCAR05.WAV~
+	~EET/temp/wav/GORCAR06.WAV~
+	~EET/temp/wav/GORCHR01.WAV~
+	~EET/temp/wav/GORCHR02.WAV~
+	~EET/temp/wav/GORCHR03.WAV~
+	~EET/temp/wav/GORCHR04.WAV~
+	~EET/temp/wav/GORCHR05.WAV~
+	~EET/temp/wav/GORCHR06.WAV~
+	~EET/temp/wav/GORTAN01.WAV~
+	~EET/temp/wav/GORTAN02.WAV~
+	~EET/temp/wav/GORTAN03.WAV~
+	~EET/temp/wav/GORTAN04.WAV~
+	~EET/temp/wav/GORTAN05.WAV~
+	~EET/temp/wav/GORTAN06.WAV~
+	~EET/temp/wav/GORTAN15.WAV~
+	~EET/temp/wav/GPRIF01.WAV~
+	~EET/temp/wav/GPRIF02.WAV~
+	~EET/temp/wav/GPRIF03.WAV~
+	~EET/temp/wav/GPRIF04.WAV~
+	~EET/temp/wav/GPRIF05.WAV~
+	~EET/temp/wav/GPRIF06.WAV~
+	~EET/temp/wav/GPRIF07.WAV~
+	~EET/temp/wav/GPRIF08.WAV~
+	~EET/temp/wav/GPRIM01.WAV~
+	~EET/temp/wav/GPRIM02.WAV~
+	~EET/temp/wav/GPRIM03.WAV~
+	~EET/temp/wav/GPRIM04.WAV~
+	~EET/temp/wav/GPRIM05.WAV~
+	~EET/temp/wav/GPRIM06.WAV~
+	~EET/temp/wav/GPRIM07.WAV~
+	~EET/temp/wav/GPRIM08.WAV~
+	~EET/temp/wav/GRNDHG01.WAV~
+	~EET/temp/wav/GRNDHG03.WAV~
+	~EET/temp/wav/GRNDHG06.WAV~
+	~EET/temp/wav/GRNDHG07.WAV~
+	~EET/temp/wav/HUMAN01.WAV~
+	~EET/temp/wav/HUMAN02.WAV~
+	~EET/temp/wav/HUMAN03.WAV~
+	~EET/temp/wav/HUMAN04.WAV~
+	~EET/temp/wav/HUMAN05.WAV~
+	~EET/temp/wav/HUMAN06.WAV~
+	~EET/temp/wav/HUMAN07.WAV~
+	~EET/temp/wav/HUMAN08.WAV~
+	~EET/temp/wav/HUMAN09.WAV~
+	~EET/temp/wav/HVILLF01.WAV~
+	~EET/temp/wav/HVILLF02.WAV~
+	~EET/temp/wav/HVILLF03.WAV~
+	~EET/temp/wav/HVILLF04.WAV~
+	~EET/temp/wav/HVILLF05.WAV~
+	~EET/temp/wav/HVILLF06.WAV~
+	~EET/temp/wav/HVILLF07.WAV~
+	~EET/temp/wav/HVILLF08.WAV~
+	~EET/temp/wav/HVILLM01.WAV~
+	~EET/temp/wav/HVILLM02.WAV~
+	~EET/temp/wav/HVILLM03.WAV~
+	~EET/temp/wav/HVILLM04.WAV~
+	~EET/temp/wav/HVILLM05.WAV~
+	~EET/temp/wav/HVILLM06.WAV~
+	~EET/temp/wav/HVILLM07.WAV~
+	~EET/temp/wav/HVILLM08.WAV~
+	~EET/temp/wav/INSPEC01.WAV~
+	~EET/temp/wav/INSPEC03.WAV~
+	~EET/temp/wav/INSPEC04.WAV~
+	~EET/temp/wav/INSPEC05.WAV~
+	~EET/temp/wav/INSPEC20.WAV~
+	~EET/temp/wav/ISAEAX04.WAV~
+	~EET/temp/wav/ISAEAX05.WAV~
+	~EET/temp/wav/JARIEL01.WAV~
+	~EET/temp/wav/JARIEL03.WAV~
+	~EET/temp/wav/JARIEL04.WAV~
+	~EET/temp/wav/JARIEL05.WAV~
+	~EET/temp/wav/KAYLXX01.WAV~
+	~EET/temp/wav/KAYLXX03.WAV~
+	~EET/temp/wav/KAYLXX04.WAV~
+	~EET/temp/wav/KAYLXX05.WAV~
+	~EET/temp/wav/KPDOMO01.WAV~
+	~EET/temp/wav/KPDOMO03.WAV~
+	~EET/temp/wav/KPDOMO04.WAV~
+	~EET/temp/wav/KPDOMO05.WAV~
+	~EET/temp/wav/KPDOMO06.WAV~
+	~EET/temp/wav/LATHAN01.WAV~
+	~EET/temp/wav/LATHAN03.WAV~
+	~EET/temp/wav/LATHAN04.WAV~
+	~EET/temp/wav/LATHAN05.WAV~
+	~EET/temp/wav/LAVOK01.WAV~
+	~EET/temp/wav/LAVOK03.WAV~
+	~EET/temp/wav/LAVOK04.WAV~
+	~EET/temp/wav/LAVOK05.WAV~
+	~EET/temp/wav/LAVOK06.WAV~
+	~EET/temp/wav/LAVOK09.WAV~
+	~EET/temp/wav/LEREL08.WAV~
+	~EET/temp/wav/LEREL11.WAV~
+	~EET/temp/wav/LIZON02B.WAV~
+	~EET/temp/wav/LIZON08.WAV~
+	~EET/temp/wav/LIZON10.WAV~
+	~EET/temp/wav/LIZON11B.WAV~
+	~EET/temp/wav/M_FLUTE.WAV~
+	~EET/temp/wav/MAEVAR01.WAV~
+	~EET/temp/wav/MAEVAR03.WAV~
+	~EET/temp/wav/MAEVAR04.WAV~
+	~EET/temp/wav/MAEVAR05.WAV~
+	~EET/temp/wav/MAEVAR06.WAV~
+	~EET/temp/wav/MAEVAR26.WAV~
+	~EET/temp/wav/MALELF04.WAV~
+	~EET/temp/wav/MALELF05.WAV~
+	~EET/temp/wav/MALELF06.WAV~
+	~EET/temp/wav/MALMER01.WAV~
+	~EET/temp/wav/MALMER02.WAV~
+	~EET/temp/wav/MALMER03.WAV~
+	~EET/temp/wav/MALMER05.WAV~
+	~EET/temp/wav/MALMER06.WAV~
+	~EET/temp/wav/MALSAL01.WAV~
+	~EET/temp/wav/MALSAL02.WAV~
+	~EET/temp/wav/MALSAL03.WAV~
+	~EET/temp/wav/MALSAL04.WAV~
+	~EET/temp/wav/MALSAL05.WAV~
+	~EET/temp/wav/MALSAL06.WAV~
+	~EET/temp/wav/MARIAX01.WAV~
+	~EET/temp/wav/MARIAX03.WAV~
+	~EET/temp/wav/MARIAX04.WAV~
+	~EET/temp/wav/MARIAX05.WAV~
+	~EET/temp/wav/MELIS01.WAV~
+	~EET/temp/wav/MELIS02.WAV~
+	~EET/temp/wav/MELIS03.WAV~
+	~EET/temp/wav/MELIS04.WAV~
+	~EET/temp/wav/MELIS05.WAV~
+	~EET/temp/wav/MELIS06.WAV~
+	~EET/temp/wav/MELIS07.WAV~
+	~EET/temp/wav/MINIST01.WAV~
+	~EET/temp/wav/MINIST03.WAV~
+	~EET/temp/wav/MINIST04.WAV~
+	~EET/temp/wav/MINIST05.WAV~
+	~EET/temp/wav/MSTCHNG.WAV~
+	~EET/temp/wav/MUMMY07B.WAV~
+	~EET/temp/wav/MUMMY09B.WAV~
+	~EET/temp/wav/MUMMY11.WAV~
+	~EET/temp/wav/MYCON06.WAV~
+	~EET/temp/wav/MYCON08.WAV~
+	~EET/temp/wav/MYCON10.WAV~
+	~EET/temp/wav/NOBFE01.WAV~
+	~EET/temp/wav/NOBFE02.WAV~
+	~EET/temp/wav/NOBFE03.WAV~
+	~EET/temp/wav/NOBFE04.WAV~
+	~EET/temp/wav/NOBFE05.WAV~
+	~EET/temp/wav/NOBFE06.WAV~
+	~EET/temp/wav/NOBFE07.WAV~
+	~EET/temp/wav/NOBFE08.WAV~
+	~EET/temp/wav/NOBFE09.WAV~
+	~EET/temp/wav/NOBFE201.WAV~
+	~EET/temp/wav/NOBFE202.WAV~
+	~EET/temp/wav/NOBFE203.WAV~
+	~EET/temp/wav/NOBFE204.WAV~
+	~EET/temp/wav/NOBFE205.WAV~
+	~EET/temp/wav/NOBFE206.WAV~
+	~EET/temp/wav/NOBFE207.WAV~
+	~EET/temp/wav/NOBFE208.WAV~
+	~EET/temp/wav/NOBFE209.WAV~
+	~EET/temp/wav/NOBMA01.WAV~
+	~EET/temp/wav/NOBMA02.WAV~
+	~EET/temp/wav/NOBMA03.WAV~
+	~EET/temp/wav/NOBMA04.WAV~
+	~EET/temp/wav/NOBMA05.WAV~
+	~EET/temp/wav/NOBMA06.WAV~
+	~EET/temp/wav/NOBMA07.WAV~
+	~EET/temp/wav/NOBMA08.WAV~
+	~EET/temp/wav/NOBMA09.WAV~
+	~EET/temp/wav/NOBMA201.WAV~
+	~EET/temp/wav/NOBMA202.WAV~
+	~EET/temp/wav/NOBMA203.WAV~
+	~EET/temp/wav/NOBMA204.WAV~
+	~EET/temp/wav/NOBMA205.WAV~
+	~EET/temp/wav/NOBMA206.WAV~
+	~EET/temp/wav/NOBMA207.WAV~
+	~EET/temp/wav/NOBMA208.WAV~
+	~EET/temp/wav/NOBMA209.WAV~
+	~EET/temp/wav/ODREN01.WAV~
+	~EET/temp/wav/ODREN02.WAV~
+	~EET/temp/wav/ODREN03.WAV~
+	~EET/temp/wav/ODREN04.WAV~
+	~EET/temp/wav/ODREN05.WAV~
+	~EET/temp/wav/ODREN06.WAV~
+	~EET/temp/wav/ODREN07.WAV~
+	~EET/temp/wav/ODREN08.WAV~
+	~EET/temp/wav/OISIGX01.WAV~
+	~EET/temp/wav/OISIGX03.WAV~
+	~EET/temp/wav/OISIGX04.WAV~
+	~EET/temp/wav/OISIGX05.WAV~
+	~EET/temp/wav/ORCAXE08.WAV~
+	~EET/temp/wav/ORCAXE10.WAV~
+	~EET/temp/wav/ORCBW06.WAV~
+	~EET/temp/wav/ORCBW10.WAV~
+	~EET/temp/wav/ORCSH08.WAV~
+	~EET/temp/wav/ORCSH09B.WAV~
+	~EET/temp/wav/OROG07B.WAV~
+	~EET/temp/wav/OROG08A.WAV~
+	~EET/temp/wav/OROG08B.WAV~
+	~EET/temp/wav/OROG10.WAV~
+	~EET/temp/wav/OROG11.WAV~
+	~EET/temp/wav/OROGC07B.WAV~
+	~EET/temp/wav/OROGC08A.WAV~
+	~EET/temp/wav/OROGC08B.WAV~
+	~EET/temp/wav/OROGC09B.WAV~
+	~EET/temp/wav/OROGC11.WAV~
+	~EET/temp/wav/PEASF01.WAV~
+	~EET/temp/wav/PEASF02.WAV~
+	~EET/temp/wav/PEASF03.WAV~
+	~EET/temp/wav/PEASF04.WAV~
+	~EET/temp/wav/PEASF05.WAV~
+	~EET/temp/wav/PEASF06.WAV~
+	~EET/temp/wav/PEASF07.WAV~
+	~EET/temp/wav/PEASF08.WAV~
+	~EET/temp/wav/PEASF09.WAV~
+	~EET/temp/wav/PEASF201.WAV~
+	~EET/temp/wav/PEASF202.WAV~
+	~EET/temp/wav/PEASF203.WAV~
+	~EET/temp/wav/PEASF204.WAV~
+	~EET/temp/wav/PEASF205.WAV~
+	~EET/temp/wav/PEASF206.WAV~
+	~EET/temp/wav/PEASF207.WAV~
+	~EET/temp/wav/PEASF208.WAV~
+	~EET/temp/wav/PEASF209.WAV~
+	~EET/temp/wav/PEASF301.WAV~
+	~EET/temp/wav/PEASF302.WAV~
+	~EET/temp/wav/PEASF303.WAV~
+	~EET/temp/wav/PEASF304.WAV~
+	~EET/temp/wav/PEASF305.WAV~
+	~EET/temp/wav/PEASF306.WAV~
+	~EET/temp/wav/PEASF307.WAV~
+	~EET/temp/wav/PEASF308.WAV~
+	~EET/temp/wav/PEASF309.WAV~
+	~EET/temp/wav/PEASM01.WAV~
+	~EET/temp/wav/PEASM02.WAV~
+	~EET/temp/wav/PEASM03.WAV~
+	~EET/temp/wav/PEASM04.WAV~
+	~EET/temp/wav/PEASM05.WAV~
+	~EET/temp/wav/PEASM06.WAV~
+	~EET/temp/wav/PEASM07.WAV~
+	~EET/temp/wav/PEASM08.WAV~
+	~EET/temp/wav/PEASM09.WAV~
+	~EET/temp/wav/PEASM201.WAV~
+	~EET/temp/wav/PEASM202.WAV~
+	~EET/temp/wav/PEASM203.WAV~
+	~EET/temp/wav/PEASM204.WAV~
+	~EET/temp/wav/PEASM205.WAV~
+	~EET/temp/wav/PEASM206.WAV~
+	~EET/temp/wav/PEASM207.WAV~
+	~EET/temp/wav/PEASM208.WAV~
+	~EET/temp/wav/PEASM209.WAV~
+	~EET/temp/wav/PEASM301.WAV~
+	~EET/temp/wav/PEASM302.WAV~
+	~EET/temp/wav/PEASM303.WAV~
+	~EET/temp/wav/PEASM304.WAV~
+	~EET/temp/wav/PEASM305.WAV~
+	~EET/temp/wav/PEASM306.WAV~
+	~EET/temp/wav/PEASM307.WAV~
+	~EET/temp/wav/PEASM308.WAV~
+	~EET/temp/wav/PEASM309.WAV~
+	~EET/temp/wav/PHAERE01.WAV~
+	~EET/temp/wav/PHAERE03.WAV~
+	~EET/temp/wav/PHAERE04.WAV~
+	~EET/temp/wav/PHAERE05.WAV~
+	~EET/temp/wav/PHAERE06.WAV~
+	~EET/temp/wav/PSEUD01.WAV~
+	~EET/temp/wav/PSEUD02.WAV~
+	~EET/temp/wav/PSEUD03.WAV~
+	~EET/temp/wav/PSEUD04.WAV~
+	~EET/temp/wav/PSEUD06.WAV~
+	~EET/temp/wav/PSEUD07.WAV~
+	~EET/temp/wav/RAELIS01.WAV~
+	~EET/temp/wav/RAELIS03.WAV~
+	~EET/temp/wav/RAELIS04.WAV~
+	~EET/temp/wav/RAELIS05.WAV~
+	~EET/temp/wav/RAELIS06.WAV~
+	~EET/temp/wav/RAELIS34.WAV~
+	~EET/temp/wav/RENAL04.WAV~
+	~EET/temp/wav/RENAL05.WAV~
+	~EET/temp/wav/RENAL06.WAV~
+	~EET/temp/wav/RENAL07.WAV~
+	~EET/temp/wav/RENAL25.WAV~
+	~EET/temp/wav/RIFTG01.WAV~
+	~EET/temp/wav/RIFTG03.WAV~
+	~EET/temp/wav/RIFTG04.WAV~
+	~EET/temp/wav/RIFTG05.WAV~
+	~EET/temp/wav/RIFTG06.WAV~
+	~EET/temp/wav/RUFFIA01.WAV~
+	~EET/temp/wav/RUFFIA02.WAV~
+	~EET/temp/wav/RUFFIA03.WAV~
+	~EET/temp/wav/RUFFIA04.WAV~
+	~EET/temp/wav/RUFFIA05.WAV~
+	~EET/temp/wav/RUFFIA06.WAV~
+	~EET/temp/wav/RUFFIA07.WAV~
+	~EET/temp/wav/RUFFIA08.WAV~
+	~EET/temp/wav/SAINXX01.WAV~
+	~EET/temp/wav/SAINXX03.WAV~
+	~EET/temp/wav/SAINXX04.WAV~
+	~EET/temp/wav/SAINXX05.WAV~
+	~EET/temp/wav/SALAM02.WAV~
+	~EET/temp/wav/SALAM09B.WAV~
+	~EET/temp/wav/SALAM10A.WAV~
+	~EET/temp/wav/SALAM10B.WAV~
+	~EET/temp/wav/SALAM11.WAV~
+	~EET/temp/wav/SARFEM06.WAV~
+	~EET/temp/wav/SARKIS01.WAV~
+	~EET/temp/wav/SARKIS02.WAV~
+	~EET/temp/wav/SARKIS03.WAV~
+	~EET/temp/wav/SARKIS04.WAV~
+	~EET/temp/wav/SARKIS05.WAV~
+	~EET/temp/wav/SARKIS06.WAV~
+	~EET/temp/wav/SARLES01.WAV~
+	~EET/temp/wav/SARLES03.WAV~
+	~EET/temp/wav/SARLES04.WAV~
+	~EET/temp/wav/SARLES05.WAV~
+	~EET/temp/wav/SARLES20.WAV~
+	~EET/temp/wav/SARMAN06.WAV~
+	~EET/temp/wav/SASSAR01.WAV~
+	~EET/temp/wav/SASSAR03.WAV~
+	~EET/temp/wav/SASSAR04.WAV~
+	~EET/temp/wav/SASSAR05.WAV~
+	~EET/temp/wav/SASSAR06.WAV~
+	~EET/temp/wav/SASSAR25.WAV~
+	~EET/temp/wav/SENPRI02.WAV~
+	~EET/temp/wav/SENPRI03.WAV~
+	~EET/temp/wav/SENPRI04.WAV~
+	~EET/temp/wav/SENPRI05.WAV~
+	~EET/temp/wav/SENPRI06.WAV~
+	~EET/temp/wav/SENPRI07.WAV~
+	~EET/temp/wav/SHADEL01.WAV~
+	~EET/temp/wav/SHADEL04.WAV~
+	~EET/temp/wav/SHADEL05.WAV~
+	~EET/temp/wav/SHADEL06.WAV~
+	~EET/temp/wav/SHADEL07.WAV~
+	~EET/temp/wav/SHAMB01.WAV~
+	~EET/temp/wav/SHAMB02.WAV~
+	~EET/temp/wav/SHAMB03.WAV~
+	~EET/temp/wav/SHAMB04.WAV~
+	~EET/temp/wav/SHAMB05.WAV~
+	~EET/temp/wav/SHAMB06.WAV~
+	~EET/temp/wav/SHAMB07.WAV~
+	~EET/temp/wav/SHRIE03A.WAV~
+	~EET/temp/wav/SHRIE03B.WAV~
+	~EET/temp/wav/SHRIE04A.WAV~
+	~EET/temp/wav/SHRIE04B.WAV~
+	~EET/temp/wav/SHRIE07A.WAV~
+	~EET/temp/wav/SHRIE07B.WAV~
+	~EET/temp/wav/SHRIE09A.WAV~
+	~EET/temp/wav/SHRIE09B.WAV~
+	~EET/temp/wav/SKELA08.WAV~
+	~EET/temp/wav/SKELA09B.WAV~
+	~EET/temp/wav/SMSPID01.WAV~
+	~EET/temp/wav/SMSPID02.WAV~
+	~EET/temp/wav/SMSPID07.WAV~
+	~EET/temp/wav/SOLAR01.WAV~
+	~EET/temp/wav/SOLAR02.WAV~
+	~EET/temp/wav/SOLAR03.WAV~
+	~EET/temp/wav/SOLAR04.WAV~
+	~EET/temp/wav/SOLAR05.WAV~
+	~EET/temp/wav/SOLARF01.WAV~
+	~EET/temp/wav/SOLARF02.WAV~
+	~EET/temp/wav/SOLARF03.WAV~
+	~EET/temp/wav/SOLARF04.WAV~
+	~EET/temp/wav/SOLARF05.WAV~
+	~EET/temp/wav/SOLARF06.WAV~
+	~EET/temp/wav/SOLARF07.WAV~
+	~EET/temp/wav/SOLARG01.WAV~
+	~EET/temp/wav/SOLARG02.WAV~
+	~EET/temp/wav/SOLARG03.WAV~
+	~EET/temp/wav/SOLARG04.WAV~
+	~EET/temp/wav/SOLARG05.WAV~
+	~EET/temp/wav/SOLARG06.WAV~
+	~EET/temp/wav/SOLARG07.WAV~
+	~EET/temp/wav/SOLF01.WAV~
+	~EET/temp/wav/SOLF02.WAV~
+	~EET/temp/wav/SOLF03.WAV~
+	~EET/temp/wav/SOLF04.WAV~
+	~EET/temp/wav/SOLF05.WAV~
+	~EET/temp/wav/SOLF06.WAV~
+	~EET/temp/wav/SOLF07.WAV~
+	~EET/temp/wav/SOLF08.WAV~
+	~EET/temp/wav/SOLM01.WAV~
+	~EET/temp/wav/SOLM02.WAV~
+	~EET/temp/wav/SOLM03.WAV~
+	~EET/temp/wav/SOLM04.WAV~
+	~EET/temp/wav/SOLM05.WAV~
+	~EET/temp/wav/SOLM06.WAV~
+	~EET/temp/wav/SOLM07.WAV~
+	~EET/temp/wav/SOLM08.WAV~
+	~EET/temp/wav/STHFE01.WAV~
+	~EET/temp/wav/STHFE02.WAV~
+	~EET/temp/wav/STHFE03.WAV~
+	~EET/temp/wav/STHFE04.WAV~
+	~EET/temp/wav/STHFE05.WAV~
+	~EET/temp/wav/STHFE06.WAV~
+	~EET/temp/wav/STHFE07.WAV~
+	~EET/temp/wav/STHFE08.WAV~
+	~EET/temp/wav/STHFE09.WAV~
+	~EET/temp/wav/STHMA01.WAV~
+	~EET/temp/wav/STHMA02.WAV~
+	~EET/temp/wav/STHMA03.WAV~
+	~EET/temp/wav/STHMA04.WAV~
+	~EET/temp/wav/STHMA05.WAV~
+	~EET/temp/wav/STHMA06.WAV~
+	~EET/temp/wav/STHMA07.WAV~
+	~EET/temp/wav/STHMA08.WAV~
+	~EET/temp/wav/STHMA09.WAV~
+	~EET/temp/wav/TANNER01.WAV~
+	~EET/temp/wav/TANNER03.WAV~
+	~EET/temp/wav/TANNER04.WAV~
+	~EET/temp/wav/TANNER05.WAV~
+	~EET/temp/wav/TANNER20.WAV~
+	~EET/temp/wav/TELWYN01.WAV~
+	~EET/temp/wav/TELWYN03.WAV~
+	~EET/temp/wav/TELWYN04.WAV~
+	~EET/temp/wav/TELWYN05.WAV~
+	~EET/temp/wav/TERMIN01.WAV~
+	~EET/temp/wav/TERMIN03.WAV~
+	~EET/temp/wav/TERMIN04.WAV~
+	~EET/temp/wav/TERMIN05.WAV~
+	~EET/temp/wav/TERMIN17.WAV~
+	~EET/temp/wav/TERMIN20.WAV~
+	~EET/temp/wav/THADDI01.WAV~
+	~EET/temp/wav/THADDI03.WAV~
+	~EET/temp/wav/THADDI04.WAV~
+	~EET/temp/wav/THADDI05.WAV~
+	~EET/temp/wav/TOGAL01.WAV~
+	~EET/temp/wav/TOGAL04.WAV~
+	~EET/temp/wav/TOGAL05.WAV~
+	~EET/temp/wav/TOGAL06.WAV~
+	~EET/temp/wav/TOGAL07.WAV~
+	~EET/temp/wav/TRA_09A.WAV~
+	~EET/temp/wav/TRA_26.WAV~
+	~EET/temp/wav/TRA_27.WAV~
+	~EET/temp/wav/TRA_29.WAV~
+	~EET/temp/wav/TRA_30.WAV~
+	~EET/temp/wav/TRA_38.WAV~
+	~EET/temp/wav/TRA_40.WAV~
+	~EET/temp/wav/TRA_43.WAV~
+	~EET/temp/wav/TRA_44.WAV~
+	~EET/temp/wav/TRA_45.WAV~
+	~EET/temp/wav/TRA_50.WAV~
+	~EET/temp/wav/TRA_51.WAV~
+	~EET/temp/wav/TRA_52.WAV~
+	~EET/temp/wav/TRA_53.WAV~
+	~EET/temp/wav/TRA_62.WAV~
+	~EET/temp/wav/TRA_63.WAV~
+	~EET/temp/wav/TROLL07A.WAV~
+	~EET/temp/wav/TROLL07B.WAV~
+	~EET/temp/wav/TROLL08B.WAV~
+	~EET/temp/wav/TROLL09B.WAV~
+	~EET/temp/wav/TROLL11.WAV~
+	~EET/temp/wav/UDSOLA01.WAV~
+	~EET/temp/wav/UDSOLA03.WAV~
+	~EET/temp/wav/UDSOLA04.WAV~
+	~EET/temp/wav/UDSOLA05.WAV~
+	~EET/temp/wav/UDSOLA06.WAV~
+	~EET/temp/wav/UDSOLA13.WAV~
+	~EET/temp/wav/UDSOLA28.WAV~
+	~EET/temp/wav/UNEARF01.WAV~
+	~EET/temp/wav/UNEARF02.WAV~
+	~EET/temp/wav/UNEARF03.WAV~
+	~EET/temp/wav/UNEARF04.WAV~
+	~EET/temp/wav/UNEARF05.WAV~
+	~EET/temp/wav/UNEARF06.WAV~
+	~EET/temp/wav/UNEARF07.WAV~
+	~EET/temp/wav/UNEARF08.WAV~
+	~EET/temp/wav/UNEARM01.WAV~
+	~EET/temp/wav/UNEARM02.WAV~
+	~EET/temp/wav/UNEARM03.WAV~
+	~EET/temp/wav/UNEARM04.WAV~
+	~EET/temp/wav/UNEARM05.WAV~
+	~EET/temp/wav/UNEARM06.WAV~
+	~EET/temp/wav/UNEARM07.WAV~
+	~EET/temp/wav/UNEARM08.WAV~
+	~EET/temp/wav/VAMPFX01.WAV~
+	~EET/temp/wav/VAMPFX02.WAV~
+	~EET/temp/wav/VAMPFX03.WAV~
+	~EET/temp/wav/VAMPFX04.WAV~
+	~EET/temp/wav/VAMPFX05.WAV~
+	~EET/temp/wav/VAMPFX06.WAV~
+	~EET/temp/wav/VAMPFX07.WAV~
+	~EET/temp/wav/VAMPFX08.WAV~
+	~EET/temp/wav/VAMPFX09.WAV~
+	~EET/temp/wav/VAMPM01.WAV~
+	~EET/temp/wav/VAMPM02.WAV~
+	~EET/temp/wav/VAMPM03.WAV~
+	~EET/temp/wav/VAMPM04.WAV~
+	~EET/temp/wav/VAMPM05.WAV~
+	~EET/temp/wav/VAMPM06.WAV~
+	~EET/temp/wav/VAMPM07.WAV~
+	~EET/temp/wav/VAMPM08.WAV~
+	~EET/temp/wav/VAMPM09.WAV~
+	~EET/temp/wav/VIRGIN01.WAV~
+	~EET/temp/wav/VIRGIN02.WAV~
+	~EET/temp/wav/VIRGIN03.WAV~
+	~EET/temp/wav/VIRGIN04.WAV~
+	~EET/temp/wav/VIRGIN06.WAV~
+	~EET/temp/wav/VIRGIN07.WAV~
+	~EET/temp/wav/VIRGIN08.WAV~
+	~EET/temp/wav/VIRGIN09.WAV~
+	~EET/temp/wav/VIRGIN10.WAV~
+	~EET/temp/wav/VIRGIN11.WAV~
+	~EET/temp/wav/WAL_MT.WAV~
+	~EET/temp/wav/WAL_MTA.WAV~
+	~EET/temp/wav/WAL_MTB.WAV~
+	~EET/temp/wav/WAL_MTC.WAV~
+	~EET/temp/wav/WEREG_01.WAV~
+	~EET/temp/wav/WIZEYE01.WAV~
+	~EET/temp/wav/WIZEYE02.WAV~
+	~EET/temp/wav/WYVRB01.WAV~
+	~EET/temp/wav/WYVRB02.WAV~
+	~EET/temp/wav/WYVRB03.WAV~
+	~EET/temp/wav/WYVRB06.WAV~
+	~EET/temp/wav/WYVRB07.WAV~
+	~EET/temp/wav/YANEL05B.WAV~
+	~EET/temp/wav/YANEL06A.WAV~
+	~EET/temp/wav/YANEL06B.WAV~
+	~EET/temp/wav/YANEL07A.WAV~
+	~EET/temp/wav/YANEL07B.WAV~
+	~EET/temp/wav/YANEL08A.WAV~
+	~EET/temp/wav/YANEL08B.WAV~
+	~EET/temp/wav/YANEL09B.WAV~
+	~EET/temp/wav/YANPR07B.WAV~
+	~EET/temp/wav/YANPR08A.WAV~
+	~EET/temp/wav/YANPR08B.WAV~
+	~EET/temp/wav/YANPR09B.WAV~
+	~EET/temp/wav/YANTI05B.WAV~
+	~EET/temp/wav/YANTI06A.WAV~
+	~EET/temp/wav/YANTI06B.WAV~
+	~EET/temp/wav/YANTI07B.WAV~
+	~EET/temp/wav/YANTI08A.WAV~
+	~EET/temp/wav/YANTI08B.WAV~
+	~EET/temp/wav/YANTI09B.WAV~
+	~EET/temp/wav/YANTI10A.WAV~
+	~EET/temp/wav/YANTI10B.WAV~
+	~EET/temp/wav/YANTI11.WAV~
+	~EET/temp/wav/YARRYL01.WAV~
+	~EET/temp/wav/YARRYL03.WAV~
+	~EET/temp/wav/YARRYL04.WAV~
+	~EET/temp/wav/YARRYL05.WAV~
+	~EET/temp/wav/YARRYL20.WAV~

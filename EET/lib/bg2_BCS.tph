@@ -1,15 +1,124 @@
 /////                                                  \\\\\
+///// Leftover BG:EE code in BG2:EE                    \\\\\
+/////                                                  \\\\\
+
+//Leftover BG:EE ARE scripts code
+ACTION_FOR_EACH file IN AR0100 AR0101 AR0103 AR0106 AR0108 AR0111 AR0112 AR0114 AR0115 AR0119 AR0121 AR0123 AR0125 AR0128 AR0130 AR0137 AR0138 AR0145 AR0146 AR0149 AR0153 AR0608 AR0612 AR1803 AR2301 AR2609 AR2611 AR2626 AR3300 AR3304 AR3352 AR5400 AR5405 BEGIN
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%file%.ARE~ BEGIN //just to be sure that other mod didn't add these areas
+		COPY - ~.../blank.txt~ ~.../%file%.baf~
+		COMPILE ~.../%file%.baf~
+	END
+END
+//Leftover BG:EE ARE scripts code used in scripts that are also used in BG2:EE
+<<<<<<<< .../AR0514.baf
+IF
+  Global("Durtomb","GLOBAL",1)
+  Global("DurTombTele","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("DurTombTele","GLOBAL",1)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0515","",[327.201],E))
+    ActionOverride(Player1,LeaveAreaLUA("AR0515","",[327.201],E))
+    ActionOverride(Player1,SetMasterArea("AR0500"))
+    ActionOverride(Player2,LeaveAreaLUA("AR0515","",[424.243],E))
+    ActionOverride(Player3,LeaveAreaLUA("AR0515","",[472.321],E))
+    ActionOverride(Player4,LeaveAreaLUA("AR0515","",[433.398],E))
+    ActionOverride(Player5,LeaveAreaLUA("AR0515","",[228.409],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0515","",[168.303],E))
+END
+
+IF
+  Global("Viking","GLOBAL",1)
+  Global("VikingTele","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("VikingTele","GLOBAL",1)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0515","",[327.201],E))
+    ActionOverride(Player1,LeaveAreaLUA("AR0515","",[327.201],E))
+    ActionOverride(Player1,SetMasterArea("AR0500"))
+    ActionOverride(Player2,LeaveAreaLUA("AR0515","",[424.243],E))
+    ActionOverride(Player3,LeaveAreaLUA("AR0515","",[472.321],E))
+    ActionOverride(Player4,LeaveAreaLUA("AR0515","",[433.398],E))
+    ActionOverride(Player5,LeaveAreaLUA("AR0515","",[228.409],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0515","",[168.303],E))
+END
+
+IF
+  Global("DurStatue","GLOBAL",1)
+  Global("DurStatueTele","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("DurStatueTele","GLOBAL",1)
+    ActionOverride(Player1,LeaveAreaLUAPanic("AR0515","",[327.201],E))
+    ActionOverride(Player1,LeaveAreaLUA("AR0515","",[327.201],E))
+    ActionOverride(Player1,SetMasterArea("AR0500"))
+    ActionOverride(Player2,LeaveAreaLUA("AR0515","",[424.243],E))
+    ActionOverride(Player3,LeaveAreaLUA("AR0515","",[472.321],E))
+    ActionOverride(Player4,LeaveAreaLUA("AR0515","",[433.398],E))
+    ActionOverride(Player5,LeaveAreaLUA("AR0515","",[228.409],E))
+    ActionOverride(Player6,LeaveAreaLUA("AR0515","",[168.303],E))
+END
+
+IF
+  Global("TeleRoom","GLOBAL",1)
+  OpenState("FinalDoor",FALSE)
+THEN
+  RESPONSE #100
+    OpenDoor("FinalDoor")
+END
+>>>>>>>>
+<<<<<<<< .../AR2001.baf
+IF
+  Global("Door2012Disabled","GLOBAL",1)
+  Global("Infected","GLOBAL",1)
+THEN
+  RESPONSE #100
+    TriggerActivation("DOOR2012",TRUE)
+    SetGlobal("Door2012Disabled","GLOBAL",0)
+END
+
+IF
+  Global("Door2012Disabled","GLOBAL",0)
+  Global("Infected","GLOBAL",0)
+THEN
+  RESPONSE #100
+    TriggerActivation("DOOR2012",FALSE)
+    SetGlobal("Door2012Disabled","GLOBAL",1)
+END
+
+IF
+  OpenState("DOR2012",FALSE)
+  Global("Infected","GLOBAL",1)
+THEN
+  RESPONSE #100
+    OpenDoor("DOR2012")
+END
+
+IF
+  OpenState("DOR2012",TRUE)
+  Global("Infected","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CloseDoor("DOR2012")
+END
+>>>>>>>>
+ACTION_FOR_EACH file IN AR0514 AR2001 BEGIN
+	COPY_EXISTING ~%file%.BCS~ ~override~
+		REPLACE_BCS_BLOCK ~.../%file%.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~WARNING: .../%file%.baf doesn't exist within %file%.BCS~ END
+	BUT_ONLY
+END
+
+/////                                                  \\\\\
 ///// DAYNITE/NITEDAY movies                           \\\\\
 /////                                                  \\\\\
 
-//currently disabled due to bug in Multiplayer mode, probably related to this: http://forum.baldursgate.com/discussion/comment/191406
-/*<<<<<<<< .../DAYNITE_NITEDAY-eb.baf
+<<<<<<<< .../DAYNITE_NITEDAY-eb.baf
 IF
   Time(DUSK_END)
   !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
 THEN
   RESPONSE #100
-    StartMovie("DAYNITE_")
+    StartMovie("DAYNITE")
     SetGlobalTimer("K#TimerSunset","GLOBAL",ONE_HOUR)
 END
 
@@ -18,23 +127,23 @@ IF
   !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
 THEN
   RESPONSE #100
-    StartMovie("NITEDAY_")
+    StartMovie("NITEDAY")
     SetGlobalTimer("K#TimerSunrise","GLOBAL",ONE_HOUR)
 END
 >>>>>>>>
 
 COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 	READ_BYTE 0x48 flags
-	PATCH_IF (flags BAND "0b00000001") AND (flags BAND "0b00000010") AND (flags BAND "0b00001000") AND (flags BAND "0b01000000") BEGIN
+	PATCH_IF (flags BAND BIT0) AND (flags BAND BIT1) AND (flags BAND BIT3) AND (flags BAND BIT6) BEGIN
 		INNER_ACTION BEGIN
 			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~
 			PRINT ~DAYNITE/NITEDAY movies added to %SOURCE_RES%.BCS~
 		END
 	END
-BUT_ONLY*/
+BUT_ONLY
 
 /////                                                  \\\\\
-///// BALDUR.BCS                                       \\\\\
+///// BALDUR.BCS, BALDUR25                             \\\\\
 /////                                                  \\\\\
 
 <<<<<<<< .../BALDUR-eb.baf
@@ -78,74 +187,34 @@ THEN
     SetGlobal("BaelothJoinedParty","GLOBAL",0)
 END
 
-//code from ToB
+//code from SoD
 IF
-  Global("UseSmith","GLOBAL",1)
+  Global("bd_spect","global",3)
+  Global("bd_spect_journal","global",0)
 THEN
   RESPONSE #100
-    CreateCreatureObject("botsmith",Player1,0,0,0) // Cespenar
-    SetGlobal("UseSmith","GLOBAL",0)
+    AddJournalEntry(@61616,QUEST_DONE) // Zaviak's Vision Quest  The Spectacles of Spectacle are out of charges.   The creatures I did see were unusual, dangerous, and fascinating. Zaviak may be a strange character, but his glasses worked and they did open my mind to some degree.
+    SetGlobal("bd_spect_journal","global",1)
 END
 
 IF
-  Dead("gromnir")
-  Global("DeathOfGromnir","GLOBAL",0)
-  CombatCounter(0)
-  !AreaCheck("AR4500")
+  Global("BD_XHOST_SWORD","GLOBAL",1)
+  OR(6)
+    HasItemEquipedReal("BDSW1HX5",Player1) // Gift of the Demon +1
+    HasItemEquipedReal("BDSW1HX5",Player2) // Gift of the Demon +1
+    HasItemEquipedReal("BDSW1HX5",Player3) // Gift of the Demon +1
+    HasItemEquipedReal("BDSW1HX5",Player4) // Gift of the Demon +1
+    HasItemEquipedReal("BDSW1HX5",Player5) // Gift of the Demon +1
+    HasItemEquipedReal("BDSW1HX5",Player6) // Gift of the Demon +1
 THEN
-  RESPONSE #100
-    ClearAllActions()
-    StartCutSceneMode()
-    SetGlobal("DeathOfGromnir","GLOBAL",1)
-    CreateCreatureObjectEffect("MEL01","SPFLESHS",Player1)
-    Wait(1)
-    PlaySong(79)
-    ActionOverride("mel01",StartDialogueNoSet(Player1))
-    EndCutSceneMode()
-END
-
-IF
-  Global("OHD_inscribed_noober","GLOBAL",1)
-THEN
-  RESPONSE #100
-    SetGlobal("OHD_inscribed_noober","GLOBAL",2)
-    SetGlobalTimer("OHD_noober_timer","GLOBAL",FOURTEEN_DAYS)
-END
-
-IF
-  Global("OHD_inscribed_noober","GLOBAL",2)
-  GlobalTimerExpired("OHD_noober_timer","GLOBAL")
-  CombatCounter(0)
-  !AreaCheck("AR4500")
-  !AreaType(DUNGEON)
-THEN
-  RESPONSE #100
-    SetGlobal("OHD_inscribed_noober","GLOBAL",3)
-    CreateCreatureOffScreen("OHDNOOB",SW) // Noober
-END
-
-IF
-  Global("OHH_hexxatmortal","GLOBAL",3)
-  Global("OHH_finaljournal","GLOBAL",0)
-  !Global("HexxatRomanceActive","GLOBAL",2)
-THEN
-  RESPONSE #100
-    AddJournalEntry(86507,INFO) // The mystery of L has been solved, though in truth I'd be happier if it weren't. The mighty lich Larloch fulfilled his promise to Hexxat, but doing so exacted a terrible price.
-    SetGlobal("OHH_finaljournal","GLOBAL",1)
-END
-
-IF
-  Global("OHH_hexxatmortal","GLOBAL",3)
-  Global("OHH_finaljournal","GLOBAL",0)
-  Global("HexxatRomanceActive","GLOBAL",2)
-THEN
-  RESPONSE #100
-    AddJournalEntry(86508,INFO) // The mystery of L has been solved, though in truth I'd be happier if it weren't. The mighty lich Larloch fulfilled his promise to Hexxat, but doing so exacted a terrible price. I know this was what she desired, but a selfish part of me will always wish otherwise.
-    SetGlobal("OHH_finaljournal","GLOBAL",1)
+  RESPONSE #1000
+    SetGlobal("BD_XHOST_SWORD","GLOBAL",2)
+    DisplayStringHeadOwner("BDSW1HX5",@67252) // Your sword blade snaps in half with a crack that almost sounds like a rasping laugh.
 END
 >>>>>>>>
 
 EXTEND_BOTTOM ~BALDUR.BCS~ ~.../BALDUR-eb.baf~
+EXTEND_BOTTOM ~BALDUR25.BCS~ ~.../BALDUR-eb.baf~
 
 <<<<<<<< .../timers-et.baf
 //counts how many REAL hours you have been playing
@@ -179,7 +248,7 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~BALDUR.BCS~ ~.../timers-et.baf~
-COPY ~EET/base/blank.bcs~ ~override/BALDUR25.BCS~
+EXTEND_TOP ~BALDUR25.BCS~ ~.../timers-et.baf~
 
 /////                                                  \\\\\
 ///// DS3483.BCS (Town Crier)                          \\\\\
@@ -225,7 +294,7 @@ COPY_EXISTING ~DPLAYER2.BCS~ ~override~
   !InParty(Myself)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~BreakingPoint()~
@@ -235,7 +304,7 @@ COPY_EXISTING ~DPLAYER2.BCS~ ~override~
   BreakingPoint()~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~Global("IHATEYOUALL","LOCALS",1)[%newline%]*InParty(Myself)~
@@ -246,7 +315,7 @@ COPY_EXISTING ~DPLAYER2.BCS~ ~override~
   InParty(Myself)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 
@@ -279,13 +348,39 @@ END
 <<<<<<<< .../DPLAYER2-eb.baf
 IF
   GlobalLT("ENDOFBG1","GLOBAL",2)
+  OR(2)
+    !Specifics(Myself,NORMAL)
+    !Global("bd_joined","locals",0)
+  InPartyAllowDead(Myself)
+  GlobalGT("bd_plot","global",0)
+THEN
+  RESPONSE #100
+    ChangeSpecifics(Myself,NORMAL)
+    SetGlobal("bd_joined","locals",0)
+    SetGlobal("bd_npc_camp","locals",0)
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
+  !InPartyAllowDead(Myself)
+  GlobalGT("bd_plot","global",0)
+THEN
+  RESPONSE #100
+    SetGlobal("KickedOut","LOCALS",0)
+    SetGlobal("bd_joined","locals",1)
+    SetGlobal("bd_npc_camp","locals",0)
+    ChangeAIScript("bdparty",DEFAULT)
+END
+
+IF
+  GlobalLT("ENDOFBG1","GLOBAL",2)
   !InParty(Myself)
   OR(5)
-  Name("neera",Myself)
-  Name("dorn",Myself)
-  Name("rasaad",Myself)
-  Name("baeloth",Myself)
-  HappinessGT(Myself,-299)
+    Name("neera",Myself)
+    Name("dorn",Myself)
+    Name("rasaad",Myself)
+    Name("baeloth",Myself)
+    HappinessGT(Myself,-299)
 THEN
   RESPONSE #100
     Dialog(Player1)
@@ -309,7 +404,7 @@ END
 
 IF
   GlobalLT("ENDOFBG1","GLOBAL",2)
-  !CharName("Imoen",Myself)
+  !Name("Imoen2",Myself)
   BreakingPoint()
 THEN
   RESPONSE #100
@@ -363,7 +458,7 @@ COPY_EXISTING ~DPLAYER3.BCS~ ~override~
   Global("OHN_NEERA_RENC","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 
@@ -385,192 +480,123 @@ END
 >>>>>>>>
 
 EXTEND_BOTTOM ~DPLAYER3.BCS~ ~.../DPLAYER3-eb.baf~
-             
+
 /////                                                  \\\\\
 ///// PLAYER1D.BCS                                     \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< .../PLAYER1D-et.baf
+<<<<<<<< .../PLAYER1D-eb.baf
 IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",0)
-  GlobalGT("Chapter","GLOBAL",1)
-  ReputationGT(Player1,9)
+  OR(2)
+    Global("bd_cant_rest","myarea",1)
+    Global("bd_no_camp_rest","myarea",1)
 THEN
   RESPONSE #100
-    TextScreen("DRMTXT2_")
-    SetGlobal("BG1DREAM","GLOBAL",2)//just like in BG:EE "DREAM" variable starts at 2
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN101") // Cure Light Wounds
-    RestParty()
+    DisplayStringNoName(Player1,@69033) // ^RYou may not rest in this place.^-
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",0)
-  GlobalGT("Chapter","GLOBAL",1)
-  ReputationLT(Player1,10)
+  GlobalGT("chapter","global",7)
+  GlobalLT("chapter","global",13)
+  !GlobalTimerNotExpired("bd_dream_timer","global")
+  Global("bd_ddd","global",0)
 THEN
   RESPONSE #100
-    TextScreen("DRMTXT2_")
-    SetGlobal("BG1DREAM","GLOBAL",2)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN104") // Larloch's Minor Drain
-    RestParty()
+    SetGlobal("bd_ddd","global",1)
+    StartCutSceneMode()
+    FadeToColor([30.0],0)
+    SmallWait(20)
+    AdvanceTime(EIGHT_HOURS)
+    SetGlobalTimer("bd_dream_timer","global",TWELVE_HOURS)
+    ApplySpellRES("bdrejuve",Player1) // No such index
+    ApplySpellRES("bdrejuve",Player2) // No such index
+    ApplySpellRES("bdrejuve",Player3) // No such index
+    ApplySpellRES("bdrejuve",Player4) // No such index
+    ApplySpellRES("bdrejuve",Player5) // No such index
+    ApplySpellRES("bdrejuve",Player6) // No such index
+    StartCutSceneEx("bdddd1a",TRUE)
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",2)
-  ReputationGT(Player1,9)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+  GlobalGT("chapter","global",8)
+  GlobalLT("chapter","global",13)
+  !GlobalTimerNotExpired("bd_dream_timer","global")
+  Global("bd_ddd","global",1)
 THEN
   RESPONSE #100
-    TextScreen("DRMTXT3_")
-    SetGlobal("BG1DREAM","GLOBAL",3)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN101") // Cure Light Wounds
-    RestParty()
+    SetGlobal("bd_ddd","global",2)
+    StartCutSceneMode()
+    FadeToColor([30.0],0)
+    SmallWait(20)
+    AdvanceTime(EIGHT_HOURS)
+    SetGlobalTimer("bd_dream_timer","global",TWELVE_HOURS)
+    ApplySpellRES("bdrejuve",Player1) // No such index
+    ApplySpellRES("bdrejuve",Player2) // No such index
+    ApplySpellRES("bdrejuve",Player3) // No such index
+    ApplySpellRES("bdrejuve",Player4) // No such index
+    ApplySpellRES("bdrejuve",Player5) // No such index
+    ApplySpellRES("bdrejuve",Player6) // No such index
+    StartCutSceneEx("bdddd2a",TRUE)
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",2)
-  GlobalGT("Chapter","GLOBAL",2)
-  ReputationLT(Player1,10)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+  GlobalGT("chapter","global",9)
+  GlobalLT("chapter","global",13)
+  !GlobalTimerNotExpired("bd_dream_timer","global")
+  Global("bd_ddd","global",2)
 THEN
   RESPONSE #100
-    TextScreen("DRMTXT3_")
-    SetGlobal("BG1DREAM","GLOBAL",3)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN104") // Larloch's Minor Drain
-    RestParty()
+    SetGlobal("bd_ddd","global",3)
+    StartCutSceneMode()
+    FadeToColor([30.0],0)
+    SmallWait(20)
+    AdvanceTime(EIGHT_HOURS)
+    SetGlobalTimer("bd_dream_timer","global",TWELVE_HOURS)
+    ApplySpellRES("bdrejuve",Player1) // No such index
+    ApplySpellRES("bdrejuve",Player2) // No such index
+    ApplySpellRES("bdrejuve",Player3) // No such index
+    ApplySpellRES("bdrejuve",Player4) // No such index
+    ApplySpellRES("bdrejuve",Player5) // No such index
+    ApplySpellRES("bdrejuve",Player6) // No such index
+    StartCutSceneEx("bdddd3a",TRUE)
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",3)
-  GlobalGT("Chapter","GLOBAL",3)
-  ReputationGT(Player1,9)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+  GlobalGT("chapter","global",10)
+  GlobalLT("chapter","global",13)
+  !GlobalTimerNotExpired("bd_dream_timer","global")
+  Global("bd_ddd","global",3)
 THEN
   RESPONSE #100
-    TextScreen("DRMTXT4_")
-    SetGlobal("BG1DREAM","GLOBAL",4)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN102") // Slow Poison
-    RestParty()
+    SetGlobal("bd_ddd","global",4)
+    StartCutSceneMode()
+    FadeToColor([30.0],0)
+    SmallWait(20)
+    AdvanceTime(EIGHT_HOURS)
+    SetGlobalTimer("bd_dream_timer","global",TWELVE_HOURS)
+    ApplySpellRES("bdrejuve",Player1) // No such index
+    ApplySpellRES("bdrejuve",Player2) // No such index
+    ApplySpellRES("bdrejuve",Player3) // No such index
+    ApplySpellRES("bdrejuve",Player4) // No such index
+    ApplySpellRES("bdrejuve",Player5) // No such index
+    ApplySpellRES("bdrejuve",Player6) // No such index
+    StartCutSceneEx("bdddd4a",TRUE)
 END
 
 IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",3)
-  GlobalGT("Chapter","GLOBAL",3)
-  ReputationLT(Player1,10)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
+  AreaCheck("bd0104")
+  GlobalGT("bd_jail_visitors","bd0104",11)
+  GlobalLT("bd_plot","global",615)
 THEN
   RESPONSE #100
-    TextScreen("DRMTXT4_")
-    SetGlobal("BG1DREAM","GLOBAL",4)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN105") // Horror
-    RestParty()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",4)
-  GlobalGT("Chapter","GLOBAL",4)
-  ReputationGT(Player1,9)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
-THEN
-  RESPONSE #100
-    TextScreen("DRMTXT5_")
-    SetGlobal("BG1DREAM","GLOBAL",5)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN102") // Slow Poison
-    RestParty()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",4)
-  GlobalGT("Chapter","GLOBAL",4)
-  ReputationLT(Player1,10)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
-THEN
-  RESPONSE #100
-    TextScreen("DRMTXT5_")
-    SetGlobal("BG1DREAM","GLOBAL",5)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN105") // Horror
-    RestParty()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",5)
-  GlobalGT("Chapter","GLOBAL",5)
-  ReputationGT(Player1,9)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
-THEN
-  RESPONSE #100
-    TextScreen("DRMTXT6_")
-    SetGlobal("BG1DREAM","GLOBAL",6)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN103") // Draw Upon Holy Might
-    RestParty()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",5)
-  GlobalGT("Chapter","GLOBAL",5)
-  ReputationLT(Player1,10)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
-THEN
-  RESPONSE #100
-    TextScreen("DRMTXT6_")
-    SetGlobal("BG1DREAM","GLOBAL",6)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN106") // Vampiric Touch
-    RestParty()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",6)
-  GlobalGT("Chapter","GLOBAL",6)
-  ReputationGT(Player1,9)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
-THEN
-  RESPONSE #100
-    TextScreen("DRMTXT7_")
-    SetGlobal("BG1DREAM","GLOBAL",7)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN103") // Draw Upon Holy Might
-    RestParty()
-END
-
-IF
-  Global("ENDOFBG1","GLOBAL",0)
-  Global("BG1DREAM","GLOBAL",6)
-  GlobalGT("Chapter","GLOBAL",6)
-  ReputationLT(Player1,10)
-  GlobalTimerExpired("BG1DREAMReset","GLOBAL")
-THEN
-  RESPONSE #100
-    TextScreen("DRMTXT7_")
-    SetGlobal("BG1DREAM","GLOBAL",7)
-    SetGlobalTimer("BG1DREAMReset","GLOBAL",1)
-    AddSpecialAbility("SPIN106") // Vampiric Touch
-    RestParty()
+    StartCutSceneMode()
+    SetGlobal("bd_plot","global",615)
+    ClearAllActions()
+    StartCutSceneEx("bdcut64",TRUE)
 END
 >>>>>>>>
 
-EXTEND_TOP ~PLAYER1D.BCS~ ~.../PLAYER1D-et.baf~
+EXTEND_BOTTOM ~PLAYER1D.BCS~ ~.../PLAYER1D-eb.baf~
 
 /////                                                  \\\\\
 ///// Imoen death variable changes                     \\\\\
@@ -578,6 +604,8 @@ EXTEND_TOP ~PLAYER1D.BCS~ ~.../PLAYER1D-et.baf~
 
 COPY_EXISTING ~CLONROOM.BCS~ ~override~
 	~CUT01.BCS~ ~override~
+	~CUTD1.BCS~ ~override~
+	~CUTSKIP2.BCS~ ~override~
 	~ELLEROOM.BCS~ ~override~
 	~LIBRARY.BCS~ ~override~
 	~NEWGAME.BCS~ ~override~
@@ -588,29 +616,10 @@ COPY_EXISTING ~CLONROOM.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~"Imoen2"~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
-
-/////                                                  \\\\\
-///// Jaheira Harpers Call spell                       \\\\\
-/////                                                  \\\\\
-
-<<<<<<<< .../JAHEIRA-eb.baf
-IF
-  Global("JaheiraHarpersCall","GLOBAL",0)
-  Global("JaheiraPartyBG1","GLOBAL",1)
-  XPGT(Myself,179999)
-THEN
-  RESPONSE #100
-    SetGlobal("JaheiraHarpersCall","GLOBAL",1)
-    AddSpecialAbility("SPJA01")
-    Continue()
-END
->>>>>>>>
-
-EXTEND_BOTTOM ~JAHEIRA.BCS~ ~.../JAHEIRA-eb.baf~
 
 /////                                                  \\\\\
 ///// ToB transition                                   \\\\\
@@ -619,27 +628,13 @@ EXTEND_BOTTOM ~JAHEIRA.BCS~ ~.../JAHEIRA-eb.baf~
 COPY_EXISTING ~CUT100A.BCS~ ~override~
 	~CUT100B.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~StartMovie("INTRO")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~StartMovie("INTROTOB")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
 		SPRINT textToReplace ~MoveToExpansion()~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~LeaveAreaLUAPanic("AR4000","",[1300.1840],W)
-    LeaveAreaLUA("AR4000","",[1300.1840],W)
-    ActionOverride(Player2,LeaveAreaLUA("AR4000","",[1300.1840],W))
-    ActionOverride(Player3,LeaveAreaLUA("AR4000","",[1300.1840],W))
-    ActionOverride(Player4,LeaveAreaLUA("AR4000","",[1300.1840],SW))
-    ActionOverride(Player5,LeaveAreaLUA("AR4000","",[1300.1840],S))
-    ActionOverride(Player6,LeaveAreaLUA("AR4000","",[1300.1840],S))~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~MoveToCampaign("ToB")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -648,80 +643,210 @@ BUT_ONLY
 ///// AR0304 (Edwin spawn)                             \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< .../AR0304-eb.baf
+<<<<<<<< .../AR0304-et.baf
 IF
-  Global("EdwinImport","GLOBAL",0)
-  Global("EdwinPartyBG1","GLOBAL",0)
-  //Global("ENDOFBG2","GLOBAL",0)
-  //!InMyArea("Edwin")
-  //!InPartyAllowDead("Edwin")
-  //!Dead("Edwin")
-  LevelLT(Player1,9)
+  Global("K#EdwinImport","AR0304",0)
+  BeenInParty("Edwin")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Edwin",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
-    CreateCreature("Edwin7",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
+    MoveGlobal("AR0304","Edwin",[852.340])
+    ActionOverride("Edwin",Face(S))
+    ActionOverride("Edwin",SetGlobal("BD_JOINXP","LOCALS",0))
+    ActionOverride("Edwin",DestroyAllEquipment())
+    //DestroyItem("MISC89_") // Edwin's Amulet
+    ActionOverride("Edwin",CreateItem("STAF01",1,0,0)) // Quarterstaff
+    ActionOverride("Edwin",CreateItem("MISC89",1,0,0)) // Edwin's Amulet
+    ActionOverride("Edwin",CreateItem("DAGG01",1,0,0)) // Dagger
+    ActionOverride("Edwin",CreateItem("CLCK14",1,0,0)) // Adventurer's Robe
+    ActionOverride("Edwin",CreateItem("EDWINKEY",1,0,0)) // Mae'Var's Strongbox Key
+    ActionOverride("Edwin",FillSlot(SLOT_ARMOR))
+    ActionOverride("Edwin",FillSlot(SLOT_WEAPON))
+    ActionOverride("Edwin",FillSlot(SLOT_AMULET))
+    ActionOverride("Edwin",EquipMostDamagingMelee())
+    //ReallyForceSpellRES("K#POREDW","Edwin") // No such index
+    SetPlayerSound("Edwin",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Edwin",3966,MORALE) // I'll not die to incompetence!
+    SetPlayerSound("Edwin",3968,HAPPY) // I had not thought this group capable of pleasing me, but I am impressed.
+    SetPlayerSound("Edwin",3969,UNHAPPY_ANNOYED) // Could my opinion of this group drop ANY lower? Evidently so.
+    SetPlayerSound("Edwin",3970,UNHAPPY_SERIOUS) // I warn you, I cannot abide this charity. It is not to my tastes at all.
+    SetPlayerSound("Edwin",3971,UNHAPPY_BREAKING_POINT) // No, I do not feel this is working out. You waste opportunity after opportunity. I will stand no more.
+    SetPlayerSound("Edwin",3972,LEADER) // It is about time you monkeys realized who should be leader.
+    SetPlayerSound("Edwin",3973,TIRED) // I require rest. I demand we stop.
+    SetPlayerSound("Edwin",3974,BORED) // Inactive outward, inactive inward. Why do I suffer these fools?
+    SetPlayerSound("Edwin",3967,BATTLE_CRY1) // Your worthless lives end here!
+    SetPlayerSound("Edwin",30694,BATTLE_CRY2) // Cry for your lives; they are over!
+    SetPlayerSound("Edwin",30706,BATTLE_CRY3) // You can do nothing but die!
+    SetPlayerSound("Edwin",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Edwin",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Edwin",-1,ATTACK1) // No such index
+    SetPlayerSound("Edwin",-1,ATTACK2) // No such index
+    SetPlayerSound("Edwin",-1,ATTACK3) // No such index
+    SetPlayerSound("Edwin",-1,ATTACK4) // No such index
+    SetPlayerSound("Edwin",5350,DAMAGE) // 
+    SetPlayerSound("Edwin",5351,DYING) // 
+    SetPlayerSound("Edwin",3975,HURT) // I could use some help here, fools.
+    SetPlayerSound("Edwin",5345,AREA_FOREST) // I find the "great outdoors" chaotic and dirty. It needs a shaping will to slap the beasts into proper order. 
+    SetPlayerSound("Edwin",5346,AREA_CITY) // The city changes, but the fools within are always the same. 
+    SetPlayerSound("Edwin",5347,AREA_DUNGEON) // Could we not have hired some poor fools to do this for us? This is no place for a man of my stature.
+    SetPlayerSound("Edwin",5348,AREA_DAY) // Another day and more aimless stumbling about. 
+    SetPlayerSound("Edwin",5349,AREA_NIGHT) // Intelligent peoples do not wander around looking for trouble in the evening hours.
+    SetPlayerSound("Edwin",3976,SELECT_COMMON1) // Yes?
+    SetPlayerSound("Edwin",3977,SELECT_COMMON2) // What is it now?!
+    SetPlayerSound("Edwin",3978,SELECT_COMMON3) // Go bother someone else.
+    SetPlayerSound("Edwin",30709,SELECT_COMMON4) // I'm busy, okay? I'm busy!
+    SetPlayerSound("Edwin",30710,SELECT_COMMON5) // Have you nothing else to do but bother me?
+    SetPlayerSound("Edwin",30711,SELECT_COMMON6) // Ye-es, master, what shall I fetch now?
+    SetPlayerSound("Edwin",30712,SELECT_ACTION1) // Oh, all right!
+    SetPlayerSound("Edwin",30713,SELECT_ACTION2) // Yes, yes, I see.
+    SetPlayerSound("Edwin",30714,SELECT_ACTION3) // One day... one day...
+    SetPlayerSound("Edwin",30715,SELECT_ACTION4) // If I must.
+    SetPlayerSound("Edwin",3984,SELECT_ACTION5) // Tedious monkey-work.
+    SetPlayerSound("Edwin",3985,SELECT_ACTION6) // A waste of my talents.
+    SetPlayerSound("Edwin",3986,SELECT_ACTION7) // Fine, fine, just stop pestering me.
+    SetPlayerSound("Edwin",-1,INTERACTION1) // No such index
+    SetPlayerSound("Edwin",-1,INTERACTION1) // No such index
+    SetPlayerSound("Edwin",-1,INTERACTION2) // No such index
+    SetPlayerSound("Edwin",-1,INTERACTION3) // No such index
+    SetPlayerSound("Edwin",-1,INTERACTION4) // No such index
+    SetPlayerSound("Edwin",-1,INTERACTION5) // No such index
+    SetPlayerSound("Edwin",-1,INSULT1) // No such index
+    SetPlayerSound("Edwin",-1,INSULT2) // No such index
+    SetPlayerSound("Edwin",-1,INSULT3) // No such index
+    SetPlayerSound("Edwin",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Edwin",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Edwin",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Edwin",-1,SPECIAL1) // No such index
+    SetPlayerSound("Edwin",-1,SPECIAL2) // No such index
+    SetPlayerSound("Edwin",-1,SPECIAL3) // No such index
+    SetPlayerSound("Edwin",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Edwin",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Edwin",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Edwin",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Edwin",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Edwin",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Edwin",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Edwin",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Edwin",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Edwin",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Edwin",30716,SELECT_RARE1) // Very well.
+    SetPlayerSound("Edwin",30717,SELECT_RARE2) // "Edwin, do this." "Edwin, do that." Somebody get this jerk a banana.
+    SetPlayerSound("Edwin",30718,CRITICAL_HIT) // Ha! Fear me!
+    SetPlayerSound("Edwin",30719,CRITICAL_MISS) // Bah! Useless weapon!
+    SetPlayerSound("Edwin",30720,TARGET_IMMUNE) // Pfeh. This weapon is worthless!
+    SetPlayerSound("Edwin",30721,INVENTORY_FULL) // I will carry no more. Find your trinket upon the ground.
+    SetPlayerSound("Edwin",30722,PICKED_POCKET) // The fool saw nothing. Such simple larceny.
+    SetPlayerSound("Edwin",30723,EXISTANCE1) // I am concealed, though I see no need.
+    SetPlayerSound("Edwin",30724,EXISTANCE2) // My spell disrupted?! Augh!
+    SetPlayerSound("Edwin",30725,EXISTANCE3) // I prefer to attack more directly, but a trap will do for now.
+    SetPlayerSound("Edwin",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Edwin",10216,EXISTANCE5) // When asked about how he came to be in the employ of the Shadow Thieves, EDWIN sneers that it is none of your business. In his opinion, you are lucky enough to have encountered him at all, and further inquiries beyond this initial boon will only serve to tempt the fates. Despite his obstinate nature, there is a hint that his present circumstance is not all that favorable, and his willingness to join with you contradicts his supposed distaste for the company of others. Edwin ignores speculation about his recent past, but he does appear to have placed less emphasis on the Red Wizard colors he has so brazenly displayed in the past. It is an understandable act for a wizard traveler in mage-fearing Amn.
+    ActionOverride("Edwin",SetDialog("Edwin"))
+    ActionOverride("Edwin",SetNumTimesTalkedTo(0))
+    ActionOverride("Edwin",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Edwin",ChangeAIScript("",CLASS))
+    ActionOverride("Edwin",ChangeAIScript("",RACE))
+    ActionOverride("Edwin",ChangeAIScript("WTARSGT",GENERAL))
+    ActionOverride("Edwin",ChangeAIScript("DPLAYER",DEFAULT))
+    ActionOverride("Edwin",ChangeAIScript("Edwin",OVERRIDE))
+    SetGlobal("K#EdwinImport","AR0304",1)
+    Continue()
+END
+
+/*IF
+  Global("K#EdwinImport","AR0304",0)
+  BeenInParty("Edwin")
+  CheckStatLT("Edwin",10,STR)
+THEN
+  RESPONSE #100
+    ChangeStat("Edwin",STR,10,SET)
+    Continue()
 END
 
 IF
-  Global("EdwinImport","GLOBAL",0)
-  Global("EdwinPartyBG1","GLOBAL",0)
-  //Global("ENDOFBG2","GLOBAL",0)
-  //!InMyArea("Edwin")
-  //!InPartyAllowDead("Edwin")
-  //!Dead("Edwin")
+  Global("K#EdwinImport","AR0304",0)
+  BeenInParty("Edwin")
+  CheckStatLT("Edwin",10,WIS)
+THEN
+  RESPONSE #100
+    ChangeStat("Edwin",WIS,10,SET)
+    Continue()
+END*/
+
+IF
+  Global("K#EdwinImport","AR0304",0)
+  !BeenInParty("Edwin")
+  GlobalLT("chapter","GLOBAL",20)
+  //!StateCheck("Edwin",STATE_REALLY_DEAD)
+  LevelLT(Player1,9)
+THEN
+  RESPONSE #100
+    CreateCreature("Edwin7",[852.340],S)
+    ActionOverride("Edwin",MakeGlobalOverride())
+    SetGlobal("K#EdwinImport","AR0304",1)
+    Continue()
+END
+
+IF
+  Global("K#EdwinImport","AR0304",0)
+  !BeenInParty("Edwin")
+  GlobalLT("chapter","GLOBAL",20)
+  //!StateCheck("Edwin",STATE_REALLY_DEAD)
   LevelGT(Player1,8)
   LevelLT(Player1,11)
 THEN
   RESPONSE #100
-    CreateCreature("Edwin9",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
+    CreateCreature("Edwin9",[852.340],S)
+    ActionOverride("Edwin",MakeGlobalOverride())
+    SetGlobal("K#EdwinImport","AR0304",1)
+    Continue()
 END
 
 IF
-  Global("EdwinImport","GLOBAL",0)
-  Global("EdwinPartyBG1","GLOBAL",0)
-  //Global("ENDOFBG2","GLOBAL",0)
-  //!InMyArea("Edwin")
-  //!InPartyAllowDead("Edwin")
-  //!Dead("Edwin")
+  Global("K#EdwinImport","AR0304",0)
+  !BeenInParty("Edwin")
+  GlobalLT("chapter","GLOBAL",20)
+  //!StateCheck("Edwin",STATE_REALLY_DEAD)
   Level(Player1,11)
 THEN
   RESPONSE #100
-    CreateCreature("Edwin11",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
+    CreateCreature("Edwin11",[852.340],S)
+    ActionOverride("Edwin",MakeGlobalOverride())
+    SetGlobal("K#EdwinImport","AR0304",1)
+    Continue()
 END
 
 IF
-  Global("EdwinImport","GLOBAL",0)
-  Global("EdwinPartyBG1","GLOBAL",0)
-  //Global("ENDOFBG2","GLOBAL",0)
-  //!InMyArea("Edwin")
-  //!InPartyAllowDead("Edwin")
-  //!Dead("Edwin")
+  Global("K#EdwinImport","AR0304",0)
+  !BeenInParty("Edwin")
+  GlobalLT("chapter","GLOBAL",20)
+  //!StateCheck("Edwin",STATE_REALLY_DEAD)
   Level(Player1,12)
 THEN
   RESPONSE #100
-    CreateCreature("Edwin12",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
+    CreateCreature("Edwin12",[852.340],S)
+    ActionOverride("Edwin",MakeGlobalOverride())
+    SetGlobal("K#EdwinImport","AR0304",1)
+    Continue()
 END
 
 IF
-  Global("EdwinImport","GLOBAL",0)
-  Global("EdwinPartyBG1","GLOBAL",0)
-  //Global("ENDOFBG2","GLOBAL",0)
-  //!InMyArea("Edwin")
-  //!InPartyAllowDead("Edwin")
-  //!Dead("Edwin")
+  Global("K#EdwinImport","AR0304",0)
+  !BeenInParty("Edwin")
+  GlobalLT("chapter","GLOBAL",20)
+  //!StateCheck("Edwin",STATE_REALLY_DEAD)
   LevelGT(Player1,12)
 THEN
   RESPONSE #100
-    CreateCreature("Edwin13",[852.340],4)
-    SetGlobal("EdwinImport","GLOBAL",1)
+    CreateCreature("Edwin13",[852.340],S)
+    ActionOverride("Edwin",MakeGlobalOverride())
+    SetGlobal("K#EdwinImport","AR0304",1)
+    Continue()
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~AR0304.BCS~ ~.../AR0304-eb.baf~
+EXTEND_TOP ~AR0304.BCS~ ~.../AR0304-et.baf~
 
 /////                                                  \\\\\
 ///// AR0602 (newgame, Minsc, Jaheira, Imoen spawn)    \\\\\
@@ -739,202 +864,475 @@ COPY_EXISTING ~AR0602.BCS~ ~override~
     SmallWait(10)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~InParty("Imoen")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~InParty("Imoen2")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
 
 <<<<<<<< .../AR0602-et.baf
 IF
-  Global("ImoenImport","GLOBAL",0)
-  Global("Imoen2PartyBG1","GLOBAL",0)
-  //Global("ENDOFBG2","GLOBAL",0)
-  //!InMyArea("Imoen2")
-  //!InPartyAllowDead("Imoen2")
-  //!Dead("Imoen2")
+  Global("K#ImoenImport","AR0602",0)
+  BeenInParty("Imoen2")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Imoen2",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
-    CreateCreature("Imoen10",[3198.2837],6) // Imoen
-    SetGlobal("ImoenImport","GLOBAL",1)
+    MoveGlobal("AR0602","Imoen2",[3198.2837])
+	ActionOverride("Imoen2",Face(S))
+    ActionOverride("Imoen2",SetGlobal("BD_JOINXP","LOCALS",0))
+	ActionOverride("Imoen2",DestroyAllEquipment())
+    ActionOverride("Imoen2",CreateItem("IMOENHP1",1,0,0)) // Imoen's Belt
+    ActionOverride("Imoen2",FillSlot(SLOT_BELT))
+    //ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
+    SetPlayerSound("Imoen2",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Imoen2",11037,MORALE) // No, no! No, I'm not gonna end up dead in this place! I have to get out! I have to get to the surface!
+    SetPlayerSound("Imoen2",30726,HAPPY) // Now I remember why traveling with you was always so much fun.
+    SetPlayerSound("Imoen2",4338,UNHAPPY_ANNOYED) // I'll stick with you no matter what, but we should still try and be decent to people.
+    SetPlayerSound("Imoen2",30727,UNHAPPY_SERIOUS) // I think all this has really changed you. Come on, this isn't like us at all.
+    SetPlayerSound("Imoen2",-1,UNHAPPY_BREAKING_POINT) // No such index
+    SetPlayerSound("Imoen2",4337,LEADER) // Aww, come on. I'm not cut out for the leadership stuff.
+    SetPlayerSound("Imoen2",4339,TIRED) // *yawn* I'm getting sleepy. Wish we could stop for a bit.
+    SetPlayerSound("Imoen2",4333,BORED) // If we're going to do nothing, let's at least find a safer place to do it.
+    SetPlayerSound("Imoen2",11035,BATTLE_CRY1) // My blade will cut you down to size!
+    SetPlayerSound("Imoen2",30729,BATTLE_CRY2) // If I have to fight to get out of here, so be it!
+    SetPlayerSound("Imoen2",30730,BATTLE_CRY3) // You're not gonna keep me here!
+    SetPlayerSound("Imoen2",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Imoen2",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK1) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK2) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK3) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK4) // No such index
+    SetPlayerSound("Imoen2",5395,DAMAGE) // 
+    SetPlayerSound("Imoen2",5396,DYING) // 
+    SetPlayerSound("Imoen2",4330,HURT) // Come on, now, don't let me suffer in this place. We've both had enough of that.
+    SetPlayerSound("Imoen2",30731,AREA_FOREST) // I wish I could spend more time in the forest. Oh, it feels so alive.
+    SetPlayerSound("Imoen2",30732,AREA_CITY) // I don't feel like I fit in with people in the city anymore.
+    SetPlayerSound("Imoen2",11036,AREA_DUNGEON) // This place is just too darn creepy. I really want out of here.
+    SetPlayerSound("Imoen2",30733,AREA_DAY) // Glad to see another day. I think the light hurts my eyes though.
+    SetPlayerSound("Imoen2",30734,AREA_NIGHT) // Might as well be up and about. I don't think I'd sleep anyway.
+    SetPlayerSound("Imoen2",30735,SELECT_COMMON1) // Yep?
+    SetPlayerSound("Imoen2",30736,SELECT_COMMON2) // Whatchu want?
+    SetPlayerSound("Imoen2",30737,SELECT_COMMON3) // Name it.
+    SetPlayerSound("Imoen2",30738,SELECT_COMMON4) // Ready and willing.
+    SetPlayerSound("Imoen2",30739,SELECT_COMMON5) // Somethin' up?
+    SetPlayerSound("Imoen2",30740,SELECT_COMMON6) // Time to move?
+    SetPlayerSound("Imoen2",11038,SELECT_ACTION1) // Gotcha.
+    SetPlayerSound("Imoen2",11039,SELECT_ACTION2) // Good to go.
+    SetPlayerSound("Imoen2",4335,SELECT_ACTION3) // Right you are.
+    SetPlayerSound("Imoen2",4336,SELECT_ACTION4) // All right, all right.
+    SetPlayerSound("Imoen2",11043,SELECT_ACTION5) // No problem at all.
+    SetPlayerSound("Imoen2",11042,SELECT_ACTION6) // You can count on me!
+    SetPlayerSound("Imoen2",11045,SELECT_ACTION7) // This way then?
+    SetPlayerSound("Imoen2",-1,INTERACTION1) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION1) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION2) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION3) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION4) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION5) // No such index
+    SetPlayerSound("Imoen2",-1,INSULT1) // No such index
+    SetPlayerSound("Imoen2",-1,INSULT2) // No such index
+    SetPlayerSound("Imoen2",-1,INSULT3) // No such index
+    SetPlayerSound("Imoen2",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Imoen2",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Imoen2",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Imoen2",-1,SPECIAL1) // No such index
+    SetPlayerSound("Imoen2",-1,SPECIAL2) // No such index
+    SetPlayerSound("Imoen2",-1,SPECIAL3) // No such index
+    SetPlayerSound("Imoen2",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Imoen2",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Imoen2",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Imoen2",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Imoen2",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Imoen2",30741,SELECT_RARE1) // Right as rain.
+    SetPlayerSound("Imoen2",30742,SELECT_RARE2) // Just like old times. Well, except for the torture and all.
+    SetPlayerSound("Imoen2",30746,CRITICAL_HIT) // Gotcha good!
+    SetPlayerSound("Imoen2",30747,CRITICAL_MISS) // Next time...
+    SetPlayerSound("Imoen2",30748,TARGET_IMMUNE) // Gotta try something else.
+    SetPlayerSound("Imoen2",30749,INVENTORY_FULL) // Sorry, but I couldn't hold that last item. It's on the ground.
+    SetPlayerSound("Imoen2",30750,PICKED_POCKET) // Easy as pie.
+    SetPlayerSound("Imoen2",30751,EXISTANCE1) // Now you see me, now you don't.
+    SetPlayerSound("Imoen2",30752,EXISTANCE2) // Ugh! The magic fizzled. 
+    SetPlayerSound("Imoen2",30753,EXISTANCE3) // Shh! It's set and ready to go.
+    SetPlayerSound("Imoen2",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Imoen2",10233,EXISTANCE5) // IMOEN chuckles when you ask her about her past, assuming you are just trying to keep her mind on happier times and places. She indulges you, and certainly does cheer up when speaking of how you spent your youths together in Candlekeep. She arrived there the same as you, in the company of your foster father Gorion, but despite this similarity, she grew up much more carefree than you did. Indeed, her lighthearted outlook has long kept her immune to the hardships of the world, though the dark confines and horrors of your current location have definitely taken their toll.
+    ActionOverride("Imoen2",SetDialog("IMOEN10"))
+    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Imoen2",ChangeAIScript("NPCMAGE1",CLASS))
+    ActionOverride("Imoen2",ChangeAIScript("",RACE))
+    ActionOverride("Imoen2",ChangeAIScript("",GENERAL))
+    ActionOverride("Imoen2",ChangeAIScript("WTASIGHT",DEFAULT))
+    ActionOverride("Imoen2",ChangeAIScript("IMOEN",OVERRIDE))
+    SetGlobal("K#ImoenImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("JaheiraImport","GLOBAL",0)
-  Global("JaheiraPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Jaheira")
-  !InPartyAllowDead("Jaheira")
-  !Dead("Jaheira")
+  Global("K#ImoenImport","AR0602",0)
+  !BeenInParty("Imoen2")
+  GlobalLT("chapter","GLOBAL",20)
+  //!StateCheck("Imoen2",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    CreateCreature("Imoen10",[3198.2837],S) // Imoen
+    ActionOverride("Imoen2",MakeGlobalOverride())
+    SetGlobal("K#ImoenImport","AR0602",1)
+    Continue()
+END
+
+IF
+  Global("K#JaheiraImport","AR0602",0)
+  BeenInParty("Jaheira")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Jaheira",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobal("AR0602","Jaheira",[3898.2676])
+	ActionOverride("Jaheira",Face(S))
+    ActionOverride("Jaheira",SetGlobal("BD_JOINXP","LOCALS",0))
+	ActionOverride("Jaheira",DestroyAllEquipment())
+    //ReallyForceSpellRES("K#PORJAH","Jaheira") // No such index
+    SetPlayerSound("Jaheira",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Jaheira",4008,MORALE) // I will not fall here!
+    SetPlayerSound("Jaheira",4010,HAPPY) // Our actions are good, and will serve the greater balance.
+    SetPlayerSound("Jaheira",4011,UNHAPPY_ANNOYED) // I hope this is not a sign of things to come. We must strive to maintain balance.
+    SetPlayerSound("Jaheira",4012,UNHAPPY_SERIOUS) // This is no longer a matter that can be brushed aside! Change your ways or we shall be at odds!
+    SetPlayerSound("Jaheira",4013,UNHAPPY_BREAKING_POINT) // I... I cannot believe the change in this group! For the greater balance, I... I must oppose you!
+    SetPlayerSound("Jaheira",4014,LEADER) // As I have said before, you could not have made a better choice.
+    SetPlayerSound("Jaheira",4015,TIRED) // Rest would be welcome lest we endanger ourselves.
+    SetPlayerSound("Jaheira",4016,BORED) // It is strange that we stand about when there is so much to do.
+    SetPlayerSound("Jaheira",4009,BATTLE_CRY1) // For the fallen!
+    SetPlayerSound("Jaheira",30765,BATTLE_CRY2) // Fall, creature! And feed the earth!
+    SetPlayerSound("Jaheira",30766,BATTLE_CRY3) // Nature take the life she gave!
+    SetPlayerSound("Jaheira",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Jaheira",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK1) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK2) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK3) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK4) // No such index
+    SetPlayerSound("Jaheira",5353,DAMAGE) // 
+    SetPlayerSound("Jaheira",5354,DYING) // 
+    SetPlayerSound("Jaheira",4017,HURT) // I will require healing if I am to be of use to the group.
+    SetPlayerSound("Jaheira",4018,AREA_FOREST) // I am at peace in the outdoor places, though it never seems to last.
+    SetPlayerSound("Jaheira",4019,AREA_CITY) // I have no patience for cities. Our stay had best be a short one.
+    SetPlayerSound("Jaheira",4020,AREA_DUNGEON) // Nature could find a home here if it were properly cleansed and balanced.
+    SetPlayerSound("Jaheira",5352,AREA_DAY) // I welcome each day we see. Some are not so lucky. 
+    SetPlayerSound("Jaheira",4021,AREA_NIGHT) // Nature has many children that call the darkness home. I am not one of them. 
+    SetPlayerSound("Jaheira",4022,SELECT_COMMON1) // Nature's servant awaits.
+    SetPlayerSound("Jaheira",4023,SELECT_COMMON2) // I await your need.
+    SetPlayerSound("Jaheira",54350,SELECT_COMMON3) // Yes?
+    SetPlayerSound("Jaheira",4024,SELECT_COMMON4) // I am ready.
+    SetPlayerSound("Jaheira",30767,SELECT_COMMON5) // It is about time.
+    SetPlayerSound("Jaheira",30768,SELECT_COMMON6) // Speak your mind.
+    SetPlayerSound("Jaheira",4025,SELECT_ACTION1) // It is done.
+    SetPlayerSound("Jaheira",30769,SELECT_ACTION2) // I am willing.
+    SetPlayerSound("Jaheira",4027,SELECT_ACTION3) // I go.
+    SetPlayerSound("Jaheira",4028,SELECT_ACTION4) // As I would have done.
+    SetPlayerSound("Jaheira",4029,SELECT_ACTION5) // If it will help.
+    SetPlayerSound("Jaheira",4030,SELECT_ACTION6) // I thought as much.
+    SetPlayerSound("Jaheira",4031,SELECT_ACTION7) // As you would have it.
+    SetPlayerSound("Jaheira",-1,INTERACTION1) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION1) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION2) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION3) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION4) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION5) // No such index
+    SetPlayerSound("Jaheira",-1,INSULT1) // No such index
+    SetPlayerSound("Jaheira",-1,INSULT2) // No such index
+    SetPlayerSound("Jaheira",-1,INSULT3) // No such index
+    SetPlayerSound("Jaheira",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Jaheira",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Jaheira",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Jaheira",-1,SPECIAL1) // No such index
+    SetPlayerSound("Jaheira",-1,SPECIAL2) // No such index
+    SetPlayerSound("Jaheira",-1,SPECIAL3) // No such index
+    SetPlayerSound("Jaheira",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Jaheira",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Jaheira",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Jaheira",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Jaheira",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Jaheira",30770,SELECT_RARE1) // You require nothing more?
+    SetPlayerSound("Jaheira",30771,SELECT_RARE2) // If you think it is wise to do so. So much comes back to haunt us.
+    SetPlayerSound("Jaheira",30772,CRITICAL_HIT) // With vengeance!
+    SetPlayerSound("Jaheira",30775,CRITICAL_MISS) // Ugh!
+    SetPlayerSound("Jaheira",30776,TARGET_IMMUNE) // Weapon has no effect!
+    SetPlayerSound("Jaheira",30777,INVENTORY_FULL) // I have too much in my pack as it is. You'll have to pick that up off the ground.
+    SetPlayerSound("Jaheira",30778,PICKED_POCKET) // 
+    SetPlayerSound("Jaheira",30779,EXISTANCE1) // 
+    SetPlayerSound("Jaheira",30780,EXISTANCE2) // My concentration is undone. My spell has failed!
+    SetPlayerSound("Jaheira",30781,EXISTANCE3) // 
+    SetPlayerSound("Jaheira",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Jaheira",10199,EXISTANCE5) // When asked about her past, JAHEIRA glares as she speaks. She says that she was born in the Tethyr region to a loyalist of the King Alemander regime, unfortunately during the Tethyrian civil war. Her family was among the nobles targeted by the angry mobs of peasants, and she was only spared because a servant girl took her from their castle before it fell. An enclave of druids in the Forest of Tethir was willing to grant shelter, and Jaheira grew up headstrong in their care. She believes the only way to protect nature is to have an active role in the world, but the cost of this dedication seems to weigh heavily on her mind these days.  She grows quiet when you ask about recent events, and while she gives the appearance of her normal, strong-willed self, there is a look of doubt in her eyes. It would seem that she has seen too many friends fall to remain unaffected. She does not like the subject, and lets it drop.
+    ActionOverride("Jaheira",SetDialog("Jaheira")
+    ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
+    ActionOverride("Jaheira",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Jaheira",ChangeAIScript("SHOUT",CLASS))
+    ActionOverride("Jaheira",ChangeAIScript("NPCDRU1",RACE))
+    ActionOverride("Jaheira",ChangeAIScript("",GENERAL))
+    ActionOverride("Jaheira",ChangeAIScript("WTARSGT",DEFAULT))
+    ActionOverride("Jaheira",ChangeAIScript("JAHEIRA",OVERRIDE))
+    SetGlobal("K#JaheiraImport","AR0602",1)
+    Continue()
+END
+
+/*IF
+  Global("K#JaheiraImport","AR0602",0)
+  BeenInParty("Jaheira")
+  CheckStatLT("Jaheira",17,DEX)
+THEN
+  RESPONSE #100
+    ChangeStat("Jaheira",DEX,17,SET)
+    Continue()
+END*/
+
+IF
+  Global("K#JaheiraImport","AR0602",0)
+  !BeenInParty("Jaheira")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Jaheira",STATE_REALLY_DEAD)
   LevelLT(Player1,8)
 THEN
   RESPONSE #100
-    CreateCreature("Jaheir7",[3898.2676],6) // Jaheira
-    SetGlobal("JaheiraImport","GLOBAL",1)
+    CreateCreature("Jaheir7",[3898.2676],S) // Jaheira
+    ActionOverride("Jaheira",MakeGlobalOverride())
+    SetGlobal("K#JaheiraImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("JaheiraImport","GLOBAL",0)
-  Global("JaheiraPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Jaheira")
-  !InPartyAllowDead("Jaheira")
-  !Dead("Jaheira")
+  Global("K#JaheiraImport","AR0602",0)
+  !BeenInParty("Jaheira")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Jaheira",STATE_REALLY_DEAD)
   LevelGT(Player1,7)
   LevelLT(Player1,11)
 THEN
   RESPONSE #100
-    CreateCreature("Jaheir8",[3898.2676],6) // Jaheira
-    SetGlobal("JaheiraImport","GLOBAL",1)
+    CreateCreature("Jaheir8",[3898.2676],S) // Jaheira
+    ActionOverride("Jaheira",MakeGlobalOverride())
+    SetGlobal("K#JaheiraImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("JaheiraImport","GLOBAL",0)
-  Global("JaheiraPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Jaheira")
-  !InPartyAllowDead("Jaheira")
-  !Dead("Jaheira")
+  Global("K#JaheiraImport","AR0602",0)
+  !BeenInParty("Jaheira")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Jaheira",STATE_REALLY_DEAD)
   Level(Player1,11)
 THEN
   RESPONSE #100
-    CreateCreature("Jaheir11",[3898.2676],6) // Jaheira
-    SetGlobal("JaheiraImport","GLOBAL",1)
+    CreateCreature("Jaheir11",[3898.2676],S) // Jaheira
+    ActionOverride("Jaheira",MakeGlobalOverride())
+    SetGlobal("K#JaheiraImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("JaheiraImport","GLOBAL",0)
-  Global("JaheiraPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Jaheira")
-  !InPartyAllowDead("Jaheira")
-  !Dead("Jaheira")
+  Global("K#JaheiraImport","AR0602",0)
+  !BeenInParty("Jaheira")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Jaheira",STATE_REALLY_DEAD)
   LevelGT(Player1,11)
 THEN
   RESPONSE #100
-    CreateCreature("Jaheir12",[3898.2676],6) // Jaheira
-    SetGlobal("JaheiraImport","GLOBAL",1)
+    CreateCreature("Jaheir12",[3898.2676],S) // Jaheira
+    ActionOverride("Jaheira",MakeGlobalOverride())
+    SetGlobal("K#JaheiraImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("MinscImport","GLOBAL",0)
-  Global("MinscPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Minsc")
-  !InPartyAllowDead("Minsc")
-  !Dead("Minsc")
+  Global("K#MinscImport","AR0602",0)
+  BeenInParty("Minsc")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobal("AR0602","Minsc",[4029.2759])
+	ActionOverride("Minsc",Face(S))
+    ActionOverride("Minsc",SetGlobal("BD_JOINXP","LOCALS",0))
+	ActionOverride("Minsc",DestroyAllEquipment())
+	ChangeStat("MINSC",HATEDRACE,125,SET)
+    ChangeAlignment("Minsc",CHAOTIC_GOOD)
+    //ReallyForceSpellRES("K#PORMIN","Minsc") // No such index
+    SetPlayerSound("Minsc",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Minsc",30788,MORALE) // Despair not! I will inspire you by charging blindly on!
+    SetPlayerSound("Minsc",4087,HAPPY) // We are all heroes, you and Boo and I! Hamsters and rangers everywhere, rejoice!
+    SetPlayerSound("Minsc",4088,UNHAPPY_ANNOYED) // This behavior must not continue! Feel the burning stare of my hamster and change your ways!
+    SetPlayerSound("Minsc",4089,UNHAPPY_SERIOUS) // This is not right. Change our course or I will have to apply a considerable wallop of virtue!
+    SetPlayerSound("Minsc",4090,UNHAPPY_BREAKING_POINT) // Boo can stand only so much!
+    SetPlayerSound("Minsc",30790,LEADER) // Minsc will lead with blade and boot! Boo will take care of the details.
+    SetPlayerSound("Minsc",4092,TIRED) // We must rest soon. Boo is getting squirrely.
+    SetPlayerSound("Minsc",4093,BORED) // Boo must have his exercise lest he bite us all in hard-to-reach places.
+    SetPlayerSound("Minsc",4086,BATTLE_CRY1) // Go for the eyes, Boo, GO FOR THE EYES! RrraaaAAGHGHH!
+    SetPlayerSound("Minsc",30793,BATTLE_CRY2) // Feel the backhand of justice!
+    SetPlayerSound("Minsc",30794,BATTLE_CRY3) // Great fun! Hehe. Right, Boo?
+    SetPlayerSound("Minsc",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Minsc",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK1) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK2) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK3) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK4) // No such index
+    SetPlayerSound("Minsc",5359,DAMAGE) // 
+    SetPlayerSound("Minsc",5360,DYING) // 
+    SetPlayerSound("Minsc",4094,HURT) // I must get aid soon. Boo is too young to have to avenge me.
+    SetPlayerSound("Minsc",4095,AREA_FOREST) // You know... I think the forest likes Boo.
+    SetPlayerSound("Minsc",5357,AREA_CITY) // Cities always teem with evil and decay. Let's give it a good shake and see what falls out!
+    SetPlayerSound("Minsc",4096,AREA_DUNGEON) // A den of stinking evil. Cover your nose, Boo. We will leave no crevice untouched!
+    SetPlayerSound("Minsc",5358,AREA_DAY) // Ahh, I prefer the bright of day. Evil must be able to see the justice I dispense!
+    SetPlayerSound("Minsc",4097,AREA_NIGHT) // Strange things go bump in the night, but none bump bigger than Minsc!
+    SetPlayerSound("Minsc",4098,SELECT_COMMON1) // You point, I punch.
+    SetPlayerSound("Minsc",4099,SELECT_COMMON2) // Swords, not words!
+    SetPlayerSound("Minsc",4100,SELECT_COMMON3) // Minsc and Boo stand ready.
+    SetPlayerSound("Minsc",30796,SELECT_COMMON4) // Every hamster has his day.
+    SetPlayerSound("Minsc",30798,SELECT_COMMON5) // Armored, sharpened, and raring to go.
+    SetPlayerSound("Minsc",30799,SELECT_COMMON6) // Boo says, "What?!"
+    SetPlayerSound("Minsc",4101,SELECT_ACTION1) // Where Minsc goes, evil stands aside.
+    SetPlayerSound("Minsc",30800,SELECT_ACTION2) // Jump on my sword while you can, evil. I won't be as gentle!
+    SetPlayerSound("Minsc",30801,SELECT_ACTION3) // Live by the sword, live a good long time!
+    SetPlayerSound("Minsc",4104,SELECT_ACTION4) // Stand back for justice!
+    SetPlayerSound("Minsc",30806,SELECT_ACTION5) // See battle, Boo? Run, Boo, Run!
+    SetPlayerSound("Minsc",30807,SELECT_ACTION6) // Make way, villainy! Hero coming through!
+    SetPlayerSound("Minsc",4107,SELECT_ACTION7) // Butt-kicking for goodness!
+    SetPlayerSound("Minsc",-1,INTERACTION1) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION1) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION2) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION3) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION4) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION5) // No such index
+    SetPlayerSound("Minsc",-1,INSULT1) // No such index
+    SetPlayerSound("Minsc",-1,INSULT2) // No such index
+    SetPlayerSound("Minsc",-1,INSULT3) // No such index
+    SetPlayerSound("Minsc",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Minsc",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Minsc",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Minsc",-1,SPECIAL1) // No such index
+    SetPlayerSound("Minsc",-1,SPECIAL2) // No such index
+    SetPlayerSound("Minsc",-1,SPECIAL3) // No such index
+    SetPlayerSound("Minsc",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Minsc",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Minsc",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Minsc",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Minsc",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Minsc",30808,SELECT_RARE1) // The bigger they are, the harder I hit!
+    SetPlayerSound("Minsc",30809,SELECT_RARE2) // Don't teach my hamster to suck eggs!
+    SetPlayerSound("Minsc",30937,CRITICAL_HIT) // Ah hay!
+    SetPlayerSound("Minsc",31850,CRITICAL_MISS) // Gah, that's not right!
+    SetPlayerSound("Minsc",31901,TARGET_IMMUNE) // No effect? I need bigger sword!
+    SetPlayerSound("Minsc",33805,INVENTORY_FULL) // I have had to drop what you gave me. I have only two arms and no more space.
+    SetPlayerSound("Minsc",34379,PICKED_POCKET) // 
+    SetPlayerSound("Minsc",34380,EXISTANCE1) // None shall see me... though my battle cry may give me away.
+    SetPlayerSound("Minsc",34381,EXISTANCE2) // I turned to shield Boo and have lost my spell. I am NOT sorry.
+    SetPlayerSound("Minsc",34744,EXISTANCE3) // 
+    SetPlayerSound("Minsc",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Minsc",10185,EXISTANCE5) // When asked about his past, MINSC proclaims that he is a berserker warrior from the nation of Rashemen in the Utter East, though his affinity for animals speaks to his skill as a ranger as well. He originally came to the Sword Coast on a dajemma, a ritual journey to manhood, as the bodyguard of a young Wychlaran of Rashemen named Dynaheir. To his shame, Dynaheir is now dead, and he fears that the doors of the honored Ice Dragon Berserker Lodge are forever closed to him. This personal tragedy has obviously not strengthened Minsc's hold on reality, as evidenced by his continued dependence on his animal companion "Boo," a creature that he claims is a miniature giant space hamster. Apparently such things do exist somewhere in the Realms, but Minsc has surely taken too many blows to the head.
+    ActionOverride("Minsc",SetDialog("MINSCA"))
+    ActionOverride("Minsc",SetNumTimesTalkedTo(0))
+    ActionOverride("Minsc",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Minsc",ChangeAIScript("",CLASS))
+    ActionOverride("Minsc",ChangeAIScript("",RACE))
+    ActionOverride("Minsc",ChangeAIScript("MINSCX",GENERAL))
+    ActionOverride("Minsc",ChangeAIScript("DPLAYER",DEFAULT))
+    ActionOverride("Minsc",ChangeAIScript("MINSC",OVERRIDE))
+	SetGlobal("K#MinscImport","AR0602",1)
+    Continue()
+END
+
+/*IF
+  Global("K#MinscImport","AR0602",0)
+  BeenInParty("Minsc")
+  CheckStatLT("Minsc",16,DEX)
+THEN
+  RESPONSE #100
+    ChangeStat("Minsc",DEX,16,SET)
+    Continue()
+END*/
+
+IF
+  Global("K#MinscImport","AR0602",0)
+  !BeenInParty("Minsc")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
   LevelLT(Player1,8)
 THEN
   RESPONSE #100
-    CreateCreature("Minsc7",[4029.2759],6) // Minsc
-    SetGlobal("MinscImport","GLOBAL",1)
+    CreateCreature("Minsc7",[4029.2759],S) // Minsc
+    ActionOverride("Minsc",MakeGlobalOverride())
+    SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("MinscImport","GLOBAL",0)
-  Global("MinscPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Minsc")
-  !InPartyAllowDead("Minsc")
-  !Dead("Minsc")
+  Global("K#MinscImport","AR0602",0)
+  !BeenInParty("Minsc")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
   Level(Player1,8)
 THEN
   RESPONSE #100
-    CreateCreature("Minsc8",[4029.2759],6) // Minsc
-    SetGlobal("MinscImport","GLOBAL",1)
+    CreateCreature("Minsc8",[4029.2759],S) // Minsc
+    ActionOverride("Minsc",MakeGlobalOverride())
+    SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("MinscImport","GLOBAL",0)
-  Global("MinscPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Minsc")
-  !InPartyAllowDead("Minsc")
-  !Dead("Minsc")
+  Global("K#MinscImport","AR0602",0)
+  !BeenInParty("Minsc")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
   Level(Player1,9)
 THEN
   RESPONSE #100
-    CreateCreature("Minsc9",[4029.2759],6) // Minsc
-    SetGlobal("MinscImport","GLOBAL",1)
+    CreateCreature("Minsc9",[4029.2759],S) // Minsc
+    ActionOverride("Minsc",MakeGlobalOverride())
+    SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("MinscImport","GLOBAL",0)
-  Global("MinscPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Minsc")
-  !InPartyAllowDead("Minsc")
-  !Dead("Minsc")
+  Global("K#MinscImport","AR0602",0)
+  !BeenInParty("Minsc")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
   OR(2)
     Level(Player1,10)
     Level(Player1,11)
 THEN
   RESPONSE #100
-    CreateCreature("Minsc10",[4029.2759],6) // Minsc
-    SetGlobal("MinscImport","GLOBAL",1)
+    CreateCreature("Minsc10",[4029.2759],S) // Minsc
+    ActionOverride("Minsc",MakeGlobalOverride())
+    SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END
 
 IF
-  Global("MinscImport","GLOBAL",0)
-  Global("MinscPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Minsc")
-  !InPartyAllowDead("Minsc")
-  !Dead("Minsc")
+  Global("K#MinscImport","AR0602",0)
+  !BeenInParty("Minsc")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
   LevelGT(Player1,11)
 THEN
   RESPONSE #100
-    CreateCreature("Minsc12",[4029.2759],6) // Minsc
-    SetGlobal("MinscImport","GLOBAL",1)
-    Continue()
-END
-
-IF
-  Global("K#NewGame","AR0602",1)
-  Global("MoveScreen","AR0602",1)
-  ReputationGT(Player1,9)
-THEN
-  RESPONSE #100
-    SetGlobal("K#NewGame","AR0602",2)
-    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Leczenie lekkich ran
-    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Spowolnienie trucizny
-    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Spowolnienie trucizny
-    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Przywołanie boskiej mocy
-    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Przywołanie boskiej mocy
-    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Leczenie lekkich ran
-    Continue()
-END
-
-IF
-  Global("K#NewGame","AR0602",1)
-  Global("MoveScreen","AR0602",1)
-  ReputationLT(Player1,10)
-THEN
-  RESPONSE #100
-    SetGlobal("K#NewGame","AR0602",2)
-    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Pomniejsze drążenie Larlocha
-    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Groza
-    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Groza
-    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Wampiryczne dotknięcie
-    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Wampiryczne dotknięcie
-    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Pomniejsze drążenie Larlocha
+    CreateCreature("Minsc12",[4029.2759],S) // Minsc
+    ActionOverride("Minsc",MakeGlobalOverride())
+    SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END
 
@@ -944,11 +1342,12 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR0602",1)
+    SetGlobal("DREAM","GLOBAL",7)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("NEWGAME_SOA","GLOBAL",1)
-    SetGlobal("K#temp","GLOBAL",364)
-    AddGlobals("K#DaysPassed","K#temp")
-    AdvanceTime(ONE_YEAR)
+    //SetGlobal("K#temp","GLOBAL",364)
+    //AddGlobals("K#DaysPassed","K#temp")
+    //AdvanceTime(ONE_YEAR)
     ActionOverride(Player1,LeaveAreaLUAPanic("AR0602","",[3744.2801],S))
     ActionOverride(Player1,LeaveAreaLUA("AR0602","",[3744.2801],S))
     ActionOverride(Player2,LeaveAreaLUA("AR0602","",[3585.2917],SWW))
@@ -956,8 +1355,11 @@ THEN
     ActionOverride(Player4,LeaveAreaLUA("AR0602","",[3374.3068],NNE))
     ActionOverride(Player5,LeaveAreaLUA("AR0602","",[3824.2447],E))
     ActionOverride(Player6,LeaveAreaLUA("AR0602","",[3889.2479],SSE))
+    MultiPlayerSync()
+    SmallWait(2)
+    RemoveWorldmapAreaFlag("BG4800",ENABLED) //Reveal from linked area
+    ReallyForceSpellRES("K#REMBHA",Player1)
     TakeItemListPartyNum("K#PLOT",99)
-    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
     Continue()
 END
 
@@ -968,7 +1370,51 @@ THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR0602",2)
     SetGlobal("ENDOFBG1","GLOBAL",2)
-    StartMovie("INTRO")
+    StartMovie("INTRO15F")
+    RemoveWorldmapAreaFlag("BD0010",15) //Visible, Reveal from linked area, Can be visited, Has been visited
+    AddWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
+    ReallyForceSpellRES("K#FAMREM",Player1)
+    ReallyForceSpellRES("K#FAMREM",Player2)
+    ReallyForceSpellRES("K#FAMREM",Player3)
+    ReallyForceSpellRES("K#FAMREM",Player4)
+    ReallyForceSpellRES("K#FAMREM",Player5)
+    ReallyForceSpellRES("K#FAMREM",Player6)
+    //MoveContainerContents("*K#ImportContainer00","*Table3BD6100")
+    //MoveContainerContents("*K#ImportContainer01","*Table3BD6100")
+    Continue()
+END
+
+IF
+  Global("NEWGAME_SOA","GLOBAL",1)
+  Global("K#NewGame","AR0602",1)
+  Global("MoveScreen","AR0602",1)
+  ReputationGT(Player1,9)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","AR0602",2)
+    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Cure Light Wounds
+    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Slow Poison
+    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Slow Poison
+    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Draw Upon Holy Might
+    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Draw Upon Holy Might
+    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Cure Light Wounds
+    Continue()
+END
+
+IF
+  Global("NEWGAME_SOA","GLOBAL",1)
+  Global("K#NewGame","AR0602",1)
+  Global("MoveScreen","AR0602",1)
+  ReputationLT(Player1,10)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","AR0602",2)
+    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Larloch's Minor Drain
+    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Horror
+    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Horror
+    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Vampiric Touch
+    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Vampiric Touch
+    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Larloch's Minor Drain
     Continue()
 END
 >>>>>>>>
@@ -979,12 +1425,205 @@ EXTEND_TOP ~AR0602.BCS~ ~.../AR0602-et.baf~
 ///// AR1000 (Viconia spawn)                           \\\\\
 /////                                                  \\\\\
 
-<<<<<<<< .../AR1000-eb.baf
+<<<<<<<< .../AR1000-et.baf
+IF
+  Global("K#ViconiaImport","AR1000",0)
+  BeenInParty("Viconia")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobal("AR1000","Viconia",[1821.1081])
+	ActionOverride("Viconia",Face(S))
+    ActionOverride("Viconia",SetGlobal("BD_JOINXP","LOCALS",0))
+	ActionOverride("Viconia",DestroyAllEquipment())
+    //ReallyForceSpellRES("K#PORVIC","Viconia") // No such index
+    SetPlayerSound("Viconia",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Viconia",3613,MORALE) // We must flee to fight another day!
+    SetPlayerSound("Viconia",3615,HAPPY) // I find this a most satisfactory arrangement.
+    SetPlayerSound("Viconia",3616,UNHAPPY_ANNOYED) // Surface-dwellers can be so stupid.
+    SetPlayerSound("Viconia",3617,UNHAPPY_SERIOUS) // I am beginning to tire of spending my time with fools.
+    SetPlayerSound("Viconia",3618,UNHAPPY_BREAKING_POINT) // I have no desire to remain in the company of the witless.
+    SetPlayerSound("Viconia",3619,LEADER) // I see you have learned much in your short lifespan.
+    SetPlayerSound("Viconia",3620,TIRED) // How long do you intend to crack your whip on my back?! I say we stop now.
+    SetPlayerSound("Viconia",3621,BORED) // The drow are never this idle with their time.
+    SetPlayerSound("Viconia",3614,BATTLE_CRY1) // Lil alurl! For Shar!
+    SetPlayerSound("Viconia",29812,BATTLE_CRY2) // No mercy for those who oppose us!
+    SetPlayerSound("Viconia",29813,BATTLE_CRY3) // Ultrinnan!
+    SetPlayerSound("Viconia",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Viconia",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Viconia",-1,ATTACK1) // No such index
+    SetPlayerSound("Viconia",-1,ATTACK2) // No such index
+    SetPlayerSound("Viconia",-1,ATTACK3) // No such index
+    SetPlayerSound("Viconia",-1,ATTACK4) // No such index
+    SetPlayerSound("Viconia",29814,DAMAGE) // 
+    SetPlayerSound("Viconia",5285,DYING) // 
+    SetPlayerSound("Viconia",3622,HURT) // No... it cannot end like this... I shall not allow it!
+    SetPlayerSound("Viconia",3623,AREA_FOREST) // I am still unused to all this green and fragrant brightness... part of me yet looks for the hidden spider's web amongst all this.
+    SetPlayerSound("Viconia",5281,AREA_CITY) // The stink of the collected rivvin... how I despise them all. 
+    SetPlayerSound("Viconia",5283,AREA_DUNGEON) // I swim in memories in such a place as this... most unpleasant memories.
+    SetPlayerSound("Viconia",3624,AREA_DAY) // Ahhh, this light... still it burns me!
+    SetPlayerSound("Viconia",3625,AREA_NIGHT) // There is no roof to this world. I feel as if I shall fall into this sky of yours sometimes.
+    SetPlayerSound("Viconia",3626,SELECT_COMMON1) // Jal Khaless?
+    SetPlayerSound("Viconia",3627,SELECT_COMMON2) // Yes, abbil?
+    SetPlayerSound("Viconia",3628,SELECT_COMMON3) // Usstan zhah dosst.
+    SetPlayerSound("Viconia",30517,SELECT_COMMON4) // I am yours to command.
+    SetPlayerSound("Viconia",30520,SELECT_COMMON5) // Shar guides my hand.
+    SetPlayerSound("Viconia",30524,SELECT_COMMON6) // Victory shall be ours! You know this.
+    SetPlayerSound("Viconia",3630,SELECT_ACTION1) // Trust is for the foolish... and the dead.
+    SetPlayerSound("Viconia",3631,SELECT_ACTION2) // I shall follow your strength.
+    SetPlayerSound("Viconia",3632,SELECT_ACTION3) // Destiny awaits!
+    SetPlayerSound("Viconia",3633,SELECT_ACTION4) // Nau natha.
+    SetPlayerSound("Viconia",3634,SELECT_ACTION5) // A'dos quarth!
+    SetPlayerSound("Viconia",3635,SELECT_ACTION6) // As you desire.
+    SetPlayerSound("Viconia",3636,SELECT_ACTION7) // If that is your will.
+    SetPlayerSound("Viconia",-1,INTERACTION1) // No such index
+    SetPlayerSound("Viconia",-1,INTERACTION1) // No such index
+    SetPlayerSound("Viconia",-1,INTERACTION2) // No such index
+    SetPlayerSound("Viconia",-1,INTERACTION3) // No such index
+    SetPlayerSound("Viconia",-1,INTERACTION4) // No such index
+    SetPlayerSound("Viconia",-1,INTERACTION5) // No such index
+    SetPlayerSound("Viconia",-1,INSULT1) // No such index
+    SetPlayerSound("Viconia",-1,INSULT2) // No such index
+    SetPlayerSound("Viconia",-1,INSULT3) // No such index
+    SetPlayerSound("Viconia",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Viconia",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Viconia",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Viconia",-1,SPECIAL1) // No such index
+    SetPlayerSound("Viconia",-1,SPECIAL2) // No such index
+    SetPlayerSound("Viconia",-1,SPECIAL3) // No such index
+    SetPlayerSound("Viconia",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Viconia",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Viconia",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Viconia",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Viconia",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Viconia",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Viconia",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Viconia",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Viconia",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Viconia",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Viconia",30526,SELECT_RARE1) // Folt xund!
+    SetPlayerSound("Viconia",30527,SELECT_RARE2) // I serve Shar above all others, but I shall remain with you... for now.
+    SetPlayerSound("Viconia",30528,CRITICAL_HIT) // Vith'os!
+    SetPlayerSound("Viconia",30529,CRITICAL_MISS) // Vith'ir!
+    SetPlayerSound("Viconia",30534,TARGET_IMMUNE) // My weapon is faulty!
+    SetPlayerSound("Viconia",30535,INVENTORY_FULL) // I will carry no more. You may scrounge for what I have dropped upon the ground.
+    SetPlayerSound("Viconia",30536,PICKED_POCKET) // 
+    SetPlayerSound("Viconia",30537,EXISTANCE1) // 
+    SetPlayerSound("Viconia",30538,EXISTANCE2) // My thoughts are disrupted. My magic is lost!
+    SetPlayerSound("Viconia",30539,EXISTANCE3) // 
+    SetPlayerSound("Viconia",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Viconia",10217,EXISTANCE5) // When you ask about her recent past, VICONIA snarls that it is not your place to know such things of her. There is still pride in her voice when she speaks about her Underdark home of Menzoberranzan, but you get the feeling that there is nothing left for her there, her family and House most likely victims of typically vicious drow "politics." She has continued in her worship of the night goddess Shar, but that appears to have been the only boon to her exile. She seems sullen and bitter, and has certainly learned much of the intolerance she must face while living amongst surface peoples. Her natural abilities as a drow have faded with time, also contributing to her lost sense of belonging. 
+    ActionOverride("Viconia",SetDialog("VICONI"))
+    ActionOverride("Viconia",SetNumTimesTalkedTo(0))
+    ActionOverride("Viconia",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Viconia",ChangeAIScript("INITRG10",CLASS))
+    ActionOverride("Viconia",ChangeAIScript("VICX",RACE))
+    ActionOverride("Viconia",ChangeAIScript("WTASIGHT",GENERAL))
+    ActionOverride("Viconia",ChangeAIScript("DPLAYER",DEFAULT))
+    ActionOverride("Viconia",ChangeAIScript("VICONIA",OVERRIDE))
+    SetGlobal("K#ViconiaImport","AR1000",1)
+    Continue()
+END
+
+/*IF
+  Global("K#ViconiaImport","AR1000",0)
+  BeenInParty("Viconia")
+  CheckStatLT("Viconia",18,WIS)
+THEN
+  RESPONSE #100
+    ChangeStat("Viconia",WIS,18,SET)
+    Continue()
+END
+
+IF
+  Global("K#ViconiaImport","AR1000",0)
+  BeenInParty("Viconia")
+  CheckStatLT("Viconia",65,RESISTMAGIC)
+THEN
+  RESPONSE #100
+    ChangeStat("Viconia",RESISTMAGIC,65,SET)
+    Continue()
+END*/
+
+IF
+  Global("K#ViconiaImport","AR1000",0)
+  !BeenInParty("Viconia")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)
+  LevelLT(Player1,8)
+THEN
+  RESPONSE #100
+    CreateCreatureImpassable("VICONI6",[1821.1081],S)
+    ActionOverride("Viconia",MakeGlobalOverride())
+    SetGlobal("K#ViconiaImport","AR1000",1)
+    Continue()
+END
+
+IF
+  Global("K#ViconiaImport","AR1000",0)
+  !BeenInParty("Viconia")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)
+  Level(Player1,8)
+THEN
+  RESPONSE #100
+    CreateCreatureImpassable("VICONI8",[1821.1081],S)
+    ActionOverride("Viconia",MakeGlobalOverride())
+    SetGlobal("K#ViconiaImport","AR1000",1)
+    Continue()
+END
+
+IF
+  Global("K#ViconiaImport","AR1000",0)
+  !BeenInParty("Viconia")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)
+  OR(2)
+    Level(Player1,9)
+    Level(Player1,10)
+THEN
+  RESPONSE #100
+    CreateCreatureImpassable("VICONI9",[1821.1081],S)
+    ActionOverride("Viconia",MakeGlobalOverride())
+    SetGlobal("K#ViconiaImport","AR1000",1)
+    Continue()
+END
+
+IF
+  Global("K#ViconiaImport","AR1000",0)
+  !BeenInParty("Viconia")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)
+  OR(2)
+    Level(Player1,11)
+    Level(Player1,12)
+THEN
+  RESPONSE #100
+    CreateCreatureImpassable("VICONI11",[1821.1081],S)
+    ActionOverride("Viconia",MakeGlobalOverride())
+    SetGlobal("K#ViconiaImport","AR1000",1)
+    Continue()
+END
+
+IF
+  Global("K#ViconiaImport","AR1000",0)
+  !BeenInParty("Viconia")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)
+  LevelGT(Player1,12)
+THEN
+  RESPONSE #100
+    CreateCreatureImpassable("VICONI13",[1821.1081],S)
+    ActionOverride("Viconia",MakeGlobalOverride())
+    SetGlobal("K#ViconiaImport","AR1000",1)
+    Continue()
+END
+
 IF
   Global("K#ViconiaSpawn","AR1000",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InPartyAllowDead("Viconia")
-  !Dead("Viconia")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
     SetGlobal("K#ViconiaSpawn","AR1000",1)
@@ -997,83 +1636,9 @@ THEN
     CreateCreature("VICG3",[1526.1164],12)
 	Continue()
 END
-
-IF
-  Global("ViconiaImport","GLOBAL",0)
-  Global("ViconiaPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Viconia")
-  !InPartyAllowDead("Viconia")
-  !Dead("Viconia")
-  LevelLT(Player1,8)
-THEN
-  RESPONSE #100
-    CreateCreatureImpassable("VICONI6",[1821.1081],0)
-    SetGlobal("ViconiaImport","GLOBAL",1)
-END
-
-IF
-  Global("ViconiaImport","GLOBAL",0)
-  Global("ViconiaPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Viconia")
-  !InPartyAllowDead("Viconia")
-  !Dead("Viconia")
-  Level(Player1,8)
-THEN
-  RESPONSE #100
-    CreateCreatureImpassable("VICONI8",[1821.1081],0)
-    SetGlobal("ViconiaImport","GLOBAL",1)
-END
-
-IF
-  Global("ViconiaImport","GLOBAL",0)
-  Global("ViconiaPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Viconia")
-  !InPartyAllowDead("Viconia")
-  !Dead("Viconia")
-  OR(2)
-    Level(Player1,9)
-    Level(Player1,10)
-THEN
-  RESPONSE #100
-    CreateCreatureImpassable("VICONI9",[1821.1081],0)
-    SetGlobal("ViconiaImport","GLOBAL",1)
-END
-
-IF
-  Global("ViconiaImport","GLOBAL",0)
-  Global("ViconiaPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Viconia")
-  !InPartyAllowDead("Viconia")
-  !Dead("Viconia")
-  OR(2)
-    Level(Player1,11)
-    Level(Player1,12)
-THEN
-  RESPONSE #100
-    CreateCreatureImpassable("VICONI11",[1821.1081],0)
-    SetGlobal("ViconiaImport","GLOBAL",1)
-END
-
-IF
-  Global("ViconiaImport","GLOBAL",0)
-  Global("ViconiaPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Viconia")
-  !InPartyAllowDead("Viconia")
-  !Dead("Viconia")
-  LevelGT(Player1,12)
-THEN
-  RESPONSE #100
-    CreateCreatureImpassable("VICONI13",[1821.1081],0)
-    SetGlobal("ViconiaImport","GLOBAL",1)
-END
 >>>>>>>>
 
-EXTEND_BOTTOM ~AR1000.BCS~ ~.../AR1000-eb.baf~
+EXTEND_TOP ~AR1000.BCS~ ~.../AR1000-et.baf~
 
 /////                                                  \\\\\
 ///// AR0900 (Dorn spawn)                              \\\\\
@@ -1085,203 +1650,471 @@ COPY_EXISTING ~AR0900.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~HasDLC("dorn")
-  Global("DornImport","GLOBAL",0)
-  Global("DornPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Dorn")
-  !InPartyAllowDead("Dorn")
-  !Dead("Dorn")~
+  Global("K#DornImport","AR0900",0)
+  !BeenInParty("Dorn")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Dorn",STATE_REALLY_DEAD)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
-		SPRINT textToReplace ~CreateCreature("DORN8",\[2550\.3394\],E)~
+		SPRINT textToReplace ~\(CreateCreature("DORN\)\(.+\)$~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN8",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1\2
+ActionOverride("Dorn",MakeGlobalOverride())~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("DORN9",\[2550\.3394\],E)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN9",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("DORN10",\[2550\.3394\],E)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN10",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("DORN12",\[2550\.3394\],E)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("DORN12",[2550.3394],E)
-    SetGlobal("DornImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
+
+<<<<<<<< .../AR0900-et.baf
+IF
+  HasDLC("dorn")
+  GlobalLT("OHD_PLOT","GLOBAL",1)
+  Global("K#DornImport","AR0900",0)
+  BeenInParty("Dorn")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Dorn",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobal("AR0900","Dorn",[2550.3394])
+	ActionOverride("Dorn",Face(E))
+    ActionOverride("Dorn",SetGlobal("BD_JOINXP","LOCALS",0))
+	ActionOverride("Dorn",DestroyAllEquipment())
+    ActionOverride("Dorn",CreateItem("HELM01",1,0,0)) // Helmet
+    ActionOverride("Dorn",CreateItem("PLAT01",1,0,0)) // Plate Mail
+    ActionOverride("Dorn",CreateItem("SW2HD1",1,0,0)) // Rancor +1
+    ActionOverride("Dorn",FillSlot(SLOT_HELMET))
+    ActionOverride("Dorn",FillSlot(SLOT_ARMOR))
+    ActionOverride("Dorn",FillSlot(SLOT_WEAPON))
+    ActionOverride("Dorn",EquipMostDamagingMelee())
+    //ReallyForceSpellRES("K#PORDOR","Dorn")
+    SetPlayerSound("Dorn",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Dorn",-1,MORALE) // No such index
+    SetPlayerSound("Dorn",93367,HAPPY) // I am pleased.
+    SetPlayerSound("Dorn",93368,UNHAPPY_ANNOYED) // Most disagreeable.
+    SetPlayerSound("Dorn",93369,UNHAPPY_SERIOUS) // Do not push me further.
+    SetPlayerSound("Dorn",93370,UNHAPPY_BREAKING_POINT) // NO MORE!
+    SetPlayerSound("Dorn",93329,LEADER) // You have made a wise decision. We will reach new and greater heights under my command.
+    SetPlayerSound("Dorn",93330,TIRED) // I grow weary.
+    SetPlayerSound("Dorn",93331,BORED) // There are hundreds, thousands, hundreds of thousands of people we could be slaying right now, and we do nothing!
+    SetPlayerSound("Dorn",93326,BATTLE_CRY1) // I'll send you to the Abyss!
+    SetPlayerSound("Dorn",93327,BATTLE_CRY2) // Death to all who stand against me!
+    SetPlayerSound("Dorn",93328,BATTLE_CRY3) // Taste darkness, fool!
+    SetPlayerSound("Dorn",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Dorn",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Dorn",-1,ATTACK1) // No such index
+    SetPlayerSound("Dorn",-1,ATTACK2) // No such index
+    SetPlayerSound("Dorn",-1,ATTACK3) // No such index
+    SetPlayerSound("Dorn",-1,ATTACK4) // No such index
+    SetPlayerSound("Dorn",93347,DAMAGE) // Ah! Ah...
+    SetPlayerSound("Dorn",93348,DYING) // Augh! Go ahead then, you gods of death! Take me!
+    SetPlayerSound("Dorn",93332,HURT) // It'll take more than a scratch to stop Dorn Il-Khan!
+    SetPlayerSound("Dorn",93349,AREA_FOREST) // So peaceful and serene it seems. It is a lie. The leaves and branches hide a savagery we sapients can only aspire to.
+    SetPlayerSound("Dorn",93350,AREA_CITY) // The city is no different from the forest—men, dwarves, elves, orcs... we are all beasts. Some just have stronger leashes than others.
+    SetPlayerSound("Dorn",93351,AREA_DUNGEON) // Anything that gets in our way will be buried in this place's rubble.
+    SetPlayerSound("Dorn",93352,AREA_DAY) // Each day I live is another day I stole from the gods.
+    SetPlayerSound("Dorn",93353,AREA_NIGHT) // Glory awaits in darkness.
+    SetPlayerSound("Dorn",93357,SELECT_COMMON1) // What would you have me do?
+    SetPlayerSound("Dorn",102634,SELECT_COMMON2) // I will listen... for now.
+    SetPlayerSound("Dorn",93343,SELECT_COMMON3) // Mind your tone.
+    SetPlayerSound("Dorn",93336,SELECT_COMMON4) // You have a problem?
+    SetPlayerSound("Dorn",93355,SELECT_COMMON5) // You are going somewhere you do not want to be.
+    SetPlayerSound("Dorn",93334,SELECT_COMMON6) // Hrm. Yes.
+    SetPlayerSound("Dorn",93340,SELECT_ACTION1) // Very well.
+    SetPlayerSound("Dorn",93341,SELECT_ACTION2) // I look forward to it.
+    SetPlayerSound("Dorn",93342,SELECT_ACTION3) // I will enjoy this.
+    SetPlayerSound("Dorn",93335,SELECT_ACTION4) // I will take care of this.
+    SetPlayerSound("Dorn",93344,SELECT_ACTION5) // It will be done.
+    SetPlayerSound("Dorn",93345,SELECT_ACTION6) // Easily.
+    SetPlayerSound("Dorn",93346,SELECT_ACTION7) // A waste of my talents, but so be it.
+    SetPlayerSound("Dorn",-1,INTERACTION1) // No such index
+    SetPlayerSound("Dorn",-1,INTERACTION1) // No such index
+    SetPlayerSound("Dorn",-1,INTERACTION2) // No such index
+    SetPlayerSound("Dorn",-1,INTERACTION3) // No such index
+    SetPlayerSound("Dorn",-1,INTERACTION4) // No such index
+    SetPlayerSound("Dorn",-1,INTERACTION5) // No such index
+    SetPlayerSound("Dorn",-1,INSULT1) // No such index
+    SetPlayerSound("Dorn",-1,INSULT2) // No such index
+    SetPlayerSound("Dorn",-1,INSULT3) // No such index
+    SetPlayerSound("Dorn",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Dorn",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Dorn",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Dorn",-1,SPECIAL1) // No such index
+    SetPlayerSound("Dorn",-1,SPECIAL2) // No such index
+    SetPlayerSound("Dorn",-1,SPECIAL3) // No such index
+    SetPlayerSound("Dorn",93354,REACT_TO_DIE_GENERAL) // I've no use for the weak. We are better off.
+    SetPlayerSound("Dorn",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Dorn",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Dorn",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Dorn",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Dorn",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Dorn",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Dorn",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Dorn",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Dorn",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Dorn",93337,SELECT_RARE1) // Kill them all and have done with it.
+    SetPlayerSound("Dorn",93356,SELECT_RARE2) // I am Dorn Il-Khan. I do as I will. You do not give me orders.
+    SetPlayerSound("Dorn",93358,CRITICAL_HIT) // Hah! I'll rip you apart, you wheyfaced cur!
+    SetPlayerSound("Dorn",93359,CRITICAL_MISS) // You were lucky then. But luck runs out.
+    SetPlayerSound("Dorn",93360,TARGET_IMMUNE) // Curse it!
+    SetPlayerSound("Dorn",93361,INVENTORY_FULL) // I am not some beast of burden. I'll carry no more of your trinkets.
+    SetPlayerSound("Dorn",93362,PICKED_POCKET) // Who says Dorn Il-Khan is incapable of subtlety?
+    SetPlayerSound("Dorn",93364,EXISTANCE1) // A blind enemy is a beaten one.
+    SetPlayerSound("Dorn",93365,EXISTANCE2) // Curse the luck! My spell was fouled!
+    SetPlayerSound("Dorn",93366,EXISTANCE3) // I will leave our enemies a gift.
+    SetPlayerSound("Dorn",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Dorn",91841,EXISTANCE5) // The half-orc blackguard is a man more comfortable with action than words. When pressed, he gruffly alludes to an act of betrayal that set him upon a bloody path of vengeance with the assistance of his patron, Ur-Gothoz. Since eliminating those who betrayed him, he has continued to spread chaos, death, and destruction at his dark patron's behest. While Dorn seems to revel in carnage and bloodshed, when he speaks of his work for Ur-Gothoz, you believe you detect a note of dissatisfaction in his voice.
+    ActionOverride("Dorn",SetDialog("DORN"))
+    ActionOverride("Dorn",SetNumTimesTalkedTo(0))
+    ActionOverride("Dorn",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Dorn",ChangeAIScript("",CLASS))
+    ActionOverride("Dorn",ChangeAIScript("",RACE))
+    ActionOverride("Dorn",ChangeAIScript("",GENERAL))
+    ActionOverride("Dorn",ChangeAIScript("",DEFAULT))
+    ActionOverride("Dorn",ChangeAIScript("DORN",OVERRIDE))
+    SetGlobal("K#DornImport","AR0900",1)
+    SetGlobal("OHH_DORN_INIT","ar0900",1)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~AR0900.BCS~ ~.../AR0900-et.baf~
+
+/////                                                  \\\\\
+///// AR1512 (Spellhold Imoen spawn)                   \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../AR1512-et.baf
+IF
+  Global("K#ImoenImport","AR1512",0)
+  GlobalLT("chapter","GLOBAL",20)
+  //!StateCheck("Imoen2",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobal("AR1512","Imoen2",[1857.1520])
+    ActionOverride("Imoen2",Face(SW))
+    ActionOverride("Imoen2",SetGlobal("BD_JOINXP","LOCALS",0))
+    DestroyItem("Imoen2") // Imoen's Belt
+    SetPlayerSound("Imoen2",30759,MORALE) // I got enough trouble without fightin' these odds!
+    SetPlayerSound("Imoen2",30760,BORED) // I'm withering away just standing here. Let's get going.
+    SetPlayerSound("Imoen2",30761,BATTLE_CRY2) // You asked for it!
+    SetPlayerSound("Imoen2",30762,BATTLE_CRY3) // Oh, I'll show you a fight!
+    SetPlayerSound("Imoen2",30764,HURT) // I'm weak enough without my wounds. Someone give me a hand over here, please?
+    SetPlayerSound("Imoen2",74276,EXISTANCE5) // IMOEN chuckles when you ask her about her past, assuming you are just trying to keep her mind on happier times and places. She indulges you, and certainly does cheer up when speaking of how you spent your youths together in Candlekeep. She arrived there the same as you, in the company of your foster father Gorion, but despite this similarity, she grew up much more carefree than you did. Indeed, her lighthearted outlook has long kept her immune to the hardships of the world, though the horrors she has endured have definitely taken their toll.
+    ActionOverride("Imoen2",SetDialog("IMOEN2"))
+    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Imoen2",ChangeAIScript("IMOEN2",OVERRIDE))
+    SetGlobal("K#ImoenImport","AR1512",1)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~AR1512.BCS~ ~.../AR1512-et.baf~
 
 /////                                                  \\\\\
 ///// AR2000, OHR_JOIN (Rasaad spawn)                  \\\\\
 /////                                                  \\\\\
 
-//the CreateCreature("RASAAD8",[1550.1368],S) in AR2000.BCS is used only for OHRCUT01.BCS. Real spawning is done via OHR_JOIN.BCS
-
-//AR2000.BCS
 COPY_EXISTING ~AR2000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HasDLC("Rasaad")~
+		SPRINT textToReplace ~HasDLC("Rasaad")[%newline%]*Global("OHR_SPAWN","AR2000",0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~HasDLC("Rasaad")
-  Global("RasaadPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)
-  !Dead("Rasaad")~
+  Global("OHR_SPAWN","AR2000",0)
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+
+		SPRINT textToReplace ~CreateCreature("RASAAD8",\[1550\.1368\],S)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
 
-<<<<<<<< .../AR2000-eb.baf
+<<<<<<<< .../AR2000-et.baf
 IF
   HasDLC("Rasaad")
-  Global("RasaadPartyBG1","GLOBAL",1)
-  Global("ENDOFBG2","GLOBAL",0)
-  !InMyArea("Rasaad")
-  !InPartyAllowDead("Rasaad")
-  !Dead("Rasaad")
-  Global("OHR_SPAWN","AR2000",0)
+  Global("K#RasaadImport","AR2000",0)
+  BeenInParty("Rasaad")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
-    SetGlobal("OHR_SPAWN","AR2000",1)
-    CreateCreature("OHRTREYA",[1600.1435],NNW)
-    CreateCreature("OHRSSM01",[1486.1435],NE)
+    MoveGlobal("AR2000","Rasaad",[1550.1368])
+	ActionOverride("Rasaad",Face(S))
+    ActionOverride("Rasaad",SetGlobal("BD_JOINXP","LOCALS",0))
+	ActionOverride("Rasaad",DestroyAllEquipment())
+    ActionOverride("Rasaad",CreateItem("RSBRAC",1,0,0)) // Glimmering Bands
+    ActionOverride("Rasaad",CreateItem("RSBOOT",1,0,0)) // Moonlight Walkers
+    ActionOverride("Rasaad",FillSlot(SLOT_GAUNTLETS))
+    ActionOverride("Rasaad",FillSlot(SLOT_BOOTS))
+    ActionOverride("Rasaad",EquipMostDamagingMelee())
+    //ReallyForceSpellRES("K#PORRAS","Rasaad")
+    SetPlayerSound("Rasaad",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Rasaad",-1,MORALE) // No such index
+    SetPlayerSound("Rasaad",93990,HAPPY) // My heart is filled with joy.
+    SetPlayerSound("Rasaad",93991,UNHAPPY_ANNOYED) // I am rising above this.
+    SetPlayerSound("Rasaad",93992,UNHAPPY_SERIOUS) // This will not stand.
+    SetPlayerSound("Rasaad",93993,UNHAPPY_BREAKING_POINT) // This is intolerable!
+    SetPlayerSound("Rasaad",86697,LEADER) // I shall do everything to prove "Rasaad" worthy to lead.
+    SetPlayerSound("Rasaad",86701,TIRED) // I am weary. Let us rest for a while, my friend.
+    SetPlayerSound("Rasaad",86711,BORED) // I am a patient man, but that patience is being tried.
+    SetPlayerSound("Rasaad",86686,BATTLE_CRY1) // Pay for your sins!
+    SetPlayerSound("Rasaad",86690,BATTLE_CRY2) // I'll see you in the ground!
+    SetPlayerSound("Rasaad",86695,BATTLE_CRY3) // Taste my foot!
+    SetPlayerSound("Rasaad",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Rasaad",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Rasaad",-1,ATTACK1) // No such index
+    SetPlayerSound("Rasaad",-1,ATTACK2) // No such index
+    SetPlayerSound("Rasaad",-1,ATTACK3) // No such index
+    SetPlayerSound("Rasaad",-1,ATTACK4) // No such index
+    SetPlayerSound("Rasaad",86757,DAMAGE) // Uagh!
+    SetPlayerSound("Rasaad",86758,DYING) // I fear I am done. Gamaz, my brother, I will see you soon.
+    SetPlayerSound("Rasaad",86719,HURT) // Leave me. I will only slow you down.
+    SetPlayerSound("Rasaad",86759,AREA_FOREST) // It is so peaceful here. My mind is calm, and my heart is not so heavy.
+    SetPlayerSound("Rasaad",86760,AREA_CITY) // This place is so full of motion and noise—it is difficult to focus on what really matters.
+    SetPlayerSound("Rasaad",86761,AREA_DUNGEON) // Let us do what needs to be done and be done with this place.
+    SetPlayerSound("Rasaad",86762,AREA_DAY) // The sun is just, but merciless.
+    SetPlayerSound("Rasaad",86763,AREA_NIGHT) // Once, Selûne's light calmed my heart and cleared my mind. No longer.
+    SetPlayerSound("Rasaad",86740,SELECT_COMMON1) // What can I do?
+    SetPlayerSound("Rasaad",86766,SELECT_COMMON2) // Let me help you.
+    SetPlayerSound("Rasaad",86731,SELECT_COMMON3) // I need something to punch or kick.
+    SetPlayerSound("Rasaad",86767,SELECT_COMMON4) // What do you want of me?
+    SetPlayerSound("Rasaad",86723,SELECT_COMMON5) // I shall do what is required.
+    SetPlayerSound("Rasaad",86714,SELECT_COMMON6) // We will take action soon. Right?
+    SetPlayerSound("Rasaad",86743,SELECT_ACTION1) // Very well.
+    SetPlayerSound("Rasaad",86751,SELECT_ACTION2) // I could handle that.
+    SetPlayerSound("Rasaad",86752,SELECT_ACTION3) // Excellent.
+    SetPlayerSound("Rasaad",86747,SELECT_ACTION4) // As you wish.
+    SetPlayerSound("Rasaad",86754,SELECT_ACTION5) // It would be my pleasure.
+    SetPlayerSound("Rasaad",86755,SELECT_ACTION6) // Certainly.
+    SetPlayerSound("Rasaad",86756,SELECT_ACTION7) // That is all?
+    SetPlayerSound("Rasaad",-1,INTERACTION1) // No such index
+    SetPlayerSound("Rasaad",-1,INTERACTION1) // No such index
+    SetPlayerSound("Rasaad",-1,INTERACTION2) // No such index
+    SetPlayerSound("Rasaad",-1,INTERACTION3) // No such index
+    SetPlayerSound("Rasaad",-1,INTERACTION4) // No such index
+    SetPlayerSound("Rasaad",-1,INTERACTION5) // No such index
+    SetPlayerSound("Rasaad",-1,INSULT1) // No such index
+    SetPlayerSound("Rasaad",-1,INSULT2) // No such index
+    SetPlayerSound("Rasaad",-1,INSULT3) // No such index
+    SetPlayerSound("Rasaad",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Rasaad",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Rasaad",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Rasaad",-1,SPECIAL1) // No such index
+    SetPlayerSound("Rasaad",-1,SPECIAL2) // No such index
+    SetPlayerSound("Rasaad",-1,SPECIAL3) // No such index
+    SetPlayerSound("Rasaad",86764,REACT_TO_DIE_GENERAL) // Our enemies will pay a terrible price for this!
+    SetPlayerSound("Rasaad",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Rasaad",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Rasaad",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Rasaad",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Rasaad",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Rasaad",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Rasaad",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Rasaad",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Rasaad",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Rasaad",86753,SELECT_RARE1) // Simplicity itself for one trained in the techniques of the Sun Soul order.
+    SetPlayerSound("Rasaad",86728,SELECT_RARE2) // It is the will of the goddess.
+    SetPlayerSound("Rasaad",86768,CRITICAL_HIT) // You cannot defeat me. Surrender now, before it's too late.
+    SetPlayerSound("Rasaad",86770,CRITICAL_MISS) // You are a slippery one!
+    SetPlayerSound("Rasaad",86771,TARGET_IMMUNE) // Nothing? Then I'll try something different!
+    SetPlayerSound("Rasaad",86772,INVENTORY_FULL) // Each new item restricts my movement further. I can carry no more.
+    SetPlayerSound("Rasaad",86773,PICKED_POCKET) // Not the honorable way to do things—but certainly an efficient one.
+    SetPlayerSound("Rasaad",86774,EXISTANCE1) // As long as we are unseen, we are safe.
+    SetPlayerSound("Rasaad",86775,EXISTANCE2) // Tchah! That didn't work.
+    SetPlayerSound("Rasaad",86776,EXISTANCE3) // This should make our enemies think twice.
+    SetPlayerSound("Rasaad",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Rasaad",86676,EXISTANCE5) // A worshipper of the moon goddess Selûne, the taciturn monk Rasaad's life in service to the Sun Soul order ended in tragedy. He speaks of his brother Gamaz in reverent tones, even though Gamaz betrayed the Sun Soul by joining the Dark Moon sect, where he learned to worship Shar at the feet of a man named Alorgoth. Though it was his own hand that slew Gamaz, Rasaad holds Alorgoth responsible for his brother's death. He has committed himself to avenging Gamaz, and it's obvious there is little he won't sacrifice to achieve that goal.
+    ActionOverride("Rasaad",SetDialog("RASAAD"))
+    ActionOverride("Rasaad",SetNumTimesTalkedTo(0))
+    ActionOverride("Rasaad",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Rasaad",ChangeAIScript("",CLASS))
+    ActionOverride("Rasaad",ChangeAIScript("",RACE))
+    ActionOverride("Rasaad",ChangeAIScript("",GENERAL))
+    ActionOverride("Rasaad",ChangeAIScript("WTASIGHT",DEFAULT))
+    ActionOverride("Rasaad",ChangeAIScript("RASAAD",OVERRIDE))
+    SetGlobal("K#RasaadImport","AR2000",1)
+    Continue()
+END
+
+IF
+  HasDLC("Rasaad")
+  Global("K#RasaadImport","AR2000",0)
+  !BeenInParty("Rasaad")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
+  XPLT(Player1,250000)
+THEN
+  RESPONSE #100
+    CreateCreature("RASAAD8",[1550.1368],S) // Rasaad
+    ActionOverride("Rasaad",MakeGlobalOverride())
+    SetGlobal("K#RasaadImport","AR2000",1)
+    Continue()
+END
+
+IF
+  HasDLC("Rasaad")
+  Global("K#RasaadImport","AR2000",0)
+  !BeenInParty("Rasaad")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
+  XPGT(Player1,249999)
+  XPLT(Player1,450000)
+THEN
+  RESPONSE #100
+    CreateCreature("RASAAD9",[1550.1368],S) // Rasaad
+    ActionOverride("Rasaad",MakeGlobalOverride())
+    SetGlobal("K#RasaadImport","AR2000",1)
+    Continue()
+END
+
+IF
+  HasDLC("Rasaad")
+  Global("K#RasaadImport","AR2000",0)
+  !BeenInParty("Rasaad")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
+  XPGT(Player1,449999)
+  XPLT(Player1,800000)
+THEN
+  RESPONSE #100
+    CreateCreature("RASAAD10",[1550.1368],S) // Rasaad
+    ActionOverride("Rasaad",MakeGlobalOverride())
+    SetGlobal("K#RasaadImport","AR2000",1)
+    Continue()
+END
+
+IF
+  HasDLC("Rasaad")
+  Global("K#RasaadImport","AR2000",0)
+  !BeenInParty("Rasaad")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
+  XPGT(Player1,799999)
+  XPLT(Player1,1200000)
+THEN
+  RESPONSE #100
+    CreateCreature("RASAAD11",[1550.1368],S) // Rasaad
+    ActionOverride("Rasaad",MakeGlobalOverride())
+    SetGlobal("K#RasaadImport","AR2000",1)
+    Continue()
+END
+
+IF
+  HasDLC("Rasaad")
+  Global("K#RasaadImport","AR2000",0)
+  !BeenInParty("Rasaad")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
+  XPGT(Player1,1199999)
+THEN
+  RESPONSE #100
+    CreateCreature("RASAAD12",[1550.1368],S) // Rasaad
+    ActionOverride("Rasaad",MakeGlobalOverride())
+    SetGlobal("K#RasaadImport","AR2000",1)
+    Continue()
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~AR2000.BCS~ ~.../AR2000-eb.baf~
+EXTEND_TOP ~AR2000.BCS~ ~.../AR2000-et.baf~
 
-//OHR_JOIN.BCS
-COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~Global("OHR_PLOT","GLOBAL",0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("OHR_PLOT","GLOBAL",0)
-  Global("RasaadImport","GLOBAL",0)
-  Global("RasaadPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
- 		SPRINT textToReplace ~CreateCreatureObject("RASAAD8",Player1,0,0,0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD8",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreatureObject("RASAAD9",Player1,0,0,0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD9",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreatureObject("RASAAD10",Player1,0,0,0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD10",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreatureObject("RASAAD11",Player1,0,0,0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD11",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreatureObject("RASAAD13",Player1,0,0,0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreatureObject("RASAAD13",Player1,0,0,0)
-    SetGlobal("RasaadImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-<<<<<<<< .../OHR_JOIN-eb.baf
+<<<<<<<< .../OHR_JOIN-rbOld.baf
 IF
   Global("OHR_PLOT","GLOBAL",0)
-  Global("RasaadImport","GLOBAL",0)
-  Global("RasaadPartyBG1","GLOBAL",1)
-  Global("ENDOFBG2","GLOBAL",0)
   Range(Player1,30)
-  !InMyArea("RASAAD")  // RASAAD
-  !InPartyAllowDead("RASAAD")  // RASAAD
-  !Dead("RASAAD")  // RASAAD
+  XPLT(Player1,250000)
+  !InMyArea("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  !Dead("RASAAD")
 THEN
   RESPONSE #100
-    MoveGlobalObject("RASAAD",Player1)
+    CreateCreatureObject("RASAAD8",Player1,0,0,0) // Rasaad
+END
+
+IF
+  Global("OHR_PLOT","GLOBAL",0)
+  Range(Player1,30)
+  XPGT(Player1,249999)
+  XPLT(Player1,450000)
+  !InMyArea("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  !Dead("RASAAD")
+THEN
+  RESPONSE #100
+    CreateCreatureObject("RASAAD9",Player1,0,0,0) // Rasaad
+END
+
+IF
+  Global("OHR_PLOT","GLOBAL",0)
+  Range(Player1,30)
+  XPGT(Player1,449999)
+  XPLT(Player1,800000)
+  !InMyArea("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  !Dead("RASAAD")
+THEN
+  RESPONSE #100
+    CreateCreatureObject("RASAAD10",Player1,0,0,0) // Rasaad
+END
+
+IF
+  Global("OHR_PLOT","GLOBAL",0)
+  Range(Player1,30)
+  XPGT(Player1,799999)
+  XPLT(Player1,1200000)
+  !InMyArea("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  !Dead("RASAAD")
+THEN
+  RESPONSE #100
+    CreateCreatureObject("RASAAD11",Player1,0,0,0) // Rasaad
+END
+
+IF
+  Global("OHR_PLOT","GLOBAL",0)
+  Range(Player1,30)
+  XPGT(Player1,1199999)
+  !InMyArea("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  !Dead("RASAAD")
+THEN
+  RESPONSE #100
+    CreateCreatureObject("RASAAD13",Player1,0,0,0) // Rasaad
 END
 >>>>>>>>
 
-EXTEND_BOTTOM ~OHR_JOIN.BCS~ ~.../OHR_JOIN-eb.baf~
+<<<<<<<< .../OHR_JOIN-rbNew.baf
+IF
+  Global("K#RasaadImport","AR2000",1)
+  Global("OHR_PLOT","GLOBAL",0)
+  Range(Player1,30)
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobalObject("Rasaad",Player1)
+    SetGlobal("K#RasaadImport","AR2000",2)
+END
+>>>>>>>>
 
-/////                                                  \\\\\
-///// AR2800 (Suldanesselar)                           \\\\\
-/////                                                  \\\\\
-
-COPY_EXISTING ~AR2800.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("")[%newline%]*TextScreen("SCRTXT08")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("")
-    TextScreen("SCRTXT08")
-    RevealAreaOnMap("BG0000")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
+	REPLACE_BCS_BLOCK ~.../OHR_JOIN-rbOld.baf~ ~.../OHR_JOIN-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OHR_JOIN-rbOld.baf in %SOURCE_FILE%.~ END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -1296,7 +2129,7 @@ COPY_EXISTING ~AR4000.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find 21 matches for %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find 21 matches for %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1308,12 +2141,14 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR4000",1)
+    SetGlobal("DREAM","GLOBAL",7)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("ENDOFBG2","GLOBAL",2)
     SetGlobal("NEWGAME_TOB","GLOBAL",1)
-    StartMovie("INTROTOB")
+    StartMovie("INTRO")
+    RemoveWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
+    ReallyForceSpellRES("K#REMBHA",Player1)
     TakeItemListPartyNum("K#PLOT",99)
-    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
     Continue()
 END
 
@@ -1325,7 +2160,12 @@ THEN
     SetGlobal("K#NewGame","AR4000",1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("ENDOFBG2","GLOBAL",2)
-    CreateCreatureObject("K#FAMREM",Player1,0,0,0)
+    ReallyForceSpellRES("K#FAMREM",Player1)
+    ReallyForceSpellRES("K#FAMREM",Player2)
+    ReallyForceSpellRES("K#FAMREM",Player3)
+    ReallyForceSpellRES("K#FAMREM",Player4)
+    ReallyForceSpellRES("K#FAMREM",Player5)
+    ReallyForceSpellRES("K#FAMREM",Player6)
     Continue()
 END
 >>>>>>>>
@@ -1345,7 +2185,7 @@ COPY_EXISTING ~AR4500.BCS~ ~override~
   Global("NEWGAME_TOB","GLOBAL",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1364,108 +2204,336 @@ COPY_EXISTING ~CUT205B.BCS~ ~override~
     ActionOverride("Sarevok",SetNumTimesTalkedTo(0))~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
 
 /////                                                  \\\\\
-///// OH6000 (Neera spawn)                             \\\\\
+///// AR0500, OHNCUT1A, OH6000 (Neera spawn)           \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING ~OH6000.BCS~ ~override~
+COPY_EXISTING ~OHNMCUT1.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~Global("OHN_PLOT","GLOBAL",0)~
+		SPRINT textToReplace ~CreateCreature("OHNELLIS",\[3848\.448\],NNW)[%newline%]*END~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("OHN_PLOT","GLOBAL",0)
-  Global("NeeraImport","GLOBAL",0)
-  Global("NeeraPartyBG1","GLOBAL",0)
-  Global("ENDOFBG2","GLOBAL",0)~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("OHNELLIS",[3848.448],NNW)
+    Continue()
+END~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("NEERA8",\[993\.3534\],S)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA8",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("NEERA10",\[993\.3534\],S)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA10",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("NEERA11",\[993\.3534\],S)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA11",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("NEERA12",\[993\.3534\],S)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA12",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~CreateCreature("NEERA13",\[993\.3534\],S)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("NEERA13",[993.3534],S)
-    SetGlobal("NeeraImport","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
 
-/////                                                  \\\\\
-///// CUT01 (Imoen fluid transition to Spellhold)      \\\\\
-/////                                                  \\\\\
+<<<<<<<< .../AR0500-et.baf
+IF
+  Global("OHN_INTRO_SCENE","AR0500",2)
+  Global("K#NeeraImport","AR0500",0)
+  BeenInParty("Neera")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Neera",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobal("AR0500","Neera",[3927.485])
+	ActionOverride("Neera",Face(NNW))
+    ActionOverride("Neera",SetGlobal("BD_JOINXP","LOCALS",0))
+	ActionOverride("Neera",DestroyAllEquipment())
+    ActionOverride("Neera",CreateItem("NEBELT01",1,0,0)) // Adoy's Belt
+    ActionOverride("Neera",CreateItem("STAFN1",1,0,0)) // Neera's Staff +1
+    ActionOverride("Neera",FillSlot(SLOT_BELT))
+    ActionOverride("Neera",FillSlot(SLOT_WEAPON))
+    ActionOverride("Neera",EquipMostDamagingMelee())
+    SetPlayerSound("Neera",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Neera",-1,MORALE) // No such index
+    SetPlayerSound("Neera",84546,HAPPY) // I'm so proud of you, <CHARNAME>.
+    SetPlayerSound("Neera",86672,UNHAPPY_ANNOYED) // I don't like where this is headed.
+    SetPlayerSound("Neera",86673,UNHAPPY_SERIOUS) // Definitely don't like where this is headed.
+    SetPlayerSound("Neera",102930,UNHAPPY_BREAKING_POINT) // I can't take any more of this!
+    SetPlayerSound("Neera",88513,LEADER) // You understand that I am volatile and occasionally unreasonable? Okay, great!
+    SetPlayerSound("Neera",88514,TIRED) // *yawn* My mind's even foggier than usual. Can we... stop?
+    SetPlayerSound("Neera",88516,BORED) // Fidgeting over here... fidget, fidget, fidget!
+    SetPlayerSound("Neera",88510,BATTLE_CRY1) // Get down, everyone!
+    SetPlayerSound("Neera",88511,BATTLE_CRY2) // I command pure chaos! Kinda.
+    SetPlayerSound("Neera",88512,BATTLE_CRY3) // Victory? Unclear. Destruction? Certain!
+    SetPlayerSound("Neera",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Neera",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Neera",-1,ATTACK1) // No such index
+    SetPlayerSound("Neera",-1,ATTACK2) // No such index
+    SetPlayerSound("Neera",-1,ATTACK3) // No such index
+    SetPlayerSound("Neera",-1,ATTACK4) // No such index
+    SetPlayerSound("Neera",88533,DAMAGE) // Ouch. OUCH!
+    SetPlayerSound("Neera",88534,DYING) // 
+    SetPlayerSound("Neera",88518,HURT) // Please! Someone... anyone?! I'm in... quite a bit of pain here.
+    SetPlayerSound("Neera",88535,AREA_FOREST) // Being in the woods always reminds me of the High Forest. I like it.
+    SetPlayerSound("Neera",88536,AREA_CITY) // Are you gonna make me cast spells here? There are a lot of people around.
+    SetPlayerSound("Neera",88537,AREA_DUNGEON) // I sense great evil... fabled treasure... terrible danger... probably some spiders.
+    SetPlayerSound("Neera",88538,AREA_DAY) // It's a fine day for fireballs.
+    SetPlayerSound("Neera",88539,AREA_NIGHT) // An evening stroll under the stars! When do we get attacked?
+    SetPlayerSound("Neera",88519,SELECT_COMMON1) // Hmm?
+    SetPlayerSound("Neera",88520,SELECT_COMMON2) // Ready for anything.
+    SetPlayerSound("Neera",88521,SELECT_COMMON3) // Happy to help... uh, to try to help, anyway.
+    SetPlayerSound("Neera",88522,SELECT_COMMON4) // I'm ready!
+    SetPlayerSound("Neera",88523,SELECT_COMMON5) // Yes?
+    SetPlayerSound("Neera",88524,SELECT_COMMON6) // What'll it be?
+    SetPlayerSound("Neera",88526,SELECT_ACTION1) // That's it?
+    SetPlayerSound("Neera",88527,SELECT_ACTION2) // Fine!
+    SetPlayerSound("Neera",88528,SELECT_ACTION3) // Sure.
+    SetPlayerSound("Neera",88529,SELECT_ACTION4) // I suppose.
+    SetPlayerSound("Neera",88530,SELECT_ACTION5) // I'll do it.
+    SetPlayerSound("Neera",88531,SELECT_ACTION6) // Simple and surge-free.
+    SetPlayerSound("Neera",88532,SELECT_ACTION7) // So easy you could almost do it yourself.
+    SetPlayerSound("Neera",-1,INTERACTION1) // No such index
+    SetPlayerSound("Neera",-1,INTERACTION1) // No such index
+    SetPlayerSound("Neera",-1,INTERACTION2) // No such index
+    SetPlayerSound("Neera",-1,INTERACTION3) // No such index
+    SetPlayerSound("Neera",-1,INTERACTION4) // No such index
+    SetPlayerSound("Neera",-1,INTERACTION5) // No such index
+    SetPlayerSound("Neera",-1,INSULT1) // No such index
+    SetPlayerSound("Neera",-1,INSULT2) // No such index
+    SetPlayerSound("Neera",-1,INSULT3) // No such index
+    SetPlayerSound("Neera",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Neera",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Neera",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Neera",-1,SPECIAL1) // No such index
+    SetPlayerSound("Neera",-1,SPECIAL2) // No such index
+    SetPlayerSound("Neera",-1,SPECIAL3) // No such index
+    SetPlayerSound("Neera",88540,REACT_TO_DIE_GENERAL) // No! We can't let them get away with this!
+    SetPlayerSound("Neera",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Neera",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Neera",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Neera",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Neera",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Neera",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Neera",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Neera",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Neera",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Neera",88541,SELECT_RARE1) // Not savin' the day this time.
+    SetPlayerSound("Neera",88542,SELECT_RARE2) // I was tryin' to concentrate!
+    SetPlayerSound("Neera",88544,CRITICAL_HIT) // Did everyone see that? It was incredible!
+    SetPlayerSound("Neera",88546,CRITICAL_MISS) // That wasn't even close, was it?
+    SetPlayerSound("Neera",88547,TARGET_IMMUNE) // Blast it! That's not gonna work.
+    SetPlayerSound("Neera",88548,INVENTORY_FULL) // Get rid of some of this trash! I can't carry anymore.
+    SetPlayerSound("Neera",88549,PICKED_POCKET) // I could get used to this! It was so easy.
+    SetPlayerSound("Neera",88550,EXISTANCE1) // I feel so sneaky.
+    SetPlayerSound("Neera",88551,EXISTANCE2) // Oh no, I've lost my spell!
+    SetPlayerSound("Neera",88552,EXISTANCE3) // Ha! Can't wait to see what happens.
+    SetPlayerSound("Neera",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Neera",93710,EXISTANCE5) // When asked about her past, NEERA shrugs. She says that, before coming to Athkatla, she wandered the Sword Coast enjoying an adventurer's life while evading the Order of Eight Staves, an organization dedicated to hunting wild mages. She talks less about her distant past, but does not hide the fact she was banished from the High Forest for her wild magic. She is quick to laugh and to chatter, perhaps a little glibly, but lashes out whenever she senses a threat to her autonomy. She is deeply invested in protecting other wild mages and seems willing to risk almost everything to do so.
+    ActionOverride("Neera",SetDialog("NEERA"))
+    ActionOverride("Neera",SetNumTimesTalkedTo(0))
+    ActionOverride("Neera",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Neera",ChangeAIScript("",CLASS))
+    ActionOverride("Neera",ChangeAIScript("",RACE))
+    ActionOverride("Neera",ChangeAIScript("",GENERAL))
+    ActionOverride("Neera",ChangeAIScript("WTARSGT",DEFAULT))
+    ActionOverride("Neera",ChangeAIScript("NEERA",OVERRIDE))
+    SetGlobal("K#NeeraImport","AR0500",1)
+    Continue()
+END
 
-COPY_EXISTING ~CUT01.BCS~ ~override~
+IF
+  Global("OHN_INTRO_SCENE","AR0500",2)
+  Global("K#NeeraImport","AR0500",0)
+  !BeenInParty("Neera")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Neera",STATE_REALLY_DEAD)
+  XPLT(Player1,250000)
+THEN
+  RESPONSE #100
+    CreateCreature("NEERA8",[993.3534],S) // Neera
+    ActionOverride("Neera",MakeGlobalOverride())
+    SetGlobal("K#NeeraImport","AR0500",1)
+    Continue()
+END
+
+IF
+  Global("OHN_INTRO_SCENE","AR0500",2)
+  Global("K#NeeraImport","AR0500",0)
+  !BeenInParty("Neera")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Neera",STATE_REALLY_DEAD)
+  XPGT(Player1,249999)
+  XPLT(Player1,400000)
+THEN
+  RESPONSE #100
+    CreateCreature("NEERA10",[993.3534],S) // Neera
+    ActionOverride("Neera",MakeGlobalOverride())
+    SetGlobal("K#NeeraImport","AR0500",1)
+    Continue()
+END
+
+IF
+  Global("OHN_INTRO_SCENE","AR0500",2)
+  Global("K#NeeraImport","AR0500",0)
+  !BeenInParty("Neera")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Neera",STATE_REALLY_DEAD)
+  XPGT(Player1,399999)
+  XPLT(Player1,800000)
+THEN
+  RESPONSE #100
+    CreateCreature("NEERA11",[993.3534],S) // Neera
+    ActionOverride("Neera",MakeGlobalOverride())
+    SetGlobal("K#NeeraImport","AR0500",1)
+    Continue()
+END
+
+IF
+  Global("OHN_INTRO_SCENE","AR0500",2)
+  Global("K#NeeraImport","AR0500",0)
+  !BeenInParty("Neera")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Neera",STATE_REALLY_DEAD)
+  XPGT(Player1,799999)
+  XPLT(Player1,1200000)
+THEN
+  RESPONSE #100
+    CreateCreature("NEERA12",[993.3534],S) // Neera
+    ActionOverride("Neera",MakeGlobalOverride())
+    SetGlobal("K#NeeraImport","AR0500",1)
+    Continue()
+END
+
+IF
+  Global("OHN_INTRO_SCENE","AR0500",2)
+  Global("K#NeeraImport","AR0500",0)
+  !BeenInParty("Neera")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Neera",STATE_REALLY_DEAD)
+  XPGT(Player1,1199999)
+THEN
+  RESPONSE #100
+    CreateCreature("NEERA13",[993.3534],S) // Neera
+    ActionOverride("Neera",MakeGlobalOverride())
+    SetGlobal("K#NeeraImport","AR0500",1)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~AR0500.BCS~ ~.../AR0500-et.baf~
+
+COPY_EXISTING ~OHNCUT1A.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		/*SPRINT textToReplace ~ActionOverride("Imoen2",SetDialogue(""))~
+		SPRINT textToReplace ~CreateCreature("NEERA8",\[3927\.485\],NNW)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
-
-		SPRINT textToReplace ~ActionOverride("Imoen2",DestroySelf())~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("Imoen2",MoveGlobal("AR1512",Myself,[1857.1520]))
-    ActionOverride("Imoen2",Face(SW))
-    ActionOverride("Imoen2",ChangeAIScript("K#IMIMO2",OVERRIDE))~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
+
+<<<<<<<< .../OH6000-rbOld.baf
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  XPLT(Player1,250000)
+  !InMyArea("NEERA")
+  !InPartyAllowDead("NEERA")
+  !Dead("NEERA")
+THEN
+  RESPONSE #100
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+    CreateCreature("NEERA8",[993.3534],S) // Neera
+END
+
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  XPGT(Player1,249999)
+  XPLT(Player1,400000)
+  !InMyArea("NEERA")
+  !InPartyAllowDead("NEERA")
+  !Dead("NEERA")
+THEN
+  RESPONSE #100
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+    CreateCreature("NEERA10",[993.3534],S) // Neera
+END
+
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  XPGT(Player1,399999)
+  XPLT(Player1,800000)
+  !InMyArea("NEERA")
+  !InPartyAllowDead("NEERA")
+  !Dead("NEERA")
+THEN
+  RESPONSE #100
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+    CreateCreature("NEERA11",[993.3534],S) // Neera
+END
+
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  XPGT(Player1,799999)
+  XPLT(Player1,1200000)
+  !InMyArea("NEERA")
+  !InPartyAllowDead("NEERA")
+  !Dead("NEERA")
+THEN
+  RESPONSE #100
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+    CreateCreature("NEERA12",[993.3534],S) // Neera
+END
+
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  XPGT(Player1,1199999)
+  !InMyArea("NEERA")
+  !InPartyAllowDead("NEERA")
+  !Dead("NEERA")
+THEN
+  RESPONSE #100
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+    CreateCreature("NEERA13",[993.3534],S) // Neera
+END
+>>>>>>>>
+
+<<<<<<<< .../OH6000-rbNew.baf
+IF
+  Global("OHN_PLOT","GLOBAL",0)
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Neera",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    MoveGlobal("OH6000","Neera",[993.3534])
+	ActionOverride("Neera",Face(S))
+    SetGlobal("OHN_PLOT","GLOBAL",1)
+END
+>>>>>>>>
+
+COPY_EXISTING ~OH6000.BCS~ ~override~
+	REPLACE_BCS_BLOCK ~.../OH6000-rbOld.baf~ ~.../OH6000-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OH6000-rbOld.baf in %SOURCE_FILE%.~ END
+BUT_ONLY
+
+/////                                                  \\\\\
+///// OH8000 (Black Pits 2)                            \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../OH8000-et.baf
+IF
+  Global("K#NewGame","OH8000",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","OH8000",1)
+    LeaveAreaLUAPanic("OH8000","",[2.2],S)
+    ActionOverride(Player1,LeaveAreaLUA("OH8000","",[2.2],S))
+    ActionOverride(Player2,LeaveAreaLUA("OH8000","",[2.2],S))
+    ActionOverride(Player3,LeaveAreaLUA("OH8000","",[2.2],S))
+    ActionOverride(Player4,LeaveAreaLUA("OH8000","",[2.2],S))
+    ActionOverride(Player5,LeaveAreaLUA("OH8000","",[2.2],S))
+    ActionOverride(Player6,LeaveAreaLUA("OH8000","",[2.2],S))
+    MultiPlayerSync()
+    SmallWait(2)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_TOP ~OH8000.BCS~ ~.../OH8000-et.baf~
 
 /////                                                  \\\\\
 /////existing in BG2:EE and BG:EE, also used in BG2:EE \\\\\
@@ -1482,14 +2550,14 @@ BUT_ONLY
 //AMNISE.BCS
 COPY_EXISTING ~AMNISE.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~NumberOfTimesTalkedTo(0)~
+		SPRINT textToReplace ~NumTimesTalkedTo(0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~!Allegiance(Myself,ENEMY)
-  NumberOfTimesTalkedTo(0)~
+  NumTimesTalkedTo(0)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1503,7 +2571,7 @@ COPY_EXISTING ~ANKHEG.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1518,7 +2586,7 @@ COPY_EXISTING ~BEAR.BCS~ ~override~
     GlobalLT("ENDOFBG1","GLOBAL",2)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),200)~
@@ -1527,7 +2595,7 @@ COPY_EXISTING ~BEAR.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),200)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1563,7 +2631,7 @@ COPY_EXISTING ~CBEAR.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),75)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1614,7 +2682,7 @@ COPY_EXISTING ~CUTTUTOR.BCS~ ~override~
     EndCutSceneMode()~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1629,7 +2697,7 @@ COPY_EXISTING ~DEMGLASU.BCS~ ~override~
   Global("Prep","LOCALS",1)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1643,7 +2711,7 @@ COPY_EXISTING ~DEMNABSU.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpell(LastSeenBy(Myself),TANARI_DEATH_GAZE)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1657,7 +2725,7 @@ COPY_EXISTING ~DEMSUC.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1673,7 +2741,7 @@ COPY_EXISTING ~ETTERCAP.BCS~ ~override~
 THEN~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1687,7 +2755,7 @@ COPY_EXISTING ~FIGHTER4.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1701,7 +2769,7 @@ COPY_EXISTING ~GBASILSK.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1715,7 +2783,7 @@ COPY_EXISTING ~GENSHY.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastSeenBy(Myself),100)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1729,7 +2797,7 @@ COPY_EXISTING ~GIBBER.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),75)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1756,7 +2824,7 @@ COPY_EXISTING ~INITDLG.BCS~ ~override~
   !Allegiance(Myself,ENEMY)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1772,7 +2840,7 @@ COPY_EXISTING ~INITDLG2.BCS~ ~override~
   !Allegiance(Myself,ENEMY)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1788,7 +2856,7 @@ COPY_EXISTING ~INITMAIN.BCS~ ~override~
   !Allegiance(Myself,ENEMY)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1804,7 +2872,7 @@ COPY_EXISTING ~LBASILSK.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1819,7 +2887,7 @@ COPY_EXISTING ~MAGE1.BCS~ ~override~
   HaveSpell(WIZARD_ARMOR)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1837,7 +2905,7 @@ COPY_EXISTING ~MAGE3.BCS~ ~override~
   HaveSpell(WIZARD_GHOST_ARMOR)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1853,7 +2921,7 @@ COPY_EXISTING ~MAGE4.BCS~ ~override~
   HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1868,7 +2936,7 @@ COPY_EXISTING ~MAGE5.BCS~ ~override~
   HaveSpell(WIZARD_MIRROR_IMAGE)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1884,7 +2952,7 @@ COPY_EXISTING ~MAGE6.BCS~ ~override~
   HaveSpell(WIZARD_SHADOW_DOOR)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1899,7 +2967,7 @@ COPY_EXISTING ~MAGE7.BCS~ ~override~
   HaveSpell(WIZARD_MIRROR_IMAGE)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
@@ -1910,7 +2978,7 @@ COPY_EXISTING ~MAGE7.BCS~ ~override~
   HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1925,7 +2993,7 @@ COPY_EXISTING ~MAGE8.BCS~ ~override~
   HaveSpell(WIZARD_MIRROR_IMAGE)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
@@ -1936,7 +3004,7 @@ COPY_EXISTING ~MAGE8.BCS~ ~override~
   HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1950,7 +3018,7 @@ COPY_EXISTING ~PREY.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastSeenBy(Myself),15)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -1964,7 +3032,7 @@ COPY_EXISTING ~PRIEST4.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),15)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2043,7 +3111,7 @@ COPY_EXISTING ~RUNENEMY.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2058,7 +3126,7 @@ COPY_EXISTING ~SEEENEMY.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~!Allegiance(Myself,EVILCUTOFF)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END*/
 
 		SPRINT textToReplace ~!Class(LastSeenBy(Myself),FLAMING_FIST)~
@@ -2069,7 +3137,7 @@ COPY_EXISTING ~SEEENEMY.BCS~ ~override~
   !Class(LastSeenBy(Myself),AMNISH_SOLDIER)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2084,7 +3152,7 @@ COPY_EXISTING ~SHADFI02.BCS~ ~override~
   HPPercentGT(Myself,49)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2114,7 +3182,7 @@ COPY_EXISTING ~SIRSPELL.BCS~ ~override~
   HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2128,7 +3196,7 @@ COPY_EXISTING ~WDRUNSGT.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2143,7 +3211,7 @@ COPY_EXISTING ~WTASIGHT.BCS~ ~override~
   InWeaponRange(LastSeenBy(Myself))~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 
 		SPRINT textToReplace ~AttackedBy(\[ANYONE\],DEFAULT)~
@@ -2153,7 +3221,7 @@ COPY_EXISTING ~WTASIGHT.BCS~ ~override~
   InWeaponRange(LastSeenBy(Myself))~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2179,7 +3247,7 @@ COPY_EXISTING ~WTRUNSGT.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),150)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),150)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -2187,7 +3255,7 @@ COPY_EXISTING ~WTRUNSGT.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),150)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2201,7 +3269,7 @@ COPY_EXISTING ~WTRUNWAT.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),150)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~Warning: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
 	END
 BUT_ONLY
@@ -2222,3 +3290,666 @@ END
 ACTION_FOR_EACH script IN ANKHEG BEAR CCRAWLER CDRYAD DIREWOLF ETTERCAP GBASILSK GIBBER GNOLLF HAMA HOBGOBF KOBOLDF LBASILSK OGRE PRIEST1 PRIEST2 PRIEST3 PRIEST4 PRIEST5 PSPIDER WARDOG WDARSGT WDASIGHT WILDDOG WTARSGT WTASIGHT WYVERN XVART BEGIN
 	EXTEND_TOP ~%script%.BCS~ ~.../STATE_PANIC-et.baf~
 END
+
+/////                                                  \\\\\
+///// ACHIEVEM                                         \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../ACHIEVEM-eb.baf
+IF
+  Global("ACH_FLYING_BG1","GLOBAL",0)
+  AreaCheck("BG0125")
+  Dead("Sarevok")
+  Global("BD_ACH_PARTY","GLOBAL",1)
+  !NumInPartyGT(1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FLYING_BG1","GLOBAL",1)
+END
+
+IF
+  Global("ACH_FRIEND_OF_BG1","GLOBAL",0)
+  Global("bd_ach_difficulty","global",1)
+  AreaCheck("BG0125")
+  Dead("Sarevok")
+  StoryModeOn()
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FRIEND_OF_BG1","GLOBAL",1)
+END
+
+IF
+  Global("ACH_LORD_OF_BG1","GLOBAL",0)
+  Global("bd_ach_difficulty","global",2)
+  AreaCheck("BG0125")
+  Dead("Sarevok")
+  NightmareModeOn()
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_LORD_OF_BG1","GLOBAL",1)
+END
+
+IF
+  Global("ACH_SACRIFICES_MUST_BG1","GLOBAL",0)
+  AreaCheck("BG0125")
+  Dead("Sarevok")
+  StateCheck(Player2,STATE_REALLY_DEAD)
+  StateCheck(Player3,STATE_REALLY_DEAD)
+  StateCheck(Player4,STATE_REALLY_DEAD)
+  StateCheck(Player5,STATE_REALLY_DEAD)
+  StateCheck(Player6,STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_SACRIFICES_MUST_BG1","GLOBAL",1)
+END
+
+IF
+  Global("ACH_LEAVE_NO_BG1","GLOBAL",0)
+  AreaCheck("BG0125")
+  Dead("Sarevok")
+  NumInPartyAlive(6)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_LEAVE_NO_BG1","GLOBAL",1)
+END
+
+IF
+  Global("ACH_FOREST_FRIEND","GLOBAL",0)
+  Global("SeniyadXP","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FOREST_FRIEND","GLOBAL",1)
+END
+
+IF
+  Global("ACH_NOBLE_ASSISTANT","GLOBAL",0)
+  Global("AldethMove","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_NOBLE_ASSISTANT","GLOBAL",1)
+END
+
+IF
+  Global("ACH_HE_STARTED","GLOBAL",0)
+  !Global("ACH_USE_YOUR","GLOBAL",1)
+  Dead("Marl")
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_HE_STARTED","GLOBAL",1)
+END
+
+IF
+  Global("ACH_REUNION","GLOBAL",0)
+  OR(2)
+    Global("TremainMove","GLOBAL",3)
+    Global("TremainMove","GLOBAL",4)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_REUNION","GLOBAL",1)
+END
+
+IF
+  Global("ACH_PHILISTINE","GLOBAL",0)
+  Dead("Prism")
+  Global("OublekBounty2","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_PHILISTINE","GLOBAL",1)
+END
+
+IF
+  Global("ACH_A_WORK_OF_ART","GLOBAL",0)
+  Global("prism_work_is_complete","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_A_WORK_OF_ART","GLOBAL",1)
+END
+
+IF
+  Global("ACH_FISHERMENS_FRIEND","GLOBAL",0)
+  Dead("Tenya")
+  Global("killed_tenya_fishermen","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FISHERMENS_FRIEND","GLOBAL",1)
+END
+
+IF
+  Global("ACH_SAVE_THE_COW","GLOBAL",0)
+  !Dead("HulriksCow")
+  Global("XvartsDead","GLOBAL",8)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_SAVE_THE_COW","GLOBAL",1)
+END
+
+IF
+  Global("ACH_UNPETRIFIED","GLOBAL",0)
+  Global("Tamah_Freed","GLOBAL",2)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_UNPETRIFIED","GLOBAL",1)
+END
+
+IF
+  Global("ACH_ONLY_MOSTLY_DEAD","GLOBAL",0)
+  Global("HelpDrienne","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_ONLY_MOSTLY_DEAD","GLOBAL",1)
+END
+
+IF
+  Global("ACH_THE_LEGEND","GLOBAL",0)
+  Dead("DeathK")
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_THE_LEGEND","GLOBAL",1)
+END
+
+IF
+  Global("ACH_THE_STONE_CLERIC","GLOBAL",0)
+  Global("Branwen_Freed","GLOBAL",2)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_THE_STONE_CLERIC","GLOBAL",1)
+END
+
+IF
+  Global("ACH_AN_ANCIENT_EVIL","GLOBAL",0)
+  Dead("TANAR")
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_AN_ANCIENT_EVIL","GLOBAL",1)
+END
+
+IF
+  Global("ACH_BACK_TO_BASICS","GLOBAL",0)
+  Global("learn_all_the_things","GLOBAL",14)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_BACK_TO_BASICS","GLOBAL",1)
+END
+
+IF
+  Global("ACH_ENTERTAINED","GLOBAL",0)
+  InParty("baeloth")
+  AreaCheck("ar2900")
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_ENTERTAINED","GLOBAL",1)
+END
+
+IF
+  Global("ACH_ALL_THE_OPTINOS","GLOBAL",0)
+  InPartyAllowDead("neera")
+  InPartyAllowDead("rasaad")
+  InPartyAllowDead("dorn")
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_ALL_THE_OPTINOS","GLOBAL",1)
+END
+
+IF
+  Global("ACH_SAFE_FOR_NOW","GLOBAL",0)
+  Dead("carbos")
+  Dead("shank")
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_SAFE_FOR_NOW","GLOBAL",1)
+END
+
+IF
+  Global("ACH_FORESHADOWING","GLOBAL",0)
+  Global("FirebeadDone","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FORESHADOWING","GLOBAL",1)
+END
+
+IF
+  Global("ACH_COMPLETIONIST","GLOBAL",0)
+  Global("HelpFirebead","GLOBAL",2)
+  Global("HelpHull","GLOBAL",1)
+  Global("HelpPhlydia","GLOBAL",1)
+  Global("HelpFuller","GLOBAL",1)
+  Global("SPRITE_IS_DEADREVRAT","GLOBAL",6)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_COMPLETIONIST","GLOBAL",1)
+END
+
+IF
+  Global("ACH_MASTER_THIEF","GLOBAL",0)
+  PartyHasItem("misc64") // Telescope
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_MASTER_THIEF","GLOBAL",1)
+END
+
+IF
+  Global("CHAPTER","GLOBAL",1)
+  Global("ACH_ON_MY_OWN","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_ON_MY_OWN","GLOBAL",1)
+END
+
+IF
+  Global("SpokeToKhalid","GLOBAL",1)
+  Global("ACH_FRIENDLY_FACES","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FRIENDLY_FACES","GLOBAL",1)
+END
+
+IF
+  Global("CHAPTER","GLOBAL",3)
+  Global("ACH_VICTORY_IS","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_VICTORY_IS","GLOBAL",1)
+END
+
+IF
+  Global("CHAPTER","GLOBAL",4)
+  Global("ACH_BANDITS_BANISHED","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_BANDITS_BANISHED","GLOBAL",1)
+END
+
+IF
+  Global("CHAPTER","GLOBAL",5)
+  Global("ACH_WATER_WATER","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_WATER_WATER","GLOBAL",1)
+END
+
+IF
+  Global("CHAPTER","GLOBAL",6)
+  Global("ACH_ON_THE_TRAIL","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_ON_THE_TRAIL","GLOBAL",1)
+END
+
+IF
+  Global("CHAPTER","GLOBAL",7)
+  AreaCheck("ar2626")
+  Global("ACH_ON_MY_OWN_AGAIN","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_ON_MY_OWN_AGAIN","GLOBAL",1)
+END
+
+IF
+  Dead("Sarevok")
+  Global("ACH_HERO_OF","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_HERO_OF","GLOBAL",1)
+END
+
+IF
+  Global("AttackedSilke","GLOBAL",0)
+  Dead("Merchant1")
+  Dead("Merchant2")
+  Dead("Merchant3")
+  Global("ACH_MERCENARY_OF","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_MERCENARY_OF","GLOBAL",1)
+END
+
+IF
+  Global("AttackedSilke","GLOBAL",1)
+  Dead("Silke")
+  Global("ACH_WORST_BODYGUARD","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_WORST_BODYGUARD","GLOBAL",1)
+END
+
+IF
+  Global("TamokoMove","GLOBAL",4)
+  Global("ACH_LOVERS_REDEMPTION","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_LOVERS_REDEMPTION","GLOBAL",1)
+END
+
+IF
+  Dead("Tamoko")
+  !Global("TamokoMove","GLOBAL",4)
+  Global("ACH_LOVERS_SACRIFICE","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_LOVERS_SACRIFICE","GLOBAL",1)
+END
+
+IF
+  Global("HelpMinsc","GLOBAL",2)
+  Global("ACH_WITCH_SAVIOUR","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_WITCH_SAVIOUR","GLOBAL",1)
+END
+
+IF
+  Dead("dynaheir")
+  Global("edwin_killing_dynaheir","GLOBAL",1)
+  Global("ACH_WITCH_SLAYER","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_WITCH_SLAYER","GLOBAL",1)
+END
+
+IF
+  Global("AbelaNotExists","GLOBAL",1)
+  Global("ACH_DAMSEL_OUT_OF_DISTRESS","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_DAMSEL_OUT_OF_DISTRESS","GLOBAL",1)
+END
+
+IF
+  Dead("Brage")
+  Global("BrageRiddle","GLOBAL",0)
+  Global("ACH_JUDGE_JURY_EXECUTIONER","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_JUDGE_JURY_EXECUTIONER","GLOBAL",1)
+END
+
+IF
+  Global("BrageRiddle","GLOBAL",2)
+  Global("ACH_SECOND_CHANCE","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_SECOND_CHANCE","GLOBAL",1)
+END
+
+IF
+  Global("HelpTenya","GLOBAL",2)
+  Global("ACH_FISHERMENS_FOE","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FISHERMENS_FOE","GLOBAL",1)
+END
+
+IF
+  Global("HelpGallor","GLOBAL",2)
+  Global("ACH_GALLORS_PLOT","GLOBAL",0)
+  !Global("ACH_FAERUNIAN_IDOL","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_GALLORS_PLOT","GLOBAL",1)
+END
+
+IF
+  Global("TalkedToCharleston","GLOBAL",2)
+  Global("ACH_THIS_BELONGS_IN_A_MUSEUM","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_THIS_BELONGS_IN_A_MUSEUM","GLOBAL",1)
+END
+
+IF
+  !Global("HelpGallor","GLOBAL",2)
+  PartyHasItem("MISC48") // Idol
+  Dead("Doomsayer")
+  Global("ACH_FAERUNIAN_IDOL","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_FAERUNIAN_IDOL","GLOBAL",1)
+END
+
+IF
+  Global("HelpNashkellWoman","GLOBAL",3)
+  Global("ACH_SOBERING_NEWS","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_SOBERING_NEWS","GLOBAL",1)
+END
+
+IF
+  Global("jenkal_letting_in_kobolds","GLOBAL",1)
+  Global("ACH_SCENT_OF_A_KOBOLD","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ACH_SCENT_OF_A_KOBOLD","GLOBAL",1)
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~ACHIEVEM.BCS~ ~.../ACHIEVEM-eb.baf~
+
+/////                                                  \\\\\
+///// BDDEFAI                                          \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../BDDEFAI-eb.baf
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_SPECIAL","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  HaveSpell(BERSERKER_ENRAGE) // SPCL321.SPL (Enrage)
+  !CheckSpellState(Myself,BERSERKER_RAGE)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  See([EVILCUTOFF])
+  OR(4)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+    See([EVILCUTOFF.0.UMBERHULK])
+    See([EVILCUTOFF.0.MYCONID])
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    Spell(Myself,BERSERKER_ENRAGE) // SPCL321.SPL (Enrage)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_SPECIAL","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  HaveSpell(BARBARIAN_RAGE) // SPCL152.SPL (Barbarian Rage)
+  !CheckSpellState(Myself,BARBARIAN_RAGE)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  See([EVILCUTOFF])
+  OR(4)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+    See([EVILCUTOFF.0.UMBERHULK])
+    See([EVILCUTOFF.0.MYCONID])
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    Spell(Myself,BARBARIAN_RAGE) // SPCL152.SPL (Barbarian Rage)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_SPECIAL","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  HaveSpell(KENSAI_KIA) // SPCL144.SPL (Kai)
+  !CheckSpellState(Myself,KENSAI_KIA)
+  Range(NearestEnemyOf(Myself),6)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  See([EVILCUTOFF])
+  OR(2)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    Spell(Myself,KENSAI_KIA) // SPCL144.SPL (Kai)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  HaveSpellRES("SPDWD02") // Defensive Stance
+  !CheckSpellState(Myself,DEFENSIVE_STANCE)
+  Range(NearestEnemyOf(Myself),6)
+  OR(2)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    SpellRES("SPDWD02",Myself) // Defensive Stance
+    SetInterrupt(TRUE)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_SPECIAL","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  HaveSpell(BLADE_OFFENSIVE_SPIN) // SPCL521.SPL (Offensive Spin)
+  !CheckSpellState(Myself,OFFENSIVE_SPIN)
+  !CheckSpellState(Myself,DEFENSIVE_SPIN)
+  Range(NearestEnemyOf(Myself),6)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  See([EVILCUTOFF])
+  OR(2)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    Spell(Myself,BLADE_OFFENSIVE_SPIN) // SPCL521.SPL (Offensive Spin)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_SPECIAL","LOCALS",0)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  HaveSpell(ARCHER_CALL_SHOT) // SPCL121.SPL (Called Shot)
+  !CheckSpellState(Myself,ARCHER_CALL_SHOT)
+  IsWeaponRanged(Myself)
+  !Range([EVILCUTOFF],5)
+  OR(4)
+    CheckStatGT([EVILCUTOFF],6,LEVEL)
+    CheckStatGT(SecondNearest([EVILCUTOFF]),6,LEVEL)
+    CheckStatGT(ThirdNearest([EVILCUTOFF]),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],4)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    Spell(Myself,ARCHER_CALL_SHOT) // SPCL121.SPL (Called Shot)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_DEFENSIVE","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  !GlobalTimerNotExpired("BD_Support","LOCALS")
+  HaveSpell(CLERIC_ARMOR_OF_FAITH) // SPPR111.SPL (Armor of Faith)
+  See([EVILCUTOFF])
+  OR(2)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+  !CheckSpellState(Myself,ARMOR_OF_FAITH)
+  CheckStatLT(Myself,50,SPELLFAILUREPRIEST)
+  !CheckStatGT(Myself,0,CLERIC_INSECT_PLAGUE)
+  !StateCheck(Myself,STATE_SILENCED)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    SetGlobalTimer("BD_Support","LOCALS",TWO_ROUNDS)
+    Spell(Myself,CLERIC_ARMOR_OF_FAITH) // SPPR111.SPL (Armor of Faith)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_SPECIAL","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  HaveSpellRES("SPIN103") // Draw Upon Holy Might
+  See([EVILCUTOFF])
+  OR(2)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+  !StateCheck(Myself,STATE_DRAWUPONHOLYMIGHT)
+  CheckStatLT(Myself,50,SPELLFAILUREPRIEST)
+  !CheckStatGT(Myself,0,CLERIC_INSECT_PLAGUE)
+  !StateCheck(Myself,STATE_SILENCED)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    SpellRES("SPIN103",Myself) // Draw Upon Holy Might
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_DEFENSIVE","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  !GlobalTimerNotExpired("BD_Support","LOCALS")
+  HaveSpell(CLERIC_DRAW_UPON_HOLY_MIGHT) // SPPR214.SPL (Draw Upon Holy Might)
+  See([EVILCUTOFF])
+  OR(2)
+    CheckStatGT(LastSeenBy(Myself),6,LEVEL)
+    NumCreatureGT([EVILCUTOFF],3)
+  !StateCheck(Myself,STATE_DRAWUPONHOLYMIGHT)
+  CheckStatLT(Myself,50,SPELLFAILUREPRIEST)
+  !CheckStatGT(Myself,0,CLERIC_INSECT_PLAGUE)
+  !StateCheck(Myself,STATE_SILENCED)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    SetGlobalTimer("BD_Support","LOCALS",TWO_ROUNDS)
+    Spell(Myself,CLERIC_DRAW_UPON_HOLY_MIGHT) // SPPR214.SPL (Draw Upon Holy Might)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_OFFENSIVE","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  HaveSpell(WIZARD_MONSTER_SUMMONING_2) // SPWI407.SPL (Monster Summoning II)
+  OR(2)
+    NumCreatureGT([EVILCUTOFF],4)
+    CheckStatGT([EVILCUTOFF],6,LEVEL)
+  CheckStatLT(Myself,50,SPELLFAILUREMAGE)
+  !CheckStatGT(Myself,0,CLERIC_INSECT_PLAGUE)
+  !StateCheck(Myself,STATE_SILENCED)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    Spell(Myself,WIZARD_MONSTER_SUMMONING_2) // SPWI407.SPL (Monster Summoning II)
+END
+
+IF
+  Global("ENDOFBG1","GLOBAL",0)
+  Global("BDAI_DISABLE_ITEMS","LOCALS",0)
+  ActionListEmpty()
+  InParty(Myself)
+  !GlobalTimerNotExpired("BD_Cast","LOCALS")
+  !GlobalTimerNotExpired("BD_Wand","LOCALS")
+  HasItem("WAND10",Myself) // Wand of Monster Summoning
+  OR(2)
+    NumCreatureGT([EVILCUTOFF],4)
+    CheckStatGT([EVILCUTOFF],6,LEVEL)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BD_Cast","LOCALS",ONE_ROUND)
+    SetGlobalTimer("BD_Wand","LOCALS",THREE_ROUNDS)
+    UseItem("WAND10",Myself) // Wand of Monster Summoning
+    SetSequence(SEQ_CAST)
+    DisplayString(Myself,66959) // No. What else?
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~BDDEFAI.BCS~ ~.../BDDEFAI-eb.baf~

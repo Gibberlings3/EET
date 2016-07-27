@@ -1,17 +1,9 @@
 OUTER_SPRINT option ~~
 OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 2) || (option < 1) BEGIN
-	PRINT ~Choose GAME_IS platform to append eet parameter to:
- 1. Baldur's Gate 2 / Throne of Bhaal
- 2. Siege of Dragonspear~
-	ACTION_READLN option
-END
-
-OUTER_SPRINT option2 ~~
-OUTER_WHILE NOT (IS_AN_INT %option2%) || (option2 > 2) || (option2 < 1) BEGIN
 	PRINT ~Should the tool add EVALUATE_BUFFER to all COMPILE, EXTEND_, REPLACE_BCS_BLOCK, R_B_B weidu commands, if not already present?
  1. No (you will need to do it manually for scripts and dialogs that needs it)
  2. Yes (add EVALUATE_BUFFER everywhere if any script or dialog file needs it)~
-	ACTION_READLN option2
+	ACTION_READLN option
 END
 
 PRINT ~~
@@ -21,11 +13,9 @@ OUTER_SET cntcurrent = 0
 OUTER_SET ignore_cnt = 0
 OUTER_SET patch_cnt = 0
 OUTER_SPRINT log ~~
-ACTION_IF (option = 1) BEGIN
-	OUTER_SPRINT game ~bg2~
-	OUTER_SPRINT platformMATCH1 "ALWAYS
-  ACTION_IF (GAME_IS ~eet~) AND (FILE_CONTAINS ~override/EET.flag~ ~EET_JOURNAL~) BEGIN
-    OUTER_SET bg2_chapter = 14
+OUTER_SPRINT platformMATCH1 "ALWAYS
+  ACTION_IF (GAME_IS ~eet~) BEGIN
+    OUTER_SET bg2_chapter = 12
   END ELSE BEGIN
     OUTER_SET bg2_chapter = 0
   END
@@ -33,20 +23,6 @@ ACTION_IF (option = 1) BEGIN
     OUTER_SET bg2_chapter = bg2_chapter + 1
     OUTER_SPRINT name_source ~bg2_chapter_%i%~
     OUTER_SET EVAL ~%name_source%~ = bg2_chapter
-  END
-"
-END ELSE BEGIN
-	OUTER_SPRINT game ~sod~
-	OUTER_SPRINT platformMATCH1 "ALWAYS
-  ACTION_IF (GAME_IS ~eet~) AND (FILE_CONTAINS ~override/EET.flag~ ~EET_JOURNAL~) BEGIN
-    OUTER_SET sod_chapter = 7
-  END ELSE BEGIN
-    OUTER_SET sod_chapter = 0
-  END
-  OUTER_FOR (i=1; i<=7; i=i+1) BEGIN
-    OUTER_SET sod_chapter = sod_chapter + 1
-    OUTER_SPRINT name_source ~sod_chapter_%i%~
-    OUTER_SET EVAL ~%name_source%~ = sod_chapter
   END
 "
 END
@@ -80,12 +56,12 @@ COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 						PATCH_IF (patched = 0) BEGIN
 							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
 						END
-						SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2%) => %MATCH1%%%game%_chapter_%MATCH2%%)~
+						SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2%) => %MATCH1%%bg2_chapter_%MATCH2%%)~
 						SPRINT log ~%log%%log_temp%%LNL%~
 						PATCH_PRINT ~%log_temp%~
 						SET patched = 1
 					END
-					~%MATCH1%%%game%_chapter_%MATCH2%%)~
+					~%MATCH1%%bg2_chapter_%MATCH2%%)~
 					REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
 			END
 			ACTION_IF (patched = 0) BEGIN
@@ -159,7 +135,7 @@ ACTION_IF (patch_cnt > 0) BEGIN
 							END
 						END
 					END
-					PATCH_IF (option2 = 2) BEGIN
+					PATCH_IF (option = 2) BEGIN
 						REPLACE_EVALUATE CASE_SENSITIVE ~^\([ %TAB%]*REPLACE_BCS_BLOCK\)\(.*\)$~ BEGIN
 							PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~EVAL~) BEGIN
 								SPRINT log_temp ~Patching %patch_name%: %MATCH1%%MATCH2% => %MATCH1% EVALUATE_BUFFER%MATCH2%~

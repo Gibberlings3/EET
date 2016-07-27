@@ -1,41 +1,506 @@
-DELETE + ~%biff_dir%/v2/tis/HOTCOAL.TIS~
-	~%biff_dir%/v2/tis/HOTCOALR.TIS~
-	~%biff_dir%/v2/tis/MIN1A01.TIS~
-	~%biff_dir%/v2/tis/OH2010.TIS~
-	~%biff_dir%/v2/tis/OH3020.TIS~
-	~%biff_dir%/v2/tis/WTFALL.TIS~
-	~%biff_dir%/v2/tis/WTFALLR.TIS~
-	~%biff_dir%/v2/tis/WTGOO.TIS~
-	~%biff_dir%/v2/tis/WTGOO2.TIS~
-	~%biff_dir%/v2/tis/WTGOO2R.TIS~
-	~%biff_dir%/v2/tis/WTGOOR.TIS~
-	~%biff_dir%/v2/tis/WTLAKE.TIS~
-	~%biff_dir%/v2/tis/WTLAKER.TIS~
-	~%biff_dir%/v2/tis/WTLAVA.TIS~
-	~%biff_dir%/v2/tis/WTLAVAR.TIS~
-	~%biff_dir%/v2/tis/WTMGLI.TIS~
-	~%biff_dir%/v2/tis/WTMGLIR.TIS~
-	~%biff_dir%/v2/tis/WTOIL.TIS~
-	~%biff_dir%/v2/tis/WTOIL2.TIS~
-	~%biff_dir%/v2/tis/WTOIL2R.TIS~
-	~%biff_dir%/v2/tis/WTOILR.TIS~
-	~%biff_dir%/v2/tis/WTPOOL.TIS~
-	~%biff_dir%/v2/tis/WTPOOLR.TIS~
-	~%biff_dir%/v2/tis/WTRIV.TIS~
-	~%biff_dir%/v2/tis/WTRIV2.TIS~
-	~%biff_dir%/v2/tis/WTRIV2R.TIS~
-	~%biff_dir%/v2/tis/WTRIVR.TIS~
-	~%biff_dir%/v2/tis/WTSEW.TIS~
-	~%biff_dir%/v2/tis/WTSEWB.TIS~
-	~%biff_dir%/v2/tis/WTSEWBR.TIS~
-	~%biff_dir%/v2/tis/WTSEWR.TIS~
-	~%biff_dir%/v2/tis/WTSTR.TIS~
-	~%biff_dir%/v2/tis/WTSTR2.TIS~
-	~%biff_dir%/v2/tis/WTSTR2R.TIS~
-	~%biff_dir%/v2/tis/WTSTRR.TIS~
-	~%biff_dir%/v2/tis/WTSWAM.TIS~
-	~%biff_dir%/v2/tis/WTSWAMR.TIS~
-	~%biff_dir%/v2/tis/WTURN.TIS~
-	~%biff_dir%/v2/tis/WTURNR.TIS~
-	~%biff_dir%/v2/tis/WTWAVE.TIS~
-	~%biff_dir%/v2/tis/WTWAVER.TIS~
+ACTION_BASH_FOR ~%biff_dir%~ ~^B.+\.TIS$~ BEGIN
+	COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_FILESPEC%~
+		READ_LONG 0x8 "tiles_cnt"
+		READ_LONG 0x10 "tiles_off"
+		READ_LONG 0xc "tiles_length"
+		FOR (cnt=0; cnt<"%tiles_cnt%"; cnt=cnt+1) BEGIN
+			READ_LONG ("%tiles_off%"+"%tiles_length%"*cnt+0x0) "pvrz_page"
+			PATCH_IF (pvrz_page >= 0) BEGIN
+				//PATCH_PRINT ~cnt = %cnt%, pvrz_page = %pvrz_page%~
+				SET pvrz_page = pvrz_page + 50
+				WRITE_LONG ("%tiles_off%"+"%tiles_length%"*cnt+0x0) "pvrz_page"
+			END
+		END
+END
+
+MOVE + ~%biff_dir%/AR0002.TIS~ ~%biff_dir%/eetBG00/BG0002.TIS~
+	~%biff_dir%/AR0100.TIS~ ~%biff_dir%/eetBG01/BG0100.TIS~
+	~%biff_dir%/AR0100N.TIS~ ~%biff_dir%/eetBG01/BG0100N.TIS~
+	~%biff_dir%/AR0101.TIS~ ~%biff_dir%/eetBG01/BG0101.TIS~
+	~%biff_dir%/AR0102.TIS~ ~%biff_dir%/eetBG01/BG0102.TIS~
+	~%biff_dir%/AR0103.TIS~ ~%biff_dir%/eetBG01/BG0103.TIS~
+	~%biff_dir%/AR0104.TIS~ ~%biff_dir%/eetBG01/BG0104.TIS~
+	~%biff_dir%/AR0105.TIS~ ~%biff_dir%/eetBG01/BG0105.TIS~
+	~%biff_dir%/AR0106.TIS~ ~%biff_dir%/eetBG01/BG0106.TIS~
+	~%biff_dir%/AR0107.TIS~ ~%biff_dir%/eetBG01/BG0107.TIS~
+	~%biff_dir%/AR0108.TIS~ ~%biff_dir%/eetBG01/BG0108.TIS~
+	~%biff_dir%/AR0109.TIS~ ~%biff_dir%/eetBG01/BG0109.TIS~
+	~%biff_dir%/AR0110.TIS~ ~%biff_dir%/eetBG01/BG0110.TIS~
+	~%biff_dir%/AR0111.TIS~ ~%biff_dir%/eetBG01/BG0111.TIS~
+	~%biff_dir%/AR0112.TIS~ ~%biff_dir%/eetBG01/BG0112.TIS~
+	~%biff_dir%/AR0114.TIS~ ~%biff_dir%/eetBG01/BG0114.TIS~
+	~%biff_dir%/AR0115.TIS~ ~%biff_dir%/eetBG01/BG0115.TIS~
+	~%biff_dir%/AR0116.TIS~ ~%biff_dir%/eetBG01/BG0116.TIS~
+	~%biff_dir%/AR0117.TIS~ ~%biff_dir%/eetBG01/BG0117.TIS~
+	~%biff_dir%/AR0118.TIS~ ~%biff_dir%/eetBG01/BG0118.TIS~
+	~%biff_dir%/AR0119.TIS~ ~%biff_dir%/eetBG01/BG0119.TIS~
+	~%biff_dir%/AR0120.TIS~ ~%biff_dir%/eetBG01/BG0120.TIS~
+	~%biff_dir%/AR0121.TIS~ ~%biff_dir%/eetBG01/BG0121.TIS~
+	~%biff_dir%/AR0123.TIS~ ~%biff_dir%/eetBG01/BG0123.TIS~
+	~%biff_dir%/AR0125.TIS~ ~%biff_dir%/eetBG01/BG0125.TIS~
+	~%biff_dir%/AR0126.TIS~ ~%biff_dir%/eetBG01/BG0126.TIS~
+	~%biff_dir%/AR0127.TIS~ ~%biff_dir%/eetBG01/BG0127.TIS~
+	~%biff_dir%/AR0128.TIS~ ~%biff_dir%/eetBG01/BG0128.TIS~
+	~%biff_dir%/AR0129.TIS~ ~%biff_dir%/eetBG01/BG0129.TIS~
+	~%biff_dir%/AR0130.TIS~ ~%biff_dir%/eetBG01/BG0130.TIS~
+	~%biff_dir%/AR0131.TIS~ ~%biff_dir%/eetBG01/BG0131.TIS~
+	~%biff_dir%/AR0132.TIS~ ~%biff_dir%/eetBG01/BG0132.TIS~
+	~%biff_dir%/AR0133.TIS~ ~%biff_dir%/eetBG01/BG0133.TIS~
+	~%biff_dir%/AR0134.TIS~ ~%biff_dir%/eetBG01/BG0134.TIS~
+	~%biff_dir%/AR0135.TIS~ ~%biff_dir%/eetBG01/BG0135.TIS~
+	~%biff_dir%/AR0136.TIS~ ~%biff_dir%/eetBG01/BG0136.TIS~
+	~%biff_dir%/AR0137.TIS~ ~%biff_dir%/eetBG01/BG0137.TIS~
+	~%biff_dir%/AR0138.TIS~ ~%biff_dir%/eetBG01/BG0138.TIS~
+	~%biff_dir%/AR0139.TIS~ ~%biff_dir%/eetBG01/BG0139.TIS~
+	~%biff_dir%/AR0140.TIS~ ~%biff_dir%/eetBG01/BG0140.TIS~
+	~%biff_dir%/AR0141.TIS~ ~%biff_dir%/eetBG01/BG0141.TIS~
+	~%biff_dir%/AR0142.TIS~ ~%biff_dir%/eetBG01/BG0142.TIS~
+	~%biff_dir%/AR0143.TIS~ ~%biff_dir%/eetBG01/BG0143.TIS~
+	~%biff_dir%/AR0144.TIS~ ~%biff_dir%/eetBG01/BG0144.TIS~
+	~%biff_dir%/AR0145.TIS~ ~%biff_dir%/eetBG01/BG0145.TIS~
+	~%biff_dir%/AR0146.TIS~ ~%biff_dir%/eetBG01/BG0146.TIS~
+	~%biff_dir%/AR0148.TIS~ ~%biff_dir%/eetBG01/BG0148.TIS~
+	~%biff_dir%/AR0149.TIS~ ~%biff_dir%/eetBG01/BG0149.TIS~
+	~%biff_dir%/AR0150.TIS~ ~%biff_dir%/eetBG01/BG0150.TIS~
+	~%biff_dir%/AR0151.TIS~ ~%biff_dir%/eetBG01/BG0151.TIS~
+	~%biff_dir%/AR0152.TIS~ ~%biff_dir%/eetBG01/BG0152.TIS~
+	~%biff_dir%/AR0153.TIS~ ~%biff_dir%/eetBG01/BG0153.TIS~
+	~%biff_dir%/AR0155.TIS~ ~%biff_dir%/eetBG01/BG0155.TIS~
+	~%biff_dir%/AR0156.TIS~ ~%biff_dir%/eetBG01/BG0156.TIS~
+	~%biff_dir%/AR0161.TIS~ ~%biff_dir%/eetBG01/BG0161.TIS~
+	~%biff_dir%/AR0162.TIS~ ~%biff_dir%/eetBG01/BG0162.TIS~
+	~%biff_dir%/AR0163.TIS~ ~%biff_dir%/eetBG01/BG0163.TIS~
+	~%biff_dir%/AR0164.TIS~ ~%biff_dir%/eetBG01/BG0164.TIS~
+	~%biff_dir%/AR0165.TIS~ ~%biff_dir%/eetBG01/BG0165.TIS~
+	~%biff_dir%/AR0166.TIS~ ~%biff_dir%/eetBG01/BG0166.TIS~
+	~%biff_dir%/AR0167.TIS~ ~%biff_dir%/eetBG01/BG0167.TIS~
+	~%biff_dir%/AR0168.TIS~ ~%biff_dir%/eetBG01/BG0168.TIS~
+	~%biff_dir%/AR0169.TIS~ ~%biff_dir%/eetBG01/BG0169.TIS~
+	~%biff_dir%/AR0170.TIS~ ~%biff_dir%/eetBG01/BG0170.TIS~
+	~%biff_dir%/AR0200.TIS~ ~%biff_dir%/eetBG02/BG0200.TIS~
+	~%biff_dir%/AR0200N.TIS~ ~%biff_dir%/eetBG02/BG0200N.TIS~
+	~%biff_dir%/AR0224.TIS~ ~%biff_dir%/eetBG02/BG0224.TIS~
+	~%biff_dir%/AR0225.TIS~ ~%biff_dir%/eetBG02/BG0225.TIS~
+	~%biff_dir%/AR0226.TIS~ ~%biff_dir%/eetBG02/BG0226.TIS~
+	~%biff_dir%/AR0300.TIS~ ~%biff_dir%/eetBG03/BG0300.TIS~
+	~%biff_dir%/AR0300N.TIS~ ~%biff_dir%/eetBG03/BG0300N.TIS~
+	~%biff_dir%/AR0304.TIS~ ~%biff_dir%/eetBG03/BG0304.TIS~
+	~%biff_dir%/AR0400.TIS~ ~%biff_dir%/eetBG04/BG0400.TIS~
+	~%biff_dir%/AR0401.TIS~ ~%biff_dir%/eetBG04/BG0401.TIS~
+	~%biff_dir%/AR0500.TIS~ ~%biff_dir%/eetBG05/BG0500.TIS~
+	~%biff_dir%/AR0501.TIS~ ~%biff_dir%/eetBG05/BG0501.TIS~
+	~%biff_dir%/AR0502.TIS~ ~%biff_dir%/eetBG05/BG0502.TIS~
+	~%biff_dir%/AR0503.TIS~ ~%biff_dir%/eetBG05/BG0503.TIS~
+	~%biff_dir%/AR0504.TIS~ ~%biff_dir%/eetBG05/BG0504.TIS~
+	~%biff_dir%/AR0505.TIS~ ~%biff_dir%/eetBG05/BG0505.TIS~
+	~%biff_dir%/AR0506.TIS~ ~%biff_dir%/eetBG05/BG0506.TIS~
+	~%biff_dir%/AR0506AC.TIS~ ~%biff_dir%/eetBG05/BG0506AC.TIS~
+	~%biff_dir%/AR0506AO.TIS~ ~%biff_dir%/eetBG05/BG0506AO.TIS~
+	~%biff_dir%/AR0507.TIS~ ~%biff_dir%/eetBG05/BG0507.TIS~
+	~%biff_dir%/AR0508.TIS~ ~%biff_dir%/eetBG05/BG0508.TIS~
+	~%biff_dir%/AR0509.TIS~ ~%biff_dir%/eetBG05/BG0509.TIS~
+	~%biff_dir%/AR0510.TIS~ ~%biff_dir%/eetBG05/BG0510.TIS~
+	~%biff_dir%/AR0511.TIS~ ~%biff_dir%/eetBG05/BG0511.TIS~
+	~%biff_dir%/AR0512.TIS~ ~%biff_dir%/eetBG05/BG0512.TIS~
+	~%biff_dir%/AR0513.TIS~ ~%biff_dir%/eetBG05/BG0513.TIS~
+	~%biff_dir%/AR0514.TIS~ ~%biff_dir%/eetBG05/BG0514.TIS~
+	~%biff_dir%/AR0515.TIS~ ~%biff_dir%/eetBG05/BG0515.TIS~
+	~%biff_dir%/AR0516.TIS~ ~%biff_dir%/eetBG05/BG0516.TIS~
+	~%biff_dir%/AR0600.TIS~ ~%biff_dir%/eetBG06/BG0600.TIS~
+	~%biff_dir%/AR0600N.TIS~ ~%biff_dir%/eetBG06/BG0600N.TIS~
+	~%biff_dir%/AR0601.TIS~ ~%biff_dir%/eetBG06/BG0601.TIS~
+	~%biff_dir%/AR0602.TIS~ ~%biff_dir%/eetBG06/BG0602.TIS~
+	~%biff_dir%/AR0603.TIS~ ~%biff_dir%/eetBG06/BG0603.TIS~
+	~%biff_dir%/AR0606.TIS~ ~%biff_dir%/eetBG06/BG0606.TIS~
+	~%biff_dir%/AR0607.TIS~ ~%biff_dir%/eetBG06/BG0607.TIS~
+	~%biff_dir%/AR0608.TIS~ ~%biff_dir%/eetBG06/BG0608.TIS~
+	~%biff_dir%/AR0609.TIS~ ~%biff_dir%/eetBG06/BG0609.TIS~
+	~%biff_dir%/AR0611.TIS~ ~%biff_dir%/eetBG06/BG0611.TIS~
+	~%biff_dir%/AR0612.TIS~ ~%biff_dir%/eetBG06/BG0612.TIS~
+	~%biff_dir%/AR0613.TIS~ ~%biff_dir%/eetBG06/BG0613.TIS~
+	~%biff_dir%/AR0614.TIS~ ~%biff_dir%/eetBG06/BG0614.TIS~
+	~%biff_dir%/AR0615.TIS~ ~%biff_dir%/eetBG06/BG0615.TIS~
+	~%biff_dir%/AR0616.TIS~ ~%biff_dir%/eetBG06/BG0616.TIS~
+	~%biff_dir%/AR0621.TIS~ ~%biff_dir%/eetBG06/BG0621.TIS~
+	~%biff_dir%/AR0621N.TIS~ ~%biff_dir%/eetBG06/BG0621N.TIS~
+	~%biff_dir%/AR0700.TIS~ ~%biff_dir%/eetBG07/BG0700.TIS~
+	~%biff_dir%/AR0700N.TIS~ ~%biff_dir%/eetBG07/BG0700N.TIS~
+	~%biff_dir%/AR0702.TIS~ ~%biff_dir%/eetBG07/BG0702.TIS~
+	~%biff_dir%/AR0703.TIS~ ~%biff_dir%/eetBG07/BG0703.TIS~
+	~%biff_dir%/AR0704.TIS~ ~%biff_dir%/eetBG07/BG0704.TIS~
+	~%biff_dir%/AR0705.TIS~ ~%biff_dir%/eetBG07/BG0705.TIS~
+	~%biff_dir%/AR0706.TIS~ ~%biff_dir%/eetBG07/BG0706.TIS~
+	~%biff_dir%/AR0719.TIS~ ~%biff_dir%/eetBG07/BG0719.TIS~
+	~%biff_dir%/AR0720.TIS~ ~%biff_dir%/eetBG07/BG0720.TIS~
+	~%biff_dir%/AR0724.TIS~ ~%biff_dir%/eetBG07/BG0724.TIS~
+	~%biff_dir%/AR0726.TIS~ ~%biff_dir%/eetBG07/BG0726.TIS~
+	~%biff_dir%/AR0800.TIS~ ~%biff_dir%/eetBG08/BG0800.TIS~
+	~%biff_dir%/AR0800N.TIS~ ~%biff_dir%/eetBG08/BG0800N.TIS~
+	~%biff_dir%/AR0807.TIS~ ~%biff_dir%/eetBG08/BG0807.TIS~
+	~%biff_dir%/AR0808.TIS~ ~%biff_dir%/eetBG08/BG0808.TIS~
+	~%biff_dir%/AR0809.TIS~ ~%biff_dir%/eetBG08/BG0809.TIS~
+	~%biff_dir%/AR0900.TIS~ ~%biff_dir%/eetBG09/BG0900.TIS~
+	~%biff_dir%/AR0900N.TIS~ ~%biff_dir%/eetBG09/BG0900N.TIS~
+	~%biff_dir%/AR0901.TIS~ ~%biff_dir%/eetBG09/BG0901.TIS~
+	~%biff_dir%/AR1000.TIS~ ~%biff_dir%/eetBG10/BG1000.TIS~
+	~%biff_dir%/AR1001.TIS~ ~%biff_dir%/eetBG10/BG1001.TIS~
+	~%biff_dir%/AR1002.TIS~ ~%biff_dir%/eetBG10/BG1002.TIS~
+	~%biff_dir%/AR1003.TIS~ ~%biff_dir%/eetBG10/BG1003.TIS~
+	~%biff_dir%/AR1004.TIS~ ~%biff_dir%/eetBG10/BG1004.TIS~
+	~%biff_dir%/AR1005.TIS~ ~%biff_dir%/eetBG10/BG1005.TIS~
+	~%biff_dir%/AR1008.TIS~ ~%biff_dir%/eetBG10/BG1008.TIS~
+	~%biff_dir%/AR1009.TIS~ ~%biff_dir%/eetBG10/BG1009.TIS~
+	~%biff_dir%/AR1010.TIS~ ~%biff_dir%/eetBG10/BG1010.TIS~
+	~%biff_dir%/AR1100.TIS~ ~%biff_dir%/eetBG11/BG1100.TIS~
+	~%biff_dir%/AR1100N.TIS~ ~%biff_dir%/eetBG11/BG1100N.TIS~
+	~%biff_dir%/AR1101.TIS~ ~%biff_dir%/eetBG11/BG1101.TIS~
+	~%biff_dir%/AR1102.TIS~ ~%biff_dir%/eetBG11/BG1102.TIS~
+	~%biff_dir%/AR1200.TIS~ ~%biff_dir%/eetBG12/BG1200.TIS~
+	~%biff_dir%/AR1200N.TIS~ ~%biff_dir%/eetBG12/BG1200N.TIS~
+	~%biff_dir%/AR1207.TIS~ ~%biff_dir%/eetBG12/BG1207.TIS~
+	~%biff_dir%/AR1208.TIS~ ~%biff_dir%/eetBG12/BG1208.TIS~
+	~%biff_dir%/AR1215.TIS~ ~%biff_dir%/eetBG12/BG1215.TIS~
+	~%biff_dir%/AR1300.TIS~ ~%biff_dir%/eetBG13/BG1300.TIS~
+	~%biff_dir%/AR1300N.TIS~ ~%biff_dir%/eetBG13/BG1300N.TIS~
+	~%biff_dir%/AR1302.TIS~ ~%biff_dir%/eetBG13/BG1302.TIS~
+	~%biff_dir%/AR1400.TIS~ ~%biff_dir%/eetBG14/BG1400.TIS~
+	~%biff_dir%/AR1401.TIS~ ~%biff_dir%/eetBG14/BG1401.TIS~
+	~%biff_dir%/AR1402.TIS~ ~%biff_dir%/eetBG14/BG1402.TIS~
+	~%biff_dir%/AR1403.TIS~ ~%biff_dir%/eetBG14/BG1403.TIS~
+	~%biff_dir%/AR1404.TIS~ ~%biff_dir%/eetBG14/BG1404.TIS~
+	~%biff_dir%/AR1500.TIS~ ~%biff_dir%/eetBG15/BG1500.TIS~
+	~%biff_dir%/AR1501.TIS~ ~%biff_dir%/eetBG15/BG1501.TIS~
+	~%biff_dir%/AR1502.TIS~ ~%biff_dir%/eetBG15/BG1502.TIS~
+	~%biff_dir%/AR1503.TIS~ ~%biff_dir%/eetBG15/BG1503.TIS~
+	~%biff_dir%/AR1504.TIS~ ~%biff_dir%/eetBG15/BG1504.TIS~
+	~%biff_dir%/AR1505.TIS~ ~%biff_dir%/eetBG15/BG1505.TIS~
+	~%biff_dir%/AR1600.TIS~ ~%biff_dir%/eetBG16/BG1600.TIS~
+	~%biff_dir%/AR1601.TIS~ ~%biff_dir%/eetBG16/BG1601.TIS~
+	~%biff_dir%/AR1602.TIS~ ~%biff_dir%/eetBG16/BG1602.TIS~
+	~%biff_dir%/AR1603.TIS~ ~%biff_dir%/eetBG16/BG1603.TIS~
+	~%biff_dir%/AR1700.TIS~ ~%biff_dir%/eetBG17/BG1700.TIS~
+	~%biff_dir%/AR1800.TIS~ ~%biff_dir%/eetBG18/BG1800.TIS~
+	~%biff_dir%/AR1801.TIS~ ~%biff_dir%/eetBG18/BG1801.TIS~
+	~%biff_dir%/AR1802.TIS~ ~%biff_dir%/eetBG18/BG1802.TIS~
+	~%biff_dir%/AR1803.TIS~ ~%biff_dir%/eetBG18/BG1803.TIS~
+	~%biff_dir%/AR1804.TIS~ ~%biff_dir%/eetBG18/BG1804.TIS~
+	~%biff_dir%/AR1805.TIS~ ~%biff_dir%/eetBG18/BG1805.TIS~
+	~%biff_dir%/AR1806.TIS~ ~%biff_dir%/eetBG18/BG1806.TIS~
+	~%biff_dir%/AR1807.TIS~ ~%biff_dir%/eetBG18/BG1807.TIS~
+	~%biff_dir%/AR1808.TIS~ ~%biff_dir%/eetBG18/BG1808.TIS~
+	~%biff_dir%/AR1809.TIS~ ~%biff_dir%/eetBG18/BG1809.TIS~
+	~%biff_dir%/AR1900.TIS~ ~%biff_dir%/eetBG19/BG1900.TIS~
+	~%biff_dir%/AR1900N.TIS~ ~%biff_dir%/eetBG19/BG1900N.TIS~
+	~%biff_dir%/AR1901.TIS~ ~%biff_dir%/eetBG19/BG1901.TIS~
+	~%biff_dir%/AR1902.TIS~ ~%biff_dir%/eetBG19/BG1902.TIS~
+	~%biff_dir%/AR1903.TIS~ ~%biff_dir%/eetBG19/BG1903.TIS~
+	~%biff_dir%/AR2000.TIS~ ~%biff_dir%/eetBG20/BG2000.TIS~
+	~%biff_dir%/AR2001.TIS~ ~%biff_dir%/eetBG20/BG2001.TIS~
+	~%biff_dir%/AR2002.TIS~ ~%biff_dir%/eetBG20/BG2002.TIS~
+	~%biff_dir%/AR2004.TIS~ ~%biff_dir%/eetBG20/BG2004.TIS~
+	~%biff_dir%/AR2006.TIS~ ~%biff_dir%/eetBG20/BG2006.TIS~
+	~%biff_dir%/AR2008.TIS~ ~%biff_dir%/eetBG20/BG2008.TIS~
+	~%biff_dir%/AR2012.TIS~ ~%biff_dir%/eetBG20/BG2012.TIS~
+	~%biff_dir%/AR2100.TIS~ ~%biff_dir%/eetBG21/BG2100.TIS~
+	~%biff_dir%/AR2101.TIS~ ~%biff_dir%/eetBG21/BG2101.TIS~
+	~%biff_dir%/AR2200.TIS~ ~%biff_dir%/eetBG22/BG2200.TIS~
+	~%biff_dir%/AR2215.TIS~ ~%biff_dir%/eetBG22/BG2215.TIS~
+	~%biff_dir%/AR2300.TIS~ ~%biff_dir%/eetBG23/BG2300.TIS~
+	~%biff_dir%/AR2300N.TIS~ ~%biff_dir%/eetBG23/BG2300N.TIS~
+	~%biff_dir%/AR2301.TIS~ ~%biff_dir%/eetBG23/BG2301.TIS~
+	~%biff_dir%/AR2302.TIS~ ~%biff_dir%/eetBG23/BG2302.TIS~
+	~%biff_dir%/AR2303.TIS~ ~%biff_dir%/eetBG23/BG2303.TIS~
+	~%biff_dir%/AR2304.TIS~ ~%biff_dir%/eetBG23/BG2304.TIS~
+	~%biff_dir%/AR2305.TIS~ ~%biff_dir%/eetBG23/BG2305.TIS~
+	~%biff_dir%/AR2306.TIS~ ~%biff_dir%/eetBG23/BG2306.TIS~
+	~%biff_dir%/AR2400.TIS~ ~%biff_dir%/eetBG24/BG2400.TIS~
+	~%biff_dir%/AR2600.TIS~ ~%biff_dir%/eetBG26/BG2600.TIS~
+	~%biff_dir%/AR2600N.TIS~ ~%biff_dir%/eetBG26/BG2600N.TIS~
+	~%biff_dir%/AR2602.TIS~ ~%biff_dir%/eetBG26/BG2602.TIS~
+	~%biff_dir%/AR2605.TIS~ ~%biff_dir%/eetBG26/BG2605.TIS~
+	~%biff_dir%/AR2606.TIS~ ~%biff_dir%/eetBG26/BG2606.TIS~
+	~%biff_dir%/AR2607.TIS~ ~%biff_dir%/eetBG26/BG2607.TIS~
+	~%biff_dir%/AR2608.TIS~ ~%biff_dir%/eetBG26/BG2608.TIS~
+	~%biff_dir%/AR2609.TIS~ ~%biff_dir%/eetBG26/BG2609.TIS~
+	~%biff_dir%/AR2610.TIS~ ~%biff_dir%/eetBG26/BG2610.TIS~
+	~%biff_dir%/AR2611.TIS~ ~%biff_dir%/eetBG26/BG2611.TIS~
+	~%biff_dir%/AR2612.TIS~ ~%biff_dir%/eetBG26/BG2612.TIS~
+	~%biff_dir%/AR2613.TIS~ ~%biff_dir%/eetBG26/BG2613.TIS~
+	~%biff_dir%/AR2614.TIS~ ~%biff_dir%/eetBG26/BG2614.TIS~
+	~%biff_dir%/AR2615.TIS~ ~%biff_dir%/eetBG26/BG2615.TIS~
+	~%biff_dir%/AR2616.TIS~ ~%biff_dir%/eetBG26/BG2616.TIS~
+	~%biff_dir%/AR2617.TIS~ ~%biff_dir%/eetBG26/BG2617.TIS~
+	~%biff_dir%/AR2618.TIS~ ~%biff_dir%/eetBG26/BG2618.TIS~
+	~%biff_dir%/AR2619.TIS~ ~%biff_dir%/eetBG26/BG2619.TIS~
+	~%biff_dir%/AR2631.TIS~ ~%biff_dir%/eetBG26/BG2631.TIS~
+	~%biff_dir%/AR2643.TIS~ ~%biff_dir%/eetBG26/BG2643.TIS~
+	~%biff_dir%/AR2700.TIS~ ~%biff_dir%/eetBG27/BG2700.TIS~
+	~%biff_dir%/AR2800.TIS~ ~%biff_dir%/eetBG28/BG2800.TIS~
+	~%biff_dir%/AR2900.TIS~ ~%biff_dir%/eetBG29/BG2900.TIS~
+	~%biff_dir%/AR3000.TIS~ ~%biff_dir%/eetBG30/BG3000.TIS~
+	~%biff_dir%/AR3100.TIS~ ~%biff_dir%/eetBG31/BG3100.TIS~
+	~%biff_dir%/AR3200.TIS~ ~%biff_dir%/eetBG32/BG3200.TIS~
+	~%biff_dir%/AR3200N.TIS~ ~%biff_dir%/eetBG32/BG3200N.TIS~
+	~%biff_dir%/AR3201.TIS~ ~%biff_dir%/eetBG32/BG3201.TIS~
+	~%biff_dir%/AR3202.TIS~ ~%biff_dir%/eetBG32/BG3202.TIS~
+	~%biff_dir%/AR3300.TIS~ ~%biff_dir%/eetBG33/BG3300.TIS~
+	~%biff_dir%/AR3301.TIS~ ~%biff_dir%/eetBG33/BG3301.TIS~
+	~%biff_dir%/AR3302.TIS~ ~%biff_dir%/eetBG33/BG3302.TIS~
+	~%biff_dir%/AR3303.TIS~ ~%biff_dir%/eetBG33/BG3303.TIS~
+	~%biff_dir%/AR3304.TIS~ ~%biff_dir%/eetBG33/BG3304.TIS~
+	~%biff_dir%/AR3305.TIS~ ~%biff_dir%/eetBG33/BG3305.TIS~
+	~%biff_dir%/AR3306.TIS~ ~%biff_dir%/eetBG33/BG3306.TIS~
+	~%biff_dir%/AR3307.TIS~ ~%biff_dir%/eetBG33/BG3307.TIS~
+	~%biff_dir%/AR3308.TIS~ ~%biff_dir%/eetBG33/BG3308.TIS~
+	~%biff_dir%/AR3309.TIS~ ~%biff_dir%/eetBG33/BG3309.TIS~
+	~%biff_dir%/AR3310.TIS~ ~%biff_dir%/eetBG33/BG3310.TIS~
+	~%biff_dir%/AR3313.TIS~ ~%biff_dir%/eetBG33/BG3313.TIS~
+	~%biff_dir%/AR3314.TIS~ ~%biff_dir%/eetBG33/BG3314.TIS~
+	~%biff_dir%/AR3316.TIS~ ~%biff_dir%/eetBG33/BG3316.TIS~
+	~%biff_dir%/AR3317.TIS~ ~%biff_dir%/eetBG33/BG3317.TIS~
+	~%biff_dir%/AR3320.TIS~ ~%biff_dir%/eetBG33/BG3320.TIS~
+	~%biff_dir%/AR3321.TIS~ ~%biff_dir%/eetBG33/BG3321.TIS~
+	~%biff_dir%/AR3327.TIS~ ~%biff_dir%/eetBG33/BG3327.TIS~
+	~%biff_dir%/AR3328.TIS~ ~%biff_dir%/eetBG33/BG3328.TIS~
+	~%biff_dir%/AR3339.TIS~ ~%biff_dir%/eetBG33/BG3339.TIS~
+	~%biff_dir%/AR3340.TIS~ ~%biff_dir%/eetBG33/BG3340.TIS~
+	~%biff_dir%/AR3351.TIS~ ~%biff_dir%/eetBG33/BG3351.TIS~
+	~%biff_dir%/AR3352.TIS~ ~%biff_dir%/eetBG33/BG3352.TIS~
+	~%biff_dir%/AR3353.TIS~ ~%biff_dir%/eetBG33/BG3353.TIS~
+	~%biff_dir%/AR3357.TIS~ ~%biff_dir%/eetBG33/BG3357.TIS~
+	~%biff_dir%/AR3400.TIS~ ~%biff_dir%/eetBG34/BG3400.TIS~
+	~%biff_dir%/AR3400N.TIS~ ~%biff_dir%/eetBG34/BG3400N.TIS~
+	~%biff_dir%/AR3401.TIS~ ~%biff_dir%/eetBG34/BG3401.TIS~
+	~%biff_dir%/AR3402.TIS~ ~%biff_dir%/eetBG34/BG3402.TIS~
+	~%biff_dir%/AR3500.TIS~ ~%biff_dir%/eetBG35/BG3500.TIS~
+	~%biff_dir%/AR3600.TIS~ ~%biff_dir%/eetBG36/BG3600.TIS~
+	~%biff_dir%/AR3601.TIS~ ~%biff_dir%/eetBG36/BG3601.TIS~
+	~%biff_dir%/AR3700.TIS~ ~%biff_dir%/eetBG37/BG3700.TIS~
+	~%biff_dir%/AR3800.TIS~ ~%biff_dir%/eetBG38/BG3800.TIS~
+	~%biff_dir%/AR3802.TIS~ ~%biff_dir%/eetBG38/BG3802.TIS~
+	~%biff_dir%/AR3900.TIS~ ~%biff_dir%/eetBG39/BG3900.TIS~
+	~%biff_dir%/AR3901.TIS~ ~%biff_dir%/eetBG39/BG3901.TIS~
+	~%biff_dir%/AR4000.TIS~ ~%biff_dir%/eetBG40/BG4000.TIS~
+	~%biff_dir%/AR4001.TIS~ ~%biff_dir%/eetBG40/BG4001.TIS~
+	~%biff_dir%/AR4002.TIS~ ~%biff_dir%/eetBG40/BG4002.TIS~
+	~%biff_dir%/AR4003.TIS~ ~%biff_dir%/eetBG40/BG4003.TIS~
+	~%biff_dir%/AR4004.TIS~ ~%biff_dir%/eetBG40/BG4004.TIS~
+	~%biff_dir%/AR4006.TIS~ ~%biff_dir%/eetBG40/BG4006.TIS~
+	~%biff_dir%/AR4100.TIS~ ~%biff_dir%/eetBG41/BG4100.TIS~
+	~%biff_dir%/AR4101.TIS~ ~%biff_dir%/eetBG41/BG4101.TIS~
+	~%biff_dir%/AR4200.TIS~ ~%biff_dir%/eetBG42/BG4200.TIS~
+	~%biff_dir%/AR4201.TIS~ ~%biff_dir%/eetBG42/BG4201.TIS~
+	~%biff_dir%/AR4300.TIS~ ~%biff_dir%/eetBG43/BG4300.TIS~
+	~%biff_dir%/AR4400.TIS~ ~%biff_dir%/eetBG44/BG4400.TIS~
+	~%biff_dir%/AR4401.TIS~ ~%biff_dir%/eetBG44/BG4401.TIS~
+	~%biff_dir%/AR4500.TIS~ ~%biff_dir%/eetBG45/BG4500.TIS~
+	~%biff_dir%/AR4501.TIS~ ~%biff_dir%/eetBG45/BG4501.TIS~
+	~%biff_dir%/AR4600.TIS~ ~%biff_dir%/eetBG46/BG4600.TIS~
+	~%biff_dir%/AR4700.TIS~ ~%biff_dir%/eetBG47/BG4700.TIS~
+	~%biff_dir%/AR4700N.TIS~ ~%biff_dir%/eetBG47/BG4700N.TIS~
+	~%biff_dir%/AR4701.TIS~ ~%biff_dir%/eetBG47/BG4701.TIS~
+	~%biff_dir%/AR4800.TIS~ ~%biff_dir%/eetBG48/BG4800.TIS~
+	~%biff_dir%/AR4801.TIS~ ~%biff_dir%/eetBG48/BG4801.TIS~
+	~%biff_dir%/AR4802.TIS~ ~%biff_dir%/eetBG48/BG4802.TIS~
+	~%biff_dir%/AR4803.TIS~ ~%biff_dir%/eetBG48/BG4803.TIS~
+	~%biff_dir%/AR4804.TIS~ ~%biff_dir%/eetBG48/BG4804.TIS~
+	~%biff_dir%/AR4805.TIS~ ~%biff_dir%/eetBG48/BG4805.TIS~
+	~%biff_dir%/AR4806.TIS~ ~%biff_dir%/eetBG48/BG4806.TIS~
+	~%biff_dir%/AR4807.TIS~ ~%biff_dir%/eetBG48/BG4807.TIS~
+	~%biff_dir%/AR4808.TIS~ ~%biff_dir%/eetBG48/BG4808.TIS~
+	~%biff_dir%/AR4809.TIS~ ~%biff_dir%/eetBG48/BG4809.TIS~
+	~%biff_dir%/AR4810.TIS~ ~%biff_dir%/eetBG48/BG4810.TIS~
+	~%biff_dir%/AR4900.TIS~ ~%biff_dir%/eetBG49/BG4900.TIS~
+	~%biff_dir%/AR4900N.TIS~ ~%biff_dir%/eetBG49/BG4900N.TIS~
+	~%biff_dir%/AR4901.TIS~ ~%biff_dir%/eetBG49/BG4901.TIS~
+	~%biff_dir%/AR4902.TIS~ ~%biff_dir%/eetBG49/BG4902.TIS~
+	~%biff_dir%/AR4903.TIS~ ~%biff_dir%/eetBG49/BG4903.TIS~
+	~%biff_dir%/AR4905.TIS~ ~%biff_dir%/eetBG49/BG4905.TIS~
+	~%biff_dir%/AR4906.TIS~ ~%biff_dir%/eetBG49/BG4906.TIS~
+	~%biff_dir%/AR5000.TIS~ ~%biff_dir%/eetBG50/BG5000.TIS~
+	~%biff_dir%/AR5001.TIS~ ~%biff_dir%/eetBG50/BG5001.TIS~
+	~%biff_dir%/AR5100.TIS~ ~%biff_dir%/eetBG51/BG5100.TIS~
+	~%biff_dir%/AR5101.TIS~ ~%biff_dir%/eetBG51/BG5101.TIS~
+	~%biff_dir%/AR5102.TIS~ ~%biff_dir%/eetBG51/BG5102.TIS~
+	~%biff_dir%/AR5103.TIS~ ~%biff_dir%/eetBG51/BG5103.TIS~
+	~%biff_dir%/AR5200.TIS~ ~%biff_dir%/eetBG52/BG5200.TIS~
+	~%biff_dir%/AR5201.TIS~ ~%biff_dir%/eetBG52/BG5201.TIS~
+	~%biff_dir%/AR5202.TIS~ ~%biff_dir%/eetBG52/BG5202.TIS~
+	~%biff_dir%/AR5300.TIS~ ~%biff_dir%/eetBG53/BG5300.TIS~
+	~%biff_dir%/AR5400.TIS~ ~%biff_dir%/eetBG54/BG5400.TIS~
+	~%biff_dir%/AR5401.TIS~ ~%biff_dir%/eetBG54/BG5401.TIS~
+	~%biff_dir%/AR5402.TIS~ ~%biff_dir%/eetBG54/BG5402.TIS~
+	~%biff_dir%/AR5403.TIS~ ~%biff_dir%/eetBG54/BG5403.TIS~
+	~%biff_dir%/AR5404.TIS~ ~%biff_dir%/eetBG54/BG5404.TIS~
+	~%biff_dir%/AR5405.TIS~ ~%biff_dir%/eetBG54/BG5405.TIS~
+	~%biff_dir%/AR5406.TIS~ ~%biff_dir%/eetBG54/BG5406.TIS~
+	~%biff_dir%/AR5500.TIS~ ~%biff_dir%/eetBG55/BG5500.TIS~
+	~%biff_dir%/AR5506.TIS~ ~%biff_dir%/eetBG55/BG5506.TIS~
+	~%biff_dir%/AR5600.TIS~ ~%biff_dir%/eetBG56/BG5600.TIS~
+	~%biff_dir%/AR5700.TIS~ ~%biff_dir%/eetBG57/BG5700.TIS~
+	~%biff_dir%/AR5800.TIS~ ~%biff_dir%/eetBG58/BG5800.TIS~
+	~%biff_dir%/AR5900.TIS~ ~%biff_dir%/eetBG59/BG5900.TIS~
+	~%biff_dir%/AR6000.TIS~ ~%biff_dir%/eetBG60/BG6000.TIS~
+	~%biff_dir%/AR6100.TIS~ ~%biff_dir%/eetBG61/BG6100.TIS~
+	~%biff_dir%/OH2000.TIS~ ~%biff_dir%/eetOH2~
+	~%biff_dir%/OH2000N.TIS~ ~%biff_dir%/eetOH2~
+	~%biff_dir%/OH2010.TIS~ ~%biff_dir%/eetOH2~
+	~%biff_dir%/OH3000.TIS~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3000N.TIS~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3010.TIS~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3020.TIS~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3100.TIS~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH3100N.TIS~ ~%biff_dir%/eetOH3~
+	~%biff_dir%/OH9310.TIS~ ~%biff_dir%/eetOH9~
+	~%biff_dir%/OH9350.TIS~ ~%biff_dir%/eetOH9~
+	~%biff_dir%/OH9360.TIS~ ~%biff_dir%/eetOH9~
+	~%biff_dir%/TU0015.TIS~ ~%biff_dir%/eetTU00~
+	~%biff_dir%/TU0016.TIS~ ~%biff_dir%/eetTU00~
+	~%biff_dir%/TU0017.TIS~ ~%biff_dir%/eetTU00~
+	~%biff_dir%/TU0018.TIS~ ~%biff_dir%/eetTU00~
+//SoD
+	~%biff_dir%/BD0010.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0010N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0020.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0020N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0030.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0030N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0035.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0040.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0040N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0050.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0050N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0060.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0060N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0061.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0062.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0063.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0063N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0064.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0064N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0065.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0065N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0066.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0066N.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0067.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0072.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0100.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0101.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0102.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0103.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0104.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0105.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0106.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0107.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0108.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0109.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0110.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0111.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0112.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0113.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0114.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0115.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0116.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0117.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0120.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0121.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0122.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD0130.TIS~ ~%biff_dir%/eetBD0~
+	~%biff_dir%/BD1000.TIS~ ~%biff_dir%/eetBD1~
+	~%biff_dir%/BD1000N.TIS~ ~%biff_dir%/eetBD1~
+	~%biff_dir%/BD1010.TIS~ ~%biff_dir%/eetBD1~
+	~%biff_dir%/BD1100.TIS~ ~%biff_dir%/eetBD1~
+	~%biff_dir%/BD1200.TIS~ ~%biff_dir%/eetBD1~
+	~%biff_dir%/BD1200N.TIS~ ~%biff_dir%/eetBD1~
+	~%biff_dir%/BD2000.TIS~ ~%biff_dir%/eetBD2~
+	~%biff_dir%/BD2000N.TIS~ ~%biff_dir%/eetBD2~
+	~%biff_dir%/BD2010.TIS~ ~%biff_dir%/eetBD2~
+	~%biff_dir%/BD2100.TIS~ ~%biff_dir%/eetBD2~
+	~%biff_dir%/BD3000.TIS~ ~%biff_dir%/eetBD3~
+	~%biff_dir%/BD3000N.TIS~ ~%biff_dir%/eetBD3~
+	~%biff_dir%/BD4000.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4000N.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4100.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4300.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4400.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4500.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4600.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4601.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD4700.TIS~ ~%biff_dir%/eetBD4~
+	~%biff_dir%/BD5000.TIS~ ~%biff_dir%/eetBD5~
+	~%biff_dir%/BD5000N.TIS~ ~%biff_dir%/eetBD5~
+	~%biff_dir%/BD5100.TIS~ ~%biff_dir%/eetBD5~
+	~%biff_dir%/BD5110.TIS~ ~%biff_dir%/eetBD5~
+	~%biff_dir%/BD5200.TIS~ ~%biff_dir%/eetBD5~
+	~%biff_dir%/BD5300.TIS~ ~%biff_dir%/eetBD5~
+	~%biff_dir%/BD6000.TIS~ ~%biff_dir%/eetBD6~
+	~%biff_dir%/BD6100.TIS~ ~%biff_dir%/eetBD6~
+	~%biff_dir%/BD6200.TIS~ ~%biff_dir%/eetBD6~
+	~%biff_dir%/BD7000.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7000N.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7100.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7100N.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7110.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7200.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7200N.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7210.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7210N.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7220.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7230.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7300.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7300N.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7310.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7400.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7400N.TIS~ ~%biff_dir%/eetBD7~
+	~%biff_dir%/BD7410.TIS~ ~%biff_dir%/eetBD7~
+
+DELETE + ~%biff_dir%/HOTCOAL.TIS~
+	~%biff_dir%/HOTCOALR.TIS~
+	~%biff_dir%/MIN1A01.TIS~
+	~%biff_dir%/OH2010.TIS~
+	~%biff_dir%/OH3020.TIS~
+	~%biff_dir%/WTFALL.TIS~
+	~%biff_dir%/WTFALLR.TIS~
+	~%biff_dir%/WTGOO.TIS~
+	~%biff_dir%/WTGOO2.TIS~
+	~%biff_dir%/WTGOO2R.TIS~
+	~%biff_dir%/WTGOOR.TIS~
+	~%biff_dir%/WTLAKE.TIS~
+	~%biff_dir%/WTLAKER.TIS~
+	~%biff_dir%/WTLAVA.TIS~
+	~%biff_dir%/WTLAVAR.TIS~
+	~%biff_dir%/WTMGLI.TIS~
+	~%biff_dir%/WTMGLIR.TIS~
+	~%biff_dir%/WTOIL.TIS~
+	~%biff_dir%/WTOIL2.TIS~
+	~%biff_dir%/WTOIL2R.TIS~
+	~%biff_dir%/WTOILR.TIS~
+	~%biff_dir%/WTPOOL.TIS~
+	~%biff_dir%/WTPOOLR.TIS~
+	~%biff_dir%/WTRIV.TIS~
+	~%biff_dir%/WTRIV2.TIS~
+	~%biff_dir%/WTRIV2R.TIS~
+	~%biff_dir%/WTRIVR.TIS~
+	~%biff_dir%/WTSEW.TIS~
+	~%biff_dir%/WTSEWB.TIS~
+	~%biff_dir%/WTSEWBR.TIS~
+	~%biff_dir%/WTSEWR.TIS~
+	~%biff_dir%/WTSTR.TIS~
+	~%biff_dir%/WTSTR2.TIS~
+	~%biff_dir%/WTSTR2R.TIS~
+	~%biff_dir%/WTSTRR.TIS~
+	~%biff_dir%/WTSWAM.TIS~
+	~%biff_dir%/WTSWAMR.TIS~
+	~%biff_dir%/WTURN.TIS~
+	~%biff_dir%/WTURNR.TIS~
+	~%biff_dir%/WTWAVE.TIS~
+	~%biff_dir%/WTWAVER.TIS~
+//new in patch 2.0
+	~%biff_dir%/WTLAKA.TIS~
+	~%biff_dir%/WTLAKAR.TIS~
+	~%biff_dir%/WTLAKB.TIS~
+	~%biff_dir%/WTLAKBR.TIS~
+	~%biff_dir%/WTLAKC.TIS~
+	~%biff_dir%/WTLAKCR.TIS~
+	~%biff_dir%/WTLAKD.TIS~
+	~%biff_dir%/WTLAKDR.TIS~

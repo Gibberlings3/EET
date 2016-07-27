@@ -6,6 +6,13 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
 END
 
 /////                                                  \\\\\
+///// Preparing SMTABLES variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN
+END
+
+/////                                                  \\\\\
 ///// Preparing STATE variables                        \\\\\
 /////                                                  \\\\\
 
@@ -27,10 +34,24 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN
 END
 
 /////                                                  \\\\\
+///// Preparing Race IDS variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN
+END
+
+/////                                                  \\\\\
 ///// Preparing Class IDS variables                    \\\\\
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing Specific IDS variables                 \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN
 END
 
 /////                                                  \\\\\
@@ -69,6 +90,13 @@ ACTION_PHP_EACH array_chapter_sourceDest AS source => dest BEGIN
 END
 
 /////                                                  \\\\\
+///// Preparing SAVE variables                         \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_save BEGIN
+END
+
+/////                                                  \\\\\
 ///// Preparing DV variables                           \\\\\
 /////                                                  \\\\\
 
@@ -102,7 +130,7 @@ END
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY array_var_sourceDest BEGIN
 	~KickedOut~ , ~KickedOut~ , ~KickedOut~ , ~IWasKickedOut~ => ~%KICKED_OUT%~
-	~DREAM~, ~BG1DREAM~ , ~DREAM~ , ~BG1DREAM~ => ~%bgdreams%~
+	~DREAM~, ~DREAM~ , ~DREAM~ , ~BG1DREAM~ => ~%bgdreams%~
 END
 
 ACTION_PHP_EACH array_var_sourceDest AS source => dest BEGIN

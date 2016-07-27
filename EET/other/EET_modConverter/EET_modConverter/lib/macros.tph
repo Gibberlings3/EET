@@ -378,8 +378,9 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 		READ_SHORT 0x58 "actors_cnt"
 		FOR (cnt=0; cnt<"%actors_cnt%"; cnt=cnt+1) BEGIN
 			//CRE structure (embedded CRE files)
-			READ_LONG ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
-			PATCH_IF (actors_flags = 0) BEGIN
+			READ_BYTE ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
+			END ELSE BEGIN //CRE attached
 				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
 				PATCH_IF (actors_emb_off != 0) BEGIN
 					PATCH_FOR_EACH offset IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
@@ -403,7 +404,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 					READ_BYTE ("%actors_emb_off%"+0x33) "eff_ver"
 					FOR (cnt2=0; cnt2<"%fx_cnt%"; cnt2=cnt2+1) BEGIN
 						PATCH_IF (eff_ver = 0) BEGIN //EFF v1
-							READ_SHORT ("%fx_off%"+0x30*cnt2) "fx_type"
+							READ_SHORT ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2) "fx_type"
 							PATCH_IF ("%fx_type%" = 103) //Change Name
 							OR ("%fx_type%" = 139) //Display String
 							OR ("%fx_type%" = 180) //Can't Use Item
@@ -415,39 +416,41 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 							OR ("%fx_type%" = 330) //Float text
 							OR ("%fx_type%" = 338) //Disable rest or save
 							BEGIN
-								SET offset = ("%fx_off%"+0x30*cnt2+0x4)
+								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4)
 								READ_LONG offset "StrRef"
 								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-									SET str_updated = 0
 									PATCH_IF ("%fx_type%" = 267) BEGIN
-										PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
-											PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-												PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-													//SAY offset ( AT "StrRef" )
-													SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-												END ELSE BEGIN
-													WRITE_LONG offset "%strNew%"
-													SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-												END
-												SET str_updated = 1
+										PATCH_IF (VARIABLE_IS_SET $EVAL ~%array%~(~%StrRef%~)) BEGIN
+											TEXT_SPRINT StrRef_new $EVAL ~%array%~(~%StrRef%~)
+											PATCH_IF (StrRef = StrRef_new) BEGIN
+												SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+											END ELSE BEGIN
+												WRITE_LONG offset "%StrRef_new%"
+												SPRINT log ~%log%  WRITE_LONG %offset% %StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+											END
+										END ELSE BEGIN
+											GET_STRREF StrRef "string_old"
+											SET StrRef_new = RESOLVE_STR_REF ((AT StrRef))
+											GET_STRREF StrRef_new "string_new"
+											PATCH_IF ~%string_old%~ STRING_EQUAL_CASE ~%string_new%~ BEGIN
+												//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+											END ELSE BEGIN
+												WRITE_LONG offset "%StrRef%"
+												SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 											END
 										END
 									END
-									PATCH_IF (str_updated = 0) BEGIN
-										SAY offset ( AT "StrRef" )
-										SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
-									END
 								END
 							END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-								SET offset = ("%fx_off%"+0x30*cnt2+0x2c)
+								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x2c)
 								READ_LONG offset "StrRef"
 								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 									SAY offset ( AT "StrRef" )
 									SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 								END
-								READ_LONG ("%fx_off%"+0x30*cnt2+0x8) "ids_target"
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8) "ids_target"
 								PATCH_IF (ids_target = 10) BEGIN //Actor's name
-									SET offset = ("%fx_off%"+0x30*cnt2+0x4)
+									SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4)
 									READ_LONG offset "StrRef"
 									PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 										SAY offset ( AT "StrRef" )
@@ -456,7 +459,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 								END
 							END
 						END ELSE BEGIN //EFF v2
-							READ_LONG ("%fx_off%"+0x108*cnt2+0x8) "fx_type"
+							READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x8) "fx_type"
 							PATCH_IF ("%fx_type%" = 103) //Change Name
 							OR ("%fx_type%" = 139) //Display String
 							OR ("%fx_type%" = 180) //Can't Use Item
@@ -468,39 +471,41 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 							OR ("%fx_type%" = 330) //Float text
 							OR ("%fx_type%" = 338) //Disable rest or save
 							BEGIN
-								SET offset = ("%fx_off%"+0x108*cnt2+0x14)
+								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14)
 								READ_LONG offset "StrRef"
 								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-									SET str_updated = 0
 									PATCH_IF ("%fx_type%" = 267) BEGIN
-										PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
-											PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-												PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-													//SAY offset ( AT "StrRef" )
-													SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-												END ELSE BEGIN
-													WRITE_LONG offset "%strNew%"
-													SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-												END
-												SET str_updated = 1
+										PATCH_IF (VARIABLE_IS_SET $EVAL ~%array%~(~%StrRef%~)) BEGIN
+											TEXT_SPRINT StrRef_new $EVAL ~%array%~(~%StrRef%~)
+											PATCH_IF (StrRef = StrRef_new) BEGIN
+												SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+											END ELSE BEGIN
+												WRITE_LONG offset "%StrRef_new%"
+												SPRINT log ~%log%  WRITE_LONG %offset% %StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+											END
+										END ELSE BEGIN
+											GET_STRREF StrRef "string_old"
+											SET StrRef_new = RESOLVE_STR_REF ((AT StrRef))
+											GET_STRREF StrRef_new "string_new"
+											PATCH_IF ~%string_old%~ STRING_EQUAL_CASE ~%string_new%~ BEGIN
+												//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+											END ELSE BEGIN
+												WRITE_LONG offset "%StrRef%"
+												SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 											END
 										END
 									END
-									PATCH_IF (str_updated = 0) BEGIN
-										SAY offset ( AT "StrRef" )
-										SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
-									END
 								END
 							END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-								SET offset = ("%fx_off%"+0x108*cnt2+0x40)
+								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x40)
 								READ_LONG offset "StrRef"
 								PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 									SAY offset ( AT "StrRef" )
 									SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 								END
-								READ_LONG ("%fx_off%"+0x108*cnt2+0x18) "ids_target"
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x18) "ids_target"
 								PATCH_IF (ids_target = 10) BEGIN //Actor's name
-									SET offset = ("%fx_off%"+0x108*cnt2+0x14)
+									SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14)
 									READ_LONG offset "StrRef"
 									PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
 										SAY offset ( AT "StrRef" )
@@ -631,24 +636,26 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				SET offset = ("%fx_off%"+0x108*cnt+0x14)
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-					SET str_updated = 0
 					PATCH_IF ("%fx_type%" = 267) BEGIN
-						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
-							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-									//SAY offset ( AT "StrRef" )
-									SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-								END ELSE BEGIN
-									WRITE_LONG offset "%strNew%"
-									SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-								END
-								SET str_updated = 1
+						PATCH_IF (VARIABLE_IS_SET $EVAL ~%array%~(~%StrRef%~)) BEGIN
+							TEXT_SPRINT StrRef_new $EVAL ~%array%~(~%StrRef%~)
+							PATCH_IF (StrRef = StrRef_new) BEGIN
+								SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%StrRef_new%"
+								SPRINT log ~%log%  WRITE_LONG %offset% %StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+							END
+						END ELSE BEGIN
+							GET_STRREF StrRef "string_old"
+							SET StrRef_new = RESOLVE_STR_REF ((AT StrRef))
+							GET_STRREF StrRef_new "string_new"
+							PATCH_IF ~%string_old%~ STRING_EQUAL_CASE ~%string_new%~ BEGIN
+								//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%StrRef%"
+								SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 							END
 						END
-					END
-					PATCH_IF (str_updated = 0) BEGIN
-						SAY offset ( AT "StrRef" )
-						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 					END
 				END
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -686,24 +693,26 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			SET offset = 0x1c
 			READ_LONG offset "StrRef"
 			PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-				SET str_updated = 0
 				PATCH_IF ("%fx_type%" = 267) BEGIN
-					PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
-						PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-							PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-								//SAY offset ( AT "StrRef" )
-								SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-							END ELSE BEGIN
-								WRITE_LONG offset "%strNew%"
-								SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-							END
-							SET str_updated = 1
+					PATCH_IF (VARIABLE_IS_SET $EVAL ~%array%~(~%StrRef%~)) BEGIN
+						TEXT_SPRINT StrRef_new $EVAL ~%array%~(~%StrRef%~)
+						PATCH_IF (StrRef = StrRef_new) BEGIN
+							SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+						END ELSE BEGIN
+							WRITE_LONG offset "%StrRef_new%"
+							SPRINT log ~%log%  WRITE_LONG %offset% %StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+						END
+					END ELSE BEGIN
+						GET_STRREF StrRef "string_old"
+						SET StrRef_new = RESOLVE_STR_REF ((AT StrRef))
+						GET_STRREF StrRef_new "string_new"
+						PATCH_IF ~%string_old%~ STRING_EQUAL_CASE ~%string_new%~ BEGIN
+							//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+						END ELSE BEGIN
+							WRITE_LONG offset "%StrRef%"
+							SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 						END
 					END
-				END
-				PATCH_IF (str_updated = 0) BEGIN
-					SAY offset ( AT "StrRef" )
-					SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 				END
 			END
 		END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -756,24 +765,26 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				SET offset = ("%fx_off%"+0x30*cnt+0x4)
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-					SET str_updated = 0
 					PATCH_IF ("%fx_type%" = 267) BEGIN
-						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
-							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-									//SAY offset ( AT "StrRef" )
-									SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-								END ELSE BEGIN
-									WRITE_LONG offset "%strNew%"
-									SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-								END
-								SET str_updated = 1
+						PATCH_IF (VARIABLE_IS_SET $EVAL ~%array%~(~%StrRef%~)) BEGIN
+							TEXT_SPRINT StrRef_new $EVAL ~%array%~(~%StrRef%~)
+							PATCH_IF (StrRef = StrRef_new) BEGIN
+								SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%StrRef_new%"
+								SPRINT log ~%log%  WRITE_LONG %offset% %StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+							END
+						END ELSE BEGIN
+							GET_STRREF StrRef "string_old"
+							SET StrRef_new = RESOLVE_STR_REF ((AT StrRef))
+							GET_STRREF StrRef_new "string_new"
+							PATCH_IF ~%string_old%~ STRING_EQUAL_CASE ~%string_new%~ BEGIN
+								//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%StrRef%"
+								SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 							END
 						END
-					END
-					PATCH_IF (str_updated = 0) BEGIN
-						SAY offset ( AT "StrRef" )
-						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 					END
 				END
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -835,24 +846,26 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				SET offset = ("%fx_off%"+0x30*cnt+0x4)
 				READ_LONG offset "StrRef"
 				PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-					SET str_updated = 0
 					PATCH_IF ("%fx_type%" = 267) BEGIN
-						PHP_EACH "%array%" AS "strOld" => "strNew" BEGIN
-							PATCH_IF (StrRef = "%strOld_1%") OR (StrRef = "%strNew%") AND (str_updated = 0) BEGIN
-								PATCH_IF ("%strOld_1%" = "%strNew%") OR (StrRef = "%strNew%") BEGIN
-									//SAY offset ( AT "StrRef" )
-									SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-								END ELSE BEGIN
-									WRITE_LONG offset "%strNew%"
-									SPRINT log ~%log%  WRITE_LONG %offset% %strNew% %slash%%slash%opcode=%fx_type%, %strOld%%LNL%~
-								END
-								SET str_updated = 1
+						PATCH_IF (VARIABLE_IS_SET $EVAL ~%array%~(~%StrRef%~)) BEGIN
+							TEXT_SPRINT StrRef_new $EVAL ~%array%~(~%StrRef%~)
+							PATCH_IF (StrRef = StrRef_new) BEGIN
+								SPRINT log ~%log%  %slash%%slash%SAY %offset% @%StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%StrRef_new%"
+								SPRINT log ~%log%  WRITE_LONG %offset% %StrRef_new% %slash%%slash%opcode=%fx_type%, %StrRef%%LNL%~
+							END
+						END ELSE BEGIN
+							GET_STRREF StrRef "string_old"
+							SET StrRef_new = RESOLVE_STR_REF ((AT StrRef))
+							GET_STRREF StrRef_new "string_new"
+							PATCH_IF ~%string_old%~ STRING_EQUAL_CASE ~%string_new%~ BEGIN
+								//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+							END ELSE BEGIN
+								WRITE_LONG offset "%StrRef%"
+								SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 							END
 						END
-					END
-					PATCH_IF (str_updated = 0) BEGIN
-						SAY offset ( AT "StrRef" )
-						SPRINT log ~%log%  SAY %offset% @%StrRef% %slash%%slash%opcode=%fx_type%%LNL%~
 					END
 				END
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
@@ -1064,7 +1077,6 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 	STR_VAR
 		2da_links_array = ""
 		icons_array = ""
-		tra = ""
 		output_areas = EVAL "%SOURCE_RES%_areas.2da"
 		output_links = EVAL "%SOURCE_RES%_links.2da"
 		output_strings = EVAL "%SOURCE_RES%_trans.tra"
@@ -1118,33 +1130,17 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 					READ_STRREF ao + 0xf0*i + 0x44 tool
 				END
 			END ELSE BEGIN
-				INNER_ACTION BEGIN
-					ACTION_IF (name > 0) AND (FILE_CONTAINS_EVALUATED (~%tra%~ ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~)) BEGIN
-						COPY - ~%tra%~ ~%tra%~
-							REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*@%name%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~ BEGIN
-								PATCH_IF (name = tool) BEGIN
-									SPRINT name "%MATCH1%"
-									SPRINT tool "%MATCH1%"
-								END ELSE BEGIN
-									SPRINT name "%MATCH1%"
-								END
-							END ~~
-					END ELSE ACTION_IF (name = tool) BEGIN
-						OUTER_SPRINT name ~~
-						OUTER_SPRINT tool ~~
-					END ELSE BEGIN
-						OUTER_SPRINT name ~~
-					END
-					ACTION_IF (IS_AN_INT ~%tool%~) BEGIN //not set yet
-						ACTION_IF (tool > 0) AND (FILE_CONTAINS_EVALUATED (~%tra%~ ~^[ %TAB%]*@%tool%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~)) BEGIN
-							COPY - ~%tra%~ ~%tra%~
-								REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*@%tool%[ %TAB%]*=[ %TAB%]*[%tilde%%quote%]\(.*\)[%tilde%%quote%][^%tilde%%quote%]*$~ BEGIN
-									SPRINT tool "%MATCH1%"
-								END ~~
-						END ELSE BEGIN
-							OUTER_SPRINT tool ~~
-						END
-					END
+				PATCH_IF (name > 0) BEGIN
+					SET strref = RESOLVE_STR_REF ((AT name))
+					GET_STRREF strref "name"
+				END ELSE BEGIN
+					SPRINT name ~~
+				END
+				PATCH_IF (tool > 0) BEGIN
+					SET strref = RESOLVE_STR_REF ((AT tool))
+					GET_STRREF strref "tool"
+				END ELSE BEGIN
+					SPRINT tool ~~
 				END
 			END
 			SET doOnce = 0
@@ -1271,14 +1267,14 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_mus~ BEGIN
 	END
 END
 
-DEFINE_PATCH_MACRO ~EET_PCU_off_state~ BEGIN
+DEFINE_PATCH_MACRO ~EET_PCU_off_long~ BEGIN
 	READ_LONG off "source"
-	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $remapped_state(~%source%~)) BEGIN
-		TEXT_SPRINT dest $remapped_state(~%source%~)
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_LONG off "%dest%"
-			SPRINT str ~Patching %SOURCE_FILESPEC%: STATE = %source% => %dest% -~
+			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)
 			PATCH_PRINT ~%str%~
 		END
@@ -1316,14 +1312,14 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
 	END
 END
 
-DEFINE_PATCH_MACRO ~EET_PCU_off_class~ BEGIN
+DEFINE_PATCH_MACRO ~EET_PCU_off_byte~ BEGIN
 	READ_BYTE off "source"
-	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $remapped_class(~%source%~)) BEGIN
-		TEXT_SPRINT dest $remapped_class(~%source%~)
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_BYTE off "%dest%"
-			SPRINT str ~Patching %SOURCE_FILESPEC%: CLASS = %source% => %dest% -~
+			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)
 			PATCH_PRINT ~%str%~
 		END
@@ -1400,58 +1396,546 @@ END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_PATCH_MACRO ~EET_PCU_match_res~ BEGIN
-	SPRINT source ~%match%~
-	TO_UPPER source
-	PATCH_IF (~%match%~ STRING_CONTAINS_REGEXP ~#d#~) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		SET updated = 1
-		TEXT_SPRINT match $EVAL ~remapped_%res%~(~%source%~)
-		PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %match% - %res%~
-		SPRINT match ~#d#%match%~
+ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
+	//ACTION.IDS
+	"ACTIONOVERRIDE" => "_dv1_" //ActionOverride
+	"ACTIVATE" => "_dv1_" //Activate
+	"ADDEXPERIENCEPARTYGLOBAL" => "_var1_are2_" //AddexperiencePartyGlobal
+	"ADDGLOBALS" => "_var1_var2_" //AddGlobals
+	"ADDJOURNALENTRY" => "_tra1_" //AddJournalEntry
+	"ADDMAPNOTE" => "_tra2_" //AddMapNote
+	"ADDMAPNOTECOLOR" => "_tra2_" //AddMapNoteColor
+	"ADDSPECIALABILITY" => "_spl1_" //AddSpecialAbility
+	"ADDSTOREITEM" => "_sto1_itm2_" //AddStoreItem
+	"ADDWORLDMAPAREAFLAG" => "_are1_" //AddWorldmapAreaFlag
+	"ADDXPOBJECT" => "_dv1_" //AddXPObject
+	"ADDXPWORTH" => "_dv1_" //AddXPWorth
+	"ADDXPWORTHONCE" => "_dv1_" //AddXPWorthOnce
+	"AMBIENTACTIVATE" => "_dv1_" //AmbientActivate
+	"APPLYDAMAGE" => "_dv1_" //ApplyDamage
+	"APPLYDAMAGEPERCENT" => "_dv1_" //ApplyDamagePercent
+	"APPLYSPELL" => "_dv1_splName2_splRes2_" //ApplySpell
+	"APPLYSPELLRES" => "_spl1_dv2_" //ApplySpellRES
+	"ATTACHTRANSITIONTODOOR" => "_door2_" //AttachTransitionToDoor
+	"ATTACK" => "_dv1_" //Attack
+	"ATTACKNOSOUND" => "_dv1_" //AttackNoSound
+	"ATTACKONEROUND" => "_dv1_" //AttackOneRound
+	"ATTACKREEVALUATE" => "_dv1_" //AttackReevaluate
+	"BACKSTAB" => "_dv1_" //BackStab
+	"BASHDOOR" => "_door1_" //BashDoor
+	"CALLLIGHTNING" => "_dv1_" //CallLightning
+	"CALM" => "_dv1_" //Calm
+	"CHANGEAISCRIPT" => "_bcs1_" //ChangeAIScript
+	"CHANGEAITYPE" => "_dv1_" //ChangeAIType
+	"CHANGEALIGNMENT" => "_dv1_" //ChangeAlignment
+	"CHANGEANIMATION" => "_cre1_" //ChangeAnimation
+	"CHANGEANIMATIONNOEFFECT" => "_cre1_" //ChangeAnimationNoEffect
+	"CHANGECLASS" => "_dv1_" //ChangeClass
+	"CHANGEENEMYALLY" => "_dv1_" //ChangeEnemyAlly
+	"CHANGEGENDER" => "_dv1_" //ChangeGender
+	"CHANGEGENERAL" => "_dv1_" //ChangeGeneral
+	"CHANGERACE" => "_dv1_" //ChangeRace
+	"CHANGESPECIFICS" => "_dv1_" //ChangeSpecifics
+	"CHANGESTAT" => "_dv1_" //ChangeStat
+	"CHANGESTOREMARKUP" => "_sto1_" //ChangeStoreMarkup
+	"CLEARACTIONS" => "_dv1_" //ClearActions
+	"CLOSEDOOR" => "_door1_" //CloseDoor
+	"COPYGROUNDPILESTO" => "_are1_" //CopyGroundPilesTo
+	"CREATECREATURE" => "_cre1_" //CreateCreature
+	"CREATECREATUREATLOCATION" => "_var1_are2_cre3_" //CreateCreatureAtLocation
+	"CREATECREATURECOPYPOINT" => "_cre1_dv2_" //CreateCreatureCopyPoint
+	"CREATECREATUREDOOR" => "_cre1_" //CreateCreatureDoor
+	"CREATECREATUREEFFECT" => "_cre1_bam2_" //CreateCreatureEffect
+	"CREATECREATUREIMPASSABLE" => "_cre1_" //CreateCreatureImpassable
+	"CREATECREATUREIMPASSABLEALLOWOVERLAP" => "_cre1_" //CreateCreatureImpassableAllowOverlap
+	"CREATECREATUREIMPASSABLEALLOWOVERLAPEFFECT" => "_cre1_bam2_" //CreateCreatureImpassableAllowOverlapEffect
+	"CREATECREATUREIMPASSABLEEFFECT" => "_cre1_bam2_" //CreateCreatureImpassableEffect
+	"CREATECREATUREOBJECT" => "_cre1_dv2_door2_" //CreateCreatureObject
+	"CREATECREATUREOBJECTCOPY" => "_cre1_dv2_door2_" //CreateCreatureObjectCopy
+	"CREATECREATUREOBJECTCOPYEFFECT" => "_cre1_bam2_dv3_" //CreateCreatureObjectCopyEffect
+	"CREATECREATUREOBJECTDOOR" => "_cre1_dv2_door2_" //CreateCreatureObjectDoor
+	"CREATECREATUREOBJECTEFFECT" => "_cre1_bam2_dv3_" //CreateCreatureObjectEffect
+	"CREATECREATUREOBJECTOFFSCREEN" => "_cre1_dv2_door2_" //CreateCreatureObjectOffScreen
+	"CREATECREATUREOBJECTOFFSET" => "_cre1_dv2_door2_" //CreateCreatureObjectOffset
+	"CREATECREATUREOFFSCREEN" => "_cre1_" //CreateCreatureOffScreen
+	"CREATEITEM" => "_itm1_" //CreateItem
+	"CREATEITEMGLOBAL" => "_var1_are2_itm3_" //CreateItemGlobal
+	"CREATEVISUALEFFECT" => "_bam1_" //CreateVisualEffect
+	"CREATEVISUALEFFECTOBJECT" => "_bam1_dv2_" //CreateVisualEffectObject
+	"CUTSCENEID" => "_dv1_" //CutSceneId
+	"DEACTIVATE" => "_dv1_" //Deactivate
+	"DEATHMATCHPOSITIONAREA" => "_are1_" //DeathMatchPositionArea
+	"DEATHMATCHPOSITIONGLOBAL" => "_are1_" //DeathMatchPositionGlobal
+	"DEATHMATCHPOSITIONLOCAL" => "_are1_" //DeathMatchPositionLocal
+	"DESTROYITEM" => "_itm1_" //DestroyItem
+	"DETECTSECRETDOOR" => "_door1_" //DetectSecretDoor
+	"DIALOG" => "_dv1_" //Dialog
+	"DIALOGFORCEINTERRUPT" => "_dv1_" //DialogForceInterrupt
+	"DIALOGUE" => "_dv1_" //Dialogue
+	"DIALOGUEFORCEINTERRUPT" => "_dv1_" //DialogueForceInterrupt
+	"DISABLEAI" => "_dv1_" //DisableAI
+	"DISPLAYSTRING" => "_dv1_tra2_" //DisplayString
+	"DISPLAYSTRINGHEAD" => "_dv1_tra2_" //DisplayStringHead
+	"DISPLAYSTRINGHEADDEAD" => "_dv1_tra2_" //DisplayStringHeadDead
+	"DISPLAYSTRINGHEADNOLOG" => "_dv1_tra2_" //DisplayStringHeadNoLog
+	"DISPLAYSTRINGHEADOWNER" => "_itm1_tra2_" //DisplayStringHeadOwner
+	"DISPLAYSTRINGNONAME" => "_dv1_tra2_" //DisplayStringNoName
+	"DISPLAYSTRINGNONAMEDLG" => "_dv1_tra2_" //DisplayStringNoNameDlg
+	"DISPLAYSTRINGNONAMEHEAD" => "_dv1_tra2_" //DisplayStringNoNameHead
+	"DISPLAYSTRINGPOINT" => "_tra1_" //DisplayStringPoint
+	"DISPLAYSTRINGPOINTLOG" => "_tra1_" //DisplayStringPointLog
+	"DISPLAYSTRINGWAIT" => "_dv1_tra2_" //DisplayStringWait
+	"DROPITEM" => "_itm1_" //DropItem
+	"EQUIPITEM" => "_itm1_" //EquipItem
+	"EQUIPITEMEX" => "_itm1_" //EquipItemEx
+	"ERASEJOURNALENTRY" => "_tra1_" //EraseJournalEntry
+	"ESCAPEAREAMOVE" => "_are1_" //EscapeAreaMove
+	"ESCAPEAREAOBJECT" => "_door1_" //EscapeAreaObject
+	"ESCAPEAREAOBJECTMOVE" => "_are1_door2_" //EscapeAreaObjectMove
+	"FACEOBJECT" => "_dv1_door1_" //FaceObject
+	"FAKEEFFECTEXPIRYCHECK" => "_dv1_" //FakeEffectExpiryCheck
+	"FOLLOWOBJECTFORMATION" => "_dv1_" //FollowObjectFormation
+	"FORCERANDOMENCOUNTER" => "_are1_" //ForceRandomEncounter
+	"FORCERANDOMENCOUNTERENTRY" => "_are1_" //ForceRandomEncounterEntry
+	"FORCESPELL" => "_dv1_splName2_splRes2_" //ForceSpell
+	"FORCESPELLPOINT" => "_splName2_splRes2_" //ForceSpellPoint
+	"FORCESPELLPOINTRANGE" => "_splName2_splRes2_" //ForceSpellPointRange
+	"FORCESPELLPOINTRANGERES" => "_spl1_" //ForceSpellPointRangeRES
+	"FORCESPELLPOINTRES" => "_spl1_" //ForceSpellPointRES
+	"FORCESPELLRANGE" => "_dv1_splName2_splRes2_" //ForceSpellRange
+	"FORCESPELLRANGERES" => "_spl1_dv2_" //ForceSpellRangeRES
+	"FORCESPELLRES" => "_spl1_dv2_" //ForceSpellRES
+	"FORMATION" => "_dv1_" //Formation
+	"GAMEOVER" => "_tra1_" //GameOver
+	"GETITEM" => "_itm1_dv2_" //GetItem
+	"GIVEITEM" => "_itm1_dv2_" //GiveItem
+	"GIVEITEMCREATE" => "_itm1_dv2_" //GiveItemCreate
+	"GIVEOBJECTGOLDGLOBAL" => "_var1_are2_dv3_" //GiveObjectGoldGlobal
+	"GIVEORDER" => "_dv1_" //GiveOrder
+	"GIVEPARTYGOLDGLOBAL" => "_var1_" //GivePartyGoldGlobal
+	"GROUPATTACK" => "_dv1_" //GroupAttack
+	"HIDEAREAONMAP" => "_are1_" //HideAreaOnMap
+	"INCREMENTCHAPTER" => "_2da1_" //IncrementChapter
+	"INCREMENTGLOBAL" => "_var1_are2_" //IncrementGlobal
+	"INTERACT" => "_dv1_" //Interact
+	"JUMPTOOBJECT" => "_dv1_door1_" //JumpToObject
+	"KILL" => "_dv1_" //Kill
+	"LAYHANDS" => "_dv1_" //LayHands
+	"LEAVEAREA" => "_are1_" //LeaveArea
+	"LEAVEAREALUA" => "_are1_" //LeaveAreaLUA
+	"LEAVEAREALUAENTRY" => "_are1_exit2_" //LeaveAreaLUAEntry
+	"LEAVEAREALUAPANIC" => "_are1_" //LeaveAreaLUAPanic
+	"LEAVEAREALUAPANICENTRY" => "_are1_exit2_" //LeaveAreaLUAPanicEntry
+	"LOCK" => "_dv1_door1_" //Lock
+	"MORALEDEC" => "_dv1_" //MoraleDec
+	"MORALEINC" => "_dv1_" //MoraleInc
+	"MORALESET" => "_dv1_" //MoraleSet
+	"MOVEBETWEENAREAS" => "_are1_" //MoveBetweenAreas
+	"MOVEBETWEENAREASEFFECT" => "_are1_bam2_" //MoveBetweenAreasEffect
+	"MOVEGLOBAL" => "_are1_dv2_" //MoveGlobal
+	"MOVEGLOBALOBJECT" => "_dv1_dv2_" //MoveGlobalObject
+	"MOVEGLOBALOBJECTOFFSCREEN" => "_dv1_dv2_" //MoveGlobalObjectOffScreen
+	"MOVEGLOBALSTO" => "_are1_are2_" //MoveGlobalsTo
+	"MOVETOOBJECT" => "_dv1_door1_" //MoveToObject
+	"MOVETOOBJECTFOLLOW" => "_dv1_door1_" //MoveToObjectFollow
+	"MOVETOOBJECTNOINTERRUPT" => "_dv1_door1_" //MoveToObjectNoInterrupt
+	"MOVETOOBJECTOFFSET" => "_dv1_door1_" //MoveToObjectOffset
+	"MOVETOSAVEDLOCATION" => "_var1_are2_" //MoveToSavedLocation
+	"MOVETOSAVEDLOCATIONN" => "_var1_are2_" //MoveToSavedLocationn
+	"MOVEVIEWOBJECT" => "_dv1_door1_" //MoveViewObject
+	"OPENDOOR" => "_door1_" //OpenDoor
+	"PICKLOCK" => "_door1_" //PickLock
+	"PICKPOCKETS" => "_dv1_" //PickPockets
+	"PICKUPITEM" => "_itm1_" //PickUpItem
+	"PLAYERDIALOG" => "_dv1_" //PlayerDialog
+	"PLAYERDIALOGUE" => "_dv1_" //PlayerDialogue
+	"PLAYSOUND" => "_wav1_" //PlaySound
+	"POLYMORPHCOPY" => "_dv1_" //PolymorphCopy
+	"POLYMORPHCOPYBASE" => "_dv1_" //PolymorphCopyBase
+	"PROTECTOBJECT" => "_dv1_door1_" //ProtectObject
+	"REALLYFORCESPELL" => "_dv1_splName2_splRes2_" //ReallyForceSpell
+	"REALLYFORCESPELLDEAD" => "_dv1_splName2_splRes2_" //ReallyForceSpellDead
+	"REALLYFORCESPELLDEADRES" => "_spl1_dv2_" //ReallyForceSpellDeadRES
+	"REALLYFORCESPELLPOINT" => "_splName2_splRes2_" //ReallyForceSpellPoint
+	"REALLYFORCESPELLPOINTRES" => "_spl1_" //ReallyForceSpellPointRES
+	"REALLYFORCESPELLRES" => "_spl1_dv2_" //ReallyForceSpellRES
+	"REALSETGLOBALTIMER" => "_var1_are2_" //RealSetGlobalTimer
+	"REMOVEMAPNOTE" => "_tra2_" //RemoveMapNote
+	"REMOVESPELL" => "_splName1_splRes1_" //RemoveSpell
+	"REMOVESPELLRES" => "_spl1_" //RemoveSpellRES
+	"REMOVESTOREITEM" => "_sto1_itm2_" //RemoveStoreItem
+	"REMOVEWORLDMAPAREAFLAG" => "_are1_" //RemoveWorldmapAreaFlag
+	"REVEALAREAONMAP" => "_are1_" //RevealAreaOnMap
+	"RUNAWAYFROM" => "_dv1_" //RunAwayFrom
+	"RUNAWAYFROMNOINTERRUPT" => "_dv1_" //RunAwayFromNoInterrupt
+	"RUNAWAYFROMNOINTERRUPTNOLEAVEAREA" => "_dv1_" //RunAwayFromNoInterruptNoLeaveArea
+	"RUNAWAYFROMNOLEAVEAREA" => "_dv1_" //RunAwayFromNoLeaveArea
+	"SAVELOCATION" => "_are1_var2_" //SaveLocation
+	"SAVEGAME" => "_save1_" //SaveGame
+	"SAVEOBJECTLOCATION" => "_are1_var2_dv3_" //SaveObjectLocation
+	"SETAREASCRIPT" => "_bcs1_" //SetAreaScript
+	"SETDIALOG" => "_dlg1_" //SetDialog
+	"SETDIALOGUE" => "_dlg1_" //SetDialogue
+	"SETENCOUNTERPROBABILITY" => "_are1_are2_" //SetEncounterProbability
+	"SETGABBER" => "_dv1_" //SetGabber
+	"SETGLOBAL" => "_var1_are2_chapter3_" //SetGlobal
+	"SETGLOBALRANDOM" => "_var1_are2_" //SetGlobalRandom
+	"SETGLOBALRANDOMPLUS" => "_var1_are2_" //SetGlobalRandomPlus
+	"SETGLOBALTIMER" => "_var1_are2_" //SetGlobalTimer
+	"SETGLOBALTIMERRANDOM" => "_var1_are2_" //SetGlobalTimerRandom
+	"SETITEMFLAGS" => "_itm1_" //SetItemFlags
+	"SETMASTERAREA" => "_are1_" //SetMasterArea
+	"SETNAME" => "_tra1_" //SetName
+	"SETPLAYERSOUND" => "_dv1_tra2_" //SetPlayerSound
+	"SETQUESTDONE" => "_tra1_" //SetQuestDone
+	"SETTOKEN" => "_tra2_" //SetToken
+	"SETTOKENGLOBAL" => "_var1_are2_" //SetTokenGlobal
+	"SETTOKENOBJECT" => "_dv2_" //SetTokenObject
+	"SETUPWISHOBJECT" => "_dv1_" //SetupWishObject
+	"SETWORLDMAP" => "_wmp1_" //SetWorldmap
+	"SG" => "_var1_chapter2_" //SG
+	"SPELL" => "_dv1_splName2_splRes2_" //Spell
+	"SPELLNODEC" => "_dv1_splName2_splRes2_" //SpellNoDec
+	"SPELLNODECRES" => "_spl1_dv2_" //SpellNoDecRES
+	"SPELLPOINT" => "_splName2_splRes2_" //SpellPoint
+	"SPELLPOINTNODEC" => "_splName2_splRes2_" //SpellPointNoDec
+	"SPELLPOINTNODECRES" => "_spl1_" //SpellPointNoDecRES
+	"SPELLPOINTRES" => "_spl1_" //SpellPointRES
+	"SPELLRES" => "_spl1_dv2_" //SpellRES
+	"STARTCUTSCENE" => "_bcs1_" //StartCutScene
+	"STARTCUTSCENEEX" => "_bcs1_" //StartCutSceneEx
+	"STARTDIALOG" => "_dlg1_dv2_" //StartDialog
+	"STARTDIALOGINTERRUPT" => "_dlg1_dv2_" //StartDialogInterrupt
+	"STARTDIALOGNONAME" => "_dlg1_dv2_" //StartDialogNoName
+	"STARTDIALOGNOSET" => "_dv1_" //StartDialogNoSet
+	"STARTDIALOGNOSETINTERRUPT" => "_dv1_" //StartDialogNoSetInterrupt
+	"STARTDIALOGOVERRIDE" => "_dlg1_dv2_" //StartDialogOverride
+	"STARTDIALOGOVERRIDEINTERRUPT" => "_dlg1_dv2_" //StartDialogOverrideInterrupt
+	"STARTDIALOGUE" => "_dlg1_dv2_" //StartDialogue
+	"STARTDIALOGUEINTERRUPT" => "_dlg1_dv2_" //StartDialogueInterrupt
+	"STARTDIALOGUENOSET" => "_dv1_" //StartDialogueNoSet
+	"STARTDIALOGUENOSETINTERRUPT" => "_dv1_" //StartDialogueNoSetInterrupt
+	"STARTMOVIE" => "_mve1_" //StartMovie
+	"STARTSTORE" => "_sto1_dv2_" //StartStore
+	"STATICPALETTE" => "_bmp1_dv2_" //StaticPalette
+	"STATICSEQUENCE" => "_dv1_" //StaticSequence
+	"STATICSTART" => "_dv1_" //StaticStart
+	"STATICSTOP" => "_dv1_" //StaticStop
+	"TAKECREATUREITEMS" => "_dv1_" //TakeCreatureItems
+	"TAKEITEMLISTPARTY" => "_2da1_" //TakeItemListParty
+	"TAKEITEMLISTPARTYNUM" => "_2da1_" //TakeItemListPartyNum
+	"TAKEITEMREPLACE" => "_itm1_itm2_dv3_" //TakeItemReplace
+	"TAKEOBJECTGOLDGLOBAL" => "_var1_are2_dv3_" //TakeObjectGoldGlobal
+	"TAKEPARTYITEM" => "_itm1_" //TakePartyItem
+	"TAKEPARTYITEMALL" => "_itm1_" //TakePartyItemAll
+	"TAKEPARTYITEMNUM" => "_itm1_" //TakePartyItemNum
+	"TAKEPARTYITEMRANGE" => "_itm1_" //TakePartyItemRange
+	"TEXTSCREEN" => "_2da1_" //TextScreen
+	"TRANSFORMITEM" => "_itm1_itm2_" //TransformItem
+	"TRIGGERWALKTO" => "_dv1_" //TriggerWalkTo
+	"UNLOCK" => "_door1_" //Unlock
+	"USEITEM" => "_itm1_dv2_" //UseItem
+	"USEITEMPOINT" => "_itm1_" //UseItemPoint
+	"USEITEMSLOT" => "_dv1_" //UseItemSlot
+	"USEITEMSLOTABILITY" => "_dv1_" //UseItemSlotAbility
+	"VERBALCONSTANT" => "_dv1_" //VerbalConstant
+	"VERBALCONSTANTHEAD" => "_dv1_" //VerbalConstantHead
+	"XEQUIPITEM" => "_itm1_dv2_" //XEquipItem
+
+	//TRIGGER.IDS
+	"ACQUIRED" => "_itm1_" //Acquired
+	"ALIGNMENT" => "_dv1_" //Alignment
+	"ALLEGIANCE" => "_dv1_" //Allegiance
+	"AREACHECK" => "_are1_" //AreaCheck
+	"AREACHECKOBJECT" => "_are1_dv2_door2_" //AreaCheckObject
+	"ATTACKEDBY" => "_dv1_" //AttackedBy
+	"BEENINPARTY" => "_dv1_" //BeenInParty
+	"CANTURN" => "_dv1_" //CanTurn
+	"CHARNAME" => "_dv1_dv2_" //CharName
+	"CHECKITEMSLOT" => "_dv1_itm2_" //CheckItemSlot
+	"CHECKSPELLSTATE" => "_dv1_" //CheckSpellState
+	"CHECKSTAT" => "_dv1_" //CheckStat
+	"CHECKSTATGT" => "_dv1_" //CheckStatGT
+	"CHECKSTATLT" => "_dv1_" //CheckStatLT
+	"CLASS" => "_dv1_" //Class
+	"CLASSLEVEL" => "_dv1_" //ClassLevel
+	"CLASSLEVELGT" => "_dv1_" //ClassLevelGT
+	"CLASSLEVELLT" => "_dv1_" //ClassLevelLT
+	"CLICKED" => "_dv1_" //Clicked
+	"CLOSED" => "_dv1_" //Closed
+	"CONTAINS" => "_itm1_" //Contains
+	"CURRENTAMMO" => "_itm1_dv2_" //CurrentAmmo
+	"DEAD" => "_dv1_" //Dead
+	"DETECT" => "_dv1_door1_" //Detect
+	"DETECTED" => "_dv1_" //Detected
+	"DIED" => "_dv1_" //Died
+	"DISARMED" => "_dv1_" //Disarmed
+	"DISARMFAILED" => "_dv1_" //DisarmFailed
+	"ENTERED" => "_dv1_" //Entered
+	"EXISTS" => "_dv1_" //Exists
+	"EXTENDEDSTATECHECK" => "_dv1_" //ExtendedStateCheck
+	"FALLENPALADIN" => "_dv1_" //FallenPaladin
+	"FALLENRANGER" => "_dv1_" //FallenRanger
+	"G" => "_var1_chapter2_" //G
+	"GENDER" => "_dv1_" //Gender
+	"GENERAL" => "_dv1_" //General
+	"GGT" => "_var1_chapter2_" //GGT
+	"GLOBAL" => "_var1_are2_chapter3_" //Global
+	"GLOBALGT" => "_var1_are2_chapter3_" //GlobalGT
+	"GLOBALLT" => "_var1_are2_chapter3_" //GlobalLT
+	"GLOBALSEQUAL" => "_var1_var2_" //GlobalsEqual
+	"GLOBALSGT" => "_var1_var2_" //GlobalsGT
+	"GLOBALSLT" => "_var1_var2_" //GlobalsLT
+	"GLOBALTIMEREXACT" => "_var1_are2_" //GlobalTimerExact
+	"GLOBALTIMEREXPIRED" => "_var1_are2_" //GlobalTimerExpired
+	"GLOBALTIMERNOTEXPIRED" => "_var1_are2_" //GlobalTimerNotExpired
+	"GLT" => "_var1_chapter2_" //GLT
+	"HAPPINESS" => "_dv1_" //Happiness
+	"HAPPINESSGT" => "_dv1_" //HappinessGT
+	"HAPPINESSLT" => "_dv1_" //HappinessLT
+	"HASBOUNCEEFFECTS" => "_dv1_" //HasBounceEffects
+	"HASIMMUNITYEFFECTS" => "_dv1_" //HasImmunityEffects
+	"HASITEM" => "_itm1_dv2_" //HasItem
+	"HASITEMCATEGORY" => "_dv1_" //HasItemCategory
+	"HASITEMEQUIPED" => "_itm1_dv2_" //HasItemEquiped
+	"HASITEMEQUIPEDREAL" => "_itm1_dv2_" //HasItemEquipedReal
+	"HASITEMSLOT" => "_dv1_" //HasItemSlot
+	"HASITEMTYPE" => "_dv1_" //HasItemType
+	"HASWEAPONEQUIPED" => "_dv1_" //HasWeaponEquiped
+	"HAVEKNOWNSPELL" => "_splName1_splRes1_" //HaveKnownSpell
+	"HAVEKNOWNSPELLRES" => "_spl1_" //HaveKnownSpellRES
+	"HAVESPELL" => "_splName1_splRes1_" //HaveSpell
+	"HAVESPELLPARTY" => "_splName1_" //HaveSpellParty
+	"HAVESPELLRES" => "_spl1_" //HaveSpellRES
+	"HEARD" => "_dv1_" //Heard
+	"HELP" => "_dv1_" //Help
+	"HITBY" => "_dv1_" //HitBy
+	"HP" => "_dv1_" //HP
+	"HPGT" => "_dv1_" //HPGT
+	"HPLT" => "_dv1_" //HPLT
+	"HPPERCENT" => "_dv1_" //HPPercent
+	"HPPERCENTGT" => "_dv1_" //HPPercentGT
+	"HPPERCENTLT" => "_dv1_" //HPPercentLT
+	"IFVALIDFORPARTYDIALOG" => "_dv1_" //IfValidForPartyDialog
+	"IFVALIDFORPARTYDIALOGUE" => "_dv1_" //IfValidForPartyDialogue
+	"IMMUNETOSPELLLEVEL" => "_dv1_" //ImmuneToSpellLevel
+	"INACTIVEAREA" => "_dv1_door1_" //InActiveArea
+	"INLINE" => "_dv1_dv2_" //InLine
+	"INMYAREA" => "_dv1_door1_" //InMyArea
+	"INMYGROUP" => "_dv1_" //InMyGroup
+	"INPARTY" => "_dv1_" //InParty
+	"INPARTYALLOWDEAD" => "_dv1_" //InPartyAllowDead
+	"INPARTYSLOT" => "_dv1_" //InPartySlot
+	"INTERACTINGWITH" => "_dv1_" //InteractingWith
+	"INVENTORYFULL" => "_dv1_" //InventoryFull
+	"INWEAPONRANGE" => "_dv1_" //InWeaponRange
+	"ISACTIVE" => "_dv1_" //IsActive
+	"ISFORCEDRANDOMENCOUNTERACTIVE" => "_are1_" //IsForcedRandomEncounterActive
+	"ISGABBER" => "_dv1_" //IsGabber
+	"ISOVERME" => "_dv1_" //IsOverMe
+	"ISVALIDFORPARTYDIALOG" => "_dv1_" //IsValidForPartyDialog
+	"ISVALIDFORPARTYDIALOGUE" => "_dv1_" //IsValidForPartyDialogue
+	"ISWEAPONRANGED" => "_dv1_" //IsWeaponRanged
+	"JOINS" => "_dv1_" //Joins
+	"KILLED" => "_dv1_" //Killed
+	"KIT" => "_dv1_" //Kit
+	"LEAVES" => "_dv1_" //Leaves
+	"LEVEL" => "_dv1_" //Level
+	"LEVELGT" => "_dv1_" //LevelGT
+	"LEVELLT" => "_dv1_" //LevelLT
+	"LOCALSEQUAL" => "_var1_var2_" //LocalsEqual
+	"LOCALSGT" => "_var1_var2_" //LocalsGT
+	"LOCALSLT" => "_var1_var2_" //LocalsLT
+	"LOS" => "_dv1_" //LOS
+	"MODALSTATEOBJECT" => "_dv1_" //ModalStateObject
+	"MORALE" => "_dv1_" //Morale
+	"MORALEGT" => "_dv1_" //MoraleGT
+	"MORALELT" => "_dv1_" //MoraleLT
+	"NAME" => "_dv1_dv2_" //Name
+	"NEARLOCATION" => "_dv1_" //NearLocation
+	"NEARSAVEDLOCATION" => "_dv1_var2_" //NearSavedLocation
+	"NEXTTRIGGEROBJECT" => "_dv1_" //NextTriggerObject
+	"NOTSTATECHECK" => "_dv1_" //NotStateCheck
+	"NUMCREATURE" => "_dv1_" //NumCreature
+	"NUMCREATUREGT" => "_dv1_" //NumCreatureGT
+	"NUMCREATURELT" => "_dv1_" //NumCreatureLT
+	"NUMCREATUREVSPARTY" => "_dv1_" //NumCreatureVsParty
+	"NUMCREATUREVSPARTYGT" => "_dv1_" //NumCreatureVsPartyGT
+	"NUMCREATUREVSPARTYLT" => "_dv1_" //NumCreatureVsPartyLT
+	"NUMDEAD" => "_dv1_" //NumDead
+	"NUMDEADGT" => "_dv1_" //NumDeadGT
+	"NUMDEADLT" => "_dv1_" //NumDeadLT
+	"NUMITEMS" => "_itm1_dv2_" //NumItems
+	"NUMITEMSGT" => "_itm1_dv2_" //NumItemsGT
+	"NUMITEMSLT" => "_itm1_dv2_" //NumItemsLT
+	"NUMITEMSPARTY" => "_itm1_" //NumItemsParty
+	"NUMITEMSPARTYGT" => "_itm1_" //NumItemsPartyGT
+	"NUMITEMSPARTYLT" => "_itm1_" //NumItemsPartyLT
+	"OBJECTACTIONLISTEMPTY" => "_dv1_door1_" //ObjectActionListEmpty
+	"ONSCREEN" => "_dv1_door1_" //OnScreen
+	"OPENED" => "_dv1_" //Opened
+	"OPENSTATE" => "_door1_" //OpenState
+	"ORIGINALCLASS" => "_dv1_" //OriginalClass
+	"PARTYHASITEM" => "_itm1_" //PartyHasItem
+	"PARTYHASITEMIDENTIFIED" => "_itm1_" //PartyHasItemIdentified
+	"PARTYMEMBERDIED" => "_dv1_" //PartyMemberDied
+	"PERSONALSPACEDISTANCE" => "_dv1_door1_" //PersonalSpaceDistance
+	"PICKLOCKFAILED" => "_dv1_door1_" //PickLockFailed
+	"PICKPOCKETFAILED" => "_dv1_" //PickPocketFailed
+	"RACE" => "_dv1_" //Race
+	"RANGE" => "_dv1_" //Range
+	"REACTION" => "_dv1_" //Reaction
+	"REACTIONGT" => "_dv1_" //ReactionGT
+	"REACTIONLT" => "_dv1_" //ReactionLT
+	"REALGLOBALTIMEREXACT" => "_var1_are2_" //RealGlobalTimerExact
+	"REALGLOBALTIMEREXPIRED" => "_var1_are2_" //RealGlobalTimerExpired
+	"REALGLOBALTIMERNOTEXPIRED" => "_var1_are2_" //RealGlobalTimerNotExpired
+	"RECEIVEDORDER" => "_dv1_" //ReceivedOrder
+	"REPUTATION" => "_dv1_" //Reputation
+	"REPUTATIONGT" => "_dv1_" //ReputationGT
+	"REPUTATIONLT" => "_dv1_" //ReputationLT
+	"RESET" => "_dv1_" //Reset
+	"SAID" => "_dv1_" //Said
+	"SECRETDOORDETECTED" => "_door1_" //SecretDoorDetected
+	"SEE" => "_dv1_door1_" //See
+	"SPECIFICS" => "_dv1_" //Specifics
+	"SPELLCAST" => "_dv1_splName2_splRes2_" //SpellCast
+	"SPELLCASTINNATE" => "_dv1_splName2_splRes2_" //SpellCastInnate
+	"SPELLCASTINNATERES" => "_spl1_dv2_" //SpellCastInnateRES
+	"SPELLCASTONME" => "_dv1_splName2_splRes2_" //SpellCastOnMe
+	"SPELLCASTONMERES" => "_spl1_dv2_" //SpellCastOnMeRES
+	"SPELLCASTPRIEST" => "_dv1_splName2_splRes2_" //SpellCastPriest
+	"SPELLCASTPRIESTRES" => "_spl1_dv2_" //SpellCastPriestRES
+	"SPELLCASTRES" => "_spl1_dv2_" //SpellCastRES
+	"STATECHECK" => "_dv1_" //StateCheck
+	"STEALFAILED" => "_dv1_" //StealFailed
+	"SUMMONED" => "_dv1_" //Summoned
+	"SWITCH" => "_var1_are2_" //Switch
+	"TARGETUNREACHABLE" => "_dv1_door1_" //TargetUnreachable
+	"TRAPTRIGGERED" => "_dv1_" //TrapTriggered
+	"TRIGGEROVERRIDE" => "_dv1_" //TriggerOverride
+	"TURNEDBY" => "_dv1_" //TurnedBy
+	"UNLOCKED" => "_dv1_" //Unlocked
+	"UNUSABLE" => "_itm1_" //Unusable
+	"WEAPONCANDAMAGE" => "_dv1_" //WeaponCanDamage
+	"WEAPONEFFECTIVEVS" => "_dv1_" //WeaponEffectiveVs
+	"XP" => "_dv1_" //XP
+	"XPGT" => "_dv1_" //XPGT
+	"XPLT" => "_dv1_" //XPLT
+END
+
+//generate array for each command stored in EET_cmd_list array
+ACTION_PHP_EACH EET_cmd_list AS cmd => res_type BEGIN
+	OUTER_PATCH_SAVE res_type ~%res_type%~ BEGIN
+		SET cnt = 0
+		REPLACE_EVALUATE CASE_INSENSITIVE ~_\(2*[A-Z]+\)\([0-9]\)~ BEGIN
+			SET cnt = cnt + 1
+			SPRINT $EVAL ~array_%cmd%~("%cnt%" "%MATCH2%") "%MATCH1%"
+		END ~~
 	END
 END
 
-DEFINE_PATCH_MACRO ~EET_PCU_match_8675~ BEGIN
-	PATCH_IF (~%match%~ STRING_CONTAINS_REGEXP ~#d#~) BEGIN
-		SPRINT source ~%match%~
-		TO_UPPER source
-		INNER_PATCH_SAVE source6 ~%source%~ BEGIN
-			REPLACE_TEXTUALLY ~^\(.?.?.?.?.?.?\).*~ ~\1~
-		END
-		INNER_PATCH_SAVE source7 ~%source%~ BEGIN
-			REPLACE_TEXTUALLY ~^\(.?.?.?.?.?.?.?\).*~ ~\1~
-		END
-		INNER_PATCH_SAVE source5 ~%source%~ BEGIN
-			REPLACE_TEXTUALLY ~^\(.?.?.?.?.?\).*~ ~\1~
-		END
-		PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
-			SET updated = 1
-			PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - %res%~
-			SPRINT match ~#d#%dest%~
-		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source6%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source6%~)
-			SET updated = 1
-			PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source6% => %dest% - %res%~
-			INNER_PATCH_SAVE match ~%match%~ BEGIN
-				REPLACE_TEXTUALLY ~^%source6%~ ~#d#%dest%~
+DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
+	REPLACE_TEXTUALLY ~\(ActionOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #AOcomma# \2) #AObracket#~
+	REPLACE_TEXTUALLY ~\(TriggerOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #AOcomma# \2) #AObracket#~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~\([%WNL%%LNL%%MNL%%TAB% %tilde%%quote%\!]\)\([A-Z]+\)(\([^%WNL%%LNL%%MNL%%TAB% ]+\))~ BEGIN //loop through all commands
+		SPRINT init ~%MATCH1%~ //matched 
+		SPRINT cmd ~%MATCH2%~ //matched command name
+		SPRINT cmd_case ~%cmd%~
+		TO_UPPER cmd_case //uppercased command name
+		SPRINT arg ~%MATCH3%~ //matched arguments
+		SPRINT end ~%MATCH4%~ //matched one or more )
+		PATCH_IF (VARIABLE_IS_SET $EET_cmd_list(~%cmd_case%~)) BEGIN //only if command array exists
+			SET cnt = 0
+			SPRINT array EVAL ~array_%cmd_case%~
+			INNER_PATCH_SAVE arg ~%arg%~ BEGIN
+				SET splRes = 0
+				SET chapterUp = 0
+				REPLACE_EVALUATE CASE_INSENSITIVE ~\([^,]+\)~ BEGIN //loop through all arguments within command
+					SPRINT source ~%MATCH1%~ //matched argument
+					SET cnt = cnt + 1 //argument column
+					PHP_EACH ~%array%~ AS col => res BEGIN
+						PATCH_IF (col_1 = cnt) BEGIN
+							/*PATCH_IF (~%res%~ STRING_EQUAL_CASE ~tra~) AND (IS_AN_INT source) AND (source > 0) BEGIN
+								INNER_PATCH_SAVE source ~%source%~ BEGIN
+									REPLACE_TEXTUALLY ~^\([0-9]+\)~ ~@\1~
+									SET updated = 1
+								END
+							END ELSE BEGIN*/
+								SET resref = 0
+								PATCH_IF ((~%source%~ STRING_CONTAINS_REGEXP ~^"[^"]+"$~)=0) BEGIN //remove quotes if resref
+									INNER_PATCH_SAVE source ~%source%~ BEGIN
+										REPLACE_TEXTUALLY ~^"\([^"]+\)"$~ ~\1~
+										SET resref = 1
+									END
+								END
+								SPRINT source_case ~%source%~
+								TO_UPPER source_case //uppercased matched argument
+								PATCH_IF (~%res%~ STRING_EQUAL_CASE ~var~) AND (~%source%~ STRING_EQUAL_CASE ~CHAPTER~) BEGIN
+									SET chapterUp = 1 //enabled chapter replacing in next loop
+								END
+								PATCH_IF (~%res%~ STRING_EQUAL_CASE ~door~) OR (~%res%~ STRING_EQUAL_CASE ~exit~) BEGIN
+									INNER_PATCH_SAVE source6 ~%source_case%~ BEGIN
+										REPLACE_TEXTUALLY ~^\(.?.?.?.?.?.?\).*~ ~\1~
+									END
+									INNER_PATCH_SAVE source7 ~%source_case%~ BEGIN
+										REPLACE_TEXTUALLY ~^\(.?.?.?.?.?.?.?\).*~ ~\1~
+									END
+									INNER_PATCH_SAVE source5 ~%source_case%~ BEGIN
+										REPLACE_TEXTUALLY ~^\(.?.?.?.?.?\).*~ ~\1~
+									END
+									PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source_case%~)
+										SET updated = 1
+										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source_case% => %dest% - %res%~
+										SPRINT source ~%dest%~
+									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source6%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source6%~)
+										SET updated = 1
+										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source6% => %dest% - %res%~
+										INNER_PATCH_SAVE source ~%source%~ BEGIN
+											REPLACE_TEXTUALLY ~^%source6%~ ~%dest%~
+										END
+									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source7%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source7%~)
+										SET updated = 1
+										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source7% => %dest% - %res%~
+										INNER_PATCH_SAVE source ~%source%~ BEGIN
+											REPLACE_TEXTUALLY ~^%source7%~ ~%dest%~
+										END
+									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source5%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source5%~)
+										SET updated = 1
+										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source5% => %dest% - %res%~
+										INNER_PATCH_SAVE source ~%source%~ BEGIN
+											REPLACE_TEXTUALLY ~^%source5%~ ~%dest%~
+										END
+									END
+								END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) AND (((~%res%~ STRING_EQUAL_CASE ~chapter~)=0) OR (chapterUp = 1)) BEGIN //replace text using array corresponding to resref type
+									TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source_case%~)
+									SET updated = 1
+									PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source% => %dest% - %res%~
+									SPRINT source ~%dest%~
+									PATCH_IF (~%res%~ STRING_EQUAL_CASE ~splRes~) BEGIN
+										SET splRes = 1
+										SET resref = 1
+									END
+								END
+								PATCH_IF (resref = 1) BEGIN //restore quotation if needed
+									SPRINT source ~"%source%"~
+								END
+							//END
+						END
+					END
+				END ~%source%~
+				PATCH_IF (splRes = 1) BEGIN
+					REPLACE_TEXTUALLY ~\([^,]+\),\([^,]+\)~ ~\2,\1~
+					SPRINT cmd ~%cmd%RES~
+				END
 			END
-		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source7%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source7%~)
-			SET updated = 1
-			PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source7% => %dest% - %res%~
-			INNER_PATCH_SAVE match ~%match%~ BEGIN
-				REPLACE_TEXTUALLY ~^%source7%~ ~#d#%dest%~
-			END
-		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source5%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source5%~)
-			SET updated = 1
-			PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source5% => %dest% - %res%~
-			INNER_PATCH_SAVE match ~%match%~ BEGIN
-				REPLACE_TEXTUALLY ~^%source5%~ ~#d#%dest%~
-			END
 		END
-	END
+	END ~%init%%cmd%(%arg%)~
+	REPLACE_TEXTUALLY ~) #AOcomma# \([^ ]+\) #AObracket#~ ~,\1)~
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1518,14 +2002,12 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching tbl file %patch_name%...~
 
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Z0-9#_]+\)~ BEGIN
-			SPRINT match ~%MATCH1%~ SPRINT res ~exit~ LPM EET_PCU_match_8675
+			SPRINT match ~%MATCH1%~ SPRINT res ~exit~ LPM EET_PCU_outer_8675
 		END ~%match%~
 
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Z0-9#_]+\)~ BEGIN
-			SPRINT match ~%MATCH1%~ SPRINT res ~are~ LPM EET_PCU_match_res
+			SPRINT match ~%MATCH1%~ SPRINT res ~are~ LPM EET_PCU_outer_res
 		END ~%match%~
-
-		REPLACE_TEXTUALLY ~#d#~ ~~
 
 		SET tbl_check += 1
 		SET checked = 1
@@ -1598,8 +2080,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 			////////////////////////////////////
 			//CRE structure (embedded CRE files)
 			////////////////////////////////////
-			READ_LONG ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
-			PATCH_IF (actors_flags = 0) BEGIN
+			READ_BYTE ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
+			END ELSE BEGIN //CRE attached
 				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
 				PATCH_IF (actors_emb_off != 0) BEGIN
 					//0x34 small portrait BMP resref
@@ -1626,8 +2109,14 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 					//0x268 default BCS resref
 					SET off = ("%actors_emb_off%"+0x268) SPRINT res ~bcs~ LPM EET_PCU_off_res
 
+					//0x272 Race number
+					SET off = ("%actors_emb_off%"+0x272) SPRINT res ~race~ LPM EET_PCU_off_byte
+
 					//0x273 Class number
-					SET off = ("%actors_emb_off%"+0x273) LPM EET_PCU_off_class
+					SET off = ("%actors_emb_off%"+0x273) SPRINT res ~class~ LPM EET_PCU_off_byte
+
+					//0x274 Specific number
+					SET off = ("%actors_emb_off%"+0x274) SPRINT res ~spec~ LPM EET_PCU_off_byte
 
 					//0x280 Death Variable
 					SET off = ("%actors_emb_off%"+0x280) SPRINT res ~dv~ LPM EET_PCU_off_32
@@ -1642,7 +2131,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 					READ_SHORT ("%actors_emb_off%"+0x2a4) "kspell_cnt"
 					FOR (cnt2=0; cnt2<"%kspell_cnt%"; cnt2=cnt2+1) BEGIN
 						//0x0 SPL resref
-						SET off = ("%kspell_off%"+0xc*cnt2) SPRINT res ~spl~ LPM EET_PCU_off_res
+						SET off = ("%actors_emb_off%"+"%kspell_off%"+0xc*cnt2) SPRINT res ~spl~ LPM EET_PCU_off_res
 					END
 
 					//////////////////
@@ -1652,7 +2141,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 					READ_SHORT ("%actors_emb_off%"+0x2b4) "mspell_cnt"
 					FOR (cnt2=0; cnt2<"%mspell_cnt%"; cnt2=cnt2+1) BEGIN
 						//0x0 SPL resref
-						SET off = ("%mspell_off%"+0xc*cnt2) SPRINT res ~spl~ LPM EET_PCU_off_res
+						SET off = ("%actors_emb_off%"+"%mspell_off%"+0xc*cnt2) SPRINT res ~spl~ LPM EET_PCU_off_res
 					END
 
 					///////
@@ -1662,7 +2151,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 					READ_SHORT ("%actors_emb_off%"+0x2c0) "item_cnt"
 					FOR (cnt2=0; cnt2<"%item_cnt%"; cnt2=cnt2+1) BEGIN
 						//0x0 ITM resref
-						SET off = ("%item_off%"+0x14*cnt2) SPRINT res ~itm~ LPM EET_PCU_off_res
+						SET off = ("%actors_emb_off%"+"%item_off%"+0x14*cnt2) SPRINT res ~itm~ LPM EET_PCU_off_res
 					END
 
 					/////////
@@ -1673,14 +2162,56 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 					READ_BYTE ("%actors_emb_off%"+0x33) "eff_ver"
 					FOR (cnt2=0; cnt2<"%fx_cnt%"; cnt2=cnt2+1) BEGIN
 						PATCH_IF (eff_ver = 0) BEGIN //EFF v1
-							READ_SHORT ("%fx_off%"+0x30*cnt2) "fx_type"
-							SET offset = ("%fx_off%"+0x30*cnt2+0x14)
+							READ_SHORT ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2) "fx_type"
+							SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x14)
+
+							PATCH_IF ("%fx_type%" = 55) //Death: Kill Creature Type
+							OR ("%fx_type%" = 72) //IDS: Set IDS State
+							OR ("%fx_type%" = 100) //Protection: from Creature Type
+							OR ("%fx_type%" = 109) //State: Hold
+							OR ("%fx_type%" = 175) //State: Hold
+							OR ("%fx_type%" = 177) //Use EFF File
+							OR ("%fx_type%" = 178) //Spell Effect: THAC0 vs. Creature Type Modifier
+							OR ("%fx_type%" = 179) //Spell Effect: Damage vs. Creature Type Modifier
+							OR ("%fx_type%" = 185) //State: Hold
+							OR ("%fx_type%" = 219) //Stat: AC vs. Creature Type Modifier
+							OR ("%fx_type%" = 238) //Death: Disintegrate
+							OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+							OR ("%fx_type%" = 319) //Usability: Item Usability
+							BEGIN
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8) "ids_file"
+								PATCH_IF (ids_file = 4) BEGIN //Race.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4) SPRINT res ~race~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4) SPRINT res ~class~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4) SPRINT res ~spec~ LPM EET_PCU_off_long
+								END
+							END
+
+							PATCH_IF ("%fx_type%" = 318) //Protection: Immunity to Spell
+							OR ("%fx_type%" = 324) //Protection: Immunity to Spell and Message
+							OR ("%fx_type%" = 326) //Add Effects List
+							BEGIN
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8) "ids_file"
+								PATCH_IF (ids_file = 104) BEGIN //Race.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4) SPRINT res ~race~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 105) BEGIN //Class.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4) SPRINT res ~class~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 106) BEGIN //Specific.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4) SPRINT res ~spec~ LPM EET_PCU_off_long
+								END
+							END
+
+							PATCH_IF ("%fx_type%" = 331) BEGIN //Random Monster Summoning
+								SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8) SPRINT res ~sum~ LPM EET_PCU_off_long
+							END
 
 							PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 							OR ("%fx_type%" = 169) //Prevent Special Effect Icon
 							OR ("%fx_type%" = 240) //Remove Special Effect Icon
 							BEGIN
-								SET off = ("%fx_off%"+0x30*cnt2+0x8) LPM EET_PCU_off_state
+								SET off = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8) SPRINT res ~state~ LPM EET_PCU_off_long
 							END
 
 							PATCH_IF ("%fx_type%" = 214) //Select Spell
@@ -1719,7 +2250,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 							END
 
 							PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-								READ_LONG ("%fx_off%"+0x30*cnt2+0x8) "ids_target"
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8) "ids_target"
 								PATCH_IF (ids_target = 11) BEGIN //Actor's script name
 									SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
 								END
@@ -1787,16 +2318,54 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 								SET off = offset SPRINT res ~wav~ LPM EET_PCU_off_res
 							END
 						END ELSE BEGIN //EFF v2
-							READ_LONG ("%fx_off%"+0x108*cnt2+0x8) "fx_type"
-							SET offset = ("%fx_off%"+0x108*cnt2+0x28) //Resource
-							SET offset2 = ("%fx_off%"+0x108*cnt2+0x68) //Resource 2 (VVC field)
-							SET offset3 = ("%fx_off%"+0x108*cnt2+0x70) //Resource 3
+							READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x8) "fx_type"
+							SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x28) //Resource
+							SET offset2 = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x68) //Resource 2 (VVC field)
+							SET offset3 = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x70) //Resource 3
+
+							PATCH_IF ("%fx_type%" = 55) //Death: Kill Creature Type
+							OR ("%fx_type%" = 72) //IDS: Set IDS State
+							OR ("%fx_type%" = 100) //Protection: from Creature Type
+							OR ("%fx_type%" = 109) //State: Hold
+							OR ("%fx_type%" = 175) //State: Hold
+							OR ("%fx_type%" = 177) //Use EFF File
+							OR ("%fx_type%" = 178) //Spell Effect: THAC0 vs. Creature Type Modifier
+							OR ("%fx_type%" = 179) //Spell Effect: Damage vs. Creature Type Modifier
+							OR ("%fx_type%" = 185) //State: Hold
+							OR ("%fx_type%" = 219) //Stat: AC vs. Creature Type Modifier
+							OR ("%fx_type%" = 238) //Death: Disintegrate
+							OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+							OR ("%fx_type%" = 319) //Usability: Item Usability
+							BEGIN
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x18) "ids_file"
+								PATCH_IF (ids_file = 4) BEGIN //Race.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14) SPRINT res ~race~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14) SPRINT res ~class~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14) SPRINT res ~spec~ LPM EET_PCU_off_long
+								END
+							END
+
+							PATCH_IF ("%fx_type%" = 318) //Protection: Immunity to Spell
+							OR ("%fx_type%" = 324) //Protection: Immunity to Spell and Message
+							OR ("%fx_type%" = 326) //Add Effects List
+							BEGIN
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x18) "ids_file"
+								PATCH_IF (ids_file = 104) BEGIN //Race.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14) SPRINT res ~race~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 105) BEGIN //Class.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14) SPRINT res ~class~ LPM EET_PCU_off_long
+								END ELSE PATCH_IF (ids_file = 106) BEGIN //Specific.ids
+									SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14) SPRINT res ~spec~ LPM EET_PCU_off_long
+								END
+							END
 
 							PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 							OR ("%fx_type%" = 169) //Prevent Special Effect Icon
 							OR ("%fx_type%" = 240) //Remove Special Effect Icon
 							BEGIN
-								SET off = ("%fx_off%"+0x108*cnt2+0x18) LPM EET_PCU_off_state
+								SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x18) SPRINT res ~state~ LPM EET_PCU_off_long
 							END
 
 							PATCH_IF ("%fx_type%" = 127) BEGIN //Monster Summoning
@@ -1812,6 +2381,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 								SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 								SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
 								SET off = offset3 SPRINT res ~bam~ LPM EET_PCU_off_res
+								SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x18) SPRINT res ~sum~ LPM EET_PCU_off_long
 							END
 
 							PATCH_IF ("%fx_type%" = 186) BEGIN //MoveToArea
@@ -1847,7 +2417,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 							END
 
 							PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-								READ_LONG ("%fx_off%"+0x108*cnt2+0x18) "ids_target"
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x18) "ids_target"
 								PATCH_IF (ids_target = 11) BEGIN //Actor's script name
 									SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
 								END
@@ -1926,7 +2496,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 							END
 
 							//0x8c source spell SPL resref
-							SET off = ("%fx_off%"+0x108*cnt2+0x8c) SPRINT res ~spl~ LPM EET_PCU_off_res
+							SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x8c) SPRINT res ~spl~ LPM EET_PCU_off_res
 						END
 					END
 				END
@@ -2181,25 +2751,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.BAF$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching script source file %patch_name%...~
 
-		LAUNCH_PATCH_MACRO ~BAF_ARE_replace~
-		LAUNCH_PATCH_MACRO ~BAF_BAM_replace~
-		LAUNCH_PATCH_MACRO ~BAF_BCS_replace~
-		LAUNCH_PATCH_MACRO ~BAF_CRE_replace~
-		LAUNCH_PATCH_MACRO ~BAF_DLG_replace~
-		LAUNCH_PATCH_MACRO ~BAF_DV_replace~
-		LAUNCH_PATCH_MACRO ~BAF_ITM_replace~
-		LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
-		LAUNCH_PATCH_MACRO ~BAF_STO_replace~
-		LAUNCH_PATCH_MACRO ~BAF_WAV_replace~
-		LAUNCH_PATCH_MACRO ~BAF_MVE_replace~
-		LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
-		LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
-		LAUNCH_PATCH_MACRO ~BAF_door_replace~
-		LAUNCH_PATCH_MACRO ~BAF_splRes_replace~
-		LAUNCH_PATCH_MACRO ~BAF_splName_replace~
-		LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
-		REPLACE_TEXTUALLY ~#d#~ ~~
-		//LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
+		LPM EET_PCU_match
 
 		SET baf_check += 1
 		SET checked = 1
@@ -2214,25 +2766,7 @@ CO") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching compiled script file %patch_name%...~
 
 		DECOMPILE_AND_PATCH BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_ARE_replace~
-			LAUNCH_PATCH_MACRO ~BAF_BAM_replace~
-			LAUNCH_PATCH_MACRO ~BAF_BCS_replace~
-			LAUNCH_PATCH_MACRO ~BAF_CRE_replace~
-			LAUNCH_PATCH_MACRO ~BAF_DLG_replace~
-			LAUNCH_PATCH_MACRO ~BAF_DV_replace~
-			LAUNCH_PATCH_MACRO ~BAF_ITM_replace~
-			LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
-			LAUNCH_PATCH_MACRO ~BAF_STO_replace~
-			LAUNCH_PATCH_MACRO ~BAF_WAV_replace~
-			LAUNCH_PATCH_MACRO ~BAF_MVE_replace~
-			LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
-			LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
-			LAUNCH_PATCH_MACRO ~BAF_door_replace~
-			LAUNCH_PATCH_MACRO ~BAF_splRes_replace~
-			LAUNCH_PATCH_MACRO ~BAF_splName_replace~
-			LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
-			REPLACE_TEXTUALLY ~#d#~ ~~
-			//LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
+			LPM EET_PCU_match
 		END
 
 		SET bcs_check += 1
@@ -2272,8 +2806,14 @@ CO") BEGIN
 			//0x268 default BCS resref
 			SET off = 0x268 SPRINT res ~bcs~ LPM EET_PCU_off_res
 
+			//0x272 Race number
+			SET off = 0x272 SPRINT res ~race~ LPM EET_PCU_off_byte
+
 			//0x273 Class number
-			SET off = 0x273 LPM EET_PCU_off_class
+			SET off = 0x273 SPRINT res ~class~ LPM EET_PCU_off_byte
+
+			//0x274 Specific number
+			SET off = 0x274 SPRINT res ~spec~ LPM EET_PCU_off_byte
 
 			//0x280 Death Variable
 			SET off = 0x280 SPRINT res ~dv~ LPM EET_PCU_off_32
@@ -2322,11 +2862,49 @@ CO") BEGIN
 				SET offset2 = ("%fx_off%"+0x108*cnt+0x68) //Resource 2 (VVC field)
 				SET offset3 = ("%fx_off%"+0x108*cnt+0x70) //Resource 3
 
+				PATCH_IF ("%fx_type%" = 55) //Death: Kill Creature Type
+				OR ("%fx_type%" = 72) //IDS: Set IDS State
+				OR ("%fx_type%" = 100) //Protection: from Creature Type
+				OR ("%fx_type%" = 109) //State: Hold
+				OR ("%fx_type%" = 175) //State: Hold
+				OR ("%fx_type%" = 177) //Use EFF File
+				OR ("%fx_type%" = 178) //Spell Effect: THAC0 vs. Creature Type Modifier
+				OR ("%fx_type%" = 179) //Spell Effect: Damage vs. Creature Type Modifier
+				OR ("%fx_type%" = 185) //State: Hold
+				OR ("%fx_type%" = 219) //Stat: AC vs. Creature Type Modifier
+				OR ("%fx_type%" = 238) //Death: Disintegrate
+				OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+				OR ("%fx_type%" = 319) //Usability: Item Usability
+				BEGIN
+					READ_LONG ("%fx_off%"+0x108*cnt+0x18) "ids_file"
+					PATCH_IF (ids_file = 4) BEGIN //Race.ids
+						SET off = ("%fx_off%"+0x108*cnt+0x14) SPRINT res ~race~ LPM EET_PCU_off_long
+					END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+						SET off = ("%fx_off%"+0x108*cnt+0x14) SPRINT res ~class~ LPM EET_PCU_off_long
+					END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+						SET off = ("%fx_off%"+0x108*cnt+0x14) SPRINT res ~spec~ LPM EET_PCU_off_long
+					END
+				END
+
+				PATCH_IF ("%fx_type%" = 318) //Protection: Immunity to Spell
+				OR ("%fx_type%" = 324) //Protection: Immunity to Spell and Message
+				OR ("%fx_type%" = 326) //Add Effects List
+				BEGIN
+					READ_LONG ("%fx_off%"+0x108*cnt+0x18) "ids_file"
+					PATCH_IF (ids_file = 104) BEGIN //Race.ids
+						SET off = ("%fx_off%"+0x108*cnt+0x14) SPRINT res ~race~ LPM EET_PCU_off_long
+					END ELSE PATCH_IF (ids_file = 105) BEGIN //Class.ids
+						SET off = ("%fx_off%"+0x108*cnt+0x14) SPRINT res ~class~ LPM EET_PCU_off_long
+					END ELSE PATCH_IF (ids_file = 106) BEGIN //Specific.ids
+						SET off = ("%fx_off%"+0x108*cnt+0x14) SPRINT res ~spec~ LPM EET_PCU_off_long
+					END
+				END
+
 				PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 				OR ("%fx_type%" = 169) //Prevent Special Effect Icon
 				OR ("%fx_type%" = 240) //Remove Special Effect Icon
 				BEGIN
-					SET off = ("%fx_off%"+0x108*cnt+0x18) LPM EET_PCU_off_state
+					SET off = ("%fx_off%"+0x108*cnt+0x18) SPRINT res ~state~ LPM EET_PCU_off_long
 				END
 
 				PATCH_IF ("%fx_type%" = 127) BEGIN //Monster Summoning
@@ -2342,6 +2920,7 @@ CO") BEGIN
 					SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 					SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
 					SET off = offset3 SPRINT res ~bam~ LPM EET_PCU_off_res
+					SET off = ("%fx_off%"+0x108*cnt+0x18) SPRINT res ~sum~ LPM EET_PCU_off_long
 				END
 
 				PATCH_IF ("%fx_type%" = 186) BEGIN //MoveToArea
@@ -2462,7 +3041,7 @@ CO") BEGIN
 			SET cre_check += 1
 			SET checked = 1
 		END ELSE BEGIN
-			PATCH_WARN ~FJ_CRE_VALIDITY returned %SOURCE_FILESPEC% as not valid file~
+			PATCH_WARN ~WARNING: FJ_CRE_VALIDITY returned %SOURCE_FILESPEC% as not valid file~
 		END
 	END
 
@@ -2472,27 +3051,9 @@ CO") BEGIN
 	PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.D$")=0) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching dialog source file %patch_name%...~
 
-		LAUNCH_PATCH_MACRO ~BAF_ARE_replace~
-		LAUNCH_PATCH_MACRO ~BAF_BAM_replace~
-		LAUNCH_PATCH_MACRO ~BAF_BCS_replace~
-		LAUNCH_PATCH_MACRO ~BAF_CRE_replace~
-		LAUNCH_PATCH_MACRO ~BAF_DLG_replace~
-		LAUNCH_PATCH_MACRO ~BAF_DV_replace~
-		LAUNCH_PATCH_MACRO ~BAF_ITM_replace~
-		LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
-		LAUNCH_PATCH_MACRO ~BAF_STO_replace~
-		LAUNCH_PATCH_MACRO ~BAF_WAV_replace~
-		LAUNCH_PATCH_MACRO ~BAF_MVE_replace~
-		LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
-		LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
-		LAUNCH_PATCH_MACRO ~BAF_door_replace~
-		LAUNCH_PATCH_MACRO ~BAF_splRes_replace~
-		LAUNCH_PATCH_MACRO ~BAF_splName_replace~
-		LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
-		LAUNCH_PATCH_MACRO ~D_DLG_replace~
-		REPLACE_TEXTUALLY ~#d#~ ~~
-		//LAUNCH_PATCH_MACRO ~D_traifyDLG_replace~
-		//LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
+		LPM EET_PCU_match
+		LPM D_DLG_replace
+		//LPM D_traifyDLG_replace
 
 		SET d_check += 1
 		SET checked = 1
@@ -2515,27 +3076,9 @@ CO") BEGIN
 		END
 
 		DECOMPILE_AND_PATCH BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_ARE_replace~
-			LAUNCH_PATCH_MACRO ~BAF_BAM_replace~
-			LAUNCH_PATCH_MACRO ~BAF_BCS_replace~
-			LAUNCH_PATCH_MACRO ~BAF_CRE_replace~
-			LAUNCH_PATCH_MACRO ~BAF_DLG_replace~
-			LAUNCH_PATCH_MACRO ~BAF_DV_replace~
-			LAUNCH_PATCH_MACRO ~BAF_ITM_replace~
-			LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
-			LAUNCH_PATCH_MACRO ~BAF_STO_replace~
-			LAUNCH_PATCH_MACRO ~BAF_WAV_replace~
-			LAUNCH_PATCH_MACRO ~BAF_MVE_replace~
-			LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
-			LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
-			LAUNCH_PATCH_MACRO ~BAF_door_replace~
-			LAUNCH_PATCH_MACRO ~BAF_splRes_replace~
-			LAUNCH_PATCH_MACRO ~BAF_splName_replace~
-			LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
-			LAUNCH_PATCH_MACRO ~D_DLG_replace~
-			REPLACE_TEXTUALLY ~#d#~ ~~
-			//LAUNCH_PATCH_MACRO ~D_traifyDLG_replace~
-			//LAUNCH_PATCH_MACRO ~D_traifyBCS_replace~
+			LPM EET_PCU_match
+			LPM D_DLG_replace
+			//LPM D_traifyDLG_replace
 		END
 
 		SET dlg_check += 1
@@ -2553,11 +3096,49 @@ CO") BEGIN
 		SET offset2 = 0x70 //Resource 2 (VVC field)
 		SET offset3 = 0x78 //Resource 3
 
+		PATCH_IF ("%fx_type%" = 55) //Death: Kill Creature Type
+		OR ("%fx_type%" = 72) //IDS: Set IDS State
+		OR ("%fx_type%" = 100) //Protection: from Creature Type
+		OR ("%fx_type%" = 109) //State: Hold
+		OR ("%fx_type%" = 175) //State: Hold
+		OR ("%fx_type%" = 177) //Use EFF File
+		OR ("%fx_type%" = 178) //Spell Effect: THAC0 vs. Creature Type Modifier
+		OR ("%fx_type%" = 179) //Spell Effect: Damage vs. Creature Type Modifier
+		OR ("%fx_type%" = 185) //State: Hold
+		OR ("%fx_type%" = 219) //Stat: AC vs. Creature Type Modifier
+		OR ("%fx_type%" = 238) //Death: Disintegrate
+		OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+		OR ("%fx_type%" = 319) //Usability: Item Usability
+		BEGIN
+			READ_LONG 0x20 "ids_file"
+			PATCH_IF (ids_file = 4) BEGIN //Race.ids
+				SET off = 0x1c SPRINT res ~race~ LPM EET_PCU_off_long
+			END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+				SET off = 0x1c SPRINT res ~class~ LPM EET_PCU_off_long
+			END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+				SET off = 0x1c SPRINT res ~spec~ LPM EET_PCU_off_long
+			END
+		END
+
+		PATCH_IF ("%fx_type%" = 318) //Protection: Immunity to Spell
+		OR ("%fx_type%" = 324) //Protection: Immunity to Spell and Message
+		OR ("%fx_type%" = 326) //Add Effects List
+		BEGIN
+			READ_LONG 0x20 "ids_file"
+			PATCH_IF (ids_file = 104) BEGIN //Race.ids
+				SET off = 0x1c SPRINT res ~race~ LPM EET_PCU_off_long
+			END ELSE PATCH_IF (ids_file = 105) BEGIN //Class.ids
+				SET off = 0x1c SPRINT res ~class~ LPM EET_PCU_off_long
+			END ELSE PATCH_IF (ids_file = 106) BEGIN //Specific.ids
+				SET off = 0x1c SPRINT res ~spec~ LPM EET_PCU_off_long
+			END
+		END
+
 		PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 		OR ("%fx_type%" = 169) //Prevent Special Effect Icon
 		OR ("%fx_type%" = 240) //Remove Special Effect Icon
 		BEGIN
-			SET off = 0x20 LPM EET_PCU_off_state
+			SET off = 0x20 SPRINT res ~state~ LPM EET_PCU_off_long
 		END
 
 		PATCH_IF ("%fx_type%" = 127) BEGIN //Monster Summoning
@@ -2573,6 +3154,7 @@ CO") BEGIN
 			SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 			SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
 			SET off = offset3 SPRINT res ~bam~ LPM EET_PCU_off_res
+			SET off = 0x20 SPRINT res ~sum~ LPM EET_PCU_off_long
 		END
 
 		PATCH_IF ("%fx_type%" = 186) BEGIN //MoveToArea
@@ -2738,11 +3320,53 @@ CO") BEGIN
 			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
 			SET offset = ("%fx_off%"+0x30*cnt+0x14)
 
+			PATCH_IF ("%fx_type%" = 55) //Death: Kill Creature Type
+			OR ("%fx_type%" = 72) //IDS: Set IDS State
+			OR ("%fx_type%" = 100) //Protection: from Creature Type
+			OR ("%fx_type%" = 109) //State: Hold
+			OR ("%fx_type%" = 175) //State: Hold
+			OR ("%fx_type%" = 177) //Use EFF File
+			OR ("%fx_type%" = 178) //Spell Effect: THAC0 vs. Creature Type Modifier
+			OR ("%fx_type%" = 179) //Spell Effect: Damage vs. Creature Type Modifier
+			OR ("%fx_type%" = 185) //State: Hold
+			OR ("%fx_type%" = 219) //Stat: AC vs. Creature Type Modifier
+			OR ("%fx_type%" = 238) //Death: Disintegrate
+			OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+			OR ("%fx_type%" = 319) //Usability: Item Usability
+			BEGIN
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_file"
+				PATCH_IF (ids_file = 4) BEGIN //Race.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~race~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~class~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~spec~ LPM EET_PCU_off_long
+				END
+			END
+
+			PATCH_IF ("%fx_type%" = 318) //Protection: Immunity to Spell
+			OR ("%fx_type%" = 324) //Protection: Immunity to Spell and Message
+			OR ("%fx_type%" = 326) //Add Effects List
+			BEGIN
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_file"
+				PATCH_IF (ids_file = 104) BEGIN //Race.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~race~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 105) BEGIN //Class.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~class~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 106) BEGIN //Specific.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~spec~ LPM EET_PCU_off_long
+				END
+			END
+
+			PATCH_IF ("%fx_type%" = 331) BEGIN //Random Monster Summoning
+				SET off = ("%fx_off%"+0x30*cnt+0x8) SPRINT res ~sum~ LPM EET_PCU_off_long
+			END
+
 			PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 			OR ("%fx_type%" = 169) //Prevent Special Effect Icon
 			OR ("%fx_type%" = 240) //Remove Special Effect Icon
 			BEGIN
-				SET off = ("%fx_off%"+0x30*cnt+0x8) LPM EET_PCU_off_state
+				SET off = ("%fx_off%"+0x30*cnt+0x8) SPRINT res ~state~ LPM EET_PCU_off_long
 			END
 
 			PATCH_IF ("%fx_type%" = 214) //Select Spell
@@ -2966,11 +3590,53 @@ CO") BEGIN
 			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
 			SET offset = ("%fx_off%"+0x30*cnt+0x14)
 
+			PATCH_IF ("%fx_type%" = 55) //Death: Kill Creature Type
+			OR ("%fx_type%" = 72) //IDS: Set IDS State
+			OR ("%fx_type%" = 100) //Protection: from Creature Type
+			OR ("%fx_type%" = 109) //State: Hold
+			OR ("%fx_type%" = 175) //State: Hold
+			OR ("%fx_type%" = 177) //Use EFF File
+			OR ("%fx_type%" = 178) //Spell Effect: THAC0 vs. Creature Type Modifier
+			OR ("%fx_type%" = 179) //Spell Effect: Damage vs. Creature Type Modifier
+			OR ("%fx_type%" = 185) //State: Hold
+			OR ("%fx_type%" = 219) //Stat: AC vs. Creature Type Modifier
+			OR ("%fx_type%" = 238) //Death: Disintegrate
+			OR ("%fx_type%" = 283) //Use EFF File (Cursed)
+			OR ("%fx_type%" = 319) //Usability: Item Usability
+			BEGIN
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_file"
+				PATCH_IF (ids_file = 4) BEGIN //Race.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~race~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~class~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~spec~ LPM EET_PCU_off_long
+				END
+			END
+
+			PATCH_IF ("%fx_type%" = 318) //Protection: Immunity to Spell
+			OR ("%fx_type%" = 324) //Protection: Immunity to Spell and Message
+			OR ("%fx_type%" = 326) //Add Effects List
+			BEGIN
+				READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_file"
+				PATCH_IF (ids_file = 104) BEGIN //Race.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~race~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 105) BEGIN //Class.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~class~ LPM EET_PCU_off_long
+				END ELSE PATCH_IF (ids_file = 106) BEGIN //Specific.ids
+					SET off = ("%fx_off%"+0x30*cnt+0x4) SPRINT res ~spec~ LPM EET_PCU_off_long
+				END
+			END
+
+			PATCH_IF ("%fx_type%" = 331) BEGIN //Random Monster Summoning
+				SET off = ("%fx_off%"+0x30*cnt+0x8) SPRINT res ~sum~ LPM EET_PCU_off_long
+			END
+
 			PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
 			OR ("%fx_type%" = 169) //Prevent Special Effect Icon
 			OR ("%fx_type%" = 240) //Remove Special Effect Icon
 			BEGIN
-				SET off = ("%fx_off%"+0x30*cnt+0x8) LPM EET_PCU_off_state
+				SET off = ("%fx_off%"+0x30*cnt+0x8) SPRINT res ~state~ LPM EET_PCU_off_long
 			END
 
 			PATCH_IF ("%fx_type%" = 214) //Select Spell
@@ -3138,10 +3804,8 @@ CO") BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~\(\[\)%source%\(\]\)~ BEGIN
 				SET updated = 1
 				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - wav~
-			END ~\1#d#%dest%\2~
+			END ~\1%dest%\2~
 		END
-
-		REPLACE_TEXTUALLY ~#d#~ ~~
 
 		SET tra_check += 1
 		SET checked = 1
@@ -3156,7 +3820,6 @@ CO") BEGIN
 
 		//area resrefs
 		PHP_EACH remapped_are AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_ARE_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.ARE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - are~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.ARE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - are~ END ~#d#%dest%\1~
 
@@ -3178,7 +3841,6 @@ CO") BEGIN
 
 		//other resrefs
 		PHP_EACH remapped_2da AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_2DA_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.2DA\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - 2da~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.2DA\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - 2da~ END ~#d#%dest%\1~
 
@@ -3189,7 +3851,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_bam AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_BAM_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.BAM\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bam~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.BAM\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bam~ END ~#d#%dest%\1~
 
@@ -3200,7 +3861,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_bcs AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_BCS_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.BCS\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.BCS\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~#d#%dest%\1~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.BAF\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~\1#d#%dest%\2~
@@ -3213,7 +3873,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_cre AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_CRE_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.CRE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - cre~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.CRE\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - cre~ END ~#d#%dest%\1~
 
@@ -3224,7 +3883,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_dlg AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_DLG_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.DLG\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.DLG\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~#d#%dest%\1~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.D\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~\1#d#%dest%\2~
@@ -3237,7 +3895,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_dv AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_DV_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"]+\)%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - dv~ END ~\1#d#%source%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"]+\)%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - dv~ END ~\1#d#%source%~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - dv~ END ~#d#%source%\1~
@@ -3245,7 +3902,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_itm AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_ITM_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.ITM\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - itm~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.ITM\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - itm~ END ~#d#%dest%\1~
 
@@ -3256,7 +3912,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_spl AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_SPL_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.SPL\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - spl~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.SPL\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - spl~ END ~#d#%dest%\1~
 
@@ -3267,7 +3922,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_sto AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_STO_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.STO\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - sto~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.STO\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - sto~ END ~#d#%dest%\1~
 
@@ -3278,7 +3932,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_var AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_VAR_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"]+\)%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - var~ END ~\1#d#%source%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"]+\)%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - var~ END ~\1#d#%source%~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - var~ END ~#d#%source%\1~
@@ -3286,7 +3939,6 @@ CO") BEGIN
 		END
 
 		PHP_EACH remapped_wav AS source => dest BEGIN
-			LAUNCH_PATCH_MACRO ~BAF_WAV_replace~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.WAV\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - wav~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.WAV\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - wav~ END ~#d#%dest%\1~
 
@@ -3296,7 +3948,7 @@ CO") BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - wav~ END ~#d#%source%~
 		END
 //"
-		LAUNCH_PATCH_MACRO ~BAF_CHAPTER_replace~
+		LPM EET_PCU_match
 		REPLACE_TEXTUALLY ~#d#~ ~~
 
 		SET tp2_check += 1
@@ -3446,545 +4098,10 @@ END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_PATCH_MACRO ~BAF_ARE_replace~ BEGIN
-	//TRIGGER.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Global("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalGT("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalLT("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalTimerExact("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalTimerExpired("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalTimerNotExpired("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AreaCheck("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AreaCheckObject("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetGlobal("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LeaveArea("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(IncrementGlobal("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetGlobalTimer("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AddexperiencePartyGlobal("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(RevealAreaOnMap("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetMasterArea("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobal("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveBetweenAreas("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(EscapeAreaMove("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SaveLocation("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SaveObjectLocation("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(HideAreaOnMap("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CopyGroundPilesTo("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(RealSetGlobalTimer("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(EscapeAreaObjectMove("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToSavedLocationn("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToSavedLocation("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DeathMatchPositionGlobal("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DeathMatchPositionArea("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DeathMatchPositionLocal("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobalsTo("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobalsTo("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetTokenGlobal("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetEncounterProbability("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetEncounterProbability("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LeaveAreaLUAEntry("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LeaveAreaLUAPanicEntry("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureAtLocation("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateItemGlobal("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LeaveAreaLUA("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LeaveAreaLUAPanic("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveBetweenAreasEffect("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~are~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_BAM_replace~ BEGIN
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateVisualEffect("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bam~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateVisualEffectObject("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bam~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectEffect("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bam~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectCopyEffect("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bam~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LeaveAreaLUA("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bam~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LeaveAreaLUAPanic("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bam~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveBetweenAreasEffect("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bam~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_BCS_replace~ BEGIN
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeAIScript("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bcs~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartCutscene("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bcs~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_BMP_replace~ BEGIN
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StaticPalette("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~bmp~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_CRE_replace~ BEGIN
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreature("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeAnimation("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeAnimationNoEffect("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObject("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureImpassable("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureDoor("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectDoor("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectOffScreen("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureOffScreen("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectCopy("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectOffset("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureCopyPoint("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureImpassableAllowOverlap("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureAtLocation("[^"]+","[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectEffect("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectCopyEffect("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~cre~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_DV_replace~ BEGIN
-	PHP_EACH remapped_dv AS source => dest BEGIN
-		//ACTION.IDS
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ActionOverride("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Attack("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(BackStab("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Dialogue("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Dialog("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(GetItem("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(GiveItem("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(GiveOrder("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(LayHands("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PickPockets("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(RunAwayFrom("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Spell("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(UseItem("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(UseItemSlot("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Formation("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveViewObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ClickLButtonObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ClickRButtonObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DoubleClickLButtonObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DoubleClickRButtonObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SendTrigger("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CallLightning("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ProtectObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(GroupAttack("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(AttackNoSound("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoraleSet("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoraleInc("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoraleDec("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(AttackOneRound("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpell("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Deactivate("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Activate("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CutSceneId("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Kill("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(VerbalConstant("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ClearActions("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(AttackReevaluate("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialog("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogue("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PlayerDialog("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PlayerDialogue("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(GiveItemCreate("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartStore("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayString("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeAIType("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeEnemyAlly("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeGeneral("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeRace("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeClass("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeSpecifics("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeGender("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ChangeAlignment("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ApplySpell("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Interact("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToObjectFollow("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpell("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(RunAwayFromNoInterrupt("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellNoDec("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobal("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogueNoSet("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogNoSet("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToObjectNoInterrupt("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(FollowObjectFormation("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(FaceObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobalObjectOffScreen("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobalObjectOffScreen("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpellDead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Calm("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SaveObjectLocation("[^"]+","[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetTokenObject("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetGabber("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectCopy("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectOffset("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(AddXPObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringNoName("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DialogueForceInterrupt("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DialogForceInterrupt("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogInterrupt("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogueInterrupt("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogueNoSetInterrupt("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogNoSetInterrupt("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringHead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PolymorphCopy("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(VerbalConstantHead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateVisualEffectObject("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectEffect("[^"]+","[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureObjectCopyEffect("[^"]+","[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(EscapeAreaObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(EscapeAreaObjectMove("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(TakeItemReplace("[^"]+","[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PolymorphCopyBase("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobalObject("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveGlobalObject("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogOverride("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogOverrideInterrupt("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateCreatureCopyPoint("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ApplyDamage("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ApplyDamagePercent("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringWait("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellRange("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetPlayerSound("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(FakeEffectExpiryCheck("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogNoName("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellRES("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellRES("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ApplySpellRES("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpellRES("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellNoDecRES("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpellDeadRES("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellRangeRES("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringHeadDead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringNoNameHead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringNoNameDlg("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-
-		//TRIGGER.IDS
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(AttackedBy("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Help("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Joins("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Leaves("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReceivedOrder("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Said("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(TurnedBy("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Alignment("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Allegiance("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Class("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Exists("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(General("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HP("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HPGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HPLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(LOS("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Morale("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoraleGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoraleLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Race("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Range("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Reputation("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReputationGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReputationLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(See("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Specifics("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HitBy("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(TargetUnreachable("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumCreature("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumCreatureLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumCreatureGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HPPercent("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HPPercentLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HPPercentGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Heard("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StateCheck("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NotStateCheck("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Reaction("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReactionGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReactionLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InParty("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CheckStat("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CheckStatGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CheckStatLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Died("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Killed("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Entered("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Gender("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Dead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Opened("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Closed("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Detected("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Reset("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Disarmed("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Unlocked("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumTimesInteracted("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumTimesInteractedGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumTimesInteractedLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PickPocketFailed("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(StealFailed("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisarmFailed("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PickLockFailed("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasItem("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InteractingWith("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InWeaponRange("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasWeaponEquiped("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Happiness("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HappinessGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HappinessLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Clicked("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumDead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumDeadGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumDeadLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Detect("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItems("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItemsGT("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItemsLT("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(IsOverMe("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasItemEquiped("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumCreatureVsParty("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumCreatureVsPartyLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumCreatureVsPartyGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PartyMemberDied("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InPartySlot("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCast("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InLine("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InLine("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Level("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(LevelGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(LevelLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Summoned("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(ObjectActionListEmpty("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(OnScreen("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InActiveArea("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCastOnMe("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Name("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Name("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCastPriest("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCastInnate("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(IsValidForPartyDialog("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(IfValidForPartyDialog("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(IsValidForPartyDialogue("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(IfValidForPartyDialogue("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasBounceEffects("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasImmunityEffects("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasItemSlot("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(PersonalSpaceDistance("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InMyGroup("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(Kit("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(IsGabber("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(IsActive("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CharName("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(CharName("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(FallenRanger("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(FallenPaladin("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InventoryFull("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasItemEquipedReal("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(XP("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(XPGT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(XPLT("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InMyArea("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(InPartyAllowDead("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(AreaCheckObject("[^"]+","\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(WalkedToTrigger("\)%source%\("\)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dv~ END ~\1#d#%dest%\2~
-	END
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_DLG_replace~ BEGIN
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialog("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogue("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetDialog("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SetDialogue("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogInterrupt("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogueInterrupt("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogOverride("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogOverrideInterrupt("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartDialogNoName("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_ITM_replace~ BEGIN
-	//TRIGGER.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Acquired("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Unusable("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(PartyHasItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Contains("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItems("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItemsGT("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItemsLT("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItemsParty("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItemsPartyGT("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(NumItemsPartyLT("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasItemEquiped("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(PartyHasItemIdentified("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(HasItemEquipedReal("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DropItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(EquipItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GetItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GiveItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(UseItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(UseItemSlot("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(UseItemPoint("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TakePartyItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GiveItemCreate("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DestroyItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TakePartyItemAll("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TakePartyItemRange("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TakePartyItemNum("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(PickUpItem("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TakeItemReplace("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TakeItemReplace("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DisplayStringHeadOwner("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CreateItemGlobal("[^"]+","[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~itm~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_SPL_replace~ BEGIN
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*SpellRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~ //HaveSpellRES, RemoveSpellRES, SpellRES, ForceSpellRES, ApplySpellRES, ReallyForceSpellRES
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCastRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCastOnMeRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCastPriestRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SpellCastInnateRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*SpellPointRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~ //SpellPointRES, ForceSpellPointRES, ReallyForceSpellPointRES
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+NoDecRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~ //SpellNoDecRES, SpellPointNoDecRES
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ReallyForceSpellDeadRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AddSpecialAbility("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellRangeRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ForceSpellPointRangeRES("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~spl~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_STO_replace~ BEGIN
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartStore("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~sto~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_WAV_replace~ BEGIN
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(PlaySound("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~wav~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_MVE_replace~ BEGIN
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StartMovie("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~mve~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_2DA_replace~ BEGIN
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(IncrementChapter("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~2da~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TextScreen("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~2da~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_VAR_replace~ BEGIN
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Global("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~ //also catches SetGlobal and SetTokenGlobal
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalGT("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalLT("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalsEqual(.*"\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalsGT(.*"\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(GlobalsLT(.*"\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LocalsEqual(.*"\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LocalsGT(.*"\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(LocalsLT(.*"\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(IncrementGlobal("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AddGlobals(.*"\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(SG("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~var~ LPM EET_PCU_match_res END ~\1%match%\3~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_door_replace~ BEGIN
-	//TRIGGER.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(See("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(TargetUnreachable("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(StateCheck("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Detect("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(OpenState("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(ObjectActionListEmpty("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(OnScreen("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(InActiveArea("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(PersonalSpaceDistance("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(InMyArea("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(AreaCheckObject("[^"]+","\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-
-	//ACTION.IDS
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToObject("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveViewObject("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(OpenDoor("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(CloseDoor("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(BashDoor("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToObjectFollow("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Lock("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(Unlock("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(DetectSecretDoor("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(MoveToObjectNoInterrupt("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(FaceObject("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\(JumpToObject("\)\([^"]+\)\("\)~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~door~ LPM EET_PCU_match_8675 END ~\1%match%\3~
-	//CreateCreatureObject(S:ResRef*,O:Object
-	//CreateCreatureObjectDoor(S:ResRef*,O:Object*,I:Usage1*,I:Usage2*,I:Usage3*)
-	//MoveGlobalObject(O:Object*,O:Target*)
-	//AttachTransitionToDoor(S:GLOBAL*,O:Object*)
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_splRes_replace~ BEGIN
-	PHP_EACH remapped_splRes AS source => dest BEGIN
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+Spell\)(%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("#d#%dest%")~ //HaveSpell, RemoveSpell
-		REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCast(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - SpellCast -> SpellCastRES~ END ~SpellCastRES("#d#%dest%",\1)~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastOnMe(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - SpellCastOnMe -> SpellCastOnMeRES~ END ~SpellCastOnMeRES("#d#%dest%",\1)~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastPriest(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - SpellCastPriest -> SpellCastPriestRES~ END ~SpellCastPriestRES("#d#%dest%",\1)~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastInnate(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - SpellCastInnate -> SpellCastInnateRES~ END ~SpellCastInnateRES("#d#%dest%",\1)~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~HaveSpellParty(%source%)~ BEGIN PATCH_WARN ~Can't replace %source% => %dest%. There is no HaveSpellParty equivalent trigger that accepts RES reference. %SOURCE_FILESPEC% needs manual changes with HaveSpellRES and NextTriggerObject.~ END ~HaveSpellParty("%source%")~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Spell\)(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("#d#%dest%",\2)~ //Spell, ForceSpell, ApplySpell, ReallyForceSpell
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*SpellPoint\)(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("#d#%dest%",\2)~ //SpellPoint, ForceSpellPoint, ReallyForceSpellPoint
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+NoDec\)(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - %MATCH1% -> %MATCH1%RES~ END ~\1RES("#d#%dest%",\2)~ //SpellNoDec, SpellPointNoDec
-		REPLACE_EVALUATE CASE_INSENSITIVE ~ReallyForceSpellDead(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - ReallyForceSpellDead -> ReallyForceSpellDeadRES~ END ~ReallyForceSpellDeadRES("#d#%dest%",\1)~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellRange(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - ForceSpellRange -> ForceSpellRangeRES~ END ~ForceSpellRangeRES("#d#%dest%",\1)~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~ForceSpellPointRange(\([^,]+\),%source%)~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - ForceSpellPointRange -> ForceSpellPointRangeRES~ END ~ForceSpellPointRangeRES("#d#%dest%",\1)~
-	END
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_splName_replace~ BEGIN
-	//HaveSpell, RemoveSpell, HaveSpellParty
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]+Spell[A-Za-z]*(\)\([^,()]+\))~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~splName~ LPM EET_PCU_match_res END ~\1%match%)~
-	//SpellCast, SpellCastOnMe, SpellCastPriest, SpellCastInnate, Spell, ForceSpell, ApplySpell, ReallyForceSpell, SpellPoint, ForceSpellPoint, ReallyForceSpellPoint, SpellNoDec, SpellPointNoDec, ReallyForceSpellDead, ForceSpellRange, ForceSpellPointRange
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Spell[A-Za-z]*([^,]+,\)\([^,)]+\))~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~splName~ LPM EET_PCU_match_res END ~\1%match%)~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~BAF_CHAPTER_replace~ BEGIN
-	REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN
-		SPRINT match ~%MATCH2%~ SPRINT res ~chapter~ LPM EET_PCU_match_res
-	END ~\1%match%)~
-	REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 DEFINE_PATCH_MACRO ~D_DLG_replace~ BEGIN
 	//PHP_EACH remapped_dlg AS source => dest BEGIN
-	//	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]*[~"]?\)%source%\(?:$|[~" %TAB%]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - BEGIN~ END ~\1#d#%dest%\2~
+	//	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]+[~"]?\)%source%\(?:$|[~" %TAB%]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - BEGIN~ END ~\1%dest%\2~
+	//	REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\(BEGIN[ %TAB%]+[~"]\)%source%\([~"]\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - BEGIN~ END ~\1%dest%\2~
 	//END
 	//why \(?:$|[~" %TAB%]\) doesn't work?
 	//why !@$ characters don't work inside []?
@@ -4038,28 +4155,6 @@ DEFINE_PATCH_MACRO ~D_traifyDLG_replace~ BEGIN
 	REPLACE_TEXTUALLY EXACT_MATCH ~SAY #~ ~SAY @~
 	REPLACE_TEXTUALLY EXACT_MATCH ~REPLY #~ ~REPLY @~
 	REPLACE_TEXTUALLY EXACT_MATCH ~JOURNAL #~ ~JOURNAL @~
-END
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-DEFINE_PATCH_MACRO ~D_traifyBCS_replace~ BEGIN
-	REPLACE_TEXTUALLY ~SetQuestDone(~ ~SetQuestDone(@~
-	REPLACE_TEXTUALLY ~AddJournalEntry(~ ~AddJournalEntry(@~
-	REPLACE_TEXTUALLY ~EraseJournalEntry(~ ~EraseJournalEntry(@~
-	REPLACE_TEXTUALLY ~SetName(~ ~SetName(@~
-	REPLACE_TEXTUALLY ~DisplayStringPoint(~ ~DisplayStringPoint(@~
-	REPLACE_TEXTUALLY ~\(DisplayString([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(SetToken([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringNoName([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringHead([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringHeadOwner([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringWait([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(SetPlayerSound([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(RemoveMapNote([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringHeadDead([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringNoNameHead([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~\(DisplayStringNoNameDlg([^,]+\),~ ~\1,@~
-	REPLACE_TEXTUALLY ~@-1~ ~-1~
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,373 +1,463 @@
 IF
-  Global("K#FAMID","GLOBAL",0)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",0)
 THEN
   RESPONSE #100
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",1)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",1)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    ActionOverride(Player1,ApplyDamage(Myself,9,CRUSHING))
+    ApplyDamage(Myself,9,MAGIC)
     ActionOverride("fampsd",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",11)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",11)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    ActionOverride(Player1,ApplyDamage(Myself,18,CRUSHING))
+    ApplyDamage(Myself,18,MAGIC)
     ActionOverride("fampsd",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",21)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",21)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride(Player1,ApplyDamage(Myself,36,CRUSHING))
+    ApplyDamage(Myself,36,MAGIC)
     ActionOverride("fampsd",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",2)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",2)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    ActionOverride(Player1,ApplyDamage(Myself,9,CRUSHING))
+    ApplyDamage(Myself,9,MAGIC)
     ActionOverride("famfair",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",12)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",12)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    ActionOverride(Player1,ApplyDamage(Myself,18,CRUSHING))
+    ApplyDamage(Myself,18,MAGIC)
     ActionOverride("famfair",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",22)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",22)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride(Player1,ApplyDamage(Myself,36,CRUSHING))
+    ApplyDamage(Myself,36,MAGIC)
     ActionOverride("famfair",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",3)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",3)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    ActionOverride("famfer",ApplyDamage(Player1,9,CRUSHING))
+    ApplyDamage(Player1,9,MAGIC)
     ActionOverride("famfer",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",13)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",13)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    ActionOverride("famfer",ApplyDamage(Player1,18,CRUSHING))
+    ApplyDamage(Player1,18,MAGIC)
     ActionOverride("famfer",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",23)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",23)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride("famfer",ApplyDamage(Player1,36,CRUSHING))
+    ApplyDamage(Player1,36,MAGIC)
     ActionOverride("famfer",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",4)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",4)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    ActionOverride("famrab",ApplyDamage(Player1,9,CRUSHING))
+    ApplyDamage(Player1,9,MAGIC)
     ActionOverride("famrab",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",14)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",14)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    ActionOverride("famrab",ApplyDamage(Player1,18,CRUSHING))
+    ApplyDamage(Player1,18,MAGIC)
     ActionOverride("famrab",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",24)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",24)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride("famrab",ApplyDamage(Player1,36,CRUSHING))
+    ApplyDamage(Player1,36,MAGIC)
     ActionOverride("famrab",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",5)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",5)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    ActionOverride("famcat",ApplyDamage(Player1,9,CRUSHING))
+    ApplyDamage(Player1,9,MAGIC)
     ActionOverride("famcat",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",15)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",15)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    ActionOverride("famcat",ApplyDamage(Player1,18,CRUSHING))
+    ApplyDamage(Player1,18,MAGIC)
     ActionOverride("famcat",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",25)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",25)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride("famcat",ApplyDamage(Player1,36,CRUSHING))
+    ApplyDamage(Player1,36,MAGIC)
     ActionOverride("famcat",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",6)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",6)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-4,ADD)
-    ActionOverride("famimp",ApplyDamage(Player1,6,CRUSHING))
+    ApplyDamage(Player1,6,MAGIC)
     ActionOverride("famimp",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",16)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",16)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-9,ADD)
-    ActionOverride("famimp",ApplyDamage(Player1,12,CRUSHING))
+    ApplyDamage(Player1,12,MAGIC)
     ActionOverride("famimp",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",26)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",26)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride("famimp",ApplyDamage(Player1,36,CRUSHING))
+    ApplyDamage(Player1,36,MAGIC)
     ActionOverride("famimp",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",7)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",7)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    ActionOverride("famdust",ApplyDamage(Player1,9,CRUSHING))
+    ApplyDamage(Player1,9,MAGIC)
     ActionOverride("famdust",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",17)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",17)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    ActionOverride("famdust",ApplyDamage(Player1,18,CRUSHING))
+    ApplyDamage(Player1,18,MAGIC)
     ActionOverride("famdust",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",27)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",27)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride("famdust",ApplyDamage(Player1,36,CRUSHING))
+    ApplyDamage(Player1,36,MAGIC)
     ActionOverride("famdust",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",8)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",8)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-6,ADD)
-    ActionOverride("famquas",ApplyDamage(Player1,9,CRUSHING))
+    ApplyDamage(Player1,9,MAGIC)
     ActionOverride("famquas",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",18)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",18)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-12,ADD)
-    ActionOverride("famquas",ApplyDamage(Player1,18,CRUSHING))
+    ApplyDamage(Player1,18,MAGIC)
     ActionOverride("famquas",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END
 
 IF
-  Global("K#FAMID","GLOBAL",28)
+  NextTriggerObject(Player1)
+  Global("K#FAMID","LOCALS",28)
 THEN
   RESPONSE #100
+    SetInterrupt(FALSE)
+    ActionOverride(Player1,SetGlobal("K#FAMID","LOCALS",0))
     ActionOverride(Player1,Recoil())
     ActionOverride(Player1,DisplayString(Myself,21004)) // Lost one point of Constitution
     ActionOverride(Player1,DisplayString(Myself,8536)) // Familiar has died; Hit Points lost.
     ChangeStat(Player1,CON,-1,ADD)
     ChangeStat(Player1,MAXHITPOINTS,-24,ADD)
-    ActionOverride("famquas",ApplyDamage(Player1,36,CRUSHING))
+    ApplyDamage(Player1,36,MAGIC)
     ActionOverride("famquas",RemoveFamiliar())
-    SetGlobal("K#FAMID","GLOBAL",0)
-    DestroySelf()
-END
-
-IF
-  True()
-THEN
-  RESPONSE #100
+    SetGlobal("K#FAMSUM","GLOBAL",0)
+    SetInterrupt(TRUE)
     DestroySelf()
 END

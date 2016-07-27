@@ -19,7 +19,7 @@ COPY_EXISTING ~addy.cre~ ~override~
 	~sugar.cre~ ~override~
 	READ_ASCII 0x280 "DV" (32) NULL
 	PATCH_IF ((NOT ~%DV%~ STRING_EQUAL_CASE ~~) AND (NOT ~%DV%~ STRING_EQUAL_CASE ~%SOURCE_RES%~) AND (NOT ~%DV%~ STRING_EQUAL_CASE ~None~)) BEGIN
-		PATCH_WARN ~%SOURCE_FILE% uses wrong DV. Patching %DV% -> %SOURCE_FILE%.~
+		PATCH_WARN ~WARNING: %SOURCE_FILE% uses wrong DV. Patching %DV% -> %SOURCE_FILE%.~
 	END
 	WRITE_ASCIIE 0x280 ~%SOURCE_RES%~ #32 //script name
 BUT_ONLY
@@ -111,6 +111,15 @@ COPY_EXISTING ~IMOEN.CRE~ ~override~
 	~IMOEN2.CRE~ ~override~
 	~IMOEN4.CRE~ ~override~
 	~IMOEN6_.CRE~ ~override~
+
+	/*READ_LONG 0x10 "flags"
+	PATCH_IF (~%flags%~ BAND BIT6) BEGIN
+	END ELSE BEGIN
+		SET flags = flags + BIT6 //set Original class: Thief
+		WRITE_LONG 0x10 "flags"
+	END*/
+
+	//LPF ADD_CRE_EFFECT INT_VAR opcode = 293 /*Set persistent AI*/ target = 1 /*Self*/ parameter2 = 1 /*Stat value*/ timing = 9 /*Instant/Permanent*/ END
 
 	READ_LONG (0xa4 + 9 * 4) bcry4 //BATTLE_CRY1: My blade will cut you down to size!
 	READ_LONG (0xa4 + 29 * 4) insult2 //SELECT_COMMON4: Yer a queer fellow.

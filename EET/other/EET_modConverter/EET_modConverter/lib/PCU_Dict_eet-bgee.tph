@@ -56,99 +56,12 @@ COPY - ~EET_modConverter/lib/songlist_eet.2da~ ~EET_modConverter/lib~
 	END
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END~
 
-/*ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
-	"107"	=>	"1"	//CDay1
-	"108"	=>	"2"	//CDay2
-	"109"	=>	"3"	//CNite
-	"110"	=>	"4"	//Chants
-	"111"	=>	"5"	//Dream
-	"0"	=>	"6"	//Unused01
-	"112"	=>	"7"	//FDay
-	"113"	=>	"8"	//FNite
-	"114"	=>	"9"	//PDay
-	"115"	=>	"10"	//PNite
-	"116"	=>	"11"	//Temple
-	"0"	=>	"12"	//Unused02
-	"117"	=>	"13"	//TDay1
-	"118"	=>	"14"	//TDay2
-	"119"	=>	"15"	//TNite
-	"120"	=>	"16"	//Dung1
-	"121"	=>	"17"	//Dung2
-	"122"	=>	"18"	//Dung3
-	"123"	=>	"19"	//BC3
-	"124"	=>	"20"	//BC4
-	"125"	=>	"21"	//BD4
-	"126"	=>	"22"	//BD5
-	"127"	=>	"23"	//BL1
-	"128"	=>	"24"	//BL2
-	"129"	=>	"25"	//BF3
-	"130"	=>	"26"	//BF4
-	"131"	=>	"27"	//BP3
-	"132"	=>	"28"	//BP4
-	"133"	=>	"29"	//BW1
-	"0"	=>	"30"	//Unused03
-	"134"	=>	"31"	//Fort
-	"135"	=>	"32"	//Chapter
-	"136"	=>	"33"	//BGTHEME
-	"66"	=>	"34"	//TAV5
-	"66"	=>	"35"	//Tav1_d
-	"67"	=>	"36"	//TAV6
-	"137"	=>	"37"	//TAV7
-	"138"	=>	"38"	//TAV8
-	"0"	=>	"39"	//Unused05
-	"0"	=>	"40"	//Unused06
-	"0"	=>	"41"	//Unused07
-	"0"	=>	"42"	//Unused08
-	"0"	=>	"43"	//Unused09
-	"0"	=>	"44"	//Unused10
-	"0"	=>	"45"	//Unused11
-	"0"	=>	"46"	//Unused12
-	"0"	=>	"47"	//Unused13
-	"0"	=>	"48"	//Unused14
-	"0"	=>	"49"	//Unused15
-	"0"	=>	"50"	//Unused16
-	"0"	=>	"51"	//Unused17
-	"0"	=>	"52"	//Unused18
-	"0"	=>	"53"	//Unused19
-	"0"	=>	"54"	//Unused20
-	"0"	=>	"55"	//Unused21
-	"0"	=>	"56"	//Unused22
-	"0"	=>	"57"	//Unused23
-	"0"	=>	"58"	//Unused24
-	"0"	=>	"59"	//Unused25
-	"0"	=>	"60"	//Unused26
-	"0"	=>	"61"	//Unused27
-	"0"	=>	"62"	//Unused28
-	"0"	=>	"63"	//Unused29
-	"139"	=>	"64"	//Fort2
-	"140"	=>	"65"	//INite
-	"0"	=>	"66"	//Unused30
-	"0"	=>	"67"	//Unused31
-	"0"	=>	"68"	//Unused32
-	"0"	=>	"69"	//Unused33
-	"0"	=>	"70"	//Unused34
-	"0"	=>	"71"	//Unused35
-	"0"	=>	"72"	//Unused36
-	"0"	=>	"73"	//Unused37
-	"0"	=>	"74"	//Unused38
-	"0"	=>	"75"	//Unused39
-	"0"	=>	"76"	//Unused40
-	"0"	=>	"77"	//Unused41
-	"0"	=>	"78"	//Unused42
-	"0"	=>	"79"	//Unused43
-	"0"	=>	"80"	//Unused44
-	"136"	=>	"81"	//NewTheme
-	"141"	=>	"82"	//OldTheme
-	"0"	=>	"83"	//Unused45
-	"102"	=>	"84"	//BPC1
-	"103"	=>	"85"	//BPC2
-	"104"	=>	"86"	//BPC3
-	"105"	=>	"87"	//BPStg
-	"106"	=>	"88"	//BPTheme
-	"142"	=>	"89"	//NAdoys
-	"143"	=>	"90"	//NGoblin
-	"144"	=>	"91"	//RPeaks
-END*/
+/////                                                  \\\\\
+///// Preparing SMTABLES variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN
+END
 
 /////                                                  \\\\\
 ///// Preparing STATE variables                        \\\\\
@@ -172,6 +85,13 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN
 END
 
 /////                                                  \\\\\
+///// Preparing Race IDS variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN
+END
+
+/////                                                  \\\\\
 ///// Preparing Class IDS variables                    \\\\\
 /////                                                  \\\\\
 
@@ -179,10 +99,39 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN
 END
 
 /////                                                  \\\\\
+///// Preparing Specific IDS variables                 \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN
+END
+
+/////                                                  \\\\\
 ///// Preparing CHAPTER variables                      \\\\\
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_chapter BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing SAVE variables                         \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_save BEGIN
+	25 => 18 //000000007-Prologue Start
+	26 => 11 //000000008-Chapter 1 Start
+	27 => 12 //000000009-Chapter 2 Start
+	28 => 13 //000000010-Chapter 3 Start
+	29 => 14 //000000011-Chapter 4 Start
+	30 => 15 //000000012-Chapter 5 Start
+	31 => 16 //000000013-Chapter 6 Start
+	32 => 17 //000000014-Chapter 7 Start
+	33 => 19 //000000015-Chapter 7 Dungeon
+	34 => 20 //000000016-Chapter 8 Start
+	35 => 21 //000000017-Chapter 9 Start
+	36 => 22 //000000018-Chapter 10 Start
+	37 => 23 //000000019-Chapter 11 Start
+	38 => 24 //000000020-Chapter 12 Start
+	39 => 25 //000000021-Chapter 13 Start
 END
 
 /////                                                  \\\\\
@@ -199,7 +148,12 @@ END
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_var BEGIN
 	"BG_AttackedThieves"	=>	"AttackedThieves"	//same as in BGT
-	"BG1DREAM"	=>	"DREAM"	//same as in BGT
+	//Steam achievements
+	"ACH_FLYING_BG1" => "ACH_FLYING"
+	"ACH_FRIEND_OF_BG1" => "ACH_FRIEND_OF"
+	"ACH_LORD_OF_BG1" => "ACH_LORD_OF"
+	"ACH_SACRIFICES_MUST_BG1" => "ACH_SACRIFICES_MUST"
+	"ACH_LEAVE_NO_BG1" => "ACH_LEAVE_NO"
 END
 
 /////                                                  \\\\\
@@ -207,21 +161,6 @@ END
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_2da BEGIN
-	"CHPTXT0_"	=>	"CHPTXT0"
-	"CHPTXT1_"	=>	"CHPTXT1"
-	"CHPTXT2_"	=>	"CHPTXT2"
-	"CHPTXT3_"	=>	"CHPTXT3"
-	"CHPTXT4_"	=>	"CHPTXT4"
-	"CHPTXT5_"	=>	"CHPTXT5"
-	"CHPTXT6_"	=>	"CHPTXT6"
-	"CHPTXT7_"	=>	"CHPTXT7"
-	"CHPTXT8_"	=>	"CHPTXT8"
-	"DRMTXT2_"	=>	"DRMTXT2"
-	"DRMTXT3_"	=>	"DRMTXT3"
-	"DRMTXT4_"	=>	"DRMTXT4"
-	"DRMTXT5_"	=>	"DRMTXT5"
-	"DRMTXT6_"	=>	"DRMTXT6"
-	"DRMTXT7_"	=>	"DRMTXT7"
 END
 
 /////                                                  \\\\\
@@ -1331,6 +1270,18 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
 	"FAMPSD_"	=>	"FAMPSD"
 	"FAMQUAS_"	=>	"FAMQUAS"
 	"FAMRAB_"	=>	"FAMRAB"
+//SoD
+	"BDBART0_"	=>	"BDBART01"
+	"EDWIN7_"	=>	"EDWIN7"
+	"JAHEIR7_"	=>	"JAHEIR7"
+	"MINSC7_"	=>	"MINSC7"
+	"ORC01_"	=>	"ORC01"
+	"ORC02_"	=>	"ORC02"
+	"ORC03_"	=>	"ORC03"
+	"ORC04_"	=>	"ORC04"
+	"ORC05_"	=>	"ORC05"
+	"ORC06_"	=>	"ORC06"
+	"SPIDSM0_"	=>	"SPIDSM01"
 END
 
 /////                                                  \\\\\
@@ -1391,6 +1342,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
 	"FAMIL1_"	=>	"FAMIL1"
 	"FAMIL2_"	=>	"FAMIL2"
 	"FAMIL3_"	=>	"FAMIL3"
+//SoD
+	"BDBART0_"	=>	"BDBART01"
 END
 
 /////                                                  \\\\\
@@ -1500,7 +1453,7 @@ END
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mve BEGIN
-	"INTROBG1"	=>	"INTRO"	//patched exe file, need to have same amount of letters
+	"INTRO_"	=>	"INTRO"
 	"CREDITS_"	=>	"CREDITS"	//otherwise the movie will be unskippable (hardcoded)
 	"ENDCRDI_"	=>	"ENDCRDIT"	//8 characters limit
 	"BLACKPI_"	=>	"BLACKPIT"	//8 characters limit
@@ -2122,6 +2075,7 @@ END
 
 //soundsets use BG prefix because last letter is required by engine
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_wav BEGIN
+	"EFF_M46"	=>	"EFF_M46_"
 	"BLACK01_"	=>	"BLACK01"
 	"BLACK02_"	=>	"BLACK02"
 	"BLACK03_"	=>	"BLACK03"
@@ -2240,32 +2194,6 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_wav BEGIN
 	"UMBER02_"	=>	"UMBER02"
 	"UMBER05_"	=>	"UMBER05"
 	"UMBER06_"	=>	"UMBER06"
-	"BGMAINFA"	=>	"MAINF03"
-	"BGMAINFB"	=>	"MAINF08"
-	"BGMAINFC"	=>	"MAINF09"
-	"BGMAINFD"	=>	"MAINF10"
-	"BGMAINFE"	=>	"MAINF11"
-	"BGMAINFF"	=>	"MAINF17"
-	"BGMAINFG"	=>	"MAINF18"
-	"BGMAINFH"	=>	"MAINF19"
-	"BGMAINFI"	=>	"MAINF20"
-	"BGMAINFJ"	=>	"MAINF21"
-	"BGMAINFK"	=>	"MAINF22"
-	"BGMAINFL"	=>	"MAINF38"
-	"BGMAINFM"	=>	"MAINF39"
-	"BGMAINMA"	=>	"MAINM03"
-	"BGMAINMB"	=>	"MAINM08"
-	"BGMAINMC"	=>	"MAINM09"
-	"BGMAINMD"	=>	"MAINM10"
-	"BGMAINME"	=>	"MAINM11"
-	"BGMAINMF"	=>	"MAINM17"
-	"BGMAINMG"	=>	"MAINM18"
-	"BGMAINMH"	=>	"MAINM19"
-	"BGMAINMI"	=>	"MAINM20"
-	"BGMAINMJ"	=>	"MAINM21"
-	"BGMAINMK"	=>	"MAINM22"
-	"BGMAINML"	=>	"MAINM38"
-	"BGMAINMM"	=>	"MAINM39"
 	"BGFEML1A"	=>	"FEMALE1A"
 	"BGFEML1B"	=>	"FEMALE1B"
 	"BGFEML1C"	=>	"FEMALE1C"
@@ -2344,6 +2272,104 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_wav BEGIN
 	"BGFEML6K"	=>	"FEMALE6K"
 	"BGFEML6L"	=>	"FEMALE6L"
 	"BGFEML6M"	=>	"FEMALE6M"
+	"BGFEML7A"	=>	"FEMALE7A"
+	"BGFEML7B"	=>	"FEMALE7B"
+	"BGFEML7C"	=>	"FEMALE7C"
+	"BGFEML7D"	=>	"FEMALE7D"
+	"BGFEML7E"	=>	"FEMALE7E"
+	"BGFEML7F"	=>	"FEMALE7F"
+	"BGFEML7G"	=>	"FEMALE7G"
+	"BGFEML7H"	=>	"FEMALE7H"
+	"BGFEML7I"	=>	"FEMALE7I"
+	"BGFEML7J"	=>	"FEMALE7J"
+	"BGFEML7K"	=>	"FEMALE7K"
+	"BGFEML7L"	=>	"FEMALE7L"
+	"BGFEML7M"	=>	"FEMALE7M"
+	"BGFEML7N"	=>	"FEMALE7N"
+	"BGFEML7O"	=>	"FEMALE7O"
+	"BGFEML7P"	=>	"FEMALE7P"
+	"BGFEML7Q"	=>	"FEMALE7Q"
+	"BGFEML7R"	=>	"FEMALE7R"
+	"BGFEML7S"	=>	"FEMALE7S"
+	"BGFEML7T"	=>	"FEMALE7T"
+	"BGFEML7U"	=>	"FEMALE7U"
+	"BGFEML7V"	=>	"FEMALE7V"
+	"BGFEML7W"	=>	"FEMALE7W"
+	"BGFEML7X"	=>	"FEMALE7X"
+	"BGFEML7Y"	=>	"FEMALE7Y"
+	"BGFEML7Z"	=>	"FEMALE7Z"
+	"BGFEML70"	=>	"FEMALE70"
+	"BGFEML71"	=>	"FEMALE71"
+	"BGFEML72"	=>	"FEMALE72"
+	"BGFEML73"	=>	"FEMALE73"
+	"BGFEML74"	=>	"FEMALE74"
+	"BGFEML75"	=>	"FEMALE75"
+	"BGFEML76"	=>	"FEMALE76"
+	"BGFEML77"	=>	"FEMALE77"
+	"BGFEML78"	=>	"FEMALE78"
+	"BGFEML79"	=>	"FEMALE79"
+	"BGFEML8A"	=>	"FEMALE8A"
+	"BGFEML8B"	=>	"FEMALE8B"
+	"BGFEML8C"	=>	"FEMALE8C"
+	"BGFEML8D"	=>	"FEMALE8D"
+	"BGFEML8E"	=>	"FEMALE8E"
+	"BGFEML8F"	=>	"FEMALE8F"
+	"BGFEML8G"	=>	"FEMALE8G"
+	"BGFEML8H"	=>	"FEMALE8H"
+	"BGFEML8I"	=>	"FEMALE8I"
+	"BGFEML8J"	=>	"FEMALE8J"
+	"BGFEML8K"	=>	"FEMALE8K"
+	"BGFEML8L"	=>	"FEMALE8L"
+	"BGFEML8M"	=>	"FEMALE8M"
+	"BGFEML8N"	=>	"FEMALE8N"
+	"BGFEML8O"	=>	"FEMALE8O"
+	"BGFEML8P"	=>	"FEMALE8P"
+	"BGFEML8Q"	=>	"FEMALE8Q"
+	"BGFEML8R"	=>	"FEMALE8R"
+	"BGFEML8S"	=>	"FEMALE8S"
+	"BGFEML8T"	=>	"FEMALE8T"
+	"BGFEML8U"	=>	"FEMALE8U"
+	"BGFEML8V"	=>	"FEMALE8V"
+	"BGFEML8W"	=>	"FEMALE8W"
+	"BGFEML8X"	=>	"FEMALE8X"
+	"BGFEML8Y"	=>	"FEMALE8Y"
+	"BGFEML8Z"	=>	"FEMALE8Z"
+	"BGFEML80"	=>	"FEMALE80"
+	"BGFEML81"	=>	"FEMALE81"
+	"BGFEML82"	=>	"FEMALE82"
+	"BGFEML83"	=>	"FEMALE83"
+	"BGFEML84"	=>	"FEMALE84"
+	"BGFEML85"	=>	"FEMALE85"
+	"BGFEML86"	=>	"FEMALE86"
+	"BGFEML87"	=>	"FEMALE87"
+	"BGFEML88"	=>	"FEMALE88"
+	"BGFEML89"	=>	"FEMALE89"
+	"BGMAINFA"	=>	"MAINF03"
+	"BGMAINFB"	=>	"MAINF08"
+	"BGMAINFC"	=>	"MAINF09"
+	"BGMAINFD"	=>	"MAINF10"
+	"BGMAINFE"	=>	"MAINF11"
+	"BGMAINFF"	=>	"MAINF17"
+	"BGMAINFG"	=>	"MAINF18"
+	"BGMAINFH"	=>	"MAINF19"
+	"BGMAINFI"	=>	"MAINF20"
+	"BGMAINFJ"	=>	"MAINF21"
+	"BGMAINFK"	=>	"MAINF22"
+	"BGMAINFL"	=>	"MAINF38"
+	"BGMAINFM"	=>	"MAINF39"
+	"BGMAINMA"	=>	"MAINM03"
+	"BGMAINMB"	=>	"MAINM08"
+	"BGMAINMC"	=>	"MAINM09"
+	"BGMAINMD"	=>	"MAINM10"
+	"BGMAINME"	=>	"MAINM11"
+	"BGMAINMF"	=>	"MAINM17"
+	"BGMAINMG"	=>	"MAINM18"
+	"BGMAINMH"	=>	"MAINM19"
+	"BGMAINMI"	=>	"MAINM20"
+	"BGMAINMJ"	=>	"MAINM21"
+	"BGMAINMK"	=>	"MAINM22"
+	"BGMAINML"	=>	"MAINM38"
+	"BGMAINMM"	=>	"MAINM39"
 	"BGMALE1A"	=>	"MALE1A"
 	"BGMALE1B"	=>	"MALE1B"
 	"BGMALE1C"	=>	"MALE1C"
@@ -2422,6 +2448,78 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_wav BEGIN
 	"BGMALE6K"	=>	"MALE6K"
 	"BGMALE6L"	=>	"MALE6L"
 	"BGMALE6M"	=>	"MALE6M"
+	"BGMALE7A"	=>	"MALE7A"
+	"BGMALE7B"	=>	"MALE7B"
+	"BGMALE7C"	=>	"MALE7C"
+	"BGMALE7D"	=>	"MALE7D"
+	"BGMALE7E"	=>	"MALE7E"
+	"BGMALE7F"	=>	"MALE7F"
+	"BGMALE7G"	=>	"MALE7G"
+	"BGMALE7H"	=>	"MALE7H"
+	"BGMALE7I"	=>	"MALE7I"
+	"BGMALE7J"	=>	"MALE7J"
+	"BGMALE7K"	=>	"MALE7K"
+	"BGMALE7L"	=>	"MALE7L"
+	"BGMALE7M"	=>	"MALE7M"
+	"BGMALE7N"	=>	"MALE7N"
+	"BGMALE7O"	=>	"MALE7O"
+	"BGMALE7P"	=>	"MALE7P"
+	"BGMALE7Q"	=>	"MALE7Q"
+	"BGMALE7R"	=>	"MALE7R"
+	"BGMALE7S"	=>	"MALE7S"
+	"BGMALE7T"	=>	"MALE7T"
+	"BGMALE7U"	=>	"MALE7U"
+	"BGMALE7V"	=>	"MALE7V"
+	"BGMALE7W"	=>	"MALE7W"
+	"BGMALE7X"	=>	"MALE7X"
+	"BGMALE7Y"	=>	"MALE7Y"
+	"BGMALE7Z"	=>	"MALE7Z"
+	"BGMALE70"	=>	"MALE70"
+	"BGMALE71"	=>	"MALE71"
+	"BGMALE72"	=>	"MALE72"
+	"BGMALE73"	=>	"MALE73"
+	"BGMALE74"	=>	"MALE74"
+	"BGMALE75"	=>	"MALE75"
+	"BGMALE76"	=>	"MALE76"
+	"BGMALE77"	=>	"MALE77"
+	"BGMALE78"	=>	"MALE78"
+	"BGMALE79"	=>	"MALE79"
+	"BGMALE8A"	=>	"MALE8A"
+	"BGMALE8B"	=>	"MALE8B"
+	"BGMALE8C"	=>	"MALE8C"
+	"BGMALE8D"	=>	"MALE8D"
+	"BGMALE8E"	=>	"MALE8E"
+	"BGMALE8F"	=>	"MALE8F"
+	"BGMALE8G"	=>	"MALE8G"
+	"BGMALE8H"	=>	"MALE8H"
+	"BGMALE8I"	=>	"MALE8I"
+	"BGMALE8J"	=>	"MALE8J"
+	"BGMALE8K"	=>	"MALE8K"
+	"BGMALE8L"	=>	"MALE8L"
+	"BGMALE8M"	=>	"MALE8M"
+	"BGMALE8N"	=>	"MALE8N"
+	"BGMALE8O"	=>	"MALE8O"
+	"BGMALE8P"	=>	"MALE8P"
+	"BGMALE8Q"	=>	"MALE8Q"
+	"BGMALE8R"	=>	"MALE8R"
+	"BGMALE8S"	=>	"MALE8S"
+	"BGMALE8T"	=>	"MALE8T"
+	"BGMALE8U"	=>	"MALE8U"
+	"BGMALE8V"	=>	"MALE8V"
+	"BGMALE8W"	=>	"MALE8W"
+	"BGMALE8X"	=>	"MALE8X"
+	"BGMALE8Y"	=>	"MALE8Y"
+	"BGMALE8Z"	=>	"MALE8Z"
+	"BGMALE80"	=>	"MALE80"
+	"BGMALE81"	=>	"MALE81"
+	"BGMALE82"	=>	"MALE82"
+	"BGMALE83"	=>	"MALE83"
+	"BGMALE84"	=>	"MALE84"
+	"BGMALE85"	=>	"MALE85"
+	"BGMALE86"	=>	"MALE86"
+	"BGMALE87"	=>	"MALE87"
+	"BGMALE88"	=>	"MALE88"
+	"BGMALE89"	=>	"MALE89"
 END
 
 /////                                                  \\\\\
