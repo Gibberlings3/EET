@@ -287,7 +287,7 @@ a:hover.spoiler {
 		<td><em>[flags]</em></td>
 		<td class="grow">
 		<p>Dowolna kombinacja poniższych znaków (zapis bez spacji)</p>
-		<p>0 lub 1 - pominięcie potwierdzenia w przypadku, gdy ścieżka TLK wykorzystywane przez WeiDU (weidu.conf) różni się od języka używanego przez WeiDU w folderze BG:EE. 0 - pozostawia weidu.conf w spokoju, 1 - zmiana zapisu w weidu.conf, żeby użyto tego samego języka, który został wybrany w czasie instalacji EET.</p>
+		<p>1 lub 2 - pominięcie potwierdzenia w przypadku, gdy ścieżka TLK wykorzystywane przez WeiDU (weidu.conf) różni się od języka używanego przez WeiDU w folderze BG:EE. 1 - pozostawia weidu.conf w spokoju, 2 - zmiana zapisu w weidu.conf, żeby użyto tego samego języka, który został wybrany w czasie instalacji EET.</p>
 		<p>m lub M - instalacja nie zostanie przerwana, jeśli EET wykryje mody zainstalowane na BG:EE, nie znajdujące się na liście kompatybilności (odradzam, chyba że faktycznie wiesz, co robisz).</p>
 		<p>d lub D - pozostawia tymczasowe pliki instalacyjne (przynajmniej 3.2GB) po zakończonej instalacji EET (tylko dla celów debuggowania, te pliki nie są wymagane do odinstalowania lub reinstalowania modu)</p>
 		<p>p lub P - informuje WeiDU o tym, żeby użyć ścieżki do folderu Baldur's Gate podanej w [path]; jeśli w podanej tu ścieżce WeiDU nie znajdzie gry, zostaniesz poproszony/a o wpisanie jej ręcznie w czasie instalacji</p>
@@ -305,10 +305,10 @@ a:hover.spoiler {
 <p>Parametry:</p>
 
 <div class="code">
-<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list 1p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
+<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list 2p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
 </div>
 
-<p>Ten kod wiersza poleceń zainstaluje EET w języku polskim, zaktualizuje zapis weidu.conf w folderze BG:EE, jeśli różni się od języka instalacji EET, skorzysta ze ścieżki, którą podałeś dla BG:EE.</p>
+<p>Ten kod wiersza poleceń zainstaluje EET w języku polskim, zaktualizuje zapis weidu.conf, jeśli różni się od języka instalacji EET, skorzysta ze ścieżki, którą podałeś dla BG:EE.</p>
 
 <hr>
 
@@ -361,6 +361,7 @@ a:hover.spoiler {
 	<li><a href="#What are the differences between EET and the original Baldur's Gate: Enhanced Edition?">Jakie są różnice pomiędzy EET a grą Baldur's Gate: Enhanced Edition?</a></li>
 	<li><a href="#What are the differences between EET and the original Siege of Dragonspear expansion?">Jakie są różnice pomiędzy EET a dodatkiem Siege of Dragonspear?</a></li>
 	<li><a href="#What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?">Jakie są różnice pomiędzy EET a grą Baldur's Gate II: Enhanced Edition?</a></li>
+	<li><a href="#What should be the general install order?">Jaka powinna być kolejność instalacji modów?</a></li>
 	<li><a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">Jakie mody można zainstalować na BG:EE przed instalacją EET na BG2:EE?</a></li>
 	<li><a href="#What mods can be installed after EET?">Jakie mody można zainstalować po</a></li>
 	<li><a href="#How to add EET compatibility for other mods?">Jak przerobić moda, żeby był kompatybilny z EET?</a></li>
@@ -394,9 +395,19 @@ a:hover.spoiler {
 	<li>Możliwość powrotu do obszarów z BG1 i BG2 podczas Tronu Bhaala (od momentu opuszczenia Saradush).</li>
 </ul>
 
+<a id="What should be the general install order?" name="What should be the general install order?"></a>
+<h3>Jaka powinna być kolejność instalacji modów?</h3>
+<p>Kolejność instalacji modów z EET wygląda następująco:</p>
+<ol>
+	<li>Mody instalowane na BG:EE</li>
+	<li>Podstawowy komponent EET (setup-EET) zainstalowany na BG2:EE</li>
+	<li>Mody kompatybilne z EET</li>
+	<li>Trzeci komponent setup-EET_end zamyka instalację</li>
+</ol>
+
 <a id="What mods can be installed on BG:EE previous to installing EET on BG2:EE?" name="What mods can be installed on BG:EE previous to installing EET on BG2:EE?"></a>
 <h3>Jakie mody można zainstalować na BG:EE przed instalacją EET na BG2:EE?</h3>
-<p>EET dokonuje konwersji zawartości całej gry BG:EE w locie, podczas instalacji. Dzięki temu mod posiada ograniczone wsparcie dla modów instalowanych na BG:EE przed instalacją EET na BG2:EE. Lista kompatybilności dostępna jest w <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">tym temacie</a>.
+<p>EET dokonuje konwersji zawartości całej gry BG:EE w locie, podczas instalacji. Dzięki temu mod posiada ograniczone wsparcie dla modów instalowanych na BG:EE przed instalacją EET na BG2:EE. Lista kompatybilności dostępna jest w <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">tym temacie</a>.</p>
 
 <a id="What mods can be installed after EET?" name="What mods can be installed after EET?"></a>
 <h3>Jakie mody można zainstalować po EET?</h3>

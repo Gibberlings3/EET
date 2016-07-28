@@ -144,7 +144,7 @@
 		<td><em>[flags]</em></td>
 		<td class="grow">
 		<p>Any combination of below flags should be typed as one string (no whitespaces)</p>
-		<p>0 or 1 - suppress prompt for choosing the WeiDU TLK language directory if different language than selected for EET installation is specified within weidu.conf file located in BG:EE directory. 0 - leave the weidu.conf as it is, 1 - update weidu.conf to use the same language as EET installation.</p>
+		<p>1 or 2 - suppress prompt for choosing the WeiDU TLK language directory if different language than selected for EET installation is specified within weidu.conf file located in BG:EE directory. 1 - leave the weidu.conf as it is, 2 - update weidu.conf to use the same language as EET installation.</p>
 		<p>m or M - suppress failed installation message that normally shows up if BG:EE installation contains mods not listed on EET BG:EE mods compatibility list (not recommended unless you really know what you are doing).</p>
 		<p>d or D - keep EET installation files (at least 3.2GB) after the installation is complete (for debug purposes only, they are not necessary to uninstall/reinstall the mod)</p>
 		<p>p or P - pre-define the full path to the Baldur's Gate: Enhanced Edition directory; if the path is invalid, setup will prompt for a valid path</p>
@@ -162,10 +162,10 @@
 <p>Example:</p>
 
 <div class="code">
-<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list 1p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
+<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list 2p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
 </div>
 
-<p>This construction installs EET with the English language, automatically updates weidu.conf file located in BG:EE directory to use the same language as the one chosen for EET installation (if such unusual situation occurs), and pre-defines the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
+<p>This construction installs EET with the English language, automatically updates weidu.conf file to use the same language as the one chosen for EET installation (if such unusual situation occurs), and pre-defines the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
 
 <hr>
 
@@ -218,6 +218,7 @@
 	<li><a href="#What are the differences between EET and the original Baldur's Gate: Enhanced Edition?">What are the differences between EET and the original Baldur's Gate: Enhanced Edition?</a></li>
 	<li><a href="#What are the differences between EET and the original Siege of Dragonspear expansion?">What are the differences between EET and the original Siege of Dragonspear expansion?</a></li>
 	<li><a href="#What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?">What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?</a></li>
+	<li><a href="#What should be the general install order?">What should be the general install order?</a></li>
 	<li><a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">What mods can be installed on BG:EE previous to installing EET on BG2:EE?</a></li>
 	<li><a href="#What mods can be installed after EET?">What mods can be installed after EET?</a></li>
 	<li><a href="#How to add EET compatibility for other mods?">How to add EET compatibility for other mods?</a></li>
@@ -250,9 +251,19 @@
 	<li>A way to go back to BG1 and BG2 areas during Throne of Bhaal expansion (as soon as you leave Saradush).</li>
 </ul>
 
+<a id="What should be the general install order?" name="What should be the general install order?"></a>
+<h3>What should be the general install order?</h3>
+<p>The general mod install order looks like this:</p>
+<ol>
+	<li>Mods installed on BG:EE</li>
+	<li>EET Core component (setup-EET) installed on BG2:EE</li>
+	<li>Mods with native EET support installed on top of EET</li>
+	<li>EET End component (third component of setup-EET_end)</li>
+</ol>
+
 <a id="What mods can be installed on BG:EE previous to installing EET on BG2:EE?" name="What mods can be installed on BG:EE previous to installing EET on BG2:EE?"></a>
 <h3>What mods can be installed on BG:EE previous to installing EET on BG2:EE?</h3>
-<p>EET does the conversion of all BG:EE resources present in game "on the fly". That is why it provides limited support for mods installed on BG:EE previous to installing EET on BG2:EE. The compatibility list is available in <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">this forum topic</a>.
+<p>EET does the conversion of all BG:EE resources present in game "on the fly". That is why it provides limited support for mods installed on BG:EE previous to installing EET on BG2:EE. The compatibility list is available in <a href="http://gibberlings3.net/forums/index.php?showtopic=27741">this forum topic</a>.</p>
 
 <a id="What mods can be installed after EET?" name="What mods can be installed after EET?"></a>
 <h3>What mods can be installed after EET?</h3>

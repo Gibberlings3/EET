@@ -866,7 +866,7 @@ COPY_EXISTING ~BDSODTRN.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
-		SPRINT textToReplace ~Wait(1)[%newline%]*StartMovie("ENDCRDI_")[%newline%]*FadeToColor([1.0],0)~
+		SPRINT textToReplace ~Wait(1)[%newline%]*StartMovie("ENDCRDI_")[%newline%]*FadeToColor(\[1\.0\],0)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("EndOfBG1","GLOBAL",1)~

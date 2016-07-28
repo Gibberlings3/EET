@@ -198,7 +198,7 @@ echo %%var%%>EET/temp/%var%.txt
 		END
 		PRINT ~%var% = %dir%~
 		ACTION_FOR_EACH dir2 IN ~/BeamDog/Games/00806~ ~/Baldur's Gate Enhanced Edition/Data/00806~ BEGIN
-			ACTION_IF (FILE_EXISTS ~%dir%%dir2%/data/SoDAreas.bif~) AND (first_prompt = 0) BEGIN
+			ACTION_IF (FILE_EXISTS ~%dir%%dir2%/movies/sodcin05.wbm~) AND (first_prompt = 0) BEGIN
 				OUTER_SPRINT bgee_dir ~%dir%%dir2%~
 				OUTER_SET first_prompt = 1
 				PRINT ~%bgee_dir% directory assigned to default dir~
@@ -207,7 +207,7 @@ echo %%var%%>EET/temp/%var%.txt
 	END
 END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
 	ACTION_FOR_EACH dir IN ~%quote%/Applications/Baldur's Gate - Enhanced Edition/Game Data/00777/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%%tilde%/Library/Application Support/Steam/SteamApps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ BEGIN
-		ACTION_IF (FILE_EXISTS ~%dir%/data/SoDAreas.bif~) AND (first_prompt = 0) BEGIN
+		ACTION_IF (FILE_EXISTS ~%dir%/movies/sodcin05.wbm~) AND (first_prompt = 0) BEGIN
 			OUTER_SPRINT bgee_dir ~%dir%~
 			OUTER_SET first_prompt = 1
 			PRINT ~%bgee_dir% directory assigned to default dir~
@@ -245,7 +245,7 @@ OUTER_WHILE (valid_dir = 0) BEGIN
 			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes//*/
 		END
 	END
-	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/data/SoDAreas.bif~) BEGIN
+	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/movies/sodcin05.wbm~) BEGIN
 		PRINT ~~
 		PRINT @900005 //Invalid BG:EE directory, or incorrect BG:EE installation. It is safe to abort this installation by closing this window or pressing Ctrl+C.
 		PRINT @900004 //Enter the full path to your BG:EE installation then press Enter. Example: C:\Program Files (x86)\BeamDog\Games\00806
@@ -309,47 +309,50 @@ END
 ///// Confirm / create weidu.conf                      \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~LANGUAGEcase~ ~%LANGUAGE%~
+OUTER_SPRINT LANGUAGEcase ~%LANGUAGE%~
 ACTION_TO_LOWER LANGUAGEcase
 
 <<<<<<<< .../weidu.conf
 lang_dir = %LANGUAGEcase%>>>>>>>>
 
-ACTION_FOR_EACH dir IN "%bgee_dir%" "%bg2ee_dir%" BEGIN
-	ACTION_IF NOT FILE_EXISTS ~%dir%/weidu.conf~ BEGIN
-		COPY ~.../weidu.conf~ ~%dir%/weidu.conf~ EVALUATE_BUFFER
-			PATCH_PRINT ~weidu.conf created within BG:EE directory and set to %LANGUAGEcase%~
-	END ELSE BEGIN
-		COPY - ~%dir%/weidu.conf~ ~%dir%~
-			READ_2DA_ENTRY 0 2 3 "compareWith"
-			PATCH_IF (("%LANGUAGEcase%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-				PATCH_PRINT ~%dir%/weidu.conf detected with the same language setting as the installation: %LANGUAGEcase%~
-			END ELSE PATCH_IF FILE_EXISTS ~%dir%/lang/%LANGUAGE%/dialog.tlk~ BEGIN
-				PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~0~ = 0) BEGIN
-					SPRINT conf_prompt ~y~
-				END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~1~ = 0) BEGIN
-					SPRINT conf_prompt ~n~
-				END ELSE BEGIN
-					SPRINT conf_prompt ~a~
-					WHILE (~%conf_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
-						PATCH_PRINT @900010 //%dir%/weidu.conf file has %compareWith% language set instead of %LANGUAGEcase%. Is this correct? [Y]es (keep it as it is) or [N]o (change it to %LANGUAGEcase%)
-						PATCH_READLN ~conf_prompt~
-					END
-				END
-				PATCH_IF ((~%conf_prompt%~ STRING_EQUAL_CASE ~n~)=1) BEGIN
-					PATCH_PRINT ~%dir%/weidu.conf %compareWith% changed to %LANGUAGEcase%~
-					INNER_ACTION BEGIN
-						COPY ~.../weidu.conf~ ~%dir%/weidu.conf~ EVALUATE_BUFFER
-					END
-				END ELSE BEGIN
-					SPRINT LANGUAGEcase ~%LANGUAGE%~ EVALUATE_BUFFER
-				END
+ACTION_IF NOT FILE_EXISTS ~%bgee_dir%/weidu.conf~ BEGIN
+	COPY ~.../weidu.conf~ ~%bgee_dir%/weidu.conf~ EVALUATE_BUFFER
+		PATCH_PRINT ~weidu.conf created within BG:EE directory and set to %LANGUAGEcase%~
+END ELSE BEGIN
+	COPY ~%bgee_dir%/weidu.conf~ ~%bgee_dir%/weidu.conf~
+		READ_2DA_ENTRY 0 2 3 "compareWith"
+		PATCH_IF (("%LANGUAGEcase%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
+			PATCH_PRINT ~%bgee_dir%/weidu.conf detected with the same language setting as the installation: %LANGUAGEcase%~
+		END ELSE PATCH_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/dialog.tlk~ BEGIN
+			PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~1~ = 0) BEGIN
+				SPRINT conf_prompt ~y~
+			END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~2~ = 0) BEGIN
+				SPRINT conf_prompt ~n~
+			END ELSE BEGIN
+				SPRINT conf_prompt ~z~
 			END
-	END
+			WHILE (~%conf_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
+				PATCH_PRINT @900010 //%bgee_dir%/weidu.conf file has "%compareWith%" language set instead of "%LANGUAGEcase%". Is this correct? [Y]es (keep it as it is) or [N]o (change it to "%LANGUAGEcase%")
+					PATCH_READLN ~conf_prompt~
+			END
+			PATCH_IF ((~%conf_prompt%~ STRING_EQUAL_CASE ~n~)=1) BEGIN
+				PATCH_PRINT ~%bgee_dir%/weidu.conf %compareWith% changed to %LANGUAGEcase%~
+				INNER_ACTION BEGIN
+					COPY ~.../weidu.conf~ ~%bgee_dir%/weidu.conf~ EVALUATE_BUFFER
+				END
+			END ELSE BEGIN
+				PATCH_PRINT ~%bgee_dir%/weidu.conf %compareWith% kept as it is~
+			END
+		END ELSE BEGIN
+			PATCH_PRINT ~%bgee_dir%/weidu.conf will keep %compareWith% language - %bgee_dir%/lang/%LANGUAGE%/dialog.tlk doesn't exist.~
+		END
+	BUT_ONLY
 END
 
-COPY - ~weidu.conf~ ~weidu.conf~
+COPY ~weidu.conf~ ~weidu.conf~
 	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
+BUT_ONLY
+
 PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
 /////                                                  \\\\\
@@ -359,7 +362,7 @@ PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 PRINT ~~
 PRINT ~Extracting texts for translation from BG:EE...~
 
-ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGEcase%/dialog.tlk~ BEGIN
+ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/dialog.tlk~ BEGIN
 	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 0 --max 33999 --out "EET/bgee01.tra"~
 	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 34000 --max 71119 --out "EET/bgee02.tra"~
 	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 71120 --out "EET/bgee03.tra"~
@@ -477,7 +480,7 @@ ACTION_FOR_EACH var IN are bcs chr cre dlg eff ini itm pro spl sto vef vvc wed B
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
@@ -493,7 +496,7 @@ ACTION_FOR_EACH file IN baldur.gam worldmap.wmp bgmap.wmp sodmap.wmp BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%patch_dir%~
 	END ELSE BEGIN
-		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "%patch_dir%" --biff-get-rest "%file%"~
+		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --out "%patch_dir%" --biff-get-rest "%file%"~
 		LAM bash_log
 	END
 END
@@ -516,7 +519,7 @@ END
 ACTION_FOR_EACH var IN bam bmp mos tis pvrz BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET%os_slash%temp%os_slash%biff" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --out "EET%os_slash%temp%os_slash%biff" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
@@ -532,7 +535,7 @@ ACTION_FOR_EACH var IN 2da /*plt*/ wav wbm wfx BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~EET/temp/%var%~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
@@ -548,7 +551,7 @@ ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids miss
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
 	END ELSE BEGIN
-		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --out "EET/temp/array" --biff-get-rest "%file%"~
+		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --out "EET/temp/array" --biff-get-rest "%file%"~
 		LAM bash_log
 	END
 END
@@ -2388,7 +2391,7 @@ ACTION_FOR_EACH vidname IN BEREGOST INTRO_ NASHKELL WYVERN BEGIN
 	END ELSE BEGIN
 		AT_NOW ~%ffmpeg% -i EET%os_slash%base%os_slash%lmovies%os_slash%%vidname%.wbm -i EET%os_slash%lang%os_slash%en_US%os_slash%movies%os_slash%%vidname%.ogg -acodec copy -vcodec copy EET%os_slash%temp%os_slash%%vidname%.webm~
 	END
-	COPY_LARGE ~EET/temp/%vidname%.webm~ ~lang/%LANGUAGE%/movies/%vidname%.wbm~
+	COPY_LARGE ~EET/temp/%vidname%.webm~ ~lang/%LANGUAGE_BG2%/movies/%vidname%.wbm~
 END
 
 //other movies
