@@ -4,19 +4,19 @@ THEN
   RESPONSE #100
     SetGlobal("K#AdvanceTimeOneMonth","GLOBAL",1)
     SetGlobal("K#temp","GLOBAL",29)
-    AddGlobals("K#DaysPassed","K#temp")
     AdvanceTime(ONE_MONTH)
+    AddGlobals("K#DaysPassed","K#temp")
     TakeObjectGoldGlobal("K#ImportGold","GLOBAL",Player1)
-    //ActionOverride("K#ImportContainer00",TakeItemListPartyNum("IMPORT01",1))
-    //ActionOverride("K#ImportContainer00",TakeItemListPartyNum("IMPORT02",1))
-    //ActionOverride("K#ImportContainer00",TakeItemListPartyNum("IMPORT03",1))
-    //ActionOverride("K#ImportContainer00",TakeItemListPartyNum("K#IMPORT",99))
-    //ActionOverride("K#ImportContainer01",TakeCreatureItems(Player1,ALL))
-    //ActionOverride("K#ImportContainer01",TakeCreatureItems(Player2,ALL))
-    //ActionOverride("K#ImportContainer01",TakeCreatureItems(Player3,ALL))
-    //ActionOverride("K#ImportContainer01",TakeCreatureItems(Player4,ALL))
-    //ActionOverride("K#ImportContainer01",TakeCreatureItems(Player5,ALL))
-    //ActionOverride("K#ImportContainer01",TakeCreatureItems(Player6,ALL))
+    ActionOverride(Myself,TakeItemListPartyNum("IMPORT01",1))
+    ActionOverride(Myself,TakeItemListPartyNum("IMPORT02",1))
+    ActionOverride(Myself,TakeItemListPartyNum("IMPORT03",1))
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",17))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player1,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player2,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player3,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player4,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player5,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player6,ALL))
 END
 
 IF
@@ -70,12 +70,85 @@ THEN
 END
 
 IF
+  InPartyAllowDead(Player6)
+  !Name("None",Player6)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,LeaveParty())
+    ActionOverride(Player6,DestroySelf())
+    Continue()
+END
+
+IF
+  NumInParty(6)
+THEN
+  RESPONSE #100
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    Continue()
+END
+
+IF
+  NumInParty(5)
+THEN
+  RESPONSE #100
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    Continue()
+END
+
+IF
+  NumInParty(4)
+THEN
+  RESPONSE #100
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    Continue()
+END
+
+IF
+  NumInParty(3)
+THEN
+  RESPONSE #100
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    Continue()
+END
+
+IF
+  NumInParty(2)
+THEN
+  RESPONSE #100
+    ActionOverride(Myself,TakeItemListPartyNum("K#IMPORT",20))
+    ActionOverride(Myself,GivePartyAllEquipment())
+    Continue()
+END
+
+IF
   True()
 THEN
   RESPONSE #100
-    //ActionOverride("K#ImportContainer00",GivePartyAllEquipment())
-    //CopyGroundPilesTo("AR0602",[3081.2737])
-    //DestroyGroundPiles()
+    ActionOverride(Myself,GivePartyAllEquipment())
     SetGlobal("SPRITE_IS_DEADCALAHAN","GLOBAL",0)
     SetGlobal("SPRITE_IS_DEADCARBOS","GLOBAL",0)
     SetGlobal("SPRITE_IS_DEADDIANA","GLOBAL",0)
@@ -103,6 +176,5 @@ THEN
     ActionOverride(Player5,LeaveAreaLUA("AR0602","",[3824.2447],E))
     ActionOverride(Player6,LeaveAreaLUA("AR0602","",[3889.2479],SSE))
     MultiPlayerSync()
-    Wait(2)
-    SetCursorState(TRUE) //otherwise Imoen will not run her Override script
+    DestroySelf()
 END

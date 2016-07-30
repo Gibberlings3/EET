@@ -586,6 +586,76 @@ COPY_EXISTING ~BDCUT10.BCS~ ~override~
 	END
 BUT_ONLY
 
+COPY_EXISTING ~BDCUT61.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~\(IF[%newline%]*True()[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)[%newline%]*Wait(1)[%newline%]*ActionOverride(Player2,LeaveAreaLUA("bd0112","",\[855\.370\],S))\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 1) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~IF
+  InPartyAllowDead(Player2)
+  !Name("None",Player2)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player2,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player2,LeaveParty())
+    Continue()
+END
+
+IF
+  InPartyAllowDead(Player3)
+  !Name("None",Player3)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player3,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player3,LeaveParty())
+    Continue()
+END
+
+IF
+  InPartyAllowDead(Player4)
+  !Name("None",Player4)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player4,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player4,LeaveParty())
+END
+
+IF
+  InPartyAllowDead(Player5)
+  !Name("None",Player5)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player5,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player5,LeaveParty())
+END
+
+IF
+  InPartyAllowDead(Player6)
+  !Name("None",Player6)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player6,LeaveParty())
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    Wait(1)
+    ActionOverride(Player2,LeaveAreaLUA("bd0112","",[855.370],S))~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
 COPY_EXISTING ~BD7100.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("chptxt9")~
@@ -786,8 +856,8 @@ THEN
     SetGlobal("ENDOFBG1","GLOBAL",1)
     SetGlobal("NEWGAME_SOD","GLOBAL",1)
     //SetGlobal("K#temp","GLOBAL",364)
-    //AddGlobals("K#DaysPassed","K#temp")
     //AdvanceTime(ONE_YEAR)
+    //AddGlobals("K#DaysPassed","K#temp")
     RemoveWorldmapAreaFlag("BG0900",ENABLED) //Reveal from linked area
     ReallyForceSpellRES("K#REMBHA",Player1)
     TakeItemListPartyNum("K#PLOT",99)
@@ -911,14 +981,14 @@ EXTEND_TOP ~BG0900.BCS~ ~.../BG0900-et.baf~
 IF
   Global("K#NewGame","BG2600",0)
   !HasItem("staf01",Player1)
-  !HasItemSlot(Player1,SLOT_WEAPON)
+  !HasItemSlot(Player2,SLOT_WEAPON)
   !Class(Player1,MONK)
   CheckStatGT(Player1,5,STR)
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player1,1,1,0)
-    ActionOverride(Player1,FillSlot(SLOT_WEAPON))
-    ActionOverride(Player1,EquipMostDamagingMelee())
+	XEquipItem("staf01",Player1,SLOT_WEAPON,EQUIP)
+	ActionOverride(Player1,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -932,8 +1002,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player2,1,1,0)
-    ActionOverride(Player2,FillSlot(SLOT_WEAPON))
-    ActionOverride(Player2,EquipMostDamagingMelee())
+	XEquipItem("staf01",Player2,SLOT_WEAPON,EQUIP)
+	ActionOverride(Player2,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -947,8 +1017,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player3,1,1,0)
-    ActionOverride(Player3,FillSlot(SLOT_WEAPON))
-    ActionOverride(Player3,EquipMostDamagingMelee())
+	XEquipItem("staf01",Player3,SLOT_WEAPON,EQUIP)
+	ActionOverride(Player3,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -962,8 +1032,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player4,1,1,0)
-    ActionOverride(Player4,FillSlot(SLOT_WEAPON))
-    ActionOverride(Player4,EquipMostDamagingMelee())
+	XEquipItem("staf01",Player4,SLOT_WEAPON,EQUIP)
+	ActionOverride(Player4,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -977,8 +1047,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player5,1,1,0)
-    ActionOverride(Player5,FillSlot(SLOT_WEAPON))
-    ActionOverride(Player5,EquipMostDamagingMelee())
+	XEquipItem("staf01",Player5,SLOT_WEAPON,EQUIP)
+	ActionOverride(Player5,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -992,8 +1062,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player6,1,1,0)
-    ActionOverride(Player6,FillSlot(SLOT_WEAPON))
-    ActionOverride(Player6,EquipMostDamagingMelee())
+	XEquipItem("staf01",Player6,SLOT_WEAPON,EQUIP)
+	ActionOverride(Player6,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -1019,74 +1089,6 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~BG2600.BCS~ ~.../BG2600-et.baf~
-
-//TU0015.BCS
-<<<<<<<< .../TU0015-et.baf
-//STWEAPON.2DA is not reliable for some reason
-IF
-  Global("K#NewGame","TU0015",0)
-  !HasItem("staf01",Player1)
-THEN
-  RESPONSE #100
-    GiveItemCreate("staf01",Player1,1,1,0)
-    Continue()
-END
-
-IF
-  Global("K#NewGame","TU0015",0)
-  !HasItem("staf01",Player2)
-THEN
-  RESPONSE #100
-    GiveItemCreate("staf01",Player2,1,1,0)
-    Continue()
-END
-
-IF
-  Global("K#NewGame","TU0015",0)
-  !HasItem("staf01",Player3)
-THEN
-  RESPONSE #100
-    GiveItemCreate("staf01",Player3,1,1,0)
-    Continue()
-END
-
-IF
-  Global("K#NewGame","TU0015",0)
-  !HasItem("staf01",Player4)
-THEN
-  RESPONSE #100
-    GiveItemCreate("staf01",Player4,1,1,0)
-    Continue()
-END
-
-IF
-  Global("K#NewGame","TU0015",0)
-  !HasItem("staf01",Player5)
-THEN
-  RESPONSE #100
-    GiveItemCreate("staf01",Player5,1,1,0)
-    Continue()
-END
-
-IF
-  Global("K#NewGame","TU0015",0)
-  !HasItem("staf01",Player6)
-THEN
-  RESPONSE #100
-    GiveItemCreate("staf01",Player6,1,1,0)
-    Continue()
-END
-
-IF
-  Global("K#NewGame","TU0015",0)
-THEN
-  RESPONSE #100
-    SetGlobal("K#NewGame","TU0015",1)
-    Continue()
-END
->>>>>>>>
-
-EXTEND_TOP ~TU0015.BCS~ ~.../TU0015-et.baf~
 
 /////                                                  \\\\\
 /////existing in BG2:EE, replace them if not used      \\\\\

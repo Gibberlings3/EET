@@ -852,23 +852,6 @@ EXTEND_TOP ~AR0304.BCS~ ~.../AR0304-et.baf~
 ///// AR0602 (newgame, Minsc, Jaheira, Imoen spawn)    \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING ~AR0602.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SetGlobal("NewGame","AR0602",1)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("NewGame","AR0602",1)
-    ActionOverride(Player1,SetPlayerSound(Myself,15881,EXISTANCE5))
-    SetCursorState(TRUE)
-    MoveViewPoint([0.0],INSTANT)
-    SmallWait(10)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
 <<<<<<<< .../AR0602-et.baf
 IF
   Global("K#ImoenImport","AR0602",0)
@@ -1346,8 +1329,8 @@ THEN
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("NEWGAME_SOA","GLOBAL",1)
     //SetGlobal("K#temp","GLOBAL",364)
-    //AddGlobals("K#DaysPassed","K#temp")
     //AdvanceTime(ONE_YEAR)
+    //AddGlobals("K#DaysPassed","K#temp")
     ActionOverride(Player1,LeaveAreaLUAPanic("AR0602","",[3744.2801],S))
     ActionOverride(Player1,LeaveAreaLUA("AR0602","",[3744.2801],S))
     ActionOverride(Player2,LeaveAreaLUA("AR0602","",[3585.2917],SWW))
@@ -1379,8 +1362,13 @@ THEN
     ReallyForceSpellRES("K#FAMREM",Player4)
     ReallyForceSpellRES("K#FAMREM",Player5)
     ReallyForceSpellRES("K#FAMREM",Player6)
-    //MoveContainerContents("*K#ImportContainer00","*Table3BD6100")
-    //MoveContainerContents("*K#ImportContainer01","*Table3BD6100")
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player1,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player2,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player3,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player4,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player5,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player6,ALL))
+    MoveContainerContents("BD6100*K#ImportContainer","AR0602*K#ImportContainer")
     Continue()
 END
 

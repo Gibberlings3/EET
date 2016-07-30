@@ -37,18 +37,18 @@ LANGUAGE ~Spanish~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN @910000 //Update old saves to work with new installation
+BEGIN @910000 //Update old EET saves to work with new installation
 NO_LOG_RECORD
-REQUIRE_COMPONENT ~EET/EET.tp2~ 0 @910003 //You must have EET core component installed
-FORBID_COMPONENT ~setup-EET_end.tp2~ 2 @910004 //Saves created on old installation can't be updated because you have already overwritten exported TLK files with new ones via last component of this mod.
-//REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~ @910005 //%USER_DIRECTORY%/save/saves.tra doesn't exist
-//REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~ @910006 //%USER_DIRECTORY%/save/saves.txt doesn't exist
-FORBID_FILE ~override/saves_updated.flag~ @910007 //Your saves have been already updated in this installation (override/saves_updated.flag file present)
+REQUIRE_COMPONENT ~EET/EET.tp2~ 0 ~You must have EET core component installed~
+REQUIRE_PREDICATE (!FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~) @910004 //Your saves have been already updated in this installation
+REQUIRE_PREDICATE (!FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~) @910005 //Saves created on old installation can't be updated because you have already overwritten exported TLK files with new ones via last component of this mod.
+//REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~ @910006 //%USER_DIRECTORY%/save/saves.tra doesn't exist
+//REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~ @910007 //%USER_DIRECTORY%/save/saves.txt doesn't exist
 
 //workaround until WeiDU is updated: http://forums.pocketplane.net/index.php/topic,29530.0.html?PHPSESSID=7635c39a228aeaa622a46b76dfa5e287
 ACTION_FOR_EACH ext IN tra txt BEGIN
 	ACTION_IF NOT FILE_EXISTS ~%USER_DIRECTORY%/save/saves.%ext%~ BEGIN
-		FAIL @910005 //%USER_DIRECTORY%/save/saves.%ext% doesn't exist. Skipping installation. Saves won't be updated.
+		FAIL @910006 //%USER_DIRECTORY%/save/saves.tra doesn't exist
 	END
 END
 
@@ -60,7 +60,7 @@ OUTER_WHILE (valid_answer = 0) BEGIN
 	END ELSE ACTION_IF (button = 2) BEGIN //No
 		FAIL @910008 //Skipping installation. Saves won't be updated.
 	END ELSE BEGIN
-		PRINT @910009 //This is entirely OPTIONAL component! Are you sure you want to update all saves located in %USER_DIRECTORY%/save directory? You should not do it if you're planning to finish your ongoing game on older BG installation. This component can't be uninstalled (requires manual steps to do so). 1] Yes 2] No (skips component installation)
+		PRINT @910009 //This is entirely OPTIONAL component! Are you sure you want to update all saves located in %USER_DIRECTORY%/save directory? You should not do it if you're planning to finish your ongoing game on older EET installation. This component can't be uninstalled (requires manual steps to do so). 1] Yes 2] No (skips component installation)
 		ACTION_READLN ~button~
 		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
 			OUTER_SET button = 0
@@ -70,6 +70,10 @@ END
 
 INCLUDE ~EET/lib/EET_end_saves.tph~
 
+ACTION_IF (!FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~) BEGIN
+	APPEND + ~EET.flag~ ~SAVES_UPDATED~
+END
+
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
@@ -78,7 +82,7 @@ INCLUDE ~EET/lib/EET_end_saves.tph~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN @910001 //Baldur's Gate: Enhanced Edition Trilogy (EET) - alternative GUI (SoD)
+BEGIN @910001 //Alternative EET GUI (SoD)
 REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910003 //You must have EET core component installed
 
 COPY ~EET/SoD_GUI~ ~override~
@@ -91,7 +95,7 @@ COPY ~EET/SoD_GUI~ ~override~
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN @910002 //Baldur's Gate: Enhanced Edition Trilogy (EET) - last component in install order (temporary uninstall it first if you're going to install more mods)
+BEGIN @910002 //Finalize EET (last mod in install order)
 REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910003 //You must have EET core component installed
 
 CLEAR_ARRAYS
@@ -107,6 +111,10 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 	FOR (i=0; i < campaign_tbl; ++i) BEGIN
 		READ_2DA_ENTRY_FORMER campaign_tbl i 0 campaign
 		PATCH_PRINT ~Analyzing %campaign% campaign~
+		READ_2DA_ENTRY_FORMER campaign_tbl i 4 file
+		PATCH_IF (!VARIABLE_IS_SET $interdia_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
+			DEFINE_ASSOCIATIVE_ARRAY interdia_2da BEGIN ~%file%~ => ~~ END
+		END
 		READ_2DA_ENTRY_FORMER campaign_tbl i 30 file
 		PATCH_IF (!VARIABLE_IS_SET $clastext_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
 			DEFINE_ASSOCIATIVE_ARRAY clastext_2da BEGIN ~%file%~ => ~~ END
@@ -128,7 +136,9 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 						TO_UPPER dv
 						READ_2DA_ENTRY_FORMER pdialog j 2 join
 						TO_UPPER join
+						SET join_exists = 0
 						PATCH_IF (FILE_EXISTS_IN_GAME ~%join%.dlg~) BEGIN
+							SET join_exists = 1
 							PATCH_IF (!VARIABLE_IS_SET $table_dv(~%dv%~)) BEGIN
 								DEFINE_ASSOCIATIVE_ARRAY table_dv BEGIN ~%dv%~ => ~%join%~ END
 								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~~ => ~~ END
@@ -148,7 +158,7 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 							TO_UPPER 25join
 							READ_2DA_ENTRY_FORMER pdialog j 6 25dream
 							READ_2DA_ENTRY_FORMER pdialog j 7 25override
-							PATCH_IF (FILE_EXISTS_IN_GAME ~%25join%.dlg~) AND (NOT ~%25join%~ STRING_EQUAL_CASE ~%join%~) BEGIN
+							PATCH_IF (join_exists = 1) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) AND (NOT ~%25join%~ STRING_EQUAL_CASE ~%join%~) BEGIN
 								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%25join%~ , ~%join%~ => ~~ END
 							END
 							PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25DIALOG.2DA~ ~^%dv% ~)) BEGIN
@@ -157,9 +167,9 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 									APPEND ~25DIALOG.2DA~ ~%dv% %25post% %join% %25dream%~
 								END
 							END
-							SET_2DA_ENTRY j 4 cntcol ~%post%~
-							SET_2DA_ENTRY j 5 cntcol ~%join%~
-							SET_2DA_ENTRY j 6 cntcol ~%dream%~
+							SET_2DA_ENTRY j 4 cntcol ~***~
+							SET_2DA_ENTRY j 5 cntcol ~***~
+							SET_2DA_ENTRY j 6 cntcol ~***~
 							SET_2DA_ENTRY j 7 cntcol ~***~
 						END
 					END
@@ -172,6 +182,10 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 COPY_EXISTING ~BDDIALOG.2DA~ ~override~
 	REPLACE_TEXTUALLY ~^IMOEN_ ~ ~IMOEN2 ~
 BUT_ONLY
+
+ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
+	PRINT "~%file%~ , ~%file_1%~ => ~%var%~"
+END
 
 /////                                                  \\\\\
 ///// Prepare dialogue arrays                          \\\\\
@@ -270,11 +284,36 @@ BUT_ONLY
 ///// Append missing entries                           \\\\\
 /////                                                  \\\\\
 
-//25DIALOG.2DA already updated
+//PDIALOG
+//25DIALOG.2DA already patched with PDIALOG.2DA entries
+ACTION_PHP_EACH pdialog_2da AS file => dummy BEGIN
+	COPY_EXISTING ~%file%.2da~ ~override~
+		PRETTY_PRINT_2DA
+		READ_2DA_ENTRIES_NOW pdialog_tbl 2
+		FOR (i=0; i < pdialog_tbl; ++i) BEGIN
+			READ_2DA_ENTRY_FORMER pdialog_tbl i 0 dv
+			PATCH_IF (NOT ~%dv%~ STRING_EQUAL_CASE ~POST_DIALOG_FILE~) BEGIN
+				PHP_EACH pdialog_2da AS cmp_file => dummy BEGIN
+					PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+						READ_2DA_ENTRY_FORMER pdialog_tbl i 1 post
+						READ_2DA_ENTRY_FORMER pdialog_tbl i 2 join
+						READ_2DA_ENTRY_FORMER pdialog_tbl i 3 dream
+						INNER_ACTION BEGIN
+							//PRINT ~Patching %cmp_file%.2DA: %dv% %post% %join% %dream%~
+							APPEND ~%cmp_file%.2DA~ ~%dv% %post% %join% %dream%~
+							COPY_EXISTING ~%cmp_file%.2DA~ ~override~
+								PRETTY_PRINT_2DA
+							BUT_ONLY
+						END
+					END
+				END
+			END
+		END
+		PRETTY_PRINT_2DA
+	BUT_ONLY
+END
 
-COPY_EXISTING ~25BANTER.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
+//INTERDIA
 COPY_EXISTING ~INTERDIA.2DA~ ~override~
 	PRETTY_PRINT_2DA
 	READ_2DA_ENTRIES_NOW interdia 3
@@ -282,76 +321,46 @@ COPY_EXISTING ~INTERDIA.2DA~ ~override~
 		READ_2DA_ENTRY_FORMER interdia i 0 dv
 		READ_2DA_ENTRY_FORMER interdia i 1 banter
 		READ_2DA_ENTRY_FORMER interdia i 2 25banter
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25BANTER.2DA~ ~^%dv% ~)) BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25BANTER.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
 			INNER_ACTION BEGIN
 				//PRINT ~Patching 25BANTER.2DA: %dv% %25banter%~
 				APPEND ~25BANTER.2DA~ ~%dv% %25banter%~
+				COPY_EXISTING ~25BANTER.2DA~ ~override~
+					PRETTY_PRINT_2DA
+				BUT_ONLY
 			END
 		END
-		SET_2DA_ENTRY i 2 3 ~%banter%~
+		SET_2DA_ENTRY i 2 3 ~***~
 	END
 	PRETTY_PRINT_2DA
 BUT_ONLY
-COPY_EXISTING ~25BANTER.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
 
-COPY_EXISTING ~MASTAREA.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
-COPY_EXISTING ~SODMAREA.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		READ_2DA_ENTRY cnt 1 2 "col2"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~MASTAREA.2DA~ ~%col1% ~)) BEGIN
-			INNER_ACTION BEGIN
-				APPEND ~MASTAREA.2DA~ ~%col1% %col2%~
-				//PRINT ~%col1% %col2% appended to MASTAREA.2DA~
-			END
-		END
-	END
-COPY_EXISTING ~MASTAREA.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
-
-COPY_EXISTING ~REPUTATI.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	REPLACE_TEXTUALLY ~^ $~ ~~
-	COUNT_2DA_ROWS 3 "cntrow"
-BUT_ONLY
-COPY_EXISTING - ~SODREPUT.2DA~ ~.../SODREPUT.2DA~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	COUNT_2DA_COLS "cntcol"
-	FOR (cnt = 1; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY 0 cnt 3 "name"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~REPUTATI.2DA~ ~[ ]%name%[ ]~)) BEGIN
-			PATCH_PRINT ~Patching REPUTATI.2DA: %name%~
-			SET updated = 0
-			SPRINT col ~dummy_entry dummy_entry %name%~
-			FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
-				READ_2DA_ENTRY cnt2 (cnt + 1) 3 "add"
-				SPRINT col ~%col% %add%~
-			END
-			INNER_ACTION BEGIN
-				APPEND_COL ~REPUTATI.2DA~ ~%col%~
-				OUTER_PATCH_SAVE ~col~ ~%col%~ BEGIN //for easier DEBUG reading
-					REPLACE_TEXTUALLY ~dummy_entry ~ ~~
-					REPLACE_TEXTUALLY ~[ ]+~ ~ ~
+ACTION_PHP_EACH interdia_2da AS file => dummy BEGIN
+	COPY_EXISTING ~%file%.2da~ ~override~
+		PRETTY_PRINT_2DA
+		READ_2DA_ENTRIES_NOW interdia_tbl 2
+		FOR (i=1; i < interdia_tbl; ++i) BEGIN
+			READ_2DA_ENTRY_FORMER interdia_tbl i 0 dv
+			PATCH_IF (NOT ~%dv%~ STRING_EQUAL_CASE ~FILE~) BEGIN
+				PHP_EACH interdia_2da AS cmp_file => dummy BEGIN
+					PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+						READ_2DA_ENTRY_FORMER interdia_tbl i 1 banter
+						INNER_ACTION BEGIN
+							//PRINT ~Patching %cmp_file%.2DA: %dv% %banter%~
+							APPEND ~%cmp_file%.2DA~ ~%dv% %banter%~
+							COPY_EXISTING ~%cmp_file%.2DA~ ~override~
+								PRETTY_PRINT_2DA
+							BUT_ONLY
+						END
+					END
 				END
-				//PRINT ~%col% column appended to %SOURCE_FILE%~
 			END
 		END
-	END
-COPY_EXISTING ~REPUTATI.2DA~ ~override~
-	REPLACE_TEXTUALLY ~dummy_entry~ ~~
-	PRETTY_PRINT_2DA
-BUT_ONLY
+		PRETTY_PRINT_2DA
+	BUT_ONLY
+END
 
+//CLASSTEXT
 ACTION_PHP_EACH clastext_2da AS file => dummy BEGIN
 	COPY_EXISTING ~%file%.2da~ ~override~
 		PRETTY_PRINT_2DA
@@ -393,6 +402,7 @@ ACTION_PHP_EACH clastext_2da AS file => dummy BEGIN
 	BUT_ONLY
 END
 
+//RACETEXT
 ACTION_PHP_EACH racetext_2da AS file => dummy BEGIN
 	COPY_EXISTING ~%file%.2da~ ~override~
 		PRETTY_PRINT_2DA
@@ -420,15 +430,60 @@ ACTION_PHP_EACH racetext_2da AS file => dummy BEGIN
 	BUT_ONLY
 END
 
-ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
-	PRINT "~%file%~ , ~%file_1%~ => ~%var%~"
-END
+//MASTAREA
+COPY_EXISTING ~SODMAREA.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		SET noupdate = 0
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		READ_2DA_ENTRY cnt 1 2 "col2"
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~MASTAREA.2DA~ ~[ %TAB%]*%col1%[ %TAB%]~)) BEGIN
+			INNER_ACTION BEGIN
+				APPEND ~MASTAREA.2DA~ ~%col1% %col2%~
+				//PRINT ~%col1% %col2% appended to MASTAREA.2DA~
+			END
+		END
+	END
+COPY_EXISTING ~MASTAREA.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
-ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.lua~) BEGIN
-	COPY ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY%~
-		REPLACE_TEXTUALLY ~^.+'EET Installation State'.+$~ ~SetPrivateProfileString('Program Options','EET Installation State','2')~
-	BUT_ONLY
-END
+//REPUTATI
+COPY_EXISTING ~REPUTATI.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~$~ ~ ~
+	REPLACE_TEXTUALLY ~^ $~ ~~
+	COUNT_2DA_ROWS 3 "cntrow"
+BUT_ONLY
+COPY_EXISTING - ~SODREPUT.2DA~ ~.../SODREPUT.2DA~
+	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~$~ ~ ~
+	COUNT_2DA_COLS "cntcol"
+	FOR (cnt = 1; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY 0 cnt 3 "name"
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~REPUTATI.2DA~ ~[ ]%name%[ ]~)) BEGIN
+			PATCH_PRINT ~Patching REPUTATI.2DA: %name%~
+			SET updated = 0
+			SPRINT col ~dummy_entry dummy_entry %name%~
+			FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
+				READ_2DA_ENTRY cnt2 (cnt + 1) 3 "add"
+				SPRINT col ~%col% %add%~
+			END
+			INNER_ACTION BEGIN
+				APPEND_COL ~REPUTATI.2DA~ ~%col%~
+				OUTER_PATCH_SAVE ~col~ ~%col%~ BEGIN //for easier DEBUG reading
+					REPLACE_TEXTUALLY ~dummy_entry ~ ~~
+					REPLACE_TEXTUALLY ~[ ]+~ ~ ~
+				END
+				//PRINT ~%col% column appended to %SOURCE_FILE%~
+			END
+		END
+	END
+COPY_EXISTING ~REPUTATI.2DA~ ~override~
+	REPLACE_TEXTUALLY ~dummy_entry~ ~~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// Prepare files needed for save updating           \\\\\
@@ -454,3 +509,13 @@ COPY + ~.../saves.txt~ ~%USER_DIRECTORY%/save/saves.txt~ EVALUATE_BUFFER
 	PATCH_IF FILE_EXISTS ~.../add_spell.ids~ BEGIN
 		APPEND_FILE ~.../add_spell.ids~
 	END
+
+ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.lua~) BEGIN
+	COPY ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY%~
+		REPLACE_TEXTUALLY ~^.+'EET Installation State'.+$~ ~SetPrivateProfileString('Program Options','EET Installation State','2')~
+	BUT_ONLY
+END
+
+ACTION_IF (!FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~) BEGIN
+	APPEND + ~EET.flag~ ~TRA_EXPORTED~
+END

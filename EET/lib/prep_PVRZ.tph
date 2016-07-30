@@ -51,7 +51,7 @@ ACTION_FOR_EACH dir IN ~%biff_dir%~ ~EET/SoD_GUI~ BEGIN
 	END
 END
 
-ACTION_BASH_FOR ~%biff_dir%~ ~^B.+\.PVRZ$~ BEGIN
+ACTION_BASH_FOR ~%biff_dir%~ ~^B[0-9][0-9][0-9][0-9]N?[0-9]+\.PVRZ$~ BEGIN
 	OUTER_PATCH_SAVE filename ~%BASH_FOR_RES%~ BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~^B\([0-9]\)\([0-9][0-9][0-9]N?\)\([0-9]+\)$~ BEGIN
 			SET MATCH3 = MATCH3 + 50
@@ -60,7 +60,15 @@ ACTION_BASH_FOR ~%biff_dir%~ ~^B.+\.PVRZ$~ BEGIN
 	MOVE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%/eetBD%MATCH1%/%filename%.PVRZ~
 END
 
-MOVE + ~%biff_dir%/A0100N00.PVRZ~ ~%biff_dir%/eetBG01/B0100N00.PVRZ~
+MOVE + ~%biff_dir%/BOX1.PVRZ~ ~EET/SoD_GUI~
+	~%biff_dir%/BOX2.PVRZ~ ~EET/SoD_GUI~
+	~%biff_dir%/BOX3.PVRZ~ ~EET/SoD_GUI~
+	~%biff_dir%/BOX4.PVRZ~ ~EET/SoD_GUI~
+	~%biff_dir%/BOX5.PVRZ~ ~EET/SoD_GUI~
+	~%biff_dir%/BOX6.PVRZ~ ~EET/SoD_GUI~
+	~%biff_dir%/BOX7.PVRZ~ ~EET/SoD_GUI~ //dialogue boarder, don't biff it
+	~%biff_dir%/BOX8.PVRZ~ ~EET/SoD_GUI~
+	~%biff_dir%/A0100N00.PVRZ~ ~%biff_dir%/eetBG01/B0100N00.PVRZ~
 	~%biff_dir%/A0100N01.PVRZ~ ~%biff_dir%/eetBG01/B0100N01.PVRZ~
 	~%biff_dir%/A0100N02.PVRZ~ ~%biff_dir%/eetBG01/B0100N02.PVRZ~
 	~%biff_dir%/A0100N03.PVRZ~ ~%biff_dir%/eetBG01/B0100N03.PVRZ~
@@ -2535,13 +2543,6 @@ MOVE + ~%biff_dir%/A0100N00.PVRZ~ ~%biff_dir%/eetBG01/B0100N00.PVRZ~
 	~%biff_dir%/T001801.PVRZ~ ~%biff_dir%/eetTU00~
 
 DELETE + ~%biff_dir%/BGBACK.PVRZ~
-	~%biff_dir%/BOX1.PVRZ~
-	~%biff_dir%/BOX2.PVRZ~
-	~%biff_dir%/BOX3.PVRZ~
-	~%biff_dir%/BOX4.PVRZ~
-	~%biff_dir%/BOX5.PVRZ~
-	~%biff_dir%/BOX6.PVRZ~
-	~%biff_dir%/BOX8.PVRZ~
 	~%biff_dir%/MOS0000.PVRZ~
 	~%biff_dir%/MOS0001.PVRZ~
 	~%biff_dir%/MOS0002.PVRZ~

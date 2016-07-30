@@ -1642,19 +1642,6 @@ BUT_ONLY
 ///// INTERDIA.2DA, BGBANTER.2DA, BDBANTER.2DA         \\\\\
 /////                                                  \\\\\
 
-COPY + ~EET/temp/2da/BGBANTER.2DA~ ~EET/temp/2da~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
-		READ_2DA_ENTRY cnt 1 2 "col2"
-		SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
-		//READ_2DA_ENTRY cnt 2 2 "col3"
-		//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
-	END
-	PRETTY_PRINT_2DA
-
 ACTION_IF (FILE_EXISTS ~EET/temp/2da/BDBANTER.2DA~) BEGIN
 	COPY + ~EET/temp/2da/BDBANTER.2DA~ ~EET/temp/2da~
 		PRETTY_PRINT_2DA
@@ -1668,7 +1655,36 @@ ACTION_IF (FILE_EXISTS ~EET/temp/2da/BDBANTER.2DA~) BEGIN
 			//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
 		END
 		PRETTY_PRINT_2DA
+END ELSE BEGIN
+<<<<<<<< .../BDBANTER.2DA
+2DA      V1.0
+NONE
+         FILE
+>>>>>>>>
+	COPY + ~.../BDBANTER.2DA~ ~EET/temp/2da~
 END
+
+COPY + ~EET/temp/2da/BGBANTER.2DA~ ~EET/temp/2da~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		READ_2DA_ENTRY cnt 1 2 "col2"
+		SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+		//READ_2DA_ENTRY cnt 2 2 "col3"
+		//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~EET/temp/2da/BDBANTER.2DA~ ~^[ %TAB%]*%col1%[ %TAB%]~)) BEGIN
+			INNER_ACTION BEGIN
+				//PRINT ~Patching BDBANTER.2DA: %dv% ***~
+				APPEND_OUTER + ~EET/temp/2da/BDBANTER.2DA~ ~%col1% ***~
+			END
+		END
+	END
+	PRETTY_PRINT_2DA
+COPY + ~EET/temp/2da/BDBANTER.2DA~ ~EET/temp/2da~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// NPCLEVEL.2DA, BGNPCLVL.2DA, NPCLVLDS.2DA         \\\\\

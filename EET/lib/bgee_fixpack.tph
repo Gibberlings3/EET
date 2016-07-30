@@ -1,5 +1,40 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
+//junk in BG1801.ARE Rest Spawn entries (harmless but annoying during save update)
+COPY_EXISTING ~BG1801.ARE~ ~override~
+	// Missing Rest Spawn Remover
+	READ_LONG  0xc0 "rest_off" ELSE 0
+	PATCH_IF (rest_off > 0x11b) BEGIN
+		FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
+			READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
+			PATCH_IF (("%resref%" STRING_COMPARE_CASE "")                // ignore empty entries
+			AND ("%resref%" STRING_COMPARE_CASE "none")                  // ignore 'none'
+			AND ("%resref%" STRING_COMPARE_REGEXP "^[Rr][Dd].+$")) BEGIN // ignore creatures starting with RD
+				SET exists = 0
+				PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.cre~ BEGIN
+					SET exists = 1
+				END
+				PATCH_IF ("%exists%" = 0) BEGIN
+					PATCH_PRINT "%SOURCE_FILE% issue: Rest Spawn creature file does not exist (%resref%.cre)! Nulling..."
+					WRITE_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "NONE" #8
+				END
+			END
+		END
+		SET "none_count" = 0
+		FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
+			READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
+			PATCH_IF (("%resref%" STRING_EQUAL_CASE "") OR ("%resref%" STRING_EQUAL_CASE "none")) BEGIN
+				SET "none_count" = "none_count" + 1
+			END
+		END
+		READ_SHORT ("%rest_off%" + 0x98) "spawncount"
+		PATCH_IF (("%none_count%" = 10) AND ("%spawncount%" != 0)) BEGIN
+			PATCH_PRINT "%SOURCE_FILE% issue: No creatures in Rest Spawn Entry but area still set to spawn something! Setting number of spawnable creatures to 0..."
+			WRITE_SHORT ("%rest_off%" + 0x98) 0
+		END
+	END
+BUT_ONLY
+
 //Dead NPCs stays in party in chapter 13
 COPY_EXISTING ~BDCUT61.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN

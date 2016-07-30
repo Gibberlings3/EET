@@ -49,7 +49,7 @@ LANGUAGE ~Spanish~
 	~EET/lang/es_ES/2da.tra~
 	~EET/lang/es_ES/compatibility.tra~
 
-BEGIN @900000 //Baldur's Gate: Enhanced Edition Trilogy (EET) - core component
+BEGIN @900000 //Initialise EET (first mod in install order)
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ @900001 //Please install it on BG2:EE engine
 FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ @900002 //EET should be installed BEFORE BP-BGT Worldmap
 
@@ -351,9 +351,13 @@ END
 
 COPY ~weidu.conf~ ~weidu.conf~
 	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
+	INNER_PATCH_SAVE LANGUAGE_BG2 ~%LANGUAGE_BG2%~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
+			TO_UPPER MATCH1
+		END ~%MATCH1%~
+	END
+	PATCH_PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 BUT_ONLY
-
-PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
 /////                                                  \\\\\
 ///// Extraction of TLK from BG:EE                     \\\\\
@@ -363,16 +367,16 @@ PRINT ~~
 PRINT ~Extracting texts for translation from BG:EE...~
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/dialog.tlk~ BEGIN
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 0 --max 33999 --out "EET/bgee01.tra"~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 34000 --max 71119 --out "EET/bgee02.tra"~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 71120 --out "EET/bgee03.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 0 --max 33999 --out "EET/temp/bgee01.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 34000 --max 71119 --out "EET/temp/bgee02.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGEcase%" --traify-tlk --min 71120 --out "EET/temp/bgee03.tra"~
 	LAM bash_log
 END ELSE BEGIN
 	FAIL @900009 //TLK for language: %LANGUAGEcase% not found in %bgee_dir%
 END
 
 ACTION_FOR_EACH file IN bgee01 bgee02 bgee03 BEGIN
-	COPY + ~EET/%file%.tra~ ~EET~
+	COPY + ~EET/temp/%file%.tra~ ~EET/temp~
 		REPLACE_TEXTUALLY ~~~~~\([~"%]\)\[[^~"%]*\][ ]*~~~~~ ~~~~~\1~~~~~ //clear []s at the start of StrRefs//"
 		PHP_EACH remapped_wav AS source => dest BEGIN
 			REPLACE_TEXTUALLY ~\(\[\)%source%\(\]\)~ ~\1%dest%\2~
@@ -412,7 +416,7 @@ COPY - ~EET/lang/%LANGUAGE%/chapters.tra~ ~EET/lang/%LANGUAGE%~
 				REPLACE_TEXTUALLY ~%LNL%~ ~-NEWLINE-~
 			END
 			INNER_ACTION BEGIN
-				COPY + ~EET/bgee01.tra~ ~EET~
+				COPY + ~EET/temp/bgee01.tra~ ~EET/temp~
 					REPLACE_EVALUATE CASE_INSENSITIVE "^\(@%from%[ %TAB%]*=[ %TAB%]*\)~\([^~]+\)~.*$" BEGIN
 						//PATCH_PRINT ~Patching %SOURCE_FILESPEC%: REPLACED @%from%:%LNL%%MATCH2%%LNL%TO:%LNL%%text%~
 					END
@@ -422,9 +426,9 @@ COPY - ~EET/lang/%LANGUAGE%/chapters.tra~ ~EET/lang/%LANGUAGE%~
 		END ~~
 	END
 
-LOAD_TRA ~EET/bgee01.tra~
-LOAD_TRA ~EET/bgee02.tra~
-LOAD_TRA ~EET/bgee03.tra~
+LOAD_TRA ~EET/temp/bgee01.tra~
+LOAD_TRA ~EET/temp/bgee02.tra~
+LOAD_TRA ~EET/temp/bgee03.tra~
 
 /////                                                  \\\\\
 ///// HANDLE_CHARSETS                                  \\\\\
@@ -1897,6 +1901,28 @@ APPEND_OUTER + ~EET/temp/are.tph~ ~%logged%~
 COPY_EXISTING ~OH1000.ARE~ ~override/BG0000.ARE~
 	WRITE_ASCII 0x94 ~BG0000~ #8
 
+COPY_EXISTING ~BD6100.ARE~ ~override~
+	~AR0602.ARE~ ~override~
+	LPF fj_are_structure
+		INT_VAR
+		fj_type        = 8 //nonvisible
+		fj_loc_x       = 88
+		fj_loc_y       = 76
+		fj_box_left    = 72
+		fj_box_top     = 26
+		fj_box_right   = 120
+		fj_box_bottom  = 58
+		fj_trap_loc_x  = 80
+		fj_trap_loc_y  = 70
+		fj_vertex_0    = 111 + (58 << 16)
+		fj_vertex_1    = 72 + (45 << 16)
+		fj_vertex_2    = 82 + (26 << 16)
+		fj_vertex_3    = 120 + (39 << 16)
+		STR_VAR
+		fj_structure_type = container
+		fj_name           = ~K#ImportContainer~
+	END
+
 /*COPY_EXISTING ~TU0015.are~ ~override~
 	~TU0016.are~ ~override~
 	~TU0017.are~ ~override~
@@ -1964,7 +1990,7 @@ PRINT ~Installing CHR files...~
 
 MKDIR ~characters~
 
-ACTION_BASH_FOR ~EET/temp/chr~ ~^.+\.chr$~ BEGIN
+ACTION_BASH_FOR ~%patch_dir%/chr~ ~^.+\.chr$~ BEGIN
 	COPY ~%BASH_FOR_FILESPEC%~ ~characters~
 		LPF ~EET_expand_tlk~ INT_VAR max = StrRef_cutoff RET log END
 		PATCH_LOG ~%log%~
@@ -2522,9 +2548,12 @@ BUT_ONLY
 //manual edits
 COPY + ~EET/tbl/map_mods_areas.tbl~ ~EET/temp/map_bgee_areas.tbl~ //only used by BP-BGT Worldmap
 
+COPY + ~EET/temp/map_sod_links.tbl~ ~EET/temp~
+	REPLACE_TEXTUALLY ~\(BD2000[ %TAB%]+W[ %TAB%]+BD3000[ %TAB%]+EXITN[ %TAB%]+\)84~ ~\142~
+
 COPY + ~EET/temp/map_bgee_links.tbl~ ~EET/temp~
-	APPEND_FILE ~EET/tbl/map_mods_links.tbl~
 	APPEND_FILE ~EET/temp/map_sod_links.tbl~
+	APPEND_FILE ~EET/tbl/map_mods_links.tbl~
 
 COPY + ~EET/temp/map_bgee_trans.tra~ ~EET/temp~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(@[A-Z0-9]+\)\(.*[%newline%]*\)~ BEGIN
