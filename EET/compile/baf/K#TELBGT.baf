@@ -1,9 +1,20 @@
 IF
-  Global("K#AdvanceTimeOneMonth","GLOBAL",0)
+  Global("K#FrameDelay","LOCALS",0)
 THEN
   RESPONSE #100
-    SetGlobal("K#AdvanceTimeOneMonth","GLOBAL",1)
+    SetGlobal("K#FrameDelay","LOCALS",1)
     SetGlobal("K#temp","GLOBAL",29)
+    ApplySpellRES("K#REST",Player1) // No such index
+    ApplySpellRES("K#REST",Player2) // No such index
+    ApplySpellRES("K#REST",Player3) // No such index
+    ApplySpellRES("K#REST",Player4) // No such index
+    ApplySpellRES("K#REST",Player5) // No such index
+    ApplySpellRES("K#REST",Player6) // No such index
+    ActionOverride(Player2,MakeUnselectable(1))
+    ActionOverride(Player3,MakeUnselectable(1))
+    ActionOverride(Player4,MakeUnselectable(1))
+    ActionOverride(Player5,MakeUnselectable(1))
+    ActionOverride(Player6,MakeUnselectable(1))
     AdvanceTime(ONE_MONTH)
     AddGlobals("K#DaysPassed","K#temp")
     TakeObjectGoldGlobal("K#ImportGold","GLOBAL",Player1)
@@ -17,6 +28,19 @@ THEN
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player4,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player5,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player6,ALL))
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FrameDelay","LOCALS",2)
+    ApplySpellRES("K#UNREST",Player1) // No such index
+    ApplySpellRES("K#UNREST",Player2) // No such index
+    ApplySpellRES("K#UNREST",Player3) // No such index
+    ApplySpellRES("K#UNREST",Player4) // No such index
+    ApplySpellRES("K#UNREST",Player5) // No such index
+    ApplySpellRES("K#UNREST",Player6) // No such index
 END
 
 IF

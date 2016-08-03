@@ -156,7 +156,7 @@ a:hover.spoiler {
     <strong>Autor</strong>: <a href="http://gibberlings3.net/forums/index.php?showuser=6804">K4thos</a><br>
 	<strong>Kontrybutorzy na GitHub</strong>: WhiteAgnus, AWizardDidIt, Crevs Daak</p>
   <p><strong>W sieci: </strong><strong><a href="http://baldur.cob-bg.pl/">Strona</a></strong> i <a href="http://athkatla.cob-bg.pl/viewforum.php?f=190"><strong>Forum dyskusyjne</strong></a></p>
-  <p><strong>Wersja 1.0 <acronym title="(software development) A version of a program that is nearly ready for release but may still have a few bugs; the status between beta version and release version.">Release Candidate</acronym> 2</strong><br />
+  <p><strong>Wersja 1.0 <acronym title="(software development) A version of a program that is nearly ready for release but may still have a few bugs; the status between beta version and release version.">Release Candidate</acronym> 4</strong><br />
     <strong>Dostępne wersje językowe: </strong>Angielski, Polski, Niemiecki, Francuski, Hiszpański<br />
     <strong>Wsparcie dla systemów operacyjnych: </strong>Windows, Mac OS X</p>
 </div>
@@ -224,7 +224,7 @@ a:hover.spoiler {
 <p>Planując większe instalacje z modami warto rozważyć użycie programu <a href="https://bitbucket.org/BigWorldSetup/">Big World Setup</a> (wsparcie dla EET zostanie dodane wkrótce). Narzędzie to pobierze, rozpakuje i zainstaluje wybrane modyfikacje razem z EET. Oszczędność czasu i frustracji związanej z kolejnością instalacji i kompatybilnością modów.</p>
 </div>
 
-<h3>EET Core Component (setup-EET)</h3>
+<h3>Inicjacja instalacji EET (setup-EET)</h3>
 
 <p>Podstawowy komponent EET (setup-EET) wymaga świeżej, "czystej" instalacji gry BG2:EE (wymagany patch v2.3.67.3). Mody takie jak tłumaczenia i dubbing w niczym nie przeszkadzają, jednak instalacja innych modów (zwłaszcza większych, modyfikujących oryginalne zasoby) nie jest wskazana, bo może się to skończyć problemami podczas instalacji EET.</p>
 
@@ -244,7 +244,7 @@ a:hover.spoiler {
 
 <p><strong>To jeszcze nie koniec procesu instalacji EET - przeczytaj poniższą sekcję.</strong></p>
 
-<h3>EET End Installation Components (setup-EET_end)</h3>
+<h3>Zwieńczenie instalacji EET (setup-EET_end)</h3>
 
 <div class="code">
 <p><strong>Po instalacji głównego komponentu w folderze z grą znajdziesz dodatkowy plik setup-EET_end.exe. Dwa pierwsze komponenty (aktualizacja zapisów gry z poprzedniej instalacji oraz zmiana GUI) oferowane przez ten instalator są opcjonalne. Trzeci komponent jest WYMAGANY i powinien on zostać zainstalowany NA SAMYM KOŃCU, po instalacji wszystkich innych modów.</strong></p>
@@ -252,9 +252,9 @@ a:hover.spoiler {
 
 <p>W skład setup-EET_end wchodzą 3 komponenty:</p>
 <ul>
-	<li><strong>Update old saves to work with new installation</strong> - OPCJONALNY - zerknij do <a href="#What about compatibility with saves?">F.A.Q.</a> po więcej informacji. Jeśli używasz opcjonalnego modu BP-BGT Worldmap to upewnij się, że jest zainstalowany przed instalacją tego komponentu.</li>
-	<li><strong>Alternative GUI (SoD)</strong> - OPCJONALNY - podmiana GUI BG2:EE na GUI z dodatku Siege of Dragonspear.</li>
-	<li><strong>Last component in install order</strong> - WYMAGANY - komponent kończący instalację EET (trzeba go zainstalować przed rozpoczęciem gry).</li>
+	<li><strong>Aktualizacja starych zapisów gry dla obecnej instalacji</strong> - OPCJONALNY - zerknij do <a href="#What about compatibility with saves?">F.A.Q.</a> po więcej informacji. Jeśli używasz opcjonalnego modu BP-BGT Worldmap to upewnij się, że jest zainstalowany przed instalacją tego komponentu.</li>
+	<li><strong>Alternatywne GUI (SoD)</strong> - OPCJONALNY - podmiana GUI BG2:EE na GUI z dodatku Siege of Dragonspear.</li>
+	<li><strong>Zwieńczenie instalacji EET</strong> - WYMAGANY - komponent kończący instalację EET (trzeba go zainstalować przed rozpoczęciem gry).</li>
 </ul>
 
 <p>Jeśli po zakończonej instalacji komponentów zmienisz zdanie i postanowisz doinstalować jakieś mody, to wpierw uruchom setup-EET_end.exe, i odinstaluj ostatni komponent. Gdy będziesz już zadowolony z doboru modów zainstaluj go ponownie.</p>
@@ -263,7 +263,7 @@ a:hover.spoiler {
 
 <p>Po rozpakowaniu archiwum, zamiast uruchamiać plik setup, otwórz wiersz poleceń, przejdź do folderu z BG2:EE, i odpal instalatory wykorzystując kod wiersza poleceń, tak jak opisano poniżej. Szybciej jednak będzie wkleić kod wiersza poleceń do pliku z rozszerzeniem BAT i odpalić go zamiast instalatora.</p>
 
-<p><strong>EET Core Component (setup-EET)</strong></p>
+<p><strong>Inicjacja instalacji EET (setup-EET)</strong></p>
 
 <div class="code">
 <p>setup-EET.exe --force-install 0 --skip-at-view --language <em>X</em> --args-list <em>[flags]</em> <em>[path]</em></p>
@@ -312,7 +312,7 @@ a:hover.spoiler {
 
 <hr>
 
-<p><strong>EET End Installation Components (setup-EET_end)</strong></p>
+<p><strong>Zwieńczenie instalacji EET (setup-EET_end)</strong></p>
 
 <div class="code">
 <p>setup-EET_end.exe --force-install-list <em>[numbers]</em> --language <em>X</em></p>
@@ -335,9 +335,9 @@ a:hover.spoiler {
 	<tr>
 		<td><em>[numbers]</em></td>
 		<td class="grow">
-		<p>0 - Update old saves to work with new installation<br />
-		1 - Alternative GUI (SoD)<br />
-		2 - Last component in install order (required before starting the game)</p>
+		<p>0 - Aktualizacja starych zapisów gry dla obecnej instalacji<br />
+		1 - Alternatywne GUI (SoD)<br />
+		2 - Zwieńczenie instalacji EET (ostatni mod w kolejności instalacji)</p>
 		</td>
 	</tr>
 </table>
@@ -378,11 +378,10 @@ a:hover.spoiler {
 
 <a id="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?"></a>
 <h3>Jakie są różnice pomiędzy EET a grą Baldur's Gate: Enhanced Edition?</h3>
-<p>Z punktu widzenia gracza brak znaczących różnic. Od strony technicznej jest trochę zmian mających na celu usunięcie konfliktów pomiędzy zasobami BG1 i BG2, jednak nie powinno to być w żaden sposób zauważalne podczas gry. Jedyne, co mi przychodzi na myśl, to różnica w sposobie implementacji kryzysu żelaza na Wybrzeżu Mieczy. Zamiast 1% szansy na strzaskanie normalnej broni podczas BG1, EET rozszerzył tę funkcjonalność na bronie (0.5%), zbroje (0.2%), tarcze (0.2%) i hełmy (0.1%). Sam kryzys żelaza dotknie nie tylko drużynę gracza, ale i przeciwników. Taki sposób implementacji można uznać za przywrócenie planowanej funkcjonalności (na to wskazują istniejące BAMy dla innych typów zniszczonych przedmiotów i ustawione flagi w plikach ITM), jednak zwolennicy oryginalnych zasad bez trudu mogą przywrócić funkcjonalność znaną z BG1 instalując odpowiedni komponent modu <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a>. Oprócz tego zmieniona została mapa świata. Gra nie kończy się oczywiście po filmiku końcowym pierwszej części Baldura.</p>
+<p>Z punktu widzenia gracza brak znaczących różnic. Od strony technicznej jest trochę zmian mających na celu usunięcie konfliktów pomiędzy zasobami BG1 i BG2, jednak nie powinno to być w żaden sposób zauważalne podczas gry. Oprócz tego zmieniona została mapa świata. Gra nie kończy się oczywiście po filmiku wieńczącym pierwszą część Baldura.</p>
 
 <a id="What are the differences between EET and the original Siege of Dragonspear expansion?" name="What are the differences between EET and the original Siege of Dragonspear expansion?"></a>
 <h3>Jakie są różnice pomiędzy EET a dodatkiem Siege of Dragonspear?</h3>
-<p>Vanilla SoD blocks access to areas after moving from chapter to chapter which is against EET goals. While this design decision is still true in EET for now we're planning to change it to work more like in BG1 and BG2 (areas remain open in later parts of the story). Other than this planned feature SoD worldmap is already merged with EET Worldmap and after finishing the story you will be automatically migrated into BG2.</p>
 <p>Dodatek blokuje dostęp do obszarów przechodząc z rozdziału do rozdziału. Na ten moment nie zostało to jeszcze zmienione, ale wkrótce nie będzie to już miało miejsca w EET. Oprócz tego standardowe płynne przejście pomiędzy grami i zintegrowana mapa świata.</p>
 
 <a id="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?"></a>
@@ -400,9 +399,9 @@ a:hover.spoiler {
 <p>Kolejność instalacji modów z EET wygląda następująco:</p>
 <ol>
 	<li>Mody instalowane na BG:EE</li>
-	<li>Podstawowy komponent EET (setup-EET) zainstalowany na BG2:EE</li>
+	<li>Inicjacja instalacji EET (setup-EET) zainstalowany na BG2:EE</li>
 	<li>Mody kompatybilne z EET</li>
-	<li>Trzeci komponent setup-EET_end zamyka instalację</li>
+	<li>Zwieńczenie instalacji EET (trzeci komponent setup-EET_end zamykający instalację)</li>
 </ol>
 
 <a id="What mods can be installed on BG:EE previous to installing EET on BG2:EE?" name="What mods can be installed on BG:EE previous to installing EET on BG2:EE?"></a>
@@ -453,17 +452,21 @@ a:hover.spoiler {
 
 <h3>Krytyczne problemy w czasie instalacji</h3>
 
-<p><strong>"(...) BG:EE mod is not recognized by EET, so it can't be installed on BG2:EE"</strong></p>
+<p><strong>Instalator odrzuca podaną ścieżkę do Baldur's Gate: Enhanced Edition.</strong></p>
 
-<p>Jak wspomniano w <a href="#What's up with BG:EE mod compatibility list?">FAQ</a> EET ogranicza konwersję zasobów BG:EE do tych pochodzących z oryginalnej gry i modów znajdujących się na liście kompatybilności. Dodawanie nowych modów do tej listy nie wymaga dużo pracy, więc z czasem lista zapewne się powiększy.</p>
+<p>Możliwe że obecna instalacja BG:EE jest uszkodzona (brakujące/uszkodzone pliki) lub używasz wersji SoD kupionej w sklepie GOG lub Steam, bez wcześniejszej instalacji narzędzia modmerge. Weryfikacja poprawności instalacji odbywa się przez sprawdzenie obecności pliku "movies/sodcin05.wbm" w folderze z BG:EE. Spróbuj pobrać/zainstalować Baldur's Gate: Enhanced Edition od nowa. Możesz też spróbować podać ścieżkę do gry z poziomu wiersza poleceń, tak jak wspomniano w sekcji dotyczącej <a href="#installation">instalacji modu</a>.</p>
+
+<p><strong>"(...) BG:EE mod is not recognized by EET, so it can't be imported to BG2:EE with EET"</strong></p>
+
+<p>Jak wspomniano w <a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">FAQ</a> EET ogranicza konwersję zasobów BG:EE do tych pochodzących z oryginalnej gry i modów znajdujących się na liście kompatybilności. Dodawanie nowych modów do tej listy nie wymaga dużo pracy, więc z czasem lista zapewne się powiększy.</p>
 
 <p><strong>"TLK for language: (...) not found in BG:EE directory"</strong></p>
 
 <p>Sprawdź czy język (plik TLK) wybrany w czasie instalacji faktycznie znajduje się w folderze z BG:EE.</p>
 
-<p><strong>Instalator odrzuca podaną ścieżkę do Baldur's Gate: Enhanced Edition.</strong></p>
+<p><strong>ERROR: COPY (...) FAILED: cannot open target</strong></p>
 
-<p>Możliwe że obecna instalacja BG:EE jest uszkodzona (brakujące/uszkodzone pliki). Spróbuj pobrać/zainstalować Baldur's Gate: Enhanced Edition od nowa. Możesz też spróbować podać ścieżkę do gry z poziomu wiersza poleceń, tak jak wspomniano w sekcji dotyczącej instalacji modu.</p>
+<p>WeiDU <a href="http://forums.pocketplane.net/index.php/topic,29566.new.html">wywala się</a> przy próbie edycji ukrytych plików. Wyłącz atrybut ukrycia plików.</p>
 
 <p><strong>WeiDU stopped the installation because of error.</strong></p>
 
@@ -492,6 +495,10 @@ a:hover.spoiler {
 
 <p>Jest to znany <a href="http://redmine.beamdog.com/issues/21711">bug silnika gry</a>. Miejmy nadzieję, że zostanie naprawiony przez Beamdog w następnej aktualizacji gry.</p>
 
+<p><strong>Woda w niektórych basenach i fontannach nie jest prawidłowo wyświetlana.</strong></p>
+
+<p>Problem znany, ale jeszcze nie wypracowaliśmy rozwiązania. Lista znanych miejsc, gdzie szkopuł występuje dostępna w <a href="http://gibberlings3.net/forums/index.php?showtopic=28161&page=5#entry245621">tym poście</a>. Proszę zgłaszać inne obszary z tym problemem.</p>
+
 </div>
 <!-- ================== C r e d i t s ================== --><a id="credits" name="credits"></a>
 <h2>Podziękowania</h2>
@@ -500,8 +507,8 @@ a:hover.spoiler {
 <h3>Podziękowania (w kolejności alfabetycznej)</h3>
 
 <ul>
-	<li>AL|EN za wsparcie podczas tworzenia EET</li>
-	<li>Argent77 za prace nad narzędziami: Near Infinity, TileConv, tile2ee</li>
+	<li>AL|EN za wsparcie podczas tworzenia EET i za integrację z Big World Setup</li>
+	<li>Argent77 za wsparcie i prace nad narzędziami: Near Infinity, TileConv, tile2ee</li>
 	<li>Ascension64 za inspirację w postaci moda BGT-WeiDU</li>
 	<li>AWizardDidIt za prace nad dialogami (mod IWD-in-EET)</li>
 	<li>Bardez za inspirację w postaci oryginalnej wersji moda Baldur's Gate Trilogy</li>

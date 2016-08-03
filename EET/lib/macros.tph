@@ -1065,7 +1065,7 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Dumps the areas and links of a .wmp file to textual data
-DEFINE_PATCH_FUNCTION ~dump_wmp~
+DEFINE_PATCH_FUNCTION dump_wmp
 	INT_VAR
 		tra_read = 0
 		move_x = 0
@@ -1243,6 +1243,348 @@ DEFINE_PATCH_FUNCTION ~dump_wmp~
 				INSERT_BYTES 0 STRING_LENGTH "%trans_string%"
 				WRITE_ASCIIE 0 "%trans_string%"
 		END
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO read_area_array_from_2da BEGIN
+  LOCAL_SPRINT fl#r2en_area ""
+  LOCAL_SET i = 0
+  LOCAL_SPRINT area ""
+  LOCAL_SPRINT short ""
+  LOCAL_SPRINT long ""
+  LOCAL_SET flags = 0
+  LOCAL_SET bam = 0
+  LOCAL_SET x_cor = 0
+  LOCAL_SET y_cor = 0
+  LOCAL_SPRINT name ""
+  LOCAL_SPRINT tool ""
+  LOCAL_SPRINT load ""
+  LOCAL_SPRINT var ""
+  LOCAL_SPRINT cmp ""
+  LOCAL_SPRINT array ""
+
+  READ_2DA_ENTRIES_NOW fl#r2en_area 10
+  FOR (i=0;i<fl#r2en_area;++i) BEGIN
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 0 area
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 1 short
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 2 long
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 3 flags
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 4 bam
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 5 x_cor
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 6 y_cor
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 7 name
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 8 tool
+    READ_2DA_ENTRY_FORMER fl#r2en_area i 9 load
+    TO_LOWER area
+    TO_UPPER name
+    TO_UPPER tool
+    PATCH_IF "%area%" STRING_COMPARE_CASE SHORT_NAME
+    AND "%area%" STRING_COMPARE_CASE CONTENT
+    AND FILE_EXISTS_IN_GAME "%area%.are"
+    //AND ("%area%" STRING_COMPARE_CASE AR0015 OR GAME_IS bgt)
+    BEGIN
+      PATCH_IF !VARIABLE_IS_SET $fl#CONTENT("%area%") BEGIN
+        SET $fl#CONTENT("%area%") = 0
+      END
+      SPRINT $fl#SHORT("%area%") "%short%"
+      SPRINT $fl#LONG("%area%") "%long%"
+      SET $fl#FLAGS("%area%") = flags
+      SET $fl#BAM("%area%") = bam
+      SET $fl#XCOR("%area%") = x_cor
+      SET $fl#YCOR("%area%") = y_cor
+      PATCH_FOR_EACH var IN name tool load BEGIN
+        SPRINT cmp EVAL "%%var%%"
+        SPRINT array "%var%"
+        TO_UPPER array
+        PATCH_IF "%cmp%" STRING_COMPARE_CASE N BEGIN
+          SPRINT $EVAL "fl#%array%"("%area%") EVAL "%%var%%"
+        END
+      END
+    END
+  END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO read_link_array_from_2da BEGIN
+  LOCAL_SPRINT fl#r2en_link ""
+  LOCAL_SET i = 0
+  LOCAL_SPRINT src ""
+  LOCAL_SPRINT j ""
+  LOCAL_SPRINT trgt ""
+  LOCAL_SPRINT entry ""
+  LOCAL_SET time = 0
+  LOCAL_SET def = 0
+  LOCAL_SPRINT enc1 ""
+  LOCAL_SPRINT enc2 ""
+  LOCAL_SPRINT enc3 ""
+  LOCAL_SPRINT enc4 ""
+  LOCAL_SPRINT enc5 ""
+  LOCAL_SET prob = 0
+  LOCAL_SPRINT var ""
+  LOCAL_SPRINT cmp ""
+  LOCAL_SPRINT array ""
+
+  SET $j_array(n) = 0
+  SET $j_array(e) = 3
+  SET $j_array(s) = 2
+  SET $j_array(w) = 1
+  READ_2DA_ENTRIES_NOW fl#r2en_link 12
+  FOR (i=0;i<fl#r2en_link;++i) BEGIN
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 0  src
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 1  j
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 2  trgt
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 3  entry
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 4  time
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 5  def
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 6  enc1
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 7  enc2
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 8  enc3
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 9  enc4
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 10 enc5
+    READ_2DA_ENTRY_FORMER fl#r2en_link i 11 prob
+    TO_LOWER src
+    TO_LOWER j
+    TO_LOWER trgt
+    PATCH_IF ("%src%" STRING_COMPARE_CASE SRC_AREA AND
+              "%trgt%" STRING_COMPARE_CASE TARGET_AREA AND
+              "%trgt%" STRING_COMPARE_CASE TARGET_ARE) AND
+             (!VARIABLE_IS_SET $fl#LINK_BLACKLIST("%src%" "%j%" "%trgt%") OR
+               (VARIABLE_IS_SET $fl#LINK_BLACKLIST("%src%" "%j%" "%trgt%") AND
+                 $fl#LINK_BLACKLIST("%src%" "%j%" "%trgt%") = 0)) AND
+             FILE_EXISTS_IN_GAME "%src%.are" AND
+             FILE_EXISTS_IN_GAME "%trgt%.are"
+    BEGIN
+      j = $j_array("%j%")
+      PATCH_IF !VARIABLE_IS_SET $EVAL "fl#INDEX_%j%"("%src%" "%trgt%") BEGIN
+        SET $EVAL "fl#INDEX_%j%"("%src%" "%trgt%") = 0
+      END
+      SET $fl#TIME("%src%" "%j%" "%trgt%") = time
+      SET $fl#DEF("%src%" "%j%" "%trgt%") = def
+      PATCH_FOR_EACH var IN entry enc1 enc2 enc3 enc4 enc5 BEGIN
+        SPRINT cmp EVAL "%%var%%"
+        SPRINT array "%var%"
+        TO_UPPER array
+        INNER_PATCH_SAVE cmp "%cmp%" BEGIN
+          REPLACE_TEXTUALLY "###" " "
+        END
+        PATCH_IF "%cmp%" STRING_COMPARE_CASE N BEGIN
+          SPRINT $EVAL "fl#%array%"("%src%" "%j%" "%trgt%") "%cmp%"
+        END
+      END
+      SET $fl#PROB("%src%" "%j%" "%trgt%") = prob
+    END
+  END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO read_trans_array_from_2da BEGIN
+  LOCAL_SPRINT fl#r2en_trans ""
+  LOCAL_SET i = 0
+  LOCAL_SPRINT id ""
+  LOCAL_SPRINT string ""
+
+  READ_2DA_ENTRIES_NOW fl#r2en_trans 3
+  FOR (i=0;i<fl#r2en_trans;++i) BEGIN
+    READ_2DA_ENTRY_FORMER fl#r2en_trans i 0 id
+    READ_2DA_ENTRY_FORMER fl#r2en_trans i 2 string
+    TO_UPPER id
+    PATCH_IF "%id%" STRING_MATCHES_REGEXP "^@" = 0 BEGIN
+      INNER_PATCH_SAVE string "%string%" BEGIN
+        REPLACE_TEXTUALLY "###" " "
+        REPLACE_TEXTUALLY ~"~ ~~ //" //This is a stupid hack to get around a deficiency in my editor
+        REPLACE_TEXTUALLY "~" ""
+      END
+      SPRINT $fl#TRANS("%id%") "%string%"
+    END
+  END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO read_blacklist_array_from_2da BEGIN
+  LOCAL_SPRINT fl#r2en_blacklist ""
+  LOCAL_SET i = 0
+  LOCAL_SPRINT src ""
+  LOCAL_SPRINT j ""
+  LOCAL_SPRINT trgt ""
+
+  READ_2DA_ENTRIES_NOW fl#r2en_blacklist 3
+  FOR (i = 0; i < fl#r2en_blacklist; ++i) BEGIN
+    READ_2DA_ENTRY_FORMER fl#r2en_blacklist i 0 src
+    READ_2DA_ENTRY_FORMER fl#r2en_blacklist i 1 j
+    READ_2DA_ENTRY_FORMER fl#r2en_blacklist i 2 trgt
+    TO_LOWER src
+    TO_LOWER j
+    TO_LOWER trgt
+    SET $fl#LINK_BLACKLIST("%src%" "%j%" "%trgt%") = 1
+  END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_MACRO apply_link_patches BEGIN
+  LOCAL_SPRINT r2en_patches ""
+  LOCAL_SET result = 0
+  LOCAL_SET i = 0
+  LOCAL_SET j = 0
+  LOCAL_SPRINT source ""
+  LOCAL_SPRINT nesw ""
+  LOCAL_SPRINT target ""
+  LOCAL_SPRINT entry ""
+  LOCAL_SET dist = 0
+  LOCAL_SET def_entry = 0
+  LOCAL_SPRINT enc1 ""
+  LOCAL_SPRINT enc2 ""
+  LOCAL_SPRINT enc3 ""
+  LOCAL_SPRINT enc4 ""
+  LOCAL_SPRINT enc5 ""
+  LOCAL_SET enc_prob = 0
+  LOCAL_SET j = 0
+  LOCAL_SPRINT var ""
+  LOCAL_SPRINT cmp ""
+  LOCAL_SPRINT array ""
+
+  SET $j_array(n) = 0
+  SET $j_array(e) = 3
+  SET $j_array(s) = 2
+  SET $j_array(w) = 1
+  READ_2DA_ENTRIES_NOW r2en_patches 13
+
+  //Barf indeed, but I can't think of a better solution atm
+  FOR (i = 0; i < r2en_patches; ++i) BEGIN
+    READ_2DA_ENTRY_FORMER r2en_patches i 12 id
+    PATCH_IF "%id%" STRING_COMPARE_CASE NN BEGIN
+      SET $fl#patches("%id%") = 0
+    END
+  END
+  FOR (i = 0; i < r2en_patches; ++i) BEGIN
+    READ_2DA_ENTRY_FORMER r2en_patches i 12 id
+    PATCH_IF !"%id%" STRING_EQUAL_CASE NN AND $fl#patches("%id%") = 0 BEGIN
+      FOR (j = 0; j < r2en_patches; ++j) BEGIN
+        READ_2DA_ENTRY_FORMER r2en_patches j 12 id2
+        PATCH_IF j > i AND id = id2 BEGIN
+          SET $fl#patches("%id%") = 1
+          READ_2DA_ENTRY_FORMER r2en_patches j 0 source
+          READ_2DA_ENTRY_FORMER r2en_patches j 1 nesw
+          READ_2DA_ENTRY_FORMER r2en_patches j 2 target
+          READ_2DA_ENTRY_FORMER r2en_patches j 3 entry
+          READ_2DA_ENTRY_FORMER r2en_patches j 4 dist
+          READ_2DA_ENTRY_FORMER r2en_patches j 5 def_entry
+          READ_2DA_ENTRY_FORMER r2en_patches j 6 enc1
+          READ_2DA_ENTRY_FORMER r2en_patches j 7 enc2
+          READ_2DA_ENTRY_FORMER r2en_patches j 8 enc3
+          READ_2DA_ENTRY_FORMER r2en_patches j 9 enc4
+          READ_2DA_ENTRY_FORMER r2en_patches j 10 enc5
+          READ_2DA_ENTRY_FORMER r2en_patches j 11 enc_prob
+          TO_LOWER source
+          TO_LOWER nesw
+          TO_LOWER target
+          PATCH_IF "%source%" STRING_COMPARE_CASE SRC_AREA
+          AND "%target%" STRING_COMPARE_CASE TARGET_ARE BEGIN
+            j = $j_array("%nesw%")
+            PATCH_IF VARIABLE_IS_SET $EVAL "fl#INDEX_%j%"("%source%" "%target%") BEGIN
+              SPRINT $fl#ENTRY("%source%" "%j%" "%target%") "%entry%"
+              SET $fl#TIME("%source%" "%j%" "%target%") = dist
+              SET $fl#DEF("%source%" "%j%" "%target%") = def_entry
+              PATCH_FOR_EACH var IN enc1 enc2 enc3 enc4 enc5 BEGIN
+                SPRINT cmp EVAL "%%var%%"
+                SPRINT array "%var%"
+                TO_UPPER array
+                PATCH_IF "%cmp%" STRING_COMPARE_CASE N BEGIN
+                  SPRINT $EVAL "fl#%array%"("%source%" "%j%" "%target%") "%cmp%"
+                END
+              END
+              SET $fl#PROB("%source%" "%j%" "%target%") = enc_prob
+            END
+          END
+          j = r2en_patches
+        END
+      END
+    END
+  END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_ACTION_MACRO merge_in_translations BEGIN
+  LOCAL_SPRINT array ""
+  LOCAL_SPRINT area ""
+  LOCAL_SPRINT result ""
+
+  //Swap the tra references for the associated string
+  ACTION_FOR_EACH array IN fl#NAME fl#TOOL BEGIN
+    ACTION_PHP_EACH "%array%" AS area => result BEGIN
+      ACTION_IF VARIABLE_IS_SET $fl#TRANS("%result%") BEGIN
+        OUTER_SPRINT $EVAL "%array%"("%area%") $fl#TRANS("%result%")
+      END
+    END
+  END
+
+  //If there are tra references for which there was no data provided, null the array value
+  ACTION_FOR_EACH array IN fl#NAME fl#TOOL BEGIN
+    ACTION_PHP_EACH "%array%" AS area => result BEGIN
+      ACTION_IF "%result%" STRING_MATCHES_REGEXP "^@.*" = 0 BEGIN
+        OUTER_SPRINT $EVAL "%array%"("%area%") ""
+      END
+    END
+  END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DEFINE_PATCH_FUNCTION fix_table BEGIN
+  REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(SHORT_NAME\)~ ~\1%LNL%%LNL%\2~
+  REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(//\)~ ~\1%LNL%%LNL%\2~
+  REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(SRC_AREA\)~ ~\1%LNL%%LNL%\2~
+  REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(@\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~
+  REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(//\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//fixes issues with glitched water overlays, code by argent77
+DEFINE_ACTION_FUNCTION FIX_WATER
+INT_VAR
+	numTilesToFix = 0 // number of tile indices to fix
+	// $tilesToFix(0), ... contain tile indices to fix
+STR_VAR
+	wed = ~~
+BEGIN
+	ACTION_IF (numTilesToFix > 0 AND FILE_EXISTS_IN_GAME ~%wed%~) BEGIN
+		// Setting required secondary tile indices
+		COPY_EXISTING ~%wed%~ ~override~
+			SET ofsOverlay = LONG_AT 0x10
+			SET ofsTileMap = LONG_AT (ofsOverlay + 0x10)
+			READ_ASCII (ofsOverlay + 0x04) tisFile (8) NULL
+			PATCH_IF (FILE_EXISTS_IN_GAME ~%tisFile%.tis~) BEGIN
+				INNER_ACTION BEGIN
+					// adding dummy tiles to TIS
+					COPY_EXISTING ~%tisFile%.TIS~ ~override~
+						READ_LONG 0x08 numTiles
+						WRITE_LONG 0x08 (numTiles + numTilesToFix)
+						READ_LONG 0x0c sizeTile
+						READ_LONG 0x10 ofsTiles
+						FOR (idx = 0 curOfs = ofsTiles + (numTiles * sizeTile); idx < numTilesToFix; idx += 1 curOfs += sizeTile) BEGIN
+							// adding new "black" tile
+							INSERT_BYTES curOfs sizeTile
+							WRITE_LONG curOfs "-1"
+						END
+					BUT_ONLY
+				END
+				// updating secondary tile indices
+				FOR (idx = 0; idx < numTilesToFix; idx += 1) BEGIN
+					PATCH_IF (VARIABLE_IS_SET $EVAL tilesToFix(~%idx%~)) BEGIN
+						SET tileIndex = $EVAL tilesToFix(~%idx%~)
+						SET ofsTile = ofsTileMap + (tileIndex * 10)
+						WRITE_SHORT (ofsTile + 4) (numTiles + idx)
+					END
+				END
+			END
+		BUT_ONLY
 	END
 END
 

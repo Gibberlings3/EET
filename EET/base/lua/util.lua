@@ -502,7 +502,7 @@ function chapterText()
 	elseif (chapter == 19) then
 		return Infinity_FetchString(74353)
 	elseif (chapter < 23) then
-		return Infinity_FetchString(70999 + chapter)
+		return Infinity_FetchString(71000 + chapter)
 	else
 		return t("ARENA_MODE_LABEL")
 	end

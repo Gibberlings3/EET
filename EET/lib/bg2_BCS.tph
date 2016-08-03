@@ -779,7 +779,7 @@ IF
   !BeenInParty("Edwin")
   GlobalLT("chapter","GLOBAL",20)
   //!StateCheck("Edwin",STATE_REALLY_DEAD)
-  LevelLT(Player1,9)
+  //LevelLT(Player1,9)
 THEN
   RESPONSE #100
     CreateCreature("Edwin7",[852.340],S)
@@ -788,7 +788,7 @@ THEN
     Continue()
 END
 
-IF
+/*IF
   Global("K#EdwinImport","AR0304",0)
   !BeenInParty("Edwin")
   GlobalLT("chapter","GLOBAL",20)
@@ -843,7 +843,7 @@ THEN
     ActionOverride("Edwin",MakeGlobalOverride())
     SetGlobal("K#EdwinImport","AR0304",1)
     Continue()
-END
+END*/
 >>>>>>>>
 
 EXTEND_TOP ~AR0304.BCS~ ~.../AR0304-et.baf~
@@ -1083,7 +1083,7 @@ IF
   !BeenInParty("Jaheira")
   GlobalLT("chapter","GLOBAL",20)
   !StateCheck("Jaheira",STATE_REALLY_DEAD)
-  LevelLT(Player1,8)
+  //LevelLT(Player1,8)
 THEN
   RESPONSE #100
     CreateCreature("Jaheir7",[3898.2676],S) // Jaheira
@@ -1092,7 +1092,7 @@ THEN
     Continue()
 END
 
-IF
+/*IF
   Global("K#JaheiraImport","AR0602",0)
   !BeenInParty("Jaheira")
   GlobalLT("chapter","GLOBAL",20)
@@ -1133,7 +1133,7 @@ THEN
     ActionOverride("Jaheira",MakeGlobalOverride())
     SetGlobal("K#JaheiraImport","AR0602",1)
     Continue()
-END
+END*/
 
 IF
   Global("K#MinscImport","AR0602",0)
@@ -1252,7 +1252,7 @@ IF
   !BeenInParty("Minsc")
   GlobalLT("chapter","GLOBAL",20)
   !StateCheck("Minsc",STATE_REALLY_DEAD)
-  LevelLT(Player1,8)
+  //LevelLT(Player1,8)
 THEN
   RESPONSE #100
     CreateCreature("Minsc7",[4029.2759],S) // Minsc
@@ -1261,7 +1261,7 @@ THEN
     Continue()
 END
 
-IF
+/*IF
   Global("K#MinscImport","AR0602",0)
   !BeenInParty("Minsc")
   GlobalLT("chapter","GLOBAL",20)
@@ -1317,7 +1317,7 @@ THEN
     ActionOverride("Minsc",MakeGlobalOverride())
     SetGlobal("K#MinscImport","AR0602",1)
     Continue()
-END
+END*/
 
 IF
   Global("ENDOFBG1","GLOBAL",0)
@@ -1354,6 +1354,7 @@ THEN
     SetGlobal("K#NewGame","AR0602",2)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     StartMovie("INTRO15F")
+	ActionOverride(Player1,MakeUnselectable(1))
     RemoveWorldmapAreaFlag("BD0010",15) //Visible, Reveal from linked area, Can be visited, Has been visited
     AddWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
     ReallyForceSpellRES("K#FAMREM",Player1)
@@ -1539,7 +1540,7 @@ IF
   !BeenInParty("Viconia")
   GlobalLT("chapter","GLOBAL",20)
   !StateCheck("Viconia",STATE_REALLY_DEAD)
-  LevelLT(Player1,8)
+  //LevelLT(Player1,8)
 THEN
   RESPONSE #100
     CreateCreatureImpassable("VICONI6",[1821.1081],S)
@@ -1548,7 +1549,7 @@ THEN
     Continue()
 END
 
-IF
+/*IF
   Global("K#ViconiaImport","AR1000",0)
   !BeenInParty("Viconia")
   GlobalLT("chapter","GLOBAL",20)
@@ -1606,7 +1607,7 @@ THEN
     ActionOverride("Viconia",MakeGlobalOverride())
     SetGlobal("K#ViconiaImport","AR1000",1)
     Continue()
-END
+END*/
 
 IF
   Global("K#ViconiaSpawn","AR1000",0)
@@ -1632,34 +1633,59 @@ EXTEND_TOP ~AR1000.BCS~ ~.../AR1000-et.baf~
 ///// AR0900 (Dorn spawn)                              \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING ~AR0900.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HasDLC("dorn")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~HasDLC("dorn")
-  Global("K#DornImport","AR0900",0)
-  !BeenInParty("Dorn")
-  GlobalLT("chapter","GLOBAL",20)
-  !StateCheck("Dorn",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+<<<<<<<< .../AR0900-rbOld.baf
+IF
+  HasDLC("dorn")
+  GlobalLT("OHD_PLOT","GLOBAL",1)
+  !Global("OHH_DORN_INIT","ar0900",1)
+  XPLT(Player1,280501)
+THEN
+  RESPONSE #100
+    ActionOverride("dorn",DestroySelf())
+    CreateCreature("DORN8",[2550.3394],E) // Dorn
+    SetGlobal("OHH_DORN_INIT","ar0900",1)
+END
 
-		SPRINT textToReplace ~\(CreateCreature("DORN\)\(.+\)$~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1\2
-ActionOverride("Dorn",MakeGlobalOverride())~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
+IF
+  HasDLC("dorn")
+  GlobalLT("OHD_PLOT","GLOBAL",1)
+  !Global("OHH_DORN_INIT","ar0900",2)
+  XPGT(Player1,280500)
+  XPLT(Player1,600001)
+THEN
+  RESPONSE #100
+    ActionOverride("dorn",DestroySelf())
+    CreateCreature("DORN9",[2550.3394],E) // Dorn
+    SetGlobal("OHH_DORN_INIT","ar0900",2)
+END
 
-<<<<<<<< .../AR0900-et.baf
+IF
+  HasDLC("dorn")
+  GlobalLT("OHD_PLOT","GLOBAL",1)
+  !Global("OHH_DORN_INIT","ar0900",3)
+  XPGT(Player1,600000)
+  XPLT(Player1,1000001)
+THEN
+  RESPONSE #100
+    ActionOverride("dorn",DestroySelf())
+    CreateCreature("DORN10",[2550.3394],E) // Dorn
+    SetGlobal("OHH_DORN_INIT","ar0900",3)
+END
+
+IF
+  HasDLC("dorn")
+  GlobalLT("OHD_PLOT","GLOBAL",1)
+  !Global("OHH_DORN_INIT","ar0900",4)
+  XPGT(Player1,1000000)
+THEN
+  RESPONSE #100
+    ActionOverride("dorn",DestroySelf())
+    CreateCreature("DORN12",[2550.3394],E) // Dorn
+    SetGlobal("OHH_DORN_INIT","ar0900",4)
+END
+>>>>>>>>
+
+<<<<<<<< .../AR0900-rbNew.baf
 IF
   HasDLC("dorn")
   GlobalLT("OHD_PLOT","GLOBAL",1)
@@ -1767,11 +1793,29 @@ THEN
     ActionOverride("Dorn",ChangeAIScript("DORN",OVERRIDE))
     SetGlobal("K#DornImport","AR0900",1)
     SetGlobal("OHH_DORN_INIT","ar0900",1)
-    Continue()
+    //Continue()
+END
+
+IF
+  HasDLC("dorn")
+  Global("K#DornImport","AR0900",0)
+  !BeenInParty("Dorn")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Dorn",STATE_REALLY_DEAD)
+  GlobalLT("OHD_PLOT","GLOBAL",1)
+  !Global("OHH_DORN_INIT","ar0900",1)
+  //XPLT(Player1,280501)
+THEN
+  RESPONSE #100
+    CreateCreature("DORN8",[2550.3394],E) // Dorn
+    ActionOverride("Dorn",MakeGlobalOverride())
+    SetGlobal("OHH_DORN_INIT","ar0900",1)
 END
 >>>>>>>>
 
-EXTEND_TOP ~AR0900.BCS~ ~.../AR0900-et.baf~
+COPY_EXISTING ~AR0900.BCS~ ~override~
+	REPLACE_BCS_BLOCK ~.../AR0900-rbOld.baf~ ~.../AR0900-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../AR0900-rbOld.baf in %SOURCE_FILE%~ END
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// AR1512 (Spellhold Imoen spawn)                   \\\\\
@@ -1809,32 +1853,20 @@ EXTEND_TOP ~AR1512.BCS~ ~.../AR1512-et.baf~
 ///// AR2000, OHR_JOIN (Rasaad spawn)                  \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING ~AR2000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HasDLC("Rasaad")[%newline%]*Global("OHR_SPAWN","AR2000",0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~HasDLC("Rasaad")
+<<<<<<<< .../AR2000-rbOld.baf
+IF
+  HasDLC("Rasaad")
   Global("OHR_SPAWN","AR2000",0)
-  GlobalLT("chapter","GLOBAL",20)
-  !StateCheck("Rasaad",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+THEN
+  RESPONSE #100
+    SetGlobal("OHR_SPAWN","AR2000",1)
+    CreateCreature("RASAAD8",[1550.1368],S) // Rasaad
+    CreateCreature("OHRTREYA",[1600.1435],NNW) // Treya
+    CreateCreature("OHRSSM01",[1486.1435],NE) // Sun Soul Monk
+END
+>>>>>>>>
 
-		SPRINT textToReplace ~CreateCreature("RASAAD8",\[1550\.1368\],S)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-<<<<<<<< .../AR2000-et.baf
+<<<<<<<< .../AR2000-rbNew.baf
 IF
   HasDLC("Rasaad")
   Global("K#RasaadImport","AR2000",0)
@@ -1947,7 +1979,7 @@ IF
   !BeenInParty("Rasaad")
   GlobalLT("chapter","GLOBAL",20)
   !StateCheck("Rasaad",STATE_REALLY_DEAD)
-  XPLT(Player1,250000)
+  //XPLT(Player1,250000)
 THEN
   RESPONSE #100
     CreateCreature("RASAAD8",[1550.1368],S) // Rasaad
@@ -1956,7 +1988,7 @@ THEN
     Continue()
 END
 
-IF
+/*IF
   HasDLC("Rasaad")
   Global("K#RasaadImport","AR2000",0)
   !BeenInParty("Rasaad")
@@ -2017,10 +2049,24 @@ THEN
     ActionOverride("Rasaad",MakeGlobalOverride())
     SetGlobal("K#RasaadImport","AR2000",1)
     Continue()
+END*/
+
+IF
+  HasDLC("Rasaad")
+  Global("OHR_SPAWN","AR2000",0)
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetGlobal("OHR_SPAWN","AR2000",1)
+    CreateCreature("OHRTREYA",[1600.1435],NNW) // Treya
+    CreateCreature("OHRSSM01",[1486.1435],NE) // Sun Soul Monk
 END
 >>>>>>>>
 
-EXTEND_TOP ~AR2000.BCS~ ~.../AR2000-et.baf~
+COPY_EXISTING ~AR2000.BCS~ ~override~
+	REPLACE_BCS_BLOCK ~.../AR2000-rbOld.baf~ ~.../AR2000-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../AR2000-rbOld.baf in %SOURCE_FILE%~ END
+BUT_ONLY
 
 <<<<<<<< .../OHR_JOIN-rbOld.baf
 IF
@@ -2328,7 +2374,7 @@ IF
   !BeenInParty("Neera")
   GlobalLT("chapter","GLOBAL",20)
   !StateCheck("Neera",STATE_REALLY_DEAD)
-  XPLT(Player1,250000)
+  //XPLT(Player1,250000)
 THEN
   RESPONSE #100
     CreateCreature("NEERA8",[993.3534],S) // Neera
@@ -2337,7 +2383,7 @@ THEN
     Continue()
 END
 
-IF
+/*IF
   Global("OHN_INTRO_SCENE","AR0500",2)
   Global("K#NeeraImport","AR0500",0)
   !BeenInParty("Neera")
@@ -2398,7 +2444,7 @@ THEN
     ActionOverride("Neera",MakeGlobalOverride())
     SetGlobal("K#NeeraImport","AR0500",1)
     Continue()
-END
+END*/
 >>>>>>>>
 
 EXTEND_TOP ~AR0500.BCS~ ~.../AR0500-et.baf~
@@ -2489,7 +2535,7 @@ IF
 THEN
   RESPONSE #100
     MoveGlobal("OH6000","Neera",[993.3534])
-	ActionOverride("Neera",Face(S))
+    ActionOverride("Neera",Face(S))
     SetGlobal("OHN_PLOT","GLOBAL",1)
 END
 >>>>>>>>
