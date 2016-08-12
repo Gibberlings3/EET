@@ -116,6 +116,13 @@ END
 IF
   Time(DUSK_END)
   !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
+  OR(6)
+    AreaCheckObject("%SOURCE_RES%",Player1)
+    AreaCheckObject("%SOURCE_RES%",Player2)
+    AreaCheckObject("%SOURCE_RES%",Player3)
+    AreaCheckObject("%SOURCE_RES%",Player4)
+    AreaCheckObject("%SOURCE_RES%",Player5)
+    AreaCheckObject("%SOURCE_RES%",Player6)
 THEN
   RESPONSE #100
     StartMovie("DAYNITE")
@@ -125,6 +132,13 @@ END
 IF
   Time(DAWN_END)
   !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
+  OR(6)
+    AreaCheckObject("%SOURCE_RES%",Player1)
+    AreaCheckObject("%SOURCE_RES%",Player2)
+    AreaCheckObject("%SOURCE_RES%",Player3)
+    AreaCheckObject("%SOURCE_RES%",Player4)
+    AreaCheckObject("%SOURCE_RES%",Player5)
+    AreaCheckObject("%SOURCE_RES%",Player6)
 THEN
   RESPONSE #100
     StartMovie("NITEDAY")
@@ -132,11 +146,20 @@ THEN
 END
 >>>>>>>>
 
+/*COPY_EXISTING ~AR2000.ARE~ ~override~ //Trademeet
+	~AR2800.ARE~ ~override~ //Suldanesselar
+	READ_BYTE 0x48 flags
+	PATCH_IF (~%flags%~ BAND BIT3) BEGIN
+		SET flags = flags - BIT3
+		WRITE_BYTE 0x48 "flags"
+	END
+BUT_ONLY*/
+
 COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 	READ_BYTE 0x48 flags
 	PATCH_IF (flags BAND BIT0) AND (flags BAND BIT1) AND (flags BAND BIT3) AND (flags BAND BIT6) BEGIN
 		INNER_ACTION BEGIN
-			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~
+			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~ EVALUATE_BUFFER
 			PRINT ~DAYNITE/NITEDAY movies added to %SOURCE_RES%.BCS~
 		END
 	END
@@ -145,6 +168,20 @@ BUT_ONLY
 /////                                                  \\\\\
 ///// BALDUR.BCS, BALDUR25                             \\\\\
 /////                                                  \\\\\
+
+COPY_EXISTING ~BALDUR.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~\(^[%TAB% ]*Global("JosterLeave","GLOBAL",1)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("JosterLeave","GLOBAL",1)
+  !AreaType(BG1AREA)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
 
 <<<<<<<< .../BALDUR-eb.baf
 //code from BG:EE
@@ -651,9 +688,17 @@ IF
   !StateCheck("Edwin",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Edwin",SetDialog("Edwin"))
+    ActionOverride("Edwin",ChangeAIScript("",CLASS))
+    ActionOverride("Edwin",ChangeAIScript("",RACE))
+    ActionOverride("Edwin",ChangeAIScript("WTARSGT",GENERAL))
+    ActionOverride("Edwin",ChangeAIScript("DPLAYER",DEFAULT))
+    ActionOverride("Edwin",ChangeAIScript("Edwin",OVERRIDE))
     MoveGlobal("AR0304","Edwin",[852.340])
     ActionOverride("Edwin",Face(S))
     ActionOverride("Edwin",SetGlobal("BD_JOINXP","LOCALS",0))
+    ActionOverride("Edwin",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Edwin",SetNumTimesTalkedTo(0))
     ActionOverride("Edwin",DestroyAllEquipment())
     //DestroyItem("MISC89_") // Edwin's Amulet
     ActionOverride("Edwin",CreateItem("STAF01",1,0,0)) // Quarterstaff
@@ -742,14 +787,6 @@ THEN
     SetPlayerSound("Edwin",30725,EXISTANCE3) // I prefer to attack more directly, but a trap will do for now.
     SetPlayerSound("Edwin",-1,EXISTANCE4) // No such index
     SetPlayerSound("Edwin",10216,EXISTANCE5) // When asked about how he came to be in the employ of the Shadow Thieves, EDWIN sneers that it is none of your business. In his opinion, you are lucky enough to have encountered him at all, and further inquiries beyond this initial boon will only serve to tempt the fates. Despite his obstinate nature, there is a hint that his present circumstance is not all that favorable, and his willingness to join with you contradicts his supposed distaste for the company of others. Edwin ignores speculation about his recent past, but he does appear to have placed less emphasis on the Red Wizard colors he has so brazenly displayed in the past. It is an understandable act for a wizard traveler in mage-fearing Amn.
-    ActionOverride("Edwin",SetDialog("Edwin"))
-    ActionOverride("Edwin",SetNumTimesTalkedTo(0))
-    ActionOverride("Edwin",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Edwin",ChangeAIScript("",CLASS))
-    ActionOverride("Edwin",ChangeAIScript("",RACE))
-    ActionOverride("Edwin",ChangeAIScript("WTARSGT",GENERAL))
-    ActionOverride("Edwin",ChangeAIScript("DPLAYER",DEFAULT))
-    ActionOverride("Edwin",ChangeAIScript("Edwin",OVERRIDE))
     SetGlobal("K#EdwinImport","AR0304",1)
     Continue()
 END
@@ -860,10 +897,18 @@ IF
   !StateCheck("Imoen2",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Imoen2",SetDialog("IMOEN10"))
+    ActionOverride("Imoen2",ChangeAIScript("NPCMAGE1",CLASS))
+    ActionOverride("Imoen2",ChangeAIScript("",RACE))
+    ActionOverride("Imoen2",ChangeAIScript("",GENERAL))
+    ActionOverride("Imoen2",ChangeAIScript("WTASIGHT",DEFAULT))
+    ActionOverride("Imoen2",ChangeAIScript("IMOEN",OVERRIDE))
     MoveGlobal("AR0602","Imoen2",[3198.2837])
-	ActionOverride("Imoen2",Face(S))
+    ActionOverride("Imoen2",Face(S))
     ActionOverride("Imoen2",SetGlobal("BD_JOINXP","LOCALS",0))
-	ActionOverride("Imoen2",DestroyAllEquipment())
+    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
+    ActionOverride("Imoen2",DestroyAllEquipment())
     ActionOverride("Imoen2",CreateItem("IMOENHP1",1,0,0)) // Imoen's Belt
     ActionOverride("Imoen2",FillSlot(SLOT_BELT))
     //ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
@@ -943,14 +988,6 @@ THEN
     SetPlayerSound("Imoen2",30753,EXISTANCE3) // Shh! It's set and ready to go.
     SetPlayerSound("Imoen2",-1,EXISTANCE4) // No such index
     SetPlayerSound("Imoen2",10233,EXISTANCE5) // IMOEN chuckles when you ask her about her past, assuming you are just trying to keep her mind on happier times and places. She indulges you, and certainly does cheer up when speaking of how you spent your youths together in Candlekeep. She arrived there the same as you, in the company of your foster father Gorion, but despite this similarity, she grew up much more carefree than you did. Indeed, her lighthearted outlook has long kept her immune to the hardships of the world, though the dark confines and horrors of your current location have definitely taken their toll.
-    ActionOverride("Imoen2",SetDialog("IMOEN10"))
-    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
-    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Imoen2",ChangeAIScript("NPCMAGE1",CLASS))
-    ActionOverride("Imoen2",ChangeAIScript("",RACE))
-    ActionOverride("Imoen2",ChangeAIScript("",GENERAL))
-    ActionOverride("Imoen2",ChangeAIScript("WTASIGHT",DEFAULT))
-    ActionOverride("Imoen2",ChangeAIScript("IMOEN",OVERRIDE))
     SetGlobal("K#ImoenImport","AR0602",1)
     Continue()
 END
@@ -975,10 +1012,18 @@ IF
   !StateCheck("Jaheira",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Jaheira",SetDialog("Jaheira")
+    ActionOverride("Jaheira",ChangeAIScript("SHOUT",CLASS))
+    ActionOverride("Jaheira",ChangeAIScript("NPCDRU1",RACE))
+    ActionOverride("Jaheira",ChangeAIScript("",GENERAL))
+    ActionOverride("Jaheira",ChangeAIScript("WTARSGT",DEFAULT))
+    ActionOverride("Jaheira",ChangeAIScript("JAHEIRA",OVERRIDE))
     MoveGlobal("AR0602","Jaheira",[3898.2676])
-	ActionOverride("Jaheira",Face(S))
+    ActionOverride("Jaheira",Face(S))
     ActionOverride("Jaheira",SetGlobal("BD_JOINXP","LOCALS",0))
-	ActionOverride("Jaheira",DestroyAllEquipment())
+    ActionOverride("Jaheira",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
+    ActionOverride("Jaheira",DestroyAllEquipment())
     //ReallyForceSpellRES("K#PORJAH","Jaheira") // No such index
     SetPlayerSound("Jaheira",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Jaheira",4008,MORALE) // I will not fall here!
@@ -1056,14 +1101,6 @@ THEN
     SetPlayerSound("Jaheira",30781,EXISTANCE3) // 
     SetPlayerSound("Jaheira",-1,EXISTANCE4) // No such index
     SetPlayerSound("Jaheira",10199,EXISTANCE5) // When asked about her past, JAHEIRA glares as she speaks. She says that she was born in the Tethyr region to a loyalist of the King Alemander regime, unfortunately during the Tethyrian civil war. Her family was among the nobles targeted by the angry mobs of peasants, and she was only spared because a servant girl took her from their castle before it fell. An enclave of druids in the Forest of Tethir was willing to grant shelter, and Jaheira grew up headstrong in their care. She believes the only way to protect nature is to have an active role in the world, but the cost of this dedication seems to weigh heavily on her mind these days.  She grows quiet when you ask about recent events, and while she gives the appearance of her normal, strong-willed self, there is a look of doubt in her eyes. It would seem that she has seen too many friends fall to remain unaffected. She does not like the subject, and lets it drop.
-    ActionOverride("Jaheira",SetDialog("Jaheira")
-    ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
-    ActionOverride("Jaheira",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Jaheira",ChangeAIScript("SHOUT",CLASS))
-    ActionOverride("Jaheira",ChangeAIScript("NPCDRU1",RACE))
-    ActionOverride("Jaheira",ChangeAIScript("",GENERAL))
-    ActionOverride("Jaheira",ChangeAIScript("WTARSGT",DEFAULT))
-    ActionOverride("Jaheira",ChangeAIScript("JAHEIRA",OVERRIDE))
     SetGlobal("K#JaheiraImport","AR0602",1)
     Continue()
 END
@@ -1142,11 +1179,19 @@ IF
   !StateCheck("Minsc",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Minsc",SetDialog("MINSCA"))
+    ActionOverride("Minsc",ChangeAIScript("",CLASS))
+    ActionOverride("Minsc",ChangeAIScript("",RACE))
+    ActionOverride("Minsc",ChangeAIScript("MINSCX",GENERAL))
+    ActionOverride("Minsc",ChangeAIScript("DPLAYER",DEFAULT))
+    ActionOverride("Minsc",ChangeAIScript("MINSC",OVERRIDE))
     MoveGlobal("AR0602","Minsc",[4029.2759])
-	ActionOverride("Minsc",Face(S))
+    ActionOverride("Minsc",Face(S))
     ActionOverride("Minsc",SetGlobal("BD_JOINXP","LOCALS",0))
-	ActionOverride("Minsc",DestroyAllEquipment())
-	ChangeStat("MINSC",HATEDRACE,125,SET)
+    ActionOverride("Minsc",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Minsc",SetNumTimesTalkedTo(0))
+    ActionOverride("Minsc",DestroyAllEquipment())
+    ChangeStat("MINSC",HATEDRACE,125,SET)
     ChangeAlignment("Minsc",CHAOTIC_GOOD)
     //ReallyForceSpellRES("K#PORMIN","Minsc") // No such index
     SetPlayerSound("Minsc",-1,INITIAL_MEETING) // No such index
@@ -1225,15 +1270,7 @@ THEN
     SetPlayerSound("Minsc",34744,EXISTANCE3) // 
     SetPlayerSound("Minsc",-1,EXISTANCE4) // No such index
     SetPlayerSound("Minsc",10185,EXISTANCE5) // When asked about his past, MINSC proclaims that he is a berserker warrior from the nation of Rashemen in the Utter East, though his affinity for animals speaks to his skill as a ranger as well. He originally came to the Sword Coast on a dajemma, a ritual journey to manhood, as the bodyguard of a young Wychlaran of Rashemen named Dynaheir. To his shame, Dynaheir is now dead, and he fears that the doors of the honored Ice Dragon Berserker Lodge are forever closed to him. This personal tragedy has obviously not strengthened Minsc's hold on reality, as evidenced by his continued dependence on his animal companion "Boo," a creature that he claims is a miniature giant space hamster. Apparently such things do exist somewhere in the Realms, but Minsc has surely taken too many blows to the head.
-    ActionOverride("Minsc",SetDialog("MINSCA"))
-    ActionOverride("Minsc",SetNumTimesTalkedTo(0))
-    ActionOverride("Minsc",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Minsc",ChangeAIScript("",CLASS))
-    ActionOverride("Minsc",ChangeAIScript("",RACE))
-    ActionOverride("Minsc",ChangeAIScript("MINSCX",GENERAL))
-    ActionOverride("Minsc",ChangeAIScript("DPLAYER",DEFAULT))
-    ActionOverride("Minsc",ChangeAIScript("MINSC",OVERRIDE))
-	SetGlobal("K#MinscImport","AR0602",1)
+    SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END
 
@@ -1354,7 +1391,8 @@ THEN
     SetGlobal("K#NewGame","AR0602",2)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     StartMovie("INTRO15F")
-	ActionOverride(Player1,MakeUnselectable(1))
+    ActionOverride(Player1,MakeUnselectable(1))
+    //ActionOverride(Player1,SetPlayerSound(Myself,15881,EXISTANCE5))
     RemoveWorldmapAreaFlag("BD0010",15) //Visible, Reveal from linked area, Can be visited, Has been visited
     AddWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
     ReallyForceSpellRES("K#FAMREM",Player1)
@@ -1406,9 +1444,39 @@ THEN
     ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Larloch's Minor Drain
     Continue()
 END
+
+IF
+  Global("K#StoryMode","AR0602",0)
+  StoryModeOn()
+  Global("OHSMODE","GLOBAL",-1)
+  Global("MoveScreen","AR0602",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#StoryMode","AR0602",1)
+    SetGlobal("OHSMODE","GLOBAL",1)
+    ReallyForceSpellDeadRES("OHSMODE1",Player1)
+    Continue()
+END
 >>>>>>>>
 
 EXTEND_TOP ~AR0602.BCS~ ~.../AR0602-et.baf~
+
+/////                                                  \\\\\
+///// AR0607                                           \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~AR0607.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~ActionOverride("Aerie",SetBeenInPartyFlags())~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// AR1000 (Viconia spawn)                           \\\\\
@@ -1422,10 +1490,18 @@ IF
   !StateCheck("Viconia",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Viconia",SetDialog("VICONI"))
+    ActionOverride("Viconia",ChangeAIScript("INITRG10",CLASS))
+    ActionOverride("Viconia",ChangeAIScript("VICX",RACE))
+    ActionOverride("Viconia",ChangeAIScript("WTASIGHT",GENERAL))
+    ActionOverride("Viconia",ChangeAIScript("DPLAYER",DEFAULT))
+    ActionOverride("Viconia",ChangeAIScript("VICONIA",OVERRIDE))
     MoveGlobal("AR1000","Viconia",[1821.1081])
-	ActionOverride("Viconia",Face(S))
+    ActionOverride("Viconia",Face(S))
     ActionOverride("Viconia",SetGlobal("BD_JOINXP","LOCALS",0))
-	ActionOverride("Viconia",DestroyAllEquipment())
+    ActionOverride("Viconia",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Viconia",SetNumTimesTalkedTo(0))
+    ActionOverride("Viconia",DestroyAllEquipment())
     //ReallyForceSpellRES("K#PORVIC","Viconia") // No such index
     SetPlayerSound("Viconia",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Viconia",3613,MORALE) // We must flee to fight another day!
@@ -1503,14 +1579,6 @@ THEN
     SetPlayerSound("Viconia",30539,EXISTANCE3) // 
     SetPlayerSound("Viconia",-1,EXISTANCE4) // No such index
     SetPlayerSound("Viconia",10217,EXISTANCE5) // When you ask about her recent past, VICONIA snarls that it is not your place to know such things of her. There is still pride in her voice when she speaks about her Underdark home of Menzoberranzan, but you get the feeling that there is nothing left for her there, her family and House most likely victims of typically vicious drow "politics." She has continued in her worship of the night goddess Shar, but that appears to have been the only boon to her exile. She seems sullen and bitter, and has certainly learned much of the intolerance she must face while living amongst surface peoples. Her natural abilities as a drow have faded with time, also contributing to her lost sense of belonging. 
-    ActionOverride("Viconia",SetDialog("VICONI"))
-    ActionOverride("Viconia",SetNumTimesTalkedTo(0))
-    ActionOverride("Viconia",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Viconia",ChangeAIScript("INITRG10",CLASS))
-    ActionOverride("Viconia",ChangeAIScript("VICX",RACE))
-    ActionOverride("Viconia",ChangeAIScript("WTASIGHT",GENERAL))
-    ActionOverride("Viconia",ChangeAIScript("DPLAYER",DEFAULT))
-    ActionOverride("Viconia",ChangeAIScript("VICONIA",OVERRIDE))
     SetGlobal("K#ViconiaImport","AR1000",1)
     Continue()
 END
@@ -1623,7 +1691,7 @@ THEN
     CreateCreature("VICTOWN3",[1817.1197],8)
     CreateCreature("VICTOWN4",[1874.1187],6)
     CreateCreature("VICG3",[1526.1164],12)
-	Continue()
+    Continue()
 END
 >>>>>>>>
 
@@ -1695,10 +1763,18 @@ IF
   !StateCheck("Dorn",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Dorn",SetDialog("DORN"))
+    ActionOverride("Dorn",ChangeAIScript("",CLASS))
+    ActionOverride("Dorn",ChangeAIScript("",RACE))
+    ActionOverride("Dorn",ChangeAIScript("",GENERAL))
+    ActionOverride("Dorn",ChangeAIScript("",DEFAULT))
+    ActionOverride("Dorn",ChangeAIScript("DORN",OVERRIDE))
     MoveGlobal("AR0900","Dorn",[2550.3394])
-	ActionOverride("Dorn",Face(E))
+    ActionOverride("Dorn",Face(E))
     ActionOverride("Dorn",SetGlobal("BD_JOINXP","LOCALS",0))
-	ActionOverride("Dorn",DestroyAllEquipment())
+    ActionOverride("Dorn",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Dorn",SetNumTimesTalkedTo(0))
+    ActionOverride("Dorn",DestroyAllEquipment())
     ActionOverride("Dorn",CreateItem("HELM01",1,0,0)) // Helmet
     ActionOverride("Dorn",CreateItem("PLAT01",1,0,0)) // Plate Mail
     ActionOverride("Dorn",CreateItem("SW2HD1",1,0,0)) // Rancor +1
@@ -1783,14 +1859,6 @@ THEN
     SetPlayerSound("Dorn",93366,EXISTANCE3) // I will leave our enemies a gift.
     SetPlayerSound("Dorn",-1,EXISTANCE4) // No such index
     SetPlayerSound("Dorn",91841,EXISTANCE5) // The half-orc blackguard is a man more comfortable with action than words. When pressed, he gruffly alludes to an act of betrayal that set him upon a bloody path of vengeance with the assistance of his patron, Ur-Gothoz. Since eliminating those who betrayed him, he has continued to spread chaos, death, and destruction at his dark patron's behest. While Dorn seems to revel in carnage and bloodshed, when he speaks of his work for Ur-Gothoz, you believe you detect a note of dissatisfaction in his voice.
-    ActionOverride("Dorn",SetDialog("DORN"))
-    ActionOverride("Dorn",SetNumTimesTalkedTo(0))
-    ActionOverride("Dorn",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Dorn",ChangeAIScript("",CLASS))
-    ActionOverride("Dorn",ChangeAIScript("",RACE))
-    ActionOverride("Dorn",ChangeAIScript("",GENERAL))
-    ActionOverride("Dorn",ChangeAIScript("",DEFAULT))
-    ActionOverride("Dorn",ChangeAIScript("DORN",OVERRIDE))
     SetGlobal("K#DornImport","AR0900",1)
     SetGlobal("OHH_DORN_INIT","ar0900",1)
     //Continue()
@@ -1828,9 +1896,13 @@ IF
   //!StateCheck("Imoen2",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Imoen2",SetDialog("IMOEN2"))
+    ActionOverride("Imoen2",ChangeAIScript("IMOEN2",OVERRIDE))
     MoveGlobal("AR1512","Imoen2",[1857.1520])
     ActionOverride("Imoen2",Face(SW))
     ActionOverride("Imoen2",SetGlobal("BD_JOINXP","LOCALS",0))
+    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
     DestroyItem("Imoen2") // Imoen's Belt
     SetPlayerSound("Imoen2",30759,MORALE) // I got enough trouble without fightin' these odds!
     SetPlayerSound("Imoen2",30760,BORED) // I'm withering away just standing here. Let's get going.
@@ -1838,10 +1910,6 @@ THEN
     SetPlayerSound("Imoen2",30762,BATTLE_CRY3) // Oh, I'll show you a fight!
     SetPlayerSound("Imoen2",30764,HURT) // I'm weak enough without my wounds. Someone give me a hand over here, please?
     SetPlayerSound("Imoen2",74276,EXISTANCE5) // IMOEN chuckles when you ask her about her past, assuming you are just trying to keep her mind on happier times and places. She indulges you, and certainly does cheer up when speaking of how you spent your youths together in Candlekeep. She arrived there the same as you, in the company of your foster father Gorion, but despite this similarity, she grew up much more carefree than you did. Indeed, her lighthearted outlook has long kept her immune to the hardships of the world, though the horrors she has endured have definitely taken their toll.
-    ActionOverride("Imoen2",SetDialog("IMOEN2"))
-    ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
-    ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Imoen2",ChangeAIScript("IMOEN2",OVERRIDE))
     SetGlobal("K#ImoenImport","AR1512",1)
     Continue()
 END
@@ -1875,10 +1943,18 @@ IF
   !StateCheck("Rasaad",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Rasaad",SetDialog("RASAAD"))
+    ActionOverride("Rasaad",ChangeAIScript("",CLASS))
+    ActionOverride("Rasaad",ChangeAIScript("",RACE))
+    ActionOverride("Rasaad",ChangeAIScript("",GENERAL))
+    ActionOverride("Rasaad",ChangeAIScript("WTASIGHT",DEFAULT))
+    ActionOverride("Rasaad",ChangeAIScript("RASAAD",OVERRIDE))
     MoveGlobal("AR2000","Rasaad",[1550.1368])
-	ActionOverride("Rasaad",Face(S))
+    ActionOverride("Rasaad",Face(S))
     ActionOverride("Rasaad",SetGlobal("BD_JOINXP","LOCALS",0))
-	ActionOverride("Rasaad",DestroyAllEquipment())
+    ActionOverride("Rasaad",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Rasaad",SetNumTimesTalkedTo(0))
+    ActionOverride("Rasaad",DestroyAllEquipment())
     ActionOverride("Rasaad",CreateItem("RSBRAC",1,0,0)) // Glimmering Bands
     ActionOverride("Rasaad",CreateItem("RSBOOT",1,0,0)) // Moonlight Walkers
     ActionOverride("Rasaad",FillSlot(SLOT_GAUNTLETS))
@@ -1961,14 +2037,6 @@ THEN
     SetPlayerSound("Rasaad",86776,EXISTANCE3) // This should make our enemies think twice.
     SetPlayerSound("Rasaad",-1,EXISTANCE4) // No such index
     SetPlayerSound("Rasaad",86676,EXISTANCE5) // A worshipper of the moon goddess Selûne, the taciturn monk Rasaad's life in service to the Sun Soul order ended in tragedy. He speaks of his brother Gamaz in reverent tones, even though Gamaz betrayed the Sun Soul by joining the Dark Moon sect, where he learned to worship Shar at the feet of a man named Alorgoth. Though it was his own hand that slew Gamaz, Rasaad holds Alorgoth responsible for his brother's death. He has committed himself to avenging Gamaz, and it's obvious there is little he won't sacrifice to achieve that goal.
-    ActionOverride("Rasaad",SetDialog("RASAAD"))
-    ActionOverride("Rasaad",SetNumTimesTalkedTo(0))
-    ActionOverride("Rasaad",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Rasaad",ChangeAIScript("",CLASS))
-    ActionOverride("Rasaad",ChangeAIScript("",RACE))
-    ActionOverride("Rasaad",ChangeAIScript("",GENERAL))
-    ActionOverride("Rasaad",ChangeAIScript("WTASIGHT",DEFAULT))
-    ActionOverride("Rasaad",ChangeAIScript("RASAAD",OVERRIDE))
     SetGlobal("K#RasaadImport","AR2000",1)
     Continue()
 END
@@ -2140,6 +2208,8 @@ IF
   Range(Player1,30)
   GlobalLT("chapter","GLOBAL",20)
   !StateCheck("Rasaad",STATE_REALLY_DEAD)
+  !InMyArea("RASAAD")
+  !InPartyAllowDead("RASAAD")
 THEN
   RESPONSE #100
     MoveGlobalObject("Rasaad",Player1)
@@ -2221,6 +2291,31 @@ COPY_EXISTING ~AR4500.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
+		SPRINT textToReplace ~ActionOverride("[^"]+",SetBeenInPartyFlags())~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
+///// AERIE                                            \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~AERIE.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~SetBeenInPartyFlags()~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 	END
 BUT_ONLY
 
@@ -2271,10 +2366,18 @@ IF
   !StateCheck("Neera",STATE_REALLY_DEAD)
 THEN
   RESPONSE #100
+    ActionOverride("Neera",SetDialog("NEERA"))
+    ActionOverride("Neera",ChangeAIScript("",CLASS))
+    ActionOverride("Neera",ChangeAIScript("",RACE))
+    ActionOverride("Neera",ChangeAIScript("",GENERAL))
+    ActionOverride("Neera",ChangeAIScript("WTARSGT",DEFAULT))
+    ActionOverride("Neera",ChangeAIScript("NEERA",OVERRIDE))
     MoveGlobal("AR0500","Neera",[3927.485])
-	ActionOverride("Neera",Face(NNW))
+    ActionOverride("Neera",Face(NNW))
     ActionOverride("Neera",SetGlobal("BD_JOINXP","LOCALS",0))
-	ActionOverride("Neera",DestroyAllEquipment())
+    ActionOverride("Neera",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("Neera",SetNumTimesTalkedTo(0))
+    ActionOverride("Neera",DestroyAllEquipment())
     ActionOverride("Neera",CreateItem("NEBELT01",1,0,0)) // Adoy's Belt
     ActionOverride("Neera",CreateItem("STAFN1",1,0,0)) // Neera's Staff +1
     ActionOverride("Neera",FillSlot(SLOT_BELT))
@@ -2356,14 +2459,6 @@ THEN
     SetPlayerSound("Neera",88552,EXISTANCE3) // Ha! Can't wait to see what happens.
     SetPlayerSound("Neera",-1,EXISTANCE4) // No such index
     SetPlayerSound("Neera",93710,EXISTANCE5) // When asked about her past, NEERA shrugs. She says that, before coming to Athkatla, she wandered the Sword Coast enjoying an adventurer's life while evading the Order of Eight Staves, an organization dedicated to hunting wild mages. She talks less about her distant past, but does not hide the fact she was banished from the High Forest for her wild magic. She is quick to laugh and to chatter, perhaps a little glibly, but lashes out whenever she senses a threat to her autonomy. She is deeply invested in protecting other wild mages and seems willing to risk almost everything to do so.
-    ActionOverride("Neera",SetDialog("NEERA"))
-    ActionOverride("Neera",SetNumTimesTalkedTo(0))
-    ActionOverride("Neera",SetGlobal("KickedOut","LOCALS",0))
-    ActionOverride("Neera",ChangeAIScript("",CLASS))
-    ActionOverride("Neera",ChangeAIScript("",RACE))
-    ActionOverride("Neera",ChangeAIScript("",GENERAL))
-    ActionOverride("Neera",ChangeAIScript("WTARSGT",DEFAULT))
-    ActionOverride("Neera",ChangeAIScript("NEERA",OVERRIDE))
     SetGlobal("K#NeeraImport","AR0500",1)
     Continue()
 END

@@ -1364,7 +1364,6 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
 	"BGMISC79"	=>	"MISC79_"
 	"BGMISC89"	=>	"MISC89_"
 	"BGRING08"	=>	"RING08_"
-	"BGSCRL1V"	=>	"SCRL1V_"
 	"BGSTAF04"	=>	"STAF04_"
 	"BGSW2H07"	=>	"SW2H07_"
 	"BGWAND12"	=>	"WAND12_"
@@ -1377,19 +1376,12 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
 	"BGRING12"	=>	"RING12"
 	"BGRING16"	=>	"RING16"
 	"BGSCRL3I"	=>	"SCRL3I"
-//BGT uses old system for BG1 random items which is limited to 9 rows for each of RNDxxx.2DA files. This is why it had to move first BG1 RNDTREAS.2DA to RNDMAG.2DA (even more rearrangements if CtB is installed). EET uses RNDTRES.2DA, so it doesn't have to worry about compatibility or different numbers. All it does to old dummy items is replacing RN prefix with BG
-	"RNDSCR04"	=>	"BGDSCR01"
-	"RNDSCR05"	=>	"BGDSCR02"
-	"RNDSCR06"	=>	"BGDSCR03"
-	"RNDSCR07"	=>	"BGDSCR04"
-	"RNDMAG03"	=>	"BGDMAG01"
-	"RNDMAG04"	=>	"BGDMAG02"
-	"RNDMAG05"	=>	"BGDMAG03"
-	"RNDMAG06"	=>	"BGDTRE01"
-	"RNDTRE06"	=>	"BGDTRE02"
-	"RNDTRE07"	=>	"BGDTRE03"
-	"RNDTRE08"	=>	"BGDTRE04"
-	"RNDTRE09"	=>	"BGDTRE05"
+	"RNDEQU01"	=>	"RNDEQU04" //RNDEQUIP.2DA - LOW
+	"RNDEQU02"	=>	"RNDEQU05" //RNDEQUIP.2DA - HIGH
+	"RNDEQU03"	=>	"RNDEQU06" //RNDEQUIP.2DA - POOP
+	"RNDWEP01"	=>	"RNDWEP04" //RNDWEP.2DA - 1st
+	"RNDWEP02"	=>	"RNDWEP05" //RNDWEP.2DA - 2nd
+	"RNDWEP03"	=>	"RNDWEP06" //RNDWEP.2DA - 3rd
 END
 
 ACTION_IF (bgt_lite = 2) BEGIN

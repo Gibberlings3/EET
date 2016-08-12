@@ -129,9 +129,19 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 			INNER_ACTION BEGIN
 				COPY_EXISTING ~%file%.2da~ ~override~
 					PRETTY_PRINT_2DA
-					COUNT_2DA_COLS "cntcol"
-					READ_2DA_ENTRIES_NOW pdialog cntcol
-					FOR (j=0; j < pdialog; ++j) BEGIN
+					PATCH_IF (~%file%~ STRING_EQUAL_CASE ~PDIALOG~) BEGIN
+						REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
+							INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+								COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
+								WHILE (num_matches < 7) BEGIN
+									REPLACE_TEXTUALLY ~$~ ~ ***~
+									SET num_matches = num_matches + 1
+								END
+							END
+						END ~%MATCH1%~
+					END
+					READ_2DA_ENTRIES_NOW pdialog 3
+					FOR (j=1; j < pdialog; ++j) BEGIN
 						READ_2DA_ENTRY_FORMER pdialog j 0 dv
 						TO_UPPER dv
 						READ_2DA_ENTRY_FORMER pdialog j 2 join
@@ -147,7 +157,7 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 								PATCH_IF (NOT ~%join%~ STRING_EQUAL_CASE ~%join_main%~) BEGIN
 									DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~%join_main%~ => ~~ END
 								END
-								SET_2DA_ENTRY j 2 cntcol ~%join_main%~
+								SET_2DA_ENTRY j 2 3 ~%join_main%~
 							END
 						END
 						PATCH_IF (~%file%~ STRING_EQUAL_CASE ~PDIALOG~) BEGIN
@@ -167,10 +177,10 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 									APPEND ~25DIALOG.2DA~ ~%dv% %25post% %join% %25dream%~
 								END
 							END
-							SET_2DA_ENTRY j 4 cntcol ~***~
-							SET_2DA_ENTRY j 5 cntcol ~***~
-							SET_2DA_ENTRY j 6 cntcol ~***~
-							SET_2DA_ENTRY j 7 cntcol ~***~
+							SET_2DA_ENTRY j 4 3 ~***~
+							SET_2DA_ENTRY j 5 3 ~***~
+							SET_2DA_ENTRY j 6 3 ~***~
+							SET_2DA_ENTRY j 7 3 ~***~
 						END
 					END
 					PRETTY_PRINT_2DA
@@ -212,10 +222,14 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 				SPRINT EVAL ~num_states_%file%~ ~%num_states%~
 				DECOMPILE_AND_PATCH BEGIN
 					PATCH_PRINT ~Preparing %file%.dlg source file (%num_states% states starting from 0)~
-					REPLACE_EVALUATE CASE_SENSITIVE ~^\(IF .*  \)\(.*\)$~ BEGIN
+					REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\(.*\)$" BEGIN
 						SPRINT trigger ~~
 						PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
 							SPRINT trigger ~%var%%LNL%~
+						END
+						//PID
+						PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
+							SPRINT trigger ~ObjectActionListEmpty(Myself)%LNL%%trigger%%LNL%~
 						END
 					END ~%MATCH1%%trigger%%MATCH2%~
 				END
@@ -233,10 +247,14 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 					~%file%~ => ~%file_1%~
 				END
 				DECOMPILE_DLG_TO_D
-				REPLACE_EVALUATE CASE_SENSITIVE ~^\(IF .*  \)\(.*\)$~ BEGIN
+				REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\(.*\)$" BEGIN
 					SPRINT trigger ~~
 					PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
 						SPRINT trigger ~%var%%LNL%~
+					END
+					//PID
+					PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
+						SPRINT trigger ~ObjectActionListEmpty(Myself)%LNL%%trigger%%LNL%~
 					END
 				END ~%MATCH1%%trigger%%MATCH2%~
 				REPLACE_TEXTUALLY CASE_SENSITIVE ~THEN BEGIN \([0-9]+\)~ ~THEN BEGIN %file%\1~
@@ -305,7 +323,16 @@ COPY ~.../NPCLEVEL.2DA~ ~override~
 ACTION_PHP_EACH pdialog_2da AS file => dummy BEGIN
 	COPY_EXISTING ~%file%.2da~ ~override~
 		PRETTY_PRINT_2DA
-		READ_2DA_ENTRIES_NOW pdialog_tbl 2
+		REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
+			INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+				COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
+				WHILE (num_matches < 3) BEGIN
+					REPLACE_TEXTUALLY ~$~ ~ ***~
+					SET num_matches = num_matches + 1
+				END
+			END
+		END ~%MATCH1%~
+		READ_2DA_ENTRIES_NOW pdialog_tbl 4
 		FOR (i=0; i < pdialog_tbl; ++i) BEGIN
 			READ_2DA_ENTRY_FORMER pdialog_tbl i 0 dv
 			PATCH_IF (NOT ~%dv%~ STRING_EQUAL_CASE ~POST_DIALOG_FILE~) BEGIN
@@ -359,7 +386,7 @@ ACTION_PHP_EACH interdia_2da AS file => dummy BEGIN
 			READ_2DA_ENTRY_FORMER interdia_tbl i 0 dv
 			PATCH_IF (NOT ~%dv%~ STRING_EQUAL_CASE ~FILE~) BEGIN
 				PHP_EACH interdia_2da AS cmp_file => dummy BEGIN
-					PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+					PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) /*AND (NOT ~%cmp_file%~ STRING_EQUAL_CASE ~BDBANTER~)*/ AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
 						READ_2DA_ENTRY_FORMER interdia_tbl i 1 banter
 						INNER_ACTION BEGIN
 							//PRINT ~Patching %cmp_file%.2DA: %dv% %banter%~
@@ -499,6 +526,145 @@ COPY_EXISTING - ~SODREPUT.2DA~ ~.../SODREPUT.2DA~
 COPY_EXISTING ~REPUTATI.2DA~ ~override~
 	REPLACE_TEXTUALLY ~dummy_entry~ ~~
 	PRETTY_PRINT_2DA
+BUT_ONLY
+
+/////                                                  \\\\\
+///// Generate biography tables                        \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~kitlist.2da~ ~override~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 3 "cntrow"
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 3 "kit_num"
+		READ_2DA_ENTRY cnt 1 3 "name"
+		TO_UPPER name
+		DEFINE_ASSOCIATIVE_ARRAY table_kitlist BEGIN ~%name%~ => ~%kit_num%~ END
+	END
+BUT_ONLY
+
+COPY_EXISTING ~CLASTEXT.2da~ ~override~
+	READ_2DA_ENTRIES_NOW clastext_tbl 10
+	FOR (i=0; i < clastext_tbl; ++i) BEGIN
+		READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
+		TO_UPPER class
+		READ_2DA_ENTRY_FORMER clastext_tbl i 1 classid
+		READ_2DA_ENTRY_FORMER clastext_tbl i 2 kitid
+		SET define = 1
+		PATCH_IF (VARIABLE_IS_SET $table_kitlist(~%class%~)) BEGIN //Kit
+			TEXT_SPRINT kitid $table_kitlist(~%class%~)
+		END ELSE BEGIN
+			PATCH_MATCH ~%class%~ WITH
+			~FIGHTER_MAGE~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~FIGHTER_MAGE_THIEF~ ~MAGE_THIEF~ ~CLERIC_MAGE~ ~CLERIC_THIEF~ ~FIGHTER_DRUID~ ~FIGHTER_MAGE_CLERIC~ ~CLERIC_RANGER~ BEGIN
+				SET kitid = "-1" //Multi-class
+				SET define = 1
+			END
+			~ARCHER~ BEGIN
+				SPRINT class ~FERALAN~
+				SET kitid = 7
+			END
+			~WILD_MAGE~ BEGIN
+				SPRINT class ~WILDMAGE~
+				SET kitid = 30
+			END
+			DEFAULT
+				PATCH_IF (kitid = 16384) AND (~%class%~ STRING_CONTAINS_REGEXP ~FALLEN_~) BEGIN //Trueclass
+					SET kitid = 0
+				END ELSE BEGIN
+					SET define = 0
+				END
+			END
+		END
+		PATCH_IF (define = 1) BEGIN
+			//PATCH_PRINT ~%class%: classid = %classid%, kitid = %kitid%~
+			DEFINE_ASSOCIATIVE_ARRAY valid_class BEGIN ~%class%~ => ~~ END
+			SPRINT EVAL ~%class%~ ~{%classid%,%kitid%~
+		END ELSE BEGIN
+			PATCH_PRINT ~Skipping: %class%~
+		END
+	END
+BUT_ONLY
+
+COPY_EXISTING ~RACETEXT.2da~ ~override~
+	READ_2DA_ENTRIES_NOW racetext_tbl 6
+	FOR (i=0; i < racetext_tbl; ++i) BEGIN
+		READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
+		TO_UPPER race
+		READ_2DA_ENTRY_FORMER racetext_tbl i 1 id
+		DEFINE_ASSOCIATIVE_ARRAY valid_race BEGIN ~%race%~ => ~~ END
+		SPRINT EVAL ~%race%~ ~{%id%~
+	END
+BUT_ONLY
+
+COPY_EXISTING ~bgee.lua~ ~override~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~START_CAMPAIGN_\([A-Z0-9]+\)~ BEGIN
+		FOR (i=0; i < campaign_tbl; ++i) BEGIN
+			READ_2DA_ENTRY_FORMER campaign_tbl i 0 campaign
+			PATCH_IF (~%MATCH1%~ STRING_EQUAL_CASE ~%campaign%~) BEGIN
+				//PATCH_PRINT ~campaign = %campaign%~
+				READ_2DA_ENTRY_FORMER campaign_tbl i 30 clastext
+				READ_2DA_ENTRY_FORMER campaign_tbl i 31 racetext
+				INNER_ACTION BEGIN
+					ACTION_IF FILE_EXISTS_IN_GAME ~%clastext%.2da~ BEGIN
+						COPY_EXISTING ~%clastext%.2da~ ~override~
+							READ_2DA_ENTRIES_NOW clastext_tbl 10
+							FOR (i=0; i < clastext_tbl; ++i) BEGIN
+								READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
+								TO_UPPER class
+								PATCH_IF (VARIABLE_IS_SET $valid_class(~%class%~)) BEGIN
+									READ_2DA_ENTRY_FORMER clastext_tbl i 6 biography
+									PATCH_IF (biography = "-1") AND ((~%campaign%~ STR_EQ ~SOA~) OR (~%campaign%~ STR_EQ ~TOB~)) BEGIN
+										SET biography = 15881
+									END
+									SPRINT content EVAL ~%%class%%~
+									SPRINT EVAL ~%class%~ ~%content%,%biography%~
+								END
+							END
+						BUT_ONLY
+					END ELSE BEGIN
+						ACTION_PHP_EACH valid_class AS class => dummy BEGIN
+							OUTER_SPRINT content EVAL ~%%class%%~
+							OUTER_SPRINT EVAL ~%class%~ ~%content%,15882~
+						END
+					END
+					ACTION_IF FILE_EXISTS_IN_GAME ~%racetext%.2da~ BEGIN
+						COPY_EXISTING ~%racetext%.2da~ ~override~
+							READ_2DA_ENTRIES_NOW racetext_tbl 6
+							FOR (i=0; i < racetext_tbl; ++i) BEGIN
+								READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
+								TO_UPPER race
+								PATCH_IF (VARIABLE_IS_SET $valid_race(~%race%~)) BEGIN
+									READ_2DA_ENTRY_FORMER racetext_tbl i 5 biography
+									SPRINT content EVAL ~%%race%%~
+									SPRINT EVAL ~%race%~ ~%content%,%biography%~
+								END
+							END
+						BUT_ONLY
+					END ELSE BEGIN
+						ACTION_PHP_EACH valid_race AS race => dummy BEGIN
+							OUTER_SPRINT content EVAL ~%%race%%~
+							OUTER_SPRINT EVAL ~%race%~ ~%content%,-1~
+						END
+					END
+				END
+			END
+		END
+	END ~START_CAMPAIGN_%MATCH1%~
+BUT_ONLY
+
+OUTER_SPRINT append_class ~~
+ACTION_PHP_EACH valid_class AS class => dummy BEGIN
+	OUTER_SPRINT content EVAL ~%%class%%~
+	OUTER_SPRINT append_class ~%append_class%%LNL%%TAB%%content%}, --%class%~
+END
+OUTER_SPRINT append_race ~~
+ACTION_PHP_EACH valid_race AS race => dummy BEGIN
+	OUTER_SPRINT content EVAL ~%%race%%~
+	OUTER_SPRINT append_race ~%append_race%%LNL%%TAB%%content%}, --%race%~
+END
+COPY_EXISTING ~M_EET.lua~ ~override~
+	REPLACE_TEXTUALLY ~\(bioClassData = {\)~ ~\1%append_class%~
+	REPLACE_TEXTUALLY ~\(bioRaceData = {\)~ ~\1%append_race%~
 BUT_ONLY
 
 /////                                                  \\\\\

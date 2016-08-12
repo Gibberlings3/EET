@@ -13,7 +13,7 @@
     <strong>Author</strong>: <a href="http://gibberlings3.net/forums/index.php?showuser=6804">K4thos</a><br>
 	<strong>Contributors</strong>: <a href="http://gibberlings3.net/forums/index.php?showuser=2909">WhiteAgnus</a>, <a href="http://gibberlings3.net/forums/index.php?showuser=8886">AWizardDidIt</a>, <a href="http://gibberlings3.net/forums/index.php?showuser=7356">CrevsDaak</a></p>
   <p><strong>On the web: </strong><a href="http://www.gibberlings3.net/eet/"><strong>Home page</strong></a> and <a href="http://gibberlings3.net/forums/index.php?showforum=195"><strong>discussion forum</strong></a></p>
-  <p><strong>Version 1.0 <acronym title="(software development) A version of a program that is nearly ready for release but may still have a few bugs; the status between beta version and release version.">Release Candidate</acronym> 4</strong><br />
+  <p><strong>Version 1.0 <acronym title="(software development) A version of a program that is nearly ready for release but may still have a few bugs; the status between beta version and release version.">Release Candidate</acronym> 5</strong><br />
     <strong>Languages: </strong>English, Polish, German, French, Spanish<br />
     <strong>Platforms: </strong>Windows, Mac OS X</p>
 </div>
@@ -109,7 +109,7 @@
 
 <p>setup-EET_end overall offers 3 components:</p>
 <ul>
-	<li><strong>Update old saves to work with new installation</strong> - OPTIONAL - refer to <a href="#What about compatibility with saves?">F.A.Q.</a> for more info. Notice that if you're using optional BP-BGT Worldmap mod this component must be installed AFTER it.</li>
+	<li><strong>Update old saves to work with new installation</strong> - OPTIONAL - refer to <a href="#What about compatibility with saves?">F.A.Q.</a> for more info. Notice that if you're using optional BP-BGT Worldmap mod this component must be installed AFTER it. This component should be installed BEFORE 'Finalise EET' component that overwrites files needed to update saves from previous installation.</li>
 	<li><strong>Alternative GUI (SoD)</strong> - OPTIONAL - swaps the in-game BG2:EE GUI with the GUI imported from SoD expansion.</li>
 	<li><strong>Finalise EET</strong> - REQUIRED - finalises the EET installation (required before starting the game).</li>
 </ul>
@@ -239,7 +239,7 @@
 
 <a id="What are the differences between EET and the original Siege of Dragonspear expansion?" name="What are the differences between EET and the original Siege of Dragonspear expansion?"></a>
 <h3>What are the differences between EET and the original Siege of Dragonspear expansion?</h3>
-<p>Vanilla SoD blocks access to areas after moving from chapter to chapter which is against EET goals. While this design decision is still true in EET for now we're planning to change it to work more like in BG1 and BG2 (areas remain open in later parts of the story). We are also planning to restore the proper playable SoD ending that have been for some reason completely disabled in the final game. Other than this planned features SoD worldmap is already merged with EET Worldmap and after finishing the story you will be automatically migrated into BG2.</p>
+<p>Vanilla SoD blocks access to areas after moving from chapter to chapter which is against EET goals. While this design decision is still true in EET for now we're planning to change it to work more like in BG1 and BG2 (areas remain open in later parts of the story). We are also planning to restore the proper playable SoD ending that have been for some reason completely disabled in the final game. Other than this planned features SoD worldmap is already merged with EET Worldmap and after finishing the story you will be automatically migrated into BG2. On top of that EET restores extended SoD ending (for some reason vanilla SoD has cut out playable part of the final scene).</p>
 
 <a id="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?"></a>
 <h3>What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?</h3>
@@ -275,7 +275,9 @@
 
 <a id="What about compatibility with saves?" name="What about compatibility with saves?"></a>
 <h3>What about compatibility with saves?</h3>
-<p>EET introduces a new feature that allows you to use saves made on old EET installation even if you installed whole new game with different selection of mods. All saves can be updated for this purpose via setup-EET_end first component. Save games from original BG:EE and BG2:EE are not directly supported - you need to start a new game.</p>
+<p>EET introduces a new feature that allows you to use saves made on old EET installation even if you installed whole new game with different selection of mods. All saves can be updated for this purpose via setup-EET_end first component. Files needed to make it work are created by 'Finalise EET' component within EET 'save' directory.</p>
+
+<p>Save games from original BG:EE and BG2:EE are not directly supported - you need to start a new game.</p>
 
 <a id="How does NPC continuity work in EET?" name="How does NPC continuity work in EET?"></a>
 <h3>How does NPC continuity work in EET?</h3>
@@ -354,7 +356,11 @@
 
 <p><strong>Some areas in BG1 have glitched water overlays.</strong></p>
 
-<p>We are currently trying to find a solution for this issue. Please check out <a href="http://gibberlings3.net/forums/index.php?showtopic=28161&page=5#entry245621">this post</a> and report your findings.</p>
+<p>It's a known engine compatibility problem that we fix on a case by case basis. Please check out <a href="http://gibberlings3.net/forums/index.php?showtopic=28161&page=5#entry245621">this post</a> and report your findings.</p>
+
+<p><strong>The game crashes to desktop (CTD) after opening worldmap screen.</strong></p>
+
+<p>According to Roxanne the source of the problem is not the game but occasional CPU overload of the graphic card. It's more likely to happen with the big worldmap image added by BP-BGT Worldmap. Try to disable background programs before starting the game. Also <a href="https://www.youtube.com/watch?v=nn2FB1P_Mn8">have you tried turning the computer off and on again</a>?</p>
 
 </div>
 <!-- ================== C r e d i t s ================== --><a id="credits" name="credits"></a>
@@ -379,6 +385,7 @@
 	<li>Many thanks to Kirara for worldmap art</li>
 	<li>Many thanks to Mike1072 for tooltip.2da patching code and support</li>
 	<li>Many thanks to Miloch for Sword Coast Map Labels</li>
+	<li>Many thanks to Mr2150 for LUA code contribution and help with GUI related features</li>
 	<li>Many thanks to Pecca (Renegade) for permission to use his GUI resources</li>
 	<li>Many thanks to Roxanne for beta testing</li>
 	<li>Many thanks to Sai for beta testing</li>
@@ -393,10 +400,10 @@
 
 <h3>Translations</h3>
 
-<p><strong>Polish:</strong> K4thos, Cahir, morgan, porfirion</p>
-<p><strong>German:</strong> WhiteAgnus</p>
-<p><strong>French:</strong> Isaya</p>
-<p><strong>Spanish:</strong> El Dunadan</p>
+<p><strong>Polish:</strong> Etamin, K4thos, Cahir, morgan</p>
+<p><strong>German (unfinished):</strong> WhiteAgnus</p>
+<p><strong>French (unfinished):</strong> Isaya</p>
+<p><strong>Spanish (unfinished):</strong> El Dunadan</p>
 
 </div>
 <!-- ================== L e g a l e s e ================== --><a id="legalese" name="legalese"></a>

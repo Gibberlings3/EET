@@ -973,7 +973,105 @@ BUT_ONLY
 ///// RNDXXX.2DA                                       \\\\\
 /////                                                  \\\\\
 
-ACTION_FOR_EACH file IN RNDEQUIP RNDMAGIC RNDSCROL RNDTREAS RNDWEP RNDTRES BEGIN
+COPY_EXISTING ~RNDTRES.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~^RNDTRE07 ~ ~SODTRE07 ~
+	REPLACE_TEXTUALLY ~^RNDTRE08 ~ ~SODTRE08 ~
+	REPLACE_TEXTUALLY ~^RNDTRE09 ~ ~SODTRE09 ~
+COPY + ~EET/temp/array/RNDTREAS.2DA~ ~EET/temp/array~
+	REPLACE_TEXTUALLY ~^GEMBLADE .+$[%newline%]*~ ~~
+
+OUTER_SET treasMag = 0
+ACTION_FOR_EACH file IN RNDTRES RNDTREAS RNDEQUIP RNDMAGIC RNDSCROL RNDWEP BEGIN
+	COPY + ~EET/temp/array/%file%.2DA~ ~EET/temp/array~
+		PRETTY_PRINT_2DA
+		SPRINT textToReplace ~2DA[ %TAB%]+V1.0[%newline%]+.+[%newline%]+.+[%newline%]+~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z0-9#_-]+\)~ BEGIN
+			SPRINT match ~%MATCH1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res
+		END ~%match%~
+		PATCH_IF ~%file%~ STRING_EQUAL_CASE ~RNDTRES~ BEGIN
+			COUNT_2DA_ROWS 1 "cntrow"
+			FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+				READ_2DA_ENTRY cnt 0 1 new_name
+				DEFINE_ASSOCIATIVE_ARRAY rnd_items BEGIN ~%new_name%~ => ~%file%~ END
+				PATCH_IF (FILE_CONTAINS_EVALUATED (~RNDTRES.2DA~ ~^%new_name%[ %TAB%]+~)) BEGIN
+					REPLACE_TEXTUALLY ~^%new_name%[ %TAB%]+.+$~ ~deleteMeDummy~
+					PATCH_PRINT ~Skipping RNDTRES.2DA patching: already has %new_name% row~
+				END
+			END
+			REPLACE_TEXTUALLY ~deleteMeDummy~ ~~
+		END ELSE BEGIN
+			INNER_ACTION BEGIN
+				COPY_EXISTING ~%file%.2DA~ ~override~
+					PRETTY_PRINT_2DA
+					COUNT_2DA_ROWS 3 cnt
+					SET cnt = cnt - 1
+				BUT_ONLY
+			END
+			REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+\)\([ ]+[^ ]+[ ]+.+\)$~ BEGIN
+				SET cnt = cnt + 1
+				PATCH_IF (cnt = 10) AND (~%file%~ STRING_EQUAL_CASE ~RNDTREAS~) BEGIN
+					//no problem since the first row is moved to RNDMAGIC.2DA
+				END ELSE PATCH_IF (cnt > 9) BEGIN
+					PATCH_WARN ~WARNING: %file%.2DA with more than 9 rows~
+				END
+				PATCH_IF (~%file%~ STRING_EQUAL_CASE ~RNDTREAS~) AND (treasMag = 0) BEGIN
+					SPRINT appendTo ~RNDMAGIC~
+					SET treasMag = 1
+				END ELSE BEGIN
+					SPRINT appendTo ~%file%~
+				END
+				INNER_ACTION BEGIN
+					ACTION_IF ~%MATCH1%~ STRING_EQUAL_CASE ~AVERAGE~ BEGIN
+						OUTER_SPRINT name ~AVRG~
+					END ELSE ACTION_IF ~%MATCH1%~ STRING_EQUAL_CASE ~WELL_OFF~ BEGIN
+						OUTER_SPRINT name ~WELL~
+					END ELSE ACTION_IF ~%MATCH1%~ STRING_EQUAL_CASE ~WEALTHY~ BEGIN
+						OUTER_SPRINT name ~WEAL~
+					END ELSE BEGIN
+						OUTER_SPRINT name ~%MATCH1%~
+					END
+					APPEND ~%appendTo%.2DA~ ~%name%_BG1%MATCH2%~
+				END
+			END ~%MATCH1%%MATCH2%~
+		END
+END
+COPY_EXISTING ~rndtres.2da~ ~override~
+	APPEND_FILE ~EET/temp/array/rndtres.2DA~
+	PRETTY_PRINT_2DA
+BUT_ONLY
+ACTION_FOR_EACH file IN RNDTREAS RNDEQUIP RNDMAGIC RNDSCROL RNDWEP BEGIN
+	COPY_EXISTING ~%file%.2DA~ ~override~
+		PRETTY_PRINT_2DA
+		COUNT_2DA_ROWS 3 cntrow
+		FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+			INNER_PATCH_SAVE new_name ~%file%~ BEGIN
+				REPLACE_TEXTUALLY ~^\(RND...\).+$~ ~\10%cnt%~
+			END
+			DEFINE_ASSOCIATIVE_ARRAY rnd_items BEGIN ~%new_name%~ => ~%file%~ END
+		END
+	BUT_ONLY
+END
+
+ACTION_PHP_EACH rnd_items AS file => source BEGIN
+	ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%file%.itm~) BEGIN
+		COPY_EXISTING ~RNDTRE01.ITM~ ~override/%file%.itm~
+	END ELSE ACTION_IF (~%source%~ STRING_EQUAL_CASE ~RNDTRES~) BEGIN
+		WARN ~WARNING: %file%.itm already exists in game, possible conflict~
+	END
+	ACTION_IF (FILE_EXISTS ~%patch_dir%/itm/%file%.itm~) BEGIN
+		DELETE + ~%patch_dir%/itm/%file%.itm~
+	END
+END
+
+//unused code
+/*ACTION_FOR_EACH file IN RNDEQUIP RNDMAGIC RNDSCROL RNDTREAS RNDWEP RNDTRES BEGIN
 	ACTION_IF (FILE_EXISTS ~EET/temp/array/%file%.2DA~) BEGIN
 		COPY + ~EET/temp/array/%file%.2DA~ ~EET/temp/array~
 			PRETTY_PRINT_2DA
@@ -1035,7 +1133,7 @@ ACTION_FOR_EACH file IN RNDEQUIP RNDMAGIC RNDSCROL RNDTREAS RNDWEP RNDTRES BEGIN
 			PRETTY_PRINT_2DA
 		BUT_ONLY
 	END
-END
+END*/
 
 /////                                                  \\\\\
 ///// SCRPDESC.2DA                                     \\\\\
@@ -1642,24 +1740,93 @@ BUT_ONLY
 ///// INTERDIA.2DA, BGBANTER.2DA, BDBANTER.2DA         \\\\\
 /////                                                  \\\\\
 
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_bdbanter BEGIN
+	KIVAN => BDKIVANB
+	ALORA => BDALORAB
+	MINSC => BDMINSCB
+	DYNAHEIR => BDDYNAHB
+	YESLICK => BDYESLIB
+	CORAN => BDCORANB
+	AJANTIS => BDAJANTB
+	KHALID => BDKHALIB
+	JAHEIRA => BDJAHEIB
+	GARRICK => BDGARRIB
+	SAFANA => BDSAFANB
+	FALDORN => BDFALDOB
+	BRANWEN => BDBRANWB
+	QUAYLE => BDQUAYLB
+	XAN => BDXANB
+	SKIE => BDSKIEB
+	ELDOTH => BDELDOTB
+	XZAR => BDXZARB
+	MONTARON => BDMONTAB
+	TIAX => BDTIAXB
+	KAGAIN => BDKAGAIB
+	SHARTEEL => BDSHARTB
+	EDWIN => BDEDWINB
+	VICONIA => BDVICONB
+	IMOEN2 => BDIMOENB
+	NEERA => BDNEERAB
+	DORN => BDDORNB
+	RASAAD => BDRASAAB
+	BAELOTH => BDBAELOB
+	VOGHILN => BDVOGHIB
+	MKHIIN => BDMKHIIB
+	CORWIN => BDCORWIB
+	GLINT => BDGLINTB
+END
+
+OUTER_SPRINT append ~~
 ACTION_IF (FILE_EXISTS ~EET/temp/2da/BDBANTER.2DA~) BEGIN
 	COPY + ~EET/temp/2da/BDBANTER.2DA~ ~EET/temp/2da~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_ROWS 2 "cntrow"
-		FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-			READ_2DA_ENTRY cnt 0 2 "col1"
-			SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
-			//READ_2DA_ENTRY cnt 2 2 "col3"
-			//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
+		PHP_EACH table_2DA_bdbanter AS dv => dlg BEGIN
+			COUNT_REGEXP_INSTANCES ~^%dv% ~ num_matches
+			PATCH_IF (num_matches = 0) BEGIN
+				SPRINT append ~%append%%dv% %dlg%%LNL%~
+			END
 		END
 		PRETTY_PRINT_2DA
+	APPEND_OUTER + ~EET/temp/2da/BDBANTER.2DA~ ~%append%~
 END ELSE BEGIN
 <<<<<<<< .../BDBANTER.2DA
 2DA      V1.0
 NONE
          FILE
+KIVAN    BDKIVANB
+ALORA    BDALORAB
+MINSC    BDMINSCB
+DYNAHEIR BDDYNAHB
+YESLICK  BDYESLIB
+CORAN    BDCORANB
+AJANTIS  BDAJANTB
+KHALID   BDKHALIB
+JAHEIRA  BDJAHEIB
+GARRICK  BDGARRIB
+SAFANA   BDSAFANB
+FALDORN  BDFALDOB
+BRANWEN  BDBRANWB
+QUAYLE   BDQUAYLB
+XAN      BDXANB
+SKIE     BDSKIEB
+ELDOTH   BDELDOTB
+XZAR     BDXZARB
+MONTARON BDMONTAB
+TIAX     BDTIAXB
+KAGAIN   BDKAGAIB
+SHARTEEL BDSHARTB
+EDWIN    BDEDWINB
+VICONIA  BDVICONB
+IMOEN2   BDIMOENB
+NEERA    BDNEERAB
+DORN     BDDORNB
+RASAAD   BDRASAAB
+BAELOTH  BDBAELOB
+VOGHILN  BDVOGHIB
+MKHIIN   BDMKHIIB
+CORWIN   BDCORWIB
+GLINT    BDGLINTB
 >>>>>>>>
 	COPY + ~.../BDBANTER.2DA~ ~EET/temp/2da~
 END
@@ -1674,12 +1841,6 @@ COPY + ~EET/temp/2da/BGBANTER.2DA~ ~EET/temp/2da~
 		SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
 		//READ_2DA_ENTRY cnt 2 2 "col3"
 		//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~EET/temp/2da/BDBANTER.2DA~ ~^[ %TAB%]*%col1%[ %TAB%]~)) BEGIN
-			INNER_ACTION BEGIN
-				//PRINT ~Patching BDBANTER.2DA: %dv% ***~
-				APPEND_OUTER + ~EET/temp/2da/BDBANTER.2DA~ ~%col1% ***~
-			END
-		END
 	END
 	PRETTY_PRINT_2DA
 COPY + ~EET/temp/2da/BDBANTER.2DA~ ~EET/temp/2da~
@@ -1774,43 +1935,52 @@ BUT_ONLY
 
 COPY_EXISTING ~CLASTEXT.2DA~ ~override~
 	PRETTY_PRINT_2DA
+	//REPLACE_TEXTUALLY ~^ARCHER ~ ~FERALAN ~
+	//REPLACE_TEXTUALLY ~^FALLEN_ARCHER ~ ~FALLEN_FERALAN ~
+	//REPLACE_TEXTUALLY ~^WILD_MAGE ~ ~WILDMAGE ~
 	REPLACE_TEXTUALLY ~^\(GRIZZLY_BEAR[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+\)$~ ~\1 -1 -1~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
 COPY + ~EET/temp/2da/BGCLATXT.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/SODCLTXT.2DA~ ~EET/temp/2da~
 	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^FERALAN ~ ~ARCHER ~
-	REPLACE_TEXTUALLY ~^FALLEN_FERALAN ~ ~FALLEN_ARCHER ~
-	REPLACE_TEXTUALLY ~^WILDMAGE ~ ~WILD_MAGE ~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(FALLEN_BLACKGUARD .+\)$~ BEGIN
-		PATCH_IF (VARIABLE_IS_SET fallen_blackguard) BEGIN
-			SPRINT MATCH1 ~~
+	PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~BGCLATXT~ BEGIN
+		REPLACE_TEXTUALLY ~^FERALAN ~ ~ARCHER ~
+		REPLACE_TEXTUALLY ~^FALLEN_FERALAN ~ ~FALLEN_ARCHER ~
+		//REPLACE_TEXTUALLY ~^WILD_MAGE ~ ~WILDMAGE ~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~^\(FALLEN_BLACKGUARD .+[%newline%]*\)$~ BEGIN //remove duplicated entry
+			PATCH_IF (VARIABLE_IS_SET fallen_blackguard) BEGIN
+				SPRINT MATCH1 ~~
+			END
+			SET fallen_blackguard = 1
+		END ~%MATCH1%~
+		PATCH_FOR_EACH class IN FIGHTER_MAGE FIGHTER_CLERIC FIGHTER_THIEF FIGHTER_MAGE_THIEF MAGE_THIEF CLERIC_MAGE CLERIC_THIEF FIGHTER_DRUID FIGHTER_MAGE_CLERIC CLERIC_RANGER BEGIN //assign correct biography for multi-class characters
+			REPLACE_EVALUATE CASE_INSENSITIVE ~^\(%class%[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+\)[-0-9]+~ BEGIN
+			END ~%MATCH1% 15889~
 		END
-		SET fallen_blackguard = 1
-	END ~%MATCH1%~
-	COUNT_2DA_ROWS 9 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		PATCH_FOR_EACH cnt2 IN 3 4 5 6 8 BEGIN
-			READ_2DA_ENTRY cnt cnt2 9 "strref"
-			PATCH_IF ((strref > 0) AND (strref <= StrRef_cutoff)) BEGIN
-				SET strref = RESOLVE_STR_REF ((AT strref))
-				SET_2DA_ENTRY cnt cnt2 9 "strref"
+	END ELSE PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SODCLTXT~ BEGIN
+		//REPLACE_TEXTUALLY ~^ARCHER ~ ~FERALAN ~
+		//REPLACE_TEXTUALLY ~^FALLEN_ARCHER ~ ~FALLEN_FERALAN ~
+		REPLACE_TEXTUALLY ~^WILDMAGE ~ ~WILD_MAGE ~
+	END
+	REPLACE_TEXTUALLY ~^[ ]+CLASSID[ ]+KITID .+$~ ~ CLASSID KITID LOWER DESCSTR MIXED BIOGRAPHY FALLEN BRIEFDESC FALLEN_NOTICE~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
+		INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+			COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
+			WHILE (num_matches < 9) BEGIN
+				REPLACE_TEXTUALLY ~$~ ~ -1~
+				SET num_matches = num_matches + 1
 			END
 		END
-	END
-	PRETTY_PRINT_2DA
-
-COPY + ~EET/temp/2da/SODCLTXT.2DA~ ~EET/temp/2da~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^WILDMAGE ~ ~WILD_MAGE ~
-	COUNT_2DA_ROWS 9 "cntrow"
+	END ~%MATCH1%~
+	COUNT_2DA_ROWS 10 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		PATCH_FOR_EACH cnt2 IN 3 4 5 6 8 BEGIN
-			READ_2DA_ENTRY cnt cnt2 9 "strref"
+		PATCH_FOR_EACH cnt2 IN 3 4 5 6 8 9 BEGIN
+			READ_2DA_ENTRY cnt cnt2 10 "strref"
 			PATCH_IF ((strref > 0) AND (strref <= StrRef_cutoff)) BEGIN
 				SET strref = RESOLVE_STR_REF ((AT strref))
-				SET_2DA_ENTRY cnt cnt2 9 "strref"
+				SET_2DA_ENTRY cnt cnt2 10 "strref"
 			END
 		END
 	END

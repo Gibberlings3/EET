@@ -6721,13 +6721,13 @@ menu
 	{
 		area 158 32 354 46
 		text style "title"
-		text lua "t('EET_WARNING_TITLE')"
+		text lua "eetStrings.EET_WARNING_TITLE"
 	}
 	label
 	{
 		area 126 106 422 458
 		text style "normal"
-		text lua "t('EET_WARNING_TEXT')"
+		text lua "eetStrings.EET_WARNING_TEXT"
 	}
 }
 
@@ -6766,7 +6766,7 @@ menu
 			label
 			{
 				area		0 0 -1 -1
-				text lua "t(startCampaignData[rowNumber].name)"
+				text lua "getEETTitle(rowNumber)"
 				text style "normal_parchment"
 				text align left center
 			}
@@ -6804,37 +6804,33 @@ menu
 	{
 		name		"campaignBookDescription"
 		area		426 25 316 384
-		text lua	"t(startCampaignData[highlightedCampaign].description)"
+		text lua	"getEETDescription(highlightedCampaign)"
 		text style	"normal_parchment"
 		scrollbar	'GUISCRP'
 	}
 }
 
 `
-	--obviously theres some redundancy in this data but I dislike the idea of assuming what our frame/sequence will be.
-	startCampaignData = { 
-		{name = 'EET_CMP_TITLE_BG1', description = 'EET_CMP_TEXT_BG1', title = 0, bigLogo = 0, icon = 0, background = 2, button = 2, sidebar = 2, importEnabled = true, tutorialEnabled = false}, --bg1
-		{name = 'EET_CMP_TITLE_SOD', description = 'EET_CMP_TEXT_SOD', title = 1, bigLogo = 1, icon = 1, background = 2, button = 2, sidebar = 2, importEnabled = true, tutorialEnabled = false}, --sod
-		{name = 'EET_CMP_TITLE_SOA', description = 'EET_CMP_TEXT_SOA', title = 2, bigLogo = 2, icon = 2, background = 2, button = 2, sidebar = 2, importEnabled = true, tutorialEnabled = false}, --soa
-		{name = 'EET_CMP_TITLE_TOB', description = 'EET_CMP_TEXT_TOB', title = 3, bigLogo = 3, icon = 3, background = 2, button = 2, sidebar = 2, importEnabled = true, tutorialEnabled = false}, --tob
-		{name = 'EET_CMP_TITLE_BP1', description = 'EET_CMP_TEXT_BP1', title = 4, bigLogo = 4, icon = 4, background = 2, button = 2, sidebar = 2, importEnabled = true, tutorialEnabled = false}, --bp1
-		{name = 'EET_CMP_TITLE_BP2', description = 'EET_CMP_TEXT_BP2', title = 5, bigLogo = 5, icon = 5, background = 2, button = 2, sidebar = 2, importEnabled = true, tutorialEnabled = false}, --bp2
-		{name = 'EET_CMP_TITLE_TUT', description = 'EET_CMP_TEXT_TUT', title = 6, bigLogo = 6, icon = 6, background = 2, button = 2, sidebar = 2, importEnabled = true, tutorialEnabled = false}, --tut
-	}
-	
 	function getTitle()
-		local campaign = Infinity_GetINIValue('Program Options','Active Campaign')
-		return startCampaignData[campaign].title
+		return startCampaignData[currentCampaign].title
 	end
 	
 	function getBigLogo()
-		local campaign = Infinity_GetINIValue('Program Options','Active Campaign')
-		return startCampaignData[campaign].bigLogo
+		return startCampaignData[currentCampaign].bigLogo
 	end
 	
 	function getCampaignButtonSequence()
-		local campaign = Infinity_GetINIValue('Program Options','Active Campaign')
-		return startCampaignData[campaign].button
+		return startCampaignData[currentCampaign].button
+	end
+	
+	function getEETTitle(row)
+		local text = startCampaignData[row].name
+		return eetStrings[text]
+	end
+	
+	function getEETDescription(row)
+		local text = startCampaignData[row].description
+		return eetStrings[text]
 	end
 	
 	function onCampaignButton(buttonNum)
@@ -6863,22 +6859,20 @@ menu
 			startEngine:OnCampaignButtonClick('BG1',true)
 			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BG1)
 		end
+		currentCampaign = buttonNum
 	end
 	
 	function getCampaignImportEnabled()
-		local campaign = Infinity_GetINIValue('Program Options','Active Campaign')
-		return startCampaignData[campaign].importEnabled	
+		return startCampaignData[currentCampaign].importEnabled	
 	end
 	
 	function getTutorialEnabled()
 		--Tutorial and campaign import should never be enabled for the same campaign - the button uses the same space
-		local campaign = Infinity_GetINIValue('Program Options','Active Campaign')
-		return startCampaignData[campaign].tutorialEnabled	
+		return startCampaignData[currentCampaign].tutorialEnabled	
 	end
 	
 	function getSidebarFrame()
-		local campaign = Infinity_GetINIValue('Program Options','Active Campaign')
-		return startCampaignData[campaign].sidebar
+		return startCampaignData[currentCampaign].sidebar
 	end
 	
 	--usingSODStartMenu = 1
@@ -6894,9 +6888,12 @@ menu
 			Infinity_PushMenu('START_INSTALLATION_WARNING')
 		end
 		if (start_doOnce == nil) then
-			local campaign = Infinity_GetINIValue('Program Options','Active Campaign')
-			onCampaignButton(campaign)
-			highlightedCampaign = campaign
+			currentCampaign = Infinity_GetINIValue('Program Options','Active Campaign')
+			if (currentCampaign == 0) then
+				currentCampaign = 1
+			end
+			onCampaignButton(currentCampaign)
+			highlightedCampaign = currentCampaign
 			start_doOnce = 1
 			return
 		end
@@ -14223,12 +14220,48 @@ menu
 }
 `
 createBioEdit = ""
+
+function generateBioText()
+	bioClass = ""
+	bioRace = ""
+	MyRace = chargen.races[currentChargenRace].id
+	MyClass = chargen.class[currentChargenClass].id
+	MyKit = -1
+	MyKit = chargen.kit[currentChargenKit].id
+	colClass = 2 + Infinity_GetINIValue('Program Options','Active Campaign')
+	colRace = 1 + Infinity_GetINIValue('Program Options','Active Campaign')
+	-- Go through each row of bioClassData
+	for i=1,#bioClassData,1 do
+		-- Check chargen.class and chargen.kit to find a match against the current row 
+		if MyClass == bioClassData[i][1] and MyKit == bioClassData[i][2] then
+			-- On match, set bioClass string equal to bioClassData text
+			bioClass = Infinity_FetchString(bioClassData[i][colClass])
+		end
+	end
+	-- Go through each row of bioRaceData
+	for i=1,#bioRaceData,1 do
+		-- Check chargen.race to find a match against the current row
+		if MyRace == bioRaceData[i][1] then
+			-- On match, set bioRace string equal to bioRaceData text
+			bioRace = Infinity_FetchString(bioRaceData[i][colRace])
+		end
+	end
+end
 `
 menu
 {
 	name 'CHARGEN_BIO'
 	align center center
 	ignoreesc
+	onopen
+	"
+		generateBioText()
+		if bioRace == '' then
+			createBioEdit = bioClass
+		else
+			createBioEdit = bioClass .. '\n\n' .. bioRace
+		end
+	"
 	label
 	{
 		area 0 154 1024 614

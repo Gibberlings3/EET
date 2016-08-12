@@ -3,7 +3,12 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#FrameDelay","LOCALS",1)
-    SetGlobal("K#temp","GLOBAL",29)
+    DisableAI(Player1,FALSE)
+    DisableAI(Player2,FALSE)
+    DisableAI(Player3,FALSE)
+    DisableAI(Player4,FALSE)
+    DisableAI(Player5,FALSE)
+    DisableAI(Player6,FALSE)
     ApplySpellRES("K#REST",Player1) // No such index
     ApplySpellRES("K#REST",Player2) // No such index
     ApplySpellRES("K#REST",Player3) // No such index
@@ -15,6 +20,7 @@ THEN
     ActionOverride(Player4,MakeUnselectable(1))
     ActionOverride(Player5,MakeUnselectable(1))
     ActionOverride(Player6,MakeUnselectable(1))
+    SetGlobal("K#temp","GLOBAL",29)
     AdvanceTime(ONE_MONTH)
     AddGlobals("K#DaysPassed","K#temp")
     TakeObjectGoldGlobal("K#ImportGold","GLOBAL",Player1)
@@ -80,16 +86,6 @@ THEN
   RESPONSE #100
     ActionOverride(Player5,LeaveParty())
     ActionOverride(Player5,DestroySelf())
-    Continue()
-END
-
-IF
-  InPartyAllowDead(Player6)
-  !Name("None",Player6)
-THEN
-  RESPONSE #100
-    ActionOverride(Player6,LeaveParty())
-    ActionOverride(Player6,DestroySelf())
     Continue()
 END
 

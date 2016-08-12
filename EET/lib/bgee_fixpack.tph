@@ -1,5 +1,98 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
+//same problem as:
+//https://forums.beamdog.com/discussion/comment/789128#Comment_789128
+//http://redmine.beamdog.com/issues/22244
+<<<<<<<< .../oBG4800.baf
+IF
+  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
+  Global("RASAAD_1ST_SPAWN","BG4800",0)
+  !Dead("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  XPLT(Player1,1500)
+THEN
+  RESPONSE #100
+    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
+    ActionOverride("RASAAD",MakeGlobal())
+    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
+    SetGlobal("RASAAD_1ST_SPAWN","BG4800",1)
+END
+
+IF
+  !Global("RASAADFIGHT","BG4800",1)
+  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
+  Global("RASAAD_2ND_SPAWN","BG4800",0)
+  !Dead("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  XPGT(Player1,1499)
+  XPLT(Player1,6050)
+THEN
+  RESPONSE #100
+    ActionOverride("RASAAD",DestroySelf())
+    SmallWait(2)
+    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
+    ActionOverride("RASAAD",MakeGlobal())
+    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
+    SetGlobal("RasaadTalkedTo","BG4800",1)
+    SetGlobal("RASAAD_2ND_SPAWN","BG4800",1)
+END
+
+IF
+  !Global("RASAADFIGHT","BG4800",1)
+  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
+  Global("RASAAD_3RD_SPAWN","BG4800",0)
+  !Dead("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  XPGT(Player1,6049)
+  XPLT(Player1,27550)
+THEN
+  RESPONSE #100
+    ActionOverride("RASAAD",DestroySelf())
+    SmallWait(2)
+    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
+    ActionOverride("RASAAD",MakeGlobal())
+    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
+    SetGlobal("RasaadTalkedTo","BG4800",1)
+    SetGlobal("RASAAD_3RD_SPAWN","BG4800",1)
+END
+
+IF
+  !Global("RASAADFIGHT","BG4800",1)
+  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
+  Global("RASAAD_4TH_SPAWN","BG4800",0)
+  !Dead("RASAAD")
+  !InPartyAllowDead("RASAAD")
+  XPGT(Player1,27549)
+THEN
+  RESPONSE #100
+    ActionOverride("RASAAD",DestroySelf())
+    SmallWait(2)
+    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
+    ActionOverride("RASAAD",MakeGlobal())
+    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
+    SetGlobal("RasaadTalkedTo","BG4800",1)
+    SetGlobal("RASAAD_4TH_SPAWN","BG4800",1)
+END
+>>>>>>>> 
+
+<<<<<<<< .../nBG4800.baf
+IF
+  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
+  Global("RASAAD_1ST_SPAWN","BG4800",0)
+  !Dead("RASAAD")
+  !InPartyAllowDead("RASAAD")
+THEN
+  RESPONSE #100
+    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
+    ActionOverride("RASAAD",MakeGlobal())
+    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
+    SetGlobal("RASAAD_1ST_SPAWN","BG4800",1)
+END
+>>>>>>>>
+
+COPY_EXISTING ~BG4800.bcs~ ~override~
+R_B_B ~.../oBG4800.baf~ ~.../nBG4800.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBG4800.baf in %SOURCE_FILE%~ END 
+
 //junk in BG1801.ARE Rest Spawn entries (harmless but annoying during save update)
 COPY_EXISTING ~BG1801.ARE~ ~override~
 	// Missing Rest Spawn Remover

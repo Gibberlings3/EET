@@ -1,4 +1,286 @@
 /////                                                  \\\\\
+///// Patch function: BG1_RND_ITM                      \\\\\
+/////                                                  \\\\\
+
+//Patch function that can be used to automatically assign correct dummy item name used to spawn random items using 2DA tables. Supported file formats: ARE, CRE, EFF, ITM, SPL, STO.
+//src variable sets source platform for dummy item names used in that file: 0 (default, no need to assign) - BG1 / BG:EE / Tutu; 1 - BGT; 2 - EET
+//Example usage:
+/*
+COPY ~somefile~ ~override~
+  LPF BG1_RND_ITM INT_VAR src = 1 END
+*/
+DEFINE_PATCH_FUNCTION ~BG1_RND_ITM~
+	INT_VAR
+		src = 0 //source random item table names: 0 (default, no need to assign) - BG1 / BG:EE / Tutu; 1 - BGT; 2 - EET
+	BEGIN
+	READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ARE patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "AREAV1.0") AND (SOURCE_SIZE > 0x11b) BEGIN
+		////////
+		//Actors
+		////////
+		READ_LONG 0x54 "actors_off"
+		READ_SHORT 0x58 "actors_cnt"
+		FOR (cnt=0; cnt<"%actors_cnt%"; cnt=cnt+1) BEGIN
+			////////////////////////////////////
+			//CRE structure (embedded CRE files)
+			////////////////////////////////////
+			READ_BYTE ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
+			END ELSE BEGIN //CRE attached
+				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
+				PATCH_IF (actors_emb_off != 0) BEGIN
+					///////
+					//Items
+					///////
+					READ_LONG ("%actors_emb_off%"+0x2bc) "item_off"
+					READ_SHORT ("%actors_emb_off%"+0x2c0) "item_cnt"
+					FOR (cnt2=0; cnt2<"%item_cnt%"; cnt2=cnt2+1) BEGIN
+						//0x0 ITM resref
+						SET off = ("%actors_emb_off%"+"%item_off%"+0x14*cnt2) LPM BG1_RND_ITM_patch
+					END
+					/////////
+					//Effects
+					/////////
+					READ_LONG ("%actors_emb_off%"+0x2c4) "fx_off"
+					READ_LONG ("%actors_emb_off%"+0x2c8) "fx_cnt"
+					READ_BYTE ("%actors_emb_off%"+0x33) "eff_ver"
+					FOR (cnt2=0; cnt2<"%fx_cnt%"; cnt2=cnt2+1) BEGIN
+						PATCH_IF (eff_ver = 0) BEGIN //EFF v1
+							READ_SHORT ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2) "fx_type"
+							SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x14)
+						END ELSE BEGIN //EFF v2
+							READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x8) "fx_type"
+							SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x28)
+						END
+						PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
+						OR ("%fx_type%" = 112) //Remove Item
+						OR ("%fx_type%" = 122) //Create Inventory Item
+						OR ("%fx_type%" = 123) //Remove Inventory Item
+						OR ("%fx_type%" = 143) //Create Item in Slot
+						OR ("%fx_type%" = 180) //Cannot Use Item
+						OR ("%fx_type%" = 255) //Create Inventory Item (days)
+						BEGIN
+							SET off = offset LPM BG1_RND_ITM_patch
+						END
+					END
+				END
+			END
+		END
+		////////////
+		//Containers
+		////////////
+		READ_LONG 0x70 "contain_off"
+		READ_SHORT 0x74 "contain_cnt"
+		FOR (cnt=0; cnt<"%contain_cnt%"; cnt=cnt+1) BEGIN
+			//0x78 key ITM resref
+			SET off = ("%contain_off%"+0xc0*cnt+0x78) LPM BG1_RND_ITM_patch
+		END
+		/////////////////
+		//Container Items
+		/////////////////
+		READ_LONG 0x78 "citem_off"
+		READ_SHORT 0x76 "citem_cnt"
+		FOR (cnt=0; cnt<"%citem_cnt%"; cnt=cnt+1) BEGIN
+			//0x0 ITM resref
+			SET off = ("%citem_off%"+0x14*cnt) LPM BG1_RND_ITM_patch
+		END
+		///////
+		//Doors
+		///////
+		READ_LONG 0xa8 "door_off"
+		READ_LONG 0xa4 "door_cnt"
+		FOR (cnt=0; cnt<"%door_cnt%"; cnt=cnt+1) BEGIN
+			//0x78 key ITM resref
+			SET off = ("%door_off%"+0xc8*cnt+0x78) LPM BG1_RND_ITM_patch
+		END
+	END
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//CRE patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ BEGIN
+		//Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
+		LPF ~FJ_CRE_VALIDITY~ RET vl=valid END
+		PATCH_IF vl BEGIN
+			///////
+			//Items
+			///////
+			READ_LONG 0x2bc "item_off"
+			READ_SHORT 0x2c0 "item_cnt"
+			FOR (cnt=0; cnt<"%item_cnt%"; cnt=cnt+1) BEGIN
+				//0x0 ITM resref
+				SET off = ("%item_off%"+0x14*cnt) LPM BG1_RND_ITM_patch
+			END
+			/////////
+			//Effects
+			/////////
+			READ_LONG 0x2c4 "fx_off"
+			READ_LONG 0x2c8 "fx_cnt"
+			FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+				READ_LONG ("%fx_off%"+0x108*cnt+0x8) "fx_type"
+				PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
+				OR ("%fx_type%" = 112) //Remove Item
+				OR ("%fx_type%" = 122) //Create Inventory Item
+				OR ("%fx_type%" = 123) //Remove Inventory Item
+				OR ("%fx_type%" = 143) //Create Item in Slot
+				OR ("%fx_type%" = 180) //Cannot Use Item
+				OR ("%fx_type%" = 255) //Create Inventory Item (days)
+				BEGIN
+					SET off = ("%fx_off%"+0x108*cnt+0x28) LPM BG1_RND_ITM_patch
+				END
+			END
+		END
+	END
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//EFF patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "EFF V2.0") BEGIN
+		READ_SHORT 0x10 "fx_type"
+		PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
+		OR ("%fx_type%" = 112) //Remove Item
+		OR ("%fx_type%" = 122) //Create Inventory Item
+		OR ("%fx_type%" = 123) //Remove Inventory Item
+		OR ("%fx_type%" = 143) //Create Item in Slot
+		OR ("%fx_type%" = 180) //Cannot Use Item
+		OR ("%fx_type%" = 255) //Create Inventory Item (days)
+		BEGIN
+			SET off = 0x30 LPM BG1_RND_ITM_patch
+		END
+	END
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ITM patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "ITM V1  ") AND (SOURCE_SIZE > 0x71) BEGIN
+		//0x10 replacement ITM resref
+		SET off = 0x10 LPM BG1_RND_ITM_patch
+		/////////
+		//Effects
+		/////////
+		READ_LONG 0x6a "fx_off"
+		READ_SHORT 0x70 "fx_cnt"
+		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%abil_off%"+0x38*cnt+0x1e) "fx_num"
+			SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
+		END
+		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
+			PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
+			OR ("%fx_type%" = 112) //Remove Item
+			OR ("%fx_type%" = 122) //Create Inventory Item
+			OR ("%fx_type%" = 123) //Remove Inventory Item
+			OR ("%fx_type%" = 143) //Create Item in Slot
+			OR ("%fx_type%" = 180) //Cannot Use Item
+			OR ("%fx_type%" = 255) //Create Inventory Item (days)
+			BEGIN
+				SET off = ("%fx_off%"+0x30*cnt+0x14) LPM BG1_RND_ITM_patch
+			END
+		END
+	END
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//SPL patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SPL V1  ") AND (SOURCE_SIZE > 0x71) BEGIN
+		/////////
+		//Effects
+		/////////
+		READ_LONG 0x6a "fx_off"
+		READ_SHORT 0x70 "fx_cnt"
+		FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%abil_off%"+0x28*cnt+0x1e) "fx_num"
+			SET fx_cnt += fx_num //gauge the total number of effects by summing global effects and the effects of each ability
+		END
+		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+			READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
+			PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
+			OR ("%fx_type%" = 112) //Remove Item
+			OR ("%fx_type%" = 122) //Create Inventory Item
+			OR ("%fx_type%" = 123) //Remove Inventory Item
+			OR ("%fx_type%" = 143) //Create Item in Slot
+			OR ("%fx_type%" = 180) //Cannot Use Item
+			OR ("%fx_type%" = 255) //Create Inventory Item (days)
+			BEGIN
+				SET off = ("%fx_off%"+0x30*cnt+0x14) LPM BG1_RND_ITM_patch
+			END
+		END
+	END
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//STO patching                                                                                     //
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "STORV1.0") AND (SOURCE_SIZE > 0x9b) BEGIN
+		////////////////
+		//Items for Sale
+		////////////////
+		READ_LONG 0x34 "item_off"
+		READ_SHORT 0x38 "item_cnt"
+		FOR (cnt=0; cnt<"%item_cnt%"; cnt=cnt+1) BEGIN
+			//0x0 ITM resref
+			SET off = ("%item_off%"+0x1c*cnt) LPM BG1_RND_ITM_patch
+		END
+	END
+END
+
+//part of the function call, don't use separately
+DEFINE_PATCH_MACRO ~BG1_RND_ITM_patch~ BEGIN
+	DEFINE_ASSOCIATIVE_ARRAY remapped_rnd_list BEGIN
+		//EET      , BGT        => BG1 / BG:EE / Tutu
+		"RNDEQU04" , "RNDEQU01" => "RNDEQU01" //RNDEQUIP.2DA - LOW
+		"RNDEQU05" , "RNDEQU02" => "RNDEQU02" //RNDEQUIP.2DA - HIGH
+		"RNDEQU06" , "RNDEQU03" => "RNDEQU03" //RNDEQUIP.2DA - POOP
+		"RNDMAG03" , "RNDMAG03" => "RNDMAG01" //RNDMAGIC.2DA - LOW
+		"RNDMAG04" , "RNDMAG04" => "RNDMAG02" //RNDMAGIC.2DA - HIGH
+		"RNDMAG05" , "RNDMAG05" => "RNDMAG03" //RNDMAGIC.2DA - POOP
+		"RNDSCR04" , "RNDSCR04" => "RNDSCR01" //RNDSCROL.2DA - 1st
+		"RNDSCR05" , "RNDSCR05" => "RNDSCR02" //RNDSCROL.2DA - 2nd
+		"RNDSCR06" , "RNDSCR06" => "RNDSCR03" //RNDSCROL.2DA - 3rd
+		"RNDSCR07" , "RNDSCR07" => "RNDSCR04" //RNDSCROL.2DA - 4th
+		"RNDMAG06" , "RNDMAG06" => "RNDTRE01" //RNDTREAS.2DA - POOR
+		"RNDTRE06" , "RNDTRE06" => "RNDTRE02" //RNDTREAS.2DA - AVERAGE
+		"RNDTRE07" , "RNDTRE07" => "RNDTRE03" //RNDTREAS.2DA - WELL_OFF
+		"RNDTRE08" , "RNDTRE08" => "RNDTRE04" //RNDTREAS.2DA - WEALTHY
+		"RNDTRE09" , "RNDTRE09" => "RNDTRE05" //RNDTREAS.2DA - RICH
+		"RNDWEP04" , "RNDWEP01" => "RNDWEP01" //RNDWEP.2DA - 1st
+		"RNDWEP05" , "RNDWEP02" => "RNDWEP02" //RNDWEP.2DA - 2nd
+		"RNDWEP06" , "RNDWEP03" => "RNDWEP03" //RNDWEP.2DA - 3rd
+		"SODTRE07" , "" => "RNDTRE07" //RNDTRES.2DA - RNDTRE07
+		"SODTRE08" , "" => "RNDTRE08" //RNDTRES.2DA - RNDTRE08
+		"SODTRE09" , "" => "RNDTRE09" //RNDTRES.2DA - RNDTRE09
+	END
+	CLEAR_ARRAY remapped_rnd
+	PHP_EACH remapped_rnd_list AS var1 => var2 BEGIN
+		PATCH_IF GAME_IS ~bg1 totsc bgee tutu tutu_totsc~ BEGIN
+			PATCH_IF src = 1 BEGIN //BGT
+				DEFINE_ASSOCIATIVE_ARRAY remapped_rnd BEGIN ~%var1_1%~ => ~%var2%~ END
+			END ELSE PATCH_IF src = 2 BEGIN //EET
+				DEFINE_ASSOCIATIVE_ARRAY remapped_rnd BEGIN ~%var1%~ => ~%var2%~ END
+			END
+		END ELSE PATCH_IF GAME_IS ~bgt~ BEGIN
+			PATCH_IF src = 0 BEGIN //BG1 / BG:EE / Tutu
+				DEFINE_ASSOCIATIVE_ARRAY remapped_rnd BEGIN ~%var2%~ => ~%var1_1%~ END
+			END ELSE PATCH_IF src = 2 BEGIN //EET
+				DEFINE_ASSOCIATIVE_ARRAY remapped_rnd BEGIN ~%var1%~ => ~%var1_1%~ END
+			END
+		END ELSE PATCH_IF GAME_IS ~eet~ BEGIN
+			PATCH_IF src = 0 BEGIN //BG1 / BG:EE / Tutu
+				DEFINE_ASSOCIATIVE_ARRAY remapped_rnd BEGIN ~%var2%~ => ~%var1%~ END
+			END ELSE PATCH_IF src = 1 BEGIN //BGT
+				DEFINE_ASSOCIATIVE_ARRAY remapped_rnd BEGIN ~%var1_1%~ => ~%var1%~ END
+			END
+		END
+	END
+	READ_ASCII off "source" (8) NULL
+	TO_UPPER source
+	PATCH_IF (NOT ~%source%~ STRING_EQUAL_CASE ~~) AND (VARIABLE_IS_SET $remapped_rnd(~%source%~)) BEGIN
+		TEXT_SPRINT dest $remapped_rnd(~%source%~)
+		WRITE_ASCIIE off "%dest%" #8
+		SPRINT str ~Patching %SOURCE_FILESPEC%: itm = %source% => %dest% -~
+		SPRINTF str ~%s %x~ ("%str%" off)
+		PATCH_PRINT ~%str%~
+	END
+END
+
+/////                                                  \\\\\
 ///// Action function: EET_IRON_CRISIS                 \\\\\
 /////                                                  \\\\\
 
@@ -317,20 +599,20 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 		ACTION_IF (clean_ToB = 1) BEGIN
 			COPY_EXISTING ~AR4000.BCS~ ~override~
 				DECOMPILE_AND_PATCH BEGIN
-					REPLACE_TEXTUALLY ~IF[%newline%]*InParty("%clean_ToB_DV%")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~ ~~
-					REPLACE_TEXTUALLY ~IF[%newline%]*Global(".+","GLOBAL",0)[%newline%]*BeenInParty("%dv%")[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*Continue()[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*InPartyAllowDead("%clean_ToB_DV%")[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript("[^"]+",OVERRIDE))[%newline%]*SetGlobal("[^"]+","GLOBAL",2)[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*BeenInParty("%dv%")[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal("[^"]+","GLOBAL",2)[%newline%]*Continue()[%newline%]*END~ ~~
 					REPLACE_TEXTUALLY ~SetGlobal("%clean_ToB_DV%PartyBG2","GLOBAL",1)~ ~~
 				END
 			BUT_ONLY
 			COPY_EXISTING ~AR4500.BCS~ ~override~
 				DECOMPILE_AND_PATCH BEGIN
-					REPLACE_TEXTUALLY ~IF[%newline%]*InParty("%clean_ToB_DV%")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~ ~~
-					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global(".+","GLOBAL",1)[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CreateVisualEffect("SPPORTAL",\[.+\])[%newline%]*Wait(2)[%newline%]*MoveGlobal("AR4500","%clean_ToB_DV%",\[.+\])[%newline%]*ActionOverride("%clean_ToB_DV%",Face(.+))[%newline%]*ActionOverride("%clean_ToB_DV%",SetNumTimesTalkedTo(0))[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript(".+",OVERRIDE))[%newline%]*ActionOverride("%clean_ToB_DV%",SetDialogu?e?(".+"))[%newline%]*ActionOverride("%clean_ToB_DV%",SetGlobal("KickedOut","LOCALS",0))[%newline%]*SetGlobal(".+","GLOBAL",1)[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*InPartyAllowDead("%clean_ToB_DV%")[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*ActionOverride("%clean_ToB_DV%",ChangeAIScript("[^"]+",OVERRIDE))[%newline%]*SetGlobal("[^"]+","GLOBAL",2)[%newline%]*END~ ~~
+					REPLACE_TEXTUALLY ~IF[%newline%]*Global("NEWGAME_TOB","GLOBAL",0)[%newline%]*Global("[^"]+","GLOBAL",1)[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CreateVisualEffect("SPPORTAL",\[.+\])[%newline%]*Wait(2)[%newline%]*ActionOverride("%clean_ToB_DV%",SetDialogu?e?("[^"]+"))ActionOverride("%clean_ToB_DV%",ChangeAIScript("[^"]+",OVERRIDE))[%newline%]*MoveGlobal("AR4500","%clean_ToB_DV%",\[.+\])[%newline%]*ActionOverride("%clean_ToB_DV%",Face(.+))[%newline%]*ActionOverride("%clean_ToB_DV%",SetGlobal("BD_JOINXP","LOCALS",0))[%newline%]*ActionOverride("%clean_ToB_DV%",SetGlobal("KickedOut","LOCALS",0))[%newline%]*ActionOverride("%clean_ToB_DV%",SetNumTimesTalkedTo(0))[%newline%]*SetGlobal("[^"]+","GLOBAL",1)[%newline%]*END~ ~~
 				END
 			BUT_ONLY
 			COPY_EXISTING ~FATESP.DLG~ ~override~
 				DECOMPILE_AND_PATCH BEGIN
-					REPLACE_TEXTUALLY ~IF .  Global(".+","GLOBAL",0)[%newline%]*StateCheck("%clean_ToB_DV%",STATE_REALLY_DEAD)[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal(".+","GLOBAL",2)[%newline%]*. GOTO 10[%newline%]*  IF .  Global(".+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",0)[%newline%]*!StateCheck("%clean_ToB_DV%",STATE_REALLY_DEAD)[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal(".+","GLOBAL",2)[%newline%]*. GOTO 7[%newline%]*  IF .  Global(".+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",1)[%newline%]*!StateCheck("%clean_ToB_DV%",STATE_REALLY_DEAD)[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal(".+","GLOBAL",1)[%newline%]*. GOTO 9~ ~~
+					REPLACE_TEXTUALLY ~IF .  Global("[^"]+","GLOBAL",0)[%newline%]*StateCheck("%clean_ToB_DV%",STATE_REALLY_DEAD)[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal("[^"]+","GLOBAL",2)[%newline%]*. GOTO 10[%newline%]*  IF .  Global("[^"]+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",0)[%newline%]*!StateCheck("%clean_ToB_DV%",STATE_REALLY_DEAD)[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal("[^"]+","GLOBAL",2)[%newline%]*. GOTO 7[%newline%]*  IF .  Global("[^"]+","GLOBAL",0)[%newline%]*Global("%clean_ToB_DV%PartyBG2","GLOBAL",1)[%newline%]*!StateCheck("%clean_ToB_DV%",STATE_REALLY_DEAD)[%newline%]*. THEN REPLY #[0-9]+ DO .SetGlobal("[^"]+","GLOBAL",1)[%newline%]*. GOTO 9~ ~~
 				END
 			BUT_ONLY
 		END
@@ -344,9 +626,31 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 		END
 
 		//Expand local scripts
-<<<<<<<< .../chapter-et.baf
+<<<<<<<< .../chapterSoA-et.baf
 IF
-  GlobalGT("CHAPTER","GLOBAL",%chapter%)
+  !InPartyAllowDead(Myself)
+  GlobalGT("CHAPTER","GLOBAL",19)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+
+<<<<<<<< .../chapterSoD-et.baf
+IF
+  !InPartyAllowDead(Myself)
+  GlobalGT("CHAPTER","GLOBAL",13)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+
+<<<<<<<< .../chapterBG1-et.baf
+IF
+  !InPartyAllowDead(Myself)
+  GlobalGT("CHAPTER","GLOBAL",7)
+  Global("K#PartySoD","LOCALS",0)
 THEN
   RESPONSE #100
     DestroySelf()
@@ -356,7 +660,7 @@ END
 <<<<<<<< .../party-et.baf
 IF
   Global("%dv%PartyBG2","GLOBAL",0)
-  InParty(Myself)
+  InPartyAllowDead(Myself)
 THEN
   RESPONSE #100
     SetGlobal("%dv%PartyBG2","GLOBAL",1)
@@ -364,32 +668,54 @@ THEN
 END
 >>>>>>>>
 
+<<<<<<<< .../XP_ToB-eb.baf
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  InParty(Myself)
+  XPLT(Myself,2500000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+    ChangeStat(Myself,XP,2500000,SET)
+    SetInterrupt(TRUE)
+END
+>>>>>>>>
+
+		ACTION_IF (NOT ~%override_ToB%~ STRING_EQUAL_CASE ~~) BEGIN
+			PRINT ~Patching %override_ToB%.BCS~
+			ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_ToB%.BCS~ ~"BD_JOINXP"~)) BEGIN
+				PRINT ~%override_ToB%.BCS already patched.~
+			END ELSE BEGIN
+				EXTEND_BOTTOM ~%override_ToB%.BCS~ ~.../XP_ToB-eb.baf~ EVALUATE_BUFFER
+			END
+		END
 		ACTION_IF (NOT ~%override_SoA%~ STRING_EQUAL_CASE ~~) BEGIN
 			PRINT ~Patching %override_SoA%.BCS~
-			OUTER_SET chapter = 19
-			ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_SoA%.BCS~ ~IF[%newline%]*GlobalGT("CHAPTER","GLOBAL",[0-9]+)THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~)) BEGIN
+			ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_SoA%.BCS~ ~IF[%newline%]*GlobalGT("CHAPTER","GLOBAL",[0-9]+)[%newline%]*!AreaCheck("AR4000")[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~)) BEGIN
 				PRINT ~%override_SoA%.BCS already patched.~
 			END ELSE BEGIN
-				EXTEND_TOP ~%override_SoA%.BCS~ ~.../chapter-et.baf~ EVALUATE_BUFFER
+				EXTEND_TOP ~%override_SoA%.BCS~ ~.../chapterSoA-et.baf~ EVALUATE_BUFFER
 				EXTEND_TOP ~%override_SoA%.BCS~ ~.../party-et.baf~ EVALUATE_BUFFER
 			END
 		END
 		ACTION_IF (NOT ~%override_SoD%~ STRING_EQUAL_CASE ~~) BEGIN
 			PRINT ~Patching %override_SoD%.BCS~
-			OUTER_SET chapter = 13
 			ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_SoD%.BCS~ ~IF[%newline%]*GlobalGT("CHAPTER","GLOBAL",[0-9]+)THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~)) BEGIN
-				PRINT ~%override_SoD%.BCS already has %dv%PartyBG references. Patching not needed~
+				PRINT ~%override_SoD%.BCS already patched.~
 			END ELSE BEGIN
-				EXTEND_TOP ~%override_SoD%.BCS~ ~.../chapter-et.baf~ EVALUATE_BUFFER
+				EXTEND_TOP ~%override_SoD%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
 			END
 		END
 		ACTION_IF (NOT ~%override_BG1%~ STRING_EQUAL_CASE ~~) BEGIN
 			PRINT ~Patching %override_BG1%.BCS~
-			OUTER_SET chapter = 7
-			ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_BG1%.BCS~ ~IF[%newline%]*GlobalGT("CHAPTER","GLOBAL",[0-9]+)THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~)) BEGIN
-				PRINT ~%override_BG1%.BCS already has %dv%PartyBG references. Patching not needed~
+			ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_BG1%.BCS~ ~IF[%newline%]*GlobalGT("CHAPTER","GLOBAL",[0-9]+)[%newline%]*Global("K#PartySoD","LOCALS",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~)) BEGIN
+				PRINT ~%override_BG1%.BCS already patched.~
 			END ELSE BEGIN
-				EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapter-et.baf~ EVALUATE_BUFFER
+				EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterBG1-et.baf~ EVALUATE_BUFFER
+				ACTION_IF (~%override_SoD%~ STRING_EQUAL_CASE ~~) BEGIN
+					EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
+				END
 			END
 		END
 
@@ -507,7 +833,7 @@ END
 		END ELSE ACTION_IF (type != 1) /*not BG1 NPC without BG2 content*/ BEGIN
 <<<<<<<< .../AR4000-eb1.baf
 IF
-  InParty("%dv%")
+  InPartyAllowDead("%dv%")
   Global("%SummonedVar%","GLOBAL",0)
 THEN
   RESPONSE #100
@@ -548,7 +874,7 @@ END
 			END ELSE BEGIN
 <<<<<<<< .../AR4500-eb.baf
 IF
-  InParty("%dv%")
+  InPartyAllowDead("%dv%")
   Global("%SummonedVar%","GLOBAL",0)
 THEN
   RESPONSE #100
@@ -564,12 +890,13 @@ THEN
   RESPONSE #100
     CreateVisualEffect("SPPORTAL",[1999.1218])
     Wait(2)
+    ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
     MoveGlobal("AR4500","%dv%",[1999.1218])
     ActionOverride("%dv%",Face(S))
-    ActionOverride("%dv%",SetNumTimesTalkedTo(0))
-    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
-    ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
+    ActionOverride("%dv%",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("%dv%",SetNumTimesTalkedTo(0))
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
 >>>>>>>>

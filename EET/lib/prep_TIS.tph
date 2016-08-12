@@ -1,4 +1,4 @@
-ACTION_BASH_FOR ~%biff_dir%~ ~^B.+\.TIS$~ BEGIN
+ACTION_BASH_FOR ~%biff_dir%~ ~^BD[0-9][0-9][0-9][0-9]N?\.TIS$~ BEGIN
 	COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_FILESPEC%~
 		READ_LONG 0x8 "tiles_cnt"
 		READ_LONG 0x10 "tiles_off"

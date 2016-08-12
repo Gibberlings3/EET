@@ -25,7 +25,6 @@ OUTER_SPRINT platformMATCH1 "ALWAYS
     OUTER_SET EVAL ~%name_source%~ = bg2_chapter
   END
 "
-END
 
 COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
@@ -52,7 +51,7 @@ COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
 					REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
-					REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*G[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT, SG, G, GGT, GLT
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*G[A-Za-z]*([ %TAB%]*"CHAPTER"[ %TAB%]*,[ %TAB%]*"GLOBAL"[ %TAB%]*,[ %TAB%]*\)\([0-9]+\)[ %TAB%]*)~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT, SG, G, GGT, GLT
 						PATCH_IF (patched = 0) BEGIN
 							PATCH_PRINT ~%cntcurrent%/%cntrow% Patching: %patch_name%...~
 						END

@@ -1553,38 +1553,35 @@ INT_VAR
 	// $tilesToFix(0), ... contain tile indices to fix
 STR_VAR
 	wed = ~~
+	tis = ~~
 BEGIN
-	ACTION_IF (numTilesToFix > 0 AND FILE_EXISTS_IN_GAME ~%wed%~) BEGIN
+	ACTION_IF (numTilesToFix > 0) BEGIN
 		// Setting required secondary tile indices
-		COPY_EXISTING ~%wed%~ ~override~
+		COPY + ~%wed%~ ~%wed%~
 			SET ofsOverlay = LONG_AT 0x10
 			SET ofsTileMap = LONG_AT (ofsOverlay + 0x10)
-			READ_ASCII (ofsOverlay + 0x04) tisFile (8) NULL
-			PATCH_IF (FILE_EXISTS_IN_GAME ~%tisFile%.tis~) BEGIN
-				INNER_ACTION BEGIN
-					// adding dummy tiles to TIS
-					COPY_EXISTING ~%tisFile%.TIS~ ~override~
-						READ_LONG 0x08 numTiles
-						WRITE_LONG 0x08 (numTiles + numTilesToFix)
-						READ_LONG 0x0c sizeTile
-						READ_LONG 0x10 ofsTiles
-						FOR (idx = 0 curOfs = ofsTiles + (numTiles * sizeTile); idx < numTilesToFix; idx += 1 curOfs += sizeTile) BEGIN
-							// adding new "black" tile
-							INSERT_BYTES curOfs sizeTile
-							WRITE_LONG curOfs "-1"
-						END
-					BUT_ONLY
-				END
-				// updating secondary tile indices
-				FOR (idx = 0; idx < numTilesToFix; idx += 1) BEGIN
-					PATCH_IF (VARIABLE_IS_SET $EVAL tilesToFix(~%idx%~)) BEGIN
-						SET tileIndex = $EVAL tilesToFix(~%idx%~)
-						SET ofsTile = ofsTileMap + (tileIndex * 10)
-						WRITE_SHORT (ofsTile + 4) (numTiles + idx)
+			//READ_ASCII (ofsOverlay + 0x04) tisFile (8) NULL
+			INNER_ACTION BEGIN
+				// adding dummy tiles to TIS
+				COPY + ~%tis%~ ~%tis%~
+					READ_LONG 0x08 numTiles
+					WRITE_LONG 0x08 (numTiles + numTilesToFix)
+					READ_LONG 0x0c sizeTile
+					READ_LONG 0x10 ofsTiles
+					FOR (idx = 0 curOfs = ofsTiles + (numTiles * sizeTile); idx < numTilesToFix; idx += 1 curOfs += sizeTile) BEGIN
+						// adding new "black" tile
+						INSERT_BYTES curOfs sizeTile
+						WRITE_LONG curOfs "-1"
 					END
+			END
+			// updating secondary tile indices
+			FOR (idx = 0; idx < numTilesToFix; idx += 1) BEGIN
+				PATCH_IF (VARIABLE_IS_SET $EVAL tilesToFix(~%idx%~)) BEGIN
+					SET tileIndex = $EVAL tilesToFix(~%idx%~)
+					SET ofsTile = ofsTileMap + (tileIndex * 10)
+					WRITE_SHORT (ofsTile + 4) (numTiles + idx)
 				END
 			END
-		BUT_ONLY
 	END
 END
 
@@ -2962,7 +2959,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 			//0x78 key ITM resref
 			SET off = ("%door_off%"+0xc8*cnt+0x78) SPRINT res ~itm~ LPM EET_PCU_off_res
 			//0x80 open BCS resref
-			SET off = ("%door_off%"+0xc8*cnt+0x80) SPRINT res ~itm~ LPM EET_PCU_off_res
+			SET off = ("%door_off%"+0xc8*cnt+0x80) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0xb8 open DLG resref
 			SET off = ("%door_off%"+0xc8*cnt+0xb8) SPRINT res ~dlg~ LPM EET_PCU_off_res
 		END
