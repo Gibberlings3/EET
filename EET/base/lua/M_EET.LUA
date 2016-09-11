@@ -26,7 +26,7 @@ chapterText = function ()
 	if (chapter == 0) and (currentCampaign == const.START_CAMPAIGN_BP1) or (currentCampaign == const.START_CAMPAIGN_BP2) then
 		return t("ARENA_MODE_LABEL")
 	elseif (chapter < 8) then
-		return Infinity_FetchString(16202 + chapter)
+		return Infinity_FetchString(216202 + chapter)
 	elseif (chapter == 8) then
 		return eetStrings.EET_CHAPTER_8
 	elseif (chapter == 9) then
