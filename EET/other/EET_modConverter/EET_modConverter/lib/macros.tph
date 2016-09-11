@@ -1,7 +1,3 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//BEGIN Macros
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 DEFINE_PATCH_MACRO ~EET_PCU_off_mus~ BEGIN
 	READ_LONG off "source"
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $remapped_mus(~%source%~)) BEGIN
@@ -83,7 +79,7 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_off_res~ BEGIN
 	READ_ASCII off "source" (8) NULL
 	TO_UPPER source
-	PATCH_IF (NOT ~%source%~ STRING_EQUAL_CASE ~~) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
+	PATCH_IF (NOT ~%source%~ STR_EQ ~~) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
 		SET updated = 1
 		WRITE_ASCIIE off "%dest%" #8
@@ -96,7 +92,7 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_off_32~ BEGIN
 	READ_ASCII off "source" (32) NULL
 	TO_UPPER source
-	PATCH_IF (NOT ~%source%~ STRING_EQUAL_CASE ~~) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
+	PATCH_IF (NOT ~%source%~ STR_EQ ~~) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
 		SET updated = 1
 		WRITE_ASCIIE off "%dest%" #32
@@ -109,7 +105,7 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_off_8675~ BEGIN
 	READ_ASCII off "source" (8) NULL
 	TO_UPPER source
-	PATCH_IF (NOT ~%source%~ STRING_EQUAL_CASE ~~) BEGIN
+	PATCH_IF (NOT ~%source%~ STR_EQ ~~) BEGIN
 		READ_ASCII off "source6" (6) NULL
 		TO_UPPER source6
 		READ_ASCII off "source7" (7) NULL
@@ -184,12 +180,12 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"CHANGEALIGNMENT" => "_dv1_" //ChangeAlignment
 	"CHANGEANIMATION" => "_cre1_" //ChangeAnimation
 	"CHANGEANIMATIONNOEFFECT" => "_cre1_" //ChangeAnimationNoEffect
-	"CHANGECLASS" => "_dv1_" //ChangeClass
+	"CHANGECLASS" => "_dv1_class2_" //ChangeClass
 	"CHANGEENEMYALLY" => "_dv1_" //ChangeEnemyAlly
 	"CHANGEGENDER" => "_dv1_" //ChangeGender
 	"CHANGEGENERAL" => "_dv1_" //ChangeGeneral
-	"CHANGERACE" => "_dv1_" //ChangeRace
-	"CHANGESPECIFICS" => "_dv1_" //ChangeSpecifics
+	"CHANGERACE" => "_dv1_race2_" //ChangeRace
+	"CHANGESPECIFICS" => "_dv1_spec2_" //ChangeSpecifics
 	"CHANGESTAT" => "_dv1_" //ChangeStat
 	"CHANGESTOREMARKUP" => "_sto1_" //ChangeStoreMarkup
 	"CLEARACTIONS" => "_dv1_" //ClearActions
@@ -411,7 +407,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"CHECKSTAT" => "_dv1_" //CheckStat
 	"CHECKSTATGT" => "_dv1_" //CheckStatGT
 	"CHECKSTATLT" => "_dv1_" //CheckStatLT
-	"CLASS" => "_dv1_" //Class
+	"CLASS" => "_dv1_class2_" //Class
 	"CLASSLEVEL" => "_dv1_" //ClassLevel
 	"CLASSLEVELGT" => "_dv1_" //ClassLevelGT
 	"CLASSLEVELLT" => "_dv1_" //ClassLevelLT
@@ -536,7 +532,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"PERSONALSPACEDISTANCE" => "_dv1_door1_" //PersonalSpaceDistance
 	"PICKLOCKFAILED" => "_dv1_door1_" //PickLockFailed
 	"PICKPOCKETFAILED" => "_dv1_" //PickPocketFailed
-	"RACE" => "_dv1_" //Race
+	"RACE" => "_dv1_race2_" //Race
 	"RANGE" => "_dv1_" //Range
 	"REACTION" => "_dv1_" //Reaction
 	"REACTIONGT" => "_dv1_" //ReactionGT
@@ -552,7 +548,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"SAID" => "_dv1_" //Said
 	"SECRETDOORDETECTED" => "_door1_" //SecretDoorDetected
 	"SEE" => "_dv1_door1_" //See
-	"SPECIFICS" => "_dv1_" //Specifics
+	"SPECIFICS" => "_dv1_spec2_" //Specifics
 	"SPELLCAST" => "_dv1_splName2_splRes2_" //SpellCast
 	"SPELLCASTINNATE" => "_dv1_splName2_splRes2_" //SpellCastInnate
 	"SPELLCASTINNATERES" => "_spl1_dv2_" //SpellCastInnateRES
@@ -610,12 +606,15 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 					SET cnt = cnt + 1 //argument column
 					PHP_EACH ~%array%~ AS col => res BEGIN
 						PATCH_IF (col_1 = cnt) BEGIN
-							/*PATCH_IF (~%res%~ STRING_EQUAL_CASE ~tra~) AND (IS_AN_INT source) AND (source > 0) BEGIN
-								INNER_PATCH_SAVE source ~%source%~ BEGIN
-									REPLACE_TEXTUALLY ~^\([0-9]+\)~ ~@\1~
-									SET updated = 1
-								END
-							END ELSE BEGIN*/
+							//PATCH_IF (~%res%~ STR_EQ ~tra~) AND (IS_AN_INT source) AND (source > 0) BEGIN
+							//	INNER_PATCH_SAVE source ~%source%~ BEGIN
+							//		REPLACE_EVALUATE CASE_SENSITIVE ~\([0-9]+\)~ BEGIN
+							//			LPF ~EET_strref~ INT_VAR str = MATCH1 RET str END
+							//			SET MATCH1 = str
+							//		END ~%MATCH1%~
+							//		SET updated = 1
+							//	END
+							//END ELSE BEGIN
 								SET resref = 0
 								PATCH_IF ((~%source%~ STRING_CONTAINS_REGEXP ~^"[^"]+"$~)=0) BEGIN //remove quotes if resref
 									INNER_PATCH_SAVE source ~%source%~ BEGIN
@@ -625,10 +624,10 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 								END
 								SPRINT source_case ~%source%~
 								TO_UPPER source_case //uppercased matched argument
-								PATCH_IF (~%res%~ STRING_EQUAL_CASE ~var~) AND (~%source%~ STRING_EQUAL_CASE ~CHAPTER~) BEGIN
+								PATCH_IF (~%res%~ STR_EQ ~var~) AND (~%source%~ STR_EQ ~CHAPTER~) BEGIN
 									SET chapterUp = 1 //enabled chapter replacing in next loop
 								END
-								PATCH_IF (~%res%~ STRING_EQUAL_CASE ~door~) OR (~%res%~ STRING_EQUAL_CASE ~exit~) BEGIN
+								PATCH_IF (~%res%~ STR_EQ ~door~) OR (~%res%~ STR_EQ ~exit~) BEGIN
 									INNER_PATCH_SAVE source6 ~%source_case%~ BEGIN
 										REPLACE_TEXTUALLY ~^\(.?.?.?.?.?.?\).*~ ~\1~
 									END
@@ -665,12 +664,36 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 											REPLACE_TEXTUALLY ~^%source5%~ ~%dest%~
 										END
 									END
-								END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) AND (((~%res%~ STRING_EQUAL_CASE ~chapter~)=0) OR (chapterUp = 1)) BEGIN //replace text using array corresponding to resref type
+								END ELSE PATCH_IF (~%res%~ STR_EQ ~dv~) AND ((~%source%~ STRING_CONTAINS_REGEXP ~\[[A-Z0-9]+\.[A-Z0-9]+\.~)=0) BEGIN
+									INNER_PATCH_SAVE source ~%source%~ BEGIN
+										// EnemyAlly<-General<-Race<-Class<-Specifics
+										REPLACE_EVALUATE CASE_INSENSITIVE ~\(\[[A-Z0-9]+\.[A-Z0-9]+\.\)\([A-Z0-9]*\)\(\.?\)\([A-Z0-9]*\)\(\.?\)\([A-Z0-9]*\)~ BEGIN
+											PATCH_IF (~%MATCH2%~ STR_CMP ~~) AND (VARIABLE_IS_SET $remapped_race(~%MATCH2%~)) BEGIN
+												TEXT_SPRINT dest $remapped_race(~%MATCH2%~)
+												SET updated = 1
+												PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %MATCH2% => %dest% - race~
+												SPRINT MATCH2 ~%dest%~
+											END
+											PATCH_IF (~%MATCH4%~ STR_CMP ~~) AND (VARIABLE_IS_SET $remapped_class(~%MATCH4%~)) BEGIN
+												TEXT_SPRINT dest $remapped_class(~%MATCH4%~)
+												SET updated = 1
+												PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %MATCH4% => %dest% - class~
+												SPRINT MATCH4 ~%dest%~
+											END
+											PATCH_IF (~%MATCH6%~ STR_CMP ~~) AND (VARIABLE_IS_SET $remapped_spec(~%MATCH6%~)) BEGIN
+												TEXT_SPRINT dest $remapped_spec(~%MATCH6%~)
+												SET updated = 1
+												PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %MATCH6% => %dest% - spec~
+												SPRINT MATCH6 ~%dest%~
+											END
+										END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%%MATCH5%%MATCH6%~
+									END
+								END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) AND (((~%res%~ STR_EQ ~chapter~)=0) OR (chapterUp = 1)) BEGIN //replace text using array corresponding to resref type
 									TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source_case%~)
 									SET updated = 1
 									PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source% => %dest% - %res%~
 									SPRINT source ~%dest%~
-									PATCH_IF (~%res%~ STRING_EQUAL_CASE ~splRes~) BEGIN
+									PATCH_IF (~%res%~ STR_EQ ~splRes~) BEGIN
 										SET splRes = 1
 										SET resref = 1
 									END
@@ -792,7 +815,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//ARE patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "AREAV1.0") AND (SOURCE_SIZE > 0x11b) AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "AREAV1.0") AND (SOURCE_SIZE > 0x11b) AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching area version 1.0 file %patch_name%...~
 
 		//0x8 WED resref
@@ -1514,7 +1537,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//BCS patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SC
+	PATCH_IF ("%filetype%" STR_EQ "SC
 CR
 CO") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching compiled script file %patch_name%...~
@@ -1530,7 +1553,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CRE patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ AND (option != 5) BEGIN
 		//Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
 		LPF ~FJ_CRE_VALIDITY~ RET vl=valid END
 		PATCH_IF vl BEGIN
@@ -1816,7 +1839,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//DLG patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "DLG V1.0") AND (SOURCE_SIZE > 0x33) BEGIN //protects against invalid files
+	PATCH_IF ("%filetype%" STR_EQ "DLG V1.0") AND (SOURCE_SIZE > 0x33) BEGIN //protects against invalid files
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching dialog version 1.0 file %patch_name%...~
 
 		///////////
@@ -1842,7 +1865,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//EFF patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "EFF V2.0") AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "EFF V2.0") AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching effect version 2.0 file %patch_name%...~
 
 		READ_SHORT 0x10 "fx_type"
@@ -2032,7 +2055,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//ITM patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "ITM V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "ITM V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching item version 1.0 file %patch_name%...~
 
 		//0x10 replacement ITM resref
@@ -2235,7 +2258,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//PRO patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "PRO V1.0") BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "PRO V1.0") AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching PRO version 1.0 file %patch_name%...~
 
 		//0x10 fire sound WAV resref
@@ -2308,7 +2331,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//SPL patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "SPL V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "SPL V1  ") AND (SOURCE_SIZE > 0x71) AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching spell version 1.0 file %patch_name%...~
 
 		//0x10 casting sound WAV resref
@@ -2505,7 +2528,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//STO patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "STORV1.0") AND (SOURCE_SIZE > 0x9b) AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "STORV1.0") AND (SOURCE_SIZE > 0x9b) AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching store version 1.0 file %patch_name%...~
 
 		//0x44 tavern rumours DLG resref
@@ -2712,7 +2735,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//VEF patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VEF V1.0") BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "VEF V1.0") AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching VEF version 1.0 file %patch_name%...~
 
 		////////////
@@ -2742,7 +2765,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//VVC patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "VVC V1.0") AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "VVC V1.0") AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching VVC version 1.0 file %patch_name%...~
 
 		//0x8 animation BAM resref
@@ -2764,7 +2787,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//WED patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WED V1.3") AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "WED V1.3") AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching WED version 1.3 file %patch_name%...~
 
 		//////////
@@ -2784,7 +2807,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//WMP patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "WMAPV1.0") AND (option != 5) BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "WMAPV1.0") AND (option != 5) BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% Patching worldmap version 1.0 file %patch_name%...~
 
 		READ_LONG 0xc "mapentry_off"
@@ -2841,7 +2864,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//0-byte files                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	PATCH_IF ("%filetype%" STRING_EQUAL_CASE "Ignoring 0 byte file") BEGIN
+	PATCH_IF ("%filetype%" STR_EQ "Ignoring 0 byte file") BEGIN
 		PATCH_PRINT ~%cntcurrent%/%cntrow% %filetype% %patch_name%...~
 
 		SET ignore_check += 1
@@ -2906,9 +2929,18 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DEFINE_PATCH_MACRO ~D_traifyDLG_replace~ BEGIN
-	REPLACE_TEXTUALLY EXACT_MATCH ~SAY #~ ~SAY @~
-	REPLACE_TEXTUALLY EXACT_MATCH ~REPLY #~ ~REPLY @~
-	REPLACE_TEXTUALLY EXACT_MATCH ~JOURNAL #~ ~JOURNAL @~
+	REPLACE_EVALUATE CASE_SENSITIVE ~SAY #\([0-9]+\)~ BEGIN
+		LPF ~EET_strref~ INT_VAR str = MATCH1 RET str END
+		SET MATCH1 = str
+	END ~SAY #%MATCH1%~
+	REPLACE_EVALUATE CASE_SENSITIVE ~REPLY #\([0-9]+\)~ BEGIN
+		LPF ~EET_strref~ INT_VAR str = MATCH1 RET str END
+		SET MATCH1 = str
+	END ~REPLY #%MATCH1%~
+	REPLACE_EVALUATE CASE_SENSITIVE ~JOURNAL #\([0-9]+\)~ BEGIN
+		LPF ~EET_strref~ INT_VAR str = MATCH1 RET str END
+		SET MATCH1 = str
+	END ~JOURNAL #%MATCH1%~
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

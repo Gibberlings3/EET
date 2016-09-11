@@ -18,21 +18,13 @@ BUT_ONLY
 COPY + ~EET/temp/array/ANIMATE.IDS~ ~EET/temp/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			INNER_ACTION BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.IDS~ ~override~
-					COUNT_2DA_ROWS 2 "cntrow2"
-					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-						READ_2DA_ENTRY cnt2 0 2 "compareWith"
-						SET noupdate = 1
-					END
-				BUT_ONLY
-				ACTION_IF ("%noupdate%" = 0) BEGIN
+			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~^%col1%[ %TAB%]~)) BEGIN
+				READ_2DA_ENTRY cnt 1 2 "col2"
+				INNER_ACTION BEGIN
 					APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2%~
-					PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
+					PRINT ~%col1% %col2% appended to %SOURCE_FILE%~
 				END
 			END
 		END
@@ -100,22 +92,14 @@ BUT_ONLY
 COPY + ~EET/temp/array/ANISND.IDS~ ~EET/temp/array~
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 3 "col1"
 		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 3 "col2"
-			READ_2DA_ENTRY cnt 2 3 "col3"
-			INNER_ACTION BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.IDS~ ~override~
-					COUNT_2DA_ROWS 2 "cntrow2"
-					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-						READ_2DA_ENTRY cnt2 0 3 "compareWith"
-						SET noupdate = 1
-					END
-				BUT_ONLY
-				ACTION_IF ("%noupdate%" = 0) BEGIN
+			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~^%col1%[ %TAB%]~)) BEGIN
+				READ_2DA_ENTRY cnt 1 3 "col2"
+				READ_2DA_ENTRY cnt 2 3 "col3"
+				INNER_ACTION BEGIN
 					APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2% %col3%~
-					PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILESPEC%~
+					PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILE%~
 				END
 			END
 		END
@@ -136,23 +120,13 @@ APPEND ~GTIMES.IDS~ ~2592000 ONE_YEAR~        UNLESS ~ONE_YEAR~
 COPY + ~EET/temp/array/GTIMES.IDS~ ~EET/temp/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		PATCH_IF IS_AN_INT col1 BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
-			INNER_ACTION BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.IDS~ ~override~
-					COUNT_2DA_ROWS 2 "cntrow2"
-					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-						READ_2DA_ENTRY cnt2 1 2 "compareWith"
-						PATCH_IF ("%col2%" STRING_EQUAL_CASE "%compareWith%") BEGIN
-							SET noupdate = 1
-						END
-					END
-				BUT_ONLY
-				ACTION_IF ("%noupdate%" = 0) BEGIN
+			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~[ %TAB%]%col2%[ %TAB%]*$~)) BEGIN
+				INNER_ACTION BEGIN
 					APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2%~
-					PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
+					PRINT ~%col1% %col2% appended to %SOURCE_FILE%~
 				END
 			END
 		END
@@ -170,21 +144,20 @@ COPY_EXISTING ~KIT.IDS~ ~override~
 	PATCH_PRINT ~ids_index = %ids_index_sprint%~
 BUT_ONLY
 
-COPY - ~EET/temp/array/KIT.IDS~ ~EET/temp/array~
+COPY + ~EET/temp/array/KIT.IDS~ ~EET/temp/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < cntrow; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		PATCH_IF IS_AN_INT col1 BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
-			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~KIT.IDS~ ~ %col2%~)) BEGIN
-				PATCH_PRINT ~Patching KIT.IDS: %col2%~
+			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~[ %TAB%]%col2%[ %TAB%]*$~)) BEGIN
 				INNER_ACTION BEGIN
 					APPEND ~%SOURCE_RES%.IDS~ ~%ids_index_sprint% %col2%~
 					PRINT ~%ids_index_sprint% %col2% appended to %SOURCE_FILE%~
 				END
 				SET ids_index = ids_index + 1
 				SPRINTF ids_index_sprint ~%x~ (ids_index) //%~
-				PATCH_PRINT ~ids_index = %ids_index_sprint%~
+				//PATCH_PRINT ~ids_index = %ids_index_sprint%~
 			END
 		END
 	END
@@ -270,10 +243,12 @@ APPEND ~SOUNDOFF.IDS~ ~74 BIO~                     UNLESS ~ BIO~
 /////                                                  \\\\\
 
 COPY_EXISTING ~CLASS.IDS~ ~override~
+	REPLACE_TEXTUALLY ~[ %TAB%]*221[ %TAB%]+SOD_TMP~ ~221 NEOTHELID~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "ids_index"
 		READ_2DA_ENTRY cnt 1 2 "ids_name"
+		TO_UPPER ids_name
 		DEFINE_ASSOCIATIVE_ARRAY class_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
 		DEFINE_ASSOCIATIVE_ARRAY class_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
 	END
@@ -286,21 +261,27 @@ COPY + ~EET/temp/array/CLASS.IDS~ ~EET/temp/array~
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		PATCH_IF IS_AN_INT col1 BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
+			TO_UPPER col2
 			PATCH_IF (VARIABLE_IS_SET $class_ids_name(~%col2%~)) BEGIN
 				TEXT_SPRINT compare_col1 $class_ids_name(~%col2%~)
+				TEXT_SPRINT compare_col2 $class_ids_index(~%col1%~)
 				PATCH_IF (col1 != compare_col1) BEGIN
 					DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col1%~ => ~%compare_col1%~ END
+					DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col2%~ => ~%compare_col2%~ END
 					SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+					SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
 				END
 				SET noupdate = 1
 			END ELSE PATCH_IF (VARIABLE_IS_SET $class_ids_index(~%col1%~)) BEGIN
 				TEXT_SPRINT compare_col2 $class_ids_index(~%col1%~)
-				PATCH_IF (("%col2%" STRING_EQUAL_CASE "%compare_col2%")=0) BEGIN
+				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
 					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
 						PATCH_IF (NOT VARIABLE_IS_SET $class_ids_index(~%cnt2%~)) BEGIN
 							SET ids_index = cnt2
 							DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col1%~ => ~%ids_index%~ END
+							DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%compare_col2%~ => ~%col2%~ END
 							SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+							SPRINT log_remapped_class ~%log_remapped_class%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
 							SET cnt2 = 255
 						END
 						PATCH_IF (cnt2 = 254) BEGIN
@@ -315,7 +296,7 @@ COPY + ~EET/temp/array/CLASS.IDS~ ~EET/temp/array~
 			PATCH_IF (noupdate = 0) BEGIN
 				INNER_ACTION BEGIN
 					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILESPEC%~
+					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
 					ACTION_DEFINE_ASSOCIATIVE_ARRAY class_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
 					ACTION_DEFINE_ASSOCIATIVE_ARRAY class_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
 				END
@@ -332,6 +313,7 @@ COPY_EXISTING ~RACE.IDS~ ~override~
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "ids_index"
 		READ_2DA_ENTRY cnt 1 2 "ids_name"
+		TO_UPPER ids_name
 		DEFINE_ASSOCIATIVE_ARRAY race_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
 		DEFINE_ASSOCIATIVE_ARRAY race_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
 	END
@@ -344,21 +326,27 @@ COPY + ~EET/temp/array/RACE.IDS~ ~EET/temp/array~
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		PATCH_IF IS_AN_INT col1 BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
+			TO_UPPER col2
 			PATCH_IF (VARIABLE_IS_SET $race_ids_name(~%col2%~)) BEGIN
 				TEXT_SPRINT compare_col1 $race_ids_name(~%col2%~)
+				TEXT_SPRINT compare_col2 $race_ids_index(~%col1%~)
 				PATCH_IF (col1 != compare_col1) BEGIN
 					DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col1%~ => ~%compare_col1%~ END
+					DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col2%~ => ~%compare_col2%~ END
 					SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+					SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
 				END
 				SET noupdate = 1
 			END ELSE PATCH_IF (VARIABLE_IS_SET $race_ids_index(~%col1%~)) BEGIN
 				TEXT_SPRINT compare_col2 $race_ids_index(~%col1%~)
-				PATCH_IF (("%col2%" STRING_EQUAL_CASE "%compare_col2%")=0) BEGIN
+				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
 					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
 						PATCH_IF (NOT VARIABLE_IS_SET $race_ids_index(~%cnt2%~)) BEGIN
 							SET ids_index = cnt2
 							DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col1%~ => ~%ids_index%~ END
+							DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%compare_col2%~ => ~%col2%~ END
 							SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+							SPRINT log_remapped_race ~%log_remapped_race%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
 							SET cnt2 = 255
 						END
 						PATCH_IF (cnt2 = 254) BEGIN
@@ -373,7 +361,7 @@ COPY + ~EET/temp/array/RACE.IDS~ ~EET/temp/array~
 			PATCH_IF (noupdate = 0) BEGIN
 				INNER_ACTION BEGIN
 					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILESPEC%~
+					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
 					ACTION_DEFINE_ASSOCIATIVE_ARRAY race_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
 					ACTION_DEFINE_ASSOCIATIVE_ARRAY race_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
 				END
@@ -390,6 +378,7 @@ COPY_EXISTING ~SPECIFIC.IDS~ ~override~
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "ids_index"
 		READ_2DA_ENTRY cnt 1 2 "ids_name"
+		TO_UPPER ids_name
 		DEFINE_ASSOCIATIVE_ARRAY spec_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
 		DEFINE_ASSOCIATIVE_ARRAY spec_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
 	END
@@ -402,21 +391,27 @@ COPY + ~EET/temp/array/SPECIFIC.IDS~ ~EET/temp/array~
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		PATCH_IF IS_AN_INT col1 BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
+			TO_UPPER col2
 			PATCH_IF (VARIABLE_IS_SET $spec_ids_name(~%col2%~)) BEGIN
 				TEXT_SPRINT compare_col1 $spec_ids_name(~%col2%~)
+				TEXT_SPRINT compare_col2 $spec_ids_index(~%col1%~)
 				PATCH_IF (col1 != compare_col1) BEGIN
 					DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col1%~ => ~%compare_col1%~ END
+					DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col2%~ => ~%compare_col2%~ END
 					SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+					SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
 				END
 				SET noupdate = 1
 			END ELSE PATCH_IF (VARIABLE_IS_SET $spec_ids_index(~%col1%~)) BEGIN
 				TEXT_SPRINT compare_col2 $spec_ids_index(~%col1%~)
-				PATCH_IF (("%col2%" STRING_EQUAL_CASE "%compare_col2%")=0) BEGIN
+				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
 					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
 						PATCH_IF (NOT VARIABLE_IS_SET $spec_ids_index(~%cnt2%~)) BEGIN
 							SET ids_index = cnt2
 							DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col1%~ => ~%ids_index%~ END
+							DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%compare_col2%~ => ~%col2%~ END
 							SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+							SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
 							SET cnt2 = 255
 						END
 						PATCH_IF (cnt2 = 254) BEGIN
@@ -431,7 +426,7 @@ COPY + ~EET/temp/array/SPECIFIC.IDS~ ~EET/temp/array~
 			PATCH_IF (noupdate = 0) BEGIN
 				INNER_ACTION BEGIN
 					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILESPEC%~
+					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
 					ACTION_DEFINE_ASSOCIATIVE_ARRAY spec_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
 					ACTION_DEFINE_ASSOCIATIVE_ARRAY spec_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
 				END

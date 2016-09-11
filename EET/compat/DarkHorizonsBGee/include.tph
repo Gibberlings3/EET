@@ -6,14 +6,13 @@ COPY ~EET/compat/DarkHorizonsBGee/Ibrac24.bam~ ~%biff_dir%/Ibrac24#.bam~
 //these items has wrong Ability Effect index numbering, which may lead to out of bound reading (100% in CMSTQ04.ITM case)
 ACTION_BASH_FOR ~EET/compat/DarkHorizonsBGee~ ~.*.itm~ BEGIN
 	COPY ~EET/compat/DarkHorizonsBGee/%BASH_FOR_FILE%~ ~override~
-		PATCH_FOR_EACH ~offset~ IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
+		PATCH_FOR_EACH offset IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
 			INNER_ACTION BEGIN
 				COPY - ~%patch_dir%/itm/%BASH_FOR_FILE%~ ~%patch_dir%/itm~
-					READ_LONG offset "StrRef"
+					READ_LONG offset "strref"
 			END
-			PATCH_IF ((StrRef > 0) AND (StrRef <= StrRef_cutoff)) BEGIN
-				SAY offset ( AT "StrRef" )
-			END
+			LPF ~EET_strref~ INT_VAR str = strref RET str END
+			WRITE_LONG offset "%str%"
 		END
 	DELETE + ~%patch_dir%/itm/%BASH_FOR_FILE%~
 END

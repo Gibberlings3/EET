@@ -36,7 +36,7 @@ ACTION_FOR_EACH file IN BG1 BG2 BEGIN
 		PATCH_BASH_FOR ~override~ ~^.+$~ BEGIN
 			FOR (cnt = 0; cnt < cntrow; cnt = cnt + 1) BEGIN
 				READ_2DA_ENTRY_FORMER read cnt 0 "name"
-				PATCH_IF (("%BASH_FOR_FILE%" STRING_EQUAL_CASE "%name%")=1) BEGIN
+				PATCH_IF ("%BASH_FOR_FILE%" STR_EQ "%name%") BEGIN
 					SPRINT ~append~ ~%append%%WNL%Incompatibility %file%: %BASH_FOR_FILE%~
 					PATCH_PRINT ~Incompatibility %file%: %BASH_FOR_FILE%~
 					SET cnt = cntrow

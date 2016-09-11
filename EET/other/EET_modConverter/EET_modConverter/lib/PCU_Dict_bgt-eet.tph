@@ -46,7 +46,7 @@ ACTION_IF (songlist != 5) BEGIN
 					COUNT_2DA_ROWS 3 "cntrow2"
 					FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
 						READ_2DA_ENTRY cnt2 2 3 "compareCol3"
-						PATCH_IF (("%col3%" STRING_EQUAL_CASE "%compareCol3%")=1) BEGIN
+						PATCH_IF ("%col3%" STR_EQ "%compareCol3%") BEGIN
 							READ_2DA_ENTRY cnt2 0 3 "compareCol1"
 							PATCH_IF (NOT VARIABLE_IS_SET $remapped_mus(~%col1%~)) BEGIN
 								DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN

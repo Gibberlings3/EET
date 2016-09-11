@@ -1,0 +1,138 @@
+/////                                                  \\\\\
+///// Get location of BG:EE installation               \\\\\
+/////                                                  \\\\\
+
+OUTER_SET valid_dir = 0
+ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Pp]~ = 0) BEGIN
+	OUTER_SPRINT bgee_dir ~%argv[1]%~
+	OUTER_SET valid_dir = 1
+	PRINT ~%bgee_dir% directory assigned via auto install batch command~
+END ELSE ACTION_IF (FILE_EXISTS ~EET/bgee_dir.txt~) BEGIN
+	COPY - ~EET/bgee_dir.txt~ ~EET~
+		READ_ASCII 0x0 bgee_dir (%SOURCE_SIZE%)
+	OUTER_SET valid_dir = 1
+	PRINT ~%bgee_dir% directory assigned via EET/bgee_dir.txt~
+END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+<<<<<<<< .../programfiles.bat
+echo %%var%%>EET/temp/programfiles.txt
+>>>>>>>>
+	ACTION_FOR_EACH var IN ~programfiles~ ~programfiles(x86)~ ~ProgramW6432~ BEGIN
+		ACTION_IF (valid_dir = 0) BEGIN
+			COPY + ~.../programfiles.bat~ ~EET/temp~ EVALUATE_BUFFER
+			AT_NOW ~EET/temp/programfiles.bat~
+			COPY + ~EET/temp/programfiles.txt~ ~EET/temp~
+				READ_ASCII 0x0 dir (%SOURCE_SIZE%)
+			OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
+				REPLACE_TEXTUALLY ~%WNL%~ ~~ //needed due to newline added by windows > command
+			END
+			ACTION_FOR_EACH dir IN ~%dir%/BeamDog/Games/00806~ ~%dir%/Baldur's Gate Enhanced Edition/Data/00806~ ~%dir%/GalaxyClient/Games/Baldur's Gate Enhanced Edition~ ~C:/GOG Games/Baldur's Gate - Enhanced Edition~ ~%dir%/Steam/steamapps/common/Baldur's Gate Enhanced Edition~ ~../Baldur's Gate - Enhanced Edition~ BEGIN
+				ACTION_IF (FILE_EXISTS ~%dir%/movies/sodcin05.wbm~) AND (valid_dir = 0) AND (NOT VARIABLE_IS_SET $log_dir(~%dir%~)) BEGIN
+					ACTION_DEFINE_ASSOCIATIVE_ARRAY log_dir BEGIN ~%dir%~ => ~dummy~ END
+					OUTER_SPRINT bgee_dir ~%dir%~
+					OUTER_SPRINT bgee_prompt ~a~
+					OUTER_WHILE (~%bgee_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
+						PRINT @900003 //Detected BG:EE directory as %bgee_dir%. Is this correct? [Y]es or [N]o
+						ACTION_READLN bgee_prompt
+					END
+					ACTION_IF (~%bgee_prompt%~ STR_EQ ~y~) BEGIN
+						OUTER_SET valid_dir = 1
+						PRINT ~%bgee_dir% directory assigned to default dir~
+					END
+				END
+			END
+		END
+	END
+END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+	ACTION_FOR_EACH dir IN ~%quote%/Applications/Baldur's Gate - Enhanced Edition/Game Data/00806/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ BEGIN
+		ACTION_IF (FILE_EXISTS ~%dir%/movies/sodcin05.wbm~) AND (valid_dir = 0) AND (NOT VARIABLE_IS_SET $log_dir(~%dir%~)) BEGIN
+			ACTION_DEFINE_ASSOCIATIVE_ARRAY log_dir BEGIN ~%dir%~ => ~dummy~ END
+			OUTER_SPRINT bgee_dir ~%dir%~
+			OUTER_SPRINT bgee_prompt ~a~
+			OUTER_WHILE (~%bgee_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
+				PRINT @900003 //Detected BG:EE directory as %bgee_dir%. Is this correct? [Y]es or [N]o
+				ACTION_READLN ~bgee_prompt~
+			END
+			ACTION_IF (~%bgee_prompt%~ STR_EQ ~y~) BEGIN
+				OUTER_SET valid_dir = 1
+				PRINT ~%bgee_dir% directory assigned to default dir~
+			END
+		END
+	END
+END
+
+ACTION_IF (valid_dir = 1) BEGIN
+	OUTER_PATCH_SAVE bgee_dir ~%bgee_dir%~ BEGIN
+		PATCH_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN //Win32
+			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
+			REPLACE_TEXTUALLY ~\~ ~/~ //change slashes
+			REPLACE_TEXTUALLY ~[\\/]*$~ ~~ //remove terminal slashes
+		END ELSE PATCH_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
+			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
+			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes//*/
+		END
+	END
+	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/movies/sodcin05.wbm~) BEGIN
+		OUTER_SET valid_dir = 0
+	END
+END
+
+OUTER_SET first_prompt = 0
+OUTER_WHILE (valid_dir = 0) BEGIN
+	ACTION_IF (first_prompt = 0) BEGIN
+		PRINT ~~
+		PRINT @900004 //Enter the full path to your BG:EE installation then press Enter. Example: C:\Program Files (x86)\BeamDog\Games\00806
+		ACTION_READLN ~bgee_dir~
+		OUTER_SET first_prompt = 1
+	END
+	OUTER_PATCH_SAVE bgee_dir ~%bgee_dir%~ BEGIN
+		PATCH_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN //Win32
+			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
+			REPLACE_TEXTUALLY ~\~ ~/~ //change slashes
+			REPLACE_TEXTUALLY ~[\\/]*$~ ~~ //remove terminal slashes
+		END ELSE PATCH_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
+			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
+			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes//*/
+		END
+	END
+	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/movies/sodcin05.wbm~) BEGIN
+		PRINT ~~
+		PRINT @900005 //Invalid BG:EE directory, or incorrect BG:EE installation. It is safe to abort this installation by closing this window or pressing Ctrl+C.
+		PRINT @900004 //Enter the full path to your BG:EE installation then press Enter. Example: C:\Program Files (x86)\BeamDog\Games\00806
+		ACTION_READLN ~bgee_dir~
+	END ELSE BEGIN
+		OUTER_SET valid_dir = 1
+		PRINT ~BG:EE directory used for this installation:
+%bgee_dir%~
+	END
+END
+
+<<<<<<<< .../bgee_dir.txt
+%bgee_dir%>>>>>>>>
+COPY + ~.../bgee_dir.txt~ ~EET/bgee_dir.txt~ EVALUATE_BUFFER
+
+ACTION_IF FILE_EXISTS ~%bgee_dir%/weidu.conf~ BEGIN
+	COPY ~%bgee_dir%/weidu.conf~ ~%bgee_dir%~
+		READ_2DA_ENTRY 0 2 3 "lang_cmp"
+		INNER_PATCH_SAVE lang_cmp ~%lang_cmp%~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
+				TO_UPPER MATCH1
+			END ~%MATCH1%~
+		END
+	BUT_ONLY
+END
+
+ACTION_IF (NOT ~%LANGUAGE%~ STR_EQ ~en_US~) AND (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/dialog.tlk~) BEGIN
+	OUTER_SPRINT LANGUAGE_BG1 ~%LANGUAGE%~
+	PRINT ~LANGUAGE_BG1 = %LANGUAGE_BG1%~
+END ELSE ACTION_IF (NOT ~%lang_cmp%~ STR_EQ ~en_US~) AND (FILE_EXISTS ~%bgee_dir%/lang/%lang_cmp%/dialog.tlk~) BEGIN
+	OUTER_SPRINT LANGUAGE_BG1 ~%lang_cmp%~
+	PRINT ~LANGUAGE_BG1 = %LANGUAGE_BG1%~
+END ELSE ACTION_IF (NOT ~%LANGUAGE_BG2%~ STR_EQ ~en_US~) AND (FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE_BG2%/dialog.tlk~) BEGIN
+	OUTER_SPRINT LANGUAGE_BG1 ~%LANGUAGE_BG2%~
+	PRINT ~LANGUAGE_BG1 = %LANGUAGE_BG1%~
+END ELSE BEGIN
+	OUTER_SPRINT LANGUAGE_BG1 ~en_US~
+	PRINT ~LANGUAGE_BG1 = en_US~
+END

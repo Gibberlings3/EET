@@ -23,11 +23,6 @@ THEN
     SetGlobal("K#temp","GLOBAL",29)
     AdvanceTime(ONE_MONTH)
     AddGlobals("K#DaysPassed","K#temp")
-    TakeObjectGoldGlobal("K#ImportGold","GLOBAL",Player1)
-    TakeItemListPartyNum("IMPORT01",1)
-    TakeItemListPartyNum("IMPORT02",1)
-    TakeItemListPartyNum("IMPORT03",1)
-    TakeItemListPartyNum("K#IMPORT",17)
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player1,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player2,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player3,ALL))
@@ -100,75 +95,12 @@ THEN
 END
 
 IF
-  NumInParty(6)
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    Continue()
-END
-
-IF
-  NumInParty(5)
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    Continue()
-END
-
-IF
-  NumInParty(4)
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    Continue()
-END
-
-IF
-  NumInParty(3)
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    Continue()
-END
-
-IF
-  NumInParty(2)
-THEN
-  RESPONSE #100
-    TakeItemListPartyNum("K#IMPORT",20)
-    GivePartyAllEquipment()
-    Continue()
-END
-
-IF
   True()
 THEN
   RESPONSE #100
     GivePartyAllEquipment()
+    SetGlobal("SPRITE_IS_DEADKHALID","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADDYNAHEIR","GLOBAL",1)
     SetGlobal("SPRITE_IS_DEADCALAHAN","GLOBAL",0)
     SetGlobal("SPRITE_IS_DEADCARBOS","GLOBAL",0)
     SetGlobal("SPRITE_IS_DEADDIANA","GLOBAL",0)

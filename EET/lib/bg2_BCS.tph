@@ -193,7 +193,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("FinishedExpansion","GLOBAL",1)
-    AddJournalEntry(@24117,INFO)
+    AddJournalEntry(224117,INFO)
 END
 
 IF
@@ -202,7 +202,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("HasTranzigScroll","GLOBAL",1)
-    AddJournalEntry(@31449,QUEST)
+    AddJournalEntry(231449,QUEST)
 END
 
 IF
@@ -230,7 +230,7 @@ IF
   Global("bd_spect_journal","global",0)
 THEN
   RESPONSE #100
-    AddJournalEntry(@61616,QUEST_DONE) // Zaviak's Vision Quest  The Spectacles of Spectacle are out of charges.   The creatures I did see were unusual, dangerous, and fascinating. Zaviak may be a strange character, but his glasses worked and they did open my mind to some degree.
+    AddJournalEntry(261616,QUEST_DONE) // Zaviak's Vision Quest  The Spectacles of Spectacle are out of charges.   The creatures I did see were unusual, dangerous, and fascinating. Zaviak may be a strange character, but his glasses worked and they did open my mind to some degree.
     SetGlobal("bd_spect_journal","global",1)
 END
 
@@ -246,12 +246,684 @@ IF
 THEN
   RESPONSE #1000
     SetGlobal("BD_XHOST_SWORD","GLOBAL",2)
-    DisplayStringHeadOwner("BDSW1HX5",@67252) // Your sword blade snaps in half with a crack that almost sounds like a rasping laugh.
+    DisplayStringHeadOwner("BDSW1HX5",267252) // Your sword blade snaps in half with a crack that almost sounds like a rasping laugh.
 END
 >>>>>>>>
 
 EXTEND_BOTTOM ~BALDUR.BCS~ ~.../BALDUR-eb.baf~
 EXTEND_BOTTOM ~BALDUR25.BCS~ ~.../BALDUR-eb.baf~
+
+<<<<<<<< .../BALDUR25-eb.baf
+//code from SoA
+IF
+  InPartyAllowDead("Nalia")
+  Dead("Nalia")
+  Dead("Torgal")
+  Global("NaliaTorgalDies","GLOBAL",0)
+  Global("NaliaKeepPlot","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NaliaTorgalDies","GLOBAL",1)
+END
+
+IF
+  InPartyAllowDead("Nalia")
+  Dead("Nalia")
+  AreaCheck("AR1300")
+  Global("EnteredAR1300","GLOBAL",0)
+  Global("NaliaKeepPlot","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("EnteredAR1300","GLOBAL",1)
+    SetGlobalTimer("ArrivedNaliaKeep","GLOBAL",ONE_DAY)
+END
+
+IF
+  InPartyAllowDead("Nalia")
+  Dead("Nalia")
+  Global("DelciaLeave","GLOBAL",1)
+  Global("NaliaKeepPlot","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("DelciaLeave","GLOBAL",2)
+END
+
+IF
+  InPartyAllowDead("Nalia")
+  Dead("Nalia")
+  AreaCheck("AR1302")
+  CombatCounter(0)
+  Global("NaliaInAR1302","AR1302",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NaliaInAR1302","AR1302",1)
+END
+
+IF
+  InPartyAllowDead("Nalia")
+  Dead("Nalia")
+  AreaCheck("AR1303")
+  Global("NaliaInAR1303","AR1303",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NaliaInAR1303","AR1303",1)
+END
+
+IF
+  Delay(10)
+  Global("FoundMontaronBody","GLOBAL",0)
+  PartyHasItem("MISC5U") // Montaron's Body
+THEN
+  RESPONSE #100
+    SetGlobal("FoundMontaronBody","GLOBAL",1)
+    AddexperienceParty(20000)
+END
+
+IF
+  Delay(10)
+  Global("HabibAppearance","GLOBAL",0)
+  PartyHasItem("SW1H56") // Scimitar
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,DropItem("SW1H56",[-1.-1])) // Scimitar
+    ActionOverride(Player2,DropItem("SW1H56",[-1.-1])) // Scimitar
+    ActionOverride(Player3,DropItem("SW1H56",[-1.-1])) // Scimitar
+    ActionOverride(Player4,DropItem("SW1H56",[-1.-1])) // Scimitar
+    ActionOverride(Player5,DropItem("SW1H56",[-1.-1])) // Scimitar
+    ActionOverride(Player6,DropItem("SW1H56",[-1.-1])) // Scimitar
+    SetGlobal("HabibAppearance","GLOBAL",1)
+END
+
+IF
+  Delay(10)
+  Global("HabibAppearance","GLOBAL",1)
+  AreaCheck("AR0408")
+  PartyHasItem("MISC07") // Gold
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,DropItem("MISC07",[-1.-1])) // Gold
+    ActionOverride(Player2,DropItem("MISC07",[-1.-1])) // Gold
+    ActionOverride(Player3,DropItem("MISC07",[-1.-1])) // Gold
+    ActionOverride(Player4,DropItem("MISC07",[-1.-1])) // Gold
+    ActionOverride(Player5,DropItem("MISC07",[-1.-1])) // Gold
+    ActionOverride(Player6,DropItem("MISC07",[-1.-1])) // Gold
+    SetGlobal("HabibAppearance","GLOBAL",2)
+END
+
+IF
+  OR(2)
+    Global("PCSphere","GLOBAL",2)
+    ReputationLT(Player1,4)
+  GlobalLT("BribedCowled","GLOBAL",2)
+THEN
+  RESPONSE #100
+    SetGlobal("BribedCowled","GLOBAL",2)
+END
+
+IF
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(OUTDOOR)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR1901")
+  !AreaCheck("OH5500")
+  Dead("cefald01")
+  Class(Player1,DRUID_ALL)
+  !Class(Player1,SHAMAN)
+  LevelGT(Player1,13)
+  Global("DruidADSpawn","GLOBAL",0)
+  Global("GreatDruid","GLOBAL",0)
+THEN
+  RESPONSE #100
+    Wait(2)
+    SetGlobal("DruidADSpawn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("DRUIDAD",Player1,0,0,0) // Druid
+END
+
+IF
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(OUTDOOR)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR1901")
+  !AreaCheck("OH5500")
+  Class(Player1,DRUID_ALL)
+  !Class(Player1,SHAMAN)
+  LevelGT(Player1,13)
+  Global("DruidADSpawn","GLOBAL",1)
+  Global("GreatDruid","GLOBAL",0)
+  GlobalTimerExpired("DruidADReturn","GLOBAL")
+THEN
+  RESPONSE #100
+    SetGlobal("DruidADSpawn","GLOBAL",2)
+    CreateCreatureObjectOffScreen("DRUIDAD",Player1,0,0,0) // Druid
+END
+
+IF
+  Global("drowTalk","GLOBAL",0)
+  Global("slayer1","GLOBAL",0)
+  PartyRested()
+  GlobalGT("AsylumPlot","GLOBAL",43)
+THEN
+  RESPONSE #100
+    SetGlobal("drowTalk","GLOBAL",2)
+    SetGlobal("slayer1","GLOBAL",1)
+    SetGlobalTimer("SlayerTimer2","GLOBAL",FIVE_MINUTES)
+    ActionOverride(Player1,StartDialog("player1",Player1))
+END
+
+IF
+  GlobalTimerExpired("SlayerTimer2","GLOBAL")
+  Global("goodagain","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,ReallyForceSpellRES("spin718a",Myself)) // End Slayer Change
+    SetGlobal("goodagain","GLOBAL",1)
+    SetGlobal("DrowTalk","GLOBAL",4)
+    ActionOverride(Player1,StartDialog("player1",Player1))
+END
+
+IF
+  Global("Slayer10","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,StartDialog("player1",Player1))
+END
+
+IF
+  GlobalTimerExpired("PGThievesReturn","GLOBAL")
+  Global("NotifyThiefHead","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NotifyThiefHead","GLOBAL",1)
+    DisplayStringHead(Player1,62083) // Your thieves have returned from their missions.
+END
+
+IF
+  GlobalTimerExpired("JosterReturn","GLOBAL")
+  Global("JosterLeave","GLOBAL",1)
+  !AreaType(BG1AREA)
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+THEN
+  RESPONSE #100
+    SetGlobal("JosterLeave","GLOBAL",2)
+    SetGlobalTimer("JosterReturn","GLOBAL",SIX_DAYS)
+    SetGlobalTimer("JosterPaid","GLOBAL",FIVE_DAYS)
+    DisplayStringHead(Player1,62081) // The quartermaster awaits you in the guild for Renal's due.
+END
+
+IF
+  GlobalTimerExpired("JosterPaid","GLOBAL")
+  !Global("JosterLeave","GLOBAL",1)
+  Global("PGFailed","GLOBAL",0)
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+THEN
+  RESPONSE #100
+    SetGlobal("PGFailed","GLOBAL",1)
+    DisplayStringHead(Player1,62082) // Renal will no longer wait for his due... You have lost your guild.
+END
+
+IF
+  Global("MinscByeBye","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ActionOverride("Minsc",EscapeArea())
+END
+
+IF
+  Global("MinscByeBye","GLOBAL",2)
+THEN
+  RESPONSE #100
+    MoveGlobal("AR0400","Minsc",[519.529])
+END
+
+IF
+  Global("SpawnTanadv","GLOBAL",0)
+  Global("TurnCragmoon","GLOBAL",1)
+  GlobalTimerExpired("CragmoonAttack","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR1000")
+  !AreaCheck("AR0700")
+  !AreaCheck("AR0900")
+  AreaType(OUTDOOR)
+THEN
+  RESPONSE #100
+    SetGlobal("SpawnTanadv","GLOBAL",1)
+    CreateCreatureObjectOffScreen("TANADV01",Player1,0,0,0) // Strachan Fireblade
+    CreateCreatureObjectOffScreen("TANADV02",Player1,0,0,0) // Adventurer
+    CreateCreatureObjectOffScreen("TANADV03",Player1,0,0,0) // Adventurer
+    CreateCreatureObjectOffScreen("TANADV04",Player1,0,0,0) // Adventurer
+    CreateCreatureObjectOffScreen("TANADV05",Player1,0,0,0) // Adventurer
+    CreateCreatureObjectOffScreen("TANADV06",Player1,0,0,0) // Dunbar the Fifth
+END
+
+IF
+  Dead("Jaheira")
+  GlobalGT("JaheiraCursed","GLOBAL",0)
+  GlobalLT("JaheiraCursed","GLOBAL",8)
+  Global("JaheiraCursedDead","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraCursedDead","GLOBAL",1)
+END
+
+IF
+  GlobalGT("JaheiraCursed","GLOBAL",6)
+  Global("JaheiraCursedDead","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraCursedDead","GLOBAL",0)
+    Continue()
+END
+
+IF
+  GlobalGT("JaheiraCursed","GLOBAL",0)
+  GlobalLT("JaheiraCursed","GLOBAL",8)
+  Global("JaheiraCursedDead","GLOBAL",1)
+  !Dead("Jaheira")
+THEN
+  RESPONSE #100
+    ActionOverride("Jaheira",StartDialogueNoSet([PC]))
+END
+
+IF
+  GlobalTimerExpired("OgronAssault","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  AreaType(OUTDOOR)
+  Global("DelonSpawn","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("DelonSpawn","GLOBAL",1)
+    SetGlobal("OgronAttack","GLOBAL",1)
+    CreateCreatureObjectOffScreen("DELON",Player1,0,0,0) // Delon
+    ActionOverride("delon",StartDialogueNoSet(Player1))
+END
+
+IF
+  GlobalTimerExpired("UmarAssault","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  AreaType(OUTDOOR)
+  Global("DelonSpawn","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("DelonSpawn","GLOBAL",2)
+    SetGlobal("UmarPlot","GLOBAL",1)
+    CreateCreatureObjectOffScreen("DELON",Player1,0,0,0) // Delon
+    ActionOverride("delon",StartDialogueNoSet(Player1))
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin","GLOBAL")
+  Global("MeckComesFirst","GLOBAL",0)
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",0)
+  AreaType(CITY)
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("MeckComesFirst","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",3)
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",4)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin2","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",6)
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",7)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin3","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",9)
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",10)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin4","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",12)
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",13)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin5","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",16)
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",17)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin6","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",19)
+  OR(2)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",40)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin7","GLOBAL")
+  Global("BardPlot1","GLOBAL",42)
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",45)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  GlobalTimerExpired("MeetHiggin8","GLOBAL")
+  AreaType(CITY)
+  !AreaCheck("AR2000")
+  Global("BardPlot1","GLOBAL",50)
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  OR(3)
+    AreaType(OUTDOOR)
+    AreaCheck("AR0522")
+    AreaCheck("AR0511")
+THEN
+  RESPONSE #100
+    SetGlobal("BardPlot1","GLOBAL",51)
+    SetGlobal("BardPlotOn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+END
+
+IF
+  PartyRested()
+  GlobalTimerExpired("JaheiraReturn","GLOBAL")
+  Global("JaheiraReturns","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("JaheiraReturns","GLOBAL",1)
+    MoveGlobalObject("Jaheira",Player1)
+END
+
+IF
+  GlobalTimerExpired("BardMoneyTime","GLOBAL")
+  GlobalGT("BardMoney","GLOBAL",500)
+  Global("BardPlotOn","GLOBAL",5)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BardMoneyTime","GLOBAL",SEVEN_DAYS)
+    DisplayString(Player1,47142) // Gold has been placed in your keep.
+    IncrementGlobal("BardMoney","GLOBAL",-100)
+    AddGlobals("BardMoneyX","BardMoney")
+END
+
+IF
+  GlobalTimerExpired("BardMoneyTime","GLOBAL")
+  GlobalLT("BardMoney","GLOBAL",501)
+  Global("BardPlotOn","GLOBAL",5)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("BardMoneyTime","GLOBAL",SEVEN_DAYS)
+    DisplayString(Player1,47142) // Gold has been placed in your keep.
+    AddGlobals("BardMoneyX","BardMoney")
+END
+
+IF
+  GlobalTimerExpired("KPTaxTime","GLOBAL")
+  Global("PCKeepOwner","GLOBAL",1)
+THEN
+  RESPONSE #100
+    DisplayString(Player1,47142) // Gold has been placed in your keep.
+    SetGlobalTimer("KPTaxTime","GLOBAL",SEVEN_DAYS)
+    IncrementGlobal("KPTaxes","GLOBAL",500)
+END
+
+IF
+  GlobalTimerExpired("KPPlotTime","GLOBAL")
+  AreaType(OUTDOOR)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR2600")
+  !AreaCheck("AR2000")
+  !AreaCheck("AR1900")
+  !AreaCheck("OH5500")
+  Global("KeepPlot","GLOBAL",4)
+  InParty("Nalia")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  Global("NaliaIsaeaPlotDone","GLOBAL",1)
+  Global("KPRunnerSpawn","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("KPRunnerSpawn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+END
+
+IF
+  GlobalTimerExpired("KPPlotTime","GLOBAL")
+  AreaType(OUTDOOR)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR2600")
+  !AreaCheck("AR2000")
+  !AreaCheck("AR1900")
+  !AreaCheck("OH5500")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  Global("KeepPlot","GLOBAL",4)
+  !InParty("Nalia")
+  Global("KPRunnerSpawn","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("KPRunnerSpawn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+END
+
+IF
+  GlobalTimerExpired("KPPlotTime","GLOBAL")
+  AreaType(OUTDOOR)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR2600")
+  !AreaCheck("AR2000")
+  !AreaCheck("AR1900")
+  !AreaCheck("OH5500")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  Global("KeepPlot","GLOBAL",7)
+  Global("KPRunnerSpawn","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("KPRunnerSpawn","GLOBAL",2)
+    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+END
+
+IF
+  GlobalTimerExpired("KPPlotTime","GLOBAL")
+  AreaType(OUTDOOR)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR2600")
+  !AreaCheck("AR2000")
+  !AreaCheck("AR1900")
+  !AreaCheck("OH5500")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  Global("KeepPlot","GLOBAL",8)
+  Global("KPRunnerSpawn","GLOBAL",2)
+THEN
+  RESPONSE #100
+    SetGlobal("KPRunnerSpawn","GLOBAL",3)
+    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+END
+
+IF
+  GlobalGT("KPRevolt","GLOBAL",9)
+  Global("RoenalControl","GLOBAL",0)
+  GlobalLT("KeepPlot","GLOBAL",12)
+THEN
+  RESPONSE #100
+    ClearAllActions()
+    StartCutSceneMode()
+    StartCutScene("Cut32n")
+END
+
+IF
+  GlobalTimerExpired("TeolMessenger","GLOBAL")
+  !Global("Chapter","GLOBAL",16)
+  !Global("Chapter","GLOBAL",17)
+  !Global("Chapter","GLOBAL",19)
+  !Global("Chapter","GLOBAL",22)
+  AreaType(OUTDOOR)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR2600")
+  !AreaCheck("OH5500")
+  Global("NatulaSpawn","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NatulaSpawn","GLOBAL",1)
+    CreateCreatureObject("MGASS01",Player1,0,0,0) // Sergeant Natula
+    ActionOverride("MGASS01",StartDialogueNoSet(Player1))
+END
+
+IF
+  Global("geniesgone","GLOBAL",0)
+  Dead("trgeni01")
+THEN
+  RESPONSE #100
+    SetGlobal("geniesgone","GLOBAL",1)
+END
+
+IF
+  Global("K#DisableSPIN649","GLOBAL",1)
+  !AreaCheckObject("AR4500",Player1)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#PP_REM",Player1) // No such index
+    SetGlobal("K#DisableSPIN649","GLOBAL",0)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~BALDUR25.BCS~ ~.../BALDUR25-eb.baf~
 
 <<<<<<<< .../timers-et.baf
 //counts how many REAL hours you have been playing
@@ -529,7 +1201,7 @@ IF
     Global("bd_no_camp_rest","myarea",1)
 THEN
   RESPONSE #100
-    DisplayStringNoName(Player1,@69033) // ^RYou may not rest in this place.^-
+    DisplayStringNoName(Player1,269033) // ^RYou may not rest in this place.^-
 END
 
 IF
@@ -890,6 +1562,30 @@ EXTEND_TOP ~AR0304.BCS~ ~.../AR0304-et.baf~
 /////                                                  \\\\\
 
 <<<<<<<< .../AR0602-et.baf
+IF
+  Global("K#DynaheirImport","AR0602",0)
+  BeenInParty("Dynaheir")
+  !StateCheck("Dynaheir",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    Deactivate("Dynaheir")
+    Kill("Dynaheir")
+    SetGlobal("K#DynaheirImport","AR0602",1)
+    Continue()
+END
+
+IF
+  Global("K#KhalidImport","AR0602",0)
+  BeenInParty("Khalid")
+  !StateCheck("Khalid",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    Deactivate("Khalid")
+    Kill("Khalid")
+    SetGlobal("K#KhalidImport","AR0602",1)
+    Continue()
+END
+
 IF
   Global("K#ImoenImport","AR0602",0)
   BeenInParty("Imoen2")
@@ -1401,13 +2097,6 @@ THEN
     ReallyForceSpellRES("K#FAMREM",Player4)
     ReallyForceSpellRES("K#FAMREM",Player5)
     ReallyForceSpellRES("K#FAMREM",Player6)
-    ActionOverride("K#ImportContainer",TakeCreatureItems(Player1,ALL))
-    ActionOverride("K#ImportContainer",TakeCreatureItems(Player2,ALL))
-    ActionOverride("K#ImportContainer",TakeCreatureItems(Player3,ALL))
-    ActionOverride("K#ImportContainer",TakeCreatureItems(Player4,ALL))
-    ActionOverride("K#ImportContainer",TakeCreatureItems(Player5,ALL))
-    ActionOverride("K#ImportContainer",TakeCreatureItems(Player6,ALL))
-    MoveContainerContents("BD6100*K#ImportContainer","AR0602*K#ImportContainer")
     Continue()
 END
 
@@ -1460,6 +2149,26 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~AR0602.BCS~ ~.../AR0602-et.baf~
+
+COPY_EXISTING ~AR0602.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~TakePartyGold(2147483647)[%newline%]*ActionOverride(Player1,DestroyAllEquipment())[%newline%]*ActionOverride(Player2,DestroyAllEquipment())[%newline%]*ActionOverride(Player3,DestroyAllEquipment())[%newline%]*ActionOverride(Player4,DestroyAllEquipment())[%newline%]*ActionOverride(Player5,DestroyAllEquipment())[%newline%]*ActionOverride(Player6,DestroyAllEquipment())~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~TakeObjectGoldGlobal("K#ImportGold","GLOBAL",Player1)
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player1,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player2,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player3,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player4,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player5,ALL))
+    ActionOverride("K#ImportContainer",TakeCreatureItems(Player6,ALL))
+    MoveContainerContents("BD6100*K#ImportContainer","AR0602*K#ImportContainer")~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// AR0607                                           \\\\\
@@ -1903,7 +2612,7 @@ THEN
     ActionOverride("Imoen2",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
-    DestroyItem("Imoen2") // Imoen's Belt
+    ActionOverride("Imoen2",DestroyItem("IMOENHP1")) // Imoen's Belt
     SetPlayerSound("Imoen2",30759,MORALE) // I got enough trouble without fightin' these odds!
     SetPlayerSound("Imoen2",30760,BORED) // I'm withering away just standing here. Let's get going.
     SetPlayerSound("Imoen2",30761,BATTLE_CRY2) // You asked for it!
@@ -2222,6 +2931,24 @@ COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// AR2000 (Drizzt "random" encounter)               \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~AR2601.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~\(SetEncounterProbability("AR2500","AR1700",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+    SetEncounterProbability("AR2500","AR3000",0)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// AR4000 (ToB starting location - Spirit Heads)    \\\\\
 /////                                                  \\\\\
 
@@ -2248,6 +2975,7 @@ THEN
     SetGlobal("DREAM","GLOBAL",7)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("ENDOFBG2","GLOBAL",2)
+    SetGlobal("SPRITE_IS_DEADYOSHIMO","GLOBAL",1)
     SetGlobal("NEWGAME_TOB","GLOBAL",1)
     StartMovie("INTRO")
     RemoveWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
@@ -2264,6 +2992,7 @@ THEN
     SetGlobal("K#NewGame","AR4000",1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("ENDOFBG2","GLOBAL",2)
+    SetGlobal("SPRITE_IS_DEADYOSHIMO","GLOBAL",1)
     ReallyForceSpellRES("K#FAMREM",Player1)
     ReallyForceSpellRES("K#FAMREM",Player2)
     ReallyForceSpellRES("K#FAMREM",Player3)
@@ -2302,6 +3031,19 @@ COPY_EXISTING ~AR4500.BCS~ ~override~
 	END
 BUT_ONLY
 
+<<<<<<<< .../AR4500-eb.baf
+IF
+  Global("K#DisableSPIN649","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ReallyForceSpellRES("K#PP_ADD",Player1) // No such index
+    SetGlobal("K#DisableSPIN649","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
+
+EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb.baf~
+
 /////                                                  \\\\\
 ///// AERIE                                            \\\\\
 /////                                                  \\\\\
@@ -2312,6 +3054,25 @@ COPY_EXISTING ~AERIE.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
+///// BDSODIMP                                         \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~BDSODIMP.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~\(PartyHasItem("\)\([^"]+\)\(")[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1\2\3
+    TakePartyItem("\2")
+    DestroyItem("\2")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -2472,7 +3233,7 @@ IF
   //XPLT(Player1,250000)
 THEN
   RESPONSE #100
-    CreateCreature("NEERA8",[993.3534],S) // Neera
+    CreateCreature("NEERA8",[3927.485],NNW) // Neera
     ActionOverride("Neera",MakeGlobalOverride())
     SetGlobal("K#NeeraImport","AR0500",1)
     Continue()
@@ -2488,7 +3249,7 @@ END
   XPLT(Player1,400000)
 THEN
   RESPONSE #100
-    CreateCreature("NEERA10",[993.3534],S) // Neera
+    CreateCreature("NEERA10",[3927.485],NNW) // Neera
     ActionOverride("Neera",MakeGlobalOverride())
     SetGlobal("K#NeeraImport","AR0500",1)
     Continue()
@@ -2504,7 +3265,7 @@ IF
   XPLT(Player1,800000)
 THEN
   RESPONSE #100
-    CreateCreature("NEERA11",[993.3534],S) // Neera
+    CreateCreature("NEERA11",[3927.485],NNW) // Neera
     ActionOverride("Neera",MakeGlobalOverride())
     SetGlobal("K#NeeraImport","AR0500",1)
     Continue()
@@ -2520,7 +3281,7 @@ IF
   XPLT(Player1,1200000)
 THEN
   RESPONSE #100
-    CreateCreature("NEERA12",[993.3534],S) // Neera
+    CreateCreature("NEERA12",[3927.485],NNW) // Neera
     ActionOverride("Neera",MakeGlobalOverride())
     SetGlobal("K#NeeraImport","AR0500",1)
     Continue()
@@ -2535,7 +3296,7 @@ IF
   XPGT(Player1,1199999)
 THEN
   RESPONSE #100
-    CreateCreature("NEERA13",[993.3534],S) // Neera
+    CreateCreature("NEERA13",[3927.485],NNW) // Neera
     ActionOverride("Neera",MakeGlobalOverride())
     SetGlobal("K#NeeraImport","AR0500",1)
     Continue()
@@ -4077,7 +4838,7 @@ THEN
     SetGlobalTimer("BD_Wand","LOCALS",THREE_ROUNDS)
     UseItem("WAND10",Myself) // Wand of Monster Summoning
     SetSequence(SEQ_CAST)
-    DisplayString(Myself,66959) // No. What else?
+    DisplayString(Myself,266959) // *uses a wand*
 END
 >>>>>>>>
 

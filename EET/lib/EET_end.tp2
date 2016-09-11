@@ -1,13 +1,6 @@
 BACKUP ~EET/backup/end~
 AUTHOR ~K4thos (swit)~
 
-ALWAYS
-	//WeiDU currently doesn't support custom USER_DIRECTORY constant variable
-	OUTER_PATCH_SAVE USER_DIRECTORY ~%USER_DIRECTORY%~ BEGIN
-		REPLACE_TEXTUALLY ~Baldur's Gate II - Enhanced Edition~ ~Baldur's Gate - Enhanced Edition Trilogy~
-	END
-END
-
 LANGUAGE ~English~
 	~en_US~
 	~EET/lang/en_US/prompts.tra~
@@ -16,7 +9,7 @@ LANGUAGE ~Polski (Polish)~
 	~pl_PL~
 	~EET/lang/pl_PL/prompts.tra~
 	~EET/lang/pl_PL/setup.tra~
-LANGUAGE ~Deutsch (German)~
+/*LANGUAGE ~Deutsch (German)~
 	~de_DE~
 	~EET/lang/de_DE/prompts.tra~
 	~EET/lang/de_DE/setup.tra~
@@ -27,52 +20,7 @@ LANGUAGE ~French~
 LANGUAGE ~Spanish~
 	~es_ES~
 	~EET/lang/es_ES/prompts.tra~
-	~EET/lang/es_ES/setup.tra~
-
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////                                                  \\\\\
-///// Update old saves to work with new installation   \\\\\
-/////                                                  \\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
-
-BEGIN @910000 //Update old EET saves to work with new installation
-NO_LOG_RECORD
-REQUIRE_COMPONENT ~EET/EET.tp2~ 0 ~You must have EET core component installed~
-REQUIRE_PREDICATE (!FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~) @910004 //Your saves have been already updated in this installation
-REQUIRE_PREDICATE (!FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~) @910005 //Saves created on old installation can't be updated because you have already overwritten exported TLK files with new ones via last component of this mod.
-//REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~ @910006 //%USER_DIRECTORY%/save/saves.tra doesn't exist
-//REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~ @910007 //%USER_DIRECTORY%/save/saves.txt doesn't exist
-
-//workaround until WeiDU is updated: http://forums.pocketplane.net/index.php/topic,29530.0.html?PHPSESSID=7635c39a228aeaa622a46b76dfa5e287
-ACTION_FOR_EACH ext IN tra txt BEGIN
-	ACTION_IF NOT FILE_EXISTS ~%USER_DIRECTORY%/save/saves.%ext%~ BEGIN
-		FAIL @910006 //%USER_DIRECTORY%/save/saves.tra doesn't exist
-	END
-END
-
-OUTER_SET valid_answer = 0
-OUTER_SET button = 0
-OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF (button = 1) BEGIN //Yes
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF (button = 2) BEGIN //No
-		FAIL @910008 //Skipping installation. Saves won't be updated.
-	END ELSE BEGIN
-		PRINT @910009 //This is entirely OPTIONAL component! Are you sure you want to update all saves located in %USER_DIRECTORY%/save directory? You should not do it if you're planning to finish your ongoing game on older EET installation. This component can't be uninstalled (requires manual steps to do so). 1] Yes 2] No (skips component installation)
-		ACTION_READLN ~button~
-		ACTION_IF NOT (IS_AN_INT %button%) BEGIN
-			OUTER_SET button = 0
-		END
-	END
-END
-
-INCLUDE ~EET/lib/EET_end_saves.tph~
-
-ACTION_IF (!FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~) BEGIN
-	APPEND + ~EET.flag~ ~SAVES_UPDATED~
-END
+	~EET/lang/es_ES/setup.tra~*/
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -82,23 +30,56 @@ END
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN @910001 //Alternative EET GUI (SoD)
-REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910003 //You must have EET core component installed
+BEGIN @910000 //Alternative EET GUI (SoD)
+REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910002 //This component requires EET core component to be installed first
 
 COPY ~EET/SoD_GUI~ ~override~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////                                                  \\\\\
-///// End installation merger                          \\\\\
+///// End installation merger and save patcher         \\\\\
 /////                                                  \\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-BEGIN @910002 //Finalise EET (last mod in install order)
-REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910003 //You must have EET core component installed
+BEGIN @910001 //Finalise EET (last mod in install order)
+REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910002 //This component requires EET core component to be installed first
 
 CLEAR_ARRAYS
+
+/////                                                  \\\\\
+///// Save patcher                                     \\\\\
+/////                                                  \\\\\
+
+ACTION_IF FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~
+AND FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~
+AND !FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~
+AND !FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~ BEGIN
+	OUTER_SET valid_answer = 0
+END ELSE BEGIN
+	OUTER_SET valid_answer = 1
+END
+
+OUTER_SET button = 0
+OUTER_WHILE (valid_answer = 0) BEGIN
+	ACTION_IF (button = 1) BEGIN //Yes, update saves
+		OUTER_SET valid_answer = 1
+	END ELSE ACTION_IF (button = 2) BEGIN //No, continue without updating
+		OUTER_SET valid_answer = 1
+	END ELSE BEGIN
+		PRINT @910003 //In EET saves behave exactly the same as in vanilla game which means there never will be saves problem with BG:EE, SoD and BG2:EE vanilla content. Of course this functionality is not extended to mod content not related to EET, which doesn't use persistent TLK entries. Would you like to update your old saves made on previous installation to work with this new installation before installing the finalise component? Please keep in mind that it won't be possible to uninstall these changes. This step is also quite lengthy (may take several minutes depending on how many saves are located in %SAVE_DIRECTORY%). If you didn't use other mods that adds text to game than there is no need to update saves at all. 1] Yes, update saves 2] No, continue without updating
+		ACTION_READLN button
+		ACTION_IF NOT IS_AN_INT button BEGIN
+			OUTER_SET button = 0
+		END
+	END
+END
+
+ACTION_IF (button = 1) BEGIN
+	INCLUDE ~EET/lib/EET_end_saves.tph~
+	APPEND + ~EET.flag~ ~SAVES_UPDATED~
+END
 
 /////                                                  \\\\\
 ///// Prepare arrays, update 25DIALOG.2DA              \\\\\
@@ -129,7 +110,7 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 			INNER_ACTION BEGIN
 				COPY_EXISTING ~%file%.2da~ ~override~
 					PRETTY_PRINT_2DA
-					PATCH_IF (~%file%~ STRING_EQUAL_CASE ~PDIALOG~) BEGIN
+					PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
 						REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
 							INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
 								COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
@@ -154,13 +135,13 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~~ => ~~ END
 							END ELSE /*PATCH_IF (!VARIABLE_IS_SET $table_append_dlg(~%join%~))*/ BEGIN
 								TEXT_SPRINT join_main $table_dv(~%dv%~)
-								PATCH_IF (NOT ~%join%~ STRING_EQUAL_CASE ~%join_main%~) BEGIN
+								PATCH_IF (NOT ~%join%~ STR_EQ ~%join_main%~) BEGIN
 									DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~%join_main%~ => ~~ END
 								END
 								SET_2DA_ENTRY j 2 3 ~%join_main%~
 							END
 						END
-						PATCH_IF (~%file%~ STRING_EQUAL_CASE ~PDIALOG~) BEGIN
+						PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
 							READ_2DA_ENTRY_FORMER pdialog j 1 post
 							READ_2DA_ENTRY_FORMER pdialog j 3 dream
 							READ_2DA_ENTRY_FORMER pdialog j 4 25post
@@ -168,7 +149,7 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
 							TO_UPPER 25join
 							READ_2DA_ENTRY_FORMER pdialog j 6 25dream
 							READ_2DA_ENTRY_FORMER pdialog j 7 25override
-							PATCH_IF (join_exists = 1) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) AND (NOT ~%25join%~ STRING_EQUAL_CASE ~%join%~) BEGIN
+							PATCH_IF (join_exists = 1) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) AND (NOT ~%25join%~ STR_EQ ~%join%~) BEGIN
 								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%25join%~ , ~%join%~ => ~~ END
 							END
 							PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25DIALOG.2DA~ ~^%dv% ~)) BEGIN
@@ -216,7 +197,7 @@ BEGIN ~%file%~
 
 ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 	ACTION_IF FILE_EXISTS_IN_GAME ~%file%.dlg~ BEGIN
-		ACTION_IF ~%file_1%~ STRING_EQUAL_CASE ~~ BEGIN //source file
+		ACTION_IF ~%file_1%~ STR_EQ ~~ BEGIN //source file
 			COPY_EXISTING ~%file%.dlg~ ~override~
 				READ_LONG 0x8 num_states
 				SPRINT EVAL ~num_states_%file%~ ~%num_states%~
@@ -335,9 +316,9 @@ ACTION_PHP_EACH pdialog_2da AS file => dummy BEGIN
 		READ_2DA_ENTRIES_NOW pdialog_tbl 4
 		FOR (i=0; i < pdialog_tbl; ++i) BEGIN
 			READ_2DA_ENTRY_FORMER pdialog_tbl i 0 dv
-			PATCH_IF (NOT ~%dv%~ STRING_EQUAL_CASE ~POST_DIALOG_FILE~) BEGIN
+			PATCH_IF (NOT ~%dv%~ STR_EQ ~POST_DIALOG_FILE~) BEGIN
 				PHP_EACH pdialog_2da AS cmp_file => dummy BEGIN
-					PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+					PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
 						READ_2DA_ENTRY_FORMER pdialog_tbl i 1 post
 						READ_2DA_ENTRY_FORMER pdialog_tbl i 2 join
 						READ_2DA_ENTRY_FORMER pdialog_tbl i 3 dream
@@ -384,9 +365,9 @@ ACTION_PHP_EACH interdia_2da AS file => dummy BEGIN
 		READ_2DA_ENTRIES_NOW interdia_tbl 2
 		FOR (i=1; i < interdia_tbl; ++i) BEGIN
 			READ_2DA_ENTRY_FORMER interdia_tbl i 0 dv
-			PATCH_IF (NOT ~%dv%~ STRING_EQUAL_CASE ~FILE~) BEGIN
+			PATCH_IF (NOT ~%dv%~ STR_EQ ~FILE~) BEGIN
 				PHP_EACH interdia_2da AS cmp_file => dummy BEGIN
-					PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) /*AND (NOT ~%cmp_file%~ STRING_EQUAL_CASE ~BDBANTER~)*/ AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+					PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) /*AND (NOT ~%cmp_file%~ STR_EQ ~BDBANTER~)*/ AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
 						READ_2DA_ENTRY_FORMER interdia_tbl i 1 banter
 						INNER_ACTION BEGIN
 							//PRINT ~Patching %cmp_file%.2DA: %dv% %banter%~
@@ -421,7 +402,7 @@ ACTION_PHP_EACH clastext_2da AS file => dummy BEGIN
 		FOR (i=0; i < clastext_tbl; ++i) BEGIN
 			READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
 			PHP_EACH clastext_2da AS cmp_file => dummy BEGIN
-				PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%class%[ %TAB%]~)) BEGIN
+				PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%class%[ %TAB%]~)) BEGIN
 					READ_2DA_ENTRY_FORMER clastext_tbl i 1 classid
 					READ_2DA_ENTRY_FORMER clastext_tbl i 2 kitid
 					READ_2DA_ENTRY_FORMER clastext_tbl i 3 lower
@@ -453,7 +434,7 @@ ACTION_PHP_EACH racetext_2da AS file => dummy BEGIN
 		FOR (i=0; i < racetext_tbl; ++i) BEGIN
 			READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
 			PHP_EACH racetext_2da AS cmp_file => dummy BEGIN
-				PATCH_IF (NOT ~%file%~ STRING_EQUAL_CASE ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%race%[ %TAB%]~)) BEGIN
+				PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%race%[ %TAB%]~)) BEGIN
 					READ_2DA_ENTRY_FORMER racetext_tbl i 1 id
 					READ_2DA_ENTRY_FORMER racetext_tbl i 2 name
 					READ_2DA_ENTRY_FORMER racetext_tbl i 3 descstr
@@ -559,12 +540,18 @@ COPY_EXISTING ~CLASTEXT.2da~ ~override~
 				SET kitid = "-1" //Multi-class
 				SET define = 1
 			END
-			~ARCHER~ BEGIN
-				SPRINT class ~FERALAN~
+			~FERALAN~ BEGIN
+				SPRINT class ~ARCHER~
 				SET kitid = 7
 			END
+			~ARCHER~ BEGIN
+				SET kitid = 7
+			END
+			~WILDMAGE~ BEGIN
+				SPRINT class ~WILD_MAGE~
+				SET kitid = 30
+			END
 			~WILD_MAGE~ BEGIN
-				SPRINT class ~WILDMAGE~
 				SET kitid = 30
 			END
 			DEFAULT
@@ -600,7 +587,7 @@ COPY_EXISTING ~bgee.lua~ ~override~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~START_CAMPAIGN_\([A-Z0-9]+\)~ BEGIN
 		FOR (i=0; i < campaign_tbl; ++i) BEGIN
 			READ_2DA_ENTRY_FORMER campaign_tbl i 0 campaign
-			PATCH_IF (~%MATCH1%~ STRING_EQUAL_CASE ~%campaign%~) BEGIN
+			PATCH_IF (~%MATCH1%~ STR_EQ ~%campaign%~) BEGIN
 				//PATCH_PRINT ~campaign = %campaign%~
 				READ_2DA_ENTRY_FORMER campaign_tbl i 30 clastext
 				READ_2DA_ENTRY_FORMER campaign_tbl i 31 racetext
@@ -668,24 +655,70 @@ COPY_EXISTING ~M_EET.lua~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// Generate SoA item importation code               \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~BDSODIMP.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~PartyHasItem("\([^"]+\)")~ BEGIN
+			DEFINE_ASSOCIATIVE_ARRAY item_import_list BEGIN ~%MATCH1%~ => dummy END
+		END ~PartyHasItem("%MATCH1%")~
+	END
+BUT_ONLY
+
+COPY_EXISTING ~IMPORT01.2DA~ ~override~
+	~IMPORT02.2DA~ ~override~
+	~IMPORT03.2DA~ ~override~
+	~K#IMPORT.2DA~ ~override~
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 1 2 "item"
+		DEFINE_ASSOCIATIVE_ARRAY item_import_list BEGIN ~%item%~ => dummy END
+	END
+BUT_ONLY
+
+<<<<<<<< .../K#TELBGT-et.baf
+IF
+  Global("K#FrameDelay","LOCALS",0)
+  PartyHasItem("%item%")
+THEN
+  RESPONSE #100
+    TakePartyItem("%item%")
+    DestroyItem("%item%")
+	AddStoreItem("K#IMPORT","%item%",1,1)
+    Continue()
+END
+>>>>>>>>
+ACTION_PHP_EACH item_import_list AS item => dummy BEGIN
+	EXTEND_TOP ~K#TELBGT.BCS~ ~.../K#TELBGT-et.baf~ EVALUATE_BUFFER
+END
+
+/////                                                  \\\\\
 ///// Prepare files needed for save updating           \\\\\
 /////                                                  \\\\\
 
-ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
-	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
-END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
-	OUTER_SPRINT WEIDU_EXECUTABLE ~./EET/weidu~
-END
+//some strings exported from TLK to TRA becomes messed up if the new file overwrites previous one. DELETE command used before exporting doesn't fix it. Only deleting the file via AT_NOW seems to make weidu not screw the output file
 
-AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --traify-tlk --out "%USER_DIRECTORY%/save/saves.tra"~
+OUTER_SET str_min = 271337
+
+ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
+	AT_NOW ~del /f "%USER_DIRECTORY%\save\saves.tra"~ EXACT
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%\save\saves.tra"~
+END ELSE BEGIN
+	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET~
+	AT_NOW ~rm -f %USER_DIRECTORY%/save/saves.tra~ EXACT
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%/save/saves.tra"~
+END
 
 ACTION_IF FILE_EXISTS_IN_GAME ~add_spell.ids~ BEGIN
 	COPY_EXISTING - ~add_spell.ids~ ~.../add_spell.ids~
 END
 
-OUTER_SET string_count = 500000 //request weidu feature to get accurate number without copying the file (32MB limit)
+OUTER_SET str_max = 2999999
 <<<<<<<< .../saves.txt
-%string_count%
+str_min = %str_min%
+str_max = %str_max%
 >>>>>>>>
 COPY + ~.../saves.txt~ ~%USER_DIRECTORY%/save/saves.txt~ EVALUATE_BUFFER
 	PATCH_IF FILE_EXISTS ~.../add_spell.ids~ BEGIN

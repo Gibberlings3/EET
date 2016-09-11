@@ -30,13 +30,23 @@ COPY_EXISTING worldmap.wmp override
       WRITE_LONG   ip + 0x3c $fl#YCOR("%content%")
       PATCH_IF VARIABLE_IS_SET $fl#NAME("%content%") AND $fl#NAME("%content%") STR_CMP "" BEGIN
         SPRINT string $fl#NAME("%content%")
-        SAY_EVALUATED ip + 0x40 "%string%"
+        PATCH_IF VARIABLE_IS_SET $strref_wmp("%content%") BEGIN
+          SPRINT strref $strref_wmp("%content%")
+          WRITE_LONG    ip + 0x40 "%strref%"
+        END ELSE BEGIN
+          SAY_EVALUATED ip + 0x40 "%string%"
+        END
       END ELSE BEGIN
         WRITE_LONG    ip + 0x40 "-1"
       END
       PATCH_IF VARIABLE_IS_SET $fl#TOOL("%content%") AND $fl#TOOL("%content%") STR_CMP "" BEGIN
         SPRINT string $fl#TOOL("%content%")
-        SAY_EVALUATED ip + 0x44 "%string%"
+        PATCH_IF VARIABLE_IS_SET $strref_wmp("%content%") BEGIN
+          SPRINT strref $strref_wmp("%content%")
+          WRITE_LONG    ip + 0x44 "%strref%"
+        END ELSE BEGIN
+          SAY_EVALUATED ip + 0x44 "%string%"
+        END
       END ELSE BEGIN
         WRITE_LONG    ip + 0x44 "-1"
       END

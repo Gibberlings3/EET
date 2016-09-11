@@ -7,34 +7,32 @@
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
 /////                                                  \\\\\
-///// EET_SAY                                          \\\\\
+///// SAVE_SAY                                          \\\\\
 /////                                                  \\\\\
 
-DEFINE_PATCH_MACRO ~EET_SAY~ BEGIN
-	READ_LONG offset "StrRef"
-	PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-		SAY offset ( AT "StrRef" )
-		//SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
+DEFINE_PATCH_MACRO ~SAVE_SAY~ BEGIN
+	READ_LONG offset "strref"
+	PATCH_IF ((strref >= str_min) AND (strref <= str_max)) BEGIN
+		SAY offset ( AT "strref" )
+		//SPRINT log ~%log%  SAY %offset% @%strref%%LNL%~
 	END
 END
 
 /////                                                  \\\\\
-///// EET_SAY_match                                    \\\\\
+///// SAVE_SAY_match                                   \\\\\
 /////                                                  \\\\\
 
-DEFINE_PATCH_MACRO ~EET_SAY_match~ BEGIN
-	READ_LONG offset "StrRef"
-	PATCH_IF ((StrRef >= min) AND (StrRef <= max)) BEGIN
-		PATCH_IF ("%fx_type%" = 267) BEGIN
-			GET_STRREF StrRef "string_old"
-			SET StrRef_new = RESOLVE_STR_REF ((AT StrRef))
-			GET_STRREF StrRef_new "string_new"
-			PATCH_IF ~%string_old%~ STRING_EQUAL_CASE ~%string_new%~ BEGIN
-				//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
-			END ELSE BEGIN
-				WRITE_LONG offset "%StrRef_new%"
-				//SPRINT log ~%log%  SAY %offset% @%StrRef%%LNL%~
-			END
+DEFINE_PATCH_MACRO ~SAVE_SAY_match~ BEGIN
+	READ_LONG offset "strref"
+	PATCH_IF ((strref >= str_min) AND (strref <= str_max)) BEGIN
+		GET_STRREF strref "string_old"
+		SET strref_new = RESOLVE_STR_REF ((AT strref))
+		GET_STRREF strref_new "string_new"
+		PATCH_IF ~%string_old%~ STR_EQ ~%string_new%~ BEGIN
+			//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+		END ELSE BEGIN
+			WRITE_LONG offset "%strref_new%"
+			//SPRINT log ~%log%  SAY %offset% @%strref%%LNL%~
 		END
 	END
 END
@@ -46,11 +44,11 @@ END
 DEFINE_PATCH_MACRO ~EET_CRE_structure~ BEGIN
 	PATCH_FOR_EACH offset IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
 		SET offset = ("%structure_offset%"+"%offset%")
-		LPM EET_SAY
+		LPM SAVE_SAY
 	END
 	FOR (cnt=0; cnt<99; cnt=cnt+1) BEGIN
 		SET offset = ("%structure_offset%"+0xa4+0x4*cnt)
-		LPM EET_SAY
+		LPM SAVE_SAY
 	END
 	READ_LONG ("%structure_offset%"+0x2c4) "fx_off"
 	READ_LONG ("%structure_offset%"+0x2c8) "fx_cnt"
@@ -58,50 +56,64 @@ DEFINE_PATCH_MACRO ~EET_CRE_structure~ BEGIN
 	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
 		PATCH_IF (eff_ver = 0) BEGIN //EFF v1
 			READ_SHORT ("%structure_offset%"+"%fx_off%"+0x30*cnt) "fx_type"
-			PATCH_IF ("%fx_type%" = 103) //Change Name
-			OR ("%fx_type%" = 139) //Display String
+			PATCH_IF ("%fx_type%" = 139) //Display String
+			OR ("%fx_type%" = 267) //Protection from Display Specific String
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
+				LPM SAVE_SAY_match
+			END ELSE PATCH_IF ("%fx_type%" = 103) //Change Name
 			OR ("%fx_type%" = 180) //Can't Use Item
+			OR ("%fx_type%" = 183) //Apply Effect Itemtype
 			OR ("%fx_type%" = 206) //Protection from Spell
 			OR ("%fx_type%" = 253) //Add Map Marker
 			OR ("%fx_type%" = 254) //Remove Map Marker
-			OR ("%fx_type%" = 267) //Protection from Display Specific String
 			OR ("%fx_type%" = 290) //Change Title
 			OR ("%fx_type%" = 330) //Float text
 			OR ("%fx_type%" = 338) //Disable rest or save
 			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
-				LPM EET_SAY_match
+				LPM SAVE_SAY
+			END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Can't Use Itemtype
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x2c)
+				LPM SAVE_SAY
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x2c)
-				LPM EET_SAY
+				LPM SAVE_SAY
 				READ_LONG ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x8) "ids_target"
 				PATCH_IF (ids_target = 10) BEGIN //Actor's name
 					SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
-					LPM EET_SAY
+					LPM SAVE_SAY
 				END
 			END
 		END ELSE BEGIN //EFF v2
 			READ_LONG ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x8) "fx_type"
-			PATCH_IF ("%fx_type%" = 103) //Change Name
-			OR ("%fx_type%" = 139) //Display String
+			PATCH_IF ("%fx_type%" = 139) //Display String
+			OR ("%fx_type%" = 267) //Protection from Display Specific String
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
+				LPM SAVE_SAY_match
+			END ELSE PATCH_IF ("%fx_type%" = 103) //Change Name
 			OR ("%fx_type%" = 180) //Can't Use Item
+			OR ("%fx_type%" = 183) //Apply Effect Itemtype
 			OR ("%fx_type%" = 206) //Protection from Spell
 			OR ("%fx_type%" = 253) //Add Map Marker
 			OR ("%fx_type%" = 254) //Remove Map Marker
-			OR ("%fx_type%" = 267) //Protection from Display Specific String
 			OR ("%fx_type%" = 290) //Change Title
 			OR ("%fx_type%" = 330) //Float text
 			OR ("%fx_type%" = 338) //Disable rest or save
 			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
-				LPM EET_SAY_match
+				LPM SAVE_SAY
+			END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Can't Use Itemtype
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x40)
+				LPM SAVE_SAY
 			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x40)
-				LPM EET_SAY
+				LPM SAVE_SAY
 				READ_LONG ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x18) "ids_target"
 				PATCH_IF (ids_target = 10) BEGIN //Actor's name
 					SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
-					LPM EET_SAY
+					LPM SAVE_SAY
 				END
 			END
 		END
@@ -441,7 +453,7 @@ DEFINE_PATCH_MACRO ~EET_CRE_fixer~ BEGIN
 			PATCH_IF (VARIABLE_IS_SET $array_spl_glob(~%spell_num%~)) BEGIN
 				TEXT_SPRINT spell_name $array_spl_glob(~%spell_num%~)
 				LPF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
-				PATCH_IF ((~%resref%~ STRING_EQUAL ~%spell_res%~)=0) BEGIN
+				PATCH_IF ((~%resref%~ STRING_EQUAL_CASE ~%spell_res%~)=0) BEGIN
 					PATCH_IF FILE_EXISTS_IN_GAME ~%spell_res%.spl~ BEGIN
 						PATCH_PRINT "Known spell %spell_name% exists under different file name (%spell_res%.SPL)! Reassigning..."
 						WRITE_ASCII ("%structure_offset%" + "%known_off%" + ("%index%" * 0x0c)) ~%spell_res%~ #8
@@ -473,7 +485,7 @@ DEFINE_PATCH_MACRO ~EET_CRE_fixer~ BEGIN
 			PATCH_IF (VARIABLE_IS_SET $array_spl_glob(~%spell_num%~)) BEGIN
 				TEXT_SPRINT spell_name $array_spl_glob(~%spell_num%~)
 				LPF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
-				PATCH_IF ((~%resref%~ STRING_EQUAL ~%spell_res%~)=0) BEGIN
+				PATCH_IF ((~%resref%~ STRING_EQUAL_CASE ~%spell_res%~)=0) BEGIN
 					PATCH_IF FILE_EXISTS_IN_GAME ~%spell_res%.spl~ BEGIN
 						PATCH_PRINT "Memorized spell %spell_name% exists under different file name (%spell_res%.SPL)! Reassigning..."
 						WRITE_ASCII ("%structure_offset%" + "%mem_off%" + ("%index%" * 0x0c)) ~%spell_res%~ #8
@@ -501,8 +513,8 @@ END
 LOAD_TRA ~%USER_DIRECTORY%/save/saves.tra~
 
 COPY - ~%USER_DIRECTORY%/save/saves.txt~ ~%USER_DIRECTORY%/save~
-	SET min = 1
-	READ_2DA_ENTRY 0 0 1 "max"
+	READ_2DA_ENTRY 0 2 3 "str_min"
+	READ_2DA_ENTRY 1 2 3 "str_max"
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*([0-9]+)[ %TAB%]+([.]+)~ BEGIN
 		SPRINT $array_spl_glob("%MATCH1%") "%MATCH2%"
 	END ~~
@@ -545,7 +557,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 					//READ_LONG ("%party_offset%"+0x160*i+0x8) "structure_length"
 					//most powerful foe vanquished
 					SET offset = ("%party_offset%"+0x160*i+0xe4)
-					LPM EET_SAY
+					LPM SAVE_SAY
 					//favorite spells
 					
 					//fixer
@@ -561,7 +573,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 					//READ_LONG ("%nonparty_offset%"+0x160*i+0x8) "structure_length"
 					//most powerful foe vanquished
 					SET offset = ("%nonparty_offset%"+0x160*i+0xe4)
-					LPM EET_SAY
+					LPM SAVE_SAY
 					//favorite spells
 					
 					//fixer
@@ -576,7 +588,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 					READ_LONG ("%journal_offset%"+0xc*i+0xb) "source_tlk"
 					PATCH_IF (source_tlk = 0xff) BEGIN
 						SET offset = ("%journal_offset%"+0xc*i)
-						LPM EET_SAY
+						LPM SAVE_SAY
 					END
 				END
 			BUT_ONLY
@@ -613,7 +625,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 						FOR (i=0; i<"%info_cnt%"; ++i) BEGIN
 							PATCH_FOR_EACH add_off IN 0x64 0xb8 BEGIN
 								SET offset = ("%info_off%"+0xc4*i+"%add_off%") //Information text (for info points), Name
-								LPM EET_SAY
+								LPM SAVE_SAY
 							END
 						END
 						//Containers
@@ -621,7 +633,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 						READ_SHORT 0x74 "contain_cnt"
 						FOR (i=0; i<"%contain_cnt%"; ++i) BEGIN
 							SET offset = ("%contain_off%"+0xc0*i+0x84) //Lockpick string
-							LPM EET_SAY
+							LPM SAVE_SAY
 						END
 						//Doors
 						READ_LONG 0xa8 "door_off"
@@ -629,7 +641,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 						FOR (i=0; i<"%door_cnt%"; ++i) BEGIN
 							PATCH_FOR_EACH add_off IN 0x98 0xb4 BEGIN
 								SET offset = ("%door_off%"+0xc8*i+"%add_off%") //Lockpick string, Dialog speaker name
-								LPM EET_SAY
+								LPM SAVE_SAY
 							END
 						END
 						//Automap Notes
@@ -637,7 +649,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 						READ_LONG 0xc8 "note_cnt"
 						FOR (i=0; i<"%note_cnt%"; ++i) BEGIN
 							SET offset = ("%note_off%"+0x34*i+0x4) //Note text
-							LPM EET_SAY
+							LPM SAVE_SAY
 						END
 						//Projectile traps
 						READ_LONG 0xcc "pro_off"
@@ -647,35 +659,35 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 							READ_LONG ("%pro_off%"+0x1c*i+0x8) "pro_emb_off"
 							PATCH_IF (pro_emb_off != 0) BEGIN
 								SET offset = ("%pro_emb_off%"+0x30) //String
-								LPM EET_SAY
+								LPM SAVE_SAY
 							END
 						END
 						//Rest Interruptions
 						READ_LONG 0xc0 "rest_off"
 						FOR (i=0; i<10; ++i) BEGIN
 							SET offset = ("%rest_off%"+0x4*i+0x20) //Interruption explanation text (10*0x4)
-							LPM EET_SAY
+							LPM SAVE_SAY
 						END
 					END
 					/////                                                  \\\\\
 					///// STO                                              \\\\\
 					/////                                                  \\\\\
-					PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.STO$~)=0) BEGIN
+					ELSE PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.STO$~)=0) BEGIN
 						//PATCH_PRINT ~Editing *%SAV_FILE%* ...~
 						LPM EET_STO_fixer
 						SET offset = 0xc //Name
-						LPM EET_SAY
+						LPM SAVE_SAY
 						READ_LONG 0x4c "drink_off"
 						READ_SHORT 0x50 "drink_cnt"
 						FOR (i=0; i<"%drink_cnt%"; ++i) BEGIN
 							SET offset = ("%drink_off%"+0x14*i+0x8) //Drink name
-							LPM EET_SAY
+							LPM SAVE_SAY
 						END
 					END
 					/////                                                  \\\\\
 					///// WMP                                              \\\\\
 					/////                                                  \\\\\
-					PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.WMP$~)=0) BEGIN
+					ELSE PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.WMP$~)=0) BEGIN
 						//PATCH_PRINT ~Editing *%SAV_FILE%* ...~
 						READ_LONG 0xc "mapentry_off"
 						READ_LONG ("%mapentry_off%"+0x20) "areaentry_num"
@@ -683,7 +695,7 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 						FOR (i=0; i<"%areaentry_num%"; ++i) BEGIN
 							PATCH_FOR_EACH add_off IN 0x40 0x44 BEGIN
 								SET offset = ("%areaentry_off%"+0xf0*i+"%add_off%") //Name (caption), Name (tooltips)
-								LPM EET_SAY
+								LPM SAVE_SAY
 							END
 						END
 						// local wmp arrays
@@ -699,39 +711,38 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 			BUT_ONLY
 			// replacing old worldmap with new worldmap and removing not existing resources
 			COPY ~%dir%/baldur.sav~ ~%dir%~ //can't be added into previous patching block
-				PATCH_IF (SOURCE_SIZE >= 8) BEGIN
+				PATCH_IF (SOURCE_SIZE >= 0x8) BEGIN
 					READ_ASCII 0 sig ( 8 )
 					PATCH_IF (~%sig%~ STRING_EQUAL ~SAV V1.0~) BEGIN
-						SET curOfs = 8
+						SET curOfs = 0x8
 						WHILE (curOfs < SOURCE_SIZE) BEGIN // scanning resource entries...
 							READ_LONG curOfs lenFileName //Length of filename
-							READ_ASCII (curOfs + 4) fileName ( lenFileName ) NULL //Filename (length specified by previous field)
-							READ_LONG (curOfs + lenFileName + 8) lenCompressed //Compressed data length
-							SET entrySize = lenFileName + lenCompressed + 12
+							READ_ASCII (curOfs + 0x4) fileName ( lenFileName ) NULL //Filename (length specified by previous field)
+							READ_LONG (curOfs + lenFileName + 0x8) lenCompressed //Compressed data length
+							SET entrySize = lenFileName + lenCompressed + 0xc
 							//remove not existing resources
 							PATCH_IF (NOT FILE_EXISTS_IN_GAME ~%fileName%~) AND (~%fileName%~ STRING_CONTAINS_REGEXP ~\.[Tt][Oo][HhTt]$~) BEGIN
 								PATCH_PRINT ~%fileName% issue: does not exist in game! Removing file...~
 								// remove header and data from the BALDUR.SAV
 								DELETE_BYTES curOfs entrySize
 								SET SOURCE_SIZE = SOURCE_SIZE - entrySize
-							END
-							PATCH_IF ((~%fileName%~ STRING_CONTAINS_REGEXP ~\.[Ww][Mm][Pp]$~)=0) BEGIN
+							END ELSE PATCH_IF ((~%fileName%~ STRING_CONTAINS_REGEXP ~\.[Ww][Mm][Pp]$~)=0) BEGIN
 								// remove header and data from the BALDUR.SAV
-								DELETE_BYTES (curOfs + lenFileName + 12) lenCompressed
+								DELETE_BYTES (curOfs + lenFileName + 0xc) lenCompressed
 								// inserting new data to the BALDUR.SAV
 								PHP_EACH array_wmp_glob AS x => y BEGIN
 									PATCH_IF ~%x%~ STRING_EQUAL_CASE ~%fileName%~ BEGIN
 										SPRINT uncLen "%x_1%"
 										SPRINT compLen "%x_2%"
-										WRITE_LONG (curOfs + lenFileName + 4) uncLen
-										WRITE_LONG (curOfs + lenFileName + 8) compLen
-										INSERT_BYTES (curOfs + lenFileName + 12) compLen
-										WRITE_ASCIIE (curOfs + lenFileName + 12) ~%y%~ //%wmpData%
+										WRITE_LONG (curOfs + lenFileName + 0x4) uncLen
+										WRITE_LONG (curOfs + lenFileName + 0x8) compLen
+										INSERT_BYTES (curOfs + lenFileName + 0xc) compLen
+										WRITE_ASCIIE (curOfs + lenFileName + 0xc) ~%y%~ //%wmpData%
 									END
 								END
 								// optional if we want to continue scanning for other files
 								SET SOURCE_SIZE = SOURCE_SIZE + compLen - lenCompressed
-								SET entrySize = lenFileName + compLen + 12
+								SET entrySize = lenFileName + compLen + 0xc
 								SET curOfs = curOfs + entrySize
 								// terminate WHILE loop
 								//SET curOfs = SOURCE_SIZE

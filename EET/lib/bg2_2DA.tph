@@ -9,45 +9,30 @@ COPY_EXISTING ~KITLIST.2DA~ ~override~
 	PATCH_PRINT ~kit_index = %kit_index%~
 BUT_ONLY
 
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_kitStrref BEGIN
+	MATCH1 => strref1
+	MATCH2 => strref2
+	MATCH3 => strref3
+END
+
 COPY - ~EET/temp/array/KITLIST.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 3 "cntrow2"
-	FOR (cnt = 1; cnt < "%cntrow2%"; cnt = cnt + 1) BEGIN
+	COUNT_2DA_ROWS 3 "cntrow"
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 3 "kit_num"
 		READ_2DA_ENTRY cnt 1 3 "name"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~KITLIST.2DA~ ~^[0-9]+[ ]+%name%[ ]~)) BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~^[0-9]+[ ]+%name%[ ]+\([0-9\*\-]+\)[ ]+\([0-9\*\-]+\)[ ]+\([0-9\*\-]+\)[ ]+\(.+\)[ ]+[A-Za-z0-9]+$~ BEGIN
 				PATCH_PRINT ~Patching KITLIST.2DA: %name%~
 				SET kit_index = kit_index + 1
-				PATCH_IF (NOT IS_AN_INT ~%MATCH1%~) BEGIN
-					SPRINT strref1 ~*~
-				END ELSE PATCH_IF (%MATCH1% >= 0) AND (%MATCH1% <= StrRef_cutoff) BEGIN
-					SET strref1 = RESOLVE_STR_REF ((AT MATCH1))
-				END ELSE BEGIN
-					PATCH_IF (%MATCH1% != ~-1~) BEGIN
-						PATCH_WARN ~WARNING: %MATCH1% string out of TLK range~
+				PHP_EACH table_2DA_kitStrref AS match => var BEGIN
+					SPRINT strref EVAL ~%%match%%~
+					PATCH_IF (NOT IS_AN_INT strref) BEGIN
+						SPRINT EVAL ~%var%~ ~*~
+					END ELSE BEGIN
+						LPF ~EET_strref~ INT_VAR str = strref RET str END
+						SPRINT EVAL ~%var%~ ~%str%~
 					END
-					SPRINT strref1 ~-1~
-				END
-				PATCH_IF (NOT IS_AN_INT ~%MATCH2%~) BEGIN
-					SPRINT strref2 ~*~
-				END ELSE PATCH_IF (%MATCH2% >= 0) AND (%MATCH2% <= StrRef_cutoff) BEGIN
-					SET strref2 = RESOLVE_STR_REF ((AT MATCH2))
-				END ELSE BEGIN
-					PATCH_IF (%MATCH2% != ~-1~) BEGIN
-						PATCH_WARN ~WARNING: %MATCH2% string out of TLK range~
-					END
-					SPRINT strref2 ~-1~
-				END
-				PATCH_IF (NOT IS_AN_INT ~%MATCH3%~) BEGIN
-					SPRINT strref3 ~*~
-				END ELSE PATCH_IF (%MATCH3% >= 0) AND (%MATCH3% <= StrRef_cutoff) BEGIN
-					SET strref3 = RESOLVE_STR_REF ((AT MATCH3))
-				END ELSE BEGIN
-					PATCH_IF (%MATCH3% != ~-1~) BEGIN
-						PATCH_WARN ~WARNING: %MATCH3% string out of TLK range~
-					END
-					SPRINT strref3 ~-1~
 				END
 				INNER_ACTION BEGIN
 					COPY_EXISTING - ~KIT.IDS~ ~override~
@@ -60,8 +45,7 @@ COPY - ~EET/temp/array/KITLIST.2DA~ ~EET/temp/array~
 									REPLACE_TEXTUALLY ~^0x~ ~0x0000~
 								END
 								PATCH_PRINT ~%name% KITIDS = %ids_index_sprint%~
-							END
-							~%MATCH1% %name%~
+							END ~%MATCH1% %name%~
 						END ELSE BEGIN
 							SPRINT ids_index_sprint ~~
 							PATCH_WARN ~WARNING: %name% kit was not found in kit.ids~
@@ -73,8 +57,7 @@ COPY - ~EET/temp/array/KITLIST.2DA~ ~EET/temp/array~
 						OUTER_SPRINT log_remapped_kit ~%log_remapped_kit%%TAB%%kit_num%%TAB%=>%TAB%%kit_index%%TAB%%slash%%slash%%name%%LNL%~
 					END
 				END
-			END
-			~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint%~
+			END ~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint%~
 		END
 	END
 COPY_EXISTING ~KITLIST.2DA~ ~override~
@@ -104,8 +87,7 @@ ACTION_FOR_EACH file IN CLASWEAP ABCLASRQ ABCLSMOD ABDCDSRQ ABDCSCRQ ALIGNMNT DU
 						END
 						PRINT ~%name% %MATCH1% appended to %SOURCE_FILE%~
 					END
-				END
-				~%name% %MATCH1%~
+				END ~%name% %MATCH1%~
 			END
 		END
 	COPY_EXISTING ~%file%.2DA~ ~override~
@@ -132,8 +114,7 @@ ACTION_FOR_EACH file IN FALLEN LUABBR NUMWSLOT TRAPLIMT HPCLASS BEGIN
 						END
 						PRINT ~%name% %MATCH1% appended to %SOURCE_FILE%~
 					END
-				END
-				~%name% %MATCH1%~
+				END ~%name% %MATCH1%~
 			END
 		END
 	COPY_EXISTING ~%file%.2DA~ ~override~
@@ -148,7 +129,6 @@ ACTION_FOR_EACH file IN WEAPPROF CLASCOLR CLASISKL THIEFSCL CLASTHAC BEGIN
 		REPLACE_TEXTUALLY ~^ $~ ~~
 		COUNT_2DA_ROWS 3 "cntrow"
 	BUT_ONLY
-
 	COPY - ~EET/temp/array/%file%.2DA~ ~EET/temp/array~
 		PRETTY_PRINT_2DA
 		REPLACE_TEXTUALLY ~$~ ~ ~
@@ -180,36 +160,29 @@ ACTION_FOR_EACH file IN WEAPPROF CLASCOLR CLASISKL THIEFSCL CLASTHAC BEGIN
 END
 
 ACTION_BASH_FOR ~EET/temp/array~ ~^K_.+$~ BEGIN
+	COPY_EXISTING ~%BASH_FOR_RES%.2DA~ ~override~
+		PRETTY_PRINT_2DA
+		COUNT_2DA_ROWS 2 "cntrow"
+		READ_2DA_ENTRY (cntrow - 1) 0 2 "col1"
+	BUT_ONLY
 	COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_FILESPEC%~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_ROWS 2 "cntrow"
 		FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-			SET noupdate = 0
 			//READ_2DA_ENTRY cnt 0 2 "col1"
 			READ_2DA_ENTRY cnt 1 2 "col2"
-			SPRINT match ~%col2%~ SPRINT res ~kit~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
-			INNER_ACTION BEGIN
-				COPY_EXISTING ~%BASH_FOR_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-					COUNT_2DA_ROWS 2 "cntrow2"
-					READ_2DA_ENTRY (cntrow2 - 1) 0 2 "col1"
-					SET col1 = col1 + 1
-					FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-						READ_2DA_ENTRY cnt2 1 2 "compareWith"
-						PATCH_IF (("%col2%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-							SET noupdate = 1
-						END
-					END
-				BUT_ONLY
-				ACTION_IF ("%noupdate%" = 0) BEGIN
+			SPRINT match ~%col2%~ SPRINT res ~kit~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%BASH_FOR_RES%.2DA~ ~^[0-9]+[ ]+%col2%$~)) BEGIN
+				INNER_ACTION BEGIN
+					OUTER_SET col1 = col1 + 1
 					APPEND ~%BASH_FOR_RES%.2DA~ ~%col1% %col2%~
-					PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
+					PRINT ~%col1% %col2% appended to %BASH_FOR_RES%.2DA~
 				END
-				COPY_EXISTING ~%BASH_FOR_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
+	COPY_EXISTING ~%BASH_FOR_RES%.2DA~ ~override~
+		PRETTY_PRINT_2DA
+	BUT_ONLY
 END
 
 /////                                                  \\\\\
@@ -217,20 +190,20 @@ END
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_charsnd BEGIN
-	~FEMALE~ => ~BGMAINF~
-	~MALE~ => ~BGMAINM~
-	~FEMALE1~ => ~BGFEML1~
-	~FEMALE2~ => ~BGFEML2~
-	~FEMALE3~ => ~BGFEML3~
-	~FEMALE4~ => ~BGFEML4~
-	~FEMALE5~ => ~BGFEML5~
-	~FEMALE6~ => ~BGFEML6~
-	~MALE1~ => ~BGMALE1~
-	~MALE2~ => ~BGMALE2~
-	~MALE3~ => ~BGMALE3~
-	~MALE4~ => ~BGMALE4~
-	~MALE5~ => ~BGMALE5~
-	~MALE6~ => ~BGMALE6~
+	FEMALE => BGMAINF
+	MALE => BGMAINM
+	FEMALE1 => BGFEML1
+	FEMALE2 => BGFEML2
+	FEMALE3 => BGFEML3
+	FEMALE4 => BGFEML4
+	FEMALE5 => BGFEML5
+	FEMALE6 => BGFEML6
+	MALE1 => BGMALE1
+	MALE2 => BGMALE2
+	MALE3 => BGMALE3
+	MALE4 => BGMALE4
+	MALE5 => BGMALE5
+	MALE6 => BGMALE6
 END
 
 <<<<<<<< .../CHARSND.txt
@@ -257,7 +230,7 @@ COPY - ~EET/temp/array/CHARSND.2DA~ ~EET/temp/array~
 			COPY_EXISTING ~CHARSND.2DA~ ~override~//need to be copied each time to reload data for FILE_CONTAINS_EVALUATED
 				READ_2DA_ENTRY_FORMER table_charsnd 0 cnt2 "name"
 				PHP_EACH table_2DA_charsnd AS oldName => newName BEGIN
-					PATCH_IF ~%name%~ STRING_EQUAL_CASE ~%oldName%~ BEGIN
+					PATCH_IF ~%name%~ STR_EQ ~%oldName%~ BEGIN
 						SPRINT name ~%newName%~
 					END
 				END
@@ -272,16 +245,12 @@ COPY - ~EET/temp/array/CHARSND.2DA~ ~EET/temp/array~
 					END
 					FOR (cnt4 = 1; cnt4 < cntrow ; cnt4 = cnt4 + 1) BEGIN
 						READ_2DA_ENTRY_FORMER table_charsnd cnt4 0 "index2"
-						READ_2DA_ENTRY_FORMER table_charsnd cnt4 (cnt2 + 1) "string"
+						READ_2DA_ENTRY_FORMER table_charsnd cnt4 (cnt2 + 1) "strref"
 						PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~CHARSND.2DA~ ~^%index2%~)) BEGIN
 							APPEND_FILE_EVALUATE ~.../CHARSND.txt~
 						END
-						PATCH_IF (string > 0) BEGIN
-							REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 999%string%~
-							REPLACE ~999%string%~ ( AT "string" )
-						END ELSE BEGIN
-							REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 %string%~
-						END
+						LPF ~EET_strref~ INT_VAR str = strref RET str END
+						REPLACE_TEXTUALLY ~^\(%index2% .+\)$~ ~\1 %str%~
 					END
 				END
 			BUT_ONLY
@@ -310,24 +279,14 @@ ACTION_FOR_EACH file IN CLEARAIR CLEARCLD CLEARTRP CLEARWHR BEGIN
 			PRETTY_PRINT_2DA
 			COUNT_2DA_ROWS 2 "cntrow"
 			FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-				SET noupdate = 0
 				READ_2DA_ENTRY cnt 0 2 "col1"
 				READ_2DA_ENTRY cnt 1 2 "col2"
 				PATCH_IF (IS_AN_INT ~%col2%~) BEGIN
 					SET match = col2 + 1 SPRINT res ~ipro~ LPM EET_PCU_outer_res SET col2 = match - 1 SET_2DA_ENTRY cnt 1 2 "%col2%"
-					INNER_ACTION BEGIN
-						COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-							COUNT_2DA_ROWS 2 "cntrow2"
-							FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-								READ_2DA_ENTRY cnt2 0 2 "compareWith"
-								PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-									SET noupdate = 1
-								END
-							END
-						BUT_ONLY
-						ACTION_IF ("%noupdate%" = 0) BEGIN
-							APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
-							PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
+					PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%file%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+						INNER_ACTION BEGIN
+							APPEND ~%file%.2DA~ ~%col1% %col2%~
+							PRINT ~%col1% %col2% appended to %file%.2DA~
 						END
 					END
 				END
@@ -342,12 +301,20 @@ END
 ///// ENTRIES.2DA                                      \\\\\
 /////                                                  \\\\\
 
-/*COPY + ~EET/temp/array/ENTRIES.2DA~ ~EET/temp/array~
+COPY + ~EET/temp/array/ENTRIES.2DA~ ~EET/temp/array~
+	PRETTY_PRINT_2DA
+	SPRINT textToReplace ~^AR3003 .+[%newline%]*AR3004 .+[%newline%]*AR3005 .+[%newline%]*AR3006 .+[%newline%]*AR3007 .+[%newline%]*AR3008 .+[%newline%]*AR3009 .+[%newline%]*AR3010 .+[%newline%]*AR3011 .+[%newline%]*AR3012 .+[%newline%]*AR3013 .+[%newline%]*AR3014 .+[%newline%]*AR3015 .+[%newline%]*AR3019 .+[%newline%]*AR5505 .+[%newline%]*AR6001 .+[%newline%]*AR6002 .+[%newline%]*AR6003 .+[%newline%]*AR6004 .+[%newline%]*AR6008 .+[%newline%]*AR6009 .+[%newline%]*AR6010 .+[%newline%]*AR6011 .+$~
+	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+	PATCH_IF (num_matches > 0) BEGIN
+		REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+	END ELSE BEGIN
+		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+	END
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 10 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 10 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 10 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 10 "col2"
 		READ_2DA_ENTRY cnt 2 10 "col3"
 		READ_2DA_ENTRY cnt 3 10 "col4"
@@ -357,25 +324,16 @@ END
 		READ_2DA_ENTRY cnt 7 10 "col8"
 		READ_2DA_ENTRY cnt 8 10 "col9"
 		READ_2DA_ENTRY cnt 9 10 "col10"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 10 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 10 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10%~
 				PRINT ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
-	END*/
+	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// EXTANIM.2DA                                      \\\\\
@@ -385,22 +343,12 @@ COPY + ~EET/temp/array/EXTANIM.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 20 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		FOR (i = 1; i < 20; i = i + 1) BEGIN
 			READ_2DA_ENTRY cnt (i - 1) 20 "col%i%"
 		END
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 20 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 20 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1)
-					OR ("%col1%" <= 58111 ) BEGIN //0xE240 - 0xE2FF range reserved by Extended Animations
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		//0xE240 - 0xE2FF range reserved by Extended Animations
+		PATCH_IF (col1 > 58111) AND (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% %col11% %col12% %col13% %col14% %col15% %col16% %col17% %col18% %col19% %col20%~
 				PRINT ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% %col11% %col12% %col13% %col14% %col15% %col16% %col17% %col18% %col19% %col20% appended to %SOURCE_FILESPEC%~
 			END
@@ -418,21 +366,11 @@ COPY + ~EET/temp/array/EXTSPEED.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1)
-					OR ("%col1%" <= 58111 ) BEGIN //0xE240 - 0xE2FF range reserved by Extended Animations
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		//0xE240 - 0xE2FF range reserved by Extended Animations
+		PATCH_IF (col1 > 58111) AND (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
 			END
@@ -450,43 +388,25 @@ COPY + ~EET/temp/array/HATERACE.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 4 "col1"
 		READ_2DA_ENTRY cnt 1 4 "col2" //STRREF
 		READ_2DA_ENTRY cnt 2 4 "col3" //IDS
-		SPRINT match ~%col3%~ SPRINT res ~race~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 4 "%match%" SPRINT col3 ~%match%~ END
+		SPRINT match ~%col3%~ SPRINT res ~race~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 4 "%match%" SPRINT col3 ~%match%~ END
 		READ_2DA_ENTRY cnt 3 4 "col4" //STRREF_HELP
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 4 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 2 4 "compareWith"
-					PATCH_IF (("%col3%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					REPLACE_TEXTUALLY ~%col2%~ ~rep_col2~
-					REPLACE_TEXTUALLY ~%col4%~ ~rep_col4~
-				BUT_ONLY
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*[^%TAB% ]+[%TAB% ]+[0-9]+[%TAB% ]+%col3%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				LAF ~EET_strref~ INT_VAR str = col2 RET str END
+				OUTER_SET col2 = str
+				LAF ~EET_strref~ INT_VAR str = col4 RET str END
+				OUTER_SET col4 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4%~
 				PRINT ~%col1% %col2% %col3% %col4% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PATCH_IF ((col2 > 0) AND (col2 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col2%" ( AT "col2" )
-					END
-					PATCH_IF ((col4 > 0) AND (col4 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col4%" ( AT "col4" )
-					END
-					REPLACE_TEXTUALLY ~rep_col2~ ~%col2%~
-					REPLACE_TEXTUALLY ~rep_col4~ ~%col4%~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// HIDESPL.2DA                                      \\\\\
@@ -532,25 +452,14 @@ COPY + ~EET/temp/array/HIDESPL.2DA~ ~EET/temp/array~
     END
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 3 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~spl~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~spl~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 3 "col2"
 		READ_2DA_ENTRY cnt 2 3 "col3"
 		INNER_ACTION BEGIN
 			LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~%col1%~ RET spell_num spell_name END
 			ACTION_IF (FILE_EXISTS ~%patch_dir%/spl/%col1%.spl~) BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-					COUNT_2DA_ROWS 3 "cntrow2"
-					FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-						READ_2DA_ENTRY cnt2 0 3 "compareWith"
-						PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-							SET noupdate = 1
-						END
-					END
-				BUT_ONLY
-				ACTION_IF ("%noupdate%" = 0) BEGIN
+				ACTION_IF (NOT FILE_CONTAINS_EVALUATED (~HIDESPL.2DA~ ~^%col1% ~)) BEGIN
 					APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% 0 0~
 					PRINT ~Patching %SOURCE_FILESPEC%: %col1% %col2% 0 0 appended (%spell_num%%TAB%%spell_name%)~
 					OUTER_SPRINT logHide ~%logHide%##%col1%%TAB%%spell_num%%TAB%%spell_name%%LNL%~
@@ -567,8 +476,8 @@ COPY_EXISTING ~HIDESPL.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-COPY ~.../blank.txt~ ~EET/temp/HIDESPL.txt~
-APPEND_OUTER ~EET/temp/HIDESPL.txt~ ~%logHide%~
+COPY + ~.../blank.txt~ ~EET/temp/HIDESPL.txt~
+APPEND_OUTER + ~EET/temp/HIDESPL.txt~ ~%logHide%~
 
 /////                                                  \\\\\
 ///// IMPORT1-3.2DA                                    \\\\\
@@ -589,39 +498,24 @@ COPY + ~EET/temp/array/ITEM_USE.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 4 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 4 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 4 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 4 "col2"
-		SPRINT match ~%col2%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 4 "%match%" SPRINT col2 ~%match%~ END
+		SPRINT match ~%col2%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 4 "%match%" SPRINT col2 ~%match%~ END
 		READ_2DA_ENTRY cnt 2 4 "col3"
 		READ_2DA_ENTRY cnt 3 4 "col4"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 4 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 4 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					REPLACE_TEXTUALLY ~%col3%~ ~rep_col3~
-				BUT_ONLY
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				LAF ~EET_strref~ INT_VAR str = col3 RET str END
+				OUTER_SET col3 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4%~
 				PRINT ~%col1% %col2% %col3% %col4% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PATCH_IF ((col3 > 0) AND (col3 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col3%" ( AT "col3" )
-					END
-					REPLACE_TEXTUALLY ~rep_col3~ ~%col3%~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// ITEMANIM.2DA                                     \\\\\
@@ -631,29 +525,19 @@ COPY + ~EET/temp/array/ITEMANIM.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// ITEMDIAL.2DA                                     \\\\\
@@ -663,38 +547,23 @@ COPY + ~EET/temp/array/ITEMDIAL.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 3 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 3 "col2"
 		READ_2DA_ENTRY cnt 2 3 "col3"
-		SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 3 "%match%" SPRINT col3 ~%match%~ END
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 3 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 3 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					REPLACE_TEXTUALLY ~%col2%~ ~rep_col2~
-				BUT_ONLY
+		SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 3 "%match%" SPRINT col3 ~%match%~ END
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				LAF ~EET_strref~ INT_VAR str = col2 RET str END
+				OUTER_SET col2 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3%~
 				PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PATCH_IF ((col2 > 0) AND (col2 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col2%" ( AT "col2" )
-					END
-					REPLACE_TEXTUALLY ~rep_col2~ ~%col2%~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// ITEMEXCL.2DA                                     \\\\\
@@ -704,29 +573,19 @@ COPY + ~EET/temp/array/ITEMEXCL.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// MASTAREA.2DA                                     \\\\\
@@ -737,104 +596,85 @@ COPY + ~EET/temp/array/MASTAREA.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~MASTAREA.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~MASTAREA.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				APPEND ~MASTAREA.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to MASTAREA.2DA~
-				COPY_EXISTING ~MASTAREA.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~MASTAREA.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// MONSUM01-07.2DA                                  \\\\\
 /////                                                  \\\\\
 
-COPY + ~EET/temp/array/MONSUM01.2DA~ ~EET/temp/array~
-	~EET/temp/array/MONSUM02.2DA~ ~EET/temp/array~
-	~EET/temp/array/MONSUM03.2DA~ ~EET/temp/array~
-	~EET/temp/array/MONSUM04.2DA~ ~EET/temp/array~
-	~EET/temp/array/MONSUM05.2DA~ ~EET/temp/array~
-	~EET/temp/array/MONSUM06.2DA~ ~EET/temp/array~
-	~EET/temp/array/MONSUM07.2DA~ ~EET/temp/array~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 1 2 "col2"
-		SPRINT match ~%col2%~ SPRINT res ~cre~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				SET col1 = cntrow2
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 1 2 "compareWith"
-					PATCH_IF (("%col2%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
+ACTION_FOR_EACH file IN MONSUM01 MONSUM02 MONSUM03 MONSUM04 MONSUM05 MONSUM06 MONSUM07 BEGIN
+	COPY_EXISTING ~%file%.2DA~ ~override~
+		PRETTY_PRINT_2DA
+		COUNT_2DA_ROWS 2 "cntrow"
+		READ_2DA_ENTRY (cntrow - 1) 0 2 "col1"
+	BUT_ONLY
+	COPY + ~EET/temp/array/%file%.2DA~ ~EET/temp/array~
+		PRETTY_PRINT_2DA
+		COUNT_2DA_ROWS 2 "cntrow"
+		FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+			READ_2DA_ENTRY cnt 1 2 "col2"
+			SPRINT match ~%col2%~ SPRINT res ~cre~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%file%.2DA~ ~^[0-9]+[ ]+%col2%$~)) BEGIN
+				INNER_ACTION BEGIN
+					OUTER_SET col1 = col1 + 1
+					APPEND ~%file%.2DA~ ~%col1% %col2%~
+					PRINT ~%col1% %col2% appended to %file%.2DA~
 				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
-				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
-	END
+	COPY_EXISTING ~%file%.2DA~ ~override~
+		PRETTY_PRINT_2DA
+	BUT_ONLY
+END
 
 /////                                                  \\\\\
 ///// MOVIDESC.2DA                                     \\\\\
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_moviedesc BEGIN
-	"BEREGOST" => "19659"
-	"BG4LOGO" => "20698"
-	"BGENTER" => "19660"
-	"BGSUNRIS" => "62086"
-	"BGSUNSET" => "62087"
-	"BHAAL" => "19661"
-	"BILOGO" => "20699"
-	"BLACKPI_" => "99931833"
-	"BWDRAGON" => "62089"
-	"CAMP" => "19662"
-	"CNDLKEEP" => "19663"
-	"CREDITS" => "15591"
-	"DUNGEON" => "19664"
-	"DURLAG" => "99924075"
-	"ELDRCITY" => "19665"
-	"ENDCRDI_" => "62091"
-	"ENDMOVIE" => "19666"
-	"FRARMINN" => "19667"
-	"GNOLL" => "19668"
-	"INFELOGO" => "62096"
-	"INTRO_" => "19669"
-	"IRONTHRN" => "19670"
-	"MINEFLOD" => "19671"
-	"NASHKELL" => "19672"
-	"PALACE" => "19673"
-	"SEWER" => "19674"
-	"TAVERN" => "19675"
-	"TSRLOGO" => "99920697"
-	"WOTC" => "20697"
-	"WRECK" => "99924076"
-	"WYVERN" => "19676"
+	BEREGOST => 219659
+	BG4LOGO => 220698
+	BGENTER => 219660
+	BGSUNRIS => 262086
+	BGSUNSET => 262087
+	BHAAL => 219661
+	BILOGO => 220699
+	BLACKPI_ => 231833
+	BWDRAGON => 262089
+	CAMP => 219662
+	CNDLKEEP => 219663
+	CREDITS => 215591
+	DUNGEON => 219664
+	DURLAG => 224075
+	ELDRCITY => 219665
+	ENDCRDI_ => 262091
+	ENDMOVIE => 219666
+	FRARMINN => 219667
+	GNOLL => 219668
+	INFELOGO => 262096
+	INTRO_ => 219669
+	IRONTHRN => 219670
+	MINEFLOD => 219671
+	NASHKELL => 219672
+	PALACE => 219673
+	SEWER => 219674
+	TAVERN => 219675
+	TSRLOGO => 220697
+	WOTC => 220697
+	WRECK => 224076
+	WYVERN => 219676
 END
 COPY_EXISTING ~MOVIDESC.2DA~ ~override~
 	PRETTY_PRINT_2DA
@@ -856,10 +696,6 @@ COPY_EXISTING ~MOVIDESC.2DA~ ~override~
 			SET $movidesc("%movie%") = string
 		END
 	END
-	REPLACE ~99931833~ @31833
-	REPLACE ~99924075~ @24075
-	REPLACE ~99920697~ @20697
-	REPLACE ~99924076~ @24076
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -867,36 +703,21 @@ COPY + ~EET/temp/array/MOVIDESC.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~mve~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~mve~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					REPLACE_TEXTUALLY ~%col2%~ ~rep_col2~
-				BUT_ONLY
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				LAF ~EET_strref~ INT_VAR str = col2 RET str END
+				OUTER_SET col2 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PATCH_IF ((col2 > 0) AND (col2 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col2%" ( AT "col2" )
-					END
-					REPLACE_TEXTUALLY ~rep_col2~ ~%col2%~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// MSECTYPE.2DA                                     \\\\\
@@ -906,35 +727,18 @@ COPY + ~EET/temp/array/MSECTYPE.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~MSECTYPE.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				COPY_EXISTING ~MSECTYPE.2DA~ ~override~
-					REPLACE_TEXTUALLY ~%col2%~ ~rep_col2~
-				BUT_ONLY
-				APPEND ~MSECTYPE.2DA~ ~%col1% %col2%~
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				LAF ~EET_strref~ INT_VAR str = col2 RET str END
+				OUTER_SET col2 = str
+				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~MSECTYPE.2DA~ ~override~
-					PATCH_IF ((col2 > 0) AND (col2 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col2%" ( AT "col2" )
-					END
-					REPLACE_TEXTUALLY ~rep_col2~ ~%col2%~
-				BUT_ONLY
 			END
 		END
 	END
-COPY_EXISTING ~MSECTYPE.2DA~ ~override~
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -946,26 +750,18 @@ COPY + ~EET/temp/array/PORTRAIT.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~bmp~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~PORTRAIT.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				APPEND ~PORTRAIT.2DA~ ~%col1% %col2%~
+		SPRINT match ~%col2%~ SPRINT res ~bmp~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
 			END
 		END
 	END
-COPY_EXISTING ~PORTRAIT.2DA~ ~override~
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -995,7 +791,7 @@ ACTION_FOR_EACH file IN RNDTRES RNDTREAS RNDEQUIP RNDMAGIC RNDSCROL RNDWEP BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z0-9#_-]+\)~ BEGIN
 			SPRINT match ~%MATCH1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res
 		END ~%match%~
-		PATCH_IF ~%file%~ STRING_EQUAL_CASE ~RNDTRES~ BEGIN
+		PATCH_IF ~%file%~ STR_EQ ~RNDTRES~ BEGIN
 			COUNT_2DA_ROWS 1 "cntrow"
 			FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 				READ_2DA_ENTRY cnt 0 1 new_name
@@ -1016,23 +812,23 @@ ACTION_FOR_EACH file IN RNDTRES RNDTREAS RNDEQUIP RNDMAGIC RNDSCROL RNDWEP BEGIN
 			END
 			REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+\)\([ ]+[^ ]+[ ]+.+\)$~ BEGIN
 				SET cnt = cnt + 1
-				PATCH_IF (cnt = 10) AND (~%file%~ STRING_EQUAL_CASE ~RNDTREAS~) BEGIN
+				PATCH_IF (cnt = 10) AND (~%file%~ STR_EQ ~RNDTREAS~) BEGIN
 					//no problem since the first row is moved to RNDMAGIC.2DA
 				END ELSE PATCH_IF (cnt > 9) BEGIN
 					PATCH_WARN ~WARNING: %file%.2DA with more than 9 rows~
 				END
-				PATCH_IF (~%file%~ STRING_EQUAL_CASE ~RNDTREAS~) AND (treasMag = 0) BEGIN
+				PATCH_IF (~%file%~ STR_EQ ~RNDTREAS~) AND (treasMag = 0) BEGIN
 					SPRINT appendTo ~RNDMAGIC~
 					SET treasMag = 1
 				END ELSE BEGIN
 					SPRINT appendTo ~%file%~
 				END
 				INNER_ACTION BEGIN
-					ACTION_IF ~%MATCH1%~ STRING_EQUAL_CASE ~AVERAGE~ BEGIN
+					ACTION_IF ~%MATCH1%~ STR_EQ ~AVERAGE~ BEGIN
 						OUTER_SPRINT name ~AVRG~
-					END ELSE ACTION_IF ~%MATCH1%~ STRING_EQUAL_CASE ~WELL_OFF~ BEGIN
+					END ELSE ACTION_IF ~%MATCH1%~ STR_EQ ~WELL_OFF~ BEGIN
 						OUTER_SPRINT name ~WELL~
-					END ELSE ACTION_IF ~%MATCH1%~ STRING_EQUAL_CASE ~WEALTHY~ BEGIN
+					END ELSE ACTION_IF ~%MATCH1%~ STR_EQ ~WEALTHY~ BEGIN
 						OUTER_SPRINT name ~WEAL~
 					END ELSE BEGIN
 						OUTER_SPRINT name ~%MATCH1%~
@@ -1062,7 +858,7 @@ END
 ACTION_PHP_EACH rnd_items AS file => source BEGIN
 	ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%file%.itm~) BEGIN
 		COPY_EXISTING ~RNDTRE01.ITM~ ~override/%file%.itm~
-	END ELSE ACTION_IF (~%source%~ STRING_EQUAL_CASE ~RNDTRES~) BEGIN
+	END ELSE ACTION_IF (~%source%~ STR_EQ ~RNDTRES~) BEGIN
 		WARN ~WARNING: %file%.itm already exists in game, possible conflict~
 	END
 	ACTION_IF (FILE_EXISTS ~%patch_dir%/itm/%file%.itm~) BEGIN
@@ -1088,15 +884,15 @@ END
 			SPRINT filename "%SOURCE_RES%"
 			COUNT_2DA_ROWS 1 "cntrow"
 			FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-				PATCH_IF (~%filename%~ STRING_EQUAL_CASE ~RNDEQUIP~) BEGIN
+				PATCH_IF (~%filename%~ STR_EQ ~RNDEQUIP~) BEGIN
 					SPRINT item ~DEQU~
-				END ELSE PATCH_IF (~%filename%~ STRING_EQUAL_CASE ~RNDMAGIC~) BEGIN
+				END ELSE PATCH_IF (~%filename%~ STR_EQ ~RNDMAGIC~) BEGIN
 					SPRINT item ~DMAG~
-				END ELSE PATCH_IF (~%filename%~ STRING_EQUAL_CASE ~RNDSCROL~) BEGIN
+				END ELSE PATCH_IF (~%filename%~ STR_EQ ~RNDSCROL~) BEGIN
 					SPRINT item ~DSCR~
-				END ELSE PATCH_IF (~%filename%~ STRING_EQUAL_CASE ~RNDTREAS~) BEGIN
+				END ELSE PATCH_IF (~%filename%~ STR_EQ ~RNDTREAS~) BEGIN
 					SPRINT item ~DTRE~
-				END ELSE PATCH_IF (~%filename%~ STRING_EQUAL_CASE ~RNDWEP~) BEGIN
+				END ELSE PATCH_IF (~%filename%~ STR_EQ ~RNDWEP~) BEGIN
 					SPRINT item ~DWEP~
 				END ELSE BEGIN //RNDTRES
 					READ_2DA_ENTRY cnt 0 1 ~new_name~
@@ -1105,7 +901,7 @@ END
 						PATCH_PRINT ~Skipping RNDTRES.2DA patching: already has %new_name% row~
 					END
 				END
-				PATCH_IF (NOT ~%filename%~ STRING_EQUAL_CASE ~RNDTRES~) BEGIN
+				PATCH_IF (NOT ~%filename%~ STR_EQ ~RNDTRES~) BEGIN
 					SET value = cnt + 1
 					PATCH_IF (value < 10) BEGIN
 						SPRINT value ~0%value%~
@@ -1143,41 +939,23 @@ COPY + ~EET/temp/array/SCRPDESC.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 3 "col1"
 		READ_2DA_ENTRY cnt 1 3 "col2"
 		READ_2DA_ENTRY cnt 2 3 "col3"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 3 "cntrow2"
-				FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 3 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					REPLACE_TEXTUALLY ~%col2%~ ~rep_col2~
-					REPLACE_TEXTUALLY ~%col3%~ ~rep_col3~
-				BUT_ONLY
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				LAF ~EET_strref~ INT_VAR str = col2 RET str END
+				OUTER_SET col2 = str
+				LAF ~EET_strref~ INT_VAR str = col3 RET str END
+				OUTER_SET col3 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3%~
 				PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PATCH_IF ((col2 > 0) AND (col2 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col2%" ( AT "col2" )
-					END
-					PATCH_IF ((col3 > 0) AND (col3 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col3%" ( AT "col3" )
-					END
-					REPLACE_TEXTUALLY ~rep_col2~ ~%col2%~
-					REPLACE_TEXTUALLY ~rep_col3~ ~%col3%~
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// SONGLIST.2DA                                     \\\\\
@@ -1220,7 +998,7 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 		READ_2DA_ENTRY cnt 2 3 "col3"
 		SPRINT col3temp ~%col3%~
 		PHP_EACH table_2DA_songlist AS oldName => newName BEGIN
-			PATCH_IF (("%col3temp%" STRING_EQUAL_CASE "%newName%.MUS")=1) BEGIN
+			PATCH_IF ("%col3temp%" STR_EQ "%newName%.MUS") BEGIN
 				SPRINT col3temp ~%oldName%.MUS~
 			END
 		END
@@ -1231,7 +1009,7 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 					COUNT_2DA_ROWS 3 "cntrow2"
 					FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
 						READ_2DA_ENTRY cnt2 2 3 "compareCol3"
-						PATCH_IF (("%col3%" STRING_EQUAL_CASE "%compareCol3%")=1) BEGIN
+						PATCH_IF ("%col3%" STR_EQ "%compareCol3%") BEGIN
 							READ_2DA_ENTRY cnt2 0 3 "compareCol1"
 							PATCH_IF (NOT VARIABLE_IS_SET $remapped_mus(~%col1%~)) BEGIN
 								DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN ~%col1%~ => ~%compareCol1%~ END
@@ -1243,7 +1021,7 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 						END
 					END
 				BUT_ONLY
-				ACTION_IF ("%noupdate%" = 0) BEGIN
+				ACTION_IF (noupdate = 0) BEGIN
 					ACTION_IF (NOT VARIABLE_IS_SET $remapped_mus(~%col1%~)) BEGIN
 						ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN ~%col1%~ => ~%last_entry%~ END
 						OUTER_SPRINT log_remapped_mus ~%log_remapped_mus%%TAB%%col1%%TAB%=>%TAB%%last_entry%%TAB%%slash%%slash%%col2%%LNL%~
@@ -1263,11 +1041,6 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 		END
 	END
 COPY_EXISTING ~SONGLIST.2DA~ ~override~
-	//rearrangements to change music played in menu
-	//REPLACE_TEXTUALLY ~BG2Theme[ %TAB%]+THEME.MUS~ ~pasteOldTheme~
-	//REPLACE_TEXTUALLY ~ThemeT[ %TAB%]+THEMET.mus~ ~BG2Theme THEME.MUS~
-	//REPLACE_TEXTUALLY ~OldTheme[ %TAB%]+oldthm.mus~ ~ThemeT THEMET.mus~
-	//REPLACE_TEXTUALLY ~pasteOldTheme~ ~OldTheme oldthm.mus~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -1289,12 +1062,12 @@ COPY + ~EET/temp/array/SPAWNGRP.2DA~ ~EET/temp/array~
 				COUNT_2DA_COLS "cntcol2"
 				FOR (cnt2 = 0; cnt2 < ("%cntcol2%" - 1); cnt2 = cnt2 + 1) BEGIN
 					READ_2DA_ENTRY 0 cnt2 3 "compareWith"
-					PATCH_IF (("%row1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
+					PATCH_IF ("%row1%" STR_EQ "%compareWith%") BEGIN
 						SET noupdate = 1
 					END
 				END
 			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+			ACTION_IF (noupdate = 0) BEGIN
 				APPEND_COL ~%SOURCE_RES%.2DA~ ~%row1% %row2% %row3% %row4% %row5% %row6% %row7% %row8% %row9% %row10%~
 				PRINT ~%row1% %row2% %row3% %row4% %row5% %row6% %row7% %row8% %row9% %row10% column appended to %SOURCE_FILESPEC%~
 			END
@@ -1323,30 +1096,20 @@ COPY + ~EET/temp/array/SNDRESRF.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		SPRINT match ~%col2%~ SPRINT res ~wav~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		SPRINT match ~%col2%~ SPRINT res ~wav~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
 			END
 		END
 	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// SPELDESC.2DA                                     \\\\\
@@ -1356,36 +1119,19 @@ COPY + ~EET/temp/array/SPELDESC.2DA~ ~EET/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~spl~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~spl~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~SPELDESC.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
-				COPY_EXISTING ~SPELDESC.2DA~ ~override~
-					REPLACE_TEXTUALLY ~%col2%~ ~rep_col2~
-				BUT_ONLY
-				APPEND ~SPELDESC.2DA~ ~%col1% %col2%~
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
+				LAF ~EET_strref~ INT_VAR str = col2 RET str END
+				OUTER_SET col2 = str
+				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-				COPY_EXISTING ~SPELDESC.2DA~ ~override~
-					PATCH_IF ((col2 > 0) AND (col2 <= StrRef_cutoff)) BEGIN
-						REPLACE "%col2%" ( AT "col2" )
-					END
-					REPLACE_TEXTUALLY ~rep_col2~ ~%col2%~
-				BUT_ONLY
 			END
 		END
 	END
-COPY_EXISTING ~SPELDESC.2DA~ ~override~
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -1417,15 +1163,12 @@ COPY - ~EET/temp/array/TOOLTIP.2DA~ ~EET/temp/array~
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SPRINT strings ~~
 		READ_2DA_ENTRY cnt 0 3 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~TOOLTIP.2DA~ ~^%col1%[ ]~)) BEGIN
 			FOR (cnt2 = 1; cnt2 < cntcol; cnt2 = cnt2 + 1) BEGIN
 				READ_2DA_ENTRY cnt cnt2 3 "colx"
-				PATCH_IF (~%colx%~ STRING_EQUAL_CASE ~-1~) BEGIN
-					SPRINT strings ~%strings% %colx% ~
-				END ELSE BEGIN
-					SPRINT strings ~%strings% @%colx% ~
-				END
+				LPF ~EET_strref~ INT_VAR str = colx RET str END
+				SPRINT strings ~%strings% %str% ~
 			END
 			INNER_ACTION BEGIN
 				PRINT ~Patching TOOLTIP.2DA: %col1% %strings%~
@@ -1449,29 +1192,17 @@ COPY + ~EET/temp/array/TRACKING.2DA~ ~EET/temp/array~
 	END
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		INNER_ACTION BEGIN
-			COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-				COUNT_2DA_ROWS 2 "cntrow2"
-				FOR (cnt2 = 1; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 0 2 "compareWith"
-					PATCH_IF (("%col1%" STRING_EQUAL_CASE "%compareWith%")=1) BEGIN
-						SET noupdate = 1
-					END
-				END
-			BUT_ONLY
-			ACTION_IF ("%noupdate%" = 0) BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			INNER_ACTION BEGIN
 				OUTER_PATCH_SAVE col2_new ~%col2%~ BEGIN
 					REPLACE_TEXTUALLY ~O_~ ~~
 				END
-				ACTION_IF ((col2_new > 0) AND (col2_new <= StrRef_cutoff)) BEGIN
-					OUTER_SET strref = RESOLVE_STR_REF ((AT col2_new))
-					OUTER_PATCH_SAVE col2 ~%col2%~ BEGIN
-						REPLACE_TEXTUALLY ~^\(O*_*\)[0-9]+$~ ~\1%strref%~
-					END
+				LAF ~EET_strref~ INT_VAR str = col2_new RET str END
+				OUTER_PATCH_SAVE col2 ~%col2%~ BEGIN
+					REPLACE_TEXTUALLY ~^\(O*_*\)[0-9]+$~ ~\1%str%~
 				END
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
@@ -1537,7 +1268,7 @@ COPY + ~EET/temp/array/ACHIEVEM.2DA~ ~EET/temp/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~var~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~var~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_FILE%~ ~^%col1%[ ]+~)) BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
 			INNER_ACTION BEGIN
@@ -1612,7 +1343,7 @@ COPY + ~EET/temp/array/ITEMSPEC.2DA~ ~EET/temp/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_FILE%~ ~^%col1%[ ]+~)) BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
 			INNER_ACTION BEGIN
@@ -1637,7 +1368,7 @@ COPY + ~EET/temp/array/PARTYAI.2DA~ ~EET/temp/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_FILE%~ ~^%col1%[ ]+~)) BEGIN
 			READ_2DA_ENTRY cnt 1 2 "col2"
 			INNER_ACTION BEGIN
@@ -1717,11 +1448,11 @@ COPY + ~EET/temp/array/SMTABLES.2DA~ ~EET/temp/array~
 					COUNT_2DA_ROWS 4 "cntrow2"
 					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
 						READ_2DA_ENTRY cnt2 1 4 "col2"
-						SPRINT match ~%col2%~ SPRINT res ~cre~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt2 1 4 "%match%" SPRINT col2 ~%match%~ END
+						SPRINT match ~%col2%~ SPRINT res ~cre~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt2 1 4 "%match%" SPRINT col2 ~%match%~ END
 						READ_2DA_ENTRY cnt2 2 4 "col3"
-						SPRINT match ~%col3%~ SPRINT res ~bam~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt2 2 4 "%match%" SPRINT col3 ~%match%~ END
+						SPRINT match ~%col3%~ SPRINT res ~bam~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt2 2 4 "%match%" SPRINT col3 ~%match%~ END
 						READ_2DA_ENTRY cnt2 3 4 "col4"
-						SPRINT match ~%col4%~ SPRINT res ~bam~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col4%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt2 3 4 "%match%" SPRINT col4 ~%match%~ END
+						SPRINT match ~%col4%~ SPRINT res ~bam~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col4%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt2 3 4 "%match%" SPRINT col4 ~%match%~ END
 						PATCH_IF (exists = 1) AND (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_FILE%~ ~^[^ ]+[ ]+%col2%[ ]+~)) BEGIN
 							INNER_ACTION BEGIN
 								APPEND ~%SOURCE_FILE%~ ~%col1% %col2% %col3% %col4%~
@@ -1732,7 +1463,7 @@ COPY + ~EET/temp/array/SMTABLES.2DA~ ~EET/temp/array~
 			END
 		END
 	END
-COPY_EXISTING ~%SOURCE_FILE%~ ~override~
+COPY_EXISTING ~SMTABLES.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -1836,11 +1567,11 @@ COPY + ~EET/temp/2da/BGBANTER.2DA~ ~EET/temp/2da~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+		SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
 		//READ_2DA_ENTRY cnt 2 2 "col3"
-		//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
+		//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
 	END
 	PRETTY_PRINT_2DA
 COPY + ~EET/temp/2da/BDBANTER.2DA~ ~EET/temp/2da~
@@ -1860,27 +1591,31 @@ BUT_ONLY
 
 COPY + ~EET/temp/2da/BGDIALOG.2DA~ ~EET/temp/2da~
 	PRETTY_PRINT_2DA
-	PATCH_FOR_EACH var IN BDRASAAD BDMINSC BDDYNAHE BDKHALID BDJAHEIR BDVICONI BDEDWIN BDNEERA BDDORN BDBAELOT BDVOGHIL BDMKHIIN CORWIN BDCLARA BDSAFANA BDGLINT BDCAELAR BDIMOEN BEGIN
-		REPLACE_TEXTUALLY ~^%var% .*[%newline%]*~ ~~
+	SPRINT textToReplace ~^BDRASAAD .+[%newline%]*BDMINSC .+[%newline%]*BDDYNAHE .+[%newline%]*BDKHALID .+[%newline%]*BDJAHEIR .+[%newline%]*BDVICONI .+[%newline%]*BDEDWIN .+[%newline%]*BDNEERA .+[%newline%]*BDDORN .+[%newline%]*BDBAELOT .+[%newline%]*BDVOGHIL .+[%newline%]*BDMKHIIN .+[%newline%]*CORWIN .+[%newline%]*BDCLARA .+[%newline%]*BDSAFANA .+[%newline%]*BDGLINT .+[%newline%]*BDCAELAR .+[%newline%]*BDIMOEN .+$~
+	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+	PATCH_IF (num_matches > 0) BEGIN
+		REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+	END ELSE BEGIN
+		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 	END
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 4 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 4 "%match%" SPRINT col1 ~%match%~ END
+		SPRINT match ~%col1%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 4 "%match%" SPRINT col1 ~%match%~ END
 		READ_2DA_ENTRY cnt 1 4 "col2"
-		SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 4 "%match%" SPRINT col2 ~%match%~ END
+		SPRINT match ~%col2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 4 "%match%" SPRINT col2 ~%match%~ END
 		READ_2DA_ENTRY cnt 2 4 "col3"
-		SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 4 "%match%" SPRINT col3 ~%match%~ END
+		SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 4 "%match%" SPRINT col3 ~%match%~ END
 		READ_2DA_ENTRY cnt 3 4 "col4"
-		SPRINT match ~%col4%~ SPRINT res ~bcs~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col4%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 3 4 "%match%" SPRINT col4 ~%match%~ END
+		SPRINT match ~%col4%~ SPRINT res ~bcs~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col4%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 3 4 "%match%" SPRINT col4 ~%match%~ END
 		//READ_2DA_ENTRY cnt 4 4 "col5"
-		//SPRINT match ~%col5%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col5%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 4 4 "%match%" SPRINT col5 ~%match%~ END
+		//SPRINT match ~%col5%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col5%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 4 4 "%match%" SPRINT col5 ~%match%~ END
 		//READ_2DA_ENTRY cnt 5 4 "col6"
-		//SPRINT match ~%col6%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col6%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 5 4 "%match%" SPRINT col6 ~%match%~ END
+		//SPRINT match ~%col6%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col6%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 5 4 "%match%" SPRINT col6 ~%match%~ END
 		//READ_2DA_ENTRY cnt 6 4 "col7"
-		//SPRINT match ~%col7%~ SPRINT res ~bcs~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col7%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 6 4 "%match%" SPRINT col7 ~%match%~ END
+		//SPRINT match ~%col7%~ SPRINT res ~bcs~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col7%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 6 4 "%match%" SPRINT col7 ~%match%~ END
 		//READ_2DA_ENTRY cnt 7 4 "col8"
-		//SPRINT match ~%col8%~ SPRINT res ~bcs~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col8%~ STRING_EQUAL_CASE ~%match%~) BEGIN SET_2DA_ENTRY cnt 7 4 "%match%" SPRINT col8 ~%match%~ END
+		//SPRINT match ~%col8%~ SPRINT res ~bcs~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col8%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 7 4 "%match%" SPRINT col8 ~%match%~ END
 	END
 	PRETTY_PRINT_2DA
 
@@ -1901,7 +1636,7 @@ COPY_EXISTING ~STARTARE.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-APPEND_OUTER ~EET/temp/2da/BGSTARTA.2DA~ ~START_MP_XP_CAP 8000000~ UNLESS ~START_MP_XP_CAP~
+APPEND_OUTER + ~EET/temp/2da/BGSTARTA.2DA~ ~START_MP_XP_CAP 8000000~ UNLESS ~START_MP_XP_CAP~
 COPY + ~EET/temp/2da/BGSTARTA.2DA~ ~EET/temp/2da~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~START_AREA[ %TAB%]+AR2600$~ ~START_AREA BG2600~
@@ -1938,14 +1673,20 @@ COPY_EXISTING ~CLASTEXT.2DA~ ~override~
 	//REPLACE_TEXTUALLY ~^ARCHER ~ ~FERALAN ~
 	//REPLACE_TEXTUALLY ~^FALLEN_ARCHER ~ ~FALLEN_FERALAN ~
 	//REPLACE_TEXTUALLY ~^WILD_MAGE ~ ~WILDMAGE ~
+	REPLACE_TEXTUALLY ~ 24230[ ]+24205 ~ ~9559 32088~ //FALLEN_CLERIC
+	REPLACE_TEXTUALLY ~ 24309[ ]+24206 ~ ~25223 32090~ //FALLEN_GODLATHANDER
 	REPLACE_TEXTUALLY ~^\(GRIZZLY_BEAR[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+\)$~ ~\1 -1 -1~
+	COUNT_2DA_ROWS 10 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		SET_2DA_ENTRY cnt 6 10 "-1"
+	END
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
 COPY + ~EET/temp/2da/BGCLATXT.2DA~ ~EET/temp/2da~
 	~EET/temp/2da/SODCLTXT.2DA~ ~EET/temp/2da~
 	PRETTY_PRINT_2DA
-	PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~BGCLATXT~ BEGIN
+	PATCH_IF ~%SOURCE_RES%~ STR_EQ ~BGCLATXT~ BEGIN
 		REPLACE_TEXTUALLY ~^FERALAN ~ ~ARCHER ~
 		REPLACE_TEXTUALLY ~^FALLEN_FERALAN ~ ~FALLEN_ARCHER ~
 		//REPLACE_TEXTUALLY ~^WILD_MAGE ~ ~WILDMAGE ~
@@ -1957,9 +1698,9 @@ COPY + ~EET/temp/2da/BGCLATXT.2DA~ ~EET/temp/2da~
 		END ~%MATCH1%~
 		PATCH_FOR_EACH class IN FIGHTER_MAGE FIGHTER_CLERIC FIGHTER_THIEF FIGHTER_MAGE_THIEF MAGE_THIEF CLERIC_MAGE CLERIC_THIEF FIGHTER_DRUID FIGHTER_MAGE_CLERIC CLERIC_RANGER BEGIN //assign correct biography for multi-class characters
 			REPLACE_EVALUATE CASE_INSENSITIVE ~^\(%class%[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+\)[-0-9]+~ BEGIN
-			END ~%MATCH1% 15889~
+			END ~%MATCH1% 215889~
 		END
-	END ELSE PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SODCLTXT~ BEGIN
+	END ELSE PATCH_IF ~%SOURCE_RES%~ STR_EQ ~SODCLTXT~ BEGIN
 		//REPLACE_TEXTUALLY ~^ARCHER ~ ~FERALAN ~
 		//REPLACE_TEXTUALLY ~^FALLEN_ARCHER ~ ~FALLEN_FERALAN ~
 		REPLACE_TEXTUALLY ~^WILDMAGE ~ ~WILD_MAGE ~
@@ -1978,10 +1719,8 @@ COPY + ~EET/temp/2da/BGCLATXT.2DA~ ~EET/temp/2da~
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		PATCH_FOR_EACH cnt2 IN 3 4 5 6 8 9 BEGIN
 			READ_2DA_ENTRY cnt cnt2 10 "strref"
-			PATCH_IF ((strref > 0) AND (strref <= StrRef_cutoff)) BEGIN
-				SET strref = RESOLVE_STR_REF ((AT strref))
-				SET_2DA_ENTRY cnt cnt2 10 "strref"
-			END
+			LPF ~EET_strref~ INT_VAR str = strref RET str END
+			SET_2DA_ENTRY cnt cnt2 10 "str"
 		END
 	END
 	PRETTY_PRINT_2DA
@@ -1991,7 +1730,11 @@ COPY + ~EET/temp/2da/BGCLATXT.2DA~ ~EET/temp/2da~
 /////                                                  \\\\\
 
 COPY_EXISTING ~RACETEXT.2DA~ ~override~
-	REPLACE 31709 @31709
+	COUNT_2DA_ROWS 6 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		SET_2DA_ENTRY cnt 5 6 "-1"
+	END
+	PRETTY_PRINT_2DA
 BUT_ONLY
 
 COPY + ~EET/temp/2da/BGRACTXT.2DA~ ~EET/temp/2da~
@@ -2001,10 +1744,8 @@ COPY + ~EET/temp/2da/BGRACTXT.2DA~ ~EET/temp/2da~
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		FOR (cnt2 = 2; cnt2 < 6; cnt2 = cnt2 + 1) BEGIN
 			READ_2DA_ENTRY cnt cnt2 6 "strref"
-			PATCH_IF ((strref > 0) AND (strref <= StrRef_cutoff)) BEGIN
-				SET strref = RESOLVE_STR_REF ((AT strref))
-				SET_2DA_ENTRY cnt cnt2 6 "strref"
-			END
+			LPF ~EET_strref~ INT_VAR str = strref RET str END
+			SET_2DA_ENTRY cnt cnt2 6 "str"
 		END
 	END
 	PRETTY_PRINT_2DA
@@ -2064,16 +1805,27 @@ BUT_ONLY
 ///// SAVENAME.2DA                                     \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT savename ~~
-OUTER_SET cnt = 24
-OUTER_FOR (i=4000200; i<=4000214; i=i+1) BEGIN
-	OUTER_SET cnt = cnt + 1
-	OUTER_SET strref = RESOLVE_STR_REF ((AT i))
-	OUTER_SPRINT savename ~%savename%%cnt% %strref% %cnt% 1%LNL%~
-END
-APPEND ~SAVENAME.2DA~ ~%savename%~
+<<<<<<<< .../SAVENAME.2da
+25       232737   25       1
+26       232728   26       1
+27       232731   27       1
+28       232732   28       1
+29       232733   29       1
+30       232734   30       1
+31       232735   31       1
+32       232736   32       1
+33       271101   33       1
+34       271102   34       1
+35       271103   35       1
+36       271104   36       1
+37       271105   37       1
+38       271106   38       1
+39       271107   39       1
+>>>>>>>>
+
 COPY_EXISTING ~SAVENAME.2DA~ ~override~
 	SET_2DA_ENTRY 1 3 4 "1" //4
 	SET_2DA_ENTRY 4 3 4 "1" //4
+	APPEND_FILE ~.../SAVENAME.2da~
 	PRETTY_PRINT_2DA
 BUT_ONLY

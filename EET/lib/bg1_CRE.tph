@@ -1,8 +1,8 @@
 //done after moving to override folder due to READ_SOUNDSET command issue
 
-/////                                                  \\\\\
-///// DV                                               \\\\\
-/////                                                  \\\\\
+/////                                                 \\\\\
+/////DV                                               \\\\\
+/////                                                 \\\\\
 
 COPY_EXISTING ~addy.cre~ ~override~
 	~brenna.cre~ ~override~
@@ -18,50 +18,15 @@ COPY_EXISTING ~addy.cre~ ~override~
 	~sorrel.cre~ ~override~
 	~sugar.cre~ ~override~
 	READ_ASCII 0x280 "DV" (32) NULL
-	PATCH_IF ((NOT ~%DV%~ STRING_EQUAL_CASE ~~) AND (NOT ~%DV%~ STRING_EQUAL_CASE ~%SOURCE_RES%~) AND (NOT ~%DV%~ STRING_EQUAL_CASE ~None~)) BEGIN
+	PATCH_IF ((NOT ~%DV%~ STR_EQ ~~) AND (NOT ~%DV%~ STR_EQ ~%SOURCE_RES%~) AND (NOT ~%DV%~ STR_EQ ~None~)) BEGIN
 		PATCH_WARN ~WARNING: %SOURCE_FILE% uses wrong DV. Patching %DV% -> %SOURCE_FILE%.~
 	END
 	WRITE_ASCIIE 0x280 ~%SOURCE_RES%~ #32 //script name
 BUT_ONLY
 
-/////                                                  \\\\\
-///// Unique items                                     \\\\\
-/////                                                  \\\\\
-
-// Varscona +2; repacing all references except Ribald's with generic +2 sword
-COPY_EXISTING ~E34.CRE~ ~override~
-	//~GREYWO.CRE~ ~override~
-	~VALINO.CRE~ ~override~
-	READ_LONG 0x2bc "itm_off" ELSE 0
-	READ_LONG 0x2c0 "itm_num" ELSE 0
-	FOR (index=0; index<"%itm_num%"; index=index+1) BEGIN // searches through items
-		READ_ASCII ("%itm_off%" + (0x14 * "%index%")) "item"
-		PATCH_IF (("%item%" STRING_EQUAL_CASE "sw1h06")=1) BEGIN // find Varscona
-			WRITE_ASCII ("%itm_off%" + (0x14 * "%index%")) "sw1h41" #8 // replace with Long Sword +2
-			SET "index" = "%itm_num%" // kills loop
-		END
-	END
-BUT_ONLY
-
-/////                                                  \\\\\
-///// Misc fixes                                       \\\\\
-/////                                                  \\\\\
-
-COPY_EXISTING ~NARRAT.CRE~ ~override~
-	WRITE_LONG 0x8 0xffffffff
-	WRITE_LONG 0xc 0xffffffff
-BUT_ONLY
-
-COPY_EXISTING ~NARRAT2.CRE~ ~override~
-	WRITE_LONG 0x8 0xffffffff
-	WRITE_LONG 0xc 0xffffffff
-BUT_ONLY
-
-/////                                                  \\\\\
-///// NPC soundsets                                    \\\\\
-/////                                                  \\\\\
-
-//COPY_EXISTING with "+" because original files are already backed up
+/////                                                 \\\\\
+/////NPC soundsets                                    \\\\\
+/////                                                 \\\\\
 
 //In BG1, the rare selection sounds were at the select_action slots 4 through 7, and could (apparently) be triggered by clicking on the NPC 9 times in a row
 //In BG2 select_action slots 4 through 7 are no longer used as (rare) select_common slots, so they need to be rearranged to select_rare slots
@@ -69,31 +34,36 @@ BUT_ONLY
 //code based on Miloch's code available in DSotSC (without additions from BG2 and changes to INNTEREACT.2DA - these can be added via optional EET tweak component)
 //more information: http://forums.gibberlings3.net/index.php?showtopic=15178
 
+OUTER_SET INSULT1 = 0x154
+OUTER_SET INSULT2 = 0x158
+OUTER_SET INSULT3 = 0x15c
+OUTER_SET RESPONSE_TO_COMPLIMENT1 = 0x180
+
 //BG1 Edwin
 COPY_EXISTING ~EDWIN.CRE~ ~override~
 	~EDWIN2.CRE~ ~override~
 	~EDWIN4.CRE~ ~override~
 	~EDWIN6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 27 * 4) insult3 //SELECT_COMMON2: You are so irritating.
-	READ_LONG (0xa4 + 46 * 4) rinsult2 //INSULT3: Typical response; I wonder if they will prove useful at all
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 59 * 4) rinsult2
+	READ_LONG SELECT_COMMON2 insult3 //You are so irritating.
+	READ_LONG INSULT3 rinsult2 //Typical response; I wonder if they will prove useful at all
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG RESPONSE_TO_INSULT2 rinsult2
 
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: Elminster this, Elminster that...
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: Please don't disturb me...
-	READ_LONG (0xa4 + 38 * 4) rinsult3 //SELECT_ACTION7: They continue under the delusion...
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION5 rare1 //Elminster this, Elminster that...
+	READ_LONG SELECT_ACTION6 rare2 //Please don't disturb me...
+	READ_LONG SELECT_ACTION7 rinsult3 //They continue under the delusion...
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
-	READ_LONG (0xa4 + 42 * 4) rcomp2 //INTERACTION4: 'Tis welcome you find no fault with one such as I.
-	READ_LONG (0xa4 + 43 * 4) rcomp3 //INTERACTION5: Her company is refreshing but I am surprised I find it so.
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
-	WRITE_LONG (0xa4 + 57 * 4) rcomp3
+	READ_LONG INTERACTION4 rcomp2 //'Tis welcome you find no fault with one such as I.
+	READ_LONG INTERACTION5 rcomp3 //Her company is refreshing but I am surprised I find it so.
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
+	WRITE_LONG RESPONSE_TO_COMPLIMENT3 rcomp3
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 22 23 24 25 29 30 31 35 36 37 38 62 69 72 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -103,7 +73,7 @@ OUTER_SPRINT soundset ~bg1imoen~
 LAM READ_SOUNDSET
 OUTER_SET overwrite = 2
 ACTION_FOR_EACH npc IN ~IMOEN.CRE~ ~IMOEN1.CRE~ BEGIN
-	LAM ~EET_write_soundset~
+	LAM WRITE_SOUNDSET
 END
 
 COPY_EXISTING ~IMOEN.CRE~ ~override~
@@ -121,31 +91,31 @@ COPY_EXISTING ~IMOEN.CRE~ ~override~
 
 	//LPF ADD_CRE_EFFECT INT_VAR opcode = 293 /*Set persistent AI*/ target = 1 /*Self*/ parameter2 = 1 /*Stat value*/ timing = 9 /*Instant/Permanent*/ END
 
-	READ_LONG (0xa4 + 9 * 4) bcry4 //BATTLE_CRY1: My blade will cut you down to size!
-	READ_LONG (0xa4 + 29 * 4) insult2 //SELECT_COMMON4: Yer a queer fellow.
-	WRITE_LONG (0xa4 + 12 * 4) bcry4
-	WRITE_LONG (0xa4 + 45 * 4) insult2
+	READ_LONG BATTLE_CRY1 bcry4 //My blade will cut you down to size!
+	READ_LONG SELECT_COMMON4 insult2 //Yer a queer fellow.
+	WRITE_LONG BATTLE_CRY4 bcry4
+	WRITE_LONG INSULT2 insult2
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Do ya wanna tell me a story...
-	READ_LONG (0xa4 + 36 * 4) inter1 //SELECT_ACTION5: I know nothing more, so leave me to go.
-	READ_LONG (0xa4 + 37 * 4) special1 //SELECT_ACTION6: Good on you if you save the day.
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: Back home, Puff-Guts would always tell me a story.
-	WRITE_LONG (0xa4 + 39 * 4) inter1
-	WRITE_LONG (0xa4 + 50 * 4) special1
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //Do ya wanna tell me a story...
+	READ_LONG SELECT_ACTION5 inter1 //I know nothing more, so leave me to go.
+	READ_LONG SELECT_ACTION6 special1 //Good on you if you save the day.
+	READ_LONG SELECT_ACTION7 rare2 //Back home, Puff-Guts would always tell me a story.
+	WRITE_LONG INTERACTION1 inter1
+	WRITE_LONG SPECIAL1 special1
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
-	READ_LONG (0xa4 + 3 * 4) insult1 //UNHAPPY_ANNOYED: Mutton-mongerin' riff-raff.
-	READ_LONG (0xa4 + 3 * 4) rinsult1 //UNHAPPY_ANNOYED: Mutton-mongerin' riff-raff.
-	READ_LONG (0xa4 + 6 * 4) rcomp1 //LEADER: Yer all buffle-headed.
-	READ_LONG (0xa4 + 26 * 4) rinsult2 //SELECT_COMMON1: I care not.
-	WRITE_LONG (0xa4 + 44 * 4) insult1
-	WRITE_LONG (0xa4 + 58 * 4) rinsult1
-	WRITE_LONG (0xa4 + 55 * 4) rcomp1
-	WRITE_LONG (0xa4 + 59 * 4) rinsult2
+	READ_LONG UNHAPPY_ANNOYED insult1 //Mutton-mongerin' riff-raff.
+	READ_LONG UNHAPPY_ANNOYED rinsult1 //Mutton-mongerin' riff-raff.
+	READ_LONG LEADER rcomp1 //Yer all buffle-headed.
+	READ_LONG SELECT_COMMON1 rinsult2 //I care not.
+	WRITE_LONG INSULT1 insult1
+	WRITE_LONG RESPONSE_TO_INSULT1 rinsult1
+	WRITE_LONG RESPONSE_TO_COMPLIMENT1 rcomp1
+	WRITE_LONG RESPONSE_TO_INSULT2 rinsult2
 
 	PATCH_FOR_EACH nm IN 9 10 11 13 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -155,25 +125,25 @@ COPY_EXISTING ~JAHEIR.CRE~ ~override~
 	~JAHEIR4.CRE~ ~override~
 	~JAHEIR6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 27 * 4) rare1 //SELECT_COMMON2: Yes, oh omnipresent authority figure?
-	WRITE_LONG (0xa4 + 63 * 4) rare1
+	READ_LONG SELECT_COMMON2 rare1 //Yes, oh omnipresent authority figure?
+	WRITE_LONG SELECT_RARE1 rare1
 
-	READ_LONG (0xa4 + 35 * 4) rcomp2 //SELECT_ACTION4: What now? Need your pantaloons pressed?!
-	READ_LONG (0xa4 + 36 * 4) common2 //SELECT_ACTION5: By your command.
-	READ_LONG (0xa4 + 37 * 4) day //SELECT_ACTION6: This would be a good place for a henge!
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION7: If a tree falls in the forest...
-	WRITE_LONG (0xa4 + 24 * 4) day
-	WRITE_LONG (0xa4 + 27 * 4) common2
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rcomp2 //What now? Need your pantaloons pressed?!
+	READ_LONG SELECT_ACTION5 common2 //By your command.
+	READ_LONG SELECT_ACTION6 day //This would be a good place for a henge!
+	READ_LONG SELECT_ACTION6 rare2 //If a tree falls in the forest...
+	WRITE_LONG AREA_DAY day
+	WRITE_LONG SELECT_COMMON2 common2
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
+	WRITE_LONG SELECT_RARE2 rare2
 
-	READ_LONG (0xa4 + 42 * 4) insult3 //INTERACTION4: Do you claim to fight evil while you are diabolic yourself?
-	READ_LONG (0xa4 + 47 * 4) rcomp1 //COMPLIMENT1: Seldom do I find so little fault with someone. I hope it lasts.
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 55 * 4) rcomp1
+	READ_LONG INTERACTION4 insult3 //Do you claim to fight evil while you are diabolic yourself?
+	READ_LONG COMPLIMENT1 rcomp1 //Seldom do I find so little fault with someone. I hope it lasts.
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG RESPONSE_TO_COMPLIMENT1 rcomp1
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -183,22 +153,22 @@ COPY_EXISTING ~MINSC.CRE~ ~override~
 	~MINSC4.CRE~ ~override~
 	~MINSC6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Fool me once, shame on you...
-	READ_LONG (0xa4 + 36 * 4) bcry4 //SELECT_ACTION5: When the going gets tough...
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: There be safety in numbers...
-	READ_LONG (0xa4 + 38 * 4) bcry5 //SELECT_ACTION7: Make way evil! I'm armed...
-	WRITE_LONG (0xa4 + 12 * 4) bcry4
-	WRITE_LONG (0xa4 + 13 * 4) bcry5
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //Fool me once, shame on you...
+	READ_LONG SELECT_ACTION5 bcry4 //When the going gets tough...
+	READ_LONG SELECT_ACTION6 rare2 //There be safety in numbers...
+	READ_LONG SELECT_ACTION7 bcry5 //Make way evil! I'm armed...
+	WRITE_LONG BATTLE_CRY4 bcry4
+	WRITE_LONG BATTLE_CRY5 bcry5
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
-	READ_LONG (0xa4 + 41 * 4) insult3 //INTERACTION3: Lay a finger on what I protect and forevermore ye will answer nature's call with a hook!
-	READ_LONG (0xa4 + 43 * 4) special1 //INTERACTION5: Play on, bard! 'Tis sweet music to my furry friend.
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 50 * 4) special1
+	READ_LONG INTERACTION3 insult3 //Lay a finger on what I protect and forevermore ye will answer nature's call with a hook!
+	READ_LONG INTERACTION5 special1 //Play on, bard! 'Tis sweet music to my furry friend.
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG SPECIAL1 special1
 
 	PATCH_FOR_EACH nm IN 10 11 22 24 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -207,20 +177,20 @@ COPY_EXISTING ~VICONI.CRE~ ~override~
 	~VICONI4.CRE~ ~override~
 	~VICONI6_.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) special2 //SELECT_ACTION4: I pity you for your short life span.
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: I am born of a noble race.
-	READ_LONG (0xa4 + 37 * 4) special3 //SELECT_ACTION6: Shar is a goddess of conviction and purpose.
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: I'll go where you wish...
-	WRITE_LONG (0xa4 + 51 * 4) special2
-	WRITE_LONG (0xa4 + 52 * 4) special3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 special2 //I pity you for your short life span.
+	READ_LONG SELECT_ACTION5 rare1 //I am born of a noble race.
+	READ_LONG SELECT_ACTION6 special3 //Shar is a goddess of conviction and purpose.
+	READ_LONG SELECT_ACTION7 rare2 //I'll go where you wish...
+	WRITE_LONG SPECIAL2 special2
+	WRITE_LONG SPECIAL3 special3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
-	READ_LONG (0xa4 + 43 * 4) insult2 //INTERACTION5: If you wish to die, I am pleased to assist.
-	WRITE_LONG (0xa4 + 45 * 4) insult2
+	READ_LONG INTERACTION5 insult2 //If you wish to die, I am pleased to assist.
+	WRITE_LONG INSULT2 insult2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 22 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -229,24 +199,24 @@ COPY_EXISTING ~AJANTI.CRE~ ~override~
 	~AJANTI4.CRE~ ~override~
 	~AJANTI6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 39 * 4) insult2 //INTERACTION1: Your actions fly in the face of everything Helm holds sacred.
-	READ_LONG (0xa4 + 40 * 4) insult3 //INTERACTION2: There is not but good and evil. I suspect you are of the latter.
-	READ_LONG (0xa4 + 41 * 4) rinsult3 //INTERACTION3: Evil must be purged wherever it is found, even among companions.
-	WRITE_LONG (0xa4 + 45 * 4) insult2
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG INTERACTION1 insult2 //Your actions fly in the face of everything Helm holds sacred.
+	READ_LONG INTERACTION2 insult3 //There is not but good and evil. I suspect you are of the latter.
+	READ_LONG INTERACTION3 rinsult3 //Evil must be purged wherever it is found, even among companions.
+	WRITE_LONG INSULT2 insult2
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: We must always strive to be role models to the meek.
-	READ_LONG (0xa4 + 36 * 4) rare2 //SELECT_ACTION5: Duty to one's cause outweighs all.
-	READ_LONG (0xa4 + 37 * 4) bcry2 //SELECT_ACTION6: Evil will always fail against courage and honor.
-	READ_LONG (0xa4 + 38 * 4) bcry3 //SELECT_ACTION7: Evil must be purged without mercy.
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 11 * 4) bcry3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //We must always strive to be role models to the meek.
+	READ_LONG SELECT_ACTION5 rare2 //Duty to one's cause outweighs all.
+	READ_LONG SELECT_ACTION6 bcry2 //Evil will always fail against courage and honor.
+	READ_LONG SELECT_ACTION7 bcry3 //Evil must be purged without mercy.
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG BATTLE_CRY3 bcry3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 12 13 24 25 29 30 31 35 36 37 38 61 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -254,24 +224,24 @@ BUT_ONLY
 COPY_EXISTING ~ALORA.CRE~ ~override~
 	~ALORA6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 34 * 4) rcomp1 //SELECT_ACTION3: Happy to help!
-	READ_LONG (0xa4 + 41 * 4) rcomp2 //INTERACTION3: Everyone is basically decent, once you get them to unwrinkle their faces.
-	READ_LONG (0xa4 + 55 * 4) rinsult3 //RESPONSE_TO_COMPLIMENT1: Oh, someone needs a tickle. Someone needs a tickle! Smile already! Yeesh!
-	WRITE_LONG (0xa4 + 55 * 4) rcomp1
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG SELECT_ACTION3 rcomp1 //Happy to help!
+	READ_LONG INTERACTION3 rcomp2 //Everyone is basically decent, once you get them to unwrinkle their faces.
+	READ_LONG RESPONSE_TO_COMPLIMENT1 rinsult3 //Oh, someone needs a tickle. Someone needs a tickle! Smile already! Yeesh!
+	WRITE_LONG RESPONSE_TO_COMPLIMENT1 rcomp1
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) rcomp3 //SELECT_ACTION4: I'm so sweet I've got rotting teeth and gums!
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: C'mon people now, smile on your brother. Everybody get together, try to love one another right now.
-	READ_LONG (0xa4 + 37 * 4) bcry2 //SELECT_ACTION6: I don't think you're happy enough! I'll teach you to be happy!
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: Happy happy joy joy, happy happy joy joy
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 57 * 4) rcomp3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rcomp3 //I'm so sweet I've got rotting teeth and gums!
+	READ_LONG SELECT_ACTION5 rare1 //C'mon people now, smile on your brother. Everybody get together, try to love one another right now.
+	READ_LONG SELECT_ACTION6 bcry2 //I don't think you're happy enough! I'll teach you to be happy!
+	READ_LONG SELECT_ACTION7 rare2 //Happy happy joy joy, happy happy joy joy
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG RESPONSE_TO_COMPLIMENT3 rcomp3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 11 12 13 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -279,24 +249,24 @@ BUT_ONLY
 COPY_EXISTING ~BRANWE.CRE~ ~override~
 	~BRANWE5.CRE~ ~override~
 
-	READ_LONG (0xa4 + 41 * 4) insult3 //INTERACTION3: Stay well clear of me, you foul speakin' heretic!
-	READ_LONG (0xa4 + 42 * 4) comp2 //INTERACTION4: Tempus would guide your wayward soul, if you let him.
-	READ_LONG (0xa4 + 43 * 4) rinsult3 //INTERACTION5: May Tempus someday show you the error of your ways.
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 48 * 4) comp2
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG INTERACTION3 insult3 //Stay well clear of me, you foul speakin' heretic!
+	READ_LONG INTERACTION4 comp2 //Tempus would guide your wayward soul, if you let him.
+	READ_LONG INTERACTION5 rinsult3 //May Tempus someday show you the error of your ways.
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG COMPLIMENT2 comp2
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) bcry2 //SELECT_ACTION4: 'Tis better to die on your feet, than live on your knees.
-	READ_LONG (0xa4 + 36 * 4) bcry3 //SELECT_ACTION5: May Auril bestow the frost kiss upon our enemies.
-	READ_LONG (0xa4 + 37 * 4) rare1 //SELECT_ACTION6: By Valkur's strapping buttocks.
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: A god's favor is fickle, at best.
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 11 * 4) bcry3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 bcry2 //'Tis better to die on your feet, than live on your knees.
+	READ_LONG SELECT_ACTION5 bcry3 //May Auril bestow the frost kiss upon our enemies.
+	READ_LONG SELECT_ACTION6 rare1 //By Valkur's strapping buttocks.
+	READ_LONG SELECT_ACTION7 rare2 //A god's favor is fickle, at best.
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG BATTLE_CRY3 bcry3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 12 13 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -304,20 +274,20 @@ BUT_ONLY
 COPY_EXISTING ~CORAN.CRE~ ~override~
 	~CORAN5.CRE~ ~override~
 
-	READ_LONG (0xa4 + 42 * 4) insult1 //INTERACTION4: If you weren't such a self serving wench... don't think I'd find you half as attractive.
-	WRITE_LONG (0xa4 + 44 * 4) insult1
+	READ_LONG INTERACTION4 insult1 //If you weren't such a self serving wench... don't think I'd find you half as attractive.
+	WRITE_LONG INSULT1 insult1
 
-	READ_LONG (0xa4 + 35 * 4) bcry2 //SELECT_ACTION4: The storm is always preferable to the calm.
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: The essence of pleasure is spontaneity.
-	READ_LONG (0xa4 + 37 * 4) bcry3 //SELECT_ACTION6: You can't live without a little adventure.
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: Luck is always on the side of the romantic.
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 11 * 4) bcry3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 bcry2 //The storm is always preferable to the calm.
+	READ_LONG SELECT_ACTION5 rare1 //The essence of pleasure is spontaneity.
+	READ_LONG SELECT_ACTION6 bcry3 //You can't live without a little adventure.
+	READ_LONG SELECT_ACTION7 rare2 //Luck is always on the side of the romantic.
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG BATTLE_CRY3 bcry3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 12 13 21 22 23 24 25 29 30 31 35 36 37 38 61 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -327,17 +297,17 @@ COPY_EXISTING ~DYNAHE.CRE~ ~override~
 	~DYNAHE4.CRE~ ~override~
 	~DYNAHE6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Go here! Do that! What about MY needs?
-	READ_LONG (0xa4 + 36 * 4) rinsult2 //SELECT_ACTION5: These boots were made for walking...
-	READ_LONG (0xa4 + 37 * 4) insult2 //SELECT_ACTION6: Who art thou to touch me like you know me?!
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: Watch thee where thy place that pointer!
-	WRITE_LONG (0xa4 + 45 * 4) insult2
-	WRITE_LONG (0xa4 + 59 * 4) rinsult2
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //Go here! Do that! What about MY needs?
+	READ_LONG SELECT_ACTION5 rinsult2 //These boots were made for walking...
+	READ_LONG SELECT_ACTION6 insult2 //Who art thou to touch me like you know me?!
+	READ_LONG SELECT_ACTION7 rare2 //Watch thee where thy place that pointer!
+	WRITE_LONG INSULT2 insult2
+	WRITE_LONG RESPONSE_TO_INSULT2 rinsult2
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 23 24 25 29 30 31 35 36 37 38 49 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -345,22 +315,22 @@ BUT_ONLY
 COPY_EXISTING ~ELDOTH.CRE~ ~override~
 	~ELDOTH5.CRE~ ~override~
 
-	READ_LONG (0xa4 + 26 * 4) insult3 //SELECT_COMMON1: You're so dull.
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	READ_LONG (0xa4 + 43 * 4) rinsult3 //INTERACTION5: Stop your whining wench.
-	WRITE_LONG (0xa4 + 46 * 4) rinsult3
+	READ_LONG SELECT_COMMON1 insult3 //You're so dull.
+	WRITE_LONG INSULT3 insult3
+	READ_LONG INTERACTION5 rinsult3 //Stop your whining wench.
+	WRITE_LONG INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) special1 //SELECT_ACTION4: There is no evil but stupidity.
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: There is no good or evil...
-	READ_LONG (0xa4 + 37 * 4) special2 //SELECT_ACTION6: Only shallow people don't judge by appearance.
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: The first duty in life...
-	WRITE_LONG (0xa4 + 50 * 4) special1
-	WRITE_LONG (0xa4 + 51 * 4) special2
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 special1 //There is no evil but stupidity.
+	READ_LONG SELECT_ACTION5 rare1 //There is no good or evil...
+	READ_LONG SELECT_ACTION6 special2 //Only shallow people don't judge by appearance.
+	READ_LONG SELECT_ACTION7 rare2 //The first duty in life...
+	WRITE_LONG SPECIAL1 special1
+	WRITE_LONG SPECIAL2 special2
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 22 23 24 25 29 30 31 35 36 37 38 61 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -368,17 +338,17 @@ BUT_ONLY
 COPY_EXISTING ~FALDOR.CRE~ ~override~
 	~FALDOR5.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Why must man always despoil...
-	READ_LONG (0xa4 + 36 * 4) rare2 //SELECT_ACTION5: Man is the least grateful...
-	READ_LONG (0xa4 + 37 * 4) insult2 //SELECT_ACTION6: Oak Father, please forgive your wayward brood.
-	READ_LONG (0xa4 + 38 * 4) rinsult3 //SELECT_ACTION7: I am angry, don't talk to me now.
-	WRITE_LONG (0xa4 + 45 * 4) insult2
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //Why must man always despoil...
+	READ_LONG SELECT_ACTION5 rare2 //Man is the least grateful...
+	READ_LONG SELECT_ACTION6 insult2 //Oak Father, please forgive your wayward brood.
+	READ_LONG SELECT_ACTION7 rinsult3 //I am angry, don't talk to me now.
+	WRITE_LONG INSULT2 insult2
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 23 24 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -388,20 +358,20 @@ COPY_EXISTING ~GARRIC.CRE~ ~override~
 	~GARRIC4.CRE~ ~override~
 	~GARRIC6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 43 * 4) special2 //INTERACTION5: A girl of beauty is a joy forever.
-	WRITE_LONG (0xa4 + 51 * 4) special2
+	READ_LONG INTERACTION5 special2 //A girl of beauty is a joy forever.
+	WRITE_LONG SPECIAL2 special2
 
-	READ_LONG (0xa4 + 35 * 4) insult2 //SELECT_ACTION4: Give and spend, and the Gods will send.
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: Make short the miles with talk and smiles.
-	READ_LONG (0xa4 + 37 * 4) special3 //SELECT_ACTION6: Love makes the world go round.
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: Music has charms to soothe the savage breast.
-	WRITE_LONG (0xa4 + 45 * 4) insult2
-	WRITE_LONG (0xa4 + 52 * 4) special3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 insult2 //Give and spend, and the Gods will send.
+	READ_LONG SELECT_ACTION5 rare1 //Make short the miles with talk and smiles.
+	READ_LONG SELECT_ACTION6 special3 //Love makes the world go round.
+	READ_LONG SELECT_ACTION7 rare2 //Music has charms to soothe the savage breast.
+	WRITE_LONG INSULT2 insult2
+	WRITE_LONG SPECIAL3 special3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 23 24 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -411,17 +381,17 @@ COPY_EXISTING ~KAGAIN.CRE~ ~override~
 	~KAGAIN4.CRE~ ~override~
 	~KAGAIN6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: The only thing better than gold...
-	READ_LONG (0xa4 + 36 * 4) insult3 //SELECT_ACTION5: You pugs are starting to piss me off.
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: Gold runs the world kid...
-	READ_LONG (0xa4 + 38 * 4) special3 //SELECT_ACTION7: If I had a copper for every moron...
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 52 * 4) special3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //The only thing better than gold...
+	READ_LONG SELECT_ACTION5 insult3 //You pugs are starting to piss me off.
+	READ_LONG SELECT_ACTION6 rare2 //Gold runs the world kid...
+	READ_LONG SELECT_ACTION7 special3 //If I had a copper for every moron...
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG SPECIAL3 special3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 2 10 11 12 13 22 24 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -431,24 +401,24 @@ COPY_EXISTING ~KHALID.CRE~ ~override~
 	~KHALID4.CRE~ ~override~
 	~KHALID6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 42 * 4) insult2 //INTERACTION4: Usually everyone proves themselves, but there is something... disturbing about you.
-	READ_LONG (0xa4 + 43 * 4) insult3 //INTERACTION5: I had thought none could be so beyond the bounds of goodness. Certainly you need h-help.
-	READ_LONG (0xa4 + 50 * 4) rcomp2 //SPECIAL1: Your honesty is refreshing, but lace it well with tact.
-	WRITE_LONG (0xa4 + 45 * 4) insult2
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
+	READ_LONG INTERACTION4 insult2 //Usually everyone proves themselves, but there is something... disturbing about you.
+	READ_LONG INTERACTION5 insult3 //I had thought none could be so beyond the bounds of goodness. Certainly you need h-help.
+	READ_LONG SPECIAL1 rcomp2 //Your honesty is refreshing, but lace it well with tact.
+	WRITE_LONG INSULT2 insult2
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
 
-	READ_LONG (0xa4 + 35 * 4) special1 //SELECT_ACTION4: If at first I don't succeed...
-	READ_LONG (0xa4 + 36 * 4) special2 //SELECT_ACTION5: Th-Th-That's all, Folks!
-	READ_LONG (0xa4 + 37 * 4) rare1 //SELECT_ACTION6: Ch-ch-ch-... ch-ch-ch-chia
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: Click on someone your own size!
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 52 * 4) special3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 special1 //If at first I don't succeed...
+	READ_LONG SELECT_ACTION5 special2 //Th-Th-That's all, Folks!
+	READ_LONG SELECT_ACTION6 rare1 //Ch-ch-ch-... ch-ch-ch-chia
+	READ_LONG SELECT_ACTION7 rare2 //Click on someone your own size!
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG SPECIAL3 special3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -457,18 +427,18 @@ COPY_EXISTING ~KIVAN.CRE~ ~override~
 	~KIVAN4.CRE~ ~override~
 	~KIVAN6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) rcomp3 //SELECT_ACTION4: There is a time for talk...
-	READ_LONG (0xa4 + 36 * 4) special2 //SELECT_ACTION5: My soul aches for my lost Deheriana.
-	READ_LONG (0xa4 + 37 * 4) rcomp2 //SELECT_ACTION6: We must not waste time on idle chatter.
-	READ_LONG (0xa4 + 38 * 4) special1 //SELECT_ACTION7: My need for revenge gives me strength to go on.
-	WRITE_LONG (0xa4 + 50 * 4) special1
-	WRITE_LONG (0xa4 + 51 * 4) special2
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
-	WRITE_LONG (0xa4 + 57 * 4) rcomp3
-	WRITE_LONG (0xa4 + 63 * 4) rcomp2
-	WRITE_LONG (0xa4 + 64 * 4) rcomp3
+	READ_LONG SELECT_ACTION4 rcomp3 //There is a time for talk...
+	READ_LONG SELECT_ACTION5 special2 //My soul aches for my lost Deheriana.
+	READ_LONG SELECT_ACTION6 rcomp2 //We must not waste time on idle chatter.
+	READ_LONG SELECT_ACTION7 special1 //My need for revenge gives me strength to go on.
+	WRITE_LONG SPECIAL1 special1
+	WRITE_LONG SPECIAL2 special2
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
+	WRITE_LONG RESPONSE_TO_COMPLIMENT3 rcomp3
+	WRITE_LONG SELECT_RARE1 rcomp2
+	WRITE_LONG SELECT_RARE2 rcomp3
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 24 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -478,20 +448,20 @@ COPY_EXISTING ~MONTAR.CRE~ ~override~
 	~MONTAR4.CRE~ ~override~
 	~MONTAR6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 41 * 4) rinsult3 //INTERACTION3: Do ye truly want yer last words to be so stupid?
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG INTERACTION3 rinsult3 //Do ye truly want yer last words to be so stupid?
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: I warrant your attention?!...
-	READ_LONG (0xa4 + 36 * 4) bcry2 //SELECT_ACTION5: Arrrr!
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: Leave me be, lest your head leave yer neck.
-	READ_LONG (0xa4 + 38 * 4) rcomp2 //SELECT_ACTION7: What part of "I'm a loner" do ye not understand?!
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //I warrant your attention?!...
+	READ_LONG SELECT_ACTION5 bcry2 //Arrrr!
+	READ_LONG SELECT_ACTION6 rare2 //Leave me be, lest your head leave yer neck.
+	READ_LONG SELECT_ACTION7 rcomp2 //What part of "I'm a loner" do ye not understand?!
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 11 12 13 22 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -500,20 +470,20 @@ COPY_EXISTING ~QUAYLE_.CRE~ ~override~
 	~QUAYLE4.CRE~ ~override~
 	~QUAYLE6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 32 * 4) bcry1 //SELECT_ACTION1: I'm too smart for this.
-	WRITE_LONG (0xa4 + 9 * 4) bcry1
+	READ_LONG SELECT_ACTION1 bcry1 //I'm too smart for this.
+	WRITE_LONG BATTLE_CRY1 bcry1
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: I am so smart!...
-	READ_LONG (0xa4 + 36 * 4) bcry2 //SELECT_ACTION5: Shake a paw! C'mon, shake a paw!
-	READ_LONG (0xa4 + 37 * 4) insult3 //SELECT_ACTION6: Feel my amazing brain! Go on, touch it!
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: I wile away the hours...
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //I am so smart!...
+	READ_LONG SELECT_ACTION5 bcry2 //Shake a paw! C'mon, shake a paw!
+	READ_LONG SELECT_ACTION6 insult3 //Feel my amazing brain! Go on, touch it!
+	READ_LONG SELECT_ACTION7 rare2 //I wile away the hours...
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 11 12 13 22 24 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -522,24 +492,24 @@ COPY_EXISTING ~SAFANA.CRE~ ~override~
 	~SAFANA4.CRE~ ~override~
 	~SAFANA6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 40 * 4) rinsult3 //INTERACTION2: You have about as much appeal as a rutting owlbear.
-	READ_LONG (0xa4 + 41 * 4) rcomp3 //INTERACTION3: You think I'd surrender myself to the likes of you, that's a laugh.
-	READ_LONG (0xa4 + 33 * 4) bcry1 //SELECT_ACTION2: With pleasure.
-	WRITE_LONG (0xa4 + 9 * 4) bcry1
-	WRITE_LONG (0xa4 + 57 * 4) rcomp3
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG INTERACTION2 rinsult3 //You have about as much appeal as a rutting owlbear.
+	READ_LONG INTERACTION3 rcomp3 //You think I'd surrender myself to the likes of you, that's a laugh.
+	READ_LONG SELECT_ACTION2 bcry1 //With pleasure.
+	WRITE_LONG BATTLE_CRY1 bcry1
+	WRITE_LONG RESPONSE_TO_COMPLIMENT3 rcomp3
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Between two evils I always choose the one I haven't tried.
-	READ_LONG (0xa4 + 36 * 4) rcomp2 //SELECT_ACTION5: I love it when you speak to me that way.
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: When I'm good I'm very very good...
-	READ_LONG (0xa4 + 38 * 4) special1 //SELECT_ACTION7: Everyone in this party is entitled to my opinion.
-	WRITE_LONG (0xa4 + 50 * 4) special1
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //Between two evils I always choose the one I haven't tried.
+	READ_LONG SELECT_ACTION5 rcomp2 //I love it when you speak to me that way.
+	READ_LONG SELECT_ACTION6 rare2 //When I'm good I'm very very good...
+	READ_LONG SELECT_ACTION7 special1 //Everyone in this party is entitled to my opinion.
+	WRITE_LONG SPECIAL1 special1
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 23 24 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -548,17 +518,17 @@ COPY_EXISTING ~SHARTE.CRE~ ~override~
 	~SHARTE4.CRE~ ~override~
 	~SHARTE6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Life is made fun by crushing your enemies.
-	READ_LONG (0xa4 + 36 * 4) insult3 //SELECT_ACTION5: Sometimes the smell of a man makes me sick to my stomach.
-	READ_LONG (0xa4 + 37 * 4) comp2 //SELECT_ACTION6: Steel is the only thing that a woman can depend upon.
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: Men never think with their minds.
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 48 * 4) comp2
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //Life is made fun by crushing your enemies.
+	READ_LONG SELECT_ACTION5 insult3 //Sometimes the smell of a man makes me sick to my stomach.
+	READ_LONG SELECT_ACTION6 comp2 //Steel is the only thing that a woman can depend upon.
+	READ_LONG SELECT_ACTION7 rare2 //Men never think with their minds.
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG COMPLIMENT2 comp2
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 22 23 24 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -566,22 +536,22 @@ BUT_ONLY
 COPY_EXISTING ~SKIE.CRE~ ~override~
 	~SKIE6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 41 * 4) rinsult3 //INTERACTION3: Why do you always have to make fun of me! I hate you! Get away from me!
-	READ_LONG (0xa4 + 48 * 4) happy //COMPLIMENT2: I feel safe with you in the party.
-	WRITE_LONG (0xa4 + 2 * 4) happy
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG INTERACTION3 rinsult3 //Why do you always have to make fun of me! I hate you! Get away from me!
+	READ_LONG COMPLIMENT2 happy //I feel safe with you in the party.
+	WRITE_LONG HAPPY happy
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) rare1 //SELECT_ACTION4: Do you like my perfume.
-	READ_LONG (0xa4 + 36 * 4) rare2 //SELECT_ACTION5: It's been so long since I've had a hot meal.
-	READ_LONG (0xa4 + 37 * 4) bcry1 //SELECT_ACTION6: Lets go shopping!
-	READ_LONG (0xa4 + 38 * 4) special1 //SELECT_ACTION7: I want to go home.
-	WRITE_LONG (0xa4 + 9 * 4) bcry1
-	WRITE_LONG (0xa4 + 50 * 4) special1
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rare1 //Do you like my perfume.
+	READ_LONG SELECT_ACTION5 rare2 //It's been so long since I've had a hot meal.
+	READ_LONG SELECT_ACTION6 bcry1 //Lets go shopping!
+	READ_LONG SELECT_ACTION7 special1 //I want to go home.
+	WRITE_LONG BATTLE_CRY1 bcry1
+	WRITE_LONG SPECIAL1 special1
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 22 23 24 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -590,20 +560,20 @@ COPY_EXISTING ~TIAX.CRE~ ~override~
 	~TIAX4.CRE~ ~override~
 	~TIAX6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 43 * 4) insult2 //INTERACTION5: Tiax and his greatness shall squash you as a bug, you... you... insolent BUG!
-	WRITE_LONG (0xa4 + 45 * 4) insult2
+	READ_LONG INTERACTION5 insult2 //Tiax and his greatness shall squash you as a bug, you... you... insolent BUG!
+	WRITE_LONG INSULT2 insult2
 
-	READ_LONG (0xa4 + 35 * 4) insult3 //SELECT_ACTION4: Ya lil' monkey-spanker.
-	READ_LONG (0xa4 + 36 * 4) special3 //SELECT_ACTION5: When Tiax rules, breeches shall not ride up so wedge-like!
-	READ_LONG (0xa4 + 37 * 4) rare1 //SELECT_ACTION6: Tiax does as ye will, but one day BOOM! He rules!
-	READ_LONG (0xa4 + 38 * 4) rare2 //SELECT_ACTION7: The day comes when TIAX will point and click!
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 52 * 4) special3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 insult3 //Ya lil' monkey-spanker.
+	READ_LONG SELECT_ACTION5 special3 //When Tiax rules, breeches shall not ride up so wedge-like!
+	READ_LONG SELECT_ACTION6 rare1 //Tiax does as ye will, but one day BOOM! He rules!
+	READ_LONG SELECT_ACTION7 rare2 //The day comes when TIAX will point and click!
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG SPECIAL3 special3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -612,22 +582,22 @@ COPY_EXISTING ~XAN_.CRE~ ~override~
 	~XAN4.CRE~ ~override~
 	~XAN6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 32 * 4) rinsult3 //SELECT_ACTION1: Whatever.
-	READ_LONG (0xa4 + 60 * 4) rcomp1 //RESPONSE_TO_INSULT3: I hope what you say was well intentioned.
-	WRITE_LONG (0xa4 + 55 * 4) rcomp1
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG SELECT_ACTION1 rinsult3 //Whatever.
+	READ_LONG RESPONSE_TO_INSULT3 rcomp1 //I hope what you say was well intentioned.
+	WRITE_LONG RESPONSE_TO_COMPLIMENT1 rcomp1
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) bcry2 //SELECT_ACTION4: It is hardly worth the effort of trying.
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: We delude ourselves to think our pitiable band...
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: Let us save our effort and just lie down and die.
-	READ_LONG (0xa4 + 38 * 4) bcry3 //SELECT_ACTION7: I'll do what I can, but expect very little.
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 11 * 4) bcry3
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 bcry2 //It is hardly worth the effort of trying.
+	READ_LONG SELECT_ACTION5 rare1 //We delude ourselves to think our pitiable band...
+	READ_LONG SELECT_ACTION6 rare2 //Let us save our effort and just lie down and die.
+	READ_LONG SELECT_ACTION7 bcry3 //I'll do what I can, but expect very little.
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG BATTLE_CRY3 bcry3
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 12 13 23 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
@@ -637,41 +607,41 @@ COPY_EXISTING ~XZAR_.CRE~ ~override~
 	~XZAR4.CRE~ ~override~
 	~XZAR6.CRE~ ~override~
 
-	READ_LONG (0xa4 + 35 * 4) rcomp2 //SELECT_ACTION4: Tell me 'bout the rabbits.
-	READ_LONG (0xa4 + 36 * 4) rare1 //SELECT_ACTION5: Those the gods wish to destroy, they first make mad!
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: I ate his liver with a nice Chianti and some fava beans.
-	READ_LONG (0xa4 + 38 * 4) bcry2 //SELECT_ACTION7: I'll teach yer grandmother to suck eggs!
-	WRITE_LONG (0xa4 + 10 * 4) bcry2
-	WRITE_LONG (0xa4 + 56 * 4) rcomp2
-	WRITE_LONG (0xa4 + 63 * 4) rare1
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 rcomp2 //Tell me 'bout the rabbits.
+	READ_LONG SELECT_ACTION5 rare1 //Those the gods wish to destroy, they first make mad!
+	READ_LONG SELECT_ACTION6 rare2 //I ate his liver with a nice Chianti and some fava beans.
+	READ_LONG SELECT_ACTION7 bcry2 //I'll teach yer grandmother to suck eggs!
+	WRITE_LONG BATTLE_CRY2 bcry2
+	WRITE_LONG RESPONSE_TO_COMPLIMENT2 rcomp2
+	WRITE_LONG SELECT_RARE1 rare1
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 11 12 13 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
 
 //Yeslick
 COPY_EXISTING ~YESLIC.CRE~ ~override~
 
-	READ_LONG (0xa4 + 40 * 4) insult2 //INTERACTION2: 'Twould be good if you tithed a few coins now and then. The favor of gods is worth a few gold.
-	READ_LONG (0xa4 + 42 * 4) rinsult3 //INTERACTION4: Friendships last when gold is long gone. Perhaps you should be a little nicer to the group.
-	READ_LONG (0xa4 + 43 * 4) insult3 //INTERACTION5: I've been through enough without suffering you as well. Begone.
-	READ_LONG (0xa4 + 59 * 4) special2 //RESPONSE_TO_INSULT2: We fight for what's right, but you needn't take such pleasure in it.
-	WRITE_LONG (0xa4 + 45 * 4) insult2
-	WRITE_LONG (0xa4 + 46 * 4) insult3
-	WRITE_LONG (0xa4 + 51 * 4) special2
-	WRITE_LONG (0xa4 + 60 * 4) rinsult3
+	READ_LONG INTERACTION2 insult2 //'Twould be good if you tithed a few coins now and then. The favor of gods is worth a few gold.
+	READ_LONG INTERACTION4 rinsult3 //Friendships last when gold is long gone. Perhaps you should be a little nicer to the group.
+	READ_LONG INTERACTION5 insult3 //I've been through enough without suffering you as well. Begone.
+	READ_LONG RESPONSE_TO_INSULT2 special2 //We fight for what's right, but you needn't take such pleasure in it.
+	WRITE_LONG INSULT2 insult2
+	WRITE_LONG INSULT3 insult3
+	WRITE_LONG SPECIAL2 special2
+	WRITE_LONG RESPONSE_TO_INSULT3 rinsult3
 
-	READ_LONG (0xa4 + 35 * 4) special3 //SELECT_ACTION4: My father was a miner. And my mother was a miner before him.
-	READ_LONG (0xa4 + 36 * 4) rinsult2 //SELECT_ACTION5: Keep yer straw and sticks! Only Stone protects the pigs!
-	READ_LONG (0xa4 + 37 * 4) rare2 //SELECT_ACTION6: You load sixteen tons, what do ya get?...
-	WRITE_LONG (0xa4 + 52 * 4) special3
-	WRITE_LONG (0xa4 + 59 * 4) rinsult2
-	WRITE_LONG (0xa4 + 63 * 4) special3
-	WRITE_LONG (0xa4 + 64 * 4) rare2
+	READ_LONG SELECT_ACTION4 special3 //My father was a miner. And my mother was a miner before him.
+	READ_LONG SELECT_ACTION5 rinsult2 //Keep yer straw and sticks! Only Stone protects the pigs!
+	READ_LONG SELECT_ACTION6 rare2 //You load sixteen tons, what do ya get?...
+	WRITE_LONG SPECIAL3 special3
+	WRITE_LONG RESPONSE_TO_INSULT2 rinsult2
+	WRITE_LONG SELECT_RARE1 special3
+	WRITE_LONG SELECT_RARE2 rare2
 
 	PATCH_FOR_EACH nm IN 10 11 12 13 21 22 25 29 30 31 35 36 37 38 62 BEGIN
-		WRITE_LONG (0xa4 + nm * 4) (0 - 1)
+		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY

@@ -43,12 +43,12 @@ COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 		//PATCH_PRINT ~patch_name = %patch_name%; ;patch_dir = %patch_dir%; patch_ext = %patch_ext%~
 		SET patched = 0
 		INNER_ACTION BEGIN
-			ACTION_IF ~%patch_ext%~ STRING_EQUAL_CASE ~BAF~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~D~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~TP2~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~TPA~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~TPH~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
+			ACTION_IF ~%patch_ext%~ STR_EQ ~BAF~ OR
+				~%patch_ext%~ STR_EQ ~D~ OR
+				~%patch_ext%~ STR_EQ ~TP2~ OR
+				~%patch_ext%~ STR_EQ ~TPA~ OR
+				~%patch_ext%~ STR_EQ ~TPH~ OR
+				~%patch_ext%~ STR_EQ ~TPP~ BEGIN
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
 					REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
 					REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*G[A-Za-z]*([ %TAB%]*"CHAPTER"[ %TAB%]*,[ %TAB%]*"GLOBAL"[ %TAB%]*,[ %TAB%]*\)\([0-9]+\)[ %TAB%]*)~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT, SG, G, GGT, GLT
@@ -93,7 +93,7 @@ ACTION_IF (patch_cnt > 0) BEGIN
 					OUTER_SPRINT tp2_path ~Output~
 				END
 				COPY - ~EET_modConverter/%tp2_path%/%patch_name%~ ~.../Output/%patch_name%~
-					PATCH_IF (~%SOURCE_EXT%~ STRING_EQUAL_CASE ~tp2~) BEGIN
+					PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~tp2~) BEGIN
 						COUNT_REGEXP_INSTANCES CASE_SENSITIVE ~AUTHOR~ valid
 						PATCH_IF (valid > 0) BEGIN
 							COUNT_REGEXP_INSTANCES ~^[ %TAB%]*ALWAYS[ %TAB%]*.*[ %TAB%]*$~ num_matches
@@ -187,7 +187,7 @@ ACTION_IF (patch_cnt > 0) BEGIN
 						END ~%MATCH1%%MATCH2%~
 					END
 				ACTION_IF (patched = 1) BEGIN
-					ACTION_IF (~%tp2_path%~ STRING_EQUAL_CASE ~Input~) BEGIN
+					ACTION_IF (~%tp2_path%~ STR_EQ ~Input~) BEGIN
 						OUTER_SET patch_cnt = patch_cnt + 1
 						OUTER_SET ignore_cnt = ignore_cnt - 1
 					END

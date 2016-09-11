@@ -1,0 +1,2427 @@
+BACKUP ~EET/backup/core~
+AUTHOR ~K4thos (swit)~
+VERSION ~1.0 RC6~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Core EET (game importation)                      \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+LANGUAGE ~English~
+	~en_US~
+	~EET/lang/en_US/prompts.tra~
+	~EET/lang/en_US/setup.tra~
+	~EET/lang/en_US/chapters.tra~
+	~EET/lang/en_US/dialog.tra~
+	~EET/lang/en_US/2da.tra~
+	~EET/lang/en_US/compatibility.tra~
+LANGUAGE ~Polski (Polish)~
+	~pl_PL~
+	~EET/lang/pl_PL/prompts.tra~
+	~EET/lang/pl_PL/setup.tra~
+	~EET/lang/pl_PL/chapters.tra~
+	~EET/lang/pl_PL/dialog.tra~
+	~EET/lang/pl_PL/2da.tra~
+	~EET/lang/pl_PL/compatibility.tra~
+/*LANGUAGE ~Deutsch (German)~
+	~de_DE~
+	~EET/lang/de_DE/prompts.tra~
+	~EET/lang/de_DE/setup.tra~
+	~EET/lang/de_DE/chapters.tra~
+	~EET/lang/de_DE/dialog.tra~
+	~EET/lang/de_DE/2da.tra~
+	~EET/lang/de_DE/compatibility.tra~
+LANGUAGE ~French~
+	~fr_FR~
+	~EET/lang/fr_FR/prompts.tra~
+	~EET/lang/fr_FR/setup.tra~
+	~EET/lang/fr_FR/chapters.tra~
+	~EET/lang/fr_FR/dialog.tra~
+	~EET/lang/fr_FR/2da.tra~
+	~EET/lang/fr_FR/compatibility.tra~
+LANGUAGE ~Spanish~
+	~es_ES~
+	~EET/lang/es_ES/prompts.tra~
+	~EET/lang/es_ES/setup.tra~
+	~EET/lang/es_ES/chapters.tra~
+	~EET/lang/es_ES/dialog.tra~
+	~EET/lang/es_ES/2da.tra~
+	~EET/lang/es_ES/compatibility.tra~*/
+
+BEGIN ~Core EET (game importation)~
+REQUIRE_PREDICATE MOD_IS_INSTALLED ~EET/EET.tp2~ 0 @900009 //This component requires EET initialise component to be installed first
+
+PRINT ~INTERACTIVE = %INTERACTIVE%~
+PRINT ~LANGUAGE = %LANGUAGE%~
+PRINT ~argv[0] = %argv[0]%~
+PRINT ~argv[1] = %argv[1]%~
+
+/////                                                  \\\\\
+///// Common                                           \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../blank.txt
+>>>>>>>>
+
+COPY ~weidu.conf~ ~weidu.conf~
+	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
+	INNER_PATCH_SAVE LANGUAGE_BG2 ~%LANGUAGE_BG2%~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
+			TO_UPPER MATCH1
+		END ~%MATCH1%~
+	END
+	PATCH_PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
+BUT_ONLY
+
+OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
+OUTER_SPRINT slash ~/~
+OUTER_SPRINT quote ~"~
+OUTER_SPRINT tilde "~"
+
+MKDIR ~EET/temp~
+
+COPY - ~.../blank.txt~ ~.../blank.baf~
+
+OUTER_SPRINT tra_path ~EET/lang~
+OUTER_SPRINT temp_dir ~EET/temp~
+OUTER_SPRINT patch_dir ~EET/temp/patch~
+OUTER_SPRINT biff_dir ~EET/temp/biff~
+OUTER_SPRINT backup_dir ~EET/backup~
+OUTER_SPRINT arch_var ~~
+
+OUTER_SPRINT log_remapped_sum ~~
+OUTER_SPRINT log_remapped_kit ~~
+OUTER_SPRINT log_remapped_race ~~
+OUTER_SPRINT log_remapped_class ~~
+OUTER_SPRINT log_remapped_spec ~~
+OUTER_SPRINT log_remapped_ipro ~~
+OUTER_SPRINT log_remapped_mus ~~
+OUTER_SPRINT log_remapped_bam ~~
+OUTER_SPRINT log_remapped_eff ~~
+OUTER_SPRINT log_remapped_itm ~~
+OUTER_SPRINT log_remapped_spl ~~
+OUTER_SPRINT log_remapped_splName ~~
+
+ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+	OUTER_SPRINT os_slash ~\~
+	OUTER_SPRINT exe ~.exe~
+	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
+	OUTER_SPRINT bash_debug ~ 2>&1|EET\bin\win32\mtee.exe EET\temp\bash.debug /A~
+	AT_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
+	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
+		//AT_EXIT ~rmdir /s /q EET\temp~ EXACT
+	END
+<<<<<<<< .../arch_var.bat
+::32/64Bit Switch
+ECHO %PROCESSOR_ARCHITEW6432%|FINDSTR AMD64>NUL && SET arch_var=AMD64 || SET arch_var=x86
+ECHO %arch_var%>EET\temp\arch_var.txt
+>>>>>>>>
+	COPY + ~.../arch_var.bat~ ~EET/temp/arch_var.bat~
+	AT_NOW ~CALL EET\temp\arch_var.bat~
+	COPY - ~EET/temp/arch_var.txt~ ~EET/temp~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~AMD64~ BEGIN
+			SPRINT arch_var ~x86_64\~
+			PATCH_PRINT ~arch_var = %arch_var%~
+		END ~~
+END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+	OUTER_SPRINT os_slash ~/~
+	OUTER_SPRINT exe ~~
+	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET~
+	OUTER_SPRINT bash_debug ~ 2>>EET/temp/bash.debug | tee -a EET/temp/bash.debug~
+	AT_UNINSTALL ~rm -rf EET/temp~ EXACT
+	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
+		AT_EXIT ~rm -rf EET/temp~ EXACT
+	END
+END
+
+OUTER_SPRINT tileconv ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
+OUTER_SPRINT tile2ee ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tile2ee%exe%~
+OUTER_SPRINT ffmpeg ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
+OUTER_SET EET_JOURNAL = 1
+
+ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
+	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGEE.log~
+		REPLACE_TEXTUALLY ~^//.*~ ~~ //removes "Recently uninstalled" lines
+END
+
+/////                                                  \\\\\
+///// Include                                          \\\\\
+/////                                                  \\\\\
+
+COPY - ~EET/other/cpmvars/eet_cpmvars.tpa~ ~.../eet_cpmvars.tpa~
+	~EET/other/EET_functions.tph~ ~.../EET_functions.tph~
+	REPLACE_TEXTUALLY ~\(GAME_IS .eet\)~ ~\1 bg2ee~ //at this point WeiDU thinks it's still BG2:EE installation, unless you're reinstalling the mod
+INCLUDE ~.../eet_cpmvars.tpa~
+INCLUDE ~.../EET_functions.tph~
+
+INCLUDE ~EET/lib/macros.tph~
+INCLUDE ~EET/lib/strref_tables.tph~
+INCLUDE ~EET/lib/bgee_dir.tph~
+INCLUDE ~EET/lib/pcu_dict.tph~
+
+/////                                                  \\\\\
+///// BG2:EE files patching                            \\\\\
+/////                                                  \\\\\
+
+PRINT ~~
+PRINT ~Extracting BG:EE resources...~
+
+/////                                                  \\\\\
+///// prepare BG:EE resources for PCU conversion       \\\\\
+/////                                                  \\\\\
+
+ACTION_FOR_EACH var IN are bcs chr cre dlg eff ini itm pro spl sto vef vvc wed BEGIN
+	PRINT ~~
+	PRINT ~Preparing %var% files...~
+	MKDIR ~%patch_dir%/%var%~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	LAM bash_log
+	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
+		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
+			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/%var%~
+		END
+	END
+	ACTION_IF FILE_EXISTS ~EET/lib/prep_%var%.tph~ BEGIN
+		INCLUDE ~EET/lib/prep_%var%.tph~
+	END
+END
+
+ACTION_FOR_EACH file IN baldur.gam worldmap.wmp bgmap.wmp sodmap.wmp BEGIN
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
+		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%patch_dir%~
+	END ELSE BEGIN
+		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%" --biff-get-rest "%file%"~
+		LAM bash_log
+	END
+END
+
+/////                                                  \\\\\
+///// prepare other BG:EE resources                    \\\\\
+/////                                                  \\\\\
+
+MKDIR ~EET/temp/array~
+	~%bgee_dir%/lang/%LANGUAGE_BG1%/override~
+	~lang/%LANGUAGE_BG2%/sounds~
+	~%biff_dir%/pvrz~
+	~%biff_dir%/eetGui~
+	~EET/SoD_GUI~
+
+ACTION_FOR_EACH dir IN eetTU00 eetOH2 eetOH3 eetOH9 eetBG00 eetBG01 eetBG02 eetBG03 eetBG04 eetBG05 eetBG06 eetBG07 eetBG08 eetBG09 eetBG10 eetBG11 eetBG12 eetBG13 eetBG14 eetBG15 eetBG16 eetBG17 eetBG18 eetBG19 eetBG20 eetBG21 eetBG22 eetBG23 eetBG24 eetBG26 eetBG27 eetBG28 eetBG29 eetBG30 eetBG31 eetBG32 eetBG33 eetBG34 eetBG35 eetBG36 eetBG37 eetBG38 eetBG39 eetBG40 eetBG41 eetBG42 eetBG43 eetBG44 eetBG45 eetBG46 eetBG47 eetBG48 eetBG49 eetBG50 eetBG51 eetBG52 eetBG53 eetBG54 eetBG55 eetBG56 eetBG57 eetBG58 eetBG59 eetBG60 eetBG61 eetBD0 eetBD1 eetBD2 eetBD3 eetBD4 eetBD5 eetBD6 eetBD7 BEGIN
+	MKDIR ~%biff_dir%/%dir%~
+END
+
+ACTION_FOR_EACH var IN bam bmp mos tis pvrz BEGIN
+	PRINT ~~
+	PRINT ~Preparing %var% files...~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "EET%os_slash%temp%os_slash%biff" --biff-get-rest "^.*\.%var%$"~
+	LAM bash_log
+	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
+		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
+			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%~
+		END
+	END
+	ACTION_IF FILE_EXISTS ~EET/lib/prep_%var%.tph~ BEGIN
+		INCLUDE ~EET/lib/prep_%var%.tph~
+	END
+END
+
+ACTION_FOR_EACH var IN 2da /*plt*/ wav wbm wfx BEGIN
+	PRINT ~~
+	PRINT ~Preparing %var% files...~
+	MKDIR ~EET/temp/%var%~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "EET/temp/%var%" --biff-get-rest "^.*\.%var%$"~
+	LAM bash_log
+	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
+		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
+			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~EET/temp/%var%~
+		END
+	END
+	ACTION_IF FILE_EXISTS ~EET/lib/prep_%var%.tph~ BEGIN
+		INCLUDE ~EET/lib/prep_%var%.tph~
+	END
+END
+
+ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids specific.ids spell.ids bgee.lua bgee.sql BEGIN
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
+		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~EET/temp/array~
+	END ELSE BEGIN
+		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "EET/temp/array" --biff-get-rest "%file%"~
+		LAM bash_log
+	END
+END
+
+/////                                                  \\\\\
+///// BG2:EE files patching                            \\\\\
+/////                                                  \\\\\
+
+PRINT ~~
+PRINT ~BG2:EE files patching...~
+
+/////                                                  \\\\\
+///// ADD_PROJECTILE                                   \\\\\
+/////                                                  \\\\\
+
+PRINT ~Adding projectiles...~
+
+COPY_EXISTING ~projectl.ids~ ~override~
+	~missile.ids~ ~override~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+BUT_ONLY
+
+COPY + ~EET/temp/array/missile.ids~ ~EET/temp/array~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+
+COPY + ~EET/temp/array/projectl.ids~ ~EET/temp/array~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	COUNT_2DA_ROWS 2 cntrow
+	FOR (cnt = 0; cnt <= "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		PATCH_IF IS_AN_INT col1 BEGIN
+			SET pro_num_int = col1
+			SET pro_num_int_mis = pro_num_int + 1
+			READ_2DA_ENTRY cnt 1 2 "col2"
+			SPRINT match ~%col2%~ SPRINT res ~pro~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+			INNER_ACTION BEGIN
+				COPY_EXISTING ~projectl.ids~ ~override~
+					REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+					COUNT_REGEXP_INSTANCES ~^%col1% %col2%$~ num_matches
+					PATCH_IF (num_matches = 0) BEGIN
+						COUNT_REGEXP_INSTANCES ~^%pro_num_int% %col2%$~ num_matches
+					END
+					COUNT_REGEXP_INSTANCES ~ %col2%$~ num_matches2
+				BUT_ONLY
+				ACTION_IF (num_matches > 0) BEGIN
+				END ELSE ACTION_IF (num_matches2 > 0) BEGIN
+					COPY_EXISTING - ~projectl.ids~ ~.../projectl.ids~
+						SET updated = 0
+						REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Za-z0-9]+\) %col2%$~ BEGIN
+							PATCH_IF (updated = 0) BEGIN
+								SPRINT pro_num2 ~%MATCH1%~
+								SET pro_num_int2 = pro_num2 + 1
+								PATCH_IF (pro_num_int_mis != pro_num_int2) BEGIN
+									DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN ~%pro_num_int_mis%~ => ~%pro_num_int2%~ END
+									SPRINT log_remapped_ipro ~%log_remapped_ipro%%TAB%%pro_num_int_mis%%TAB%=>%TAB%%pro_num_int2%%TAB%%slash%%slash%%col2%%LNL%~
+								END
+								SET updated = 1
+							END
+						END ~~
+				END ELSE ACTION_IF (NOT FILE_EXISTS ~%patch_dir%/pro/%col2%.pro~) BEGIN
+					PRINT ~Skipping ADD_PROJECTILE: %patch_dir%/pro/%col2%.pro - doesn't exist~
+				END ELSE BEGIN //for some reason ADD_PROJECTILE can't add pro staring with 1
+					ADD_PROJECTILE ~%patch_dir%/pro/%col2%.pro~
+					OUTER_SPRINT ret EVAL ~%%col2%%~
+					/*COPY + ~%backup_dir%/0/UNINSTALL.0~ ~%backup_dir%/0~ //the file is not patched yet
+						REPLACE_TEXTUALLY ~override.%ret%.pro~ ~~
+					DELETE + ~override/%col2%.pro~*/
+					COPY - ~EET/temp/array/missile.ids~ ~.../temp/array/missile.ids~
+						SET updated = 0
+						REPLACE_EVALUATE CASE_INSENSITIVE ~^%pro_num_int_mis% \(.+\)$~ BEGIN
+							PATCH_IF (updated = 0) BEGIN
+								SPRINT mis_anme ~%MATCH1%~
+								PATCH_IF (pro_num_int_mis != ret) BEGIN
+									DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN ~%pro_num_int_mis%~ => ~%ret%~ END
+									SPRINT log_remapped_ipro ~%log_remapped_ipro%%TAB%%pro_num_int_mis%%TAB%=>%TAB%%ret%%TAB%%slash%%slash%%col2%%LNL%~
+								END
+								SET updated = 1
+							END
+						END ~~
+					ACTION_IF (updated = 1) AND (NOT ~%col2%~ STR_EQ ~%mis_anme%~) BEGIN
+						COPY_EXISTING ~missile.ids~ ~override~
+							REPLACE_TEXTUALLY ~^%ret% %col2%$~ ~%ret% %mis_anme%~
+						BUT_ONLY
+						PRINT ~Changed MISSILE.IDS reference name: %col2% -> %mis_anme%~
+					END
+				END
+			END
+		END
+	END
+
+/////                                                  \\\\\
+///// ADD_SPELL                                        \\\\\
+/////                                                  \\\\\
+
+PRINT ~Adding spells...~
+
+COPY_EXISTING ~spell.ids~ ~override~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	REPLACE_TEXTUALLY ~2924 BERESH_CHANGE%LNL%~ ~~ //WIZARD_SUMMON_PLANATAR_EVIL dupe
+	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~ //WIZARD_COMET dupe
+BUT_ONLY
+
+OUTER_SPRINT log ~~
+COPY + ~EET/temp/array/spell.ids~ ~EET/temp/array~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
+	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
+	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	REPLACE_TEXTUALLY ~2924 BERESH_CHANGE%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~
+	COUNT_2DA_ROWS 2 cntrow
+	FOR (cnt = 0; cnt <= "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 idscode
+		PATCH_IF IS_AN_INT idscode BEGIN
+			READ_2DA_ENTRY cnt 1 2 spell_name
+			PATCH_IF (idscode >= 4000) BEGIN
+				SPRINT type ~SPCL~
+				SET spell_type = 4
+			END ELSE PATCH_IF (idscode >= 3000) BEGIN
+				SPRINT type ~SPIN~
+				SET spell_type = 3
+			END ELSE PATCH_IF (idscode >= 2000) BEGIN
+				SPRINT type ~SPWI~
+				SET spell_type = 2
+			END ELSE BEGIN
+				SPRINT type ~SPPR~
+				SET spell_type = 1
+			END
+			INNER_PATCH_SAVE source_res ~%idscode%~ BEGIN
+				REPLACE_TEXTUALLY ~^[1-4]~ ~%type%~
+			END
+			INNER_PATCH_SAVE spell_level ~%idscode%~ BEGIN
+				REPLACE_TEXTUALLY ~^.\(.\).+$~ ~\1~
+			END
+			INNER_ACTION BEGIN
+				ACTION_IF (NOT FILE_EXISTS ~%patch_dir%/spl/%source_res%.spl~) BEGIN
+					PRINT ~Skipping SPELL.IDS reference: %source_res%%TAB%%idscode%%TAB%%spell_name%~
+				END ELSE BEGIN
+					OUTER_SET ref_exists = 0
+					ACTION_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~ %spell_name%$~)) BEGIN
+						LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
+						ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%spell_res%.spl~) BEGIN
+							PRINT ~Resource from SPELL.IDS is referenced but doesn't exist in game: %source_res%%TAB%%idscode%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%~
+						END ELSE ACTION_IF (~%idscode%~ STR_EQ ~%spell_num%~) BEGIN
+							PRINT ~Resource from SPELL.IDS already exists in game: %source_res%%TAB%%idscode%%TAB%%spell_name%~
+							OUTER_SET ref_exists = 1
+						END ELSE BEGIN
+							PRINT ~Resource from SPELL.IDS already exists in game under different ID: %source_res%%TAB%%idscode%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%~
+							OUTER_SPRINT log ~%log%%source_res%%TAB%%idscode%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%%LNL%~
+							OUTER_SET ref_exists = 1
+						END
+						ACTION_IF (ref_exists = 1) BEGIN
+							ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ BEGIN
+								ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+									OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
+										REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
+									END
+									DELETE + ~%BASH_FOR_FILESPEC%~
+									ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
+										ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
+											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+											OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+										END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
+											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+											OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+										END
+									END
+								END
+							END
+						END
+					END
+					ACTION_IF (ref_exists = 0) BEGIN
+						/*ACTION_IF (spell_type = 3) AND (spell_level = 1) BEGIN
+							OUTER_SET spell_level = 2 //not enough level 1 slots
+						END
+						ACTION_IF ~%source_res%~ STR_EQ ~name_of_the_spell~ BEGIN
+							OUTER_SET spell_level = 0 //not enough level 7 slots
+						END*/
+						PRINT ~ADD_SPELL: %patch_dir%/spl/%source_res%.spl %spell_type% %spell_level% %spell_name%~
+						ADD_SPELL ~%patch_dir%/spl/%source_res%.spl~ spell_type spell_level ~%spell_name%~
+						LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
+						PRINT ~Renamed spell: %source_res% -> %spell_res%~
+						OUTER_SPRINT EVAL ~%spell_name%_RES~ ~%spell_res%~
+						ACTION_IF ~%spell_res%~ STRING_CONTAINS_REGEXP ~[A-Z]+[0-9]+~ BEGIN
+							PRINT ~ADD_SPELL failed to add %patch_dir%/spl/%source_res%.spl~
+						END ELSE BEGIN
+							/*COPY + ~%backup_dir%/0/UNINSTALL.0~ ~%backup_dir%/0~ //the file is not patched yet
+								REPLACE_TEXTUALLY ~override.%spell_res%.spl~ ~~
+							DELETE + ~override/%spell_res%.spl~*/
+							ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
+								MKDIR ~%dir%/ADD_SPELL~
+								ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+									OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
+										REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
+									END
+									ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
+										MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
+									END ELSE BEGIN
+										WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
+									END
+									ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
+										ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
+											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+											OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+										END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
+											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+											OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+										END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~bam~ BEGIN
+											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+											OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+										END
+									END
+								END
+							END
+						END
+						COPY_EXISTING ~spell.ids~ ~override~
+							REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~ //just to be sure that ADD_SPELL didn't brake it
+						BUT_ONLY
+					END
+				END
+			END
+		END
+	END
+
+//below code need to be done after all new spells are already present within spell.ids
+
+//expand remaining PCU variables
+COPY + ~.../blank.txt~ ~EET/temp/add_spell_temp.txt~
+APPEND_OUTER + ~EET/temp/add_spell_temp.txt~ ~%log%~
+COPY + ~EET/temp/add_spell_temp.txt~ ~EET/temp~
+	COUNT_2DA_ROWS 3 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 3 "col1" //file name
+		READ_2DA_ENTRY cnt 1 3 "col2" //IDS num
+		READ_2DA_ENTRY cnt 2 3 "col3" //IDS name
+		INNER_ACTION BEGIN
+			ACTION_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~^%col2% ~)) BEGIN
+				LAF RES_NAME_OF_SPELL_NUM INT_VAR spell_num = col2 RET spell_name END
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%spell_name%~ => ~%col3%~ END
+				OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_name%%TAB%=>%TAB%%col3%%TAB%%slash%%slash%%col3%%LNL%~
+			END ELSE BEGIN
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%col2%~ => ~%col3%~ END
+				OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%col2%%TAB%=>%TAB%%col3%%TAB%%slash%%slash%%col3%%LNL%~
+			END
+		END
+	END
+
+ACTION_BASH_FOR ~%patch_dir%/spl/ADD_SPELL~ ~^[A-Z]+[1-4][0-9][0-9].spl$~ BEGIN //loop only through spells added by ADD_SPELL (ignores those just renamed)
+	LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~%BASH_FOR_RES%~ RET spell_num spell_name END
+	OUTER_SET spell_num_sav = spell_num
+	OUTER_SPRINT spell_name_sav ~%spell_name%~
+	COPY - ~EET/temp/array/spell.ids~ ~.../temp/array/spell.ids~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([0-9]+\) %spell_name%$~ BEGIN
+			PATCH_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~^%MATCH1% ~)) BEGIN
+				INNER_ACTION BEGIN
+					LAF RES_NAME_OF_SPELL_NUM INT_VAR spell_num = MATCH1 RET spell_name END
+					ACTION_IF (NOT ~%spell_name%~ STR_EQ ~%spell_name_sav%~) BEGIN
+						ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%spell_name%~ => ~%spell_name_sav%~ END
+						OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_name%%TAB%=>%TAB%%spell_name_sav%%TAB%%slash%%slash%%spell_name_sav%%LNL%~
+					END
+				END
+			END ELSE PATCH_IF (MATCH1 != spell_num_sav) BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%MATCH1%~ => ~%spell_name_sav%~ END
+				SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%MATCH1%%TAB%=>%TAB%%spell_name_sav%%TAB%%slash%%slash%%spell_name_sav%%LNL%~
+			END
+		END ~~
+END
+
+ACTION_FOR_EACH dir IN ~%biff_dir%~ ~%patch_dir%/eff~ ~%patch_dir%/spl~ BEGIN
+	ACTION_BASH_FOR ~%dir%/ADD_SPELL~ ~^.*$~ BEGIN
+		ACTION_IF (FILE_EXISTS ~%dir%/%BASH_FOR_FILE%~) BEGIN
+			WARN ~WARNING: %BASH_FOR_FILESPEC% already exists in %dir%~
+		END
+		COPY + ~%BASH_FOR_FILESPEC%~ ~%dir%~
+	END
+END
+
+/////                                                  \\\\\
+///// Chapter numbers                                  \\\\\
+/////                                                  \\\\\
+
+//changes chapter numbers in BG2 to use EET continuous chapter convention
+ACTION_FOR_EACH var IN BCS DLG BEGIN
+	COPY_EXISTING_REGEXP GLOB ~^.+\.%var%$~ ~override~
+		PATCH_IF (NOT FILE_EXISTS ~EET/temp/patch/%var%/%SOURCE_FILE%~) BEGIN //need to be added before converting BCS and DLG to BAF and D
+			DECOMPILE_AND_PATCH BEGIN
+				REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
+				REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+					SET value = MATCH2 + 12
+					PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %MATCH2% => %MATCH1%%value%)~
+				END
+				~%MATCH1%%value%)~
+				REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
+			END
+		END
+	BUT_ONLY
+END
+
+/////                                                  \\\\\
+///// Patching each group of BG2:EE resources          \\\\\
+/////                                                  \\\\\
+
+////////////////////////
+// Viader's Extended Animations
+////////////////////////
+//0xE240 - 0xE2FF - reserved by Extended Animations
+//0xE330 - 0xE3FF - free
+//0xE440 - 0xE4FF - free
+//0xE530 - 0xE5FF - free
+//0xE620 - 0xE6FF - free
+//0xE730 - 0xE7FF - free
+//0xE850 - 0xE8FF - free
+//0xE920 - 0xE9FF - free
+//0xEA30 - 0xEAFF - free
+//0xEB30 - 0xEBFF - free
+//0xEC30 - 0xECFF - free
+//0xED30 - 0xEDFF - free
+//0xEE20 - 0xEEFF - free
+
+ACTION_FOR_EACH var IN IDS TLK 2DA CRE BCS DLG BEGIN
+	PRINT ~Patching BG2:EE %var% files~
+	INCLUDE ~EET/lib/bg2_%var%.tph~
+END
+
+/////                                                  \\\\\
+///// LUA / MENU BG2:EE patching                       \\\\\
+/////                                                  \\\\\
+
+//no point in patching UI.MENU
+COPY ~EET/base/lua/UI_BG2.MENU~ ~override/UI.MENU~
+
+COPY ~EET/base/lua/UI_SoD.MENU~ ~EET/SoD_GUI/UI.MENU~
+
+OUTER_SPRINT L_LUA ~~
+ACTION_FOR_EACH entry IN EET_CMP_TEXT_BG1 EET_CMP_TEXT_SOD EET_CMP_TEXT_SOA EET_CMP_TEXT_TOB EET_CMP_TEXT_BP1 EET_CMP_TEXT_BP2 EET_CMP_TEXT_TUT EET_CMP_TITLE_BG1 EET_CMP_TITLE_SOD EET_CMP_TITLE_SOA EET_CMP_TITLE_TOB EET_CMP_TITLE_BP1 EET_CMP_TITLE_BP2 EET_CMP_TITLE_TUT EET_WARNING_TITLE EET_WARNING_TEXT EET_CHAPTER_8 EET_CHAPTER_9 EET_CHAPTER_10 EET_CHAPTER_11 EET_CHAPTER_12 BEGIN
+	ACTION_IF (~%entry%~ STR_EQ ~EET_CMP_TEXT_BG1~) BEGIN
+		OUTER_SET cnt = 4000100
+	END ELSE ACTION_IF (~%entry%~ STR_EQ ~EET_CHAPTER_8~) BEGIN
+		OUTER_SET cnt = 2000059
+	END
+	OUTER_SPRINT string (AT cnt)
+	OUTER_PATCH_SAVE string ~%string%~ BEGIN
+		REPLACE_TEXTUALLY ~%LNL%~ ~\n~
+		REPLACE_TEXTUALLY ~"~ ~\"~
+	END
+	OUTER_SPRINT L_LUA ~%L_LUA%%LNL%%TAB%%entry% = "%string%",~
+	OUTER_SET cnt = cnt + 1
+END
+
+COPY ~EET/base/lua/M_EET.lua~ ~override~
+	REPLACE_TEXTUALLY ~\(eetStrings = {\)~ ~\1
+%L_LUA%~
+
+COPY_EXISTING ~BGEE.LUA~ ~override~
+	REPLACE_TEXTUALLY ~chapterBackgrounds\[[0-9]+\][ %TAB%]*=[ %TAB%]*"GUICHP.+"[%newline%]*~ ~~
+	REPLACE_TEXTUALLY ~{'intro',.+[%newline%]*~ ~~
+	REPLACE_TEXTUALLY ~{'blackpit',.+[%newline%]*~ ~~
+	REPLACE_TEXTUALLY ~{'sodcin0[1-3]',.+[%newline%]*~ ~~
+	REPLACE_TEXTUALLY ~JOURNAL_MODE_EDIT = 3,~ ~JOURNAL_MODE_EDIT = 3,
+	
+	START_CAMPAIGN_BG1 = 1,
+	START_CAMPAIGN_SOD = 2,
+	START_CAMPAIGN_SOA = 3,
+	START_CAMPAIGN_TOB = 4,
+	START_CAMPAIGN_BP1 = 5,
+	START_CAMPAIGN_BP2 = 6,
+	START_CAMPAIGN_TUT = 7,~
+	REPLACE_TEXTUALLY ~styles[ %TAB%]*=[%newline%]*{~ ~styles =
+{
+	gamelog_sod =
+	{
+		color = 'B',
+		font = 'POSTANTI',
+		point = 12,
+		useFontZoom = 1,
+		valign = 'top',
+		halign = 'left',
+	},
+
+	normal_sod =
+	{
+		color = 'B',
+		font = 'MODESTOM',
+		point = 14,
+		useFontZoom = 1,
+		valign = 'top',
+		halign = 'left',
+	},
+	normal_parchment_sod =
+	{
+		color = '5',
+		font = 'POSTANTI',
+		point = 12,
+		useFontZoom = 1,
+		valign = 'top',
+		halign = 'left',
+	},
+	title_sod =
+	{
+		color = '1',
+		font = 'SHERWOOD',
+		point = 20,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'center',
+	},
+	parchment_sod = 
+	{
+		color = '5',
+		font = 'POSTANTI' ,
+		point = 12,
+		useFontZoom = 1,
+		valign = 'top',
+		halign = 'left',
+	},
+	button_sod =
+	{
+		color = 'B',
+		font = 'MODESTOM' ,
+		point = 18,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'center',
+		upper = 1,
+		pad = {8,8,8,8},
+	},
+	label_sod =
+	{
+		color = 'B',
+		font = 'MODESTOM',
+		point = 14,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'center',
+	},
+	label_parchment_sod =
+	{
+		color = '5',
+		font = 'POSTANTI',
+		point = 12,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'center',
+	},
+	button_parchment_sod =
+	{
+		color = '5',
+		font = 'POSTANTI',
+		point = 12,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'center',
+		pad = {0,5,0,0},
+	},
+	edit_sod =
+	{
+		color = 'B',
+		font = 'MODESTOM',
+		point = 14,
+		useFontZoom = 1,
+		valign = 'top',
+		halign = 'left',
+	},
+	edit_parchment_sod =
+	{
+		color = '5',
+		font = 'POSTANTI',
+		point = 12,
+		useFontZoom = 1,
+		valign = 'top',
+		halign = 'left',
+	},
+	list_sod =
+	{
+		color = 'B',
+		font = 'STONESML',
+		point = 18,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'left',
+	},
+	list_parchment_sod =
+	{
+		color = '5',
+		font = 'POSTANTI',
+		point = 12,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'left',
+	},
+	gold_sod =
+	{
+		color = '$',
+		font = 'MODESTOM',
+		point = 12,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'center',
+	},
+	label_loadname_sod =
+	{
+		color = 'B',
+		font = 'MODESTOM',
+		point = 20,
+		useFontZoom = 0,
+		valign = 'center',
+		halign = 'center',
+	},~
+BUT_ONLY
+
+COPY + ~EET/temp/array/BGEE.lua~ ~EET/temp/array~
+	//REPLACE_TEXTUALLY ~--{'sodcin0~ ~{'sodcin0~ //http://redmine.beamdog.com/issues/24733
+	REPLACE_TEXTUALLY ~'intro', 719, 779,~ ~'intro', 569, 629,~
+	REPLACE_TEXTUALLY ~'intro', 809, 869,~ ~'intro', 618, 668,~
+	REPLACE_TEXTUALLY ~'intro', 889, 959,~ ~'intro', 669, 741,~
+	REPLACE_TEXTUALLY ~'intro', 949, 989,~ ~'intro', 760, 820,~
+	REPLACE_TEXTUALLY ~{'BDSHAM1L', 1}~ ~{'BDSHAM1', 1}~
+	REPLACE_TEXTUALLY ~{'BDORCM1L', 1}~ ~{'BDORCM1', 1}~
+	REPLACE_TEXTUALLY ~{'BDSHAF1L', 2}~ ~{'BDSHAF1', 2}~
+	REPLACE_TEXTUALLY ~{'BDORCF1L', 2}~ ~{'BDORCF1', 2}~
+	SPRINT addDLC_var ~~
+	SPRINT addDLCContent_var ~~
+	SPRINT filenames_stringrefs_var ~~
+	SPRINT chapterBackgrounds_var ~~
+	SPRINT createQuest_var ~~
+	SPRINT createEntry_var ~~
+	//SPRINT portraits_var ~~ //check if this will be fixed in future: http://redmine.beamdog.com/issues/21516
+	SPRINT portraits_var ~	{'YANNER4', 1},
+	{'YANNER5', 1},
+	{'YANNER6', 1},
+	{'YANNER1', 2},
+	{'YANNER2', 2},
+	{'YANNER3', 2},
+	{'OHHEXX', 2},
+~
+	SPRINT movies_var ~~
+	PATCH_INCLUDE ~EET/lib/cheat_var.tph~ //check if adding these areas will be needed in future patches
+	REPLACE_TEXTUALLY ~filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'MALE\([0-9]+\)'~ ~filenames_stringrefs['BGMALE\1'~
+	REPLACE_TEXTUALLY ~filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'FEMALE\([0-9]+\)'~ ~filenames_stringrefs['BGFEML\1'~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*Infinity_AddDLC[ %TAB%]*([ %TAB%]*'\(.*\)'[ %TAB%]*,[ %TAB%]*'\(.*\)'[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*'\(.*\)'[ %TAB%]*,[ %TAB%]*'\(.*\)'[ %TAB%]*)~ BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*Infinity_AddDLC[ %TAB%]*([ %TAB%]*'%MATCH1%'~)) BEGIN
+			SPRINT match ~%MATCH2%~ SPRINT res ~bmp~ LPM EET_PCU_outer_res SPRINT MATCH2 ~%match%~
+			PATCH_IF (MATCH3 > 0) BEGIN LPF ~EET_strref~ INT_VAR str = MATCH3 RET str END SET MATCH3 = str END
+			PATCH_IF (MATCH4 > 0) BEGIN LPF ~EET_strref~ INT_VAR str = MATCH4 RET str END SET MATCH4 = str END
+			SPRINT addDLC_var ~%addDLC_var%Infinity_AddDLC( '%MATCH1%', '%MATCH2%', %MATCH3%, %MATCH4%, '%MATCH5%', '%MATCH6%' )%LNL%~
+			//PATCH_PRINT ~Infinity_AddDLC: %MATCH1% ; %MATCH2% ; %MATCH3% ; %MATCH4% ; %MATCH5% ; %MATCH6%~
+		END
+	END ~~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*Infinity_AddDLCContent[ %TAB%]*([ %TAB%]*'\(.*\)'[ %TAB%]*,[ %TAB%]*\([0-9]+\)[ %TAB%]*)~ BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*Infinity_AddDLCContent[ %TAB%]*([ %TAB%]*'%MATCH1%'~)) BEGIN
+			SPRINT addDLCContent_var ~%addDLCContent_var%Infinity_AddDLCContent('%MATCH1%', %MATCH2% )%LNL%~
+			//PATCH_PRINT ~Infinity_AddDLCContent: %MATCH1% ; %MATCH2%~
+		END
+	END ~~
+	SET male_cnt = 0
+	SET female_cnt = 0
+	FOR (cnt = 4000000; cnt <= 4000010; cnt = cnt + 1) BEGIN
+		SET strref = RESOLVE_STR_REF ((AT cnt))
+		PATCH_IF (cnt <= 4000004) BEGIN //BG2 male
+			SET male_cnt = male_cnt + 1
+			SPRINT filenames_stringrefs_var ~%filenames_stringrefs_var%filenames_stringrefs['MALE%male_cnt%'] = {%strref%, 2}%LNL%~
+		END ELSE PATCH_IF (cnt <= 4000008) BEGIN //BG2 female
+			SET female_cnt = female_cnt + 1
+			SPRINT filenames_stringrefs_var ~%filenames_stringrefs_var%filenames_stringrefs['FEMALE%female_cnt%'] = {%strref%, 2}%LNL%~
+		END ELSE PATCH_IF (cnt = 4000009) BEGIN //BG1 main male
+			SPRINT filenames_stringrefs_var ~%filenames_stringrefs_var%filenames_stringrefs['BGMAINM'] = {%strref%, 2}%LNL%~
+		END ELSE PATCH_IF (cnt = 4000010) BEGIN //BG1 main female
+			SPRINT filenames_stringrefs_var ~%filenames_stringrefs_var%filenames_stringrefs['BGMAINF'] = {%strref%, 2}%LNL%~
+		END
+	END
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'\(.*\)'[ %TAB%]*\][ %TAB%]*=[ %TAB%]*{\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([0-9]+\)[ %TAB%]*}~ BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'%MATCH1%'~)) BEGIN
+			LPF ~EET_strref~ INT_VAR str = MATCH2 RET str END
+			SET MATCH2 = str
+			INNER_ACTION BEGIN
+				ALTER_TLK_LIST BEGIN MATCH2 END BEGIN REPLACE_TEXTUALLY ~^~ ~BG1 ~ END
+			END
+			SPRINT filenames_stringrefs_var ~%filenames_stringrefs_var%filenames_stringrefs['%MATCH1%'] = {%MATCH2%, %MATCH3%}%LNL%~
+			//PATCH_PRINT ~filenames_stringrefs: %MATCH1% ; %MATCH2% ; %MATCH3%~
+		END
+	END ~~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*chapterBackgrounds[ %TAB%]*\[\([0-9]+\)\][ %TAB%]*=[ %TAB%]*"\(.*\)"~ BEGIN
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*chapterBackgrounds[ %TAB%]*\[%MATCH1%\]~)) BEGIN
+			SPRINT chapterBackgrounds_var ~%chapterBackgrounds_var%chapterBackgrounds[%MATCH1%] = "%MATCH2%"%LNL%~
+			//PATCH_PRINT ~chapterBackgrounds: %MATCH1% ; %MATCH2%~
+		END
+	END ~~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*createQuest[ %TAB%]*([ %TAB%]*\([-0-9]+\)[ %TAB%]*)~ BEGIN
+		PATCH_IF (MATCH1 > 0) BEGIN LPF ~EET_strref~ INT_VAR str = MATCH1 RET str END SET MATCH1 = str END
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*createQuest[ %TAB%]*([ %TAB%]*%MATCH1%[ %TAB%]*)~)) BEGIN
+			SPRINT createQuest_var ~%createQuest_var%%TAB%createQuest    ( %MATCH1% )%LNL%~
+			//DEFINE_ASSOCIATIVE_ARRAY createQuest BEGIN ~%TAB%createQuest    ( %MATCH1% )~ => ~dummy~ END
+			//PATCH_PRINT ~createQuest: %MATCH1%~
+		END
+	END ~~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*createEntry[ %TAB%]*([ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*{[ %TAB%]*\(.*\)[ %TAB%]*}[ %TAB%]*,[ %TAB%]*\(.*\)[ %TAB%]*)~ BEGIN
+		PATCH_IF (MATCH1 > 0) BEGIN LPF ~EET_strref~ INT_VAR str = MATCH1 RET str END SET MATCH1 = str END
+		PATCH_IF (MATCH3 > 0) BEGIN LPF ~EET_strref~ INT_VAR str = MATCH3 RET str END SET MATCH3 = str END
+		SPRINT createEntry_var ~%createEntry_var%%TAB%createEntry    ( %MATCH1%, %MATCH2%, %MATCH3%, {%MATCH4%}, %MATCH5%)%LNL%~
+		//DEFINE_ASSOCIATIVE_ARRAY createQuest BEGIN ~%TAB%createEntry    ( %MATCH1%, %MATCH2%, %MATCH3%, {%MATCH4%}, %MATCH5% )~ => ~dummy~ END
+		//PATCH_PRINT ~createEntry: : %MATCH1% ; %MATCH2% ; %MATCH3% ; %MATCH4% ; %MATCH5%~
+	END ~~
+	REPLACE_TEXTUALLY ~--.*~ ~~
+	REPLACE_TEXTUALLY ~{~ ~~
+	REPLACE_TEXTUALLY ~}~ ~~
+	REPLACE_TEXTUALLY ~,~ ~ ~
+	REPLACE_TEXTUALLY ~'~ ~ ~
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		PATCH_IF ((~%col1%~ STRING_CONTAINS_REGEXP ~portraits=?~)=0) BEGIN
+			SET portraits_row = cnt + 1
+		END ELSE PATCH_IF ((~%col1%~ STRING_CONTAINS_REGEXP ~movies=?~)=0) BEGIN
+			SET portraits_row_end = cnt
+			SET movies_row = cnt + 1
+		END ELSE PATCH_IF ((~%col1%~ STRING_CONTAINS_REGEXP ~credits=?~)=0) BEGIN
+			SET movies_row_end = cnt
+		END ELSE PATCH_IF ((~%col1%~ STRING_CONTAINS_REGEXP ~cheatAreas=?~)=0) BEGIN
+			SET cheat_row = cnt + 1
+		END ELSE PATCH_IF ((~%col1%~ STRING_CONTAINS_REGEXP ~fontcolors=?~)=0) BEGIN
+			SET cheat_row_end = cnt
+			SET cnt = cntrow
+		END
+	END
+	FOR (cnt = portraits_row; cnt < portraits_row_end; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~bmp~ LPM EET_PCU_outer_res SPRINT col1 ~%match%~
+		READ_2DA_ENTRY cnt 1 2 "col2"
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*{[ %TAB%]*'%col1%'[ %TAB%]*,[ %TAB%]*%col2%[ %TAB%]*}~)) BEGIN
+			SPRINT portraits_var ~%portraits_var%%TAB%{'%col1%', %col2%},%LNL%~
+			//PATCH_PRINT ~portraits: %col1% ; %col2%~
+		END
+	END
+	FOR (cnt = movies_row; cnt < movies_row_end; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~mve~ LPM EET_PCU_outer_res SPRINT col1 ~%match%~
+		TO_LOWER col1 //otherwise it doesn't work
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*{[ %TAB%]*'%col1%'~)) BEGIN
+			READ_2DA_ENTRY cnt 1 2 "col2"
+			READ_2DA_ENTRY cnt 2 2 "col3"
+			READ_2DA_ENTRY cnt 3 2 "col4"
+			LPF ~EET_strref~ INT_VAR str = col4 RET str END SET col4 = str
+			READ_2DA_ENTRY cnt 4 2 "col5"
+			READ_2DA_ENTRY cnt 5 2 "col6"
+			SPRINT movies_var ~%movies_var%%TAB%{'%col1%', %col2%, %col3%, %col4%, %col5%, %col6%},%LNL%~
+			//PATCH_PRINT ~movies: %col1% ; %col2% ; %col3% ; %col4% ; %col5% ; %col6%~
+		END
+	END
+	FOR (cnt = cheat_row; cnt < cheat_row_end; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		//READ_2DA_ENTRY cnt 1 2 "col2" //contains spaces
+		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res SPRINT col1 ~%match%~
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*{[ %TAB%]*%col1%~)) BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*%col1%[ %TAB%]*"\(.*\)"~ BEGIN
+				SPRINT cheat_var ~%cheat_var%%TAB%{%col1%, "%MATCH1%"},%LNL%~
+				//PATCH_PRINT ~cheatAreas: %col1% ; %MATCH1%~
+			END ~%col1%  "%MATCH1%"~
+		END
+	END
+
+<<<<<<<< .../bgee.lua
+
+%addDLC_var%
+%addDLCContent_var%
+%filenames_stringrefs_var%
+%chapterBackgrounds_var%
+>>>>>>>>
+COPY_EXISTING ~bgee.lua~ ~override~
+	REPLACE_TEXTUALLY ~}[%newline%]*\(}[%newline%]*movies =\)~ ~},%LNL%%portraits_var%\1~ //notice added missing , at the last line
+	REPLACE_TEXTUALLY ~\(movies[ %TAB%]*=[%newline%]*{\)~ ~\1%LNL%%movies_var%~
+	REPLACE_TEXTUALLY ~\(cheatAreas[ %TAB%]*=[%newline%]*{\)~ ~\1%LNL%%cheat_var%~
+	REPLACE_TEXTUALLY ~\(createEntry.+)\)[%newline%]*end~ ~\1%LNL%%createQuest_var%%createEntry_var%end~
+	APPEND_FILE ~.../bgee.lua~ EVALUATE_BUFFER
+BUT_ONLY
+
+COPY ~engine.lua~ ~engine.lua~
+	REPLACE_TEXTUALLY ~engine_name[ %TAB%]*=[ %TAB%]*".*"~ ~engine_name = "Baldur's Gate - Enhanced Edition Trilogy"~
+
+OUTER_PATCH_SAVE USER_DIRECTORY_EET ~%USER_DIRECTORY%~ BEGIN
+	REPLACE_TEXTUALLY ~Baldur's Gate II - Enhanced Edition~ ~Baldur's Gate - Enhanced Edition Trilogy~
+END
+ACTION_IF (NOT DIRECTORY_EXISTS ~%USER_DIRECTORY_EET%/save~) BEGIN
+	MKDIR ~%USER_DIRECTORY_EET%/save~
+END
+ACTION_IF (NOT FILE_EXISTS ~%USER_DIRECTORY_EET%/Baldur.lua~) AND (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.lua~) BEGIN
+	COPY + ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY_EET%~
+END
+
+ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY_EET%/Baldur.lua~) BEGIN
+<<<<<<<< .../Baldur.lua
+SetPrivateProfileString('%row%','%option%','%option_1%')
+>>>>>>>>
+	COPY + ~%USER_DIRECTORY_EET%/Baldur.lua~ ~%USER_DIRECTORY_EET%~
+		REPLACE_TEXTUALLY ~^.+'Last Save .+[%newline%]*~ ~~
+		DEFINE_ASSOCIATIVE_ARRAY table_EET_ini BEGIN
+			"Text" , "%LANGUAGE_BG2%" => "Language"
+			"EET Installation State" , 1 => "Program Options"
+			"Active Campaign" , 1 => "Program Options"
+			//"Never Show Nuisance SOD" , 0 => "Program Options"
+			"Debug Mode" , 1 => "Program Options"
+			"Logging On" , 1 => "Program Options"
+			"UI Edit Mode" , 1 => "Program Options"
+			"Cheats" , 1 => "Game Options"
+			"BG4LOGO" , 1 => "MOVIES"
+			"BILOGO" , 1 => "MOVIES"
+			"BLACKPI_" , 1 => "MOVIES"
+			"BWDRAGON" , 1 => "MOVIES"
+			"CREDITS" , 1 => "MOVIES"
+			"INFELOGO" , 1 => "MOVIES"
+			"INTRO_" , 1 => "MOVIES"
+			"INTRO15F" , 1 => "MOVIES"
+			"INTRO" , 1 => "MOVIES"
+			"TSRLOGO" , 1 => "MOVIES"
+			"WOTC" , 1 => "MOVIES"
+		END
+		PHP_EACH table_EET_ini AS option => row BEGIN
+			COUNT_REGEXP_INSTANCES ~'%option%'~ num_matches
+			PATCH_IF (num_matches = 0) BEGIN
+				APPEND_FILE ~.../Baldur.lua~ EVALUATE_BUFFER
+			END ELSE BEGIN
+				REPLACE_TEXTUALLY ~^.+'%option%'.+$~ ~SetPrivateProfileString('%row%','%option%','%option_1%')~
+			END
+		END
+	BUT_ONLY
+END ELSE BEGIN
+<<<<<<<< .../Baldur.lua
+SetPrivateProfileString('Language','Text','%LANGUAGE_BG2%')
+SetPrivateProfileString('Program Options','EET Installation State','1')
+SetPrivateProfileString('Program Options','Active Campaign','1')
+SetPrivateProfileString('Program Options','Debug Mode','1')
+SetPrivateProfileString('Program Options','Logging On','1')
+SetPrivateProfileString('Program Options','UI Edit Mode','1')
+SetPrivateProfileString('Game Options','Cheats','1')
+SetPrivateProfileString('MOVIES','BG4LOGO','1')
+SetPrivateProfileString('MOVIES','BILOGO','1')
+SetPrivateProfileString('MOVIES','BLACKPI_','1')
+SetPrivateProfileString('MOVIES','BWDRAGON','1')
+SetPrivateProfileString('MOVIES','CREDITS','1')
+SetPrivateProfileString('MOVIES','INFELOGO','1')
+SetPrivateProfileString('MOVIES','INTRO_','1')
+SetPrivateProfileString('MOVIES','INTRO15F','1')
+SetPrivateProfileString('MOVIES','INTRO','1')
+SetPrivateProfileString('MOVIES','TSRLOGO','1')
+SetPrivateProfileString('MOVIES','WOTC','1')
+>>>>>>>>
+	COPY + ~.../Baldur.lua~ ~%USER_DIRECTORY_EET%/Baldur.lua~ EVALUATE_BUFFER
+END
+
+/////                                                  \\\\\
+///// Minor BG2:EE patching                            \\\\\
+/////                                                  \\\\\
+
+//changes Bandit Scalp itemtype to Tattoos (39)
+COPY_EXISTING ~MISC86.ITM~ ~override~
+	WRITE_SHORT 0x1c 39
+BUT_ONLY
+
+//Viconia cutscene people spawned via AR1000.BCS instead of ARE
+COPY_EXISTING ~AR1000.ARE~ ~override~
+	READ_LONG  0x54 "actor_off"
+	READ_SHORT 0x58 "actor_num"
+	FOR (index = 0 ; index < actor_num ; index = index + 1) BEGIN
+		READ_ASCII ("%actor_off%" + 0x80 + (0x110 * "%index%")) "resref" // cre file
+		PATCH_IF ("%resref%" STR_EQ "VICG1")
+		OR ("%resref%" STR_EQ "VICG2")
+		OR ("%resref%" STR_EQ "VICTOWN1")
+		OR ("%resref%" STR_EQ "VICTOWN2")
+		OR ("%resref%" STR_EQ "VICTOWN3")
+		OR ("%resref%" STR_EQ "VICTOWN4")
+		OR ("%resref%" STR_EQ "VICG3") BEGIN
+			PATCH_PRINT "Patching %SOURCE_FILE%: removing actor %resref%"
+			LPF fj_are_structure
+				INT_VAR fj_delete_mode = "%index%"
+				STR_VAR fj_structure_type = actor
+			END
+			SET index = index - 1
+			READ_SHORT 0x58 "actor_num"
+		END
+	END
+BUT_ONLY
+
+//The Army Scythe +1 uses BG1 icon (darker one kept for Drow Crossbow of Speed)
+COPY_EXISTING ~XBOW06.ITM~ ~override~
+	READ_ASCII 0x3a "resref"
+	PATCH_IF (~%resref%~ STR_EQ ~IXBOW06~) BEGIN
+		WRITE_ASCII 0x3a "IXBOW06_" #8
+	END
+	READ_LONG 0x64 "abil_off"
+	READ_SHORT 0x68 "abil_cnt"
+	FOR (cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+		READ_ASCII ("%abil_off%"+0x38*cnt+0x4) "resref"
+		PATCH_IF (~%resref%~ STR_EQ ~IXBOW06~) BEGIN
+			WRITE_ASCII 0x3a "IXBOW06_" #8
+		END
+	END
+BUT_ONLY
+
+//overwrite GUI chapter MOS reference
+COPY_EXISTING ~GUICHAP.CHU~ ~override~
+	WRITE_ASCII 0x28 ~GUICHP1B~ #8
+BUT_ONLY
+
+/////                                                  \\\\\
+///// Compatibility patches                            \\\\\
+/////                                                  \\\\\
+
+ACTION_IF FILE_EXISTS ~EET/temp/WeiDU.log~ BEGIN
+	COPY - ~EET/tbl/compatibility.tbl~ ~EET/tbl~
+		COUNT_2DA_ROWS 2 "cntrow"
+		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+			READ_2DA_ENTRY cnt 0 2 "col1"
+			READ_2DA_ENTRY cnt 1 2 "col2"
+			PATCH_IF ("%col2%" = 1) BEGIN
+				INNER_ACTION BEGIN
+					ACTION_IF (FILE_CONTAINS ~EET/temp/WeiDU.log~ EVAL ~^%col1%~) BEGIN
+						PRINT ~Including %col1% compatibility patches~
+						INCLUDE ~EET/compat/%col1%/include.tph~
+					END
+				END
+			END
+		END
+END
+
+/////                                                  \\\\\
+///// Decompile BCS / DLG files                        \\\\\
+/////                                                  \\\\\
+
+ACTION_BASH_FOR ~%patch_dir%/bcs~ ~.*~ BEGIN
+	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
+	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
+		DECOMPILE_BCS_TO_BAF
+END
+
+ACTION_BASH_FOR ~%patch_dir%/dlg~ ~.*~ BEGIN
+	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
+	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
+		DECOMPILE_DLG_TO_D
+		REPLACE_TEXTUALLY ~EET/TEMP/PATCH/DLG/~ ~~
+END
+
+/////                                                  \\\\\
+///// PCU conversion                                   \\\\\
+/////                                                  \\\\\
+
+PRINT ~~
+PRINT ~PCU conversion...~
+
+//print and append variables generated during installation
+PRINT ~Additional variables created during installation, not listed in lib/pcu_dict.tph:~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN%LNL%%log_remapped_sum%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN%LNL%%log_remapped_race%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN%LNL%%log_remapped_spec%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN%LNL%%log_remapped_ipro%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN%LNL%%log_remapped_bam%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END~
+
+COPY + ~.../blank.txt~ ~EET/temp/new_vars.tph~
+APPEND_OUTER + ~EET/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN%LNL%%log_remapped_sum%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN%LNL%%log_remapped_race%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN%LNL%%log_remapped_spec%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN%LNL%%log_remapped_ipro%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN%LNL%%log_remapped_bam%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%~
+
+COPY ~EET/lib/pcu_dict.tph~ ~EET/lib~
+	APPEND_FILE ~EET/temp/new_vars.tph~
+
+//FOR variables
+OUTER_SET count = 0
+OUTER_SET cntrow = 0
+OUTER_SET cnt = 0
+OUTER_SET cntare = 0
+OUTER_SET cntcre = 0
+OUTER_SET cntwav = 0
+
+//reporting variables
+OUTER_SET are_check = 0
+OUTER_SET baf_check = 0
+OUTER_SET bcs_check = 0
+OUTER_SET cre_check = 0
+OUTER_SET d_check = 0
+OUTER_SET dlg_check = 0
+OUTER_SET eff_check = 0
+OUTER_SET gam_check = 0
+OUTER_SET itm_check = 0
+OUTER_SET pro_check = 0
+OUTER_SET spl_check = 0
+OUTER_SET sto_check = 0
+OUTER_SET tp2_check = 0
+OUTER_SET tra_check = 0
+OUTER_SET vef_check = 0
+OUTER_SET vvc_check = 0
+OUTER_SET wed_check = 0
+OUTER_SET wmp_check = 0
+OUTER_SET ignore_check = 0
+OUTER_SET ren_check = 0
+
+//conversion
+PRINT ~Please be patient during the conversion process. This may take some time...~
+
+COPY + ~.../blank.txt~ ~EET/temp/Filelist.txt~
+ACTION_FOR_EACH var IN are bcs cre dlg eff ini itm pro spl sto vef vvc wed "" BEGIN
+	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
+		COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
+			SET checked = 0
+			READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
+			LPM EET_PCU_core
+	END
+END
+
+PRINT ~Conversion complete. Statistics:
+ARE %are_check%
+BAF %baf_check%
+BCS %bcs_check%
+CRE %cre_check%
+D   %d_check%
+DLG %dlg_check%
+EFF %eff_check%
+GAM %gam_check%
+ITM %itm_check%
+PRO %pro_check%
+SPL %spl_check%
+STO %sto_check%
+TP* %tp2_check%
+TRA %tra_check%
+VEF %vvc_check%
+VVC %vvc_check%
+WED %wed_check%
+WMP %wmp_check%
+
+%ignore_check% files ignored.
+%ren_check% files renamed.~
+
+/////                                                  \\\\\
+///// BG:EE files patching and installation            \\\\\
+/////                                                  \\\\\
+
+PRINT ~~
+PRINT ~BG:EE files patching and installation...~
+
+/////                                                  \\\\\
+///// Dummy mod files                                  \\\\\
+/////                                                  \\\\\
+
+ACTION_FOR_EACH var IN b g3 000 UB xxx BEGIN
+	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
+		COPY ~%BASH_FOR_FILESPEC%~ ~override~
+	END
+END
+
+/////                                                  \\\\\
+///// 2DA                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing 2DA files...~
+
+COPY + ~EET/temp/2da/BPEND.2DA~ ~EET/temp/2da~
+	READ_2DA_ENTRY 1 1 3 "strref"
+	LPF ~EET_strref~ INT_VAR str = strref RET str END
+	SET_2DA_ENTRY 1 1 3 "%str%"
+	SET_2DA_ENTRY 1 2 3 "%str%"
+	PRETTY_PRINT_2DA
+
+COPY + ~EET/temp/2da/DPALACE.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/ISLOFF.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/ISLON.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/TOSCEND.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/TOSCST.2DA~ ~EET/temp/2da~
+	READ_2DA_ENTRY 2 2 3 "strref"
+	LPF ~EET_strref~ INT_VAR str = strref RET str END
+	SET_2DA_ENTRY 2 2 3 "%str%"
+	SET_2DA_ENTRY 3 2 3 "%str%"
+	PATCH_IF (~%SOURCE_RES%~ STR_EQ ~DPALACE~) BEGIN
+		SET_2DA_ENTRY 8 1 2 "135" //SONG
+	END
+	PRETTY_PRINT_2DA
+
+<<<<<<<< .../song.2da
+SONG					%song%
+>>>>>>>>
+OUTER_SET song = 111
+COPY + ~EET/temp/2da/DRMTXT2.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/DRMTXT3.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/DRMTXT4.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/DRMTXT5.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/DRMTXT6.2DA~ ~EET/temp/2da~
+	~EET/temp/2da/DRMTXT7.2DA~ ~EET/temp/2da~
+	READ_2DA_ENTRY 2 2 3 "strref"
+	LPF ~EET_strref~ INT_VAR str = strref RET str END
+	SET_2DA_ENTRY 2 2 3 "%str%"
+	READ_2DA_ENTRY 3 2 3 "strref"
+	LPF ~EET_strref~ INT_VAR str = strref RET str END
+	SET_2DA_ENTRY 3 2 3 "%str%"
+	APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
+	PRETTY_PRINT_2DA
+
+OUTER_SET song = 107
+COPY + ~EET/temp/2da/CHPTXT0.2DA~ ~EET/temp/2da~
+	FOR (i= 1 ; i<=5 ; i=i+1) BEGIN
+		READ_2DA_ENTRY 2 ~%i%~ 6 "strref"
+		LPF ~EET_strref~ INT_VAR str = strref RET str END
+		SET_2DA_ENTRY 2 ~%i%~ 6 "%str%"
+	END
+	APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
+	PRETTY_PRINT_2DA
+
+OUTER_SET strref = RESOLVE_STR_REF (@2000000)
+<<<<<<<< .../CHPTXT1.2da
+2DA     V1.0
+NONE
+        0       1        2        3
+SWITCH  DEFAULT DEFAULT  DEFAULT  DEFAULT
+DEFAULT 216203  %strref% 211898   211899
+SONG    135
+>>>>>>>>
+COPY ~.../CHPTXT1.2da~ ~override~ EVALUATE_BUFFER
+	PRETTY_PRINT_2DA
+
+<<<<<<<< .../CHPTXT.2da
+2DA V1.0
+NONE
+        0           1
+SWITCH  DEFAULT     DEFAULT
+DEFAULT %strref%  %strref_1%
+SONG    135
+>>>>>>>>
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_CHPTXT BEGIN
+	216204 , 2000001 => CHPTXT2
+	216205 , 2000002 => CHPTXT3
+	216206 , 2000003 => CHPTXT4
+	216207 , 2000004 => CHPTXT5
+	216208 , 2000005 => CHPTXT6
+	216209 , 2000006 => CHPTXT7
+	2000059 , 2000008 => CHPTXT8
+	2000060 , 2000009 => SODTXT9
+	2000061 , 2000010 => SODTXT10
+	2000062 , 2000011 => CHPTXT11
+	2000063 , 2000012 => CHPTXT12
+	2000065 , 2000013 => CHPTXT13
+END
+ACTION_PHP_EACH table_EET_CHPTXT AS strref => file BEGIN
+	ACTION_IF (strref > 2000000) BEGIN
+		OUTER_SET strref = RESOLVE_STR_REF ((AT strref))
+	END
+	OUTER_SET strref_1 = RESOLVE_STR_REF ((AT strref_1))
+	COPY ~.../CHPTXT.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
+		PRETTY_PRINT_2DA
+END
+
+COPY ~EET/base/2da~ ~override~
+	~EET/temp/2da~ ~override~
+
+/////                                                  \\\\\
+///// ACM / MUS                                        \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing ACM/MUS files...~
+
+GET_DIRECTORY_ARRAY dir ~%bgee_dir%/music~ ~~
+ACTION_PHP_EACH dir AS from => to BEGIN
+	OUTER_PATCH_SAVE dir_name ~%to%~ BEGIN
+		REPLACE_TEXTUALLY ~^.+/\([^/\\]+\)$~ ~\1~
+	END
+	ACTION_TO_UPPER dir_name
+	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%dir_name%~)) BEGIN
+		OUTER_TEXT_SPRINT dest_dir $table_2DA_songlist(~%dir_name%~)
+	END ELSE BEGIN
+		OUTER_SPRINT dest_dir ~%dir_name%~
+	END
+	ACTION_IF (NOT DIRECTORY_EXISTS ~music/%dest_dir%~) BEGIN
+		MKDIR ~music/%dest_dir%~
+		ACTION_BASH_FOR ~%to%~ ~^.+$~ BEGIN
+			OUTER_PATCH_SAVE dest_file ~%BASH_FOR_FILE%~ BEGIN
+				REPLACE_TEXTUALLY ~^%dir_name%~ ~%dest_dir%~
+			END
+			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~music/%dest_dir%/%dest_file%~
+		END
+	END
+END
+
+ACTION_BASH_FOR ~%bgee_dir%/music~ ~^.+\.mus$~ BEGIN
+	ACTION_TO_UPPER BASH_FOR_RES
+	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%BASH_FOR_RES%~)) BEGIN
+		OUTER_TEXT_SPRINT dest_res $table_2DA_songlist(~%BASH_FOR_RES%~)
+	END ELSE BEGIN
+		OUTER_SPRINT dest_res ~%BASH_FOR_RES%~
+	END
+	ACTION_IF (NOT FILE_EXISTS ~music/%dest_res%.mus~) BEGIN
+		COPY ~%BASH_FOR_FILESPEC%~ ~music/%dest_res%.mus~
+			REPLACE_TEXTUALLY ~%BASH_FOR_RES%~ ~%dest_res%~
+	END
+END
+
+/////                                                  \\\\\
+///// ARE                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing ARE files...~
+
+//typo in BG:EE, assigned AE1213.BCS instead of AR1213.BCS
+COPY + ~%patch_dir%/are/BG1213.ARE~ ~%patch_dir%/are~
+	WRITE_ASCIIE 0x94 ~%SOURCE_RES%~ #8
+BUT_ONLY
+
+//Imoen ARE actor spawn has Override Script Name flag set, disable it to use Imoen2 DV
+COPY + ~%patch_dir%/are/BD0103.ARE~ ~%patch_dir%/are~
+	READ_LONG  0x54 "actor_off"
+	READ_SHORT 0x58 "actor_num"
+	FOR (index = 0 ; index < actor_num ; index = index + 1) BEGIN
+		READ_ASCII ("%actor_off%" + (0x110 * "%index%")) "name"
+		PATCH_IF ("%name%" STR_EQ "Imoen") BEGIN
+			//WRITE_ASCII ("%actor_off%" + (0x110 * "%index%")) "Imoen2"
+			READ_LONG ("%actor_off%" + 0x28 + (0x110 * "%index%")) "flags"
+			PATCH_IF (flags BAND BIT3) BEGIN
+				SET flags = flags - BIT3
+				WRITE_LONG ("%actor_off%" + 0x28 + (0x110 * "%index%")) "flags"
+			END
+		END
+	END
+BUT_ONLY
+
+COPY ~%patch_dir%/are~ ~override~
+	WRITE_SHORT 0x48 THIS | (1 << BG1AREA)
+	LPF EET_expand_tlk INT_VAR add = 200000 END
+	// Area script assigner
+	READ_ASCII 0x94 "script"
+	PATCH_IF (FILE_EXISTS ~%patch_dir%/bcs/%script%.baf~) BEGIN
+	END ELSE PATCH_IF (FILE_EXISTS ~%patch_dir%/bcs/%SOURCE_RES%.baf~) BEGIN
+		PATCH_PRINT ~%SOURCE_FILE% - Area script (%SOURCE_RES%.BCS) assigned~
+		WRITE_ASCIIE 0x94 ~%SOURCE_RES%~ #8
+	END ELSE PATCH_IF (~%script%~ STR_CMP ~~) AND (NOT ~%script%~ STR_EQ ~NONE~) BEGIN
+		PATCH_PRINT ~%SOURCE_FILE% - Missing area script (%script%.BCS) created~
+		INNER_ACTION BEGIN
+			COPY ~EET/base/blank.bcs~ ~override/%script%.BCS~
+		END
+	END ELSE BEGIN
+		PATCH_PRINT ~%SOURCE_FILE% - Missing area script (%SOURCE_RES%.BCS) created and assigned~
+		WRITE_ASCIIE 0x94 ~%SOURCE_RES%~ #8
+		INNER_ACTION BEGIN
+			COPY ~EET/base/blank.bcs~ ~override/%SOURCE_RES%.BCS~
+		END
+	END
+
+COPY_EXISTING ~BD6100.ARE~ ~override~
+	~AR0602.ARE~ ~override~
+	LPF fj_are_structure
+		INT_VAR
+		fj_type        = 8 //nonvisible
+		fj_loc_x       = 88
+		fj_loc_y       = 76
+		fj_box_left    = 72
+		fj_box_top     = 26
+		fj_box_right   = 120
+		fj_box_bottom  = 58
+		fj_trap_loc_x  = 80
+		fj_trap_loc_y  = 70
+		fj_vertex_0    = 111 + (58 << 16)
+		fj_vertex_1    = 72 + (45 << 16)
+		fj_vertex_2    = 82 + (26 << 16)
+		fj_vertex_3    = 120 + (39 << 16)
+		STR_VAR
+		fj_structure_type = container
+		fj_name           = ~K#ImportContainer~
+	END
+
+/*COPY_EXISTING ~TU0015.are~ ~override~
+	~TU0016.are~ ~override~
+	~TU0017.are~ ~override~
+	~TU0018.are~ ~override~
+	READ_BYTE 0x14 "flags"
+	PATCH_IF (~%flags%~ BAND BIT0) BEGIN
+	END ELSE BEGIN
+		SET flags = flags + BIT0
+		WRITE_BYTE 0x14 "flags"
+	END
+BUT_ONLY*/
+
+/////                                                  \\\\\
+///// BAM                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing BAM files...~
+
+COPY_LARGE + ~EET/base/bam~ ~%biff_dir%~
+
+/////                                                  \\\\\
+///// BCS                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing BCS files...~
+
+//compile scripts
+COMPILE ~%patch_dir%/bcs~
+	~EET/compile/baf~
+
+//patching BG:EE scripts
+INCLUDE ~EET/lib/bg1_BCS.tph~
+
+/////                                                  \\\\\
+///// BMP                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing BMP files...~
+
+//nothing to do
+
+/////                                                  \\\\\
+///// BS                                               \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing BS files...~
+
+MKDIR ~scripts~
+
+COPY ~%bgee_dir%/scripts/ohfight1.bs~ ~scripts~
+
+COPY ~EET/base/test/EET_test.baf~ ~scripts/EET_test.bs~
+	COMPILE_BAF_TO_BCS
+
+/////                                                  \\\\\
+///// CHR                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing CHR files...~
+
+MKDIR ~characters~
+
+ACTION_BASH_FOR ~%patch_dir%/chr~ ~^0.+\.chr$~ BEGIN //only starting with 0 number
+	OUTER_PATCH_SAVE file ~%BASH_FOR_RES%~ BEGIN
+		REPLACE_TEXTUALLY ~^[0-9][0-9]~ ~BG~
+	END
+	COPY ~%BASH_FOR_FILESPEC%~ ~characters/%file%.chr~
+		LPF EET_expand_tlk INT_VAR add = 200000 END
+END
+
+/////                                                  \\\\\
+///// CRE                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing CRE files...~
+
+COPY ~%patch_dir%/cre~ ~override~
+	LPF EET_expand_tlk INT_VAR add = 200000 END
+
+COPY ~EET/base/cre~ ~override~
+
+// patching BG:EE cre files
+INCLUDE ~EET/lib/bg1_cre.tph~
+
+// Find Familiar externalization
+ACTION_FOR_EACH file IN FAMCAT_ FAMDUST_ FAMFAIR_ FAMFER_ FAMIMP_ FAMPSD_ FAMQUAS_ FAMRAB_ FAMCAT FAMDUST FAMFAIR FAMFER FAMIMP FAMPSD FAMQUAS FAMRAB FAMCAT25 FAMDUS25 FAMFAI25 FAMFER25 FAMIMP25 FAMPSD25 FAMQUA25 FAMRAB25 BEGIN
+	COPY_EXISTING ~%file%.CRE~ ~override~
+		LPF ADD_CRE_EFFECT INT_VAR opcode = 232 /*Cast Spell on Condition*/ target = 1 /*Self*/ parameter2 = 16 /*Target dies*/ timing = 9 /*Instant/Permanent*/ STR_VAR resource = "K#FAMKIL" END
+	BUT_ONLY
+END
+
+/////                                                  \\\\\
+///// DLG                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing DLG files...~
+
+COPY + ~%patch_dir%/dlg/BPNAJIM.D~ ~%patch_dir%/dlg~
+	REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]GoToStartScreen()~ ~ClearAllActions()
+    ReallyForceSpellRES("K#FAMREM",Player1)
+    ReallyForceSpellRES("K#FAMREM",Player2)
+    ReallyForceSpellRES("K#FAMREM",Player3)
+    ReallyForceSpellRES("K#FAMREM",Player4)
+    ReallyForceSpellRES("K#FAMREM",Player5)
+    ReallyForceSpellRES("K#FAMREM",Player6)
+    StartCutScene("K#CUTBP2")~
+BUT_ONLY
+
+COMPILE ~%patch_dir%/dlg~
+	~EET/compile/d~
+
+/////                                                  \\\\\
+///// EFF                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing EFF files...~
+
+COPY ~%patch_dir%/eff~ ~override~
+	LPF EET_expand_tlk INT_VAR add = 200000 END
+
+COPY ~EET/base/eff~ ~override~
+
+/////                                                  \\\\\
+///// GAM                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing GAM...~
+
+OUTER_SPRINT ~gam~ ~2DA%WNL%dummy%WNL%CRE_NAME ORIENTATION AREA X Y~
+COPY + ~%patch_dir%/BALDUR.GAM~ ~%patch_dir%~
+	READ_LONG 0x30 npcs_off
+	READ_LONG 0x34 npcs_cnt
+	FOR (cnt=0; cnt<"%npcs_cnt%"; cnt=cnt+1) BEGIN
+		SET offset = ("%npcs_off%"+0x160*cnt)
+		READ_ASCII offset + 0xc "cre_name"
+		READ_LONG offset + 0x14 "cre_orient"
+		READ_ASCII offset + 0x18 "area_name"
+		READ_SHORT offset + 0x20 "loc_x"
+		READ_SHORT offset + 0x22 "loc_y"
+		SPRINT ~gam~ ~%gam%%WNL%%cnt% %cre_name% %cre_orient% %area_name% %loc_x% %loc_y%~
+	END
+	PATCH_LOG ~%gam%~
+
+COPY + ~.../blank.txt~ ~EET/temp/gam.2da~
+APPEND_OUTER + ~EET/temp/gam.2da~ ~%gam%~
+COPY + ~EET/temp/gam.2da~ ~EET/temp~
+	PRETTY_PRINT_2DA
+
+COPY - ~EET/temp/gam.2da~ ~EET/temp~
+	COUNT_2DA_ROWS 6 GAM_count
+	READ_2DA_ENTRIES_NOW ~#GAM_patch_table~ 6
+BUT_ONLY
+
+COPY ~EET/base/BALDUR.GAM~ ~override~
+	READ_LONG 0x20 "PC_offset"
+	READ_LONG 0x28 "US_offset"
+	READ_LONG 0x30 "npcs_off"
+	READ_LONG 0x34 "npcs_cnt"
+	READ_LONG 0x38 "glob_offset"
+	READ_LONG 0x50 "jrnl_offset"
+	READ_LONG 0x68 "famil_offset"
+	READ_LONG 0x6c "locat_offset"
+	READ_LONG 0x78 "US2_offset"
+
+	FOR (cnt=0; cnt<"%GAM_count%"; cnt=cnt+1) BEGIN
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 1 "cre_name"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 2 "cre_orient"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 3 "area_name"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 4 "loc_x"
+		READ_2DA_ENTRY_FORMER ~#GAM_patch_table~ "cnt" 5 "loc_y"
+
+		INSERT_BYTES "%npcs_off%" 0x160
+		WRITE_ASCIIE ("%npcs_off%" + 0x0c) "%cre_name%" #8
+		WRITE_ASCIIE ("%npcs_off%" + 0x18) "%area_name%" #8
+		WRITE_SHORT ("%npcs_off%" + 0x20) "%loc_x%"
+		WRITE_SHORT ("%npcs_off%" + 0x22) "%loc_y%"
+		WRITE_SHORT ("%npcs_off%" + 0x8c) 0xffff
+		WRITE_SHORT ("%npcs_off%" + 0x8e) 0xffff
+		WRITE_SHORT ("%npcs_off%" + 0x90) 0xffff
+		WRITE_SHORT ("%npcs_off%" + 0x92) 0xffff
+		WRITE_SHORT ("%npcs_off%" + 0xb4) 0xffff
+		WRITE_SHORT ("%npcs_off%" + 0xb6) 0xffff
+		WRITE_SHORT ("%npcs_off%" + 0xb8) 0xffff	  
+	END
+
+	PATCH_IF ("%cnt%" > 0) BEGIN	
+		SET delta = 0x160 * cnt
+		SET npcs_cnt = npcs_cnt + cnt
+		WRITE_LONG 0x34 "%npcs_cnt%"
+
+		PATCH_IF ("%PC_offset%">="%npcs_off%") BEGIN
+			SET PC_offset = PC_offset + delta
+			WRITE_LONG 0x20 "%PC_offset%"
+		END
+		PATCH_IF ("%US_offset%">="%npcs_off%") BEGIN
+			SET US_offset = US_offset + delta
+			WRITE_LONG 0x28 "%US_offset%"
+		END
+		PATCH_IF ("%glob_offset%">="%npcs_off%") BEGIN
+			SET glob_offset = glob_offset + delta
+			WRITE_LONG 0x38 "%glob_offset%"
+		END
+		PATCH_IF ("%jrnl_offset%">="%npcs_off%") BEGIN
+			SET jrnl_offset = jrnl_offset + delta
+			WRITE_LONG 0x50 "%jrnl_offset%"
+		END
+		PATCH_IF ("%famil_offset%">="%npcs_off%") BEGIN
+			SET famil_offset = famil_offset + delta
+			WRITE_LONG 0x68 "%famil_offset%"
+		END
+		PATCH_IF ("%locat_offset%">="%npcs_off%") BEGIN
+			SET locat_offset = locat_offset + delta
+			WRITE_LONG 0x6c "%locat_offset%"
+		END
+		PATCH_IF ("%US2_offset%">="%npcs_off%") BEGIN
+			SET US2_offset = US2_offset + delta
+			WRITE_LONG 0x78 "%US2_offset%"
+		END
+	END
+
+/////                                                  \\\\\
+///// GLSL                                             \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing GLSL files...~
+
+COPY ~EET/base/glsl~ ~override~ //check in future patch if fpYUV.GLSL is fixed in BG2:EE
+
+/////                                                  \\\\\
+///// GUI                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing GUI...~
+
+ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mbc$~ BEGIN
+	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%biff%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~
+END
+LAM bash_log
+
+ACTION_BASH_FOR ~EET/base/gui/sod~ ~^.+\.mbc$~ BEGIN
+	AT_NOW ~%tileconv% -e -o "EET%os_slash%SoD_GUI%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%sod%os_slash%%BASH_FOR_FILE%" %bash_debug%~
+END
+LAM bash_log
+
+/*ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileIndex BEGIN
+	"WORLDMAP" , "MOS" => "20"
+	"BIGLOGO" , "BAM" => "30"
+	"TITLE" , "BAM" => "40"
+	"CMPGEET" , "BAM" => "50"
+	"STARTSOD" , "MOS" => "60"
+	"MAPICONS" , "BAM" => "70"
+	"STARTBG2" , "MOS" => "80"
+END
+ACTION_PHP_EACH table_EET_fileIndex AS file => index BEGIN
+	COPY + ~EET/base/gui/%file%.%file_1%~ ~%biff_dir%~
+		LPF ~UPDATE_PVRZ_INDICES~ RET original_base_index new_base_index END
+	ACTION_IF original_base_index >= 0 AND new_base_index >= 0 BEGIN
+		ACTION_BASH_FOR ~EET/base/gui~ ~mos%index%.*\.pvrz~ BEGIN
+			LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%BASH_FOR_FILESPEC%~ END
+		END
+	END ELSE BEGIN
+		WARN ~WARNING: Couldn't install PVRZ files~
+	END
+END*/
+
+//ACTION_CLEAR_ARRAY remapped_pvrz
+
+ACTION_FOR_EACH file IN ~MAPICONS.BAM~ ~WORLDMAP.MOS~ ~BIGLOGO.BAM~ ~TITLE.BAM~ ~CMPGEET.BAM~ ~STARTSOD.MOS~ ~STARTBG2.MOS~ BEGIN
+	COPY + ~EET/base/gui/%file%~ ~%biff_dir%~
+		READ_LONG 0x10 "blocks_cnt"
+		PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~bam~) BEGIN
+			READ_LONG 0x1c "blocks_off"
+		END ELSE BEGIN //mos
+			READ_LONG 0x14 "blocks_off"
+		END
+		FOR (cnt=0; cnt<"%blocks_cnt%"; cnt=cnt+1) BEGIN
+			READ_LONG ("%blocks_off%"+0x1c*cnt+0x0) "original_base_index"
+			//PATCH_PRINT ~cnt = %cnt%, original_base_index = %original_base_index%~
+			PATCH_IF (VARIABLE_IS_SET $remapped_pvrz_base(~%original_base_index%~)) BEGIN
+				TEXT_SPRINT new_base_index $remapped_pvrz_base(~%original_base_index%~)
+				WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
+			END ELSE BEGIN
+				SET new_base_index = reserve_index_start + reserve_index_cnt //variables already set via prep_PVRZ.tph
+				SET reserve_index_cnt = reserve_index_cnt + 1
+				//PATCH_PRINT ~remapped_pvrz_base = %original_base_index% => %new_base_index%~
+				DEFINE_ASSOCIATIVE_ARRAY remapped_pvrz_base BEGIN ~%original_base_index%~ => ~%new_base_index%~ END
+				WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
+				PATCH_FOR_EACH index IN original_base_index new_base_index BEGIN
+					SET value = EVAL ~%index%~
+					PATCH_IF (value < 10) BEGIN
+						SPRINT EVAL ~%index%~ ~000%value%~
+					END ELSE PATCH_IF (value < 100) BEGIN
+						SPRINT EVAL ~%index%~ ~00%value%~
+					END ELSE PATCH_IF (value < 1000) BEGIN
+						SPRINT EVAL ~%index%~ ~0%value%~
+					END ELSE BEGIN
+						SPRINT EVAL ~%index%~ ~%value%~
+					END
+				END
+				INNER_ACTION BEGIN
+					//LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~EET/base/gui/mos%pvrz_name%.pvrz~ target_folder = EVAL ~%biff_dir%~ END
+					COPY_LARGE + ~EET/base/gui/mos%original_base_index%.pvrz~ ~%biff_dir%/mos%new_base_index%.pvrz~
+				END
+			END
+		END
+END
+
+ACTION_BASH_FOR ~%biff_dir%/pvrz~ ~^.+\.pvrz$~ BEGIN
+	MOVE + ~%biff_dir%/pvrz~ ~%biff_dir%~
+END
+
+/////                                                  \\\\\
+///// INI                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing INI files...~
+
+COPY ~%patch_dir%/ini~ ~override~
+
+/////                                                  \\\\\
+///// ITM                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing ITM files...~
+
+COPY ~EET/base/itm/SCRL1V_.ITM~ ~override~
+
+COPY ~%patch_dir%/itm~ ~override~
+	LPF EET_expand_tlk INT_VAR add = 200000 END
+
+COPY_EXISTING ~BPRNG1.ITM~ ~override~
+	LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = "208" END //Minimum HP
+BUT_ONLY
+
+//Modify permanent sleep spell effect (SoD Final)
+COPY_EXISTING ~BDDAGG06.ITM~ ~override~
+	~BDDAGG07.ITM~ ~override~
+	LPF ALTER_ITEM_EFFECT INT_VAR check_headers = 1 match_opcode = 39 /*Sleep*/ timing = 0 /*Instant/Limited*/ duration = 7200 /*ONE_DAY*/ END
+BUT_ONLY
+
+COPY_EXISTING ~BDAROW04.ITM~ ~override/AROW15.ITM~
+	~BDBOLT03.ITM~ ~override/BOLT09.ITM~
+
+COPY_EXISTING ~BAG31.ITM~ ~override/K#IMPORT.ITM~
+
+/////                                                  \\\\\
+///// PRO                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing PRO files...~
+
+COPY ~%patch_dir%/pro~ ~override~
+
+/////                                                  \\\\\
+///// SPL                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing SPL files...~
+
+//Find Familiar related spells
+COPY ~EET/base/spl/SPWI123.SPL~ ~override~
+	~EET/base/spl/SPCL342.SPL~ ~override~
+	~EET/base/spl/K#FAMKIL.SPL~ ~override~
+	~EET/base/spl/K#FAMREM.SPL~ ~override~
+	~EET/base/spl/K#REST.SPL~ ~override~
+	~EET/base/spl/K#UNREST.SPL~ ~override~
+ACTION_FOR_EACH var IN 4 6 9 12 24 BEGIN
+	COPY ~EET/base/spl/K#CURE.SPL~ ~override/K#CURE%var%.SPL~
+		WRITE_LONG 0x9e "%var%"
+	//OUTER_SET value = ((var / 2) * 3)
+	//COPY ~EET/base/spl/K#DMG.SPL~ ~override/K#DMG%value%.SPL~
+	//	WRITE_LONG 0x9e "%value%"
+END
+
+//remove Bhaal Powers
+COPY ~EET/base/spl/K#REMBHA.SPL~ ~override~
+
+//disable/enable SPIN649.SPL
+COPY ~EET/base/spl/K#PP_ADD.SPL~ ~override~
+	~EET/base/spl/K#PP_REM.SPL~ ~override~
+
+//assign BG2 portraits on transition
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_portraitID BEGIN
+	"NEDWIN" => "EDW"
+	"NIMOEN" => "IMO"
+	"NJAHEIR" => "JAH"
+	"NMINSC" => "MIN"
+	"NVICON" => "VIC"
+END
+ACTION_PHP_EACH table_EET_portraitID AS portrait => ID BEGIN
+	COPY ~EET/base/spl/K#PORTR.SPL~ ~override/K#POR%ID%.SPL~
+		WRITE_ASCIIE ~0xae~ ~%portrait%S~ #8 // Small portrait
+		WRITE_ASCIIE ~0xde~ ~%portrait%M~ #8 // Medium portrait
+END
+
+//assign NPC colors after resurrection from chunk death
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileID BEGIN
+	"IMOEN" => "IMO"
+	"EDWIN" => "EDW"
+END
+ACTION_PHP_EACH table_EET_fileID AS file => ID BEGIN
+	COPY_EXISTING ~%file%.cre~ ~override~
+		READ_BYTE 0x2c "metal" //Metal Colour Index	9e
+		READ_BYTE 0x2d "minor" //Minor Colour Index
+		READ_BYTE 0x2e "major" //Major Colour Index
+		READ_BYTE 0x2f "skin" //Skin Colour Index
+		READ_BYTE 0x30 "leather" //Leather Colour Index
+		READ_BYTE 0x31 "armor" //Armor Colour Index
+		READ_BYTE 0x32 "hair" //Hair Colour Index
+	BUT_ONLY
+	COPY ~EET/base/spl/K#COLOR.SPL~ ~override/K#COL%ID%.SPL~
+		WRITE_LONG 0x9e "metal"
+		WRITE_LONG 0xce "minor"
+		WRITE_LONG 0xfe "major"
+		WRITE_LONG 0x12e "skin"
+		WRITE_LONG 0x15e "leather"
+		WRITE_LONG 0x18e "armor"
+		WRITE_LONG 0xbe "hair"
+END
+
+COPY ~%patch_dir%/spl~ ~override~
+	LPF EET_expand_tlk INT_VAR add = 200000 END
+
+/////                                                  \\\\\
+///// STO                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing STO files...~
+
+COPY ~%patch_dir%/sto~ ~override~
+	LPF EET_expand_tlk INT_VAR add = 200000 END
+
+COPY_EXISTING ~BAG31.STO~ ~override/K#IMPORT.STO~
+
+/////                                                  \\\\\
+///// VEF                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing VEF files...~
+
+COPY ~%patch_dir%/vef~ ~override~
+
+/////                                                  \\\\\
+///// VVC                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing VVC files...~
+
+COPY ~%patch_dir%/vvc~ ~override~
+
+/////                                                  \\\\\
+///// WAV                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing WAV files...~
+
+ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/sounds~ ~%bgee_dir%/lang/en_US/sounds~ ~%bgee_dir%/sounds~ BEGIN
+	ACTION_BASH_FOR ~%dir%~ ~^.+\.wav$~ BEGIN
+		ACTION_TO_UPPER BASH_FOR_RES
+		ACTION_IF (VARIABLE_IS_SET $remapped_wav(~%BASH_FOR_RES%~)) BEGIN
+			OUTER_TEXT_SPRINT dest_file $remapped_wav(~%BASH_FOR_RES%~)
+		END ELSE BEGIN
+			OUTER_SPRINT dest_file ~%BASH_FOR_RES%~
+		END
+		ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~) BEGIN
+			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~
+		END
+	END
+END
+
+COPY_LARGE + ~EET/base/wav~ ~EET/temp/wav~
+
+/////                                                  \\\\\
+///// WBM                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing WBM files...~
+
+MKDIR ~lang/%LANGUAGE_BG2%/movies~
+
+//BG1 movies with voice over
+ACTION_FOR_EACH vidname IN BEREGOST INTRO_ NASHKELL WYVERN BEGIN
+	ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/%vidname%.ogg~) BEGIN
+		AT_NOW ~%ffmpeg% -i EET%os_slash%base%os_slash%lmovies%os_slash%%vidname%.wbm -i EET%os_slash%lang%os_slash%%LANGUAGE%%os_slash%movies%os_slash%%vidname%.ogg -acodec copy -vcodec copy EET%os_slash%temp%os_slash%%vidname%.webm~
+	END ELSE BEGIN
+		AT_NOW ~%ffmpeg% -i EET%os_slash%base%os_slash%lmovies%os_slash%%vidname%.wbm -i EET%os_slash%lang%os_slash%en_US%os_slash%movies%os_slash%%vidname%.ogg -acodec copy -vcodec copy EET%os_slash%temp%os_slash%%vidname%.webm~
+	END
+	COPY_LARGE ~EET/temp/%vidname%.webm~ ~lang/%LANGUAGE_BG2%/movies/%vidname%.wbm~
+END
+
+//other movies
+COPY_LARGE ~EET/base/movies~ ~lang/%LANGUAGE_BG2%/movies~
+
+ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/movies~ ~%bgee_dir%/lang/en_US/movies~ ~%bgee_dir%/movies~ BEGIN
+	ACTION_BASH_FOR ~%dir%~ ~^.+\.wbm$~ BEGIN
+		ACTION_TO_UPPER BASH_FOR_RES
+		ACTION_IF (VARIABLE_IS_SET $remapped_mve(~%BASH_FOR_RES%~)) BEGIN
+			OUTER_TEXT_SPRINT dest_file $remapped_mve(~%BASH_FOR_RES%~)
+		END ELSE BEGIN
+			OUTER_SPRINT dest_file ~%BASH_FOR_RES%~
+		END
+		ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~) BEGIN
+			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// WED                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing WED files...~
+
+// patching BG3300 (Beregost)
+ACTION_DEFINE_ARRAY tilesToFix BEGIN 3799 3800 3879 3880 END
+LAF FIX_WATER INT_VAR numTilesToFix = 4 STR_VAR wed = ~%patch_dir%/wed/bg3300.wed~ tis = ~%biff_dir%/eetBG33/bg3300.tis~ END
+
+// patching BG3000
+ACTION_DEFINE_ARRAY tilesToFix BEGIN 2588 END
+LAF FIX_WATER INT_VAR numTilesToFix = 1 STR_VAR wed = ~%patch_dir%/wed/bg3000.wed~ tis = ~%biff_dir%/eetBG30/bg3000.tis~ END
+
+// patching BG1802
+ACTION_DEFINE_ARRAY tilesToFix BEGIN 1292 1293 END
+LAF FIX_WATER INT_VAR numTilesToFix = 2 STR_VAR wed = ~%patch_dir%/wed/bg1802.wed~ tis = ~%biff_dir%/eetBG18/bg1802.tis~ END
+
+COPY ~%patch_dir%/wed~ ~override~
+
+/////                                                  \\\\\
+///// WFX                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing WFX files...~
+
+COPY ~EET/temp/wfx~ ~override~
+
+/////                                                  \\\\\
+///// WMP                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing WMP files...~
+
+MKDIR ~Worldmap~
+
+COPY_EXISTING ~xnewarea.2da~ ~override~
+	REPLACE_TEXTUALLY CASE_INSENSITIVE ~^.*ar3000.*$~ ~1~ //without 1 engine behave in weird way (sets XP CAP to 2950000)
+IF ~ar3000~
+BUT_ONLY
+
+COPY_EXISTING ~XL3000.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	//Bugged entrance names in lines added by Beamdog...
+	REPLACE_TEXTUALLY ~^\(2 .+ \)EXITW ~ ~\EXITWMP~
+	REPLACE_TEXTUALLY ~^\(3 .+ \)EXITW ~ ~\EXITWMP~
+	REPLACE_TEXTUALLY ~^\(9 .+ \)EXITSE ~ ~\EXITWMP~
+	REPLACE_TEXTUALLY ~^\(20 .+ \)EXITE ~ ~\1EXITSW~
+	REPLACE_TEXTUALLY ~^\(21 .+ \)EXITE ~ ~\1EXITSW~
+	REPLACE_TEXTUALLY ~^\(22 .+ \)EXITE ~ ~\1EXITSW~
+BUT_ONLY
+
+//icons_array
+ACTION_DEFINE_ASSOCIATIVE_ARRAY wmp_bg2_icons_array BEGIN
+	OH4000 , 29 => 106
+	OH4100 , 32 => 108
+	OH5100 , 34 => 110
+	OH6000 , 33 => 109
+	OH6100 , 31 => 107
+	OH6200 , 31 => 107
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY wmp_tob_icons_array BEGIN
+	AR4000 , 6 => 91
+	AR3000 , 5 => 90
+	AR5000 , 8 => 93
+	AR5500 , 14 => 99
+	AR5203 , 7 => 92
+	AR5202 , 9 => 94
+	AR5200 , 10 => 95
+	AR6300 , 15 => 100
+	AR6400 , 13 => 98
+	AR6000 , 16 => 101
+	AR6100 , 12 => 97
+	OH4200 , 18 => 111
+	OH6400 , 11 => 96
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY wmp_bg2_2da_links_array BEGIN
+	AR3000 => XL3000
+END
+
+//dump wmp
+COPY + ~%patch_dir%/worldmap.wmp~ ~%patch_dir%~
+	LPF ~dump_wmp~
+	INT_VAR
+		tra_read = 1
+		skip_areas = 1
+	STR_VAR
+		output_links = "EET/temp/map_bgee_links.tbl"
+		output_strings = "EET/temp/map_bgee_trans.tra"
+	END
+
+COPY + ~%patch_dir%/sodmap.wmp~ ~%patch_dir%~
+	LPF ~dump_wmp~
+	INT_VAR
+		tra_read = 1
+		skip_areas = 1
+	STR_VAR
+		output_links = "EET/temp/map_sod_links.tbl"
+		output_strings = "EET/temp/map_sod_trans.tra"
+	END
+
+COPY_EXISTING ~worldmap.wmp~ ~override~
+	LPF ~dump_wmp~
+	INT_VAR
+		move_y = 2283
+		compare_bams = 1
+	STR_VAR
+		2da_links_array = "wmp_bg2_2da_links_array"
+		icons_array = "wmp_bg2_icons_array"
+		output_areas = "EET/temp/map_bg2_areas.tbl"
+		output_links = "EET/temp/map_bg2_links.tbl"
+		output_strings = "EET/temp/map_bg2_trans.tra"
+	END
+BUT_ONLY
+
+COPY_EXISTING ~worldm25.wmp~ ~override~
+	LPF ~dump_wmp~
+	INT_VAR
+		move_x = 893
+		move_y = 3011
+		compare_bams = 1
+	STR_VAR
+		icons_array = "wmp_tob_icons_array"
+		output_areas = "EET/temp/map_tob_areas.tbl"
+		output_links = "EET/temp/map_tob_links.tbl"
+		output_strings = "EET/temp/map_tob_trans.tra"
+	END
+BUT_ONLY
+
+//manual edits
+COPY + ~EET/tbl/map_mods_areas.tbl~ ~EET/temp/map_bgee_areas.tbl~ //only used by BP-BGT Worldmap
+
+COPY + ~EET/temp/map_sod_links.tbl~ ~EET/temp~
+	REPLACE_TEXTUALLY ~\(BD1000[ %TAB%]+S[ %TAB%]+BD7100[ %TAB%]+EXITSW[ %TAB%]+\)10~ ~\14~
+	REPLACE_TEXTUALLY ~\(BD7000[ %TAB%]+E[ %TAB%]+BD7100[ %TAB%]+EXITSW[ %TAB%]+\)11~ ~\15~
+	REPLACE_TEXTUALLY ~\(BD2000[ %TAB%]+W[ %TAB%]+BD3000[ %TAB%]+EXITN[ %TAB%]+\)84~ ~\110~
+	REPLACE_TEXTUALLY ~\(BD0010[ %TAB%]+E[ %TAB%]+BD1000[ %TAB%]+EXITSW[ %TAB%]+\)8~ ~\12~
+
+COPY + ~EET/temp/map_bgee_links.tbl~ ~EET/temp~
+	APPEND_FILE ~EET/temp/map_sod_links.tbl~
+	APPEND_FILE ~EET/tbl/map_mods_links.tbl~
+
+COPY + ~EET/temp/map_bgee_trans.tra~ ~EET/temp~
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^\(@[A-Z0-9]+\)\(.*[%newline%]*\)~ BEGIN
+		PATCH_IF (FILE_CONTAINS_EVALUATED (~EET/lang/%LANGUAGE%/map_mods_trans.tra~ ~^%MATCH1%[ %TAB%]~)) BEGIN
+			SPRINT MATCH1 ~~
+			SPRINT MATCH2 ~~
+		END
+	END ~%MATCH1%%MATCH2%~
+	APPEND_FILE ~EET/lang/%LANGUAGE%/map_mods_trans.tra~
+	APPEND_FILE ~EET/temp/map_sod_trans.tra~
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY wmp_soa_xy_array BEGIN //little fixes for misplaced Athkatla icons (useful also for vanilla BG2 worldmap)
+	1 , "-1" , "-4" => AR0800
+	2 , "3" , "5" => AR0400
+	3 , "0" , "4" => AR0700
+	4 , "3" , "-3" => AR0300
+	5 , "-1" , "1" => AR0020
+	6 , "-6" , "1" => AR0500
+	7 , "0" , "3" => AR1000
+	8 , "4" , "2" => AR0900
+END
+
+COPY + ~EET/temp/map_bg2_areas.tbl~ ~EET/temp~
+	REPLACE_TEXTUALLY ~\(AR0700[ ]+\)15 ~ ~\13  ~
+	PHP_EACH wmp_soa_xy_array AS xy => area BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(%area%[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
+			SET MATCH2 = MATCH2 + xy_1
+			SET MATCH4 = MATCH4 + xy_2
+		END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
+	END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY wmp_tob_xy_array BEGIN //move icons to lore friendly coordinates
+	1 , "-182" , "-157" => AR3000
+	2 , "-420" , "-60" => AR4000
+	3 , "15" , "-33" => OH6400
+END
+
+COPY + ~EET/temp/map_tob_areas.tbl~ ~EET/temp~
+	REPLACE_TEXTUALLY ~\(AR3000[ ]+\)7 ~ ~\13 ~
+	REPLACE_TEXTUALLY ~\(AR4000[ ]+\)7 ~ ~\13 ~
+	PHP_EACH wmp_tob_xy_array AS xy => area BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(%area%[ ]+[0-9]+[ ]+[0-9]+[ ]+\)\([0-9]+\)\([ ]+\)\([0-9]+\)~ BEGIN
+			SET MATCH2 = MATCH2 + xy_1
+			SET MATCH4 = MATCH4 + xy_2
+		END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%~
+	END
+
+COPY + ~EET/temp/map_tob_trans.tra~ ~EET/temp~
+	REPLACE_TEXTUALLY ~^@AR4000.*[%newline%]*~ ~~
+	REPLACE_TEXTUALLY ~^@AR6400.*[%newline%]*~ ~~
+
+//BP-BGT Worldmap
+ACTION_FOR_EACH file IN areas.tbl links.tbl trans.tra BEGIN
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/Worldmap/map_mods_%file%~) BEGIN
+		COPY + ~%bgee_dir%/Worldmap/map_mods_%file%~ ~EET/temp~
+			PHP_EACH remapped_are AS source => dest BEGIN
+				REPLACE_TEXTUALLY ~%source%~ ~%dest%~
+			END
+	END
+	ACTION_IF (FILE_EXISTS ~Worldmap/map_mods_%file%~) BEGIN
+		COPY ~Worldmap/map_mods_%file%~ ~Worldmap~
+			APPEND_FILE ~EET/temp/map_bgee_%file%~
+			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%~) BEGIN
+				APPEND_FILE ~EET/temp/map_mods_%file%~
+			END
+	END ELSE BEGIN
+		COPY ~EET/temp/map_bgee_%file%~ ~Worldmap/map_mods_%file%~
+			PATCH_IF (FILE_EXISTS ~EET/temp/map_mods_%file%~) BEGIN
+				APPEND_FILE ~EET/temp/map_mods_%file%~
+			END
+	END
+END
+
+//EET worldmap
+
+COPY + ~EET/tbl/map_eet_areas.tbl~ ~EET/temp~
+	APPEND_FILE ~EET/temp/map_bg2_areas.tbl~
+	APPEND_FILE ~EET/temp/map_tob_areas.tbl~
+	LPF fix_table END
+	LPM read_area_array_from_2da
+
+COPY + ~Worldmap/map_mods_links.tbl~ ~EET/temp/map_eet_links.tbl~
+	APPEND_FILE ~EET/temp/map_bg2_links.tbl~
+	APPEND_FILE ~EET/tbl/map_ar3000_links.tbl~ //links missing in XL3000.2DA
+	APPEND_FILE ~EET/temp/map_tob_links.tbl~
+	LPF fix_table END
+	LPM read_link_array_from_2da
+
+COPY + ~Worldmap/map_mods_trans.tra~ ~EET/temp/map_eet_trans.tra~
+	APPEND_FILE ~EET/temp/map_bg2_trans.tra~
+	APPEND_FILE ~EET/temp/map_tob_trans.tra~
+	LPF fix_table END
+	LPM read_trans_array_from_2da
+
+LAM merge_in_translations
+
+ACTION_PHP_EACH strref_wmp AS content => strref BEGIN
+	ACTION_IF (strref >= 199000) AND (strref < 200000) BEGIN
+		ACTION_IF (VARIABLE_IS_SET $fl#NAME("%content%")) AND ($fl#NAME("%content%") STR_CMP "") BEGIN 
+			OUTER_SPRINT string $fl#NAME("%content%")
+		END ELSE ACTION_IF (VARIABLE_IS_SET $fl#TOOL("%content%")) AND ($fl#TOOL("%content%") STR_CMP "") BEGIN
+			OUTER_SPRINT string $fl#TOOL("%content%")
+        END ELSE BEGIN
+			OUTER_SPRINT string ~~
+		END
+		STRING_SET_EVALUATE strref ~%string%~
+	END
+END
+
+COPY_EXISTING ~worldmap.wmp~ ~override~
+	READ_LONG 0xc mo
+	READ_LONG mo + 0x20 na
+	READ_LONG mo + 0x24 ao
+	READ_LONG mo + 0x28 lo
+	READ_LONG mo + 0x2c nl
+	FOR (i = 0; i < nl; ++i) BEGIN
+		DELETE_BYTES lo 0xd8
+	END
+	FOR (i = 0; i < na; ++i) BEGIN
+		DELETE_BYTES ao 0xf0
+		SET lo = lo - 0xf0
+	END
+	WRITE_LONG mo + 0x20 0
+	WRITE_LONG mo + 0x24 ao
+	WRITE_LONG mo + 0x28 lo
+	WRITE_LONG mo + 0x2c 0
+BUT_ONLY
+
+INCLUDE ~EET/lib/build_worldmap.tpa~
+
+//SOD BG Worldmap
+
+COPY ~%patch_dir%/BGMAP.wmp~ ~override~
+	LPF EET_expand_tlk INT_VAR add = 200000 END
+
+/////                                                  \\\\\
+///// Iron Crisis (item shattering)                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ARRAY eet_ironCrisis_array BEGIN 
+AX1H01.ITM
+AX1H04.ITM
+BLUN02.ITM
+BLUN04.ITM
+BLUN06.ITM
+BLUN08.ITM
+DAGG01.ITM
+DAGG06.ITM
+DAGG07.ITM
+HALB01.ITM
+HAMM01.ITM
+SPER01.ITM
+SW1H01.ITM
+SW1H04.ITM
+SW1H07.ITM
+SW1H12.ITM
+SW1H17.ITM
+SW1H20.ITM
+SW1H43.ITM
+SW1H46.ITM
+SW1H48.ITM
+SW2H01.ITM
+/*SHLD01.ITM
+SHLD03.ITM
+SHLD05.ITM
+SHLD08.ITM
+SHLD09.ITM
+SHLD10.ITM
+SHLD11.ITM
+SHLD12.ITM
+SHLD13.ITM
+SHLD14.ITM
+SHLD15.ITM
+SHLD16.ITM
+SHLD01A.ITM
+SHLD03A.ITM
+SHLD05A.ITM
+SHLD08A.ITM
+SHLD09A.ITM
+SHLD10A.ITM
+SHLD11A.ITM
+SHLD12A.ITM
+SHLD13A.ITM
+SHLD14A.ITM
+SHLD15A.ITM
+SHLD16A.ITM
+CHAN01.ITM
+CHAN04.ITM
+PLAT01.ITM
+PLAT04.ITM
+HELM01.ITM
+HELM08.ITM
+HELM09.ITM
+HELM10.ITM
+HELM11.ITM
+HELM12.ITM
+HELM13.ITM
+HELM15.ITM*/
+END
+LAF ~EET_IRON_CRISIS~
+	STR_VAR
+	shattering_array = EVAL ~eet_ironCrisis_array~ //array with files to patch (supports: weapons, armors, shields, helmets)
+END
+
+/////                                                  \\\\\
+///// EET transition                                   \\\\\
+/////                                                  \\\\\
+
+INCLUDE ~EET/lib/transition.tph~
+
+/////                                                  \\\\\
+///// Fixpack                                          \\\\\
+/////                                                  \\\\\
+
+INCLUDE ~EET/lib/bgee_fixpack.tph~
+
+/////                                                  \\\\\
+///// Exe patching                                     \\\\\
+/////                                                  \\\\\
+
+COPY ~Baldur%exe%~ ~Baldur%exe%~
+	REPLACE_TEXTUALLY ~NITEDAY~ ~~ (7)
+	REPLACE_TEXTUALLY ~DAYNITE~ ~~ (7)
+	REPLACE_TEXTUALLY ~SPIN649~ ~~ (7)
+	REPLACE_TEXTUALLY ~SPIN822~ ~~ (7)
+	//change default campaign
+	REPLACE_TEXTUALLY ~SOD~ ~BG1~
+	REPLACE_TEXTUALLY ~Never Show Nuisance BG1~ ~Never Show Nuisance SOD~
+	REPLACE_TEXTUALLY ~Edition/BG1save~ ~Edition/sodsave~
+	REPLACE_TEXTUALLY ~usingBG1StartMenu~ ~usingSODStartMenu~
+BUT_ONLY
+
+/////                                                  \\\\\
+///// Biffing                                          \\\\\
+/////                                                  \\\\\
+
+PRINT ~Biffing graphic resources and wav files~
+
+MAKE_BIFF ~eetTU00~ BEGIN ~%biff_dir%/eetTU00~ ~^.*$~ END
+MAKE_BIFF ~eetOH2~ BEGIN ~%biff_dir%/eetOH2~ ~^.*$~ END
+MAKE_BIFF ~eetOH3~ BEGIN ~%biff_dir%/eetOH3~ ~^.*$~ END
+MAKE_BIFF ~eetOH9~ BEGIN ~%biff_dir%/eetOH9~ ~^.*$~ END
+MAKE_BIFF ~eetBD0~ BEGIN ~%biff_dir%/eetBD0~ ~^.*$~ END
+MAKE_BIFF ~eetBD1~ BEGIN ~%biff_dir%/eetBD1~ ~^.*$~ END
+MAKE_BIFF ~eetBD2~ BEGIN ~%biff_dir%/eetBD2~ ~^.*$~ END
+MAKE_BIFF ~eetBD3~ BEGIN ~%biff_dir%/eetBD3~ ~^.*$~ END
+MAKE_BIFF ~eetBD4~ BEGIN ~%biff_dir%/eetBD4~ ~^.*$~ END
+MAKE_BIFF ~eetBD5~ BEGIN ~%biff_dir%/eetBD5~ ~^.*$~ END
+MAKE_BIFF ~eetBD6~ BEGIN ~%biff_dir%/eetBD6~ ~^.*$~ END
+MAKE_BIFF ~eetBD7~ BEGIN ~%biff_dir%/eetBD7~ ~^.*$~ END
+MAKE_BIFF ~eetBG00~ BEGIN ~%biff_dir%/eetBG00~ ~^.*$~ END
+MAKE_BIFF ~eetBG01~ BEGIN ~%biff_dir%/eetBG01~ ~^.*$~ END
+MAKE_BIFF ~eetBG02~ BEGIN ~%biff_dir%/eetBG02~ ~^.*$~ END
+MAKE_BIFF ~eetBG03~ BEGIN ~%biff_dir%/eetBG03~ ~^.*$~ END
+MAKE_BIFF ~eetBG04~ BEGIN ~%biff_dir%/eetBG04~ ~^.*$~ END
+MAKE_BIFF ~eetBG05~ BEGIN ~%biff_dir%/eetBG05~ ~^.*$~ END
+MAKE_BIFF ~eetBG06~ BEGIN ~%biff_dir%/eetBG06~ ~^.*$~ END
+MAKE_BIFF ~eetBG07~ BEGIN ~%biff_dir%/eetBG07~ ~^.*$~ END
+MAKE_BIFF ~eetBG08~ BEGIN ~%biff_dir%/eetBG08~ ~^.*$~ END
+MAKE_BIFF ~eetBG09~ BEGIN ~%biff_dir%/eetBG09~ ~^.*$~ END
+MAKE_BIFF ~eetBG10~ BEGIN ~%biff_dir%/eetBG10~ ~^.*$~ END
+MAKE_BIFF ~eetBG11~ BEGIN ~%biff_dir%/eetBG11~ ~^.*$~ END
+MAKE_BIFF ~eetBG12~ BEGIN ~%biff_dir%/eetBG12~ ~^.*$~ END
+MAKE_BIFF ~eetBG13~ BEGIN ~%biff_dir%/eetBG13~ ~^.*$~ END
+MAKE_BIFF ~eetBG14~ BEGIN ~%biff_dir%/eetBG14~ ~^.*$~ END
+MAKE_BIFF ~eetBG15~ BEGIN ~%biff_dir%/eetBG15~ ~^.*$~ END
+MAKE_BIFF ~eetBG16~ BEGIN ~%biff_dir%/eetBG16~ ~^.*$~ END
+MAKE_BIFF ~eetBG17~ BEGIN ~%biff_dir%/eetBG17~ ~^.*$~ END
+MAKE_BIFF ~eetBG18~ BEGIN ~%biff_dir%/eetBG18~ ~^.*$~ END
+MAKE_BIFF ~eetBG19~ BEGIN ~%biff_dir%/eetBG19~ ~^.*$~ END
+MAKE_BIFF ~eetBG20~ BEGIN ~%biff_dir%/eetBG20~ ~^.*$~ END
+MAKE_BIFF ~eetBG21~ BEGIN ~%biff_dir%/eetBG21~ ~^.*$~ END
+MAKE_BIFF ~eetBG22~ BEGIN ~%biff_dir%/eetBG22~ ~^.*$~ END
+MAKE_BIFF ~eetBG23~ BEGIN ~%biff_dir%/eetBG23~ ~^.*$~ END
+MAKE_BIFF ~eetBG24~ BEGIN ~%biff_dir%/eetBG24~ ~^.*$~ END
+MAKE_BIFF ~eetBG26~ BEGIN ~%biff_dir%/eetBG26~ ~^.*$~ END
+MAKE_BIFF ~eetBG27~ BEGIN ~%biff_dir%/eetBG27~ ~^.*$~ END
+MAKE_BIFF ~eetBG28~ BEGIN ~%biff_dir%/eetBG28~ ~^.*$~ END
+MAKE_BIFF ~eetBG29~ BEGIN ~%biff_dir%/eetBG29~ ~^.*$~ END
+MAKE_BIFF ~eetBG30~ BEGIN ~%biff_dir%/eetBG30~ ~^.*$~ END
+MAKE_BIFF ~eetBG31~ BEGIN ~%biff_dir%/eetBG31~ ~^.*$~ END
+MAKE_BIFF ~eetBG32~ BEGIN ~%biff_dir%/eetBG32~ ~^.*$~ END
+MAKE_BIFF ~eetBG33~ BEGIN ~%biff_dir%/eetBG33~ ~^.*$~ END
+MAKE_BIFF ~eetBG34~ BEGIN ~%biff_dir%/eetBG34~ ~^.*$~ END
+MAKE_BIFF ~eetBG35~ BEGIN ~%biff_dir%/eetBG35~ ~^.*$~ END
+MAKE_BIFF ~eetBG36~ BEGIN ~%biff_dir%/eetBG36~ ~^.*$~ END
+MAKE_BIFF ~eetBG37~ BEGIN ~%biff_dir%/eetBG37~ ~^.*$~ END
+MAKE_BIFF ~eetBG38~ BEGIN ~%biff_dir%/eetBG38~ ~^.*$~ END
+MAKE_BIFF ~eetBG39~ BEGIN ~%biff_dir%/eetBG39~ ~^.*$~ END
+MAKE_BIFF ~eetBG40~ BEGIN ~%biff_dir%/eetBG40~ ~^.*$~ END
+MAKE_BIFF ~eetBG41~ BEGIN ~%biff_dir%/eetBG41~ ~^.*$~ END
+MAKE_BIFF ~eetBG42~ BEGIN ~%biff_dir%/eetBG42~ ~^.*$~ END
+MAKE_BIFF ~eetBG43~ BEGIN ~%biff_dir%/eetBG43~ ~^.*$~ END
+MAKE_BIFF ~eetBG44~ BEGIN ~%biff_dir%/eetBG44~ ~^.*$~ END
+MAKE_BIFF ~eetBG45~ BEGIN ~%biff_dir%/eetBG45~ ~^.*$~ END
+MAKE_BIFF ~eetBG46~ BEGIN ~%biff_dir%/eetBG46~ ~^.*$~ END
+MAKE_BIFF ~eetBG47~ BEGIN ~%biff_dir%/eetBG47~ ~^.*$~ END
+MAKE_BIFF ~eetBG48~ BEGIN ~%biff_dir%/eetBG48~ ~^.*$~ END
+MAKE_BIFF ~eetBG49~ BEGIN ~%biff_dir%/eetBG49~ ~^.*$~ END
+MAKE_BIFF ~eetBG50~ BEGIN ~%biff_dir%/eetBG50~ ~^.*$~ END
+MAKE_BIFF ~eetBG51~ BEGIN ~%biff_dir%/eetBG51~ ~^.*$~ END
+MAKE_BIFF ~eetBG52~ BEGIN ~%biff_dir%/eetBG52~ ~^.*$~ END
+MAKE_BIFF ~eetBG53~ BEGIN ~%biff_dir%/eetBG53~ ~^.*$~ END
+MAKE_BIFF ~eetBG54~ BEGIN ~%biff_dir%/eetBG54~ ~^.*$~ END
+MAKE_BIFF ~eetBG55~ BEGIN ~%biff_dir%/eetBG55~ ~^.*$~ END
+MAKE_BIFF ~eetBG56~ BEGIN ~%biff_dir%/eetBG56~ ~^.*$~ END
+MAKE_BIFF ~eetBG57~ BEGIN ~%biff_dir%/eetBG57~ ~^.*$~ END
+MAKE_BIFF ~eetBG58~ BEGIN ~%biff_dir%/eetBG58~ ~^.*$~ END
+MAKE_BIFF ~eetBG59~ BEGIN ~%biff_dir%/eetBG59~ ~^.*$~ END
+MAKE_BIFF ~eetBG60~ BEGIN ~%biff_dir%/eetBG60~ ~^.*$~ END
+MAKE_BIFF ~eetBG61~ BEGIN ~%biff_dir%/eetBG61~ ~^.*$~ END
+MAKE_BIFF ~eetGui~ BEGIN ~%biff_dir%/eetGui~ ~^.*$~ END
+MAKE_BIFF ~eetWbm~ BEGIN ~EET/temp/wbm~ ~^.*$~ END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_biff BEGIN
+	~eetWav~ , ~EET/temp/wav~ , ~^.*\.wav$~ => 150000000 //150 MB
+	~eetRes~ , ~%biff_dir%~ , ~^.*$~ => 50000000 //50 MB
+END
+
+ACTION_PHP_EACH table_EET_biff AS biff => size BEGIN
+	OUTER_SET totalSize = 0
+	OUTER_SET index = 0
+	MKDIR ~%biff_dir%/%biff%%index%~
+	ACTION_BASH_FOR ~%biff_1%~ ~%biff_2%~ BEGIN
+		ACTION_IF ( BASH_FOR_SIZE + totalSize > size ) AND ( totalSize > 0 ) BEGIN
+			MAKE_BIFF ~%biff%%index%~ BEGIN ~%biff_dir%/%biff%%index%~ ~^.*$~ END
+			OUTER_SET index = index + 1
+			OUTER_SET totalSize = 0
+			MKDIR ~%biff_dir%/%biff%%index%~
+		END
+		MOVE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%/%biff%%index%~
+		OUTER_SET totalSize = totalSize + BASH_FOR_SIZE
+	END
+	ACTION_IF ( totalSize > 0 ) BEGIN
+		MAKE_BIFF ~%biff%%index%~ BEGIN ~%biff_dir%/%biff%%index%~ ~^.*$~ END
+	END
+END
+
+/////                                                  \\\\\
+///// Finalise installation                            \\\\\
+/////                                                  \\\\\
+
+COPY ~.../blank.txt~ ~override/EET.flag~
+APPEND ~EET.flag~ ~EET_JOURNAL~
+PRINT ~'EET.flag' file is used by weidu to recognize the installation as EET~
+
+COPY ~%WEIDU_EXECUTABLE%~ ~setup-EET_end%exe%~
+	~EET/lib/EET_end.tp2~ ~EET_end.tp2~

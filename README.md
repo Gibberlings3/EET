@@ -2,7 +2,7 @@
 
 -------------
 
-Version 1.0 Release Candidate 1 (a version that is nearly ready for release but may still have a few bugs; the status between beta version and release version.) 
+Version 1.0 Release Candidate (a version that is nearly ready for release but may still have a few bugs; the status between beta version and release version.) 
 
 -------------
 

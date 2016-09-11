@@ -40,10 +40,10 @@ COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
 		//PATCH_PRINT ~patch_name = %patch_name%; ;patch_dir = %patch_dir%; patch_ext = %patch_ext%~
 		SET patched = 0
 		INNER_ACTION BEGIN
-			ACTION_IF ~%patch_ext%~ STRING_EQUAL_CASE ~TP2~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~TPA~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~TPH~ OR
-				~%patch_ext%~ STRING_EQUAL_CASE ~TPP~ BEGIN
+			ACTION_IF ~%patch_ext%~ STR_EQ ~TP2~ OR
+				~%patch_ext%~ STR_EQ ~TPA~ OR
+				~%patch_ext%~ STR_EQ ~TPH~ OR
+				~%patch_ext%~ STR_EQ ~TPP~ BEGIN
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
 					REPLACE_TEXTUALLY ~GAME_IS~ ~%WNL%GAME_IS~ //workaround for weidu bug
 					REPLACE_EVALUATE CASE_INSENSITIVE ~\(GAME_IS[ %TAB%]*\)\([A-Za-z0-9][A-Za-z0-9_]+\)~ BEGIN

@@ -1,5 +1,64 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
+//referenced BG2:EE strrefs (doesn't matter that much since these are mostly debug resources)
+ACTION_CLEAR_ARRAY strref_tlk
+ACTION_DEFINE_ASSOCIATIVE_ARRAY strref_tlk BEGIN
+	200340 => 340 //Held
+	200384 => 384 //Held
+	200915 => 915 //Held
+	201473 => 1473 //Held
+	208364 => 8364 //Dominated
+	208823 => 8823 //Held
+	210554 => 10554 //Undead destroyed
+	239752 => 39752 //Stricken by a foul disease
+	240968 => 40968 //Two Levels Drained
+	240969 => 40969 //Three Levels Drained
+	240979 => 40979 //Four Levels Drained
+	241495 => 41495 //One Level Drained
+	241616 => 41616 //Five Levels Drained
+	254337 => 54337 //Diseased
+	264285 => 64285 //Vorpal Hit
+	272868 => 72868 //Casts True Sight
+	204742 => 4742 //Spell Ineffective
+	237605 => "-1"
+	235567 => "-1"
+	235544 => "-1"
+	237340 => "-1"
+	235542 => "-1"
+	235606 => "-1"
+	237613 => "-1"
+	237607 => "-1"
+	236317 => "-1"
+	235568 => "-1"
+	235484 => "-1"
+	235593 => "-1"
+	237801 => "-1"
+END
+
+COPY_EXISTING ~PRINCESS.ITM~ ~override~
+	~BDNEREID.CRE~ ~override~
+	~BDPWATER.CRE~ ~override~
+	~BDSALF01.CRE~ ~override~
+	~BDDTRAI.ITM~ ~override~
+	~REF1.ITM~ ~override~
+	~BDCONSTR.ITM~ ~override~
+	LPF EET_expand_tlk INT_VAR add = 0 END
+BUT_ONLY
+
+//http://gibberlings3.net/forums/index.php?showtopic=28161&page=19#entry246196
+COPY_EXISTING ~BDPETR01.CRE~ ~override~
+	~BDPETR02.CRE~ ~override~
+	~BDPETR03.CRE~ ~override~
+	~BDPETR04.CRE~ ~override~
+	~BDPETR05.CRE~ ~override~
+	READ_ASCII 0x268 "default"
+	PATCH_IF (~%default%~ STR_EQ ~DPLAYER3~) BEGIN
+		WRITE_ASCII 0x268 ~~ #8
+	END ELSE BEGIN
+		PATCH_WARN ~WARNING: %BASH_FOR_FILE% no longer needs fixing~
+	END
+BUT_ONLY
+
 //same problem as:
 //https://forums.beamdog.com/discussion/comment/789128#Comment_789128
 //http://redmine.beamdog.com/issues/22244
@@ -73,7 +132,7 @@ THEN
     SetGlobal("RasaadTalkedTo","BG4800",1)
     SetGlobal("RASAAD_4TH_SPAWN","BG4800",1)
 END
->>>>>>>> 
+>>>>>>>>
 
 <<<<<<<< .../nBG4800.baf
 IF
@@ -91,7 +150,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~BG4800.bcs~ ~override~
-R_B_B ~.../oBG4800.baf~ ~.../nBG4800.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBG4800.baf in %SOURCE_FILE%~ END 
+R_B_B ~.../oBG4800.baf~ ~.../nBG4800.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBG4800.baf in %SOURCE_FILE%~ END
 
 //junk in BG1801.ARE Rest Spawn entries (harmless but annoying during save update)
 COPY_EXISTING ~BG1801.ARE~ ~override~
@@ -116,7 +175,7 @@ COPY_EXISTING ~BG1801.ARE~ ~override~
 		SET "none_count" = 0
 		FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
 			READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
-			PATCH_IF (("%resref%" STRING_EQUAL_CASE "") OR ("%resref%" STRING_EQUAL_CASE "none")) BEGIN
+			PATCH_IF (("%resref%" STR_EQ "") OR ("%resref%" STR_EQ "none")) BEGIN
 				SET "none_count" = "none_count" + 1
 			END
 		END
@@ -143,7 +202,7 @@ COPY_EXISTING ~BDCUT61.BCS~ ~override~
 BUT_ONLY
 
 //missing XP and story mode code in Imoen script
-COPY_EXISTING ~BD4000.BCS~ ~override~
+COPY_EXISTING ~IMOEN_.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		COUNT_REGEXP_INSTANCES ~BD_JOINXP~ num_matches
 		COUNT_REGEXP_INSTANCES ~OHSMODE3~ num_matches2
@@ -404,29 +463,6 @@ END
 >>>>>>>>
 EXTEND_TOP ~BG2619.BCS~ ~.../BG2619-et.baf~ //DOPPLEGANGER_CHANGE if dialogue was not triggered
 
-//https://forums.beamdog.com/discussion/44775/neeras-stuck-initiating-the-dialog
-//Neera's stuck initiating the dialog
-<<<<<<<< .../oNEERA.baf
-IF
-  Global("RedWizards","BG3300",3)
-  !ActuallyInCombat()
-  !Detect("NETHAY01")
-  !Detect("NETHGUA1")
-  !Detect("NETHGUA2")
-THEN
-  RESPONSE #100
-    SetGlobal("RedWizards","BG3300",4)
-    ChangeEnemyAlly("NEERA",NEUTRAL)
-    ActionOverride("NEERA",StartDialogueNoSetInterrupt(Player1))
-END
->>>>>>>> 
-
-<<<<<<<< .../nNEERA.baf
->>>>>>>>
-
-COPY_EXISTING ~NEERA_.bcs~ ~override~
-R_B_B ~.../oNEERA.baf~ ~.../nNEERA.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oNEERA.baf in %SOURCE_FILE%~ END
-
 //Changes Thayan Bodyguards Alignment from NEUTRAL to NEUTRAL_EVIL in order to prevent shouts from making commoners hostile
 //related to this topic: https://forums.beamdog.com/discussion/33842/shout-bcs-broken-ai-behavior
 COPY_EXISTING ~NETHGUA1.CRE~ ~override~
@@ -461,7 +497,7 @@ COPY_EXISTING ~CULTD1.CRE~ ~override~
 	~CULTD5.CRE~ ~override~
 	~CULTD6.CRE~ ~override~
 	READ_ASCII 0x248 ~script~ //Override script
-	PATCH_IF (~%script%~ STRING_EQUAL_CASE ~SHOUT~) BEGIN
+	PATCH_IF (~%script%~ STR_EQ ~SHOUT~) BEGIN
 		WRITE_ASCII 0x248 ~~ #8
 	END
 BUT_ONLY
@@ -479,7 +515,7 @@ COPY_EXISTING ~IMPORT02.2DA~ ~override~
 BUT_ONLY
 
 //https://forums.beamdog.com/discussion/39023/tazoksays-blocks-in-ar2400-bcs-and-ar2900-bcs-prevent-further-script-blocks-from-firing#latest
-//Script blocks added to the ends of BG2400.BCS or BG2900.BCS will not execute once BG1900 has been entered.
+//Script blocks added at the end of BG2400.BCS or BG2900.BCS will not execute once BG1900 has been entered.
 //Thanks to AstroBryGuy
 
 ACTION_IF !FILE_EXISTS ~override/AY#BGEEARBCSFIX.000~ BEGIN
@@ -500,10 +536,9 @@ ACTION_IF !FILE_EXISTS ~override/AY#BGEEARBCSFIX.000~ BEGIN
 
 END
 
-
-//In BG:EE Colquetle Family is added by the are file, the are file has no script added
+//In BG:EE Colquetle Family is added by the are file, the are file has no script attached
 //There is an existing AR4300.bcs which also adds the family to the area
-//EET assigned these script, now there are 2 Colquetle Familys...
+//EET assigned these script, now there are 2 Colquetle Families...
 
 <<<<<<<< .../oBG4300.baf
 IF
@@ -524,97 +559,6 @@ END
 COPY_EXISTING ~BG4300.bcs~ ~override~
 R_B_B ~.../oBG4300.baf~ ~.../nBG4300.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oBG4300.baf in %SOURCE_FILE% (not a problem, some mod probably fixed it before)~ END
 
-//Force Talk Rasaad repeats Banters
-//https://forums.beamdog.com/discussion/38792/windows-force-talk-to-rasaad-during-final-battle-on-cloud-peak-will-repeat-the-dialogue-with-gamaz#latest
-<<<<<<<< .../RASAADJ.D
-ADD_STATE_TRIGGER RASAADJ_ 21 ~!Global("CLOUD_PEAK","OH3000",2)~
-ADD_STATE_TRIGGER RASAADJ_ 29 ~InMyArea("RSGAMAZ")~
-ADD_STATE_TRIGGER RASAADJ_ 35 ~!Global("WARasaadFix","Global",1)~
-ADD_TRANS_ACTION RSGAMAZ BEGIN 23 END BEGIN 0 END ~SetGlobal("WARasaadFix","Global",1)~
->>>>>>>>
-
-COMPILE ~.../RASAADJ.D~
-
-//Kivan should not have a 1st-level spell slot
-//https://forums.beamdog.com/discussion/38820/kivan-should-not-have-a-1st-level-spell-slot-at-level-4-and-level-6#latest
-
-COPY_EXISTING 	~KIVAN4.cre~ ~override~
-				~KIVAN6.cre~ ~override~
-WRITE_SHORT 0x2d6 0
-WRITE_SHORT 0x2d8 0
-
-//Force Talk Tiax repeats Dorn Banter
-//https://forums.beamdog.com/discussion/38791/windows-force-talk-to-tiax-should-not-repeat-banter-between-him-and-dorn#latest
-<<<<<<<< .../tiaxj.d
-ADD_TRANS_ACTION TIAXJ BEGIN 2 END BEGIN 0 END ~SetGlobal("DORN_TIAX","GLOBAL",3)~
->>>>>>>>
-
-COMPILE ~.../tiaxj.d~
-
-//Force Talk Safana repeats Dorn Banter
-//https://forums.beamdog.com/discussion/37327/11111-all-force-talking-safana-repeats-dorn-dialog#latest
-<<<<<<<< .../SAFANJ.D
-ADD_TRANS_ACTION SAFANJ BEGIN 7 END BEGIN 0 END ~SetGlobal("DORN_SAFANA_DIALOG1","GLOBAL",2)~
->>>>>>>>
-
-COMPILE ~.../SAFANJ.D~
-
-//Animal Summoning I for 3 turns & Ranger Charm Animal ability Save Bonus
-//https://forums.beamdog.com/discussion/38486/beast-masters-animal-summoning-i-should-last-3-turns#latest
-
-COPY_EXISTING ~SPRA304.spl~ ~override~
-	READ_LONG  0x64 "abil_off"
-	READ_SHORT 0x68 "abil_num"
-	READ_LONG  0x6a "fx_off"
-	FOR (index = 0 ; index < abil_num ; index = index + 1) BEGIN
-		READ_SHORT  ("%abil_off%" + 0x1e + (0x28 * "%index%")) "abil_fx_num"
-		READ_SHORT  ("%abil_off%" + 0x20 + (0x28 * "%index%")) "abil_fx_idx"
-		FOR (index2 = 0 ; index2 < abil_fx_num ; index2 = index2 + 1) BEGIN
-			READ_BYTE ("%fx_off%" + 0x00 + (0x30 * ("%abil_fx_idx%" + "%index2%"))) "opcode"		
-				PATCH_IF (~%opcode%~ = 177) THEN BEGIN
-					WRITE_BYTE ("%fx_off%" + 0x0e + (0x30 * ("%abil_fx_idx%" + "%index2%"))) 180					
-					WRITE_BYTE ("%fx_off%" + 0x28 + (0x30 * ("%abil_fx_idx%" + "%index2%"))) 3					
-				END
-		END
-	END
-BUT_ONLY
-
-//The Captive Audience behavior should match description
-//https://forums.beamdog.com/discussion/37692/11112-all-the-captive-audience-produces-wrong-spell-has-no-charges-ammount-shown#latest
-
-COPY_EXISTING ~misc2p.itm~ ~override~
-	READ_LONG   0x64 "abil_off"
-	READ_SHORT  0x68 "abil_num"
-	READ_LONG   0x6a "fx_off"
-	FOR (index = 0 ; index < abil_num ; ++index) BEGIN
-		READ_SHORT  ("%abil_off%" + 0x20 + ("%index%" * 0x38)) "abil_fx_idx"
-		READ_SHORT  ("%abil_off%" + 0x1e + ("%index%" * 0x38)) "abil_fx_num"
-		FOR (index2 = 0 ; index2 < abil_fx_num ; ++index2) BEGIN
-			READ_BYTE ("%fx_off%" + 0x00 + (("%abil_fx_idx%" + "%index2%") * 0x30)) "opcode"
-			PATCH_IF (~%opcode%~ = 5) THEN BEGIN
-				WRITE_SHORT ("%fx_off%" + 0x08 + (("%abil_fx_idx%" + "%index2%") * 0x30)) 1003
-			END
-		END
-	END
-SET opcode = 139
-SET target = 2
-SET parameter1 = 8364
-SET parameter2 = 0
-SET timing = 1
-SET power = 5
-SET resist_dispel = 1
-SET probability1 = 100
-SET probability2 = 0
-SET duration = 0
-SET dicenumber = 0
-SET dicesize = 0
-SET savingthrow = 1
-SET savebonus = ~-2~
-SET header = 0
-SET type = 99
-LPM ADD_ITEM_EFFECT
-BUT_ONLY
-
 //Gorions Letter and Belt should be unstealable
 //https://forums.beamdog.com/discussion/41463/win-steam-gorions-letter-shouldnt-appear-on-his-corpse-when-pickpocketed-before#latest
 
@@ -622,135 +566,3 @@ COPY_EXISTING ~gorion.cre~ ~override~
 SPRINT item_to_change ~BELT16~
 SPRINT flags ~UNSTEALABLE~
 LPM ADD_CRE_ITEM_FLAGS
-
-//Aldeth should not betray the protagonist after exposing Sarevok
-//https://forums.beamdog.com/discussion/40898/gamebreaker-aldeth-should-not-betray-the-protagonist-after-exposing-sarevok#latest
-
-<<<<<<<< .../Aldeth.d
-ADD_TRANS_TRIGGER ALDETH 21 ~GlobalLT("DukeThanks","GLOBAL",1)~ DO 1
->>>>>>>>
-
-COMPILE ~.../Aldeth.d~
-
-
-//Some fixes from Prozh Fixpack, thank you. :)
-//https://forums.beamdog.com/discussion/39811/neoficialnyy-perevod-bgee/p1
-
-COPY_EXISTING ~spwi322.spl~ ~override~
-  READ_LONG  0x64 "abil_off"
-  READ_SHORT 0x68 "abil_num"
-  READ_LONG  0x6a "fx_off"
-  FOR (index = 0 ; index < abil_num ; index = index + 1) BEGIN
-    WRITE_SHORT ("%abil_off%" + 0x0e + (0x28 * "%index%")) 20 // range
-  END
-BUT_ONLY
-
-COPY_EXISTING ~spwi611.spl~ ~override~
-              ~sppr506.spl~ ~override~
-  WRITE_BYTE  0x27 7 // change secondary type
-BUT_ONLY
-
-COPY_EXISTING ~wolfgr.itm~ ~override~
-  READ_LONG  0x6a "fx_off"
-  READ_SHORT 0x70 "fx_num"
-  WHILE ("%fx_num%" > 0) BEGIN
-    SET "fx_num" = ("%fx_num%" - 1)
-    READ_SHORT ("%fx_off%" + ("%fx_num%" * 0x30)) "type"
-    PATCH_IF ("%type%" = 120) BEGIN
-      WRITE_BYTE ("%fx_off%" + 0x04 + ("%fx_num%" * 0x30)) 0 // enchantment
-      WRITE_BYTE ("%fx_off%" + 0x08 + ("%fx_num%" * 0x30)) 2 // weapon type
-    END
-	PATCH_IF ("%type%" = 98) BEGIN
-      WRITE_BYTE ("%fx_off%" + 0x04 + ("%fx_num%" * 0x30)) 6 // value
-    END
-  END
-BUT_ONLY
-
-COPY_EXISTING ~shld02p.itm~ ~override~
-  READ_LONG   0x6a "fx_off"
-  READ_SHORT  0x70 "fx_num"
-  FOR (index = 0; index < fx_num; index = index + 1) BEGIN
-    READ_SHORT ("%fx_off%" +        ("%index%" * 0x30)) "opcode"
-    READ_BYTE  ("%fx_off%" + 0x08 + ("%index%" * 0x30)) "flag"
-    PATCH_IF (("%opcode%" = 0) AND (("%flag%" BAND 0b00000010) = 0b00000010)) BEGIN
-      WRITE_LONG  ("%fx_off%" + 0x04 + ("%index%" * 0x30)) 2 // ac bonus vs missiles
-    END
-  END
-BUT_ONLY
-
-COPY_EXISTING ~wings01.itm~ ~override~
-              ~wings01b.itm~ ~override~
-  READ_BYTE  0x21 "use"
-  WRITE_BYTE 0x21 ("%use%" BAND  0b11011111) // removes monk flag
-  WRITE_BYTE 0x21 ("%use%" BOR 0b00000010) // adds half-elf flag
-BUT_ONLY
-
-COPY_EXISTING ~stafn1.itm~ ~override~
-   READ_LONG   0x64 "abil_off"
-   READ_SHORT  0x68 "abil_num"
-   READ_LONG   0x6a "fx_off"
-   WHILE ("%abil_num%" > 0) BEGIN
-     SET "abil_num" = ("%abil_num%" - 1)
-     READ_BYTE   ("%abil_off%" +        ("%abil_num%" * 0x38)) "type"
-     PATCH_IF ("%type%" = 1) BEGIN // melee ability check
-       READ_SHORT  ("%abil_off%" + 0x1e + ("%abil_num%" * 0x38)) "abil_fx_num"
-       READ_SHORT  ("%abil_off%" + 0x20 + ("%abil_num%" * 0x38)) "abil_fx_idx"
-       WHILE ("%abil_fx_num%" > 0) BEGIN
-         SET "abil_fx_num" = ("%abil_fx_num%" - 1)
-         READ_SHORT ("%fx_off%" +        (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) "opcode"
-         READ_SHORT  ("%fx_off%" + 0x02 + (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) "target"
-         PATCH_IF (("%opcode%" = 12) AND ("%target%" = 1)) BEGIN
-           WRITE_BYTE ("%fx_off%" + 0x12 + (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) 20 // probability
-           WRITE_BYTE ("%fx_off%" + 0x13 + (("%abil_fx_idx%" + "%abil_fx_num%") * 0x30)) 11 // probability
-         END
-       END
-     END
-    END
-BUT_ONLY
-
-COPY_EXISTING ~misc78.itm~ ~override~
-			  ~scrljala.itm~ ~override~
-  WRITE_BYTE  0x1c 0 // cathegory
-BUT_ONLY
-
-//dlgfix.d
-<<<<<<<< .../dlgfix.d
-ALTER_TRANS DORNJ_ BEGIN 178 END BEGIN 3 END BEGIN ~EPILOGUE~ ~EXTERN MINSCJ_ 18~ END
-ALTER_TRANS DORNJ_ BEGIN 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 END BEGIN 4 END BEGIN ~EPILOGUE~ ~EXTERN MINSCJ_ 18~ END
-ALTER_TRANS DORNJ_ BEGIN 229 END BEGIN 18 END BEGIN ~EPILOGUE~ ~EXTERN SAFANJ 13~ END
-ALTER_TRANS NEERAJ_ BEGIN 10 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 7~ END
-ALTER_TRANS NEERAJ_ BEGIN 12 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 15~ END
-ALTER_TRANS NEERAJ_ BEGIN 80 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 89~ END
-ALTER_TRANS RASAADJ_ BEGIN 2 6 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 8~ END
-ALTER_TRANS RASAADJ_ BEGIN 3 4 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 8~ END
-ALTER_TRANS RASAADJ_ BEGIN 68 END BEGIN 1 END BEGIN ~EPILOGUE~ ~GOTO 52~ END
-ALTER_TRANS TTBELT BEGIN 34 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 35~ END
-ALTER_TRANS DYNAHZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Minsc",SetDialog("None")) ActionOverride("Minsc",LeaveParty()) ActionOverride("Minsc",EscapeArea()) LeaveParty() EscapeArea()~ END
-ALTER_TRANS MINSCZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Dynaheir",SetDialog("None")) ActionOverride("Dynaheir",LeaveParty()) ActionOverride("Dynaheir",EscapeArea()) LeaveParty() EscapeArea()~ END
-ALTER_TRANS SKIEZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Eldoth",SetDialog("None")) ActionOverride("Eldoth",LeaveParty()) ActionOverride("Eldoth",EscapeArea()) LeaveParty() EscapeArea()~ END
-ALTER_TRANS ELDOTZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Skie",SetDialog("None")) ActionOverride("Skie",LeaveParty()) ActionOverride("Skie",EscapeArea()) LeaveParty() EscapeArea()~ END
-ALTER_TRANS MONTAZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Xzar",SetDialog("None")) ActionOverride("Xzar",LeaveParty()) ActionOverride("Xzar",EscapeArea()) LeaveParty() EscapeArea()~ END
-ALTER_TRANS XZARZ BEGIN 0 END BEGIN 0 END BEGIN ~ACTION~ ~SetGlobal("DORN_ROMANCE_FIGHT","GLOBAL",-1) SetDialog("None") ActionOverride("Montaron",SetDialog("None")) ActionOverride("Montaron",LeaveParty()) ActionOverride("Montaron",EscapeArea()) LeaveParty() EscapeArea()~ END
-ALTER_TRANS KENT BEGIN 4 END BEGIN 0 END BEGIN ~UNSOLVED_JOURNAL~ ~@27145~ END
-ALTER_TRANS NARLEN BEGIN 19 END BEGIN 0 END BEGIN ~UNSOLVED_JOURNAL~ ~@27312~ END
-REPLACE_SAY RASAADJ_ 116 @30566
-REPLACE_SAY RASAADJ_ 138 @30907
-REPLACE_SAY NEERAJ_ 153 @30568
-ADD_TRANS_TRIGGER BAELOTH 9 ~!InParty("NEERA")~ DO 0
-ALTER_TRANS BAELOTH BEGIN 9 END BEGIN 0 END BEGIN ~EPILOGUE~ ~GOTO 11~ END
-EXTEND_BOTTOM BAELOTH 9
-  IF ~InParty("NEERA")~ THEN REPLY @31888 EXTERN ~NEERAJ_~ 168
-END
->>>>>>>>
-
-COMPILE ~.../dlgfix.d~
-
-//Fixed not running blocks in BG5400.bcs
-//http://gibberlings3.net/forums/index.php?showtopic=27774&page=2#entry241327
-COPY_EXISTING ~BG5400.bcs~ ~override~
-DECOMPILE_AND_PATCH BEGIN
-REPLACE_TEXTUALLY ~TriggerActivation("Door5401",FALSE)~ ~TriggerActivation("Door5401",FALSE)
-Continue()~
-REPLACE_TEXTUALLY ~TriggerActivation("Door5401",TRUE)~ ~TriggerActivation("Door5401",TRUE)
-Continue()~
-END

@@ -1,10 +1,4 @@
 /////                                                  \\\\\
-///// Re-open and clean SoD areas                      \\\\\
-/////                                                  \\\\\
-
-//WIP
-
-/////                                                  \\\\\
 ///// BGSUNRIS/BGSUNSET movies                         \\\\\
 /////                                                  \\\\\
 
@@ -583,9 +577,8 @@ COPY_EXISTING ~CUTCKEEP.BCS~ ~override~
 		SPRINT textToReplace ~IncrementChapter("CHPTXT6")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			SET strref = RESOLVE_STR_REF (@2000029)
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("CHPTXT6")
-    AddJournalEntry(%strref%,INFO)~
+    AddJournalEntry(215840,INFO)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -598,9 +591,8 @@ COPY_EXISTING ~BDCUT10.BCS~ ~override~
 		SPRINT textToReplace ~IncrementChapter("chptxt8")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			SET strref = RESOLVE_STR_REF (@2000032)
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt8")
-    AddJournalEntry(%strref%,INFO)~
+    AddJournalEntry(256974,INFO)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -736,12 +728,11 @@ BUT_ONLY
 
 COPY_EXISTING ~BD7100.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("chptxt9")~
+		SPRINT textToReplace ~IncrementChapter("SODTXT9")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			SET strref = RESOLVE_STR_REF (@2000033)
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt9")
-    AddJournalEntry(%strref%,INFO)~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("SODTXT9")
+    AddJournalEntry(256368,INFO)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -751,12 +742,11 @@ BUT_ONLY
 
 COPY_EXISTING ~BD3000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("chptxt10")~
+		SPRINT textToReplace ~IncrementChapter("SODTXT10")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			SET strref = RESOLVE_STR_REF (@2000034)
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt10")
-    AddJournalEntry(%strref%,INFO)~
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("SODTXT10")
+    AddJournalEntry(256371,INFO)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -769,9 +759,8 @@ COPY_EXISTING ~BD4000.BCS~ ~override~
 		SPRINT textToReplace ~IncrementChapter("chptxt11")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			SET strref = RESOLVE_STR_REF (@2000035)
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt11")
-    AddJournalEntry(%strref%,INFO)~
+    AddJournalEntry(256373,INFO)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -784,9 +773,8 @@ COPY_EXISTING ~BD4400.BCS~ ~override~
 		SPRINT textToReplace ~IncrementChapter("chptxt12")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			SET strref = RESOLVE_STR_REF (@2000036)
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt12")
-    AddJournalEntry(%strref%,INFO)~
+    AddJournalEntry(256375,INFO)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -799,9 +787,8 @@ COPY_EXISTING ~BDCUT61.BCS~ ~override~
 		SPRINT textToReplace ~IncrementChapter("chptxt13")~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
-			SET strref = RESOLVE_STR_REF (@2000037)
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt13")
-    AddJournalEntry(%strref%,INFO)~
+    AddJournalEntry(256378,INFO)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -838,7 +825,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("FinishedExpansion","GLOBAL",1)
-    AddJournalEntry(@24117,INFO)
+    AddJournalEntry(224117,INFO)
 END
 
 IF
@@ -847,7 +834,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("HasTranzigScroll","GLOBAL",1)
-    AddJournalEntry(@31449,QUEST)
+    AddJournalEntry(231449,QUEST)
 END
 >>>>>>>>
 
@@ -888,6 +875,54 @@ BUT_ONLY
 
 EXTEND_TOP ~BDCUT10.BCS~ ~.../BDCUT10-et.baf~*/
 
+//BD0101.BCS
+COPY_EXISTING ~BD0101.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		/*SPRINT textToReplace ~^\(  Global("bd_safana_spawn","bd0101",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Safana",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END*/
+		SPRINT textToReplace ~^\(  Global("bd_dyna_spawn","bd0101",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
+  !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		SPRINT textToReplace ~^\(  Global("bd_minsc_spawn","bd0101",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
+  !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		SPRINT textToReplace ~^\(  Global("bd_viconia_spawn","bd0101",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Viconia",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
 //BD0103.BCS
 COPY_EXISTING ~BD0103.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -898,57 +933,57 @@ COPY_EXISTING ~BD0103.BCS~ ~override~
 END
 
 IF
+  Global("K#PartySoD","BD0103",0)
   InPartyAllowDead(Player2)
   !Name("None",Player2)
 THEN
   RESPONSE #100
     ActionOverride(Player2,SetGlobal("K#PartySoD","LOCALS",1))
+    SetGlobal("K#PartySoD","BD0103",1)
     Continue()
 END
 
 IF
+  Global("K#PartySoD","BD0103",0)
   InPartyAllowDead(Player3)
   !Name("None",Player3)
 THEN
   RESPONSE #100
     ActionOverride(Player3,SetGlobal("K#PartySoD","LOCALS",1))
+    SetGlobal("K#PartySoD","BD0103",1)
     Continue()
 END
 
 IF
+  Global("K#PartySoD","BD0103",0)
   InPartyAllowDead(Player4)
   !Name("None",Player4)
 THEN
   RESPONSE #100
     ActionOverride(Player4,SetGlobal("K#PartySoD","LOCALS",1))
+    SetGlobal("K#PartySoD","BD0103",1)
     Continue()
 END
 
 IF
+  Global("K#PartySoD","BD0103",0)
   InPartyAllowDead(Player5)
   !Name("None",Player5)
 THEN
   RESPONSE #100
     ActionOverride(Player5,SetGlobal("K#PartySoD","LOCALS",1))
+    SetGlobal("K#PartySoD","BD0103",1)
     Continue()
 END
 
 IF
+  Global("K#PartySoD","BD0103",0)
   InPartyAllowDead(Player6)
   !Name("None",Player6)
 THEN
   RESPONSE #100
     ActionOverride(Player6,SetGlobal("K#PartySoD","LOCALS",1))
-    Continue()
-END
-
-IF
-  InPartyAllowDead(Player6)
-  !Name("None",Player6)
-THEN
-  RESPONSE #100
-    ActionOverride(Player6,LeaveParty())
-    ActionOverride(Player6,DestroySelf())
+    SetGlobal("K#PartySoD","BD0103",1)
     Continue()
 END~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
@@ -981,6 +1016,28 @@ COPY_EXISTING ~BD0108.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
+		SPRINT textToReplace ~^\(  Global("BD_MINSC","BD0108",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
+  !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		SPRINT textToReplace ~^\(  Global("BD_DYNAHEIR","BD0108",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
+  !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 	END
 BUT_ONLY
 
@@ -993,6 +1050,32 @@ COPY_EXISTING ~BD0110.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("safana7",[889.620],N)
     ActionOverride("Safana",MakeGlobalOverride())
     SetGlobal("BD_SPAWN_SAFANA","BD0110",1)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		/*SPRINT textToReplace ~^\(  Global("BD_SPAWN_SAFANA","BD0110",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Safana",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END*/
+	END
+BUT_ONLY
+
+//BD0111.BCS
+COPY_EXISTING ~BD0111.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~^\(  Global("BD_SPAWN_RASAAD","bd0111",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",7)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -1033,6 +1116,74 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~BD0120.BCS~ ~.../BD0120-et.baf~
+
+//BD1000.BCS
+COPY_EXISTING ~BD1000.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~^\(  Global("bd_edwin_spawn","bd1000",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  GlobalLT("Chapter","GLOBAL",13)
+  !StateCheck("Edwin",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		SPRINT textToReplace ~^\(  Global("BD_BAELOTH_SPAWN","BD1000",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  GlobalLT("Chapter","GLOBAL",13)
+  !StateCheck("Baeloth",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+//BD2000.BCS
+COPY_EXISTING ~BD2000.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~^\(  Global("bd_khal_spawn","bd2000",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  GlobalLT("Chapter","GLOBAL",13)
+  !StateCheck("Khalid",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		SPRINT textToReplace ~^\(  Global("bd_dorn_spawn","bd2000",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  GlobalLT("Chapter","GLOBAL",13)
+  !StateCheck("Dorn",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+//BD2100.BCS
+COPY_EXISTING ~BD2100.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~^\(  Global("BD_NEERA","BD2100",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  GlobalLT("Chapter","GLOBAL",13)
+  !StateCheck("Neera",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
 
 //BD6100.BCS
 COPY_EXISTING ~BD6100.BCS~ ~override~
@@ -1107,6 +1258,53 @@ COPY_EXISTING ~BD6200.BCS~ ~override~
 	END
 BUT_ONLY
 
+//BD7000.BCS
+COPY_EXISTING ~BD7000.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~^\(  Global("bd_rasaad_spawn","bd7000",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  Global("Chapter","GLOBAL",8)
+  !StateCheck("Rasaad",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+//BD7100.BCS
+COPY_EXISTING ~BD7100.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~^\(  Global("bd_jah_spawn","bd7100",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  GlobalLT("Chapter","GLOBAL",13)
+  !StateCheck("Jaheira",STATE_REALLY_DEAD)~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+//BDINTRO.BCS
+/*COPY_EXISTING ~BDINTRO.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~\(!?BeenInParty("safana")\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck("Safana",STATE_REALLY_DEAD)
+  \1~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY*/
+
 //BDSODTRN.BCS
 COPY_EXISTING ~BDSODTRN.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -1156,6 +1354,20 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~BG0900.BCS~ ~.../BG0900-et.baf~
+
+//BG1002.BCS
+<<<<<<<< .../BG1002-et.baf
+IF
+  Global("Cult1","GLOBAL",1)
+  Global("Cult63Spawn","GLOBAL",0)
+  GlobalGT("SPRITE_IS_DEADTANAR","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("SPRITE_IS_DEADTANAR","GLOBAL",0)
+END
+>>>>>>>>
+
+EXTEND_TOP ~BG1002.BCS~ ~.../BG1002-et.baf~
 
 //BG2600.BCS
 <<<<<<<< .../BG2600-et.baf
@@ -1271,6 +1483,385 @@ END
 >>>>>>>>
 
 EXTEND_TOP ~BG2600.BCS~ ~.../BG2600-et.baf~
+
+/////                                                  \\\\\
+/////clean SoD areas                                   \\\\\
+/////                                                  \\\\\
+
+//Common scripts
+<<<<<<<< .../DISABLE-et.baf
+IF
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+EXTEND_TOP ~BDFIST.BCS~ ~.../DISABLE-et.baf~
+EXTEND_TOP ~BDASC.BCS~ ~.../DISABLE-et.baf~
+EXTEND_TOP ~BD5200EN.BCS~ ~.../DISABLE-et.baf~
+EXTEND_TOP ~BD5100EN.BCS~ ~.../DISABLE-et.baf~
+
+<<<<<<<< .../BDCOAL50.baf
+IF
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+>>>>>>>>
+
+ACTION_IF FILE_EXISTS_IN_GAME ~BDCOAL50.BCS~ BEGIN
+	WARN ~WARNING: BDCOAL50.BCS exists!~
+	EXTEND_TOP ~BDCOAL50.BCS~ ~.../BDCOAL50.baf~
+END ELSE BEGIN
+	COMPILE ~.../BDCOAL50.baf~
+END
+
+//Coast Way Crossing
+<<<<<<<< .../BD1000-et.baf
+IF
+  Global("K#CleanAreaNote","BD2000",0)
+  OR(3)
+    GlobalGT("Chapter","GLOBAL",8)
+    StateCheck("Baeloth",STATE_REALLY_DEAD)
+    InPartyAllowDead("Baeloth")
+THEN
+  RESPONSE #100
+    RemoveMapNote([2000.540],267515) //Baeloth's Black Pit to End All Black Pits
+    SetGlobal("K#CleanAreaNote","BD2000",1)
+    Continue()
+END
+
+IF
+  Global("K#CleanArea","BD1000",0)
+  GlobalGT("Chapter","GLOBAL",8)
+THEN
+  RESPONSE #100
+    ActionOverride("BDMIZHEN",DestroySelf()) //Mizhena
+    ActionOverride("BDRAYPHU",DestroySelf()) //Rayphus
+    ActionOverride("BDBELEGA",DestroySelf()) //Belegarm
+    ActionOverride("BDPATRES",DestroySelf()) //Patrescus
+    ActionOverride("BDPFAUG",DestroySelf()) //Pfaug
+    ActionOverride("BDTHAIRD",DestroySelf()) //Thaird
+    ActionOverride("BDSORALI",DestroySelf()) //Soralis
+    ActionOverride("BDBANNO",DestroySelf()) //Announcer
+    ActionOverride("BDTCRWD1",DestroySelf()) //Crowd Member
+    ActionOverride("BDTCRWD5",DestroySelf()) //Crowd Member
+    ActionOverride("BDTCRWD4",DestroySelf()) //Crowd Member
+    ActionOverride("BDTCRWD3",DestroySelf()) //Crowd Member
+    ActionOverride("Brown Chicken Fight",DestroySelf()) //Brown Rooster
+    ActionOverride("White Chicken Fight",DestroySelf()) //White Rooster
+    ActionOverride("BDTCRWD2",DestroySelf()) //Crowd Member
+    ActionOverride("bdophyll",DestroySelf()) //Ophyllis
+    RemoveMapNote([105.3656],270641) //<CHARNAME>'s Equipment
+    SetGlobal("K#CleanArea","BD1000",1)
+    Continue()
+END
+
+IF
+  Global("K#CleanAreaBG2","BD1000",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    RemoveMapNote([596.543],267514) //Stone Statues
+    RemoveMapNote([368.3558],267517) //Flaming Fist Encampment
+    RemoveMapNote([570.3520],267517) //Flaming Fist Encampment
+    SetGlobal("K#CleanAreaBG2","BD1000",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD1000.BCS~ ~.../BD1000-et.baf~
+
+//The Dig
+<<<<<<<< .../BD1100-et.baf
+IF
+  Global("K#CleanArea","BD1100",0)
+  GlobalGT("Chapter","GLOBAL",9)
+  Global("bd_deepvein_troops","global",1)
+THEN
+  RESPONSE #100
+    ActionOverride("BDDCLER2",DestroySelf()) //Dwarven Cleric
+    ActionOverride("BDDCLER3",DestroySelf()) //Dwarven Cleric
+    ActionOverride("BDDCLER1",DestroySelf()) //Dwarven Cleric
+    ActionOverride("BDDEEP",DestroySelf()) //Brother Deepvein
+    RemoveMapNote([1008.1717],267521) //Dwarven Clerics
+    SetGlobal("K#CleanArea","BD1100",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD1100.BCS~ ~.../BD1100-et.baf~
+
+//Boareskyr Bridge
+<<<<<<<< .../BD2000-et.baf
+IF
+  Global("K#CleanAreaNote","BD2000",0)
+  OR(3)
+    GlobalGT("Chapter","GLOBAL",9)
+    StateCheck("Dorn",STATE_REALLY_DEAD)
+    InPartyAllowDead("Dorn")
+THEN
+  RESPONSE #100
+    RemoveMapNote([1527.3223],231092) //Dorn Il-Khan
+    SetGlobal("K#CleanAreaNote","BD2000",1)
+    Continue()
+END
+
+IF
+  Global("K#CleanArea","BD2000",0)
+  GlobalGT("Chapter","GLOBAL",9)
+THEN
+  RESPONSE #100
+    ActionOverride("BDBENCE",DestroySelf()) //Bence Duncan
+    SetGlobal("K#CleanArea","BD2000",1)
+    Continue()
+END
+
+IF
+  Global("K#CleanAreaBG2","BD2000",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    ActionOverride("BDFFMERC",DestroySelf()) //Flaming Fist Mercenary
+    ActionOverride("DEAD5",DestroySelf()) //Crusader
+    ActionOverride("DEAD4",DestroySelf()) //Crusader
+    ActionOverride("DEAD2",DestroySelf()) //Crusader Archer
+    ActionOverride("DEAD1",DestroySelf()) //Crusader Recruit
+    RemoveMapNote([1384.1862],268887) //Explosive Barrels
+    RemoveMapNote([2434.2616],267526) //Crusader Encampment
+    RemoveMapNote([4090.404],268888) //Corpses
+    SetGlobal("K#CleanAreaBG2","BD2000",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD2000.BCS~ ~.../BD2000-et.baf~
+
+//Bridgefort Interior
+<<<<<<<< .../BD2100-et.baf
+IF
+  Global("K#CleanAreaNote","BD2100",0)
+  OR(3)
+    GlobalGT("Chapter","GLOBAL",9)
+    StateCheck("Neera",STATE_REALLY_DEAD)
+    InPartyAllowDead("Neera")
+THEN
+  RESPONSE #100
+    RemoveMapNote([1713.1180],269039) //Neera
+    SetGlobal("K#CleanAreaNote","BD2100",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD2100.BCS~ ~.../BD2100-et.baf~
+
+//Coalition Camp
+<<<<<<<< .../BD3000-et.baf
+IF
+  Global("K#CleanAreaBG2","BD3000",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    ActionOverride("BDCOA01D",DestroySelf()) //Daggerford Militia
+    ActionOverride("BDCOA02D",DestroySelf()) //Daggerford Militia
+    ActionOverride("BDCOA03D",DestroySelf()) //Daggerford Sergeant
+    ActionOverride("BDCOA04D",DestroySelf()) //Flaming Fist Scout
+    ActionOverride("BDCOA05D",DestroySelf()) //Flaming Fist Mercenary
+    ActionOverride("BDCOA06D",DestroySelf()) //Waterdhavian Soldier
+    ActionOverride("BDCRU01D",DestroySelf()) //Crusader Archer
+    ActionOverride("BDCRU02D",DestroySelf()) //Crusader Recruit
+    ActionOverride("BDCRU03D",DestroySelf()) //Crusader Officer
+    ActionOverride("BDCRU04D",DestroySelf()) //Crusader Recruit
+    ActionOverride("BDCRU05D",DestroySelf()) //Crusader
+    ActionOverride("BDCRU06D",DestroySelf()) //Crusader
+    ActionOverride("BDCRU07D",DestroySelf()) //Crusader
+    ActionOverride("BDCRU08D",DestroySelf()) //Crusader
+    RemoveMapNote([1535.130],269048) //Grimgor the Crusade Commander
+    RemoveMapNote([240.1425],269043) //Jegg Hillcarver
+    RemoveMapNote([1663.1827],270641) //<CHARNAME>'s Equipment
+    SetGlobal("K#CleanAreaBG2","BD3000",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD3000.BCS~ ~.../BD3000-et.baf~
+
+//Dragonspear Castle, Exterior
+COPY_EXISTING ~BD4000.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~\(AddAreaFlag(NOTRAVEL)\)~ ~\1
+    RemoveWorldmapAreaFlag("BD5000",6)
+    RemoveWorldmapAreaFlag("BD7400",6)~
+	END
+BUT_ONLY
+
+<<<<<<<< .../BD4000-et.baf
+IF
+  Global("K#CleanAreaBG2","BD4000",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    RemoveAreaFlag(NOTRAVEL)
+    ActionOverride("BDMORRUK",DestroySelf()) //Troll
+    ActionOverride("BDTHRUDD",DestroySelf()) //Troll
+    ActionOverride("BDTOLIKS",DestroySelf()) //Troll
+    ActionOverride("BDULORI",DestroySelf()) //Troll
+    RemoveMapNote([825.1280],269074) //Crusader Commander
+    RemoveMapNote([4360.820],267718) //Theodosia Immartyred
+    SetGlobal("K#CleanAreaBG2","BD4000",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD4000.BCS~ ~.../BD4000-et.baf~
+
+//Dragonspear Castle Keep, First Floor
+<<<<<<<< .../BD4100-et.baf
+IF
+  Global("K#CleanAreaBG2","BD4100",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    TriggerActivation("TransBD4000",TRUE)
+    TriggerActivation("TransBD4300",TRUE)
+    ActionOverride("BDIRENI",DestroySelf()) //Hooded Man
+    ActionOverride("BDBENCE",DestroySelf()) //Bence Duncan
+    ActionOverride("BDSKIED",DestroySelf()) //Skie
+    RemoveMapNote([1615.865],247433) //Flaming Fist Officer
+    RemoveMapNote([850.765],245187) //Belegarm
+    SetGlobal("K#CleanAreaBG2","BD4100",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD4100.BCS~ ~.../BD4100-et.baf~
+
+//Dragonspear Castle Basement
+<<<<<<<< .../BD4300-et.baf
+IF
+  Global("K#CleanAreaBG2","BD4300",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    TriggerActivation("TransBD4100",TRUE)
+    TriggerActivation("BD5200Entrance",TRUE)
+    ActionOverride("BDDAZZO",DestroySelf()) //Sergeant Dazzo
+    SetGlobal("K#CleanAreaBG2","BD4300",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD4300.BCS~ ~.../BD4300-et.baf~
+
+//Underground River Entrance
+<<<<<<<< .../BD5000-et.baf
+IF
+  Global("K#CleanAreaBG2","BD5000",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    RemoveMapNote([2702.1195],267526) //Crusader Encampment
+    SetGlobal("K#CleanAreaBG2","BD5000",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD5000.BCS~ ~.../BD5000-et.baf~
+
+//Underground River
+<<<<<<<< .../BD5100-et.baf
+IF
+  Global("K#CleanAreaBG2","BD5100",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    RemoveMapNote([4304.1939],267714) //Crusader Supply Depot
+    SetGlobal("K#CleanAreaBG2","BD5100",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD5100.BCS~ ~.../BD5100-et.baf~
+
+//The Warrens
+<<<<<<<< .../BD5200-et.baf
+IF
+  Global("K#CleanAreaBG2","BD5200",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    ActionOverride("BDSLUG",DestroySelf()) //Slug
+    RemoveMapNote([425.407],267715) //Seamstress
+    SetGlobal("K#CleanAreaBG2","BD5200",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD5200.BCS~ ~.../BD5200-et.baf~
+
+//Coast Way Forest
+COPY_EXISTING ~BDSDDSKI.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~^\(IF$\)~ ~\1
+  Global("Chapter","GLOBAL",8)~
+	END
+BUT_ONLY
+
+<<<<<<<< .../BD7000-et.baf
+IF
+  Global("K#CleanArea","BD7000",0)
+  GlobalGT("Chapter","GLOBAL",8)
+THEN
+  RESPONSE #100
+    RemoveMapNote([2050.1500],234352) //Rasaad
+    SetGlobal("K#CleanArea","BD7000",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD7000.BCS~ ~.../BD7000-et.baf~
+
+//Troll Claw Woods
+<<<<<<<< .../BD7100-et.baf
+IF
+  Global("K#CleanAreaNote","BD7100",0)
+  OR(3)
+    GlobalGT("Chapter","GLOBAL",9)
+    StateCheck("Jaheira",STATE_REALLY_DEAD)
+    InPartyAllowDead("Jaheira")
+THEN
+  RESPONSE #100
+    RemoveMapNote([3700.358],268675) //Jaheira and Voghiln
+    SetGlobal("K#CleanAreaNote","BD7100",1)
+    Continue()
+END
+
+IF
+  Global("K#CleanArea","BD7100",0)
+  GlobalGT("Chapter","GLOBAL",9)
+THEN
+  RESPONSE #100
+    ActionOverride("BDBELEGA",DestroySelf()) //Belegarm
+    ActionOverride("BDTHAIRD",DestroySelf()) //Thaird
+    ActionOverride("BDMIZHEN",DestroySelf()) //Mizhena
+    ActionOverride("BDKAVA",DestroySelf()) //Kava
+    ActionOverride("BDFARRL",DestroySelf()) //Farrl
+    ActionOverride("BDREND",DestroySelf()) //Rend
+    ActionOverride("bdophyll",DestroySelf()) //Ophyllis
+    ActionOverride("BDSORALI",DestroySelf()) //Soralis
+    ActionOverride("BDBENCE",DestroySelf()) //Bence Duncan
+    RemoveMapNote([520.3677],245187) //Belegarm
+    RemoveMapNote([312.3570],256405) //Mizhena
+    RemoveMapNote([1105.3631],265718) //Thaird
+    //RemoveMapNote([1835.3210],261774) //The Irregulars
+    RemoveMapNote([313.3593],256405) //Mizhena
+    RemoveMapNote([290.3418],270641) //<CHARNAME>'s Equipment
+    SetGlobal("K#CleanArea","BD7100",1)
+    Continue()
+END
+
+IF
+  Global("K#CleanAreaBG2","BD7100",0)
+  GlobalGT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    RemoveMapNote([418.3320],267517) //Flaming Fist Encampment
+    RemoveMapNote([745.3247],267517) //Flaming Fist Encampment
+    SetGlobal("K#CleanAreaBG2","BD7100",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~BD7100.BCS~ ~.../BD7100-et.baf~
 
 /////                                                  \\\\\
 /////existing in BG2:EE, replace them if not used      \\\\\

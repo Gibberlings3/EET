@@ -11701,7 +11701,7 @@ menu
 	label
 	{
 		name 'messagesRect'
-		area 0 42 863 211
+		area 0 175 863 78
 		rectangle 4
 	}
 	button
@@ -11725,7 +11725,7 @@ menu
 	text
 	{
 		name "worldMessageBox"
-		area 28 66 816 171
+		area 28 199 816 38
 		text lua "worldMessageBoxText"
 		text style 'gamelog_sod'
 		scrollbar	'GUISCRC'
@@ -11734,7 +11734,7 @@ menu
 	handle
 	{
 		name 'messagesHandleY'
-		area 0 42 863 22
+		area 0 175 863 22
 		pulse lua "worldMessageBoxClickedOnce == 0"
 		actionDrag
 		"
@@ -13352,7 +13352,7 @@ menu
 	button
 	{
 		enabled "chargen.levelingUp"
-		area 266 704 230 44
+		area 280 704 230 44
 		bam GUIBUTMT
 		text "INFORMATION_BUTTON"
 		text style 'button_sod'
@@ -13365,7 +13365,7 @@ menu
 	button
 	{
 		enabled "chargen.levelingUp"
-		area 533 704 230 44
+		area 520 704 230 44
 		bam GUIBUTMT
 		text "ABILITIES_BUTTON"
 		text style 'button_sod'
@@ -14106,8 +14106,11 @@ function generateBioText()
 	bioRace = ""
 	MyRace = chargen.races[currentChargenRace].id
 	MyClass = chargen.class[currentChargenClass].id
-	MyKit = -1
-	MyKit = chargen.kit[currentChargenKit].id
+	if currentChargenKit == nil then
+		MyKit = -1
+	else
+		MyKit = chargen.kit[currentChargenKit].id
+	end
 	colClass = 2 + Infinity_GetINIValue('Program Options','Active Campaign')
 	colRace = 1 + Infinity_GetINIValue('Program Options','Active Campaign')
 	-- Go through each row of bioClassData
@@ -14148,29 +14151,29 @@ menu
 		area 0 0 864 710
 		mosaic 'GUIPOPF'
 	}
-		--debug stuff
-		label
-		{
-			area 67 614 230 39
-			text lua "MyRace"
-			text style 'title_sod'
-		}
-		label
-		{
-			area 317 614 230 39
-			text lua "MyClass"
-			text style 'title_sod'
-		}
-		label
-		{
-			area 567 614 230 39
-			text lua "MyKit"
-			text style 'title_sod'
-		}
+	--debug stuff
+	--label
+	--{
+	--	area 67 614 230 39
+	--	text lua "MyRace"
+	--	text style 'title_sod'
+	--}
+	--label
+	--{
+	--	area 317 614 230 39
+	--	text lua "MyClass"
+	--	text style 'title_sod'
+	--}
+	--label
+	--{
+	--	area 567 614 230 39
+	--	text lua "MyKit"
+	--	text style 'title_sod'
+	--}
 	label
 	{
-		area 80 36 744 44
-		--area 60 37 744 44
+		--area 80 36 744 44
+		area 60 37 744 44
 		text "BIOGRAPHY_TITLE"
 		text style 'title_sod'
 	}
@@ -14649,23 +14652,23 @@ menu
 	label
 	{
 		area 0 0 864 710
-		mosaic GUIHSBS
+		mosaic GUIPO64D
 	}
 	label
 	{
-		area 74 10 716 52
+		area 86 26 748 60
 		text "ABILITIES_TITLE"
 		text style 'title_sod'
 	}
 	label
 	{
-		area 36 114 448 52
+		area 40 548 52 44
 		text lua "chargen.numHLAs"
 		text style 'title_sod'
 	}
 	text
 	{
-		area 522 118 302 494
+		area 524 104 288 474
 		text lua "Infinity_FetchString(chargenHLADescription())"
 		text style 'normal_sod'
 		scrollbar	'GUISCRC'
@@ -14726,7 +14729,7 @@ menu
 
 		scrollbar	'GUISCRC'
 		rowheight 52
-		area 58 194 404 404
+		area 40 104 446 438
 		table "chargen.HLAs"
 		var currentHLASelection
 		action 
@@ -14742,8 +14745,8 @@ menu
 	}
 	button
 	{
-		area 210 652 238 44
-		bam GUIOSTUL
+		area 320 632 230 44
+		bam GUIBUTMT
 		text "DONE_BUTTON"
 		text style 'button_sod'
 		clickable lua "createCharScreen:IsDoneButtonClickable()"

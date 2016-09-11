@@ -13,8 +13,8 @@
     <strong>Author</strong>: <a href="http://gibberlings3.net/forums/index.php?showuser=6804">K4thos</a><br>
 	<strong>Contributors</strong>: <a href="http://gibberlings3.net/forums/index.php?showuser=2909">WhiteAgnus</a>, <a href="http://gibberlings3.net/forums/index.php?showuser=8886">AWizardDidIt</a>, <a href="http://gibberlings3.net/forums/index.php?showuser=7356">CrevsDaak</a></p>
   <p><strong>On the web: </strong><a href="http://www.gibberlings3.net/eet/"><strong>Home page</strong></a> and <a href="http://gibberlings3.net/forums/index.php?showforum=195"><strong>discussion forum</strong></a></p>
-  <p><strong>Version 1.0 <acronym title="(software development) A version of a program that is nearly ready for release but may still have a few bugs; the status between beta version and release version.">Release Candidate</acronym> 5</strong><br />
-    <strong>Languages: </strong>English, Polish, German, French, Spanish<br />
+  <p><strong>Version 1.0 <acronym title="(software development) A version of a program that is nearly ready for release but may still have a few bugs; the status between beta version and release version.">Release Candidate</acronym> 6</strong><br />
+    <strong>Languages: </strong>English, Polish, German (unfinished), French (unfinished), Spanish (unfinished)<br />
     <strong>Platforms: </strong>Windows, Mac OS X</p>
 </div>
 
@@ -81,7 +81,7 @@
 <p>If you are planning to use other mods than you should consider using <a href="https://bitbucket.org/BigWorldSetup/">Big World Setup</a> (support for EET will added to BWS soon) to download, extract and install EET and other mods. This approach will save you a lot of time and ensure that selected mods are compatible with EET and installed in the correct order.</p>
 </div>
 
-<h3>Initialise EET (setup-EET)</h3>
+<h3>Initialise EET (setup-EET + setup-EET_core)</h3>
 
 <p>Core EET component requires "clean" BG2:EE installation with latest patch (currently v2.3.67.3). Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
 
@@ -97,7 +97,7 @@
 
 <p>Installation within Program Files or Program Files (x86) is not recommended due to the potential for O/S related issues (e.g. <a href="https://en.wikipedia.org/wiki/User_Account_Control">UAC</a> trouble). Unless you are sure that you have full UAC permissions consider moving BG:EE and BG2:EE outside this directory (the game is DRM free, so there are no problems with doing so).</p>
 
-<p>EET is packaged and installed with WeiDU and is distributed as a compressed archive. Extract the contents of the archive and move them to your BG2:EE game folder. Your game folder should then contain a EET folder and setup-EET.exe file. To initialize installation, double-click setup-EET.exe and follow the instructions on screen.</p>
+<p>EET is packaged and installed with WeiDU and is distributed as a compressed archive. Extract the contents of the archive and move them to your BG2:EE game folder. Your game folder should then contain a EET folder and setup-EET.exe file. To initialize installation, double-click setup-EET.exe and follow the instructions on screen. After few seconds you will be informed that the 'Initialise EET' component has been installed successfully and the next 'EET core' component will start the installation automatically.</p>
 
 <p><strong>This is NOT the end of installation - please read the below section.</strong></p>
 
@@ -144,7 +144,6 @@
 		<td><em>[flags]</em></td>
 		<td class="grow">
 		<p>Any combination of below flags should be typed as one string (no whitespaces)</p>
-		<p>1 or 2 - suppress prompt for choosing the WeiDU TLK language directory if different language than selected for EET installation is specified within weidu.conf file located in BG:EE directory. 1 - leave the weidu.conf as it is, 2 - update weidu.conf to use the same language as EET installation.</p>
 		<p>m or M - suppress failed installation message that normally shows up if BG:EE installation contains mods not listed on EET BG:EE mods compatibility list (not recommended unless you really know what you are doing).</p>
 		<p>d or D - keep EET installation files (at least 3.2GB) after the installation is complete (for debug purposes only, they are not necessary to uninstall/reinstall the mod)</p>
 		<p>p or P - pre-define the full path to the Baldur's Gate: Enhanced Edition directory; if the path is invalid, setup will prompt for a valid path</p>
@@ -162,10 +161,10 @@
 <p>Example:</p>
 
 <div class="code">
-<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list 2p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
+<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
 </div>
 
-<p>This construction installs EET with the English language, automatically updates weidu.conf file to use the same language as the one chosen for EET installation (if such unusual situation occurs), and pre-defines the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
+<p>This construction installs EET with the English language and pre-defines the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
 
 <hr>
 
@@ -342,7 +341,7 @@
 
 <p><strong>The mod finished installing successfully, but the message is "Installed with Warnings".</strong></p>
 
-<p>There are several additional precautions added into EET installation code to inform the player if something went wrong. Open up SETUP-EET.DEBUG located in your Baldur's Gate II: Enhanced Edition installation directory and search (ctrl+F) for the word "warning". If you can't figure out how to fix the problem post this debug file in the <a href="http://gibberlings3.net/forums/index.php?showforum=195">mod forum</a>. Playing with installation that showed warnings is not recommended.</p>
+<p>There are several additional precautions added into EET installation code to inform the player if something went wrong. Open up SETUP-EET_CORE.DEBUG located in your Baldur's Gate II: Enhanced Edition installation directory and search (ctrl+F) for the word "warning". If you can't figure out how to fix the problem post this debug file in the <a href="http://gibberlings3.net/forums/index.php?showforum=195">mod forum</a>. Playing with installation that showed warnings is not recommended.</p>
 
 <h3>In-game problems</h3>
 
@@ -371,7 +370,7 @@
 
 <ul>
 	<li>Many thanks to AL|EN for integration with Big World Setup and support</li>
-	<li>Many thanks to Argent77 for Near Infinity development, TileConv compressor, tile2ee tool and other major contributions</li>
+	<li>Many thanks to Argent77 for Near Infinity development, TileConv compressor, tile2ee tool, beta testing and other major contributions</li>
 	<li>Many thanks to Ascension64 whose work on BGT-WeiDU inspired this mod</li>
 	<li>Many thanks to AWizardDidIt for being a writer for EET related content (IWD-in-EET mod)</li>
 	<li>Many thanks to Bardez who created the original Baldur's Gate Trilogy</li>
@@ -382,6 +381,7 @@
 	<li>Many thanks to Fouinto for beta testing</li>
 	<li>Many thanks to geminibruni for title fonts</li>
 	<li>Many thanks to Gibberlings 3 Modding Community for hosting</li>
+	<li>Many thanks to GrimLefourbe for beta testing</li>
 	<li>Many thanks to Kirara for worldmap art</li>
 	<li>Many thanks to Mike1072 for tooltip.2da patching code and support</li>
 	<li>Many thanks to Miloch for Sword Coast Map Labels</li>
