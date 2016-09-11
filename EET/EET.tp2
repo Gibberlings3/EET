@@ -142,7 +142,7 @@ ACTION_IF NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialog.bak~ BEGIN
 	//export BG2:EE TLK to TRA
 	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --traify-tlk --out "EET/temp/bg2ee.tra"~
 	//export BG:EE TLK to TRA
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --traify# 200000 --traify-tlk --out "EET/temp/bgee.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "EET/temp/bgee.tra"~
 	//merge all TRA files, including pre-generated blank.tra
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 		AT_NOW ~copy "EET\temp\bg2ee.tra"+"EET\temp\append.tra"+"EET\base\blank.tra"+"EET\temp\bgee.tra" "EET\temp\result.tra"~ EXACT
