@@ -108,8 +108,9 @@ OUTER_SPRINT log_remapped_splName ~~
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
 	OUTER_SPRINT exe ~.exe~
+	OUTER_SPRINT osxBin ~~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
-	OUTER_SPRINT bash_debug ~ 2>&1|EET\bin\win32\mtee.exe EET\temp\bash.debug /A~
+	OUTER_SPRINT bash_debug ~ 2>&1|EET\bin\win32\mtee.exe EET\temp\bash.debug~
 	AT_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
 		//AT_EXIT ~rmdir /s /q EET\temp~ EXACT
@@ -129,7 +130,8 @@ ECHO %arch_var%>EET\temp\arch_var.txt
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	OUTER_SPRINT os_slash ~/~
 	OUTER_SPRINT exe ~~
-	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET~
+	OUTER_SPRINT osxBin ~./~
+	OUTER_SPRINT WEIDU_EXECUTABLE ~./setup-EET~
 	OUTER_SPRINT bash_debug ~ 2>>EET/temp/bash.debug | tee -a EET/temp/bash.debug~
 	AT_UNINSTALL ~rm -rf EET/temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
@@ -137,19 +139,10 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	END
 END
 
-OUTER_SPRINT tileconv ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
-OUTER_SPRINT tile2ee ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tile2ee%exe%~
-OUTER_SPRINT ffmpeg ~EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
+OUTER_SPRINT tileconv ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
+OUTER_SPRINT tile2ee ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tile2ee%exe%~
+OUTER_SPRINT ffmpeg ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
 OUTER_SET EET_JOURNAL = 1
-
-ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGEE.log~
-		REPLACE_TEXTUALLY ~^//.*~ ~~ //removes "Recently uninstalled" lines
-END
-
-/////                                                  \\\\\
-///// Include                                          \\\\\
-/////                                                  \\\\\
 
 COPY - ~EET/other/cpmvars/eet_cpmvars.tpa~ ~.../eet_cpmvars.tpa~
 	~EET/other/EET_functions.tph~ ~.../EET_functions.tph~
@@ -161,6 +154,13 @@ INCLUDE ~EET/lib/macros.tph~
 INCLUDE ~EET/lib/strref_tables.tph~
 INCLUDE ~EET/lib/bgee_dir.tph~
 INCLUDE ~EET/lib/pcu_dict.tph~
+
+ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
+	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGEE.log~
+		REPLACE_TEXTUALLY ~^//.*[%newline%]*~ ~~ //removes "Recently uninstalled" lines
+END ELSE BEGIN
+	COPY ~.../blank.txt~ ~WeiDU-BGEE.log~
+END
 
 /////                                                  \\\\\
 ///// BG2:EE files patching                            \\\\\
@@ -1791,6 +1791,7 @@ COPY ~EET/base/spl/SPWI123.SPL~ ~override~
 	~EET/base/spl/SPCL342.SPL~ ~override~
 	~EET/base/spl/K#FAMKIL.SPL~ ~override~
 	~EET/base/spl/K#FAMREM.SPL~ ~override~
+	~EET/base/spl/K#FATIGP.SPL~ ~override~
 	~EET/base/spl/K#REST.SPL~ ~override~
 	~EET/base/spl/K#UNREST.SPL~ ~override~
 ACTION_FOR_EACH var IN 4 6 9 12 24 BEGIN

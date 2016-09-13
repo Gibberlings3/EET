@@ -706,7 +706,7 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	AT_NOW ~del /f "%USER_DIRECTORY%\save\saves.tra"~ EXACT
 	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%\save\saves.tra"~
 END ELSE BEGIN
-	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET~
+	OUTER_SPRINT WEIDU_EXECUTABLE ~./setup-EET~
 	AT_NOW ~rm -f %USER_DIRECTORY%/save/saves.tra~ EXACT
 	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%/save/saves.tra"~
 END

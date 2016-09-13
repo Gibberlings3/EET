@@ -1349,6 +1349,55 @@ COPY_EXISTING ~CUT100A.BCS~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// Animation/color import for cutscene CRE files    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_sourceBase BEGIN
+	1 , ~CUT01~ , ~ CreateCreature("CSIMOEN",[^)]+)~ , ~CSIMOEN~ => ~Imoen2~ //Waukeen Promenade Imoen
+	2 , ~MOVIE01A~ , ~ LeaveAreaLUA("AR0069","",\[0\.0\],S)~ , ~cuimoen~ => ~Imoen2~ //AR0069.ARE
+	3 , ~MOVIE02A~ , ~ LeaveAreaLUA("AR0070","",\[0\.0\],S)~ , ~cuimoen2~ => ~Imoen2~ //AR0070.ARE
+	4 , ~MOVIE03A~ , ~ LeaveAreaLUA("AR0071","",\[0\.0\],S)~ , ~cuimoen3~ => ~Imoen2~ //AR0071.ARE
+	5 , ~MOVIE03B~ , ~ LeaveAreaLUA("AR0071","",\[0\.0\],S)~ , ~cuimoen3~ => ~Imoen2~ //AR0071.ARE
+	6 , ~CUT67D~ , ~ CreateCreatureDoor("dpimo01",[^)]+)~ , ~dpimo01~ => ~Imoen2~
+	7 , ~CUT69C~ , ~ CreateCreatureDoor("dpimo01",[^)]+)~ , ~dpimo01~ => ~Imoen2~
+	8 , ~CUT28A~ , ~ LeaveAreaLUA("AR0011","",\[799\.1579\],N)~ , ~dream1~ => ~Imoen2~ //AR0011.ARE
+	9 , ~CUT49A~ , ~ LeaveAreaLUA("AR0013","",\[1491\.1173\],W)~ , ~drim01~ => ~Imoen2~ //AR0013.ARE
+	10 , ~CUT49C~ , ~ LeaveAreaLUA("AR0014","",\[721\.654\],N)~ , ~drim02~ => ~Imoen2~ //AR0014.ARE
+	11 , ~CUT41H~ , ~ LeaveAreaLUA("AR0028","",\[2680\.2104\],NW)~ , ~ppdrimov~ => ~Imoen2~ //AR0028.ARE
+	12 , ~AR1515~ , ~ CreateCreature("ppimoen",\[937\.1229\],E)~ , ~ppimoen~ => ~Imoen2~ //Spellhold Imoen
+	13 , ~CUT41F~ , ~ CreateCreature("ppimoen",\[1098\.537\],S)~ , ~ppimoen~ => ~Imoen2~ //Spellhold Imoen
+END
+
+ACTION_PHP_EACH table_sourceBase AS source => base BEGIN
+	COPY_EXISTING ~%source_1%.BCS~ ~override~
+		DECOMPILE_AND_PATCH BEGIN
+			SPRINT textToReplace ~\(%source_2%\)~
+			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+		ActionOverride("%source_3%",PolymorphCopy("%base%"))~
+				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+			END ELSE BEGIN
+				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			END
+		END
+	BUT_ONLY
+END
+
+//AR0012.ARE Imoen
+<<<<<<<< .../PPDRIMO-et.baf
+IF
+  Global("K#AnimationSwap","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#AnimationSwap","LOCALS",1)
+    PolymorphCopy("Imoen2")
+    Continue()
+END
+>>>>>>>>
+EXTEND_TOP ~PPDRIMO.BCS~ ~.../PPDRIMO-et.baf~
+
+/////                                                  \\\\\
 ///// AR0304 (Edwin spawn)                             \\\\\
 /////                                                  \\\\\
 
@@ -1562,30 +1611,6 @@ EXTEND_TOP ~AR0304.BCS~ ~.../AR0304-et.baf~
 /////                                                  \\\\\
 
 <<<<<<<< .../AR0602-et.baf
-IF
-  Global("K#DynaheirImport","AR0602",0)
-  BeenInParty("Dynaheir")
-  !StateCheck("Dynaheir",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    Deactivate("Dynaheir")
-    Kill("Dynaheir")
-    SetGlobal("K#DynaheirImport","AR0602",1)
-    Continue()
-END
-
-IF
-  Global("K#KhalidImport","AR0602",0)
-  BeenInParty("Khalid")
-  !StateCheck("Khalid",STATE_REALLY_DEAD)
-THEN
-  RESPONSE #100
-    Deactivate("Khalid")
-    Kill("Khalid")
-    SetGlobal("K#KhalidImport","AR0602",1)
-    Continue()
-END
-
 IF
   Global("K#ImoenImport","AR0602",0)
   BeenInParty("Imoen2")
@@ -2088,9 +2113,15 @@ THEN
     SetGlobal("ENDOFBG1","GLOBAL",2)
     StartMovie("INTRO15F")
     ActionOverride(Player1,MakeUnselectable(1))
+    ActionOverride(Player2,MakeUnselectable(1))
+    ActionOverride(Player3,MakeUnselectable(1))
+    ActionOverride(Player4,MakeUnselectable(1))
+    ActionOverride(Player5,MakeUnselectable(1))
+    ActionOverride(Player6,MakeUnselectable(1))
     //ActionOverride(Player1,SetPlayerSound(Myself,15881,EXISTANCE5))
     RemoveWorldmapAreaFlag("BD0010",15) //Visible, Reveal from linked area, Can be visited, Has been visited
     AddWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
+    ApplySpellRES("K#FATIGP",Player1)
     ReallyForceSpellRES("K#FAMREM",Player1)
     ReallyForceSpellRES("K#FAMREM",Player2)
     ReallyForceSpellRES("K#FAMREM",Player3)

@@ -1,8 +1,11 @@
 //Compatibility with BG1NPC Required Modifications
 ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
 	EXTEND_TOP ~REDDEATH.BCS~ ~EET/compat/bg1npc/baf/X#BRDWI.BAF~ EVALUATE_BUFFER //Interjection scripting changes, BG1 NPCs
-	//delete files existing in BG2:EE
-	DELETE + ~%patch_dir%/dlg/PLAYER1.dlg~
+	//conflict with BG2:EE resources
+	ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+		"PLAYER1" => "PLAYER1_"
+	END
+	MOVE + ~%patch_dir%/dlg/PLAYER1.DLG~ ~%patch_dir%/dlg/PLAYER1_.DLG~
 END
 
 //Compatibility with BG1NPC Banters, Quests, and Interjections

@@ -3,6 +3,58 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#FrameDelay","LOCALS",1)
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",1)
+  !Name("None",Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,MakeUnselectable(1))
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",1)
+  !Name("None",Player3)
+THEN
+  RESPONSE #100
+    ActionOverride(Player3,MakeUnselectable(1))
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",1)
+  !Name("None",Player4)
+THEN
+  RESPONSE #100
+    ActionOverride(Player4,MakeUnselectable(1))
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",1)
+  !Name("None",Player5)
+THEN
+  RESPONSE #100
+    ActionOverride(Player5,MakeUnselectable(1))
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",1)
+  !Name("None",Player6)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,MakeUnselectable(1))
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#FrameDelay","LOCALS",2)
     DisableAI(Player1,FALSE)
     DisableAI(Player2,FALSE)
     DisableAI(Player3,FALSE)
@@ -15,11 +67,6 @@ THEN
     ApplySpellRES("K#REST",Player4) // No such index
     ApplySpellRES("K#REST",Player5) // No such index
     ApplySpellRES("K#REST",Player6) // No such index
-    ActionOverride(Player2,MakeUnselectable(1))
-    ActionOverride(Player3,MakeUnselectable(1))
-    ActionOverride(Player4,MakeUnselectable(1))
-    ActionOverride(Player5,MakeUnselectable(1))
-    ActionOverride(Player6,MakeUnselectable(1))
     SetGlobal("K#temp","GLOBAL",29)
     AdvanceTime(ONE_MONTH)
     AddGlobals("K#DaysPassed","K#temp")
@@ -32,10 +79,10 @@ THEN
 END
 
 IF
-  Global("K#FrameDelay","LOCALS",1)
+  Global("K#FrameDelay","LOCALS",2)
 THEN
   RESPONSE #100
-    SetGlobal("K#FrameDelay","LOCALS",2)
+    SetGlobal("K#FrameDelay","LOCALS",3)
     ApplySpellRES("K#UNREST",Player1) // No such index
     ApplySpellRES("K#UNREST",Player2) // No such index
     ApplySpellRES("K#UNREST",Player3) // No such index

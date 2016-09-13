@@ -797,6 +797,34 @@ COPY_EXISTING ~BDCUT61.BCS~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// Animation/color import for cutscene CRE files    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_sourceBase BEGIN
+	1 , ~BDDDD2A~ , ~CreateCreature("BDCCIMO",[^)]+)~ , ~BDCCIMO~ => ~Imoen2~
+	2 , ~BDDDD2B~ , ~CreateCreature("BDCCIMO",[^)]+)~ , ~BDCCIMO~ => ~Imoen2~
+	//3 , ~BD0103~ , ~CreateCreature("BDIMDEAD",[^)]+)~ , ~Imoen2~ => ~Imoen2~
+	//4 , ~BD0103~ , ~CreateCreature("BDIMOEN",[^)]+)~ , ~Imoen2~ => ~Imoen2~
+	//5 , ~BDSCRY01~ , ~CreateCreature("BDIMOEN",[^)]+)~ , ~Imoen2~ => ~Imoen2~
+END
+
+ACTION_PHP_EACH table_sourceBase AS source => base BEGIN
+	COPY_EXISTING ~%source_1%.BCS~ ~override~
+		DECOMPILE_AND_PATCH BEGIN
+			SPRINT textToReplace ~\(%source_2%\)~
+			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+		ActionOverride("%source_3%",PolymorphCopy("%base%"))~
+				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+			END ELSE BEGIN
+				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			END
+		END
+	BUT_ONLY
+END
+
+/////                                                  \\\\\
 ///// added by BG:EE                                   \\\\\
 /////                                                  \\\\\
 
