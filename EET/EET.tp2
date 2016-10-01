@@ -1,6 +1,6 @@
 BACKUP ~EET/backup~
 AUTHOR ~K4thos (swit)~
-VERSION ~1.0 RC6~
+VERSION ~1.0 RC7~
 README ~EET/lang/%LANGUAGE%/readme-EET.html~ ~EET/readme-EET.html~
 
 LANGUAGE ~English~
@@ -125,9 +125,10 @@ ACTION_IF NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialog.bak~ BEGIN
 	PRINT ~TLK merging...~
 
 	//create backups
-	COPY_LARGE + ~lang/%LANGUAGE_BG2%/dialog.tlk~ ~lang/%LANGUAGE_BG2%/dialog.bak~
-	ACTION_IF FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialogF.tlk~ BEGIN
-		COPY_LARGE + ~lang/%LANGUAGE_BG2%/dialogF.tlk~ ~lang/%LANGUAGE_BG2%/dialogF.bak~
+	ACTION_FOR_EACH var IN ~~ F BEGIN
+		ACTION_IF FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialog%var%.tlk~ BEGIN
+			COPY_LARGE + ~lang/%LANGUAGE_BG2%/dialog%var%.tlk~ ~EET/temp/dialog%var%.bak~
+		END
 	END
 
 	//generate dummy strings up to 111000

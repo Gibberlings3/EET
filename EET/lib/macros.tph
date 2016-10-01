@@ -38,7 +38,7 @@ DEFINE_PATCH_FUNCTION ~EET_spellbooks~
 	END ELSE PATCH_IF (class = 6) AND (known > 0) BEGIN // Paladin excludes inquisitors
 		READ_BYTE 0x234 level_cleric
 		INNER_ACTION BEGIN
-			COPY_EXISTING - ~MXSPLPAL.2DA~ ~override~
+			COPY_EXISTING - ~MXSPLPAL.2DA~ ~.../MXSPLPAL.2da~
 				COUNT_2DA_COLS "cntcol"
 				SET cleric_max = cntcol - 1
 				COUNT_2DA_ROWS cntcol "cntrow"
@@ -66,7 +66,7 @@ DEFINE_PATCH_FUNCTION ~EET_spellbooks~
 	END ELSE PATCH_IF (class = 12) BEGIN // Trueclass Ranger
 		READ_BYTE 0x234 level_druid
 		INNER_ACTION BEGIN
-			COPY_EXISTING - ~MXSPLDRU.2DA~ ~override~
+			COPY_EXISTING - ~MXSPLDRU.2DA~ ~.../MXSPLDRU.2DA~
 				COUNT_2DA_COLS "cntcol"
 				SET druid_max = cntcol - 1
 				COUNT_2DA_ROWS cntcol "cntrow"
@@ -96,7 +96,7 @@ DEFINE_PATCH_FUNCTION ~EET_spellbooks~
 		READ_BYTE 0x234 level_cleric
 		READ_BYTE 0x235 level_druid
 		INNER_ACTION BEGIN
-			COPY_EXISTING - ~MXSPLDRU.2DA~ ~override~
+			COPY_EXISTING - ~MXSPLDRU.2DA~ ~.../MXSPLDRU.2DA~
 				COUNT_2DA_COLS "cntcol"
 				PATCH_IF (cheat = 0) BEGIN
 					SET druid_max = cntcol - 1
@@ -145,7 +145,7 @@ DEFINE_PATCH_FUNCTION ~EET_spellbooks~
 		READ_BYTE 0x27b align // used for various restriction checks below
 		INNER_ACTION BEGIN
 			LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
-			COPY_EXISTING - ~%spell_res%.spl~ ~override~
+			COPY_EXISTING ~%spell_res%.spl~ ~override~
 				READ_LONG 0x1e "flags"
 				PATCH_IF (is_cleric = 1) OR (is_druid = 1) BEGIN
 					PATCH_IF (~%flags%~ BAND BIT0) BEGIN //Exclude Chaotic priests
@@ -244,6 +244,7 @@ DEFINE_PATCH_FUNCTION ~EET_spellbooks~
 						END
 					END
 				END
+			BUT_ONLY
 		END
 		//Known Spells
 		READ_LONG 0x2a0 "kspell_off"
@@ -1034,7 +1035,7 @@ DEFINE_PATCH_FUNCTION dump_wmp
 	END
 	INNER_ACTION BEGIN
 		ACTION_PHP_EACH ~%2da_links_array%~ AS source => file BEGIN
-			COPY_EXISTING - ~%file%.2da~ ~override~
+			COPY_EXISTING - ~%file%.2da~ ~.../%file%.2da~
 				PRETTY_PRINT_2DA
 				REPLACE_TEXTUALLY ~\*~ ~N~
 				REPLACE_EVALUATE CASE_INSENSITIVE ~^[0-9]+[ ]+\([A-Za-z0-9#_-]+\)+[ ]+\([0-9]+\)[ ]+\([A-Za-z0-9#_-]+\)[ ]+\([0-9]+\)[ ]+\([0-9]+\)[ ]+\([A-Za-z0-9#_-]+\)[ ]+\([A-Za-z0-9#_-]+\)[ ]+\([A-Za-z0-9#_-]+\)[ ]+\([A-Za-z0-9#_-]+\)[ ]+\([A-Za-z0-9#_-]+\)[ ]+\([0-3N]+\)$~ BEGIN

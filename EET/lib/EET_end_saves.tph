@@ -525,7 +525,7 @@ COPY_EXISTING_REGEXP - GLOB ~.+\.WMP~ ~override~
 	SET compLen = STRING_LENGTH ~%wmpData%~
 	SPRINT $array_wmp_glob("%SOURCE_FILE%" "%uncLen%" "%compLen%") "%wmpData%"
 
-COPY_EXISTING - ~CAMPAIGN.2DA~ ~override~
+COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 	COUNT_2DA_ROWS 32 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 12 32 "save_dir"

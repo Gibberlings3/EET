@@ -1119,7 +1119,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","BD0120",1)
-    //SetGlobal("DREAM","GLOBAL",7)
+    SetGlobal("DREAM","GLOBAL",-1)
     SetGlobal("ENDOFBG1","GLOBAL",1)
     SetGlobal("NEWGAME_SOD","GLOBAL",1)
     //SetGlobal("K#temp","GLOBAL",364)
@@ -1512,6 +1512,196 @@ END
 
 EXTEND_TOP ~BG2600.BCS~ ~.../BG2600-et.baf~
 
+<<<<<<<< .../BG1800-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("LAKADAAR")
+THEN
+  RESPONSE #100
+    ActionOverride("LAKADAAR",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG1800.BCS~ ~.../BG1800-eb.baf~
+
+<<<<<<<< .../BG2700-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("GORION")
+THEN
+  RESPONSE #100
+    ActionOverride("GORION",DestroySelf())
+    Continue()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("BINKOS")
+THEN
+  RESPONSE #100
+    ActionOverride("BINKOS",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG2700.BCS~ ~.../BG2700-eb.baf~
+
+<<<<<<<< .../BG2800-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("ANDOUT")
+THEN
+  RESPONSE #100
+    ActionOverride("ANDOUT",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG2800.BCS~ ~.../BG2800-eb.baf~
+
+<<<<<<<< .../BG3900-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("WILCO")
+THEN
+  RESPONSE #100
+    ActionOverride("WILCO",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG3900.BCS~ ~.../BG3900-eb.baf~
+
+<<<<<<<< .../BG4200-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("HOBGO5")
+THEN
+  RESPONSE #100
+    ActionOverride("HOBGO5",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG4200.BCS~ ~.../BG4200-eb.baf~
+
+<<<<<<<< .../TAEROM-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Global("TaeromRidiculous","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("TaeromRidiculous","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~TAEROM.BCS~ ~.../TAEROM-eb.baf~
+
+<<<<<<<< .../BG4400-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("SPRAT")
+THEN
+  RESPONSE #100
+    ActionOverride("SPRAT",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG4400.BCS~ ~.../BG4400-eb.baf~
+
+/////                                                  \\\\\
+/////clean BG1 areas                                   \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../BG1800-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("LAKADAAR")
+THEN
+  RESPONSE #100
+    ActionOverride("LAKADAAR",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG1800.BCS~ ~.../BG1800-eb.baf~
+
+<<<<<<<< .../BG2700-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("GORION")
+THEN
+  RESPONSE #100
+    ActionOverride("GORION",DestroySelf())
+    Continue()
+END
+
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("BINKOS")
+THEN
+  RESPONSE #100
+    ActionOverride("BINKOS",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG2700.BCS~ ~.../BG2700-eb.baf~
+
+<<<<<<<< .../BG2800-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("ANDOUT")
+THEN
+  RESPONSE #100
+    ActionOverride("ANDOUT",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG2800.BCS~ ~.../BG2800-eb.baf~
+
+<<<<<<<< .../BG3900-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("WILCO")
+THEN
+  RESPONSE #100
+    ActionOverride("WILCO",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG3900.BCS~ ~.../BG3900-eb.baf~
+
+<<<<<<<< .../BG4200-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("HOBGO5")
+THEN
+  RESPONSE #100
+    ActionOverride("HOBGO5",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG4200.BCS~ ~.../BG4200-eb.baf~
+
+<<<<<<<< .../TAEROM-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Global("TaeromRidiculous","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("TaeromRidiculous","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~TAEROM.BCS~ ~.../TAEROM-eb.baf~
+
+<<<<<<<< .../BG4400-eb.baf
+IF
+  GlobalGT("Chapter","GLOBAL",7)
+  Exists("SPRAT")
+THEN
+  RESPONSE #100
+    ActionOverride("SPRAT",DestroySelf())
+    Continue()
+END
+>>>>>>>>
+EXTEND_BOTTOM ~BG4400.BCS~ ~.../BG4400-eb.baf~
+
 /////                                                  \\\\\
 /////clean SoD areas                                   \\\\\
 /////                                                  \\\\\
@@ -1529,6 +1719,7 @@ EXTEND_TOP ~BDFIST.BCS~ ~.../DISABLE-et.baf~
 EXTEND_TOP ~BDASC.BCS~ ~.../DISABLE-et.baf~
 EXTEND_TOP ~BD5200EN.BCS~ ~.../DISABLE-et.baf~
 EXTEND_TOP ~BD5100EN.BCS~ ~.../DISABLE-et.baf~
+EXTEND_TOP ~BDTHRUDD.BCS~ ~.../DISABLE-et.baf~
 
 <<<<<<<< .../BDCOAL50.baf
 IF
@@ -1549,7 +1740,7 @@ END
 //Coast Way Crossing
 <<<<<<<< .../BD1000-et.baf
 IF
-  Global("K#CleanAreaNote","BD2000",0)
+  Global("K#CleanAreaNote","BD1000",0)
   OR(3)
     GlobalGT("Chapter","GLOBAL",8)
     StateCheck("Baeloth",STATE_REALLY_DEAD)
@@ -1557,7 +1748,7 @@ IF
 THEN
   RESPONSE #100
     RemoveMapNote([2000.540],267515) //Baeloth's Black Pit to End All Black Pits
-    SetGlobal("K#CleanAreaNote","BD2000",1)
+    SetGlobal("K#CleanAreaNote","BD1000",1)
     Continue()
 END
 
@@ -1606,7 +1797,7 @@ EXTEND_TOP ~BD1000.BCS~ ~.../BD1000-et.baf~
 IF
   Global("K#CleanArea","BD1100",0)
   GlobalGT("Chapter","GLOBAL",9)
-  Global("bd_deepvein_troops","global",1)
+  GlobalGT("bd_deepvein_troops","GLOBAL",0)
 THEN
   RESPONSE #100
     ActionOverride("BDDCLER2",DestroySelf()) //Dwarven Cleric
@@ -1650,11 +1841,16 @@ IF
   GlobalGT("Chapter","GLOBAL",13)
 THEN
   RESPONSE #100
+    ActionOverride("BDDUGRAF",DestroySelf()) //Sergeant Dugraff
     ActionOverride("BDFFMERC",DestroySelf()) //Flaming Fist Mercenary
     ActionOverride("DEAD5",DestroySelf()) //Crusader
     ActionOverride("DEAD4",DestroySelf()) //Crusader
     ActionOverride("DEAD2",DestroySelf()) //Crusader Archer
     ActionOverride("DEAD1",DestroySelf()) //Crusader Recruit
+    SoundActivate("AM_Distant_Battle",FALSE)
+    SoundActivate("AMB_Distant_Seige",FALSE)
+    SoundActivate("SS_Magic_Battle",FALSE)
+    SoundActivate("SS_Rumble_Battle",FALSE)
     RemoveMapNote([1384.1862],268887) //Explosive Barrels
     RemoveMapNote([2434.2616],267526) //Crusader Encampment
     RemoveMapNote([4090.404],268888) //Corpses
@@ -1682,6 +1878,20 @@ END
 EXTEND_TOP ~BD2100.BCS~ ~.../BD2100-et.baf~
 
 //Coalition Camp
+COPY_EXISTING ~BD3000.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~RemoveAreaFlag(NOTRAVEL)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~\(%textToReplace%\)~ ~RemoveWorldmapAreaFlag("BD2000",6)
+    \1~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
 <<<<<<<< .../BD3000-et.baf
 IF
   Global("K#CleanAreaBG2","BD3000",0)
@@ -1714,9 +1924,17 @@ EXTEND_TOP ~BD3000.BCS~ ~.../BD3000-et.baf~
 //Dragonspear Castle, Exterior
 COPY_EXISTING ~BD4000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~\(AddAreaFlag(NOTRAVEL)\)~ ~\1
-    RemoveWorldmapAreaFlag("BD5000",6)
-    RemoveWorldmapAreaFlag("BD7400",6)~
+		SPRINT textToReplace ~AddAreaFlag(NOTRAVEL)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~\(%textToReplace%\)~ ~AddWorldmapAreaFlag("BD5000",6)
+    AddWorldmapAreaFlag("BD7400",6)
+    AddWorldmapAreaFlag("BD2000",6)
+    \1~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 	END
 BUT_ONLY
 
@@ -1728,7 +1946,7 @@ THEN
   RESPONSE #100
     RemoveAreaFlag(NOTRAVEL)
     ActionOverride("BDMORRUK",DestroySelf()) //Troll
-    ActionOverride("BDTHRUDD",DestroySelf()) //Troll
+    //ActionOverride("BDTHRUDD",DestroySelf()) //Troll - disabled via local script
     ActionOverride("BDTOLIKS",DestroySelf()) //Troll
     ActionOverride("BDULORI",DestroySelf()) //Troll
     RemoveMapNote([825.1280],269074) //Crusader Commander
@@ -1768,6 +1986,8 @@ THEN
   RESPONSE #100
     TriggerActivation("TransBD4100",TRUE)
     TriggerActivation("BD5200Entrance",TRUE)
+    SoundActivate("SS_Soldier",FALSE)
+    ActionOverride("BDAUN",DestroySelf()) //Aun Argent
     ActionOverride("BDDAZZO",DestroySelf()) //Sergeant Dazzo
     SetGlobal("K#CleanAreaBG2","BD4300",1)
     Continue()
@@ -1797,6 +2017,8 @@ IF
 THEN
   RESPONSE #100
     RemoveMapNote([4304.1939],267714) //Crusader Supply Depot
+    ActionOverride("BDFLOSS",DestroySelf()) //Floss
+    ActionOverride("BDGURGLE",DestroySelf()) //Gurgle
     SetGlobal("K#CleanAreaBG2","BD5100",1)
     Continue()
 END

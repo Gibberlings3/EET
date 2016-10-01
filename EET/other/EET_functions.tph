@@ -228,7 +228,7 @@ END
       END ELSE BEGIN
         OUTER_SET match = 0
         ACTION_IF ((~%stringPosDV%~ STR_EQ ~~)=0) BEGIN
-          COPY_EXISTING - ~FATESP.DLG~ ~override~
+          COPY_EXISTING - ~FATESP.DLG~ ~.../FATESP.DLG~
             DECOMPILE_AND_PATCH BEGIN
               SPRINT tilde "~"
               SET match = 0

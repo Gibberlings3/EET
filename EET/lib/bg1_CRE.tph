@@ -5,18 +5,23 @@
 /////                                                 \\\\\
 
 COPY_EXISTING ~addy.cre~ ~override~
+	~andout.cre~ ~override~
+	~binkos.cre~ ~override~
 	~brenna.cre~ ~override~
 	~caedmo.cre~ ~override~
 	~elmin3.cre~ ~override~
+	~hobgo5.cre~ ~override~
 	~ivanne.cre~ ~override~
 	~jonavi.cre~ ~override~
 	~kaella.cre~ ~override~
 	~karan1.cre~ ~override~
-	~lamalh.cre~ ~override~ //only this CRE is missing DV in vanilla BG:EE (other are checked in case some mods sets different DV as they are not assigned in vanilla BG1/Tutu)
+	~lamalh.cre~ ~override~
 	~parda1.cre~ ~override~
 	~slavfree.cre~ ~override~
+	~sprat.cre~ ~override~
 	~sorrel.cre~ ~override~
 	~sugar.cre~ ~override~
+	~wilco.cre~ ~override~
 	READ_ASCII 0x280 "DV" (32) NULL
 	PATCH_IF ((NOT ~%DV%~ STR_EQ ~~) AND (NOT ~%DV%~ STR_EQ ~%SOURCE_RES%~) AND (NOT ~%DV%~ STR_EQ ~None~)) BEGIN
 		PATCH_WARN ~WARNING: %SOURCE_FILE% uses wrong DV. Patching %DV% -> %SOURCE_FILE%.~

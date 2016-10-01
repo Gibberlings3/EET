@@ -1,0 +1,1905 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Modder's Notes for EET</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<link href="style/g3icon.ico" rel="icon" type="image/bmp" />
+<style type="text/css">/*<![CDATA[*/
+<!--
+body  {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  text-align: left;
+  color: #000;
+  background-color: #f2f2fc;
+  margin: 35px 50px 35px 50px;
+  padding: 0px;
+  }
+img {border : 0;}
+h1, h2, h3, h4, h5, h6 {
+  font-size: 17px;
+  font-weight: bold;
+  color: #0000cd;
+  font-variant: small-caps;
+  position: relative;
+  background-color: #fff;
+  z-index:10;
+  }
+h1, h2 {
+  margin-right: 20px;
+  margin-left: 20px;
+  padding: 5px;
+  border:1px solid #888;
+  z-index:10;
+  }
+h3, h4, h5, h6 {
+  border-left:10px solid #0000cd;
+  padding-left:5px;
+  border-bottom:1px dotted #0000cd;
+  }
+h2 {font-size : 16px;}
+h3 {font-size : 15px;}
+h4 {font-size : 14px;}
+h5 {font-size : 13px;}
+h6 {font-size : 12px;}
+p, ul, table {clear:left;}
+a, a:link, a:visited, a:hover, a:active {
+  color: #0012ff;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+  }
+a:visited {color : #0000cd;}
+table {
+  width: 100%;
+  padding: 20px;
+  }
+td, th {
+  text-align: center;
+  vertical-align: baseline;
+  padding: 5px;
+  border: 1px outset #aaa;
+  }
+th {
+  background-color: #0000cd;
+  color: #fff;
+  font-weight: bold;
+  }
+hr {
+  display: block; 
+  clear: both; 
+  margin: 0; 
+  visibility: hidden;
+  }
+.leftalign, table.leftalign tr th, table.leftalign tr td {text-align: left;}
+.section {
+  position: relative;
+  border: 1px dotted #bbb;
+  background-color: #fff;
+  margin: -30px 0px 30px 0px;
+  padding: 20px 20px 10px 20px;
+  }
+.kit_description {
+  position: relative;
+  display: block;
+  background-color: #f0f0f0;
+  border-left: 4px solid #ccc;
+  border-top: 1px dotted #ccc;
+  }
+.portrait_thumb {
+  float: left;
+  width: 125px;
+  height: 125px;
+  padding: 5px;
+  text-align: center;
+  overflow: auto;
+  }
+a.spoiler, a:link.spoiler, a:active.spoiler, a:visited.spoiler, a:hover.spoiler {
+  color: #ccc;
+  background-color: #ccc;
+  border: 1px dotted #888;
+  text-decoration: none;
+  }
+a:hover.spoiler {
+  color: #000;
+  border: 1px dotted #ccc;
+  }
+.code {
+  font-family: 'Courier New', Courier, mono; 
+  border: 1px solid #555; 
+  border-left: 10px solid #555; 
+  background-color: #eee;
+  padding: 5px;
+  }
+.deprecated {color:#666;}
+.code p {
+  text-align: left;
+  font-size: 100%;
+  text-indent: 0px;
+  margin: 5px 0 10px 0;
+}
+.tg {
+  border-collapse:collapse;
+  border-spacing:0;
+  margin:0px auto;
+}
+.tg td{
+  color: #333;
+  text-align:justify;
+  padding:10px 5px;
+  border-style:solid;
+  border-width:1px;
+  overflow:hidden;
+  word-break:normal;
+}
+.tg th{
+  text-align:center;
+  font-weight:normal;
+  padding:10px 5px;
+  border-style:solid;
+  border-width:1px;
+  overflow:hidden;
+  word-break:normal;
+}
+-->
+/*]]>*/
+</style>
+</head>
+<body>
+<h1>Modder's Notes for Baldur's Gate: Enhanced Edition Trilogy (EET)</h1>
+
+<!-- ================== T a b l e ================== --><a id="table" name="Table of Contents"></a>
+<h2>Table of Contents</h2>
+<div class="section">
+	<ol>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#conventions">EET conventions</a></li>
+		<ul>
+			<li><a href="#Areas naming convention">Areas naming convention</a></li>
+			<li><a href="#Resource naming convention">Resource naming convention</a></li>
+			<li><a href="#Naming convention for new files">Naming convention for new files</a></li>
+			<li><a href="#BG1 resource naming reference table">BG1 resource naming reference table</a></li>
+		</ul>
+		<li><a href="#mods">Creating mods compatible with EET</a></li>
+		<ul>
+			<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
+			<li><a href="#Implementing BG1 random items">Implementing BG1 random items</a></li>
+			<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
+			<li><a href="#Working with files that are merged during installation">Working with files that are merged during installation</a></li>
+			<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
+			<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
+			<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
+			<li><a href="#Detecting mods installed on BG:EE">Detecting mods installed on BG:EE</a></li>
+			<li><a href="#Adding support for mods installable on BG:EE previous to installing EET on BG2:EE">Adding support for mods installable on BG:EE previous to installing EET on BG2:EE</a></li>
+			<li><a href="#Adding support for shattering items (iron crisis) system in BG1 portion of the game">Adding support for shattering items (iron crisis) system in BG1 portion of the game</a></li>
+			<li><a href="#Importing more items to BG2">Importing more items to BG2</a></li>
+			<li><a href="#Adding support for NPC transition system">Adding support for NPC transition system</a></li>
+			<li><a href="#Workaround for CalanderDay command in SoD/BG2 portion of the game">Workaround for CalanderDay command in SoD/BG2 portion of the game</a></li>
+			<li><a href="#Adding new animations">Adding new animations</a></li>
+			<li><a href="#Adding support for EET Worldmap">Adding support for EET Worldmap</a></li>
+		</ul>
+	</ol> 
+</div>
+
+<!-- ================== O v e r v i e w ================== --><a id="overview" name="Overview"></a>
+<h2>Overview</h2>
+<div class="section">
+
+<p>Baldur's Gate: Enhanced Edition Trilogy Modder's Notes is intended for modders who wish to build modifications to be installed on top of EET core component installation. The document is organized using a tutorial approach, in which you are guided through each step of accomplishing particular modding tasks without breaking compatibility with other platforms.</p>
+
+<p>These notes expects that you're already familiar with <a href="../readme-EET.html#faq">F.A.Q section</a> of the EET readme file.</p>
+
+<p>I've tried to write this document with easy to understand language even for novice modders. English is not my first language though, so I can't promise that it will be smooth read. If you find something here confusing or if you have additional questions don't hesitate to ask on <a href="http://gibberlings3.net/forums/index.php?showforum=195">EET section of Gibberlings3 forum</a>.</p>
+
+</div>
+
+<!-- ================== C o n v e n t i o n s ================== --><a id="conventions" name="conventions"></a>
+<h2>EET conventions</h2>
+<div class="section">
+
+<ul>
+	<li><a href="#Areas naming convention">Areas naming convention</a></li>
+	<li><a href="#Resource naming convention">Resource naming convention</a></li>
+	<li><a href="#Naming convention for new files">Naming convention for new files</a></li>
+	<li><a href="#BG1 resource naming reference table">BG1 resource naming reference table</a></li>
+</ul>
+
+<a id="Areas naming convention" name="Areas naming convention"></a>
+<h3>Areas naming convention</h3>
+<p>All area resources (ARE, WED, TIS, MOS, BMP, BCS) have been renamed to use new area codes because there is considerable overlap in area filenames between Baldur's Gate: Enahanced Edition and Baldur's Gate II: Enhanced Edition. It is a straightforward system. The numbers are untouched, but the prefix "AR" is changed to "BG". This maintains the consistency and validity of area references from a number of public documents, including walkthroughs, travel maps, and the like. Therefore, these documents can be referred to for an area number guide to EET, except that the prefix change from "AR" to "BG" must be considered when, for example, using the CLUAConsole, or when developing modifications that affects Baldur's Gate: Enhanced Edition areas. Siege of Dragonspear area resources don't conflict with BG2:EE due to vanilla "BD" prefix, so the original names are kept.</p>
+
+<a id="Resource naming convention" name="Resource naming convention"></a>
+<h3>Resource naming convention</h3>
+<p>For other resources, EET keeps the original BG:EE resource name as strictly as possible. If it doesn't conflict with BG2:EE content than the name of imported file is not changed. For conflicting resources BG1 ones have suffix with the underscore (_) added to make them unique. Since the engine only supports 8.3 filenames, there are 2 resources that couldn't use this convention and adopted BGT one instead (skelwa02.cre => bgskel02.cre, skelwa03.cre => bgskel03.cre).</p>
+
+<p>Conflicting spells from BG:EE that don't use SPELL.IDS symbolic names uses a little different naming convention - "BG" letters replaces first 2 letters of the spell (so SPWI becomes BGWI etc). The reason behind this is limitation of the engine which expects maximum 7 character spell names for some spell effects. This convention, adopted from BGT, makes the renamed spells still easy to identify.</p>
+
+<a id="Naming convention for new files" name="Naming convention for new files"></a>
+<h3>Naming convention for new files</h3>
+<p>New files added by EET have "K#" prefix to distinguish them from vanilla BG:EE and BG2:EE content.</p>
+
+<a id="BG1 resource naming reference table" name="BG1 resource naming reference table"></a>
+<h3>BG1 resource naming reference table</h3>
+<p>For more convenient viewing, the BG1 resource naming reference table has been moved to <a href="BG1 reference table.html">external file</a>. Even though it's in HTML format it's basically a spreadsheet file, so you can also open it for example in Microsoft Excel (which has been used to create it). The file is separated into several worksheets named after extensions of files listed there. Columns show naming conventions used in BG:EE, EET and BGT. Tutu reference has not been included because that platform renames pretty much every single resource in game which would make the table far less readable.</p>
+
+</div>
+<!-- ================== M o d s ================== --><a id="mods" name="mods"></a>
+<h2>Creating mods compatible with EET</h2>
+<div class="section">
+
+<ul>
+	<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
+	<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
+	<li><a href="#Implementing area music">Implementing area music</a></li>
+	<li><a href="#Working with files that are merged during installation">Working with files that are merged during installation</a></li>
+	<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
+	<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
+	<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
+	<li><a href="#Detecting mods installed on BG:EE">Detecting mods installed on BG:EE</a></li>
+	<li><a href="#Adding support for mods installable on BG:EE previous to installing EET on BG2:EE">Adding support for mods installable on BG:EE previous to installing EET on BG2:EE</a></li>
+	<li><a href="#Adding support for shattering items (iron crisis) system in BG1 portion of the game">Adding support for shattering items (iron crisis) system in BG1 portion of the game</a></li>
+	<li><a href="#Importing more items to BG2">Importing more items to BG2</a></li>
+	<li><a href="#Adding support for NPC transition system">Adding support for NPC transition system</a></li>
+	<li><a href="#Workaround for CalanderDay command in SoD/BG2 portion of the game">Workaround for CalanderDay command in SoD/BG2 portion of the game</a></li>
+	<li><a href="#Adding new animations">Adding new animations</a></li>
+	<li><a href="#Adding support for EET Worldmap">Adding support for EET Worldmap</a></li>
+</ul>
+
+<a id="Adopting EET naming conventions for BG1 resources" name="Adopting EET naming conventions for BG1 resources"></a>
+<h3>Adopting EET naming conventions for BG1 resources</h3>
+<p>If your mod is designed to work not only with EET but also other platforms you should consider using either:</p>
+<ul>
+<li><a href="../other/cpmvars">cpmvars variable libraries</a> - a set of variable declaration for BG:EE/BGT/Tutu/EET. INCLUDE each of these TPA files using GAME_IS WeiDU command, depending on each platform. These will cover all area names, area scripts, NPC dialogue and some other differences, allowing you to code everything with the same WeiDU code (by replacing resource name with variable). If some resource is not implemented here you can expand it to cover all your needs. It's a well known way of coding, with plenty of examples in released mods, so let's focus only on new additions related to EET.<br>
+- <strong>eet_var</strong> - can be used to add EET "_" suffix at the end of files. Other platforms will return nothing for it, so it can be used to properly reference EET BG1 resources that are not already handled by existing cpmvars. Take a look at <a href="#conventions">EET conventions</a> section if you have problem understanding why exactly this variable is handy.<br>
+- <strong>BGT_VAR</strong> - not exactly new addition (it already existed with the same purpose for BGT) but still useful for EET. It can be used as trigger filter to shutdown of D (DLG) and BAF (BCS) BG1 content blocks. The variable evaluates into following trigger: GlobalLT("ENDOFBG1","GLOBAL",2). <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Content filtering</a> is explained in later part of this document.<br>
+- <strong>bg2_chapter_1-10</strong> - variables that should replace BG2 chapter numbers in your code. More information in <a href="#Adding support for EET chapters/journal system">this section</a>.<br>
+- <strong>wmp_xCoord_SoA, wmp_yCoord_SoA, wmp_mapIcon_BG1, wmp_mapIcon_ToB, wmp_worldmap_ToB</strong> - a bunch of variables that can be used to properly patch EET Worldmap with the same code as in other platforms. They have been explained in <a href="#Adding support for EET Worldmap">this section</a>.</li>
+<li><a href="https://github.com/FredrikLindgren/bg1pal">BG1 Platform-Abstraction Layer (BG1PAL)</a> - a resource-name abstraction library for the different versions of Baldur's Gate. It converts canonical resource names into the appropriate form for the current platform via the function fl#bg1pal, which is available both as an action and a patch function. All resource names and resource types are supported. The input name is the one from BG1/BG:EE. For more extensive documentation, please refer to the readme.html file distributed with this resource.</li>
+</ul>
+
+<p>You can also patch files directly using <a href="../other/EET_modConverter">EET_modConverter</a> tool that has custom version of Platform Conversion Utility in it, specialized in converting BG:EE and BGT code and resources to adopt EET BG1 naming conventions. The tool will print all changes it makes into a log file, so you can review them if they are really needed. "Patching (...)" in log means that the input file has been patched and copied to output directory of the tool. "Analyzing (...)" means that the tool found an instance of the particular resource in tp2/tph/tpp/tpa files that didn't have extension provided. In such case the file is not patched but you should manually check if suggested change is warranted. Keep in mind that PCU part of this tool is designed for mods with BG1/BG:EE content only. You should not use it for mods with BG2 resources/code, unless you really know you're doing. Supported files that this tool can automatically convert: ARE, BAF, BCS, CRE, D, DLG, EFF, GAM, ITM, SPL, STO, TBL, TP2, TPH, TPP, TPA, TRA, VVC, WED, WMP. Other than renaming and patching files to use EET naming convention it will also handle converting ARE Song references to use EET song playlist.</p>
+
+<a id="Implementing BG1 random items" name="Implementing BG1 random items"></a>
+<h3>Implementing BG1 random items</h3>
+<p>Infinity Engine uses dummy items in order to assign random loot through the game. There are 2 ways to implement them:</p>
+<ol>
+	<li><strong>via <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndequip.htm">RNDEQUIP.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndmagic.htm">RNDMAGIC.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndscrol.htm">RNDSCROL.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndtreas.htm">RNDTREAS.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndweap.htm">RNDWEAP.2DA</a> system from vanilla engine</strong></li>
+	<li><strong>via <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndtres.htm">RNDTRES.2DA</a> system added in EE engine</strong>
+</ol>
+<p>In EET RNDTRES.2DA is used for random tables related to SoD content (no changes compared to vanilla SoD, new rows are simply appended to the file.). But for the vanilla BG1 content old system is still in use due to problem with item identification when another dummy item is referenced in a row. This means that BG1 random items have different names compared to vanilla BG:EE which needs to be adopted in mods that use them. EET uses exactly the same item names for BG1 items as BGT (the only difference is that EET also makes entries from RNDEQUIP.2DA unique), so if your mod already has compatibility code/resources for that platform it will also work with EET. To make the resource patching easier we've prepared a new WeiDU function that can be used to automatically patch any resource to use correct BG1 dummy item names, regardless of platform, available within <a href="../other">EET_functions.tph</a>. BG1_RND_ITM patch function supports following resources: ARE, CRE, EFF, ITM, SPL, STO. Example usage:</p>
+<div class="code">
+<pre>
+COPY ~somefile~ ~override~
+  LPF BG1_RND_ITM INT_VAR src = 1 END //src variable sets source platform for dummy item names used in that file: 0 (default, no need to assign) - BG1 / BG:EE / Tutu; 1 - BGT; 2 - EET
+</pre>
+</div>
+
+<a id="Implementing area music" name="Implementing area music"></a>
+<h3>Implementing BG1 random items</h3>
+
+<p>EET uses all music files present in BG:EE, SoD and BG2:EE. The mod is meant to be installed on clean installation of BG2:EE, which allows it to set a common standard for song numbers for mods installed later. All BG2:EE song references are kept as they were, BG:EE and SoD songs that were missing in BG2:EE become appended to songlist.2da during EET installation - use it as a reference. It's also easy to patch areas from BG:EE and BGT mods to use EET common standard for song numbers thanks to <a href="../other/EET_modConverter">EET_modConverter</a> tool, as has been explained <a href="#Adopting EET naming conventions for BG1 resources">here</a>.
+
+<a id="Adding support for EET chapters/journal system" name="Adding support for EET chapters/journal system"></a>
+<h3>Adding support for EET chapters/journal system</h3>
+<p>EET uses united journal system that keeps track of all 22 chapters of your journey. Here is a reference information when each chapter starts and ends:</p>
+<ol>
+	<li><strong>Baldur's Gate</strong> - chapters from 0 to 7 (<em><strong>no changes compared to vanilla BG:EE</strong></em>).</li>
+	<ul>
+		<li>Chapter 0: Candlekeep prologue -------> Leaving Candlekeep</li>
+		<li>Chapter 1: Leaving Candlekeep -------> Entering Nashkel</li>
+		<li>Chapter 2: Entering Nashkel  -------> Nashkel Mine Finish</li>
+		<li>Chapter 3: Picking up documents in Nashkel Mines, Mulahey dead -------> Looting Tazok's chest in Bandit Camp</li>
+		<li>Chapter 4: Looting Tazok's chest in Bandit Camp -------> Killing Daevorn in Cloakwood Mine</li>
+		<li>Chapter 5: Killing Daevorn in Cloakwood Mine -------> Receiving Book from Duke Eltan</li>
+		<li>Chapter 6: Receiving Book from Duke Eltan -------> Coming out of Candlekeep Catacombs</li>
+		<li>Chapter 7 Part 1: Coming out of Candlekeep Catacombs -------> Transition to SoD (Korlasz's Tomb)</li>
+	</ul>
+	<li><strong>Siege of Dragonspear expansion</strong> - chapters from 7 to 13 (<em><strong>no changes compared to vanilla BG:EE+SoD</strong></em>).</li>
+	<ul>
+		<li>Chapter 7 Part 2: Korlasz's Tomb -------> Leaving Baldur's Gate</li>
+		<li>Chapter 8: Leaving Baldur's Gate -------> Reaching Boareskyr Bridge</li>
+		<li>Chapter 9: Reaching Boareskyr Bridge -------> Reaching Coalition Camp</li>
+		<li>Chapter 10: Reaching Coalition Camp -------> Reaching Dragonspear Castle</li>
+		<li>Chapter 11: Reaching Dragonspear Castle -------> Entering the Portal to Avernus</li>
+		<li>Chapter 12: Entering the Portal -------> Arrested for murdering Skie</li>
+		<li>Chapter 13 Part 1: Escaping from Baldur's Gate + Being captured by Irenicus -------> Transition to SoA (Irenicus Dungeon)</li>
+	</ul>
+	<li><strong>Baldur's Gate II: Shadows of Amn</strong> - chapters from 13 to 19 (<em><strong>instead of 1-7</strong></em>).</li>
+	<ul>
+		<li>Chapter 13 Part 2: Escaping from Irenicus Dungeon -------> Having talked to Gaelan</li>
+		<li>Chapter 14: Having talked to Gaelan -------> Deciding for either Bodhi or Gaelan offer</li>
+		<li>Chapter 15: Decision on path to Spellhold made ---(running jobs for your ally)----> Starting the Journey to Spellhold</li>
+		<li>Chapter 16: Journey to Spellhold -------> Entering Underdark</li>
+		<li>Chapter 17: Entering Underdark -------> Back to Surface, Elhan's Camp</li>
+		<li>Chapter 18: Back on Surface after Underdark -------> Entering Suldanessalar</li>
+		<li>Chapter 19: Entering Suldanessalar -------> Transition to ToB (Sacred Grove)</li>
+	</ul>
+	<li><strong>Throne of Bhaal expansion</strong> - chapters from 20 to 22 (<em><strong>instead of 8-10</strong></em>).</li>
+	<ul>
+		<li>Chapter 20: Sacred Grove (Illasera encounter) -------> Reaching Amkethran</li>
+		<li>Chapter 21: Reaching Amkethran -------> Entering ToB Final</li>
+		<li>Chapter 22: Final Fight at Throne of Bhaal</li>
+	</ul>
+</ol>
+
+<p>As you can see from above reference mods that uses Chapter variable should adopt EET continuous chapters/journal system when it comes to Shadows of Amn and Throne of Bhaal chapters (no changes in BG:EE and SoD content). Sounds like a nightmare compatibility wise, right? Well... not really. All changes to your code can be implemented automatically without any effort on your part. There are 2 ways do it:</p>
+
+<ul>
+<li><a href="../other/EET_modConverter">EET_modConverter</a> - this tool can be used to automatically convert any BG2 and ToB code to use cpmvars like system for chapters. It will patch all BAF, D, TP2, TPH, TPP, TPA files to use variables instead of numbers whenever SetGlobal, Global, GlobalGT, GlobalLT commands related to chapter number are used in your code. Variable declaration depending on platform will be also automatically added to ALWAYS section of tp2 file (you can remove this additional code if you already use <a href="../other/cpmvars">cpmvars</a> variable libraries).</li>
+<li><a href="../other">EET_functions.tph</a> - this file contains several functions related to EET compatibility patching. Among other things it contains an action function called EET_JOURNAL which can be used in your code to patch files designed for other platforms on the fly during mod installation. Here is example how it's meant to be used:</li>
+<div class="code">
+<pre>
+ACTION_DEFINE_ARRAY arrayName BEGIN ~AERIE.bcs~ ~modDir/AERIE.d~ ~%var%/ALARM25.baf~ END
+LAF ~EET_CHAPTERS~
+  INT_VAR
+    patch_mode = 1 //0 - replace with values; 1 - replace with variables (default = 0)
+  STR_VAR
+    file_array = ~arrayName~ //array with files to patch (supports: d, dlg, baf, bcs, and any text file with code)
+END
+</pre>
+</div>
+</ul>
+
+<a id="Working with files that are merged during installation" name="Working with files that are merged during installation"></a>
+<h3>Working with files that are merged during installation</h3>
+
+<p>EET is installed in two steps - main components (<em>setup-EET_core</em> installed automatically by <em>setup-EET</em>) on a clean BG2:EE, and additional <em>setup-EET_end</em> component at the end of mod installation process (after any other mods). This second step is used to automatically:</p>
+<ul>
+<li><strong>merge NPC JOIN dialogue files</strong> and update all references to them</li>
+<li><strong>update campaign related 2da files</strong> that may have missing entries</li>
+<li><strong>export mod added strings</strong> that can be used to update mod added content in new installation</li>
+<li><strong>generate code for SoA item importation</strong> based on 2da files</li>
+</ul>
+
+<p>Why exactly NPC JOIN dialogue files are being merged? Short answer - interjections. Let's use an example from vanilla game.</p>
+<p><em>Party travels through Athkatla slums where they can meet a shady looking guy that initiates a dialogue: "Yes, you! See this mighty fine sphere here? You can have it for your very own for a mere 500 gold pieces! What do you say?". Now if you have Minsc in the party following interjection is called "Boo says such a sphere will not fit into my pocket. If I can't carry it with me, it's just not a good buy."</em></p>
+<p>The above dialogue piece called 'interjection' is triggered by WAYLANE.DLG and filtered with triggers, in this case See("Minsc") and InParty("Minsc"). Now let's say you didn't meet this guy during your Shadows of Amn travels. What would happen after going back from Throne of Bhaal to Athkatla with Minsc? The dialogue would be interrupted in the place where Minsc is expected to say something (dialogue shutdown/infinite loop and other problems). In order to make JOIN dialogue files valid through whole journey continuous characters that uses more than 1 JOIN dialogue file have them merged with one another.</p>
+
+<p>JOIN dialogue file merging is done automatically, based on PDIALOG variants 2DA entries, at the end of installation process (after all mods are already installed), so <strong>modders don't need to change anything when it comes to JOIN dialogue coding</strong>. You should patch each dialogue file exactly the same way as you do in vanilla games. State numbers and file names are not altered at that point of installation (just keep in mind that some BG1 files have been renamed due to conflicts with BG2). You can use <a href="NPC reference table.html">this reference file</a> that lists different files that are assigned through out the game (green colour cells shows BG1 renamed files - if you're using <a href="../other/cpmvars">cpmvars</a> variable libraries thn you don't even need to be aware about it).</p>
+
+<a id="Detecting EET within WeiDU code" name="Detecting EET within WeiDU code"></a>
+<h3>Detecting EET within WeiDU code</h3>
+
+<ul>
+<li>There is a new WeiDU parameter used with GAME_IS command for EET detection: <strong>GAME_IS ~eet~</strong></li>
+<li>EET is also detectable with: <strong>ENGINE_IS ~bg2ee~</strong> and <strong>GAME_INCLUDES</strong> (which accepts parameters from every game included in EET)</li>
+</ul>
+
+<p>Once again <a href="../other/EET_modConverter">EET_modConverter</a> may be handy if you need to replace many instances of GAME_IS command in your code - the tool has an option to do it automatically.</p>
+
+<a id="Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB" name="Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB"></a>
+<h3>Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</h3>
+<p>EET uses following GLOBAL in-game variable filters for vanilla campaigns to shut off content that no longer should show up after certain point of the story.</p>
+<ul>
+<li><strong>CHAPTER</strong> - that's an obvious way to handle things. Unlike BGT, EET uses continuous journal/chapter system, so the game consists of 22 chapters in total. You can use this variable reliably for this purpose.</li>
+<li><strong>ENDOFBG1</strong> - variable will return 1 after the death of Sarevok. It is set to 2 after Siege of Dragonspear -> Shadows of Amn transition. In other words you can use it to filter content designed only for BG:EE part of the story (or only for BG2 if you assigned the trigger to check if the result equals 2).</li>
+<li><strong>InToB</strong> - vanilla variable that is set to 1 in the first area of Throne of Bhaal expansion (AR4000.BCS)</li>
+</ul>
+<p>All these variables are correctly set even if you start the game in SoD, BG2 or ToB, so they should be always reliable for content filtering.</p>
+
+<p>There may be situations where you want to filter content to show up (or not) when party is returning to old areas. For this purpose EET added new "BG1AREA" entry to AREATYPE.IDS. You can check if the current area is part of BG1 campaign via following triggers:</p>
+<ul>
+<li><strong>AreaType(BG1AREA)</strong> - returns true only if the active CRE is in one of the BG1/SoD areas (areas added by BG1 mods should be patched to use it too).</li>
+<li><strong>!AreaType(BG1AREA)</strong> - returns true only if the active CRE is NOT in one of the BG1/SoD areas (which means BG2/ToB).</li>
+</ul>
+<p>If you need more precision with detecting areas you can also use additional AreaCheck(S:ResRef*) triggers.</p>
+
+<a id="Adding AreaType to BG1 ARE files" name="Adding AreaType to BG1 ARE files"></a>
+<h3>Adding AreaType to BG1 ARE files</h3>
+<p>You can patch area files with WeiDU code during your mod installation. First retrieve the BIT number associated with BG1AREA from AREATYPE.IDS using this action command:</p>
+<div class="code">
+<pre>
+ADD_AREA_TYPE BG1AREA
+</pre>
+</div>
+<p>And than patch area files with this code:</p>
+<div class="code">
+<pre>
+WRITE_SHORT 0x48 THIS | (1 << BG1AREA)
+</pre>
+</div>
+
+<a id="Detecting mods installed on BG:EE" name="Detecting mods installed on BG:EE"></a>
+<h3>Detecting mods installed on BG:EE</h3>
+
+<p>As has been mentioned in the readme F.A.Q section EET has limited support for BG:EE mods installed on BG:EE previous to installing EET on BG2:EE. Mods installed this way are treated exactly the same as vanilla resources and end up as part of the BG2:EE EET installation. So, how can other mods detect if a particular mod has been installed on BG:EE? There are 2 ways to do it:</p>
+
+<ul>
+<li><strong>dummy files</strong> are often used by mods to make them detectable by other mods. They are copied to EET override directory during installation, so can be normally detected via FILE_EXISTS_IN_GAME WeiDU command.</li>
+<li><strong>WeiDU.log file</strong> from BG:EE is copied to main directory as "WeiDU-BGEE.log", which allows modders to use workarounds for existing WeiDU functions. Here are few examples using BG1 NPC Project component 0, any language:</li>
+<div class="code">
+<pre>
+//works the same as REQUIRE_COMPONENT
+REQUIRE_PREDICATE (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) ~~
+
+//works the same as FORBID_COMPONENT
+REQUIRE_PREDICATE (!FILE_EXISTS ~WeiDU-BGEE.log~) OR ((FILE_EXISTS ~WeiDU-BGEE.log~) AND (!FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
+
+//works the same as MOD_IS_INSTALLED
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
+    //do something if component has been detected
+END ELSE BEGIN
+    //do something if component has NOT been detected
+END
+</pre>
+</div>
+<p>Of course if your mod is meant to also detect the mod installed natively than you should nest above mentioned code with vanilla WeiDU commands used for mod detection.</p>
+<p>Overall this workaround doesn't sound like a very useful thing because BG:EE mods usually don't affect BG2:EE content, so the need for additional check for them in BG2:EE mods is not common. The ones affected are usually installed on BG:EE too, so any WeiDU mod detection command works correctly at that time. And the more complicated mods (such as BG1 NPC Project) already uses dummy files, so they are detectable without any hassle anyway.</p>
+</ul>
+
+<a id="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE" name="Adding support for mods installable on BG:EE previous to installing EET on BG2:EE"></a>
+<h3>Adding support for mods installable on BG:EE previous to installing EET on BG2:EE</h3>
+<p>If you're not planning to convert your BG:EE mod to work natively with EET, you may be interested in a solution that treats mods installed on BG:EE (previous to installing EET on BG2:EE) as vanilla content, which means all new BG:EE resources are converted on the fly with vanilla files. For more information how to achieve this please take a look at <a href="../other/BGEE_to_EET_mod_checker">BGEE_to_EET_mod_checker</a> tool readme file.</p>
+
+<a id="Adding support for shattering items (iron crisis) system in BG1 portion of the game" name="Adding support for shattering items (iron crisis) system in BG1 portion of the game"></a>
+<h3>Adding support for shattering items (iron crisis) system in BG1 portion of the game</h3>
+<p>EET uses the same system as vanilla BG:EE+SoD installation - via opcode 232. There is a pre-made action function available within <a href="../other">EET_functions.tph</a> in case you would like to add more items into iron crisis pool. It first removes BG:EE/Tutu/BGT/EET implementation (if already present) and automatically patch files to add BG:EE/EET item shattering system. The function can be used not only for weapons but also armors, shield and helmets listed in the array.</p>
+
+<div class="code">
+<pre>
+ACTION_DEFINE_ARRAY arrayName BEGIN ~modDir/weapon.itm~ ~modDir/armor.itm~ ~%var%/shield.itm~ ~override/helmet.itm~ END
+LAF ~EET_IRON_CRISIS~
+  STR_VAR
+    shattering_array = EVAL ~arrayName~ //array with files to patch (supports: weapons, armors, shields, helmets)
+END
+</pre>
+</div>
+
+<a id="Importing more items to BG2" name="Importing more items to BG2"></a>
+<h3>Importing more items to BG2</h3>
+<p>In vanilla game when you import your character only Player1 inventory is checked and bags of holding are lost. In order to expand item importation for whole party and junk located in bags of holding EET introduced a new way to import items. Modders should use exactly the same code in AR0602.BCS as they do in vanilla game. The only change needed is appending the item that you would like to be imported into K#IMPORT.2DA:
+<div class="code">
+<pre>
+APPEND ~K#IMPORT.2DA~ ~1 CHAN06~ UNLESS ~CHAN06~
+</pre>
+</div>
+<p>This way the item will be in Player1 inventory at the beginning of Irenicus Dungeon even if it belonged to other party member during transition or was stored in a bag of holding. Your importation code should be expanded on top of AR0602.BCS like in vanilla game (before block that takes all items from your inventory). That's all you really need to know to create mods compatible with EET, but here is a full explanation how the system works in case you'd like to take advantage of other features of this system:
+<ol>
+<li>During setup-EET_end component installation K#IMPORT.2DA, IMPORT01.2DA, IMPORT02.2DA, IMPORT03.2DA and BDSODIMP.BCS files are read and the importation code is automatically generated at the top of K#TELBGT.BCS script using filenames found within those previously analysed files</li>
+<li>The importation code within K#TELBGT.BCS takes the referenced items from whole party + bags of holdings during SoD->BG2 transition and places them in a new bag of holding called K#IMPORT.ITM</li>
+<li>Now that the all relevant items are already within importation bag of holding the transition code moves all the remaining party items into invisible 'K#ImportContainer' container in BD6100.ARE (last area in SoD)</li>
+<li>At the end of script run CHARNAME receives importation bag of holding (K#IMPORT.ITM) with all imported items in it (so we are NOT limited to just 20 items)</li>
+<li>After CHARNAME is moved to Irenicus Dungeon there is a time for mods to do something with items imported to BG2 before they are taken away from player inventory</li>
+<li>Instead of completely destroying inventory and gold EET moves remaining items to invisible 'K#ImportContainer' container within AR0602.ARE and the gold is stored in K#ImportGold global variable. The same container also receives all items that we previously moved to container with the same name in BD6100.ARE</li>
+</ol>
+
+<a id="Adding support for NPC transition system" name="Adding support for NPC transition system"></a>
+<h3>Adding support for NPC transition system</h3>
+<p>As mentioned in readme file EET uses new system for NPC transition from Siege of Dragonspear expansion to Shadows of Amn and from Shadows of Amn to Throne of Bhaal expansion. In order to make modder's life easier we've prepared a function designed to automatically add both types of transition to any kind of NPC mod. All you need to do to make your NPC fully compatible with EET is disabling your normal patching code for AR4000.BCS, AR4500.BCS, FATESP.DLG and using EET_TRANSITION function instead.</p>
+<p>If your BG2 NPC is meant to have BG1->BG2 transition than you should add additional <strong>!BeenInParty("%DV%")</strong> trigger (where %DV% is death variable of your CRE) in the code that spawns new version of CRE file into BG2 area. This way such block won't trigger if the NPC is valid for migration from BG1 to BG2. For example:</p>
+
+<div class="code">
+<pre>
+//this code will spawn new version of CRE if the transition didn't occur and CRE was not left dead in BG1
+IF
+  Global("MinscImport","MYAREA",0)
+  !BeenInParty("Minsc") //NPC was not in party at any point during BG1/SoD (otherwise he would be valid for trnsition)
+  GlobalLT("chapter","GLOBAL",20) //don't spawn him during ToB
+  !Dead("Minsc") //NPC has not been killed during BG1
+THEN
+  RESPONSE #100
+    CreateCreature("Minsc7",[4029.2759],6)
+    ActionOverride("Minsc",MakeGlobalOverride()) //just to be sure that there is no more than 1 entry in GAM file
+    SetGlobal("MinscImport","MYAREA",1)
+    Continue()
+END
+</pre>
+</div>
+
+<p>In order to always be up to date with latest set of EET functions I suggest using WeiDU INCLUDE command and point it to EET directory in your code like this:</p>
+<div class="code">
+<pre>
+INCLUDE ~EET/other/EET_functions.tph~
+</pre>
+</div>
+
+<p>You can use this example code for reference how the <a href="../other">EET_functions.tph</a> EET_NPC_TRANSITION function is meant to be used:</p>
+
+<div class="code">
+<pre>
+LAF ~EET_NPC_TRANSITION~
+  INT_VAR
+    type = 1
+      //1 - BG1/SoD NPC without BG2 content (NPC is disabled from game after BG1, mentioned but not summonable in ToB)
+      //2 - BG2 NPC without BG1 content (transition to ToB if joined the party at least once during SoA)
+      //3 - NPC with BG1 and BG2 content (full transition to SoA/ToB)
+    default_ToB = 0 //controls if NPC should be spawnable in ToB when the game has been started in ToB (no by default - 0)
+    clean_ToB = 0 //cleans out existing EET code in FATESP.DLG, AR4000.BCS, AR4500.BCS for DV specified in clean_ToB_DV
+  STR_VAR
+    dv = "IMOEN2" //Death Variable (script name) of the NPC (must be the same in BG1/SoD/BG2/ToB)
+    override_BG1 = "IMOEN_" //name of the override NPC script in BG1
+    override_SoD = "BDIMOEN" //name of the override NPC script in SoD (use BG1 one if doesn't exist)
+    override_SoA = "IMOEN2" //name of the override NPC script in SoA
+    override_ToB = "IMOEN25" //name of the override NPC script in ToB (use SoA one if doesn't exist)
+    dialog_ToB = "IMOEN25A" //name of the dialogue file used after spawning NPC in ToB (use SoA POST dialogue or initial SoA dialogue file if doesn't exist)
+    traFile = "" //an optional TRA file that will be used for the TRA references defined in "string"
+    string = "@1" //FATESP summon text (example: "Bring me Quayle, the gnome cleric/illusionist.") or TRA string number
+    stringPosDV = "" //set the DV of NPC right below your response (used for sorting FATESP responses alphabetically)
+      //Aerie, Ajantis, Alora, Anomen, Baeloth, Branwen, Cernd, Coran, Corwin, Dorn, Dynaheir, Edwin, Eldoth, Faldorn, Garrick,
+      //Glint, HaerDalis, Hexxat, Imoen2, Jaheira, Jan, Kagain, Keldorn, Khalid, Kivan, Korgan, MKhiin, Mazzy, Minsc, Montaron,
+      //Nalia, Neera, Quayle, Rasaad, Safana, SharTeel, Skie, Tiax, Viconia, Valygar, Voghiln, Wilson, Xan, Xzar, Yeslick, Yoshimo
+      //variable not set (default) = NPC name appended at the end of summoning list
+    SummonedVar = "" //set it only if you want to use different var name than %dv%Summoned (useless in most cases)
+    SpawnPlaneVar = "" //set it only if you want use different var name than %dv%SpawnPlane (useless in most cases)
+    clean_ToB_DV = "" //if clean_ToB = 1 existing code for this DV will be removed from FATESP.DLG, AR4000.BCS, AR4500.BCS
+END
+</pre>
+</div>
+
+<div class="code">
+<pre>
+//example for BG1 NPC without BG2 content
+LAF ~EET_NPC_TRANSITION~
+  INT_VAR
+    type = 1
+  STR_VAR
+    dv = "IMOEN2"
+    override_BG1 = "IMOEN_"
+    override_SoD = "BDIMOEN"
+    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    string = "@1"
+END
+
+//example for BG2 NPC without BG1 content
+LAF ~EET_NPC_TRANSITION~
+  INT_VAR
+    type = 2
+  STR_VAR
+    dv = "IMOEN2"
+    override_SoA = "IMOEN2"
+    override_ToB = "IMOEN25"
+    dialog_ToB = "IMOEN25A"
+    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    string = "@1"
+END
+
+//example for NPC with BG1 and BG2 content (type = 3 can be also used to add transition into vanilla BG1 NPC without it)
+LAF ~EET_NPC_TRANSITION~
+  INT_VAR
+    type = 3
+  STR_VAR
+    dv = "IMOEN2"
+    override_BG1 = "IMOEN_"
+    override_SoD = "BDIMOEN"
+    override_SoA = "IMOEN2"
+    override_ToB = "IMOEN25"
+    dialog_ToB = "IMOEN25A"
+    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    string = "@1"
+END
+
+//example of implementing type of transition depending on detection if separate mod with type = 1 transition has been installed
+ACTION_IF MOD_IS_INSTALLED ~NPCName/NPCName.tp2~ ~0~ BEGIN
+  OUTER_SET type_var = 3 //this will change already applied type of transition = 1 to 3
+END ELSE BEGIN
+  OUTER_SET type_var = 2 //BG1 version of NPC is not installed, so just add BG2 only transition
+END
+LAF ~EET_NPC_TRANSITION~
+  INT_VAR
+    type = type_var
+  STR_VAR
+    dv = "IMOEN2"
+    are = "AR0602"
+    override_BG1 = "IMOEN_" //won't be used if type_var = 2
+    override_SoD = "BDIMOEN" //won't be used if type_var = 2
+    override_SoA = "IMOEN2"
+    override_ToB = "IMOEN25"
+    dialog_ToB = "IMOEN25A"
+    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    string = "@1"
+END
+</pre>
+</div>
+
+<p>You can see more examples in EET/lib/transition.tph file. It is preferable to use EET_TRANSITION than manually patching files. This way if anything regarding transition will be changed in future you won't need to change anything in your code. For those interested how exactly it works or those who need to include additional REPLACE_TEXTUALLY patching within outcome code, here is an explanation what the function does:</p>
+<ul>
+<li><strong>BG1 and/or SoD and/or BG2 local script</strong> are extend top with this code, which disables NPC that should no longer exist after certain part of the story:</li>
+
+<div class="code">
+<pre>
+IF
+  !InPartyAllowDead(Myself)
+  GlobalGT("CHAPTER","GLOBAL",%chapterNumber%)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+</pre>
+</div>
+<p>BG1 Override script has additional Global("K#PartySoD","LOCALS",0) trigger to disable the block if NPC has been in party during BG1->SoD transition (this local variable is automatically applied by BD0103.BCS script).</p>
+
+<p>SoA Override script is also expanded with this code that flags the NPC as character tied to your destiny in ToB making him/her summonable by Fate Spirit (true if the NPC was in your party during SoA):
+<div class="code">
+<pre>
+IF
+  Global("%dv%PartyBG2","GLOBAL",0)
+  InPartyAllowDead(Myself)
+THEN
+  RESPONSE #100
+    SetGlobal("%dv%PartyBG2","GLOBAL",1)
+    Continue()
+END
+</pre>
+</div>
+</ul>
+
+<ul>
+<li><strong>FATESP.DLG</strong> Fate Spirit summoning dialogue responses are expanded with following code:</li>
+<div class="code">
+<pre>
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
+~ GOTO 10
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",0)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",2)
+~ GOTO 7
+  IF ~  Global("%SummonedVar%","GLOBAL",0)
+Global("%dv%PartyBG2","GLOBAL",1)
+!Dead("%dv%")
+~ THEN REPLY %string% DO ~SetGlobal("%SummonedVar%","GLOBAL",1)
+~ GOTO 9
+END
+</pre>
+</div>
+</ul>
+
+<ul>
+<li><strong>AR4000.BCS</strong> has additional code that will check if the NPC is currently in party or was in party at some point during BG1 and BG2. Setting %SummonedVar% to 2 removes NPC from Fate Spirit summon list. default_ToB set to 1 can be used to make NPC summonable by default in new game started in ToB expansion (in such case NEWGAME_TOB variable is set to 1) - this will REPLACE_TEXTUALLY first block in AR4000.BCS setting %dv%PartyBG2 variable to 1, which is not shown in below code.</li>
+
+<div class="code">
+<pre>
+IF
+  InPartyAllowDead("%dv%")
+  Global("%SummonedVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
+    SetGlobal("%SummonedVar%","GLOBAL",2)
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",0)
+  !BeenInParty("%dv%")
+THEN
+  RESPONSE #100
+    SetGlobal("%SummonedVar%","GLOBAL",2)
+    Continue()
+END
+</pre>
+</div>
+</ul>
+
+<ul>
+<li><strong>AR4500.BCS</strong> is extended bottom with the code that migrates NPC from BG2 area to Pocket Plane:</li>
+
+<div class="code">
+<pre>
+IF
+  InPartyAllowDead("%dv%")
+  Global("%SummonedVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
+    SetGlobal("%SummonedVar%","GLOBAL",2)
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",0)
+  Global("%SummonedVar%","GLOBAL",1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CreateVisualEffect("SPPORTAL",[1999.1218])
+    Wait(2)
+    ActionOverride("%dv%",SetDialog("%dialog_ToB%"))
+    ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))
+    MoveGlobal("AR4500","%dv%",[1999.1218])
+    ActionOverride("%dv%",Face(S))
+    ActionOverride("%dv%",SetGlobal("BD_JOINXP","LOCALS",0))
+    ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("%dv%",SetNumTimesTalkedTo(0))
+    SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
+END
+</pre>
+</div>
+</ul>
+
+<p>Depending on which variables you set in EET_TRANSITION code, different combination of above patching will take place.</p>
+
+<a id="Workaround for CalanderDay command in SoD/BG2 portion of the game" name="Workaround for CalanderDay command in SoD/BG2 portion of the game"></a>
+<h3>Workaround for CalanderDay command in SoD/BG2 portion of the game</h3>
+<p>CalanderDay(I:Day*) / CalanderDayGT(I:Day*) / CalanderDayLT(I:Day*) triggers can be used to detect if the current day is the day specified / after the day specified / before the day specified. What about situations when you need to use it in Siege of Dragonspear or Baldur's Gate 2 portion of the game? We don't know how many days it will take CHARNAME party to finish first 7 chapters, so the vanilla command becomes less useful. That is why EET introduced days counter that can be used as a workaround here. For easier explanation let's take a look at how EET resolved this problem for Town Crier in Athkatla, who should tell something new each 3 passing days.
+
+<p>Town Crier local script (DS3483.BCS) has been expanded with the below code that assigns K#TOWNC01_day variable to use K#DaysPassed value (in EET this variable counts passed in-game days). From now after each day the value of K#TOWNC01_cnt will be increased by 1. You don't need to be near NPC to make it work - the K#TOWNC01_cnt variable will be updated correctly as soon as you return to area with this NPC.</p>
+<div class="code">
+<pre>
+IF
+  Global("K#DoOnce","LOCALS",0)
+  Global("K#TOWNC01_cnt","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#DoOnce","LOCALS",1)
+    SetGlobal("K#TOWNC01_cnt","GLOBAL",1) //modify this value if you want to change starting day
+    SetGlobal("K#TOWNC01_day","GLOBAL",0) //just to be sure
+    AddGlobals("K#TOWNC01_day","K#DaysPassed")
+    Continue()
+END
+
+IF
+  Global("K#DoOnce","LOCALS",1)
+  GlobalsGT("K#DaysPassed","K#TOWNC01_day")
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#TOWNC01_cnt","GLOBAL",1)
+    IncrementGlobal("K#TOWNC01_day","GLOBAL",1)
+    Continue()
+END
+</pre>
+</div>
+
+<p>Now that we have a working day tracking system we should modify TOWNC01.DLG to replace CalanderDayLT trigger with variable check instead, like this:</p>
+<div class="code">
+<pre>
+COPY_EXISTING ~TOWNC01.DLG~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~CalanderDayLT(~ ~GlobalLT("K#TOWNC01_cnt","GLOBAL",~
+  END
+BUT_ONLY
+</pre>
+</div>
+<p>There you go - a working workaround for CalanderDayLT. You can adjust the code to easily create workarounds for CalanderDay and CalanderDayGT too. In this example K#TOWNC01_cnt is a GLOBAL variable due to multiple instances of TOWNC01.CRE in different areas and we want them all to use the same days passed counter. You can change it to use LOCALS variable instead if the counter should be tracked only for 1 instance of NPC.</p>
+
+<a id="Adding new animations" name="Adding new animations"></a>
+<h3>Adding new animations</h3>
+<p>Unlike classic games Infinity Engine distributed with Enhanced Edition games doesn't have hardcoded limit for animations, so assigning new animations to existing vanilla slots is considered a bad practice now. There are 2 ways to implement new animations to the game:</p>
+<ul>
+<li><strong>INI files</strong> - engine feature introduced in IWD:EE and BG2:EE (patch 1.3). INI files, named afer the offset used for particular animation, contains code that was previously hardcoded within EXE file. Unfortunately they are not documented on <a href="http://gemrb.org/iesdp/main.htm">IESDP</a> yet, but many options available are pretty self-explanatory. Please refer to INI files available in game for example usage. Some information is also available in <a href="http://www.shsforums.net/topic/58643-adding-an-animation-to-bg2ee/">this topic</a>. Probably the most interesting thing about this new format is optional "new_palette=" entry under [general] section that allows us to assign external palette BMP files that will be used with animation, which means there is no point in distributing animation with mod if it's just a re-palleted version of existing one - INI file with new offset and palette reference will do the job.</li>
+<li><strong>EXTANIM.2DA, EXTSPEED.2DA</strong> - alternative to above implementation and another engine feature introduced by Beamdog. Hopefully <a href="http://gemrb.org/iesdp/main.htm">IESDP</a> will have full documentation for these files at some point. For now refer to what has been said by Scott Brooks in <a href="https://forums.beamdog.com/discussion/comment/116705#Comment_116705">this topic</a>. Example code can be found in viader's <a href="https://forums.beamdog.com/discussion/19501/resource-pack-extended-animations/p1">Extended Animations</a> mod.</li>
+</ul>
+<p>EET promotes common standard introduced in IWD:EE and viader's Extended Animations mod. If you are creating mod compatible with EET you should follow what has been said by viader regarding animation slot offsets, in above mentioned topic:</p>
+<div class="code">
+<pre>
+0xE240 - 0xE2FF - reserved by Extended Animations
+0xE330 - 0xE3FF - free
+0xE440 - 0xE4FF - free
+0xE530 - 0xE5FF - free
+0xE620 - 0xE6FF - free
+0xE730 - 0xE7FF - free
+0xE850 - 0xE8FF - free
+0xE920 - 0xE9FF - free
+0xEA30 - 0xEAFF - free
+0xEB30 - 0xEBFF - free
+0xEC30 - 0xECFF - free
+0xED30 - 0xEDFF - free
+0xEE20 - 0xEEFF - free
+</pre>
+</div>
+
+<a id="Adding support for EET Worldmap" name="Adding support for EET Worldmap"></a>
+<h3>Adding support for EET Worldmap</h3>
+<p>EET Worldmap consists of BG1, SoD, BG2, ToB maps merged together. It also covers lands from both IWD games (related to IWD-in-EET mod). When it comes to BG2 and ToB areas it allows for cross-platform modding without separate script blocks for patching EET Worldmap. For EET you can use the same coordinates as in vanilla maps but with added X and Y correction that represents where the old map starts compared to the upper-left corner of the EET map. Preferable way of doing so is using <a href="../other/cpmvars">cpmvars variable libraries</a> 
+
+Modders can use the same weidu code as for SoA/ToB worldmaps, by simply assigning additional X and Y coordinate correction depending on the platform. BG2 and ToB icons have the same numbers as in vanilla BG2:EE. BG1 icons also preserve the numbering, but you need to add a starting number correction, if you want to use the same code for worldmap patching between BG1 and EET. BG1 and ToB icons have been appended to MAPICONS.BAM file, so you also need to take it into account. EET uses the same icon numbers as BP-BGT Worldmap.
+
+<p>Here is an example code that is compatible with different platforms at the same time:</p>
+
+<div class="code">
+<pre>
+//either use cpmvars that have these variables set or add this variable declaration somewhere in your tp2 code
+ACTION_IF GAME_IS ~eet~ BEGIN
+  OUTER_SET wmp_xCoord_SoA = 0 //in relation to BG2/BG2:EE WORLDMAP.WMP add 0 px correction to X coordinate
+  OUTER_SET wmp_yCoord_SoA = 2283 //in relation to BG2/BG2:EE WORLDMAP.WMP add 2283 px correction to Y coordinate
+  OUTER_SET wmp_xCoord_ToB = 893 //in relation to BG2/BG2:EE WORLDM25.WMP add 893 px correction to X coordinate
+  OUTER_SET wmp_yCoord_ToB = 3011 //in relation to BG2/BG2:EE WORLDM25.WMP add 1681 px correction to Y coordinate
+  OUTER_SET wmp_mapIcon_BG1 = 29 //in relation to Tutu YAC22MAP.BAM add 29 cycles correction to map icon
+  OUTER_SET wmp_mapIcon_ToB = 85 //in relation to BG2 25MAPIC.BAM add 85 cycles correction to map icon
+  OUTER_SPRINT wmp_worldmap_ToB "worldmap" //when editing ToB worldmap use WORLDMAP.WMP instead of WORLDM25.WMP
+END ELSE BEGIN
+  OUTER_SET wmp_xCoord_SoA = 0
+  OUTER_SET wmp_yCoord_SoA = 0
+  OUTER_SET wmp_xCoord_ToB = 0
+  OUTER_SET wmp_yCoord_ToB = 0
+  OUTER_SET wmp_mapIcon_BG1 = 0
+  OUTER_SET wmp_mapIcon_ToB = 0
+  OUTER_SPRINT wmp_worldmap_ToB "worldm25"
+END
+
+//example code that adds new area to BG2/BG2:EE/EET WORLDMAP.WMP
+LAF sc#addWmpAre
+  INT_VAR
+    mapIcon = 5
+    xCoord = 240 + wmp_xCoord_SoA
+    yCoord = 130 + wmp_yCoord_SoA
+  STR_VAR
+    areName = ~fileName~
+    strName = "nameOfTheArea"
+    strDesc = "nameOfTheArea"
+END
+
+//example code that adds new area to BG2/BG2:EE WORLDM25.WMP and to EET WORLDMAP.WMP
+LAF sc#addWmpAre
+  INT_VAR
+    mapIcon = 5 + wmp_mapIcon_ToB
+    xCoord = 240 + wmp_xCoord_ToB
+    yCoord = 130 + wmp_yCoord_ToB
+  STR_VAR
+    areName = ~fileName~
+    strName = "nameOfTheArea"
+    strDesc = "nameOfTheArea"
+    worldmap = EVAL "%wmp_worldmap_ToB%"
+END
+</pre>
+</div>
+
+<p>For reference here is a table listing all icons available in EET MAPICONS.BAM file and icon numbers used by EET and other platforms.</p>
+
+<table class="tg" style="width: 90%">
+ <colgroup>
+   <col style="width: 20%">
+   <col style="width: 10%">
+   <col style="width: 10%">
+   <col style="width: 10%">
+   <col style="width: 10%">
+ </colgroup>
+ <tr>
+  <th>Icon</th>
+  <th>EET / BP-BGT Worldmap</th>
+  <th>Tutu</th>
+  <th>BG2 / BG2:EE (SoA map)</th>
+  <th>BG2 / BG2:EE (ToB map)</th>
+ </tr>
+ <tr>
+  <td><img id="Image 0" src="images/image001.png"></td>
+  <td>5</td>
+  <td>-</td>
+  <td>5</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 1" src="images/image002.png"></td>
+  <td>6</td>
+  <td>-</td>
+  <td>6</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 2" src="images/image003.png"></td>
+  <td>7</td>
+  <td>-</td>
+  <td>7</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 3" src="images/image004.png"></td>
+  <td>8</td>
+  <td>-</td>
+  <td>8</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 4" src="images/image005.png"></td>
+  <td>9</td>
+  <td>-</td>
+  <td>9</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 5" src="images/image006.png"></td>
+  <td>10</td>
+  <td>-</td>
+  <td>10</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 6" src="images/image007.png"></td>
+  <td>11</td>
+  <td>-</td>
+  <td>11</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 7" src="images/image008.png"></td>
+  <td>12</td>
+  <td>-</td>
+  <td>12</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 8" src="images/image009.png"></td>
+  <td>13</td>
+  <td>-</td>
+  <td>13</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 9" src="images/image010.png"></td>
+  <td>14</td>
+  <td>-</td>
+  <td>14</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 10" src="images/image011.png"></td>
+  <td>15</td>
+  <td>-</td>
+  <td>15</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 11" src="images/image012.png"></td>
+  <td>16</td>
+  <td>-</td>
+  <td>16</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 12" src="images/image013.png"></td>
+  <td>17</td>
+  <td>-</td>
+  <td>17</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 13" src="images/image014.png"></td>
+  <td>18</td>
+  <td>-</td>
+  <td>18</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 14" src="images/image015.png"></td>
+  <td>19</td>
+  <td>-</td>
+  <td>19</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 15" src="images/image016.png"></td>
+  <td>20</td>
+  <td>-</td>
+  <td>20</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 16" src="images/image017.png"></td>
+  <td>21</td>
+  <td>-</td>
+  <td>21</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 17" src="images/image018.png"></td>
+  <td>22</td>
+  <td>-</td>
+  <td>22</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 18" src="images/image019.png"></td>
+  <td>23</td>
+  <td>-</td>
+  <td>23</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 19" src="images/image020.png"></td>
+  <td>24</td>
+  <td>-</td>
+  <td>24</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 20" src="images/image021.png"></td>
+  <td>25</td>
+  <td>-</td>
+  <td>25</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 21" src="images/image022.png"></td>
+  <td>26</td>
+  <td>-</td>
+  <td>26</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 22" src="images/image023.png"></td>
+  <td>28</td>
+  <td>-</td>
+  <td>28</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 23" src="images/image024.png"></td>
+  <td>29</td>
+  <td>0</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 24" src="images/image025.png"></td>
+  <td>30</td>
+  <td>1</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 25" src="images/image026.png"></td>
+  <td>31</td>
+  <td>2</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 26" src="images/image027.png"></td>
+  <td>32</td>
+  <td>3</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 27" src="images/image028.png"></td>
+  <td>33</td>
+  <td>4</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 28" src="images/image029.png"></td>
+  <td>34</td>
+  <td>5</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 29" src="images/image030.png"></td>
+  <td>35</td>
+  <td>6</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 30" src="images/image031.png"></td>
+  <td>36</td>
+  <td>7</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 31" src="images/image032.png"></td>
+  <td>37</td>
+  <td>8</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 32" src="images/image033.png"></td>
+  <td>38</td>
+  <td>9</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 33" src="images/image034.png"></td>
+  <td>39</td>
+  <td>10</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 34" src="images/image035.png"></td>
+  <td>40</td>
+  <td>11</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 35" src="images/image036.png"></td>
+  <td>41</td>
+  <td>12</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 36" src="images/image037.png"></td>
+  <td>42</td>
+  <td>13</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 37" src="images/image038.png"></td>
+  <td>43</td>
+  <td>14</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 38" src="images/image039.png"></td>
+  <td>44</td>
+  <td>15</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 39" src="images/image040.png"></td>
+  <td>45</td>
+  <td>16</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 40" src="images/image041.png"></td>
+  <td>46</td>
+  <td>17</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 41" src="images/image042.png"></td>
+  <td>47</td>
+  <td>18</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 42" src="images/image043.png"></td>
+  <td>48</td>
+  <td>19</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 43" src="images/image044.png"></td>
+  <td>49</td>
+  <td>20</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 44" src="images/image045.png"></td>
+  <td>50</td>
+  <td>21</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 45" src="images/image046.png"></td>
+  <td>51</td>
+  <td>22</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 46" src="images/image047.png"></td>
+  <td>52</td>
+  <td>23</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 47" src="images/image048.png"></td>
+  <td>53</td>
+  <td>24</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 48" src="images/image049.png"></td>
+  <td>54</td>
+  <td>25</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 49" src="images/image050.png"></td>
+  <td>56</td>
+  <td>26</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 50" src="images/image051.png"></td>
+  <td>57</td>
+  <td>27</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 51" src="images/image052.png"></td>
+  <td>58</td>
+  <td>28</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 52" src="images/image053.png"></td>
+  <td>59</td>
+  <td>29</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 53" src="images/image054.png"></td>
+  <td>61</td>
+  <td>30</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 54" src="images/image055.png"></td>
+  <td>62</td>
+  <td>31</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 55" src="images/image056.png"></td>
+  <td>63</td>
+  <td>32</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 56" src="images/image057.png"></td>
+  <td>64</td>
+  <td>33</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 57" src="images/image058.png"></td>
+  <td>65</td>
+  <td>34</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 58" src="images/image059.png"></td>
+  <td>66</td>
+  <td>35</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 59" src="images/image060.png"></td>
+  <td>67</td>
+  <td>36</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 60" src="images/image061.png"></td>
+  <td>68</td>
+  <td>37</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 61" src="images/image062.png"></td>
+  <td>69</td>
+  <td>38</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 62" src="images/image063.png"></td>
+  <td>70</td>
+  <td>39</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 63" src="images/image064.png"></td>
+  <td>71</td>
+  <td>40</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 64" src="images/image065.png"></td>
+  <td>72</td>
+  <td>41</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 65" src="images/image066.png"></td>
+  <td>73</td>
+  <td>42</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 66" src="images/image067.png"></td>
+  <td>74</td>
+  <td>43</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 67" src="images/image068.png"></td>
+  <td>75</td>
+  <td>44</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 68" src="images/image069.png"></td>
+  <td>76</td>
+  <td>45</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 69" src="images/image070.png"></td>
+  <td>77</td>
+  <td>46</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 70" src="images/image071.png"></td>
+  <td>78</td>
+  <td>47</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 71" src="images/image072.png"></td>
+  <td>79</td>
+  <td>48</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 72" src="images/image073.png"></td>
+  <td>80</td>
+  <td>49</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 73" src="images/image074.png"></td>
+  <td>82</td>
+  <td>50</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 74" src="images/image075.png"></td>
+  <td>83</td>
+  <td>51</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 75" src="images/image076.png"></td>
+  <td>84</td>
+  <td>52</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 76" src="images/image077.png"></td>
+  <td>90</td>
+  <td>-</td>
+  <td>-</td>
+  <td>5</td>
+ </tr>
+ <tr>
+  <td><img id="Image 77" src="images/image078.png"></td>
+  <td>91</td>
+  <td>-</td>
+  <td>-</td>
+  <td>6</td>
+ </tr>
+ <tr>
+  <td><img id="Image 78" src="images/image079.png"></td>
+  <td>92</td>
+  <td>-</td>
+  <td>-</td>
+  <td>7</td>
+ </tr>
+ <tr>
+  <td><img id="Image 79" src="images/image080.png"></td>
+  <td>93</td>
+  <td>-</td>
+  <td>-</td>
+  <td>8</td>
+ </tr>
+ <tr>
+  <td><img id="Image 80" src="images/image081.png"></td>
+  <td>94</td>
+  <td>-</td>
+  <td>-</td>
+  <td>9</td>
+ </tr>
+ <tr>
+  <td><img id="Image 81" src="images/image082.png"></td>
+  <td>95</td>
+  <td>-</td>
+  <td>-</td>
+  <td>10</td>
+ </tr>
+ <tr>
+  <td><img id="Image 82" src="images/image083.png"></td>
+  <td>96</td>
+  <td>-</td>
+  <td>-</td>
+  <td>11</td>
+ </tr>
+ <tr>
+  <td><img id="Image 83" src="images/image084.png"></td>
+  <td>97</td>
+  <td>-</td>
+  <td>-</td>
+  <td>12</td>
+ </tr>
+ <tr>
+  <td><img id="Image 84" src="images/image085.png"></td>
+  <td>98</td>
+  <td>-</td>
+  <td>-</td>
+  <td>13</td>
+ </tr>
+ <tr>
+  <td><img id="Image 85" src="images/image086.png"></td>
+  <td>99</td>
+  <td>-</td>
+  <td>-</td>
+  <td>14</td>
+ </tr>
+ <tr>
+  <td><img id="Image 86" src="images/image087.png"></td>
+  <td>100</td>
+  <td>-</td>
+  <td>-</td>
+  <td>15</td>
+ </tr>
+ <tr>
+  <td><img id="Image 87" src="images/image088.png"></td>
+  <td>101</td>
+  <td>-</td>
+  <td>-</td>
+  <td>16</td>
+ </tr>
+ <tr>
+  <td><img id="Image 88" src="images/image089.png"></td>
+  <td>102</td>
+  <td>-</td>
+  <td>-</td>
+  <td>17</td>
+ </tr>
+ <tr>
+  <td><img id="Image 89" src="images/image090.png"></td>
+  <td>106</td>
+  <td>-</td>
+  <td>29 (only in BG2:EE)</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 90" src="images/image091.png"></td>
+  <td>107</td>
+  <td>-</td>
+  <td>31 (only in BG2:EE)</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 91" src="images/image092.png"></td>
+  <td>108</td>
+  <td>-</td>
+  <td>32 (only in BG2:EE)</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 92" src="images/image093.png"></td>
+  <td>109</td>
+  <td>-</td>
+  <td>33 (only in BG2:EE)</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 93" src="images/image094.png"></td>
+  <td>110</td>
+  <td>-</td>
+  <td>34 (only in BG2:EE)</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 94" src="images/image095.png"></td>
+  <td>111</td>
+  <td>-</td>
+  <td>30 (only in BG2:EE)</td>
+  <td>18 (only in BG2:EE)</td>
+ </tr>
+ <tr>
+  <td><img id="Image 96" src="images/image096.png"></td>
+  <td>112</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 97" src="images/image097.png"></td>
+  <td>113</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 98" src="images/image098.png"></td>
+  <td>114</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 99" src="images/image099.png"></td>
+  <td>115</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 100" src="images/image100.png"></td>
+  <td>116</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 101" src="images/image101.png"></td>
+  <td>117</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 102" src="images/image102.png"></td>
+  <td>118</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 103" src="images/image103.png"></td>
+  <td>119</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 104" src="images/image104.png"></td>
+  <td>120</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 105" src="images/image105.png"></td>
+  <td>121</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 106" src="images/image106.png"></td>
+  <td>123</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 107" src="images/image107.png"></td>
+  <td>124</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 108" src="images/image108.png"></td>
+  <td>125</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 109" src="images/image109.png"></td>
+  <td>126</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 110" src="images/image110.png"></td>
+  <td>127</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 111" src="images/image111.png"></td>
+  <td>128</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 112" src="images/image112.png"></td>
+  <td>129</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 113" src="images/image113.png"></td>
+  <td>130</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 114" src="images/image114.png"></td>
+  <td>131</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 115" src="images/image115.png"></td>
+  <td>132</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 116" src="images/image116.png"></td>
+  <td>133</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 117" src="images/image117.png"></td>
+  <td>135</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 118" src="images/image118.png"></td>
+  <td>136</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 119" src="images/image119.png"></td>
+  <td>137</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 120" src="images/image120.png"></td>
+  <td>138</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 121" src="images/image121.png"></td>
+  <td>139</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 122" src="images/image122.png"></td>
+  <td>140</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 123" src="images/image123.png"></td>
+  <td>141</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 124" src="images/image124.png"></td>
+  <td>142</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 125" src="images/image125.png"></td>
+  <td>143</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 126" src="images/image126.png"></td>
+  <td>144</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 127" src="images/image127.png"></td>
+  <td>146</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 128" src="images/image128.png"></td>
+  <td>147</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 129" src="images/image129.png"></td>
+  <td>148</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 130" src="images/image130.png"></td>
+  <td>150</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 131" src="images/image131.png"></td>
+  <td>151</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 132" src="images/image132.png"></td>
+  <td>152</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 133" src="images/image133.png"></td>
+  <td>155</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 134" src="images/image134.png"></td>
+  <td>156</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 135" src="images/image135.png"></td>
+  <td>157</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 136" src="images/image136.png"></td>
+  <td>158</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 137" src="images/image137.png"></td>
+  <td>159</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 138" src="images/image138.png"></td>
+  <td>160</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 139" src="images/image139.png"></td>
+  <td>161</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 140" src="images/image140.png"></td>
+  <td>162</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 141" src="images/image141.png"></td>
+  <td>163</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 142" src="images/image142.png"></td>
+  <td>164</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 143" src="images/image143.png"></td>
+  <td>165</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 144" src="images/image144.png"></td>
+  <td>166</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 145" src="images/image145.png"></td>
+  <td>169</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 146" src="images/image146.png"></td>
+  <td>170</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 147" src="images/image147.png"></td>
+  <td>172</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><img id="Image 148" src="images/image148.png"></td>
+  <td>173</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+</table>
+
+<table class="tg" style="width: 90%">
+ <tr>
+  <td><strong>EET Worldmap reference for BG1/SoD/SoA/ToB areas</strong> (click to enlarge)<br>
+Please visit <a href="http://gibberlings3.net/forums/index.php?showtopic=27749">this forum topic</a> for a full Worldmap image as well as areas reference for compatible mods.</td>
+ </tr>
+ <tr>
+   <td><a href="images/EET_worldmap.png"><img width=100% height=100% id="EET_worldmap" src="images/EET_worldmap.png"></a></td>
+ </tr>
+</table>
+
+</div>
+
+</html>

@@ -69,7 +69,7 @@ ACTION_IF (valid_dir = 1) BEGIN
 		END ELSE PATCH_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
 			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
-			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes//*/
+			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes
 		END
 	END
 	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/movies/sodcin05.wbm~) BEGIN
@@ -93,7 +93,7 @@ OUTER_WHILE (valid_dir = 0) BEGIN
 		END ELSE PATCH_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
 			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
-			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes//*/
+			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes
 		END
 	END
 	ACTION_IF NOT (FILE_EXISTS ~%bgee_dir%/movies/sodcin05.wbm~) BEGIN

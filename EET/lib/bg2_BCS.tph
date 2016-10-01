@@ -2083,7 +2083,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR0602",1)
-    SetGlobal("DREAM","GLOBAL",7)
+    SetGlobal("DREAM","GLOBAL",-1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("NEWGAME_SOA","GLOBAL",1)
     //SetGlobal("K#temp","GLOBAL",364)
@@ -3003,15 +3003,25 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR4000",1)
-    SetGlobal("DREAM","GLOBAL",7)
+    SetGlobal("DREAM","GLOBAL",-1)
+    SetGlobal("XPGiven","GLOBAL",0)
+    SetGlobal("INTOB","GLOBAL",1)
+    SetGlobal("StartMP","GLOBAL",1)
+    SetGlobal("HadEllesimeDream1","GLOBAL",1)
+    SetGlobal("HadImoenDream1","GLOBAL",1)
+    SetGlobal("HadSlayerDream","GLOBAL",1)
+    SetGlobal("HadJonDream1","GLOBAL",1)
+    SetGlobal("HadJonDream2","GLOBAL",1)
+    SetGlobal("HadEllesimeDream2","GLOBAL",1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
-    SetGlobal("ENDOFBG2","GLOBAL",2)
     SetGlobal("SPRITE_IS_DEADYOSHIMO","GLOBAL",1)
     SetGlobal("NEWGAME_TOB","GLOBAL",1)
     StartMovie("INTRO")
     RemoveWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
     ReallyForceSpellRES("K#REMBHA",Player1)
     TakeItemListPartyNum("K#PLOT",99)
+    GiveItemCreate("BAG19",Player1,1,0,0)
+    GiveItemCreate("AMUL27",Player1,1,0,0)
     Continue()
 END
 
@@ -3021,15 +3031,26 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR4000",1)
+    SetGlobal("XPGiven","GLOBAL",0)
+    SetGlobal("INTOB","GLOBAL",1)
+    SetGlobal("StartMP","GLOBAL",1)
+    SetGlobal("HadEllesimeDream1","GLOBAL",1)
+    SetGlobal("HadImoenDream1","GLOBAL",1)
+    SetGlobal("HadSlayerDream","GLOBAL",1)
+    SetGlobal("HadJonDream1","GLOBAL",1)
+    SetGlobal("HadJonDream2","GLOBAL",1)
+    SetGlobal("HadEllesimeDream2","GLOBAL",1)
     SetGlobal("ENDOFBG1","GLOBAL",2)
-    SetGlobal("ENDOFBG2","GLOBAL",2)
     SetGlobal("SPRITE_IS_DEADYOSHIMO","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADSAREVOK","GLOBAL",0)
+    ChangeGender("Edwin",MALE)
     ReallyForceSpellRES("K#FAMREM",Player1)
     ReallyForceSpellRES("K#FAMREM",Player2)
     ReallyForceSpellRES("K#FAMREM",Player3)
     ReallyForceSpellRES("K#FAMREM",Player4)
     ReallyForceSpellRES("K#FAMREM",Player5)
     ReallyForceSpellRES("K#FAMREM",Player6)
+    GiveItemCreate("AMUL27",Player1,1,0,0)
     Continue()
 END
 >>>>>>>>
@@ -3460,11 +3481,16 @@ EXTEND_TOP ~OH8000.BCS~ ~.../OH8000-et.baf~
 /////existing in BG2:EE and BG:EE, also used in BG2:EE \\\\\
 /////                                                  \\\\\
 
+//scripts imported from BG:EE
+//BEAR.BCS
+//CBEAR.BCS
+//CCRAWLER.BCS
+
 //different but no changes needed?:
 //CTCK.BCS
 //GTCK.BCS
 //ICMYC01.BCS
-//SLIFIS01.BCS//no changed, only different StrRef
+//SLIFIS01.BCS//just different StrRef
 //TROLIC01.BCS
 //WTATTWAT.BCS
 
@@ -3497,110 +3523,13 @@ COPY_EXISTING ~ANKHEG.BCS~ ~override~
 	END
 BUT_ONLY
 
-//BEAR.BCS
-COPY_EXISTING ~BEAR.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~!See(\[PC\.0\.0\.CLERIC_RANGER\])~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!See([PC.0.0.CLERIC_RANGER])
-    GlobalLT("ENDOFBG1","GLOBAL",2)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-
-		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),200)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),200)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-<<<<<<<< .../BEAR-et.baf
-IF
-  Range([GOODCUTOFF],7)
-  Allegiance(Myself,NEUTRAL)
-  GlobalLT("ENDOFBG1","GLOBAL",2)
-THEN
-  RESPONSE #100
-    Enemy()
-END
-
-IF
-  AttackedBy([ANYONE],DEFAULT)
-  Allegiance(Myself,NEUTRAL)
-  GlobalLT("ENDOFBG1","GLOBAL",2)
-THEN
-  RESPONSE #100
-    Enemy()
-END
->>>>>>>>
-
-EXTEND_TOP ~BEAR.BCS~ ~.../BEAR-et.baf~
-
-//CBEAR.BCS
-COPY_EXISTING ~CBEAR.BCS~ ~override~
+//BLBEAR.BCS
+COPY_EXISTING ~BLBEAR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),75)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),75)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//CCRAWLER.BCS
-<<<<<<<< .../CCRAWLER-et.baf
-IF
-  AreaCheck("BG0226")
-  Dead("SewerOgre")  // SewerOgre
-  Allegiance(Myself,NEUTRAL)
-THEN
-  RESPONSE #100
-    ChangeEnemyAlly(Myself,ENEMY)
-END
-
-IF
-  AreaCheck("BG0226")
-  See("SewerOgre")  // SewerOgre
-  !Dead("SewerOgre")  // SewerOgre
-  Allegiance("SewerOgre",NEUTRAL)  // SewerOgre
-  Allegiance(Myself,ENEMY)
-THEN
-  RESPONSE #100
-    ChangeEnemyAlly(Myself,NEUTRAL)
-END
-
-IF
-  AreaCheck("BG0226")
-  See("SewerOgre")  // SewerOgre
-  !Dead("SewerOgre")  // SewerOgre
-  Allegiance("SewerOgre",ENEMY)  // SewerOgre
-  Allegiance(Myself,NEUTRAL)
-THEN
-  RESPONSE #100
-    ChangeEnemyAlly(Myself,ENEMY)
-END
->>>>>>>>
-
-EXTEND_TOP ~CCRAWLER.BCS~ ~.../CCRAWLER-et.baf~
-
-//CUTTUTOR.BCS
-COPY_EXISTING ~CUTTUTOR.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~EndCutSceneMode()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("Deactivation0015","TU0015",2)
-    EndCutSceneMode()~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
@@ -4208,7 +4137,7 @@ THEN
 END
 >>>>>>>>
 
-ACTION_FOR_EACH script IN ANKHEG BEAR CCRAWLER CDRYAD DIREWOLF ETTERCAP GBASILSK GIBBER GNOLLF HAMA HOBGOBF KOBOLDF LBASILSK OGRE PRIEST1 PRIEST2 PRIEST3 PRIEST4 PRIEST5 PSPIDER WARDOG WDARSGT WDASIGHT WILDDOG WTARSGT WTASIGHT WYVERN XVART BEGIN
+ACTION_FOR_EACH script IN ANKHEG CDRYAD DIREWOLF ETTERCAP GBASILSK GIBBER GNOLLF HAMA HOBGOBF KOBOLDF LBASILSK OGRE PRIEST1 PRIEST2 PRIEST3 PRIEST4 PRIEST5 PSPIDER WARDOG WDARSGT WDASIGHT WILDDOG WTARSGT WTASIGHT WYVERN XVART BEGIN
 	EXTEND_TOP ~%script%.BCS~ ~.../STATE_PANIC-et.baf~
 END
 

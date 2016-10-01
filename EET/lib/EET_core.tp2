@@ -1,6 +1,6 @@
 BACKUP ~EET/backup/core~
 AUTHOR ~K4thos (swit)~
-VERSION ~1.0 RC6~
+VERSION ~1.0 RC7~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -53,6 +53,12 @@ LANGUAGE ~Spanish~
 
 BEGIN ~Core EET (game importation)~
 REQUIRE_PREDICATE MOD_IS_INSTALLED ~EET/EET.tp2~ 0 @900009 //This component requires EET initialise component to be installed first
+
+ACTION_FOR_EACH var IN ~~ F BEGIN
+	ACTION_IF FILE_EXISTS ~EET/temp/dialog%var%.bak~ BEGIN
+		COPY_LARGE + ~EET/temp/dialog%var%.bak~ ~lang/%LANGUAGE_BG2%~
+	END
+END
 
 PRINT ~INTERACTIVE = %INTERACTIVE%~
 PRINT ~LANGUAGE = %LANGUAGE%~
@@ -137,6 +143,9 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
 		AT_EXIT ~rm -rf EET/temp~ EXACT
 	END
+	AT_NOW ~chmod +x EET/bin/osx/tileconv~ EXACT
+	AT_NOW ~chmod +x EET/bin/osx/tile2ee~ EXACT
+	AT_NOW ~chmod +x EET/bin/osx/ffmpeg~ EXACT
 END
 
 OUTER_SPRINT tileconv ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
@@ -962,7 +971,6 @@ SetPrivateProfileString('%row%','%option%','%option_1%')
 			//"Never Show Nuisance SOD" , 0 => "Program Options"
 			"Debug Mode" , 1 => "Program Options"
 			"Logging On" , 1 => "Program Options"
-			"UI Edit Mode" , 1 => "Program Options"
 			"Cheats" , 1 => "Game Options"
 			"BG4LOGO" , 1 => "MOVIES"
 			"BILOGO" , 1 => "MOVIES"
@@ -992,7 +1000,6 @@ SetPrivateProfileString('Program Options','EET Installation State','1')
 SetPrivateProfileString('Program Options','Active Campaign','1')
 SetPrivateProfileString('Program Options','Debug Mode','1')
 SetPrivateProfileString('Program Options','Logging On','1')
-SetPrivateProfileString('Program Options','UI Edit Mode','1')
 SetPrivateProfileString('Game Options','Cheats','1')
 SetPrivateProfileString('MOVIES','BG4LOGO','1')
 SetPrivateProfileString('MOVIES','BILOGO','1')
