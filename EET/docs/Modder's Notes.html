@@ -160,10 +160,19 @@ a:hover.spoiler {
 			<li><a href="#Naming convention for new files">Naming convention for new files</a></li>
 			<li><a href="#BG1 resource naming reference table">BG1 resource naming reference table</a></li>
 		</ul>
-		<li><a href="#mods">Creating mods compatible with EET</a></li>
+		<li><a href="#scope">Scope of changes needed</a></li>
+		<ul>
+			<li><a href="#Mods that doesn't support EE engine at all">Mods that doesn't support EE engine at all</a></li>
+			<li><a href="#Mods with only BG2:EE content">Mods with only BG2:EE content</a></li>
+			<li><a href="#Mods with only BG:EE/SoD content">Mods with only BG:EE/SoD content</a></li>
+			<li><a href="#NPC mods">NPC mods</a></li>
+			<li><a href="#Mods affecting both BG:EE and BG2:EE resources">Mods affecting both BG:EE and BG2:EE resources</a></li>
+		</ul>
+		<li><a href="#tut">Tutorials</a></li>
 		<ul>
 			<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
 			<li><a href="#Implementing BG1 random items">Implementing BG1 random items</a></li>
+			<li><a href="#Implementing area music">Implementing area music</a></li>
 			<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
 			<li><a href="#Working with files that are merged during installation">Working with files that are merged during installation</a></li>
 			<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
@@ -223,14 +232,54 @@ a:hover.spoiler {
 <p>For more convenient viewing, the BG1 resource naming reference table has been moved to <a href="BG1 reference table.html">external file</a>. Even though it's in HTML format it's basically a spreadsheet file, so you can also open it for example in Microsoft Excel (which has been used to create it). The file is separated into several worksheets named after extensions of files listed there. Columns show naming conventions used in BG:EE, EET and BGT. Tutu reference has not been included because that platform renames pretty much every single resource in game which would make the table far less readable.</p>
 
 </div>
-<!-- ================== M o d s ================== --><a id="mods" name="mods"></a>
-<h2>Creating mods compatible with EET</h2>
+
+<!-- ================== S c o p e ================== --><a id="scope" name="scope"></a>
+<h2>Scope of changes needed</h2>
+<div class="section">
+
+<ul>
+	<li><a href="#Mods that doesn't support EE engine at all">Mods that doesn't support EE engine at all</a></li>
+	<li><a href="#Mods with only BG2:EE content">Mods with only BG2:EE content</a></li>
+	<li><a href="#Mods with only BG:EE/SoD content">Mods with only BG:EE/SoD content</a></li>
+	<li><a href="#NPC mods">NPC mods</a></li>
+	<li><a href="#Mods affecting both BG:EE and BG2:EE resources">Mods affecting both BG:EE and BG2:EE resources</a></li>
+</ul>
+
+<a id="Mods that doesn't support EE engine at all" name="Mods that doesn't support EE engine at all"></a>
+<h3>Mods that doesn't support EE engine at all</h3>
+<p><a href="http://gibberlings3.net/forums/index.php?showtopic=26671">How-to: Converting existing mods to the EE engine</a></p>
+
+<a id="Mods with only BG2:EE content" name="Mods with only BG2:EE content"></a>
+<h3>Mods with only BG2:EE content</h3>
+<p>If the mod is compatible with BG2:EE and only has BG2/ToB content than adding compatibility is a matter of minutes. Here are usual steps:</p>
+<ul>
+	<li>Usually cross-platform mods uses GAME_IS WeiDU command. If this is the case in your mod read up about <a href="#Detecting EET within WeiDU code">detecting EET within WeiDU code</a></li>
+	<li>EET uses a continuous journal and chapters system that keeps track of all 22 chapters of your journey. BG1 and SoD chapter numbers remains unchanged but if your BG2:EE mod uses Chapter global variable you will need to <a href="#Adding support for EET chapters/journal system">add support for EET chapters/journal system.</a></li>
+</ul>
+
+<a id="Mods with only BG:EE/SoD content" name="Mods with only BG:EE/SoD content"></a>
+<h3>Mods with only BG:EE/SoD content</h3>
+<p>When it comes to native compatibility with BG:EE/SoD content you should be especially aware about <a href="#conventions">EET naming conventions</a> for conflicting BG1 resources and how to <a href="#Adopting EET naming conventions for BG1 resources">implement them in your code</a>. Also keep in mind that the party can go back to previous areas (access to areas from previous campaigns is not blocked after finishing the campaign), so additional <a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">dialogue/script filtering</a> may be needed.</p>
+
+<a id="NPC mods" name="NPC mods"></a>
+<h3>NPC mods</h3>
+<p>Regardless of the portion of the story that the NPC mod has been designed for it's recommended to <a href="#Adding support for NPC transition system">adopt EET NPC continuity system</a>.</p>
+
+<a id="Mods affecting both BG:EE and BG2:EE resources" name="Mods affecting both BG:EE and BG2:EE resources"></a>
+<h3>Mods affecting both BG:EE and BG2:EE resources</h3>
+<p>These are the most tricky beasts because you can't just trust <a href="#Adopting EET naming conventions for BG1 resources">EET_modConverter</a> to handle conversion automatically - in most cases that would result in modifying both BG1 and BG2 stuff which is not intended. However you can still use the output change-log in order to decide which changes are warranted, especially if you know the code well. Preferable way to deal with incompatibilities between platform in such mods is using cross-platform coding variables. Fortunately patches for most demanding mods in this category has been already made.</p>
+
+</div>
+
+<!-- ================== T u t o r i a l s ================== --><a id="tut" name="tut"></a>
+<h2>Tutorials</h2>
 <div class="section">
 
 <ul>
 	<li><a href="#Adopting EET naming conventions for BG1 resources">Adopting EET naming conventions for BG1 resources</a></li>
-	<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
+	<li><a href="#Implementing BG1 random items">Implementing BG1 random items</a></li>
 	<li><a href="#Implementing area music">Implementing area music</a></li>
+	<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
 	<li><a href="#Working with files that are merged during installation">Working with files that are merged during installation</a></li>
 	<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
 	<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
@@ -263,19 +312,22 @@ a:hover.spoiler {
 <h3>Implementing BG1 random items</h3>
 <p>Infinity Engine uses dummy items in order to assign random loot through the game. There are 2 ways to implement them:</p>
 <ol>
-	<li><strong>via <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndequip.htm">RNDEQUIP.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndmagic.htm">RNDMAGIC.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndscrol.htm">RNDSCROL.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndtreas.htm">RNDTREAS.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndweap.htm">RNDWEAP.2DA</a> system from vanilla engine</strong></li>
-	<li><strong>via <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndtres.htm">RNDTRES.2DA</a> system added in EE engine</strong>
+	<li>via <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndequip.htm">RNDEQUIP.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndmagic.htm">RNDMAGIC.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndscrol.htm">RNDSCROL.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndtreas.htm">RNDTREAS.2DA</a>, <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndweap.htm">RNDWEAP.2DA</a> system from vanilla engine</li>
+	<li>via <a href="https://lynxlynxlynx.github.io/iesdp/files/2da/2da_bgee/rndtres.htm">RNDTRES.2DA</a> system added in EE engine</li>
 </ol>
 <p>In EET RNDTRES.2DA is used for random tables related to SoD content (no changes compared to vanilla SoD, new rows are simply appended to the file.). But for the vanilla BG1 content old system is still in use due to problem with item identification when another dummy item is referenced in a row. This means that BG1 random items have different names compared to vanilla BG:EE which needs to be adopted in mods that use them. EET uses exactly the same item names for BG1 items as BGT (the only difference is that EET also makes entries from RNDEQUIP.2DA unique), so if your mod already has compatibility code/resources for that platform it will also work with EET. To make the resource patching easier we've prepared a new WeiDU function that can be used to automatically patch any resource to use correct BG1 dummy item names, regardless of platform, available within <a href="../other">EET_functions.tph</a>. BG1_RND_ITM patch function supports following resources: ARE, CRE, EFF, ITM, SPL, STO. Example usage:</p>
 <div class="code">
 <pre>
 COPY ~somefile~ ~override~
-  LPF BG1_RND_ITM INT_VAR src = 1 END //src variable sets source platform for dummy item names used in that file: 0 (default, no need to assign) - BG1 / BG:EE / Tutu; 1 - BGT; 2 - EET
+  LPF BG1_RND_ITM
+    INT_VAR
+    src = 1 //source platform for dummy item names used in the patched file: 0 (default, no need to assign) - BG1 / BG:EE / Tutu; 1 - BGT; 2 - EET
+  END
 </pre>
 </div>
 
 <a id="Implementing area music" name="Implementing area music"></a>
-<h3>Implementing BG1 random items</h3>
+<h3>Implementing area music</h3>
 
 <p>EET uses all music files present in BG:EE, SoD and BG2:EE. The mod is meant to be installed on clean installation of BG2:EE, which allows it to set a common standard for song numbers for mods installed later. All BG2:EE song references are kept as they were, BG:EE and SoD songs that were missing in BG2:EE become appended to songlist.2da during EET installation - use it as a reference. It's also easy to patch areas from BG:EE and BGT mods to use EET common standard for song numbers thanks to <a href="../other/EET_modConverter">EET_modConverter</a> tool, as has been explained <a href="#Adopting EET naming conventions for BG1 resources">here</a>.
 
