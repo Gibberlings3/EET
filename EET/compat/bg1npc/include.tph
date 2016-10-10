@@ -13,11 +13,11 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG
 	EXTEND_TOP ~NIEMAIN.BCS~ ~EET/compat/bg1npc/baf/X#NIEMAIN.BAF~ EVALUATE_BUFFER
 
 	COPY_EXISTING ~BEARBL.CRE~ ~override~
-		WRITE_ASCII 0x280 ~bearbl~ #32 //death variable
+		WRITE_ASCII DEATHVAR ~bearbl~ #32
 	BUT_ONLY
 
 	COPY_EXISTING ~BEARBR.CRE~ ~override~
-		WRITE_ASCII 0x280 ~bearbr~ #32 //death variable
+		WRITE_ASCII DEATHVAR ~bearbr~ #32
 	BUT_ONLY
 	
 	//delete files existing in BG2:EE

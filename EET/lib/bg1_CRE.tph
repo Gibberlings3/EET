@@ -22,11 +22,11 @@ COPY_EXISTING ~addy.cre~ ~override~
 	~sorrel.cre~ ~override~
 	~sugar.cre~ ~override~
 	~wilco.cre~ ~override~
-	READ_ASCII 0x280 "DV" (32) NULL
+	READ_ASCII DEATHVAR "DV" (32) NULL
 	PATCH_IF ((NOT ~%DV%~ STR_EQ ~~) AND (NOT ~%DV%~ STR_EQ ~%SOURCE_RES%~) AND (NOT ~%DV%~ STR_EQ ~None~)) BEGIN
 		PATCH_WARN ~WARNING: %SOURCE_FILE% uses wrong DV. Patching %DV% -> %SOURCE_FILE%.~
 	END
-	WRITE_ASCIIE 0x280 ~%SOURCE_RES%~ #32 //script name
+	WRITE_ASCIIE DEATHVAR ~%SOURCE_RES%~ #32
 BUT_ONLY
 
 /////                                                 \\\\\

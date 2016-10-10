@@ -517,7 +517,7 @@ APPEND ~K#IMPORT.2DA~ ~1 CHAN06~ UNLESS ~CHAN06~
 
 <a id="Adding support for NPC transition system" name="Adding support for NPC transition system"></a>
 <h3>Adding support for NPC transition system</h3>
-<p>As mentioned in readme file EET uses new system for NPC transition from Siege of Dragonspear expansion to Shadows of Amn and from Shadows of Amn to Throne of Bhaal expansion. In order to make modder's life easier we've prepared a function designed to automatically add both types of transition to any kind of NPC mod. All you need to do to make your NPC fully compatible with EET is disabling your normal patching code for AR4000.BCS, AR4500.BCS, FATESP.DLG and using EET_TRANSITION function instead.</p>
+<p>As mentioned in readme file EET uses new system for NPC transition from Siege of Dragonspear expansion to Shadows of Amn and from Shadows of Amn to Throne of Bhaal expansion. In order to make modder's life easier we've prepared a function designed to automatically add both types of transition to any kind of NPC mod. All you need to do to make your NPC fully compatible with EET is disabling your normal patching code for AR4000.BCS, AR4500.BCS, FATESP.DLG and using EET_NPC_TRANSITION function instead.</p>
 <p>If your BG2 NPC is meant to have BG1->BG2 transition than you should add additional <strong>!BeenInParty("%DV%")</strong> trigger (where %DV% is death variable of your CRE) in the code that spawns new version of CRE file into BG2 area. This way such block won't trigger if the NPC is valid for migration from BG1 to BG2. For example:</p>
 
 <div class="code">
@@ -643,7 +643,7 @@ END
 </pre>
 </div>
 
-<p>You can see more examples in EET/lib/transition.tph file. It is preferable to use EET_TRANSITION than manually patching files. This way if anything regarding transition will be changed in future you won't need to change anything in your code. For those interested how exactly it works or those who need to include additional REPLACE_TEXTUALLY patching within outcome code, here is an explanation what the function does:</p>
+<p>You can see more examples in EET/lib/transition.tph file. It is preferable to use EET_NPC_TRANSITION than manually patching files. This way if anything regarding transition will be changed in future you won't need to change anything in your code. For those interested how exactly it works or those who need to include additional REPLACE_TEXTUALLY patching within outcome code, here is an explanation what the function does:</p>
 <ul>
 <li><strong>BG1 and/or SoD and/or BG2 local script</strong> are extend top with this code, which disables NPC that should no longer exist after certain part of the story:</li>
 
@@ -760,7 +760,7 @@ END
 </div>
 </ul>
 
-<p>Depending on which variables you set in EET_TRANSITION code, different combination of above patching will take place.</p>
+<p>Depending on which variables you set in EET_NPC_TRANSITION code, different combination of above patching will take place.</p>
 
 <a id="Workaround for CalanderDay command in SoD/BG2 portion of the game" name="Workaround for CalanderDay command in SoD/BG2 portion of the game"></a>
 <h3>Workaround for CalanderDay command in SoD/BG2 portion of the game</h3>

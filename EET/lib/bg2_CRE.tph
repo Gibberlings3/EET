@@ -8,18 +8,18 @@
 COPY_EXISTING ~IMOEN6.CRE~ ~override~
 	~IMOEN10.CRE~ ~override~
 	~IMOENDRM.CRE~ ~override~
-	WRITE_ASCII 0x280 ~Imoen2~ #32 // DV
+	WRITE_ASCII DEATHVAR ~Imoen2~ #32
 BUT_ONLY
 
 COPY_EXISTING ~GARRICK.CRE~ ~override~
-	WRITE_ASCII 0x250 ~BG2MAGE2~ #8 // Class script
+	WRITE_ASCII SCRIPT_CLASS ~BG2MAGE2~ #8
 BUT_ONLY
 
 //Tiax and Quayle looks like dwarves
 COPY_EXISTING ~quayle.cre~ ~override~
 	~pptiax.cre~ ~override~
 	~pptiax2.cre~ ~override~
-	WRITE_SHORT 0x28 24580
+	WRITE_SHORT 0x28 24580 //Animation ID
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -43,8 +43,8 @@ COPY_EXISTING ~BEARBL.CRE~ ~override~
 	SAY 0xec #5623
 	SAY 0xf0 #5624
 	SAY 0x10c #5617
-	WRITE_ASCII 0x258 ~BEAR~ #8 // Race script
-	WRITE_ASCII 0x268 ~WDASIGHT~ #8 // Default script*/
+	WRITE_ASCII SCRIPT_RACE ~BEAR~ #8
+	WRITE_ASCII SCRIPT_DEFAULT ~WDASIGHT~ #8*/
 
 COPY_EXISTING ~BEARBR.CRE~ ~override~
 	SAY 0xc8 #5627
@@ -65,7 +65,7 @@ COPY_EXISTING ~BEARBR.CRE~ ~override~
 	SAY 0xf0 #5633
 	SAY 0x10c #5625
 	SAY 0x110 #5626
-	WRITE_ASCII 0x258 ~BEAR~ #8 // Race script
+	WRITE_ASCII SCRIPT_RACE ~BEAR~ #8
 	WRITE_BYTE 0x270 ~128~ // Enemy-Ally flag*/
 
 /*COPY_EXISTING ~BEARCASU.CRE~ ~override~
@@ -77,8 +77,8 @@ COPY_EXISTING ~BEARBR.CRE~ ~override~
 	SAY 0xf0 #5642
 	SAY 0x10c #5634
 	SAY 0x110 #5635
-	WRITE_ASCII 0x258 ~CBEAR~ #8 // Race script
-	WRITE_ASCII 0x268 ~WDASIGHT~ #8 // Default script*/
+	WRITE_ASCII SCRIPT_RACE ~CBEAR~ #8
+	WRITE_ASCII SCRIPT_DEFAULT ~WDASIGHT~ #8*/
 
 COPY_EXISTING ~BIRD.CRE~ ~override~
 	SAY 0x1b8 #20292
@@ -108,7 +108,7 @@ COPY_EXISTING ~CAT.CRE~ ~override~
 	SAY 0x1c0 #20289
 	SAY 0x1c4 #20289
 	SAY 0x1c8 #20290
-	WRITE_BYTE 0x273 ~175~ // Class flag
+	WRITE_BYTE 0x273 ~175~ //Class flag
 	
 COPY_EXISTING ~CHARBASE.CRE~ ~override~
 
@@ -121,11 +121,11 @@ COPY_EXISTING ~CHICKE.CRE~ ~override~
 	SAY 0x1c0 #20283
 	SAY 0x1c4 #20283
 	SAY 0x1c8 #20284
-	WRITE_BYTE 0x273 ~199~ // Class flag
-	WRITE_BYTE 0x275 ~1~ // Gender flag
+	WRITE_BYTE 0x273 ~199~ //Class flag
+	WRITE_BYTE 0x275 ~1~ //Gender flag
 
 COPY_EXISTING ~COW.CRE~ ~override~
-	WRITE_BYTE 0x273 ~199~ // Class flag
+	WRITE_BYTE 0x273 ~199~ //Class flag
 
 COPY_EXISTING ~DIALOGMO.CRE~ ~override~
 
@@ -138,7 +138,7 @@ COPY_EXISTING ~DIALOGMO.CRE~ ~override~
 	SAY 0xf0 #5536
 	SAY 0x10c #5528
 	SAY 0x110 #5529
-	WRITE_ASCII 0x248 ~WARDOG~ #8 // Override script*/
+	WRITE_ASCII SCRIPT_OVERRIDE ~WARDOG~ #8*/
 
 /*COPY_EXISTING ~DOGWISU.CRE~ ~override~
 	SAY 0xc8 #5521
@@ -149,7 +149,7 @@ COPY_EXISTING ~DIALOGMO.CRE~ ~override~
 	SAY 0xf0 #5527
 	SAY 0x10c #5519
 	SAY 0x110 #5520
-	WRITE_ASCII 0x248 ~WILDDOG~ #8 // Override script*/
+	WRITE_ASCII SCRIPT_OVERRIDE ~WILDDOG~ #8*/
 
 //COPY_EXISTING ~DRUNK2.CRE~ ~override~
 //no need to change, not used in BG1, used in BG2
@@ -187,7 +187,7 @@ COPY_EXISTING ~EAGLE.CRE~ ~override~
 	SAY 0xf0 #5518
 	SAY 0x10c #5510
 	SAY 0x110 #5511
-	WRITE_ASCII 0x258 ~GNOLLF~ #8 // Race script*/
+	WRITE_ASCII SCRIPT_RACE ~GNOLLF~ #8*/
 
 /*COPY_EXISTING ~HOBGOBSU.CRE~ ~override~
 	SAY 0xc8 #5137
@@ -197,7 +197,7 @@ COPY_EXISTING ~EAGLE.CRE~ ~override~
 	SAY 0x10c #5135
 	SAY 0x110 #5136
 	SAY 0x1b8 #10483
-	WRITE_ASCII 0x258 ~HOBGOBA~ #8 // Race script*/
+	WRITE_ASCII SCRIPT_RACE ~HOBGOBA~ #8*/
 
 COPY_EXISTING ~HORSE.CRE~ ~override~
 
@@ -278,7 +278,7 @@ COPY_EXISTING ~PLYWOLF.CRE~ ~override~
 	SAY 0x10c #5599
 	SAY 0x110 #5600
 
-//COPY_EXISTING ~RAT.CRE~ ~override~//no changes needed
+//COPY_EXISTING ~RAT.CRE~ ~override~ //no changes needed
 
 COPY_EXISTING ~SEAGUL.CRE~ ~override~
 	SAY 0x1b8 #20288
@@ -286,7 +286,7 @@ COPY_EXISTING ~SEAGUL.CRE~ ~override~
 	SAY 0x1c0 #20288
 	SAY 0x1c4 #20288
 
-//COPY_EXISTING ~SKELDED.CRE~ ~override~//no changes needed
+//COPY_EXISTING ~SKELDED.CRE~ ~override~ //no changes needed
 
 COPY_EXISTING ~SKELE2.CRE~ ~override~
 	SAY 0xc8 #5539

@@ -128,11 +128,10 @@ ECHO %arch_var%>EET\temp\arch_var.txt
 >>>>>>>>
 	COPY + ~.../arch_var.bat~ ~EET/temp/arch_var.bat~
 	AT_NOW ~CALL EET\temp\arch_var.bat~
-	COPY - ~EET/temp/arch_var.txt~ ~EET/temp~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~AMD64~ BEGIN
-			SPRINT arch_var ~x86_64\~
-			PATCH_PRINT ~arch_var = %arch_var%~
-		END ~~
+	ACTION_IF (FILE_CONTAINS_EVALUATED (~EET/temp/arch_var.txt~ ~AMD64~)) BEGIN
+		OUTER_SPRINT arch_var ~x86_64\~
+		PRINT ~arch_var = %arch_var%~
+	END
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	OUTER_SPRINT os_slash ~/~
 	OUTER_SPRINT exe ~~
@@ -1075,20 +1074,19 @@ BUT_ONLY
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~EET/temp/WeiDU.log~ BEGIN
-	COPY - ~EET/tbl/compatibility.tbl~ ~EET/tbl~
+	COPY ~EET/tbl/compatibility.tbl~ ~EET/tbl~
 		COUNT_2DA_ROWS 2 "cntrow"
 		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 			READ_2DA_ENTRY cnt 0 2 "col1"
 			READ_2DA_ENTRY cnt 1 2 "col2"
-			PATCH_IF ("%col2%" = 1) BEGIN
+			PATCH_IF ("%col2%" = 1) AND (FILE_CONTAINS_EVALUATED (~EET/temp/WeiDU.log~ ~^%col1%~)) BEGIN
 				INNER_ACTION BEGIN
-					ACTION_IF (FILE_CONTAINS ~EET/temp/WeiDU.log~ EVAL ~^%col1%~) BEGIN
-						PRINT ~Including %col1% compatibility patches~
-						INCLUDE ~EET/compat/%col1%/include.tph~
-					END
+					PRINT ~Including %col1% compatibility patches~
+					INCLUDE ~EET/compat/%col1%/include.tph~
 				END
 			END
 		END
+	BUT_ONLY
 END
 
 /////                                                  \\\\\
@@ -2429,7 +2427,101 @@ END
 
 COPY ~.../blank.txt~ ~override/EET.flag~
 APPEND ~EET.flag~ ~EET_JOURNAL~
-PRINT ~'EET.flag' file is used by weidu to recognize the installation as EET~
+PRINT ~'EET.flag' file is used by WeiDU to recognize the installation as EET~
 
 COPY ~%WEIDU_EXECUTABLE%~ ~setup-EET_end%exe%~
+	~%WEIDU_EXECUTABLE%~ ~setup-EET_gui%exe%~
 	~EET/lib/EET_end.tp2~ ~EET_end.tp2~
+	~EET/lib/EET_gui.tp2~ ~EET_gui.tp2~
+
+ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Ss]~ = 0) BEGIN
+	PRINT ~Skipping shortcut creation~
+END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+<<<<<<<< .../userprofile.bat
+@echo off
+for /f "usebackq tokens=3*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do set DESKTOP=%%D
+for /F  %%a in ('echo %DESKTOP%') do echo %%a>EET/temp/path.txt
+>>>>>>>>
+	//we're not setting %DESKTOP% in sLinkFile but echo and read it from external file (otherwise shortcut would not be registered for uninstallation)
+	COPY + ~.../userprofile.bat~ ~EET/temp~
+	AT_NOW ~EET/temp/userprofile.bat~
+	COPY + ~EET/temp/path.txt~ ~EET/temp~
+		READ_ASCII 0x0 dir (%SOURCE_SIZE%)
+	OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
+		REPLACE_TEXTUALLY ~%WNL%~ ~~
+	END
+<<<<<<<< .../shortcut.bat
+@echo off
+
+set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
+
+echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
+echo sLinkFile = "EET\temp\EET.lnk" >> %SCRIPT%
+echo Set oLink = oWS.CreateShortcut(sLinkFile) >> %SCRIPT%
+echo oLink.TargetPath = "%CD%\Baldur.exe" >> %SCRIPT%
+: echo oLink.IconLocation = "%CD%\Baldur.exe, 0" >> %SCRIPT%
+echo oLink.IconLocation = "%CD%\EET\docs\images\eet.ico" >> %SCRIPT%
+echo oLink.WorkingDirectory = "%CD%" >> %SCRIPT%
+echo oLink.Description = "Enhanced Edition Trilogy (EET)" >> %SCRIPT%
+echo oLink.Save >> %SCRIPT%
+
+cscript /nologo %SCRIPT%
+del %SCRIPT%
+>>>>>>>>
+	COPY + ~.../shortcut.bat~ ~shortcut.bat~
+	AT_NOW ~shortcut.bat~
+	DELETE + ~shortcut.bat~
+	COPY ~EET/temp/EET.lnk~ ~%dir%~
+END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
+	//commented out until someone test it and confirm that it works
+	/*ACTION_FOR_EACH var IN PWD HOME BEGIN
+<<<<<<<< .../path.command
+echo -n $%var%>EET/temp/path.txt
+>>>>>>>>
+		COPY + ~.../path.command~ ~path.command~ EVALUATE_BUFFER
+		AT_NOW ~./path.command~
+		COPY + ~EET/temp/path.txt~ ~EET/temp~
+			READ_ASCII 0x0 dir (%SOURCE_SIZE%)
+		OUTER_PATCH_SAVE ~dir~ ~%dir%~ BEGIN
+			REPLACE_TEXTUALLY ~%LNL%~ ~~
+		END
+		OUTER_TEXT_SPRINT EVAL ~%var%~ ~%dir%~
+	END
+	DELETE + ~path.command~
+	PRINT ~PWD = %PWD%; HOME = %HOME%~
+<<<<<<<< .../EET.desktop
+[Desktop Entry]
+Encoding=UTF-8
+Value=1.0
+Type=Application
+Name=Enhanced Edition Trilogy
+GenericName=Enhanced Edition Trilogy
+Comment=Enhanced Edition Trilogy (EET)
+Icon=%PWD%/EET/docs/images/EET.ico
+Exec="%PWD%/start.sh" ""
+Categories=Game;
+Path=%PWD%
+>>>>>>>>
+	COPY ~.../EET.desktop~ ~%HOME%~ EVALUATE_BUFFER*/
+
+//this code doesn't register shortcut for uninstallation
+<<<<<<<< .../shortcut.sh
+#!/bin/sh
+cat > $HOME/EET.desktop << TEETEE
+[Desktop Entry]
+Encoding=UTF-8
+Value=1.0
+Type=Application
+Name=Enhanced Edition Trilogy
+GenericName=Enhanced Edition Trilogy
+Comment=Enhanced Edition Trilogy (EET)
+Icon=$PWD/EET/docs/images/EET.ico
+Exec="$PWD/start.sh" ""
+Categories=Game;
+Path=$PWD
+TEETEE
+>>>>>>>>
+	COPY + ~.../shortcut.sh~ ~shortcut.sh~
+	AT_NOW ~./shortcut.sh~
+	DELETE + ~shortcut.sh~
+END

@@ -1,5 +1,20 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
+//Bug in BDBAN103.BCS (VOGHLIN DV instead of VOGHILN)
+//http://redmine.beamdog.com/issues/26940
+COPY_EXISTING ~BDBAN103.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~"VOGHLIN"~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~"VOGHILN"~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
 //referenced BG2:EE strrefs (doesn't matter that much since these are mostly debug resources)
 ACTION_CLEAR_ARRAY strref_tlk
 ACTION_DEFINE_ASSOCIATIVE_ARRAY strref_tlk BEGIN

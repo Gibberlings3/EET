@@ -221,7 +221,7 @@ a:hover.spoiler {
 <div class="section">
 
 <div class="code">
-<p>Planując większe instalacje z modami warto rozważyć użycie programu <a href="https://bitbucket.org/BigWorldSetup/">Big World Setup</a> (wsparcie dla EET zostanie dodane wkrótce). Narzędzie to pobierze, rozpakuje i zainstaluje wybrane modyfikacje razem z EET. Oszczędność czasu i frustracji związanej z kolejnością instalacji i kompatybilnością modów.</p>
+<p>Planując większe instalacje z modami warto rozważyć użycie programu <a href="https://bitbucket.org/BigWorldSetup/">Big World Setup</a> (wsparcie dla EET zostanie dodane wkrótce). Narzędzie to pobierze, rozpakuje i zainstaluje wybrane modyfikacje razem z EET. Oszczędność czasu i frustracji związanych z doborem kolejności instalacji i kompatybilnością modów.</p>
 </div>
 
 <h3>Inicjacja instalacji EET (setup-EET + setup-EET_core)</h3>
@@ -247,17 +247,14 @@ a:hover.spoiler {
 <h3>Zwieńczenie instalacji EET (setup-EET_end)</h3>
 
 <div class="code">
-<p><strong>Po instalacji głównego komponentu w folderze z grą znajdziesz dodatkowy plik setup-EET_end.exe. Dwa pierwsze komponenty (aktualizacja zapisów gry z poprzedniej instalacji oraz zmiana GUI) oferowane przez ten instalator są opcjonalne. Trzeci komponent jest WYMAGANY i powinien on zostać zainstalowany NA SAMYM KOŃCU, po instalacji wszystkich innych modów.</strong></p>
+<p><strong>Po instalacji głównego komponentu w folderze z grą znajdziesz dodatkowy plik setup-EET_end.exe, którego instalacja jest WYMAGANA przed rozpoczęciem rozgrywki. Komponent powinien zostać zainstalowany NA SAMYM KOŃCU, po instalacji wszystkich innych modów.</strong></p>
 </div>
 
-<p>W skład setup-EET_end wchodzą 3 komponenty:</p>
-<ul>
-	<li><strong>Aktualizacja starych zapisów gry dla obecnej instalacji</strong> - OPCJONALNY - zerknij do <a href="#What about compatibility with saves?">F.A.Q.</a> po więcej informacji. Jeśli używasz opcjonalnego modu BP-BGT Worldmap to upewnij się, że jest zainstalowany przed instalacją tego komponentu. Sam komponent powinien być zainstalowany przed komponentem zamykającym instalację EET, który nadpisuje pliki potrzebne do aktualizacji zapisów gry.</li>
-	<li><strong>Alternatywne GUI (SoD)</strong> - OPCJONALNY - podmiana GUI BG2:EE na GUI z dodatku Siege of Dragonspear.</li>
-	<li><strong>Zwieńczenie instalacji EET</strong> - WYMAGANY - komponent kończący instalację EET (trzeba go zainstalować przed rozpoczęciem gry).</li>
-</ul>
+<p>Jeśli po zakończonej instalacji komponentu zmienisz zdanie i postanowisz doinstalować jakieś mody, to wpierw odinstaluj setup-EET_end.exe. Gdy będziesz już zadowolony/a z doboru modów zainstaluj go ponownie.</p>
 
-<p>Jeśli po zakończonej instalacji komponentów zmienisz zdanie i postanowisz doinstalować jakieś mody, to wpierw uruchom setup-EET_end.exe, i odinstaluj ostatni komponent. Gdy będziesz już zadowolony z doboru modów zainstaluj go ponownie.</p>
+<h3>Opcjonalna zmiana GUI (setup-EET_gui)</h3>
+
+<p>Instalacja tego komponentu zmienia domyślne <acronym title="Graficzny interfejs użytkownika">GUI</acronym> w grze na interfejs z dodatku Siege of Dragonspear. Instalacja możliwa przed lub po setup-EET_end.</p>
 
 <h3>Automatyczna instalacja (dla wyjadaczy)</h3>
 
@@ -287,12 +284,13 @@ a:hover.spoiler {
 		<td><em>[flags]</em></td>
 		<td class="grow">
 		<p>Dowolna kombinacja poniższych znaków (zapis bez spacji)</p>
-		<p>m lub M - instalacja nie zostanie przerwana, jeśli EET wykryje mody zainstalowane na BG:EE, nie znajdujące się na liście kompatybilności (odradzam, chyba że faktycznie wiesz, co robisz).</p>
+		<p>m lub M - instalacja nie zostanie przerwana, jeśli EET wykryje mody zainstalowane na BG:EE, nie znajdujące się na liście kompatybilności (odradzam, chyba że faktycznie wiesz, co robisz)</p>
 		<p>d lub D - pozostawia tymczasowe pliki instalacyjne (przynajmniej 3.2GB) po zakończonej instalacji EET (tylko dla celów debuggowania, te pliki nie są wymagane do odinstalowania lub reinstalowania modu)</p>
+		<p>s or S - pominięcie tworzenia skrótu do uruchamiania EET na pulpicie</p>
 		<p>p lub P - informuje WeiDU o tym, żeby użyć ścieżki do folderu Baldur's Gate podanej w [path]; jeśli w podanej tu ścieżce WeiDU nie znajdzie gry, zostaniesz poproszony/a o wpisanie jej ręcznie w czasie instalacji</p>
 		</td>
-		</tr>
-		<tr>
+	</tr>
+	<tr>
 		<td><em>[path]</em></td>
 		<td class="grow">
 		<p>Pełna ścieżka do folderu Baldur's Gate: Enhanced Edition (podana w cudzysłowach). Zostanie ona sprawdzona tylko, jeśli we <em>[flags]</em> została użyta opcja p lub P</p>
@@ -304,17 +302,17 @@ a:hover.spoiler {
 <p>Parametry:</p>
 
 <div class="code">
-<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
+<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list sp "C:\Program Files (x86)\BeamDog\Games\00806"</p>
 </div>
 
-<p>Ten kod wiersza poleceń zainstaluje EET w języku polskim i skorzysta z podanej ścieżki do instalacji BG:EE.</p>
+<p>Ten kod wiersza poleceń zainstaluje EET w języku polskim, pominie tworzenie skrótu na pulpicie i skorzysta z podanej ścieżki do instalacji BG:EE.</p>
 
 <hr>
 
 <p><strong>Zwieńczenie instalacji EET (setup-EET_end)</strong></p>
 
 <div class="code">
-<p>setup-EET_end.exe --force-install-list <em>[numbers]</em> --language <em>X</em></p>
+<p>setup-EET_end.exe --force-install 0 --language <em>X</em> --args-list <em>[flags]</em></p>
 </div>
 
 <p>Parametry:</p>
@@ -332,11 +330,9 @@ a:hover.spoiler {
 		</td>
 	</tr>
 	<tr>
-		<td><em>[numbers]</em></td>
+		<td><em>[flags]</em></td>
 		<td class="grow">
-		<p>0 - Aktualizacja starych zapisów gry dla obecnej instalacji<br />
-		1 - Alternatywne GUI (SoD)<br />
-		2 - Zwieńczenie instalacji EET (ostatni mod w kolejności instalacji)</p>
+		<p>y or Y - zgoda na <a href="#What about compatibility with saves?">aktualizuję zapisów gry</a></p>
 		</td>
 	</tr>
 </table>
@@ -345,10 +341,18 @@ a:hover.spoiler {
 <p>Przykład:</p>
 
 <div class="code">
-<p>setup-EET_end.exe --force-install-list 1 2 --language 0</p>
+<p>setup-EET_end.exe --force-install 0 --language 0</p>
 </div>
 
-<p>Ten kod wiersza poleceń zainicjuję WeiDU z użyciem języka polskiego i zainstaluje opcjonalne alternatywne GUI z SoD oraz ostatni komponent wymagany do rozpoczęcia gry z EET.</p>
+<p>Ten kod wiersza poleceń zainicjuję WeiDU z użyciem języka polskiego i zainstaluje komponent wymagany do rozpoczęcia gry z EET.</p>
+
+<hr>
+
+<p><strong>Opcjonalna zmiana GUI (setup-EET_gui)</strong></p>
+
+<div class="code">
+<p>setup-EET_gui.exe --force-install 0</p>
+</div>
 
 </div>
 <!-- ================== F A Q ================== --><a id="faq" name="faq"></a>
@@ -362,12 +366,11 @@ a:hover.spoiler {
 	<li><a href="#What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?">Jakie są różnice pomiędzy EET a grą Baldur's Gate II: Enhanced Edition?</a></li>
 	<li><a href="#What should be the general install order?">Jaka powinna być kolejność instalacji modów?</a></li>
 	<li><a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">Jakie mody można zainstalować na BG:EE przed instalacją EET na BG2:EE?</a></li>
-	<li><a href="#What mods can be installed after EET?">Jakie mody można zainstalować po</a></li>
+	<li><a href="#What mods can be installed after EET?">Jakie mody można zainstalować po EET?</a></li>
 	<li><a href="#How to add EET compatibility for other mods?">Jak przerobić moda, żeby był kompatybilny z EET?</a></li>
 	<li><a href="#What about compatibility with saves?">Jak wygląda kompatybilność ze starymi zapisami gier?</a></li>
 	<li><a href="#How does NPC continuity work in EET?">Jak rozwiązano kwestie przejścia NPC pomiędzy grami?</a></li>
 	<li><a href="#What's the point in lifting restriction for travelling back to old areas?">Czemu zniesiono ograniczenia w podróżowaniu pomiędzy obszarami?</a></li>
-	<li><a href="#Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!">Dlaczego dostęp do obszarów z BG1 ma być dostępny tak wcześnie w BG2? Co z balansem gry?</a></li>
 	<li><a href="#Can I play EET in cooperative multiplayer?">Czy można grać w trybie multiplayer ze znajomymi?</a></li>
 </ul>
 
@@ -381,7 +384,7 @@ a:hover.spoiler {
 
 <a id="What are the differences between EET and the original Siege of Dragonspear expansion?" name="What are the differences between EET and the original Siege of Dragonspear expansion?"></a>
 <h3>Jakie są różnice pomiędzy EET a dodatkiem Siege of Dragonspear?</h3>
-<p>Dodatek blokuje dostęp do obszarów przechodząc z rozdziału do rozdziału. Na ten moment nie zostało to jeszcze zmienione, ale wkrótce nie będzie to już miało miejsca w EET. Oprócz tego standardowe płynne przejście pomiędzy grami i zintegrowana mapa świata. EET przywraca również bardziej rozbudowane zakończenie tego etapu gry (z jakiegoś powodu grywalna część sceny zamykającej SoD nie została użyta w finalnej wersji dodatku).</p>
+<p>Oryginalny dodatek blokuje dostęp do obszarów przechodząc z rozdziału do rozdziału - funkcjonalność sprzeczna z ideą EET, dlatego zostało to zmienione (obszary pozostają otwarte w ciągu całej gry). Oprócz tego dodano płynne przejście pomiędzy grami i zintegrowano mapę świata. EET przywraca również bardziej rozbudowane zakończenie tego etapu gry (z jakiegoś powodu grywalna część sceny zamykającej SoD nie została użyta w finalnej wersji dodatku).</p>
 
 <a id="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?"></a>
 <h3>Jakie są różnice pomiędzy EET a grą Baldur's Gate II: Enhanced Edition?</h3>
@@ -413,19 +416,19 @@ a:hover.spoiler {
 
 <a id="How to add EET compatibility for other mods?" name="How to add EET compatibility for other mods?"></a>
 <h3>Jak przerobić moda, żeby był kompatybilny z EET?</h3>
-<p>Dzięki zasobom moderskim i narzędziom dystrybuowanym wraz z EET, adaptacja istniejących modów nie jest szczególnie trudna ani czasochłonna. Większość rzeczy da się wykonać automatycznie, korzystając z narzędzi i funkcji WeiDU, napisanych z myślą o konwersjach pod EET. Informacje na ten temat znajdziesz w pliku <a href="docs/Modder's Notes.html">Modder's Notes</a>.</p>
+<p>Dzięki zasobom moderskim i narzędziom dystrybuowanym wraz z EET, adaptacja istniejących modów nie jest szczególnie trudna, ani czasochłonna. Większość rzeczy da się wykonać automatycznie, korzystając z narzędzi i funkcji WeiDU, napisanych z myślą o konwersjach pod EET. Informacje na ten temat znajdziesz w pliku <a href="docs/Modder's Notes.html">Modder's Notes</a>.</p>
 
 <a id="What about compatibility with saves?" name="What about compatibility with saves?"></a>
 <h3>Jak wygląda kompatybilność ze starymi zapisami gier?</h3>
-<p>EET oferuje wsparcie dla starych zapisów gier z poprzedniej instalacji EET, nawet jeśli w nowej instalacji wybrałeś inny zestaw modów. W celu aktualizacji starych zapisów gier skorzystaj z pierwszego komponentu dostępnego w setup-EET_end.exe. Pliki wymagane do aktualizacji starych zapisów tworzone są przez komponent kończący instalację EET.</p>
+<p>Zapisy gry w EET funkcjonują dokładnie tak samo jak w normalnym BG:EE - brak jakichkolwiek problemów w przypadku podstawowych zasobów BG:EE, SoD, BG2:EE, nawet w przypadku wyboru innego języka podczas instalacji, czy tez instalacji innych modów. Istnieje zatem możliwość dzielenia się zapisami gry pomiędzy różnymi osobami. Tak jak w oryginalnych grach powyższe nie odnosi się do zasobów dodanych przez mody (z wyjątkiem IWD-in-EET). EET umożliwia jednak aktualizację odniesień do zasobów dodanych przez mody podczas instalacji setup-EET_end. Jeśli w czasie powstania zapisów nie były zainstalowane inne mody niż EET to nie ma potrzeby aktualizacji zapisów.</p>
 
-<p>Mod nie jest kompatybilny bezpośrednio z zapisami gier z BG:EE i BG2:EE - trzeba rozpocząć grę od nowa.</p>
+<p>Mod nie jest kompatybilny bezpośrednio z zapisami gier z BG:EE, SoD i BG2:EE - trzeba rozpocząć grę od nowa.</p>
 
 <a id="How does NPC continuity work in EET?" name="How does NPC continuity work in EET?"></a>
 <h3>Jak rozwiązano kwestie przejścia NPC pomiędzy grami?</h3>
 <p>Migracja z BG1 do SoD odbywa się na zasadach znanych z oryginalnej gry (cała drużyna przechodzi do Grobowca Rodziny Korlasz).</p>
 
-<p>Migracja do BG2 rozpoczyna się bezpośrednio po ukończeniu SoD. Postacie bez kontentu BG2 nie przechodzą do Cieni Amn - zostają usunięte z gry. Przejście do BG2 dla NPC przyłączanych w obu grach ma miejsce pod warunkiem, że dany NPC nie jest martwy i został kiedykolwiek zwerbowany do drużyny (nie ma wymogu, żeby postać była w drużynie końcowej). Po przeniesieniu bohatera dokonywane są modyfikacje danej postaci, jeśli występują różnice w BG2 (startowe przedmioty, portret, dźwięki, minimalne doświadczenie, przypisane pliki dialogów i skryptów). Jeśli NPC nie spełnił wyżej wymienionych wymogów do płynnego przejścia pomiędzy grami stworzona zostanie nowa wersja postaci, lub dany NPC w ogóle nie pojawi się w BG2, jeśli został zabity w BG1 (wyjątek stanowią Imoen i Edwin - oboje są potrzebni ze względu na kluczowe role w fabule BG2).</p>
+<p>Migracja do BG2 rozpoczyna się bezpośrednio po ukończeniu SoD. Postacie bez kontentu BG2 nie przechodzą do Cieni Amn - zostają usunięte z gry. Przejście do BG2 dla NPC przyłączanych w obu grach ma miejsce pod warunkiem, że dany NPC nie jest martwy i został kiedykolwiek zwerbowany do drużyny (nie ma wymogu, żeby postać była w drużynie końcowej). Po przeniesieniu bohatera dokonywane są modyfikacje danej postaci, jeśli występują różnice w BG2 (startowe przedmioty, dźwięki, minimalne doświadczenie, przypisane pliki dialogów i skryptów). Jeśli NPC nie spełnił wyżej wymienionych wymogów do płynnego przejścia pomiędzy grami stworzona zostanie nowa wersja postaci, lub dany NPC w ogóle nie pojawi się w BG2, jeśli został zabity w BG1 (wyjątek stanowią Imoen i Edwin - oboje są potrzebni ze względu na kluczowe role w fabule BG2).</p>
 
 <p>Tak jak w oryginalnej grze, drużyna końcowa Cieni Amn migruje do Tronu Bhaala. Zmieniono natomiast sposób wzywania innych postaci poprzez dialog z Duchem Przeznaczenia. Zamiast tworzyć nowe wersje NPC, teleportowani są istniejący bohaterowie, bezpośrednio z miejsca, gdzie ich zostawiliśmy w Cieniach Amn. Lista postaci możliwych do przyzwania będzie zależała od tego, kogo przyjęliśmy do drużyny podczas podróży w BG1 i BG2. Postaci, których nie poznałeś, w ogóle nie znajdziesz na tej liście. Podczas dialogu z Duchem Przeznaczenia w Sferze Kieszeniowej, przy próbie wezwania danego NPC, możesz otrzymać następujące odpowiedzi:</p>
 <ul>
@@ -436,11 +439,7 @@ a:hover.spoiler {
 
 <a id="What's the point in lifting restriction for travelling back to old areas?" name="What's the point in lifting restriction for travelling back to old areas?"></a>
 <h3>Czemu zniesiono ograniczenia w podróżowaniu pomiędzy obszarami?</h3>
-<p>Osobiście bardzo rozczarowałem się grając w BGT po raz pierwszy. Nawet do głowy mi nie przyszło, że konwersja łącząca wszystkie gry w jedną, to tak naprawdę 3 osobne kompanie, z dodanym ograniczonym przesyłem postaci pomiędzy BG1 i BG2. Jak wspomniano na początku, celem EET jest takie połączenie gier, żeby odnosiło się wrażenie grania w jedną spójną przygodę. Przejście pomiędzy kolejnymi etapami gry to kwestia wyświetlenia filmiku, a nie narzucenia ograniczeń na gracza. Żeby spełnić ten postulat EET znosi ograniczenia w podróżowaniu pomiędzy już odwiedzonymi obszarami, używa ciągłej numeracji rozdziałów i dziennika, korzysta z tej samej mapy świata we wszystkich obszarach i oferuje ciągłość przygody pomiędzy kolejnymi etapami gry. Drugim postulatem jest zrobienie z EET platformy przyjaznej modderom i oferującej więcej niż oryginalne gry (i BGT), dzięki spełnieniu pierwszego postulatu. W chwili obecnej nie znajdziesz nic ciekawego do roboty odwiedzając stare obszary (no chyba że robisz to w celu wykonania jakiegoś pominiętego wcześniej questu lub odzyskania przedmiotów), jednak nic nie stoi na przeszkodzie, żeby w przyszłości powstały mody dodające nowe niespodzianki dla wysoko poziomowych drużyn na starych obszarach, przykładowo podczas odwiedzin Wrót Baldura na etapie Cieni Amn lub Tronu Bhaala. Dzięki nowym możliwościom silnika łatwiej też zaimplementować bajery z tym związane, przykładowo nowy system <a href="http://gibberlings3.net/forums/index.php?showtopic=27181">spawnowania potworów</a> w zależności od etapu gry, co może okazać się przydatne dla modderów zainteresowanych urozmaiceniem rozgrywki dla powracających drużyn.</p>
-
-<a id="Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!" name="Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!"></a>
-<h3>Dlaczego dostęp do obszarów z BG1 ma być dostępny tak wcześnie w BG2? Co z balansem gry?</h3>
-<p>Takie rozwiązanie może faktycznie negatywnie wpłynąć na balans gry, bo nic nie będzie stało na przeszkodzie, żeby gracz nie potrafiący narzucić sobie ograniczeń mógł uzyskać dostęp do niezłych przedmiotów, które zachomikował gdzieś na etapie podróży po BG1. Z tego powodu, gdy ta funkcjonalność zostanie w pełni zaimplementowana, będzie również możliwość instalacji opcjonalnego tweaka dystrybuowanego z modem <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a>, który umożliwi całkowitą blokadę dostępu do obszarów, lub opóźni do nich dostęp do rozpoczęcia wybranego podczas instalacji rozdziału. Dlaczego zatem funkcjonalność takiego komponentu nie jest narzucona domyślnie? Obawiam się, że gdyby powrót do obszarów nie był rozwiązaniem opt-out (konieczność instalacji opcjonalnego komponentu, żeby narzucić ograniczenie) zamiast opt-in (opcjonalne wyłączenie funkcjonalności), to znacząco zmniejszyłaby się grupa docelowa dla modów dodających nowy kontent w obszarach z BG1, dla wczesnych etapów BG2 (tak to już jest z opcjonalnymi rozwiązaniami - mało kto z nich korzysta). Więc i motywacja modderów dla tworzenia takiego kontentu byłaby odpowiednio mniejsza. To, czy doczekamy się modów wykorzystujących nowe możliwości, jakie daje powrót do starych obszarów, okaże się w przyszłości. Mam jednak nadzieję, że brak odgórnych ograniczeń przyczyni się do urzeczywistnienia tej wizji.</p>
+<p>Osobiście bardzo rozczarowałem się grając w BGT po raz pierwszy. Nawet do głowy mi nie przyszło, że konwersja łącząca wszystkie gry w jedną, to tak naprawdę 3 osobne kompanie, z dodanym ograniczonym przesyłem postaci pomiędzy BG1 i BG2. Jak wspomniano na początku, celem EET jest takie połączenie gier, żeby odnosiło się wrażenie grania w jedną spójną przygodę. Przejście pomiędzy kolejnymi etapami gry to kwestia wyświetlenia filmiku, a nie narzucenia ograniczeń na gracza. Żeby spełnić ten postulat EET znosi ograniczenia w podróżowaniu pomiędzy już odwiedzonymi obszarami, używa ciągłej numeracji rozdziałów i dziennika, korzysta z tej samej mapy świata we wszystkich obszarach i oferuje ciągłość przygody pomiędzy kolejnymi etapami gry. Drugim postulatem jest zrobienie z EET platformy przyjaznej modderom i oferującej więcej niż oryginalne gry (i BGT), dzięki spełnieniu pierwszego postulatu. W chwili obecnej nie znajdziesz nic ciekawego do roboty odwiedzając stare obszary (no chyba że robisz to w celu wykonania jakiegoś pominiętego wcześniej questu lub odzyskania przedmiotów), jednak nic nie stoi na przeszkodzie, żeby w przyszłości powstały mody dodające nowe niespodzianki dla wysoko poziomowych drużyn na starych obszarach. Dzięki nowym możliwościom silnika łatwiej też zaimplementować bajery z tym związane, przykładowo nowy system <a href="http://gibberlings3.net/forums/index.php?showtopic=27181">spawnowania potworów</a> w zależności od etapu gry, co może okazać się przydatne dla modderów zainteresowanych urozmaiceniem rozgrywki dla powracających drużyn.</p>
 
 <a id="Can I play EET in cooperative multiplayer?" name="Can I play EET in cooperative multiplayer?"></a>
 <h3>Czy można grać w trybie multiplayer ze znajomymi?</h3>

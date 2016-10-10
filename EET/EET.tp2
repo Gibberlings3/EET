@@ -75,7 +75,6 @@ INCLUDE ~EET/lib/pcu_dict.tph~
 ///// Detect mods installed on BG:EE                   \\\\\
 /////                                                  \\\\\
 
-OUTER_SET allow_mod = 0
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~ //removes "Recently uninstalled" lines
@@ -95,23 +94,12 @@ ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 		PATCH_PRINT ~%cntrow% BG:EE mods detected. Checking compatibility with EET...~
 		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 			READ_2DA_ENTRY cnt 0 1 "col1"
-			INNER_ACTION BEGIN
-				COPY - ~EET/tbl/compatibility.tbl~ ~EET/tbl~
-					COUNT_2DA_ROWS 1 "cntrow2"
-					FOR (cnt2 = 0; cnt2 < "%cntrow2%"; cnt2 = cnt2 + 1) BEGIN
-						READ_2DA_ENTRY cnt2 0 1 "compareWith"
-						PATCH_IF ("%col1%" STR_EQ "%compareWith%") BEGIN
-							SET allow_mod = 1
-						END
-					END
-					PATCH_IF ("%allow_mod%" = 1) BEGIN
-						PATCH_PRINT ~%col1% BG:EE component detected~
-						SET allow_mod = 0
-					END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Mm]~ = 0) BEGIN
-						PATCH_WARN ~WARNING: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
-					END ELSE BEGIN
-						PATCH_FAIL @900008 //%col1% BG:EE mod is not recognized by EET, so it can't be imported to BG2:EE with EET
-					END
+			PATCH_IF (FILE_CONTAINS_EVALUATED (~EET/tbl/compatibility.tbl~ ~^%col1% ~)) BEGIN
+				PATCH_PRINT ~%col1% BG:EE component detected~
+			END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Mm]~ = 0) BEGIN
+				PATCH_WARN ~WARNING: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
+			END ELSE BEGIN
+				PATCH_FAIL @900008 //%col1% BG:EE mod is not recognized by EET, so it can't be imported to BG2:EE with EET
 			END
 		END
 END

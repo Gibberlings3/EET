@@ -107,14 +107,11 @@
 <p><strong>After the core component is installed, your game folder should then contain additional setup-EET_end.exe file. Only the last setup-EET_end.exe component is REQUIRED. It should be installed AFTER ALL OTHER MODS (at least after any mod that modifies dialogues, so for example EET Tweaks can be installed later, but to be sure always try to keep it at the end of your installation order, even if other readme files says otherwise).</strong></p>
 </div>
 
-<p>setup-EET_end overall offers 3 components:</p>
-<ul>
-	<li><strong>Update old saves to work with new installation</strong> - OPTIONAL - refer to <a href="#What about compatibility with saves?">F.A.Q.</a> for more info. Notice that if you're using optional BP-BGT Worldmap mod this component must be installed AFTER it. This component should be installed BEFORE 'Finalise EET' component that overwrites files needed to update saves from previous installation.</li>
-	<li><strong>Alternative GUI (SoD)</strong> - OPTIONAL - swaps the in-game BG2:EE GUI with the GUI imported from SoD expansion.</li>
-	<li><strong>Finalise EET</strong> - REQUIRED - finalises the EET installation (required before starting the game).</li>
-</ul>
+<p>Once the component is installed and you decide to integrate more mods you can safely uninstall it by running setup-EET_end.exe and than install it again once you are satisfied with your mod selection. No problems with reinstalling it too.</p>
 
-<p>Once the final EET component is installed and you decide to integrate more mods you can safely uninstall it by running setup-EET_end.exe and than install it again once you are satisfied with your mod selection. No problems with reinstalling it too.</p>
+<h3>Optional alternative GUI (setup-EET_gui)</h3>
+
+<p>This component installs optional Siege of Dragonspear <acronym title="Graphical User Interface">GUI</acronym>. You can install it before or after setup-EET_end.</p>
 
 <h3>Auto-installation (for expert users)</h3>
 
@@ -144,12 +141,13 @@
 		<td><em>[flags]</em></td>
 		<td class="grow">
 		<p>Any combination of below flags should be typed as one string (no whitespaces)</p>
-		<p>m or M - suppress failed installation message that normally shows up if BG:EE installation contains mods not listed on EET BG:EE mods compatibility list (not recommended unless you really know what you are doing).</p>
+		<p>m or M - suppress failed installation message that normally shows up if BG:EE installation contains mods not listed on EET BG:EE mods compatibility list (not recommended unless you really know what you are doing)</p>
 		<p>d or D - keep EET installation files (at least 3.2GB) after the installation is complete (for debug purposes only, they are not necessary to uninstall/reinstall the mod)</p>
+		<p>s or S - EET desktop shortcut won't be created</p>
 		<p>p or P - pre-define the full path to the Baldur's Gate: Enhanced Edition directory; if the path is invalid, setup will prompt for a valid path</p>
 		</td>
-		</tr>
-		<tr>
+	</tr>
+	<tr>
 		<td><em>[path]</em></td>
 		<td class="grow">
 		<p>the full path, in quotes, to your Baldur's Gate: Enhanced Edition installation directory, used in conjunction with p or P in <em>[flags]</em></p>
@@ -161,17 +159,17 @@
 <p>Example:</p>
 
 <div class="code">
-<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list p "C:\Program Files (x86)\BeamDog\Games\00806"</p>
+<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list sp "C:\Program Files (x86)\BeamDog\Games\00806"</p>
 </div>
 
-<p>This construction installs EET with the English language and pre-defines the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
+<p>This construction will install EET with the English language, skip desktop shortcut creation and pre-define the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
 
 <hr>
 
 <p><strong>Finalise EET (setup-EET_end)</strong></p>
 
 <div class="code">
-<p>setup-EET_end.exe --force-install-list <em>[number]</em> --language <em>X</em></p>
+<p>setup-EET_end.exe --force-install 0 --language <em>X</em> --args-list <em>[flags]</em></p>
 </div>
 
 <p>Parameters:</p>
@@ -189,11 +187,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td><em>[number]</em></td>
+		<td><em>[flags]</em></td>
 		<td class="grow">
-		<p>0 - Update old saves to work with new installation<br />
-		1 - Alternative GUI (SoD)<br />
-		2 - Finalise EET (last mod in install order)</p>
+		<p>y or Y - <a href="#What about compatibility with saves?">updates all save files</a></p>
 		</td>
 	</tr>
 </table>
@@ -202,10 +198,18 @@
 <p>Example:</p>
 
 <div class="code">
-<p>setup-EET_end.exe --force-install-list 1 2 --language 0</p>
+<p>setup-EET_end.exe --force-install 0 --language 0</p>
 </div>
 
-<p>This construction forces WeiDU to use English language, installs optional GUI switch component and REQUIRED component that finalises EET installation.</p>
+<p>This construction forces WeiDU to use English language and installs REQUIRED component that finalises EET installation.</p>
+
+<hr>
+
+<p><strong>Optional alternative GUI (setup-EET_gui)</strong></p>
+
+<div class="code">
+<p>setup-EET_gui.exe --force-install 0</p>
+</div>
 
 </div>
 <!-- ================== F A Q ================== --><a id="faq" name="faq"></a>
@@ -224,7 +228,6 @@
 	<li><a href="#What about compatibility with saves?">What about compatibility with saves?</a></li>
 	<li><a href="#How does NPC continuity work in EET?">How does NPC continuity work in EET?</a></li>
 	<li><a href="#What's the point in lifting restriction for travelling back to old areas?">What's the point in lifting restriction for travelling back to old areas?</a></li>
-	<li><a href="#Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!">Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!</a></li>
 	<li><a href="#Can I play EET in cooperative multiplayer?">Can I play EET in cooperative multiplayer?</a></li>
 </ul>
 
@@ -238,7 +241,7 @@
 
 <a id="What are the differences between EET and the original Siege of Dragonspear expansion?" name="What are the differences between EET and the original Siege of Dragonspear expansion?"></a>
 <h3>What are the differences between EET and the original Siege of Dragonspear expansion?</h3>
-<p>Vanilla SoD blocks access to areas after moving from chapter to chapter which is against EET goals. While this design decision is still true in EET for now we're planning to change it to work more like in BG1 and BG2 (areas remain open in later parts of the story). We are also planning to restore the proper playable SoD ending that have been for some reason completely disabled in the final game. Other than this planned features SoD worldmap is already merged with EET Worldmap and after finishing the story you will be automatically migrated into BG2. On top of that EET restores extended SoD ending (for some reason vanilla SoD has cut out playable part of the final scene).</p>
+<p>Vanilla SoD blocks access to areas after moving from chapter to chapter which is against EET goals, so it's no longer a case here (areas always remain open). SoD worldmap has been merged with EET Worldmap. After finishing the story you will be automatically migrated into BG2. On top of that EET restores extended SoD ending (for some reason vanilla SoD has cut out playable part of the final scene).</p>
 
 <a id="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?"></a>
 <h3>What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?</h3>
@@ -270,19 +273,19 @@
 
 <a id="How to add EET compatibility for other mods?" name="How to add EET compatibility for other mods?"></a>
 <h3>How to add EET compatibility for other mods?</h3>
-<p>Adopting existing mods to conventions and technical features used by EET is relatively easy and intuitive thanks to modder's resources and tools included in EET package that can be used to drastically reduce time needed for such conversion. Brief explanation of the scope of needed changes is available in <a href="http://gibberlings3.net/forums/index.php?showtopic=27751">this forum topic</a>, where we also provide support for modders converting their mods to support EET. Please refer to the <a href="docs/Modder's Notes.html">Modder's Notes</a> for detailed information regarding this task.</p>
+<p>Adopting existing mods to conventions and technical features used by EET is relatively easy and intuitive thanks to modder's resources and tools included in EET package that can be used to drastically reduce time needed for such conversion. Explanation of the scope of needed changes as well as guides on each step of accomplishing particular modding tasks without breaking compatibility with other platforms are available in <a href="docs/Modder's Notes.html">Modder's Notes</a>.</p>
 
 <a id="What about compatibility with saves?" name="What about compatibility with saves?"></a>
 <h3>What about compatibility with saves?</h3>
-<p>EET introduces a new feature that allows you to use saves made on old EET installation even if you installed whole new game with different selection of mods. All saves can be updated for this purpose via setup-EET_end first component. Files needed to make it work are created by 'Finalise EET' component within EET 'save' directory.</p>
+<p>Saves in EET behave exactly the same as in vanilla games which means you won't encounter any save problems when it comes to BG:EE, SoD and BG2:EE vanilla content, regardless of language chosen during installation and mod selection. It's also possible to share saves between different players without issues. Like in vanilla games this functionality is not extended to mod content (mods not related to EET don't use persistent TLK entries). There is however an option to update mod added string references in saves via setup-EET_end component installation (you will be asked about it if files needed for update from previous installation are available within saves directory). If you didn't use other mods that add text to game than there is no need to update saves between different installations at all.</p>
 
-<p>Save games from original BG:EE and BG2:EE are not directly supported - you need to start a new game.</p>
+<p>Save games from original BG:EE, SoD and BG2:EE are not directly supported - you need to start a new game.</p>
 
 <a id="How does NPC continuity work in EET?" name="How does NPC continuity work in EET?"></a>
 <h3>How does NPC continuity work in EET?</h3>
 <p>BG1 to SoD migration works like in vanilla SoD (all of your party moves with you to Korlasz Family Tomb).</p>
 
-<p>Character migration to BG2 starts at the end of SoD. Some characters are not continuous (those without BG2 content) and are disabled immediately, whereas others appear in Shadows of Amn and so continuity is required. Continuity only occurs when a joinable NPC was in your party at any point during BG1 or SoD (even if you didn't had that character in your end-game party he/she is still valid for transition) and is not dead. After character is moved to appropriate area some adjustments are being made if applicable (attribute changes, alignment, portrait, soundset, item, XP, dialogue and script updates). Otherwise, the appropriate level of the Shadows of Amn-resident joinable NPC is created or character doesn't show up at all if NPC has been killed during BG1 (except Imoen and Edwin due to plot requirements).</p>
+<p>Character migration to BG2 starts at the end of SoD. Some characters are not continuous (those without BG2 content) and are disabled immediately, whereas others appear in Shadows of Amn and so continuity is required. Continuity only occurs when a joinable NPC was in your party at any point during BG1 or SoD (even if you didn't had that character in your end-game party he/she is still valid for transition) and is not dead. After character is moved to appropriate area some adjustments are being made if applicable (alignment, soundset, items, XP, dialogue and script updates). Otherwise, the appropriate level of the Shadows of Amn-resident joinable NPC is created or character doesn't show up at all if NPC has been killed during BG1 (except Imoen and Edwin due to plot requirements).</p>
 
 <p>Like in vanilla game at the end of BG2 your party migrates to ToB. What has been changed is Fate Spirit old party member summoning mechanics. It no longer spawns new versions of creatures but moves characters from BG2 areas to Pocket Plane. Fate Spirit summoning NPC list is created dynamically depending on who you met during your BG1 and BG2 travels. For continuity sake NPCs that you don't know won't even show up on the list. During Fate Spirit dialogue you can receive one of 3 responses to your request:</p>
 <ul>
@@ -293,11 +296,7 @@
 
 <a id="What's the point in lifting restriction for travelling back to old areas?" name="What's the point in lifting restriction for travelling back to old areas?"></a>
 <h3>What's the point in lifting restriction for travelling back to old areas?</h3>
-<p>Maybe it's just me, but I've never accepted BGT as a true seamless experience because the game still felt to me like 3 completely separate campaigns with BG1->BG2 transition added on top of it. As you can read in the beginning of the readme, the main goal of EET is not simple merging of the games, but actually make it feel like a one, continuous journey. In order to achieve it EET lifts travelling to old areas limitations, provides continuous journal, uses the same worldmap during whole game, and offers seamless transitions between story arcs. The second goal of EET is becoming a mod friendly platform with additional modding possibilities that comes with fulfilling the first goal. Currently there is nothing interesting in old areas but we hope that modders will be interested in creating new adventures and surprises designed for higher level parties during BG2 and/or ToB portion of the game. Also thanks to the enhancements made to EE engine it's now possible to create <a href="http://gibberlings3.net/forums/index.php?showtopic=27181">custom spawns</a> for high level parties without tons of code or conflicts, which may prove useful for hypothetical mods that could try to make old places interesting for returning parties. In other words it can be treated as a playground for modders to add new stuff to the game.</p>
-
-<a id="Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!" name="Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!"></a>
-<h3>Why EET aims to open access to BG1 areas so early in BG2? It can unbalance the game!</h3>
-<p>Free access to old areas indeed can unbalance early BG2 game, as it will be easier to get good items that the party could store somewhere during BG1 portion of the game, which creates another way to exploit the game for players that cannot refrain themselves from taking advantage of it. For this reason, once the functionality is fully implemented you will be able to install new <a href="https://github.com/K4thos/EET_Tweaks">EET Tweaks</a> component that can block access to them entirely or delay it for the chapter of your choice. The reason why such tweak is an opt-out option (you need to install separate component to get rid of it) instead of opt-in option is mostly related to the above mentioned second goal of the EET. Optional open travelling by default would drastically reduce amount of people playing with it (that's always the case for optional stuff) which is an equivalent of smaller player base for mods that aims to add new content to BG1 areas in BG2 portion of the game. So the end result would be smaller chance that anyone would be even interested in creating such content. If someone will take advantage of these new possibilities remains to be seen. Leaving the base game without such limitations will hopefully positively contribute to achieve this goal.</p>
+<p>Maybe it's just me, but I've never accepted BGT as a true seamless experience because the game still felt to me like 3 completely separate campaigns with BG1->BG2 transition added on top of it. As you can read in the beginning of the readme, the main goal of EET is not simple merging of the games, but actually to make it feel like a one, continuous journey. In order to achieve it EET lifts restrictions in travelling to old areas, provides continuous journal and chapter system, uses the same worldmap during whole game, and offers seamless transitions between story arcs. The second goal of EET is becoming a mod friendly platform with additional modding possibilities that comes with fulfilling the first goal. Currently there is nothing interesting in old areas but we hope that modders will be interested in creating new adventures and surprises designed for higher level parties during BG2 and/or ToB portion of the game. In other words it can be treated as a playground for modders to add new stuff to the game.</p>
 
 <a id="Can I play EET in cooperative multiplayer?" name="Can I play EET in cooperative multiplayer?"></a>
 <h3>Can I play EET in cooperative multiplayer?</h3>
