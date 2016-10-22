@@ -17,6 +17,14 @@ showTextFlash = function (title, str, displayTime)
 	textflashidx = textflashidx + 1
 end
 
+--increase chapter variable
+function incrChapter(amount)
+	if ( ((chapter + amount) > Infinity_GetMaxChapterPage()) or ((chapter + amount) < 0 ) ) then
+		return
+	end
+	chapter = chapter + amount
+end
+
 --journal chapter labels
 chapterText = function ()
 	if(chapter < 0) then

@@ -8545,6 +8545,29 @@ menu
 	ignoreesc
 	align center center
 	onOpen "
+		--'Active Campaign' INI setting is not automatically updated by MoveToCampaign action
+		--there is no known way to retrieve in-game variable from within GUI, so we're checking Infinity_GetMaxChapterPage() instead
+		checkCampaign = Infinity_GetINIValue('Program Options','Active Campaign')
+		local chapter = Infinity_GetMaxChapterPage()
+		if (chapter == 0) and (checkCampaign ~= const.START_CAMPAIGN_BG1) and (checkCampaign ~= const.START_CAMPAIGN_BP1) and (checkCampaign ~= const.START_CAMPAIGN_BP2) and (checkCampaign ~= const.START_CAMPAIGN_TUT)) then
+			currentCampaign = const.START_CAMPAIGN_BG1
+		elseif (chapter > 0) and (chapter < 7) and (checkCampaign ~= const.START_CAMPAIGN_BG1) then
+			currentCampaign = const.START_CAMPAIGN_BG1
+		elseif (chapter == 7) and (checkCampaign ~= const.START_CAMPAIGN_BG1) and (checkCampaign ~= const.START_CAMPAIGN_SOD) then
+			currentCampaign = const.START_CAMPAIGN_SOD
+		elseif (chapter > 7) and (chapter < 13) and (checkCampaign ~= const.START_CAMPAIGN_SOD) then
+			currentCampaign = const.START_CAMPAIGN_SOD
+		elseif (chapter == 13) and (checkCampaign ~= const.START_CAMPAIGN_SOD) and (checkCampaign ~= const.START_CAMPAIGN_SOA) then
+			currentCampaign = const.START_CAMPAIGN_SOA
+		elseif (chapter > 13) and (chapter < 20) and (checkCampaign ~= const.START_CAMPAIGN_SOA) then
+			currentCampaign = const.START_CAMPAIGN_SOA
+		elseif (chapter >= 20) and (checkCampaign ~= const.START_CAMPAIGN_TOB) then
+			currentCampaign = const.START_CAMPAIGN_TOB
+		end
+		if (checkCampaign ~= currentCampaign) then
+			Infinity_SetINIValue('Program Options','Active Campaign',currentCampaign)
+		end
+		
 		versionString = CBaldurChitin:GetVersionString()
 		pushSidebars()
 	"
@@ -9087,6 +9110,61 @@ menu
 	button
 	{
 		area 286 706 230 40
+		bam GUIBUTMT
+		text "REPLAY_BUTTON"
+		text style 'button_sod'
+		clickable lua "chapterScreen:IsReplayButtonClickable()"
+		action
+		"
+			chapterScreen:OnReplayButtonClick()
+		"
+	}
+}
+menu
+{
+	name 'EPILOGUE'
+	align center center
+	ignoreEsc
+	
+	label
+	{
+		area 0 0 1024 768
+		mosaic "NPCCHAP"
+	}
+	label
+	{
+		area 106 230 210 330
+		bitmap lua "epilogueImage"
+	}
+	text
+	{
+		name "text_CHAPTERSCROLL_item"
+		area 424 128 540 534
+		text lua "text_CHAPTERSCROLL"
+		text style 'normal_sod'
+		scrollbar 'GUISCRC'
+		scrollbar func 'UpdateChapterScroll'
+		scrollbar hide lua 'text_CHAPTERSCROLL_auto == 1'
+		action
+		"
+			text_CHAPTERSCROLL_auto = 0
+		"
+	}
+	button
+	{
+		area 590 708 234 44
+		bam GUIBUTMT
+		text "DONE_BUTTON"
+		text style 'button_sod'
+		clickable lua "chapterScreen:IsDoneButtonClickable()"
+		action
+		"
+			chapterScreen:OnDoneButtonClick()
+		"
+	}
+	button
+	{
+		area 252 708 234 44
 		bam GUIBUTMT
 		text "REPLAY_BUTTON"
 		text style 'button_sod'

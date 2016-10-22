@@ -9,6 +9,10 @@ LANGUAGE ~Polski (Polish)~
 	~pl_PL~
 	~EET/lang/pl_PL/prompts.tra~
 	~EET/lang/pl_PL/setup.tra~
+LANGUAGE ~Spanish~
+	~es_ES~
+	~EET/lang/es_ES/prompts.tra~
+	~EET/lang/es_ES/setup.tra~
 /*LANGUAGE ~Deutsch (German)~
 	~de_DE~
 	~EET/lang/de_DE/prompts.tra~
@@ -16,11 +20,7 @@ LANGUAGE ~Polski (Polish)~
 LANGUAGE ~French~
 	~fr_FR~
 	~EET/lang/fr_FR/prompts.tra~
-	~EET/lang/fr_FR/setup.tra~
-LANGUAGE ~Spanish~
-	~es_ES~
-	~EET/lang/es_ES/prompts.tra~
-	~EET/lang/es_ES/setup.tra~*/
+	~EET/lang/fr_FR/setup.tra~*/
 
 BEGIN @910001 //Finalise EET (last mod in install order)
 REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910002 //This component requires EET core component to be installed first
@@ -31,7 +31,8 @@ CLEAR_ARRAYS
 ///// Save patcher                                     \\\\\
 /////                                                  \\\\\
 
-ACTION_IF FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~
+ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Yy]~ = 1)
+AND FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~
 AND FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~
 AND !FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~
 AND !FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~ BEGIN

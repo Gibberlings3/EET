@@ -26,6 +26,14 @@ LANGUAGE ~Polski (Polish)~
 	~EET/lang/pl_PL/dialog.tra~
 	~EET/lang/pl_PL/2da.tra~
 	~EET/lang/pl_PL/compatibility.tra~
+LANGUAGE ~Spanish~
+	~es_ES~
+	~EET/lang/es_ES/prompts.tra~
+	~EET/lang/es_ES/setup.tra~
+	~EET/lang/es_ES/chapters.tra~
+	~EET/lang/es_ES/dialog.tra~
+	~EET/lang/es_ES/2da.tra~
+	~EET/lang/es_ES/compatibility.tra~
 /*LANGUAGE ~Deutsch (German)~
 	~de_DE~
 	~EET/lang/de_DE/prompts.tra~
@@ -41,24 +49,10 @@ LANGUAGE ~French~
 	~EET/lang/fr_FR/chapters.tra~
 	~EET/lang/fr_FR/dialog.tra~
 	~EET/lang/fr_FR/2da.tra~
-	~EET/lang/fr_FR/compatibility.tra~
-LANGUAGE ~Spanish~
-	~es_ES~
-	~EET/lang/es_ES/prompts.tra~
-	~EET/lang/es_ES/setup.tra~
-	~EET/lang/es_ES/chapters.tra~
-	~EET/lang/es_ES/dialog.tra~
-	~EET/lang/es_ES/2da.tra~
-	~EET/lang/es_ES/compatibility.tra~*/
+	~EET/lang/fr_FR/compatibility.tra~*/
 
 BEGIN ~Core EET (game importation)~
 REQUIRE_PREDICATE MOD_IS_INSTALLED ~EET/EET.tp2~ 0 @900009 //This component requires EET initialise component to be installed first
-
-ACTION_FOR_EACH var IN ~~ F BEGIN
-	ACTION_IF FILE_EXISTS ~EET/temp/dialog%var%.bak~ BEGIN
-		COPY_LARGE + ~EET/temp/dialog%var%.bak~ ~lang/%LANGUAGE_BG2%~
-	END
-END
 
 PRINT ~INTERACTIVE = %INTERACTIVE%~
 PRINT ~LANGUAGE = %LANGUAGE%~
@@ -81,6 +75,12 @@ COPY ~weidu.conf~ ~weidu.conf~
 	END
 	PATCH_PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 BUT_ONLY
+
+ACTION_FOR_EACH var IN ~~ F BEGIN
+	ACTION_IF FILE_EXISTS ~EET/temp/dialog%var%.bak~ BEGIN
+		COPY_LARGE + ~EET/temp/dialog%var%.bak~ ~lang/%LANGUAGE_BG2%~
+	END
+END
 
 OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
 OUTER_SPRINT slash ~/~
@@ -2429,10 +2429,11 @@ COPY ~.../blank.txt~ ~override/EET.flag~
 APPEND ~EET.flag~ ~EET_JOURNAL~
 PRINT ~'EET.flag' file is used by WeiDU to recognize the installation as EET~
 
+COPY + ~EET/lib/EET_end.tp2~ ~EET_end.tp2~
+	~EET/lib/EET_gui.tp2~ ~EET_gui.tp2~
+
 COPY ~%WEIDU_EXECUTABLE%~ ~setup-EET_end%exe%~
 	~%WEIDU_EXECUTABLE%~ ~setup-EET_gui%exe%~
-	~EET/lib/EET_end.tp2~ ~EET_end.tp2~
-	~EET/lib/EET_gui.tp2~ ~EET_gui.tp2~
 
 ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Ss]~ = 0) BEGIN
 	PRINT ~Skipping shortcut creation~
