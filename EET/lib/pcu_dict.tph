@@ -1,0 +1,2828 @@
+/////                                                  \\\\\
+///// Preparing MUS variables                          \\\\\
+/////                                                  \\\\\
+
+//automatically assigned variables via bg2_2DA.tph
+/*ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
+	1	=>	107	//CDay1
+	2	=>	108	//CDay2
+	3	=>	109	//CNite
+	4	=>	110	//Chants
+	5	=>	111	//Dream
+	6	=>	0	//Unused01
+	7	=>	112	//FDay
+	8	=>	113	//FNite
+	9	=>	114	//PDay
+	10	=>	115	//PNite
+	11	=>	116	//Temple
+	12	=>	0	//Unused02
+	13	=>	117	//TDay1
+	14	=>	118	//TDay2
+	15	=>	119	//TNite
+	16	=>	120	//Dung1
+	17	=>	121	//Dung2
+	18	=>	122	//Dung3
+	19	=>	123	//BC3
+	20	=>	124	//BC4
+	21	=>	125	//BD4
+	22	=>	126	//BD5
+	23	=>	127	//BL1
+	24	=>	128	//BL2
+	25	=>	129	//BF3
+	26	=>	130	//BF4
+	27	=>	131	//BP3
+	28	=>	132	//BP4
+	29	=>	133	//BW1
+	30	=>	0	//Unused03
+	31	=>	134	//Fort
+	32	=>	135	//Chapter
+	33	=>	136	//BGTHEME
+	34	=>	66	//TAV5
+	35	=>	66	//Tav1_d
+	36	=>	67	//TAV6
+	37	=>	137	//TAV7
+	38	=>	138	//TAV8
+	39	=>	0	//Unused05
+	40	=>	0	//Unused06
+	41	=>	0	//Unused07
+	42	=>	0	//Unused08
+	43	=>	0	//Unused09
+	44	=>	0	//Unused10
+	45	=>	0	//Unused11
+	46	=>	0	//Unused12
+	47	=>	0	//Unused13
+	48	=>	0	//Unused14
+	49	=>	0	//Unused15
+	50	=>	0	//Unused16
+	51	=>	0	//Unused17
+	52	=>	0	//Unused18
+	53	=>	0	//Unused19
+	54	=>	0	//Unused20
+	55	=>	0	//Unused21
+	56	=>	0	//Unused22
+	57	=>	0	//Unused23
+	58	=>	0	//Unused24
+	59	=>	0	//Unused25
+	60	=>	139	//BD7100
+	61	=>	140	//BD7200
+	62	=>	141	//BDBGMX
+	63	=>	142	//BDBGNX
+	64	=>	143	//Fort2
+	65	=>	144	//INite
+	66	=>	145	//BDDRM1
+	67	=>	146	//BD100X
+	68	=>	0	//Unused25
+	69	=>	147	//BD200X
+	70	=>	148	//BD300X
+	71	=>	149	//BD410X
+	72	=>	150	//BD440X
+	73	=>	151	//BD510X
+	74	=>	152	//SoDTheme
+	75	=>	153	//BDCW
+	76	=>	154	//BDCU
+	77	=>	155	//BDBFB
+	78	=>	156	//BDDSB
+	79	=>	157	//BDBEC
+	80	=>	158	//BDLBB
+	81	=>	136	//NewTheme
+	82	=>	159	//OldTheme
+	83	=>	160	//BDMANX
+	84	=>	102	//BPC1
+	85	=>	103	//BPC2
+	86	=>	104	//BPC3
+	87	=>	105	//BPStg
+	88	=>	106	//BPTheme
+	89	=>	161	//NAdoys
+	90	=>	162	//NGoblin
+	91	=>	163	//RPeaks
+END*/
+
+/////                                                  \\\\\
+///// Preparing SMTABLES variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing STATE variables                        \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_state BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing PRO IDS variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing Kit IDS variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing Race IDS variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing Class IDS variables                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing Specific IDS variables                 \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing CHAPTER variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_chapter BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing SAVE variables                         \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_save BEGIN
+	2 => 0 //000000002-Final-Save => 000000000-Auto-Save
+	18 => 25 //000000007-Prologue Start
+	11 => 26 //000000008-Chapter 1 Start
+	12 => 27 //000000009-Chapter 2 Start
+	13 => 28 //000000010-Chapter 3 Start
+	14 => 29 //000000011-Chapter 4 Start
+	15 => 30 //000000012-Chapter 5 Start
+	16 => 31 //000000013-Chapter 6 Start
+	17 => 32 //000000014-Chapter 7 Start
+	19 => 33 //000000015-Chapter 7 Dungeon
+	20 => 34 //000000016-Chapter 8 Start
+	21 => 35 //000000017-Chapter 9 Start
+	22 => 36 //000000018-Chapter 10 Start
+	23 => 37 //000000019-Chapter 11 Start
+	24 => 38 //000000020-Chapter 12 Start
+	25 => 39 //000000021-Chapter 13 Start
+END
+
+/////                                                  \\\\\
+///// Preparing DV variables                           \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dv BEGIN
+	"IMOEN"	=>	"IMOEN2"	//compatibility with SOA death variable
+END
+
+/////                                                  \\\\\
+///// Preparing GLOBAL variables (BCS/BAF/DLG/D)       \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_var BEGIN
+	"AttackedThieves"	=>	"BG_AttackedThieves"	//same as in BGT
+	//Steam achievements
+	"ACH_FLYING"	=>	"ACH_FLYING_BG1"
+	"ACH_FRIEND_OF"	=>	"ACH_FRIEND_OF_BG1"
+	"ACH_LORD_OF"	=>	"ACH_LORD_OF_BG1"
+	"ACH_SACRIFICES_MUST"	=>	"ACH_SACRIFICES_MUST_BG1"
+	"ACH_LEAVE_NO"	=>	"ACH_LEAVE_NO_BG1"
+END
+
+/////                                                  \\\\\
+///// Preparing 2DA variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_2da BEGIN
+	"CHPTXT9"	=>	"SODTXT9"
+	"CHPTXT10"	=>	"SODTXT10"
+END
+
+/////                                                  \\\\\
+///// Preparing ARE/WED/MOS variables                  \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_are BEGIN
+	"AR0002"	=>	"BG0002"
+	"AR0004"	=>	"BG0004"
+	"AR0005"	=>	"BG0005"
+	"AR0006"	=>	"BG0006"
+	"AR0007"	=>	"BG0007"
+	"AR0008"	=>	"BG0008"
+	"AR0009"	=>	"BG0009"
+	"AR0010"	=>	"BG0010"
+	"AR0011"	=>	"BG0011"
+	"AR0012"	=>	"BG0012"
+	"AR0013"	=>	"BG0013"
+	"AR0014"	=>	"BG0014"
+	"AR0015"	=>	"BG0015"
+	"AR0016"	=>	"BG0016"
+	"AR0017"	=>	"BG0017"
+	"AR0018"	=>	"BG0018"
+	"AR0019"	=>	"BG0019"
+	"AR0020"	=>	"BG0020"
+	"AR0021"	=>	"BG0021"
+	"AR0100"	=>	"BG0100"
+	"AR0101"	=>	"BG0101"
+	"AR0102"	=>	"BG0102"
+	"AR0103"	=>	"BG0103"
+	"AR0104"	=>	"BG0104"
+	"AR0105"	=>	"BG0105"
+	"AR0106"	=>	"BG0106"
+	"AR0107"	=>	"BG0107"
+	"AR0108"	=>	"BG0108"
+	"AR0109"	=>	"BG0109"
+	"AR0110"	=>	"BG0110"
+	"AR0111"	=>	"BG0111"
+	"AR0112"	=>	"BG0112"
+	"AR0114"	=>	"BG0114"
+	"AR0115"	=>	"BG0115"
+	"AR0116"	=>	"BG0116"
+	"AR0117"	=>	"BG0117"
+	"AR0118"	=>	"BG0118"
+	"AR0119"	=>	"BG0119"
+	"AR0120"	=>	"BG0120"
+	"AR0121"	=>	"BG0121"
+	"AR0123"	=>	"BG0123"
+	"AR0125"	=>	"BG0125"
+	"AR0126"	=>	"BG0126"
+	"AR0127"	=>	"BG0127"
+	"AR0128"	=>	"BG0128"
+	"AR0129"	=>	"BG0129"
+	"AR0130"	=>	"BG0130"
+	"AR0131"	=>	"BG0131"
+	"AR0132"	=>	"BG0132"
+	"AR0133"	=>	"BG0133"
+	"AR0134"	=>	"BG0134"
+	"AR0135"	=>	"BG0135"
+	"AR0136"	=>	"BG0136"
+	"AR0137"	=>	"BG0137"
+	"AR0138"	=>	"BG0138"
+	"AR0139"	=>	"BG0139"
+	"AR0140"	=>	"BG0140"
+	"AR0141"	=>	"BG0141"
+	"AR0142"	=>	"BG0142"
+	"AR0143"	=>	"BG0143"
+	"AR0144"	=>	"BG0144"
+	"AR0145"	=>	"BG0145"
+	"AR0146"	=>	"BG0146"
+	"AR0148"	=>	"BG0148"
+	"AR0149"	=>	"BG0149"
+	"AR0150"	=>	"BG0150"
+	"AR0151"	=>	"BG0151"
+	"AR0152"	=>	"BG0152"
+	"AR0153"	=>	"BG0153"
+	"AR0154"	=>	"BG0154"
+	"AR0155"	=>	"BG0155"
+	"AR0156"	=>	"BG0156"
+	"AR0157"	=>	"BG0157"
+	"AR0158"	=>	"BG0158"
+	"AR0159"	=>	"BG0159"
+	"AR0160"	=>	"BG0160"
+	"AR0161"	=>	"BG0161"
+	"AR0162"	=>	"BG0162"
+	"AR0163"	=>	"BG0163"
+	"AR0164"	=>	"BG0164"
+	"AR0165"	=>	"BG0165"
+	"AR0166"	=>	"BG0166"
+	"AR0167"	=>	"BG0167"
+	"AR0168"	=>	"BG0168"
+	"AR0169"	=>	"BG0169"
+	"AR0170"	=>	"BG0170"
+	"AR0171"	=>	"BG0171"
+	"AR0200"	=>	"BG0200"
+	"AR0224"	=>	"BG0224"
+	"AR0225"	=>	"BG0225"
+	"AR0226"	=>	"BG0226"
+	"AR0300"	=>	"BG0300"
+	"AR0302"	=>	"BG0302"
+	"AR0303"	=>	"BG0303"
+	"AR0304"	=>	"BG0304"
+	"AR0305"	=>	"BG0305"
+	"AR0306"	=>	"BG0306"
+	"AR0307"	=>	"BG0307"
+	"AR0308"	=>	"BG0308"
+	"AR0400"	=>	"BG0400"
+	"AR0401"	=>	"BG0401"
+	"AR0500"	=>	"BG0500"
+	"AR0501"	=>	"BG0501"
+	"AR0502"	=>	"BG0502"
+	"AR0503"	=>	"BG0503"
+	"AR0504"	=>	"BG0504"
+	"AR0505"	=>	"BG0505"
+	"AR0506"	=>	"BG0506"
+	"AR0507"	=>	"BG0507"
+	"AR0508"	=>	"BG0508"
+	"AR0509"	=>	"BG0509"
+	"AR0510"	=>	"BG0510"
+	"AR0511"	=>	"BG0511"
+	"AR0512"	=>	"BG0512"
+	"AR0513"	=>	"BG0513"
+	"AR0514"	=>	"BG0514"
+	"AR0515"	=>	"BG0515"
+	"AR0516"	=>	"BG0516"
+	"AR0600"	=>	"BG0600"
+	"AR0601"	=>	"BG0601"
+	"AR0602"	=>	"BG0602"
+	"AR0603"	=>	"BG0603"
+	"AR0606"	=>	"BG0606"
+	"AR0607"	=>	"BG0607"
+	"AR0608"	=>	"BG0608"
+	"AR0609"	=>	"BG0609"
+	"AR0611"	=>	"BG0611"
+	"AR0612"	=>	"BG0612"
+	"AR0613"	=>	"BG0613"
+	"AR0614"	=>	"BG0614"
+	"AR0615"	=>	"BG0615"
+	"AR0616"	=>	"BG0616"
+	"AR0617"	=>	"BG0617"
+	"AR0618"	=>	"BG0618"
+	"AR0619"	=>	"BG0619"
+	"AR0620"	=>	"BG0620"
+	"AR0621"	=>	"BG0621"
+	"AR0700"	=>	"BG0700"
+	"AR0702"	=>	"BG0702"
+	"AR0703"	=>	"BG0703"
+	"AR0704"	=>	"BG0704"
+	"AR0705"	=>	"BG0705"
+	"AR0706"	=>	"BG0706"
+	"AR0707"	=>	"BG0707"
+	"AR0708"	=>	"BG0708"
+	"AR0709"	=>	"BG0709"
+	"AR0710"	=>	"BG0710"
+	"AR0711"	=>	"BG0711"
+	"AR0712"	=>	"BG0712"
+	"AR0713"	=>	"BG0713"
+	"AR0714"	=>	"BG0714"
+	"AR0715"	=>	"BG0715"
+	"AR0716"	=>	"BG0716"
+	"AR0717"	=>	"BG0717"
+	"AR0718"	=>	"BG0718"
+	"AR0719"	=>	"BG0719"
+	"AR0720"	=>	"BG0720"
+	"AR0721"	=>	"BG0721"
+	"AR0722"	=>	"BG0722"
+	"AR0723"	=>	"BG0723"
+	"AR0724"	=>	"BG0724"
+	"AR0725"	=>	"BG0725"
+	"AR0726"	=>	"BG0726"
+	"AR0800"	=>	"BG0800"
+	"AR0801"	=>	"BG0801"
+	"AR0802"	=>	"BG0802"
+	"AR0803"	=>	"BG0803"
+	"AR0804"	=>	"BG0804"
+	"AR0805"	=>	"BG0805"
+	"AR0806"	=>	"BG0806"
+	"AR0807"	=>	"BG0807"
+	"AR0808"	=>	"BG0808"
+	"AR0809"	=>	"BG0809"
+	"AR0810"	=>	"BG0810"
+	"AR0811"	=>	"BG0811"
+	"AR0812"	=>	"BG0812"
+	"AR0813"	=>	"BG0813"
+	"AR0814"	=>	"BG0814"
+	"AR0900"	=>	"BG0900"
+	"AR0901"	=>	"BG0901"
+	"AR1000"	=>	"BG1000"
+	"AR1001"	=>	"BG1001"
+	"AR1002"	=>	"BG1002"
+	"AR1003"	=>	"BG1003"
+	"AR1004"	=>	"BG1004"
+	"AR1005"	=>	"BG1005"
+	"AR1006"	=>	"BG1006"
+	"AR1007"	=>	"BG1007"
+	"AR1008"	=>	"BG1008"
+	"AR1009"	=>	"BG1009"
+	"AR1010"	=>	"BG1010"
+	"AR1100"	=>	"BG1100"
+	"AR1101"	=>	"BG1101"
+	"AR1102"	=>	"BG1102"
+	"AR1103"	=>	"BG1103"
+	"AR1104"	=>	"BG1104"
+	"AR1105"	=>	"BG1105"
+	"AR1106"	=>	"BG1106"
+	"AR1107"	=>	"BG1107"
+	"AR1108"	=>	"BG1108"
+	"AR1109"	=>	"BG1109"
+	"AR1110"	=>	"BG1110"
+	"AR1111"	=>	"BG1111"
+	"AR1112"	=>	"BG1112"
+	"AR1113"	=>	"BG1113"
+	"AR1114"	=>	"BG1114"
+	"AR1115"	=>	"BG1115"
+	"AR1116"	=>	"BG1116"
+	"AR1117"	=>	"BG1117"
+	"AR1200"	=>	"BG1200"
+	"AR1201"	=>	"BG1201"
+	"AR1202"	=>	"BG1202"
+	"AR1203"	=>	"BG1203"
+	"AR1204"	=>	"BG1204"
+	"AR1205"	=>	"BG1205"
+	"AR1206"	=>	"BG1206"
+	"AR1207"	=>	"BG1207"
+	"AR1208"	=>	"BG1208"
+	"AR1209"	=>	"BG1209"
+	"AR1210"	=>	"BG1210"
+	"AR1211"	=>	"BG1211"
+	"AR1212"	=>	"BG1212"
+	"AR1213"	=>	"BG1213"
+	"AR1214"	=>	"BG1214"
+	"AR1215"	=>	"BG1215"
+	"AR1300"	=>	"BG1300"
+	"AR1301"	=>	"BG1301"
+	"AR1302"	=>	"BG1302"
+	"AR1303"	=>	"BG1303"
+	"AR1304"	=>	"BG1304"
+	"AR1305"	=>	"BG1305"
+	"AR1306"	=>	"BG1306"
+	"AR1307"	=>	"BG1307"
+	"AR1308"	=>	"BG1308"
+	"AR1309"	=>	"BG1309"
+	"AR1310"	=>	"BG1310"
+	"AR1311"	=>	"BG1311"
+	"AR1312"	=>	"BG1312"
+	"AR1313"	=>	"BG1313"
+	"AR1314"	=>	"BG1314"
+	"AR1315"	=>	"BG1315"
+	"AR1316"	=>	"BG1316"
+	"AR1317"	=>	"BG1317"
+	"AR1320"	=>	"BG1320"
+	"AR1400"	=>	"BG1400"
+	"AR1401"	=>	"BG1401"
+	"AR1402"	=>	"BG1402"
+	"AR1403"	=>	"BG1403"
+	"AR1404"	=>	"BG1404"
+	"AR1500"	=>	"BG1500"
+	"AR1501"	=>	"BG1501"
+	"AR1502"	=>	"BG1502"
+	"AR1503"	=>	"BG1503"
+	"AR1504"	=>	"BG1504"
+	"AR1505"	=>	"BG1505"
+	"AR1600"	=>	"BG1600"
+	"AR1601"	=>	"BG1601"
+	"AR1602"	=>	"BG1602"
+	"AR1603"	=>	"BG1603"
+	"AR1700"	=>	"BG1700"
+	"AR1800"	=>	"BG1800"
+	"AR1801"	=>	"BG1801"
+	"AR1802"	=>	"BG1802"
+	"AR1803"	=>	"BG1803"
+	"AR1804"	=>	"BG1804"
+	"AR1805"	=>	"BG1805"
+	"AR1806"	=>	"BG1806"
+	"AR1807"	=>	"BG1807"
+	"AR1808"	=>	"BG1808"
+	"AR1809"	=>	"BG1809"
+	"AR1900"	=>	"BG1900"
+	"AR1901"	=>	"BG1901"
+	"AR1902"	=>	"BG1902"
+	"AR1903"	=>	"BG1903"
+	"AR1904"	=>	"BG1904"
+	"AR1905"	=>	"BG1905"
+	"AR1906"	=>	"BG1906"
+	"AR1907"	=>	"BG1907"
+	"AR2000"	=>	"BG2000"
+	"AR2001"	=>	"BG2001"
+	"AR2002"	=>	"BG2002"
+	"AR2003"	=>	"BG2003"
+	"AR2004"	=>	"BG2004"
+	"AR2005"	=>	"BG2005"
+	"AR2006"	=>	"BG2006"
+	"AR2007"	=>	"BG2007"
+	"AR2008"	=>	"BG2008"
+	"AR2009"	=>	"BG2009"
+	"AR2010"	=>	"BG2010"
+	"AR2011"	=>	"BG2011"
+	"AR2012"	=>	"BG2012"
+	"AR2100"	=>	"BG2100"
+	"AR2101"	=>	"BG2101"
+	"AR2200"	=>	"BG2200"
+	"AR2215"	=>	"BG2215"
+	"AR2300"	=>	"BG2300"
+	"AR2301"	=>	"BG2301"
+	"AR2302"	=>	"BG2302"
+	"AR2303"	=>	"BG2303"
+	"AR2304"	=>	"BG2304"
+	"AR2305"	=>	"BG2305"
+	"AR2306"	=>	"BG2306"
+	"AR2400"	=>	"BG2400"
+	"AR2600"	=>	"BG2600"
+	"AR2602"	=>	"BG2602"
+	"AR2605"	=>	"BG2605"
+	"AR2606"	=>	"BG2606"
+	"AR2607"	=>	"BG2607"
+	"AR2608"	=>	"BG2608"
+	"AR2609"	=>	"BG2609"
+	"AR2610"	=>	"BG2610"
+	"AR2611"	=>	"BG2611"
+	"AR2612"	=>	"BG2612"
+	"AR2613"	=>	"BG2613"
+	"AR2614"	=>	"BG2614"
+	"AR2615"	=>	"BG2615"
+	"AR2616"	=>	"BG2616"
+	"AR2617"	=>	"BG2617"
+	"AR2618"	=>	"BG2618"
+	"AR2619"	=>	"BG2619"
+	"AR2626"	=>	"BG2626"
+	"AR2627"	=>	"BG2627"
+	"AR2628"	=>	"BG2628"
+	"AR2629"	=>	"BG2629"
+	"AR2630"	=>	"BG2630"
+	"AR2631"	=>	"BG2631"
+	"AR2632"	=>	"BG2632"
+	"AR2633"	=>	"BG2633"
+	"AR2643"	=>	"BG2643"
+	"AR2700"	=>	"BG2700"
+	"AR2800"	=>	"BG2800"
+	"AR2900"	=>	"BG2900"
+	"AR3000"	=>	"BG3000"
+	"AR3100"	=>	"BG3100"
+	"AR3200"	=>	"BG3200"
+	"AR3201"	=>	"BG3201"
+	"AR3202"	=>	"BG3202"
+	"AR3300"	=>	"BG3300"
+	"AR3301"	=>	"BG3301"
+	"AR3302"	=>	"BG3302"
+	"AR3303"	=>	"BG3303"
+	"AR3304"	=>	"BG3304"
+	"AR3305"	=>	"BG3305"
+	"AR3306"	=>	"BG3306"
+	"AR3307"	=>	"BG3307"
+	"AR3308"	=>	"BG3308"
+	"AR3309"	=>	"BG3309"
+	"AR3310"	=>	"BG3310"
+	"AR3311"	=>	"BG3311"
+	"AR3312"	=>	"BG3312"
+	"AR3313"	=>	"BG3313"
+	"AR3314"	=>	"BG3314"
+	"AR3315"	=>	"BG3315"
+	"AR3316"	=>	"BG3316"
+	"AR3317"	=>	"BG3317"
+	"AR3318"	=>	"BG3318"
+	"AR3319"	=>	"BG3319"
+	"AR3320"	=>	"BG3320"
+	"AR3321"	=>	"BG3321"
+	"AR3322"	=>	"BG3322"
+	"AR3323"	=>	"BG3323"
+	"AR3324"	=>	"BG3324"
+	"AR3325"	=>	"BG3325"
+	"AR3326"	=>	"BG3326"
+	"AR3327"	=>	"BG3327"
+	"AR3328"	=>	"BG3328"
+	"AR3329"	=>	"BG3329"
+	"AR3330"	=>	"BG3330"
+	"AR3331"	=>	"BG3331"
+	"AR3332"	=>	"BG3332"
+	"AR3333"	=>	"BG3333"
+	"AR3334"	=>	"BG3334"
+	"AR3335"	=>	"BG3335"
+	"AR3336"	=>	"BG3336"
+	"AR3337"	=>	"BG3337"
+	"AR3338"	=>	"BG3338"
+	"AR3339"	=>	"BG3339"
+	"AR3340"	=>	"BG3340"
+	"AR3341"	=>	"BG3341"
+	"AR3342"	=>	"BG3342"
+	"AR3343"	=>	"BG3343"
+	"AR3344"	=>	"BG3344"
+	"AR3345"	=>	"BG3345"
+	"AR3346"	=>	"BG3346"
+	"AR3347"	=>	"BG3347"
+	"AR3348"	=>	"BG3348"
+	"AR3349"	=>	"BG3349"
+	"AR3350"	=>	"BG3350"
+	"AR3351"	=>	"BG3351"
+	"AR3352"	=>	"BG3352"
+	"AR3353"	=>	"BG3353"
+	"AR3354"	=>	"BG3354"
+	"AR3355"	=>	"BG3355"
+	"AR3356"	=>	"BG3356"
+	"AR3357"	=>	"BG3357"
+	"AR3400"	=>	"BG3400"
+	"AR3401"	=>	"BG3401"
+	"AR3402"	=>	"BG3402"
+	"AR3500"	=>	"BG3500"
+	"AR3600"	=>	"BG3600"
+	"AR3601"	=>	"BG3601"
+	"AR3700"	=>	"BG3700"
+	"AR3800"	=>	"BG3800"
+	"AR3802"	=>	"BG3802"
+	"AR3900"	=>	"BG3900"
+	"AR3901"	=>	"BG3901"
+	"AR4000"	=>	"BG4000"
+	"AR4001"	=>	"BG4001"
+	"AR4002"	=>	"BG4002"
+	"AR4003"	=>	"BG4003"
+	"AR4004"	=>	"BG4004"
+	"AR4005"	=>	"BG4005"
+	"AR4006"	=>	"BG4006"
+	"AR4007"	=>	"BG4007"
+	"AR4008"	=>	"BG4008"
+	"AR4009"	=>	"BG4009"
+	"AR4010"	=>	"BG4010"
+	"AR4011"	=>	"BG4011"
+	"AR4012"	=>	"BG4012"
+	"AR4013"	=>	"BG4013"
+	"AR4014"	=>	"BG4014"
+	"AR4100"	=>	"BG4100"
+	"AR4101"	=>	"BG4101"
+	"AR4200"	=>	"BG4200"
+	"AR4201"	=>	"BG4201"
+	"AR4300"	=>	"BG4300"
+	"AR4400"	=>	"BG4400"
+	"AR4401"	=>	"BG4401"
+	"AR4500"	=>	"BG4500"
+	"AR4501"	=>	"BG4501"
+	"AR4600"	=>	"BG4600"
+	"AR4700"	=>	"BG4700"
+	"AR4701"	=>	"BG4701"
+	"AR4800"	=>	"BG4800"
+	"AR4801"	=>	"BG4801"
+	"AR4802"	=>	"BG4802"
+	"AR4803"	=>	"BG4803"
+	"AR4804"	=>	"BG4804"
+	"AR4805"	=>	"BG4805"
+	"AR4806"	=>	"BG4806"
+	"AR4807"	=>	"BG4807"
+	"AR4808"	=>	"BG4808"
+	"AR4809"	=>	"BG4809"
+	"AR4810"	=>	"BG4810"
+	"AR4900"	=>	"BG4900"
+	"AR4901"	=>	"BG4901"
+	"AR4902"	=>	"BG4902"
+	"AR4903"	=>	"BG4903"
+	"AR4904"	=>	"BG4904"
+	"AR4905"	=>	"BG4905"
+	"AR4906"	=>	"BG4906"
+	"AR4907"	=>	"BG4907"
+	"AR4908"	=>	"BG4908"
+	"AR4909"	=>	"BG4909"
+	"AR5000"	=>	"BG5000"
+	"AR5001"	=>	"BG5001"
+	"AR5100"	=>	"BG5100"
+	"AR5101"	=>	"BG5101"
+	"AR5102"	=>	"BG5102"
+	"AR5103"	=>	"BG5103"
+	"AR5200"	=>	"BG5200"
+	"AR5201"	=>	"BG5201"
+	"AR5202"	=>	"BG5202"
+	"AR5300"	=>	"BG5300"
+	"AR5400"	=>	"BG5400"
+	"AR5401"	=>	"BG5401"
+	"AR5402"	=>	"BG5402"
+	"AR5403"	=>	"BG5403"
+	"AR5404"	=>	"BG5404"
+	"AR5405"	=>	"BG5405"
+	"AR5406"	=>	"BG5406"
+	"AR5500"	=>	"BG5500"
+	"AR5506"	=>	"BG5506"
+	"AR5600"	=>	"BG5600"
+	"AR5601"	=>	"BG5601"
+	"AR5700"	=>	"BG5700"
+	"AR5701"	=>	"BG5701"
+	"AR5800"	=>	"BG5800"
+	"AR5801"	=>	"BG5801"
+	"AR5900"	=>	"BG5900"
+	"AR5901"	=>	"BG5901"
+	"AR6000"	=>	"BG6000"
+	"AR6001"	=>	"BG6001"
+	"AR6100"	=>	"BG6100"
+END
+
+/////                                                  \\\\\
+///// Preparing BAM / VVC variables                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN
+	"IAX1H04"	=>	"IAX1H04_"
+	"IBELT01"	=>	"IBELT01_"
+	"IBELT02"	=>	"IBELT02_"
+	"IBELT03"	=>	"IBELT03_"
+	"IBELT04"	=>	"IBELT04_"
+	"IBRAC01"	=>	"IBRAC01_"
+	"IBRAC06"	=>	"IBRAC06_"
+	"IBRAC08"	=>	"IBRAC08_"
+	"IBRAC09"	=>	"IBRAC09_"
+	"ICHAN01"	=>	"1CHAN01B"
+	"ICHAN02"	=>	"1CHAN02B"
+	"ICHAN03"	=>	"1CHAN03B"
+	"ICHAN04"	=>	"ICHAN04_"
+	"IGLEAT01"	=>	"1GLEAT01"
+	"IHAMM04"	=>	"IHAMM04_"
+	"IHELM05"	=>	"IHELM05_"
+	"ILEAT02"	=>	"1LEAT02"
+	"ILEAT03"	=>	"ILEAT03_"
+	"ILEAT05"	=>	"1LEAT05"
+	"ILEAT06"	=>	"1LEAT06"
+	"ILEAT07"	=>	"1LEAT07"
+	"ILEAT08"	=>	"1LEAT08"
+	"ILEAT10"	=>	"1LEAT10"
+	"IMISC13"	=>	"IMISC13_"
+	"IMISC50"	=>	"IMISC50_"
+	"IPLAT02"	=>	"1PLAT02"
+	"IPLAT04"	=>	"1PLAT04"
+	"IPLAT06"	=>	"IPLAT06_"
+	"IPLAT09"	=>	"IPLAT09_"
+	"IPLAT18"	=>	"IPLAT18_"
+	"ISW1H06"	=>	"ISW1HRN"
+	"ISW1H08"	=>	"ISW1H08_"
+	"ISW1H09"	=>	"ISW1H09_"
+	"ISW1H10"	=>	"ISW1H10_"
+	"ISW1H18"	=>	"ISW1H18_"
+	"ISW2H02"	=>	"ISW2H02_"
+	"ISW2H03"	=>	"ISW2H03_"
+	"ISW2H07"	=>	"ISW2H07_"
+	"ISW2H08"	=>	"ISW2H08_"
+	"ISW2H17"	=>	"ISW2H17_"
+	"IXBOW06"	=>	"IXBOW06_"
+END
+
+/////                                                  \\\\\
+///// Preparing BCS variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bcs BEGIN
+	"AR0002"	=>	"BG0002"
+	"AR0004"	=>	"BG0004"
+	"AR0005"	=>	"BG0005"
+	"AR0006"	=>	"BG0006"
+	"AR0007"	=>	"BG0007"
+	"AR0008"	=>	"BG0008"
+	"AR0009"	=>	"BG0009"
+	"AR0010"	=>	"BG0010"
+	"AR0011"	=>	"BG0011"
+	"AR0012"	=>	"BG0012"
+	"AR0013"	=>	"BG0013"
+	"AR0014"	=>	"BG0014"
+	"AR0015"	=>	"BG0015"
+	"AR0016"	=>	"BG0016"
+	"AR0017"	=>	"BG0017"
+	"AR0018"	=>	"BG0018"
+	"AR0019"	=>	"BG0019"
+	"AR0020"	=>	"BG0020"
+	"AR0021"	=>	"BG0021"
+	"AR0100"	=>	"BG0100"
+	"AR0101"	=>	"BG0101"
+	"AR0102"	=>	"BG0102"
+	"AR0103"	=>	"BG0103"
+	"AR0104"	=>	"BG0104"
+	"AR0105"	=>	"BG0105"
+	"AR0106"	=>	"BG0106"
+	"AR0107"	=>	"BG0107"
+	"AR0108"	=>	"BG0108"
+	"AR0109"	=>	"BG0109"
+	"AR0110"	=>	"BG0110"
+	"AR0111"	=>	"BG0111"
+	"AR0112"	=>	"BG0112"
+	"AR0114"	=>	"BG0114"
+	"AR0115"	=>	"BG0115"
+	"AR0116"	=>	"BG0116"
+	"AR0117"	=>	"BG0117"
+	"AR0118"	=>	"BG0118"
+	"AR0119"	=>	"BG0119"
+	"AR0120"	=>	"BG0120"
+	"AR0121"	=>	"BG0121"
+	"AR0123"	=>	"BG0123"
+	"AR0125"	=>	"BG0125"
+	"AR0126"	=>	"BG0126"
+	"AR0127"	=>	"BG0127"
+	"AR0128"	=>	"BG0128"
+	"AR0129"	=>	"BG0129"
+	"AR0130"	=>	"BG0130"
+	"AR0131"	=>	"BG0131"
+	"AR0132"	=>	"BG0132"
+	"AR0133"	=>	"BG0133"
+	"AR0134"	=>	"BG0134"
+	"AR0135"	=>	"BG0135"
+	"AR0136"	=>	"BG0136"
+	"AR0137"	=>	"BG0137"
+	"AR0138"	=>	"BG0138"
+	"AR0139"	=>	"BG0139"
+	"AR0140"	=>	"BG0140"
+	"AR0141"	=>	"BG0141"
+	"AR0142"	=>	"BG0142"
+	"AR0143"	=>	"BG0143"
+	"AR0144"	=>	"BG0144"
+	"AR0145"	=>	"BG0145"
+	"AR0146"	=>	"BG0146"
+	"AR0148"	=>	"BG0148"
+	"AR0149"	=>	"BG0149"
+	"AR0150"	=>	"BG0150"
+	"AR0151"	=>	"BG0151"
+	"AR0152"	=>	"BG0152"
+	"AR0153"	=>	"BG0153"
+	"AR0154"	=>	"BG0154"
+	"AR0155"	=>	"BG0155"
+	"AR0156"	=>	"BG0156"
+	"AR0157"	=>	"BG0157"
+	"AR0158"	=>	"BG0158"
+	"AR0159"	=>	"BG0159"
+	"AR0160"	=>	"BG0160"
+	"AR0161"	=>	"BG0161"
+	"AR0162"	=>	"BG0162"
+	"AR0163"	=>	"BG0163"
+	"AR0164"	=>	"BG0164"
+	"AR0165"	=>	"BG0165"
+	"AR0166"	=>	"BG0166"
+	"AR0167"	=>	"BG0167"
+	"AR0168"	=>	"BG0168"
+	"AR0169"	=>	"BG0169"
+	"AR0170"	=>	"BG0170"
+	"AR0171"	=>	"BG0171"
+	"AR0200"	=>	"BG0200"
+	"AR0224"	=>	"BG0224"
+	"AR0225"	=>	"BG0225"
+	"AR0226"	=>	"BG0226"
+	"AR0300"	=>	"BG0300"
+	"AR0302"	=>	"BG0302"
+	"AR0303"	=>	"BG0303"
+	"AR0304"	=>	"BG0304"
+	"AR0305"	=>	"BG0305"
+	"AR0306"	=>	"BG0306"
+	"AR0307"	=>	"BG0307"
+	"AR0308"	=>	"BG0308"
+	"AR0400"	=>	"BG0400"
+	"AR0401"	=>	"BG0401"
+	"AR0500"	=>	"BG0500"
+	"AR0501"	=>	"BG0501"
+	"AR0502"	=>	"BG0502"
+	"AR0503"	=>	"BG0503"
+	"AR0504"	=>	"BG0504"
+	"AR0505"	=>	"BG0505"
+	"AR0506"	=>	"BG0506"
+	"AR0507"	=>	"BG0507"
+	"AR0508"	=>	"BG0508"
+	"AR0509"	=>	"BG0509"
+	"AR0510"	=>	"BG0510"
+	"AR0511"	=>	"BG0511"
+	"AR0512"	=>	"BG0512"
+	"AR0513"	=>	"BG0513"
+	"AR0514"	=>	"BG0514"
+	"AR0515"	=>	"BG0515"
+	"AR0516"	=>	"BG0516"
+	"AR0600"	=>	"BG0600"
+	"AR0601"	=>	"BG0601"
+	"AR0602"	=>	"BG0602"
+	"AR0603"	=>	"BG0603"
+	"AR0606"	=>	"BG0606"
+	"AR0607"	=>	"BG0607"
+	"AR0608"	=>	"BG0608"
+	"AR0609"	=>	"BG0609"
+	"AR0611"	=>	"BG0611"
+	"AR0612"	=>	"BG0612"
+	"AR0613"	=>	"BG0613"
+	"AR0614"	=>	"BG0614"
+	"AR0615"	=>	"BG0615"
+	"AR0616"	=>	"BG0616"
+	"AR0617"	=>	"BG0617"
+	"AR0618"	=>	"BG0618"
+	"AR0619"	=>	"BG0619"
+	"AR0620"	=>	"BG0620"
+	"AR0621"	=>	"BG0621"
+	"AR0700"	=>	"BG0700"
+	"AR0702"	=>	"BG0702"
+	"AR0703"	=>	"BG0703"
+	"AR0704"	=>	"BG0704"
+	"AR0705"	=>	"BG0705"
+	"AR0706"	=>	"BG0706"
+	"AR0707"	=>	"BG0707"
+	"AR0708"	=>	"BG0708"
+	"AR0709"	=>	"BG0709"
+	"AR0710"	=>	"BG0710"
+	"AR0711"	=>	"BG0711"
+	"AR0712"	=>	"BG0712"
+	"AR0713"	=>	"BG0713"
+	"AR0714"	=>	"BG0714"
+	"AR0715"	=>	"BG0715"
+	"AR0716"	=>	"BG0716"
+	"AR0717"	=>	"BG0717"
+	"AR0718"	=>	"BG0718"
+	"AR0719"	=>	"BG0719"
+	"AR0720"	=>	"BG0720"
+	"AR0721"	=>	"BG0721"
+	"AR0722"	=>	"BG0722"
+	"AR0723"	=>	"BG0723"
+	"AR0724"	=>	"BG0724"
+	"AR0725"	=>	"BG0725"
+	"AR0726"	=>	"BG0726"
+	"AR0800"	=>	"BG0800"
+	"AR0801"	=>	"BG0801"
+	"AR0802"	=>	"BG0802"
+	"AR0803"	=>	"BG0803"
+	"AR0804"	=>	"BG0804"
+	"AR0805"	=>	"BG0805"
+	"AR0806"	=>	"BG0806"
+	"AR0807"	=>	"BG0807"
+	"AR0808"	=>	"BG0808"
+	"AR0809"	=>	"BG0809"
+	"AR0810"	=>	"BG0810"
+	"AR0811"	=>	"BG0811"
+	"AR0812"	=>	"BG0812"
+	"AR0813"	=>	"BG0813"
+	"AR0814"	=>	"BG0814"
+	"AR0900"	=>	"BG0900"
+	"AR0901"	=>	"BG0901"
+	"AR1000"	=>	"BG1000"
+	"AR1001"	=>	"BG1001"
+	"AR1002"	=>	"BG1002"
+	"AR1003"	=>	"BG1003"
+	"AR1004"	=>	"BG1004"
+	"AR1005"	=>	"BG1005"
+	"AR1006"	=>	"BG1006"
+	"AR1007"	=>	"BG1007"
+	"AR1008"	=>	"BG1008"
+	"AR1009"	=>	"BG1009"
+	"AR1010"	=>	"BG1010"
+	"AR1100"	=>	"BG1100"
+	"AR1101"	=>	"BG1101"
+	"AR1102"	=>	"BG1102"
+	"AR1103"	=>	"BG1103"
+	"AR1104"	=>	"BG1104"
+	"AR1105"	=>	"BG1105"
+	"AR1106"	=>	"BG1106"
+	"AR1107"	=>	"BG1107"
+	"AR1108"	=>	"BG1108"
+	"AR1109"	=>	"BG1109"
+	"AR1110"	=>	"BG1110"
+	"AR1111"	=>	"BG1111"
+	"AR1112"	=>	"BG1112"
+	"AR1113"	=>	"BG1113"
+	"AR1114"	=>	"BG1114"
+	"AR1115"	=>	"BG1115"
+	"AR1116"	=>	"BG1116"
+	"AR1117"	=>	"BG1117"
+	"AR1200"	=>	"BG1200"
+	"AR1201"	=>	"BG1201"
+	"AR1202"	=>	"BG1202"
+	"AR1203"	=>	"BG1203"
+	"AR1204"	=>	"BG1204"
+	"AR1205"	=>	"BG1205"
+	"AR1206"	=>	"BG1206"
+	"AR1207"	=>	"BG1207"
+	"AR1208"	=>	"BG1208"
+	"AR1209"	=>	"BG1209"
+	"AR1210"	=>	"BG1210"
+	"AR1211"	=>	"BG1211"
+	"AR1212"	=>	"BG1212"
+	"AR1213"	=>	"BG1213"
+	"AR1214"	=>	"BG1214"
+	"AR1215"	=>	"BG1215"
+	"AR1300"	=>	"BG1300"
+	"AR1301"	=>	"BG1301"
+	"AR1302"	=>	"BG1302"
+	"AR1303"	=>	"BG1303"
+	"AR1304"	=>	"BG1304"
+	"AR1305"	=>	"BG1305"
+	"AR1306"	=>	"BG1306"
+	"AR1307"	=>	"BG1307"
+	"AR1308"	=>	"BG1308"
+	"AR1309"	=>	"BG1309"
+	"AR1310"	=>	"BG1310"
+	"AR1311"	=>	"BG1311"
+	"AR1312"	=>	"BG1312"
+	"AR1313"	=>	"BG1313"
+	"AR1314"	=>	"BG1314"
+	"AR1315"	=>	"BG1315"
+	"AR1316"	=>	"BG1316"
+	"AR1317"	=>	"BG1317"
+	"AR1320"	=>	"BG1320"
+	"AR1400"	=>	"BG1400"
+	"AR1401"	=>	"BG1401"
+	"AR1402"	=>	"BG1402"
+	"AR1403"	=>	"BG1403"
+	"AR1404"	=>	"BG1404"
+	"AR1500"	=>	"BG1500"
+	"AR1501"	=>	"BG1501"
+	"AR1502"	=>	"BG1502"
+	"AR1503"	=>	"BG1503"
+	"AR1504"	=>	"BG1504"
+	"AR1505"	=>	"BG1505"
+	"AR1600"	=>	"BG1600"
+	"AR1601"	=>	"BG1601"
+	"AR1602"	=>	"BG1602"
+	"AR1603"	=>	"BG1603"
+	"AR1700"	=>	"BG1700"
+	"AR1800"	=>	"BG1800"
+	"AR1801"	=>	"BG1801"
+	"AR1802"	=>	"BG1802"
+	"AR1803"	=>	"BG1803"
+	"AR1804"	=>	"BG1804"
+	"AR1805"	=>	"BG1805"
+	"AR1806"	=>	"BG1806"
+	"AR1807"	=>	"BG1807"
+	"AR1808"	=>	"BG1808"
+	"AR1809"	=>	"BG1809"
+	"AR1900"	=>	"BG1900"
+	"AR1901"	=>	"BG1901"
+	"AR1902"	=>	"BG1902"
+	"AR1903"	=>	"BG1903"
+	"AR1904"	=>	"BG1904"
+	"AR1905"	=>	"BG1905"
+	"AR1906"	=>	"BG1906"
+	"AR1907"	=>	"BG1907"
+	"AR2000"	=>	"BG2000"
+	"AR2001"	=>	"BG2001"
+	"AR2002"	=>	"BG2002"
+	"AR2003"	=>	"BG2003"
+	"AR2004"	=>	"BG2004"
+	"AR2005"	=>	"BG2005"
+	"AR2006"	=>	"BG2006"
+	"AR2007"	=>	"BG2007"
+	"AR2008"	=>	"BG2008"
+	"AR2009"	=>	"BG2009"
+	"AR2010"	=>	"BG2010"
+	"AR2011"	=>	"BG2011"
+	"AR2012"	=>	"BG2012"
+	"AR2100"	=>	"BG2100"
+	"AR2101"	=>	"BG2101"
+	"AR2200"	=>	"BG2200"
+	"AR2215"	=>	"BG2215"
+	"AR2300"	=>	"BG2300"
+	"AR2301"	=>	"BG2301"
+	"AR2302"	=>	"BG2302"
+	"AR2303"	=>	"BG2303"
+	"AR2304"	=>	"BG2304"
+	"AR2305"	=>	"BG2305"
+	"AR2306"	=>	"BG2306"
+	"AR2400"	=>	"BG2400"
+	"AR2600"	=>	"BG2600"
+	"AR2602"	=>	"BG2602"
+	"AR2605"	=>	"BG2605"
+	"AR2606"	=>	"BG2606"
+	"AR2607"	=>	"BG2607"
+	"AR2608"	=>	"BG2608"
+	"AR2609"	=>	"BG2609"
+	"AR2610"	=>	"BG2610"
+	"AR2611"	=>	"BG2611"
+	"AR2612"	=>	"BG2612"
+	"AR2613"	=>	"BG2613"
+	"AR2614"	=>	"BG2614"
+	"AR2615"	=>	"BG2615"
+	"AR2616"	=>	"BG2616"
+	"AR2617"	=>	"BG2617"
+	"AR2618"	=>	"BG2618"
+	"AR2619"	=>	"BG2619"
+	"AR2626"	=>	"BG2626"
+	"AR2627"	=>	"BG2627"
+	"AR2628"	=>	"BG2628"
+	"AR2629"	=>	"BG2629"
+	"AR2630"	=>	"BG2630"
+	"AR2631"	=>	"BG2631"
+	"AR2632"	=>	"BG2632"
+	"AR2633"	=>	"BG2633"
+	"AR2643"	=>	"BG2643"
+	"AR2700"	=>	"BG2700"
+	"AR2800"	=>	"BG2800"
+	"AR2900"	=>	"BG2900"
+	"AR3000"	=>	"BG3000"
+	"AR3100"	=>	"BG3100"
+	"AR3200"	=>	"BG3200"
+	"AR3201"	=>	"BG3201"
+	"AR3202"	=>	"BG3202"
+	"AR3300"	=>	"BG3300"
+	"AR3301"	=>	"BG3301"
+	"AR3302"	=>	"BG3302"
+	"AR3303"	=>	"BG3303"
+	"AR3304"	=>	"BG3304"
+	"AR3305"	=>	"BG3305"
+	"AR3306"	=>	"BG3306"
+	"AR3307"	=>	"BG3307"
+	"AR3308"	=>	"BG3308"
+	"AR3309"	=>	"BG3309"
+	"AR3310"	=>	"BG3310"
+	"AR3311"	=>	"BG3311"
+	"AR3312"	=>	"BG3312"
+	"AR3313"	=>	"BG3313"
+	"AR3314"	=>	"BG3314"
+	"AR3315"	=>	"BG3315"
+	"AR3316"	=>	"BG3316"
+	"AR3317"	=>	"BG3317"
+	"AR3318"	=>	"BG3318"
+	"AR3319"	=>	"BG3319"
+	"AR3320"	=>	"BG3320"
+	"AR3321"	=>	"BG3321"
+	"AR3322"	=>	"BG3322"
+	"AR3323"	=>	"BG3323"
+	"AR3324"	=>	"BG3324"
+	"AR3325"	=>	"BG3325"
+	"AR3326"	=>	"BG3326"
+	"AR3327"	=>	"BG3327"
+	"AR3328"	=>	"BG3328"
+	"AR3329"	=>	"BG3329"
+	"AR3330"	=>	"BG3330"
+	"AR3331"	=>	"BG3331"
+	"AR3332"	=>	"BG3332"
+	"AR3333"	=>	"BG3333"
+	"AR3334"	=>	"BG3334"
+	"AR3335"	=>	"BG3335"
+	"AR3336"	=>	"BG3336"
+	"AR3337"	=>	"BG3337"
+	"AR3338"	=>	"BG3338"
+	"AR3339"	=>	"BG3339"
+	"AR3340"	=>	"BG3340"
+	"AR3341"	=>	"BG3341"
+	"AR3342"	=>	"BG3342"
+	"AR3343"	=>	"BG3343"
+	"AR3344"	=>	"BG3344"
+	"AR3345"	=>	"BG3345"
+	"AR3346"	=>	"BG3346"
+	"AR3347"	=>	"BG3347"
+	"AR3348"	=>	"BG3348"
+	"AR3349"	=>	"BG3349"
+	"AR3350"	=>	"BG3350"
+	"AR3351"	=>	"BG3351"
+	"AR3352"	=>	"BG3352"
+	"AR3353"	=>	"BG3353"
+	"AR3354"	=>	"BG3354"
+	"AR3355"	=>	"BG3355"
+	"AR3356"	=>	"BG3356"
+	"AR3357"	=>	"BG3357"
+	"AR3400"	=>	"BG3400"
+	"AR3401"	=>	"BG3401"
+	"AR3402"	=>	"BG3402"
+	"AR3500"	=>	"BG3500"
+	"AR3600"	=>	"BG3600"
+	"AR3601"	=>	"BG3601"
+	"AR3700"	=>	"BG3700"
+	"AR3800"	=>	"BG3800"
+	"AR3802"	=>	"BG3802"
+	"AR3900"	=>	"BG3900"
+	"AR3901"	=>	"BG3901"
+	"AR4000"	=>	"BG4000"
+	"AR4001"	=>	"BG4001"
+	"AR4002"	=>	"BG4002"
+	"AR4003"	=>	"BG4003"
+	"AR4004"	=>	"BG4004"
+	"AR4005"	=>	"BG4005"
+	"AR4006"	=>	"BG4006"
+	"AR4007"	=>	"BG4007"
+	"AR4008"	=>	"BG4008"
+	"AR4009"	=>	"BG4009"
+	"AR4010"	=>	"BG4010"
+	"AR4011"	=>	"BG4011"
+	"AR4012"	=>	"BG4012"
+	"AR4013"	=>	"BG4013"
+	"AR4014"	=>	"BG4014"
+	"AR4100"	=>	"BG4100"
+	"AR4101"	=>	"BG4101"
+	"AR4200"	=>	"BG4200"
+	"AR4201"	=>	"BG4201"
+	"AR4300"	=>	"BG4300"
+	"AR4400"	=>	"BG4400"
+	"AR4401"	=>	"BG4401"
+	"AR4500"	=>	"BG4500"
+	"AR4501"	=>	"BG4501"
+	"AR4600"	=>	"BG4600"
+	"AR4700"	=>	"BG4700"
+	"AR4701"	=>	"BG4701"
+	"AR4800"	=>	"BG4800"
+	"AR4801"	=>	"BG4801"
+	"AR4802"	=>	"BG4802"
+	"AR4803"	=>	"BG4803"
+	"AR4804"	=>	"BG4804"
+	"AR4805"	=>	"BG4805"
+	"AR4806"	=>	"BG4806"
+	"AR4807"	=>	"BG4807"
+	"AR4808"	=>	"BG4808"
+	"AR4809"	=>	"BG4809"
+	"AR4810"	=>	"BG4810"
+	"AR4900"	=>	"BG4900"
+	"AR4901"	=>	"BG4901"
+	"AR4902"	=>	"BG4902"
+	"AR4903"	=>	"BG4903"
+	"AR4904"	=>	"BG4904"
+	"AR4905"	=>	"BG4905"
+	"AR4906"	=>	"BG4906"
+	"AR4907"	=>	"BG4907"
+	"AR4908"	=>	"BG4908"
+	"AR4909"	=>	"BG4909"
+	"AR5000"	=>	"BG5000"
+	"AR5001"	=>	"BG5001"
+	"AR5100"	=>	"BG5100"
+	"AR5101"	=>	"BG5101"
+	"AR5102"	=>	"BG5102"
+	"AR5103"	=>	"BG5103"
+	"AR5200"	=>	"BG5200"
+	"AR5201"	=>	"BG5201"
+	"AR5202"	=>	"BG5202"
+	"AR5300"	=>	"BG5300"
+	"AR5400"	=>	"BG5400"
+	"AR5401"	=>	"BG5401"
+	"AR5402"	=>	"BG5402"
+	"AR5403"	=>	"BG5403"
+	"AR5404"	=>	"BG5404"
+	"AR5405"	=>	"BG5405"
+	"AR5406"	=>	"BG5406"
+	"AR5500"	=>	"BG5500"
+	"AR5506"	=>	"BG5506"
+	"AR5600"	=>	"BG5600"
+	"AR5601"	=>	"BG5601"
+	"AR5700"	=>	"BG5700"
+	"AR5701"	=>	"BG5701"
+	"AR5800"	=>	"BG5800"
+	"AR5801"	=>	"BG5801"
+	"AR5900"	=>	"BG5900"
+	"AR5901"	=>	"BG5901"
+	"AR6000"	=>	"BG6000"
+	"AR6001"	=>	"BG6001"
+	"AR6100"	=>	"BG6100"
+	"BRANWEN"	=>	"BRANWEN_"
+	"EDWIN"	=>	"EDWIN_"
+	"FALDORN"	=>	"FALDORN_"
+	"GARRICK"	=>	"GARRICK_"
+	"GUARD2"	=>	"GUARD2_"
+	"GUARD3"	=>	"GUARD3_"
+	"IMOEN"	=>	"IMOEN_"
+	"JAHEIRA"	=>	"JAHEIRA_"
+	"MINSC"	=>	"MINSC_"
+	"SAREVOK"	=>	"SAREVOK_"
+	"SENDAI"	=>	"SENDAI_"
+	"SKIE"	=>	"SKIE_"
+	"TANARI"	=>	"TANARI_"
+	"VICONIA"	=>	"VICONIA_"
+	"DORN"	=>	"DORN_"
+	"NEERA"	=>	"NEERA_"
+	"RASAAD"	=>	"RASAAD_"
+	"DORND"	=>	"DORND_"
+	"EDWIND"	=>	"EDWIND_"
+	"IMOEND"	=>	"IMOEND_"
+	"MINSCD"	=>	"MINSCD_"
+	"NEERAD"	=>	"NEERAD_"
+	"RASAADD"	=>	"RASAADD_"
+	"VICOND"	=>	"VICOND_"
+END
+
+/////                                                  \\\\\
+///// Preparing BMP variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bmp BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing CRE variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_cre BEGIN
+	"CALAHA"	=>	"CALAHA_"
+	"CARBOS"	=>	"CARBOS_"
+	"FTOWN2"	=>	"FTOWN2_"
+	"FTOWN3"	=>	"FTOWN3_"
+	"FTOWN4"	=>	"FTOWN4_"
+	"GORF"	=>	"GORF_"
+	"IGIBBER"	=>	"IGIBBER_"
+	"IMOEN6"	=>	"IMOEN6_"
+	"KNIGHT1"	=>	"KNIGHT1_"
+	"MTOWN2"	=>	"MTOWN2_"
+	"MTOWN3"	=>	"MTOWN3_"
+	"MTOWN4"	=>	"MTOWN4_"
+	"MTOWN5"	=>	"MTOWN5_"
+	"NEB"	=>	"NEB_"
+	"QUAYLE"	=>	"QUAYLE_"
+	"ROGER"	=>	"ROGER_"
+	"SENDAI"	=>	"SENDAI_"
+	"SHANK"	=>	"SHANK_"
+	"SHOP01"	=>	"SHOP01_"
+	"SHOP02"	=>	"SHOP02_"
+	"SHOP03"	=>	"SHOP03_"
+	"SHOP04"	=>	"SHOP04_"
+	"SHOP05"	=>	"SHOP05_"
+	"SHOP06"	=>	"SHOP06_"
+	"SHOP07"	=>	"SHOP07_"
+	"SHOP08"	=>	"SHOP08_"
+	"SKELWA"	=>	"SKELWA_"
+	"SKELWA02"	=>	"BGSKEL02"
+	"SKELWA03"	=>	"BGSKEL03"
+	"STALKE"	=>	"STALKE_"
+	"TARNOR"	=>	"TARNOR_"
+	"TAZOK"	=>	"TAZOK_"
+	"TOWNCR"	=>	"TOWNCR_"
+	"VICONI6"	=>	"VICONI6_"
+	"WILLIA"	=>	"WILLIA_"
+	"WILLIAM"	=>	"WILLIAM_"
+	"XAN"	=>	"XAN_"
+	"XZAR"	=>	"XZAR_"
+	"FAMCAT"	=>	"FAMCAT_"
+	"FAMDUST"	=>	"FAMDUST_"
+	"FAMFAIR"	=>	"FAMFAIR_"
+	"FAMFER"	=>	"FAMFER_"
+	"FAMIMP"	=>	"FAMIMP_"
+	"FAMPSD"	=>	"FAMPSD_"
+	"FAMQUAS"	=>	"FAMQUAS_"
+	"FAMRAB"	=>	"FAMRAB_"
+//SoD
+	"BDBART01"	=>	"BDBART0_"
+	"EDWIN7"	=>	"EDWIN7_"
+	"JAHEIR7"	=>	"JAHEIR7_"
+	"MINSC7"	=>	"MINSC7_"
+	"ORC01"	=>	"ORC01_"
+	"ORC02"	=>	"ORC02_"
+	"ORC03"	=>	"ORC03_"
+	"ORC04"	=>	"ORC04_"
+	"ORC05"	=>	"ORC05_"
+	"ORC06"	=>	"ORC06_"
+	"SPIDSM01"	=>	"SPIDSM0_"
+END
+
+/////                                                  \\\\\
+///// Preparing DLG variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+	"BDORN"	=>	"BDORN_"
+	"BEDWIN"	=>	"BEDWIN_"
+	"BMINSC"	=>	"BMINSC_"
+	"BNEERA"	=>	"BNEERA_"
+	"BRASAAD"	=>	"BRASAAD_"
+	"CALAHA"	=>	"CALAHA_"
+	"CARBOS"	=>	"CARBOS_"
+	"EDWIN"	=>	"EDWIN_"
+	"EDWINJ"	=>	"EDWINJ_"
+	"EDWINP"	=>	"EDWINP_"
+	"FRANCO"	=>	"FRANCO_"
+	"FTOWN2"	=>	"FTOWN2_"
+	"FTOWN3"	=>	"FTOWN3_"
+	"FTOWN4"	=>	"FTOWN4_"
+	"IMOEN2"	=>	"IMOEN2_"
+	"IMOENP"	=>	"IMOENP_"
+	"KNIGHT"	=>	"KNIGHT_"
+	"MINSCJ"	=>	"MINSCJ_"
+	"MINSCP"	=>	"MINSCP_"
+	"MTOWN2"	=>	"MTOWN2_"
+	"MTOWN3"	=>	"MTOWN3_"
+	"MTOWN4"	=>	"MTOWN4_"
+	"MTOWN5"	=>	"MTOWN5_"
+	"NEB"	=>	"NEB_"
+	"QUAYLE"	=>	"QUAYLE_"
+	"ROGER"	=>	"ROGER_"
+	"SENDAI"	=>	"SENDAI_"
+	"SHANK"	=>	"SHANK_"
+	"SHOP01"	=>	"SHOP01_"
+	"SHOP02"	=>	"SHOP02_"
+	"SHOP03"	=>	"SHOP03_"
+	"SHOP04"	=>	"SHOP04_"
+	"SHOP05"	=>	"SHOP05_"
+	"SHOP06"	=>	"SHOP06_"
+	"SHOP07"	=>	"SHOP07_"
+	"SHOP08"	=>	"SHOP08_"
+	"SHOP09"	=>	"SHOP09_"
+	"TARNOR"	=>	"TARNOR_"
+	"TAZOK"	=>	"TAZOK_"
+	"VICONI"	=>	"VICONI_"
+	"WILLIA"	=>	"WILLIA_"
+	"DORN"	=>	"DORN_"
+	"DORNJ"	=>	"DORNJ_"
+	"DORNP"	=>	"DORNP_"
+	"NEERA"	=>	"NEERA_"
+	"NEERAJ"	=>	"NEERAJ_"
+	"NEERAP"	=>	"NEERAP_"
+	"RASAAD"	=>	"RASAAD_"
+	"RASAADJ"	=>	"RASAADJ_"
+	"RASAADP"	=>	"RASAADP_"
+	"FAMIL1"	=>	"FAMIL1_"
+	"FAMIL2"	=>	"FAMIL2_"
+	"FAMIL3"	=>	"FAMIL3_"
+//SoD
+	"BDBART01"	=>	"BDBART0_"
+END
+
+/////                                                  \\\\\
+///// Preparing EFF variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing ITM variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
+	"HELM15"	=>	"HELM15_"
+	"LEAT07"	=>	"LEAT07_"
+	"MISC56"	=>	"MISC56_"
+	"MISC79"	=>	"MISC79_"
+	"MISC89"	=>	"MISC89_"
+	"PLAT06"	=>	"PLAT06_"
+	"RING08"	=>	"RING08_"
+	"STAF04"	=>	"STAF04_"
+	"STAF08"	=>	"STAF08_"
+	"SW1H09"	=>	"SW1H09_"
+	"SW2H07"	=>	"SW2H07_"
+	"SW2H08"	=>	"SW2H08_"
+	"WAND12"	=>	"WAND12_"
+	"BAG02"	=>	"BAG02_"
+	"BAG02H"	=>	"BAG02H_"
+	"BAG03"	=>	"BAG03_"
+	"BAG03H"	=>	"BAG03H_"
+	"BAG06"	=>	"BAG06_"
+	"BAG06C"	=>	"BAG06C_"
+	"FAMCAT"	=>	"FAMCAT_"
+	"FAMDUST"	=>	"FAMDUST_"
+	"FAMFAIR"	=>	"FAMFAIR_"
+	"FAMFER"	=>	"FAMFER_"
+	"FAMIMP"	=>	"FAMIMP_"
+	"FAMPSD"	=>	"FAMPSD_"
+	"FAMQUAS"	=>	"FAMQUAS_"
+	"FAMRAB"	=>	"FAMRAB_"
+	"SHLD01"	=>	"SHLD01A"
+	"SHLD02"	=>	"SHLD02A"
+	"SHLD03"	=>	"SHLD03A"
+	"SHLD04"	=>	"SHLD04A"
+	"SHLD05"	=>	"SHLD05A"
+	"SHLD06"	=>	"SHLD06A"
+	"SHLD07"	=>	"SHLD07A"
+	"SHLD08"	=>	"SHLD08A"
+	"SHLD09"	=>	"SHLD09A"
+	"SHLD10"	=>	"SHLD10A"
+	"SHLD11"	=>	"SHLD11A"
+	"SHLD12"	=>	"SHLD12A"
+	"SHLD13"	=>	"SHLD13A"
+	"SHLD14"	=>	"SHLD14A"
+	"SHLD15"	=>	"SHLD15A"
+	"SHLD16"	=>	"SHLD16A"
+	"SHLD17"	=>	"SHLD17A"
+	"SHLD19"	=>	"SHLD19A"
+	"SHLD28"	=>	"SHLD28A"
+	"SHLD29"	=>	"SHLD29A"
+	"SHLD01A"	=>	"SHLD01"
+	"SHLD02A"	=>	"SHLD02"
+	"SHLD03A"	=>	"SHLD03"
+	"SHLD04A"	=>	"SHLD04"
+	"SHLD05A"	=>	"SHLD05"
+	"SHLD06A"	=>	"SHLD06"
+	"SHLD07A"	=>	"SHLD07"
+	"SHLD08A"	=>	"SHLD08"
+	"SHLD09A"	=>	"SHLD09"
+	"SHLD10A"	=>	"SHLD10"
+	"SHLD11A"	=>	"SHLD11"
+	"SHLD12A"	=>	"SHLD12"
+	"SHLD13A"	=>	"SHLD13"
+	"SHLD14A"	=>	"SHLD14"
+	"SHLD15A"	=>	"SHLD15"
+	"SHLD16A"	=>	"SHLD16"
+	"SHLD17A"	=>	"SHLD17"
+	"SHLD19A"	=>	"SHLD19"
+	"SHLD28A"	=>	"SHLD28"
+	"SHLD29A"	=>	"SHLD29"
+	"RNDEQU01"	=>	"RNDEQU04" //RNDEQUIP.2DA - LOW
+	"RNDEQU02"	=>	"RNDEQU05" //RNDEQUIP.2DA - HIGH
+	"RNDEQU03"	=>	"RNDEQU06" //RNDEQUIP.2DA - POOP
+	"RNDMAG01"	=>	"RNDMAG03" //RNDMAGIC.2DA - LOW
+	"RNDMAG02"	=>	"RNDMAG04" //RNDMAGIC.2DA - HIGH
+	"RNDMAG03"	=>	"RNDMAG05" //RNDMAGIC.2DA - POOP
+	"RNDSCR01"	=>	"RNDSCR04" //RNDSCROL.2DA - 1st
+	"RNDSCR02"	=>	"RNDSCR05" //RNDSCROL.2DA - 2nd
+	"RNDSCR03"	=>	"RNDSCR06" //RNDSCROL.2DA - 3rd
+	"RNDSCR04"	=>	"RNDSCR07" //RNDSCROL.2DA - 4th
+	"RNDTRE01"	=>	"RNDMAG06" //RNDTREAS.2DA - POOR
+	"RNDTRE02"	=>	"RNDTRE06" //RNDTREAS.2DA - AVERAGE
+	"RNDTRE03"	=>	"RNDTRE07" //RNDTREAS.2DA - WELL_OFF
+	"RNDTRE04"	=>	"RNDTRE08" //RNDTREAS.2DA - WEALTHY
+	"RNDTRE05"	=>	"RNDTRE09" //RNDTREAS.2DA - RICH
+	"RNDWEP01"	=>	"RNDWEP04" //RNDWEP.2DA - 1st
+	"RNDWEP02"	=>	"RNDWEP05" //RNDWEP.2DA - 2nd
+	"RNDWEP03"	=>	"RNDWEP06" //RNDWEP.2DA - 3rd
+	"RNDTRE07"	=>	"SODTRE07" //RNDTRES.2DA - RNDTRE07
+	"RNDTRE08"	=>	"SODTRE08" //RNDTRES.2DA - RNDTRE08
+	"RNDTRE09"	=>	"SODTRE09" //RNDTRES.2DA - RNDTRE09
+//during installation this table is expanded
+END
+
+//check after next patch if Beamdog will come up with something:
+// http://forums.beamdog.com/discussion/39817/fallorains-plate-should-not-be-a-generic-plate-mail-1-and-should-be-unique-in-the-game
+// http://gibberlings3.net/forums/index.php?showtopic=23896
+//AX1H03 //Battle Axe of Mauletar +2 (Beamdog already implemented description in BG2:EE so no change needed?)
+//BLUN11 //Krotan's Skullcrusher +2 (Beamdog already implemented description in BG2:EE so no change needed?)
+//BRAC03 //Bracers of Defense AC 6: Bracers to the Death (Beamdog already implemented description in BG2:EE so no change needed?)
+//DAGG03 //Heart of the Golem +2 (Beamdog already implemented description in BG2:EE so no change needed?)
+//LEAT07 //Telbar's Studded Leather Armor +2
+//PLAT02 //Fallorain's Plate +1 (Beamdog already implemented description in BG2:EE so no change needed?)
+//PLAT06 //Ankheg Plate Mail (rafted by Taerom Fuiruim of Beregost)
+//SLNG03 -> SLNG05 //IMPORT2.2DA in BG2:EE tries to import unique SLNG03.ITM from BG:EE. It points to common sling +3 but the correct item itself already exists in BG2:EE under the SLNG05.ITM name
+//STAF08 //Aule's Staff +3
+//SW1H09 //The Whistling Sword +2
+//SW2H07 //The World's Edge +3
+//SW2H08 //Durlag's Pride +2
+
+/////                                                  \\\\\
+///// Preparing MOS variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mos BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing MVE variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mve BEGIN
+	"INTRO"	=>	"INTRO_"
+	"ENDCRDIT"	=>	"ENDCRDI_"	//8 characters limit
+	"BLACKPIT"	=>	"BLACKPI_"	//8 characters limit
+END
+
+/////                                                  \\\\\
+///// Preparing PRO variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_pro BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing SPL variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN
+	"SPIN115"	=>	"BGIN115"	//Summon Ghast with description unique to Tiax
+	"SPIN996"	=>	"BGIN996"	//TANARI_DEATH_GAZE
+	"SPWI924"	=>	"OHWI924"	//BERESH_CHANGE (already replaced in BG:EE but some mods may still reference it)
+	"SPWI925"	=>	"OHWI925"	//KAISHAS_CHANGE (already replaced in BG:EE but some mods may still reference it)
+	"SPWI947"	=>	"BGWI947"	//GREATER_WOLFWERE_CHANGE
+	"SPWI927"	=>	"BGWI927"	//SUCCUBUS_ETHEREAL
+	"SPWI930"	=>	"BGWI930"	//SUCCUBUS_CHARM_MALE
+//during installation this table is expanded
+END
+
+/////                                                  \\\\\
+///// Preparing SPL res variables                      \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splRes BEGIN
+	"TANARI_DEATH_GAZE"	=>	"BGIN996"	//SPIN996
+	"GREATER_WOLFWERE_CHANGE"	=>	"BGWI947"	//SPWI947
+	"SUCCUBUS_ETHEREAL"	=>	"BGWI927"	//SPWI927
+	"SUCCUBUS_CHARM_MALE"	=>	"BGWI930"	//SPWI930
+	"BERESH_CHANGE"	=>	"OHWI924"	//SPWI924 is already replaced in BG:EE
+	"KAISHAS_CHANGE"	=>	"OHWI925"	//SPWI925 is already replaced in BG:EE
+END
+
+/////                                                  \\\\\
+///// Preparing SPL name variables                     \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
+//during installation this table is expanded
+END
+
+/////                                                  \\\\\
+///// Preparing STO variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sto BEGIN
+	"BAG02"	=>	"BAG02_"
+	"BAG02H"	=>	"BAG02H_"
+	"BAG03"	=>	"BAG03_"
+	"BAG03H"	=>	"BAG03H_"
+	"BAG06"	=>	"BAG06_"
+	"BAG06C"	=>	"BAG06C_"
+END
+
+/////                                                  \\\\\
+///// Preparing TIS variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_tis BEGIN
+	"AR0002"	=>	"BG0002"
+	"AR0004"	=>	"BG0004"
+	"AR0005"	=>	"BG0005"
+	"AR0006"	=>	"BG0006"
+	"AR0007"	=>	"BG0007"
+	"AR0008"	=>	"BG0008"
+	"AR0009"	=>	"BG0009"
+	"AR0010"	=>	"BG0010"
+	"AR0011"	=>	"BG0011"
+	"AR0012"	=>	"BG0012"
+	"AR0013"	=>	"BG0013"
+	"AR0014"	=>	"BG0014"
+	"AR0015"	=>	"BG0015"
+	"AR0016"	=>	"BG0016"
+	"AR0017"	=>	"BG0017"
+	"AR0018"	=>	"BG0018"
+	"AR0019"	=>	"BG0019"
+	"AR0020"	=>	"BG0020"
+	"AR0021"	=>	"BG0021"
+	"AR0100"	=>	"BG0100"
+	"AR0101"	=>	"BG0101"
+	"AR0102"	=>	"BG0102"
+	"AR0103"	=>	"BG0103"
+	"AR0104"	=>	"BG0104"
+	"AR0105"	=>	"BG0105"
+	"AR0106"	=>	"BG0106"
+	"AR0107"	=>	"BG0107"
+	"AR0108"	=>	"BG0108"
+	"AR0109"	=>	"BG0109"
+	"AR0110"	=>	"BG0110"
+	"AR0111"	=>	"BG0111"
+	"AR0112"	=>	"BG0112"
+	"AR0114"	=>	"BG0114"
+	"AR0115"	=>	"BG0115"
+	"AR0116"	=>	"BG0116"
+	"AR0117"	=>	"BG0117"
+	"AR0118"	=>	"BG0118"
+	"AR0119"	=>	"BG0119"
+	"AR0120"	=>	"BG0120"
+	"AR0121"	=>	"BG0121"
+	"AR0123"	=>	"BG0123"
+	"AR0125"	=>	"BG0125"
+	"AR0126"	=>	"BG0126"
+	"AR0127"	=>	"BG0127"
+	"AR0128"	=>	"BG0128"
+	"AR0129"	=>	"BG0129"
+	"AR0130"	=>	"BG0130"
+	"AR0131"	=>	"BG0131"
+	"AR0132"	=>	"BG0132"
+	"AR0133"	=>	"BG0133"
+	"AR0134"	=>	"BG0134"
+	"AR0135"	=>	"BG0135"
+	"AR0136"	=>	"BG0136"
+	"AR0137"	=>	"BG0137"
+	"AR0138"	=>	"BG0138"
+	"AR0139"	=>	"BG0139"
+	"AR0140"	=>	"BG0140"
+	"AR0141"	=>	"BG0141"
+	"AR0142"	=>	"BG0142"
+	"AR0143"	=>	"BG0143"
+	"AR0144"	=>	"BG0144"
+	"AR0145"	=>	"BG0145"
+	"AR0146"	=>	"BG0146"
+	"AR0148"	=>	"BG0148"
+	"AR0149"	=>	"BG0149"
+	"AR0150"	=>	"BG0150"
+	"AR0151"	=>	"BG0151"
+	"AR0152"	=>	"BG0152"
+	"AR0153"	=>	"BG0153"
+	"AR0154"	=>	"BG0154"
+	"AR0155"	=>	"BG0155"
+	"AR0156"	=>	"BG0156"
+	"AR0157"	=>	"BG0157"
+	"AR0158"	=>	"BG0158"
+	"AR0159"	=>	"BG0159"
+	"AR0160"	=>	"BG0160"
+	"AR0161"	=>	"BG0161"
+	"AR0162"	=>	"BG0162"
+	"AR0163"	=>	"BG0163"
+	"AR0164"	=>	"BG0164"
+	"AR0165"	=>	"BG0165"
+	"AR0166"	=>	"BG0166"
+	"AR0167"	=>	"BG0167"
+	"AR0168"	=>	"BG0168"
+	"AR0169"	=>	"BG0169"
+	"AR0170"	=>	"BG0170"
+	"AR0171"	=>	"BG0171"
+	"AR0200"	=>	"BG0200"
+	"AR0224"	=>	"BG0224"
+	"AR0225"	=>	"BG0225"
+	"AR0226"	=>	"BG0226"
+	"AR0300"	=>	"BG0300"
+	"AR0302"	=>	"BG0302"
+	"AR0303"	=>	"BG0303"
+	"AR0304"	=>	"BG0304"
+	"AR0305"	=>	"BG0305"
+	"AR0306"	=>	"BG0306"
+	"AR0307"	=>	"BG0307"
+	"AR0308"	=>	"BG0308"
+	"AR0400"	=>	"BG0400"
+	"AR0401"	=>	"BG0401"
+	"AR0500"	=>	"BG0500"
+	"AR0501"	=>	"BG0501"
+	"AR0502"	=>	"BG0502"
+	"AR0503"	=>	"BG0503"
+	"AR0504"	=>	"BG0504"
+	"AR0505"	=>	"BG0505"
+	"AR0506"	=>	"BG0506"
+	"AR0507"	=>	"BG0507"
+	"AR0508"	=>	"BG0508"
+	"AR0509"	=>	"BG0509"
+	"AR0510"	=>	"BG0510"
+	"AR0511"	=>	"BG0511"
+	"AR0512"	=>	"BG0512"
+	"AR0513"	=>	"BG0513"
+	"AR0514"	=>	"BG0514"
+	"AR0515"	=>	"BG0515"
+	"AR0516"	=>	"BG0516"
+	"AR0600"	=>	"BG0600"
+	"AR0601"	=>	"BG0601"
+	"AR0602"	=>	"BG0602"
+	"AR0603"	=>	"BG0603"
+	"AR0606"	=>	"BG0606"
+	"AR0607"	=>	"BG0607"
+	"AR0608"	=>	"BG0608"
+	"AR0609"	=>	"BG0609"
+	"AR0611"	=>	"BG0611"
+	"AR0612"	=>	"BG0612"
+	"AR0613"	=>	"BG0613"
+	"AR0614"	=>	"BG0614"
+	"AR0615"	=>	"BG0615"
+	"AR0616"	=>	"BG0616"
+	"AR0617"	=>	"BG0617"
+	"AR0618"	=>	"BG0618"
+	"AR0619"	=>	"BG0619"
+	"AR0620"	=>	"BG0620"
+	"AR0621"	=>	"BG0621"
+	"AR0700"	=>	"BG0700"
+	"AR0702"	=>	"BG0702"
+	"AR0703"	=>	"BG0703"
+	"AR0704"	=>	"BG0704"
+	"AR0705"	=>	"BG0705"
+	"AR0706"	=>	"BG0706"
+	"AR0707"	=>	"BG0707"
+	"AR0708"	=>	"BG0708"
+	"AR0709"	=>	"BG0709"
+	"AR0710"	=>	"BG0710"
+	"AR0711"	=>	"BG0711"
+	"AR0712"	=>	"BG0712"
+	"AR0713"	=>	"BG0713"
+	"AR0714"	=>	"BG0714"
+	"AR0715"	=>	"BG0715"
+	"AR0716"	=>	"BG0716"
+	"AR0717"	=>	"BG0717"
+	"AR0718"	=>	"BG0718"
+	"AR0719"	=>	"BG0719"
+	"AR0720"	=>	"BG0720"
+	"AR0721"	=>	"BG0721"
+	"AR0722"	=>	"BG0722"
+	"AR0723"	=>	"BG0723"
+	"AR0724"	=>	"BG0724"
+	"AR0725"	=>	"BG0725"
+	"AR0726"	=>	"BG0726"
+	"AR0800"	=>	"BG0800"
+	"AR0801"	=>	"BG0801"
+	"AR0802"	=>	"BG0802"
+	"AR0803"	=>	"BG0803"
+	"AR0804"	=>	"BG0804"
+	"AR0805"	=>	"BG0805"
+	"AR0806"	=>	"BG0806"
+	"AR0807"	=>	"BG0807"
+	"AR0808"	=>	"BG0808"
+	"AR0809"	=>	"BG0809"
+	"AR0810"	=>	"BG0810"
+	"AR0811"	=>	"BG0811"
+	"AR0812"	=>	"BG0812"
+	"AR0813"	=>	"BG0813"
+	"AR0814"	=>	"BG0814"
+	"AR0900"	=>	"BG0900"
+	"AR0901"	=>	"BG0901"
+	"AR1000"	=>	"BG1000"
+	"AR1001"	=>	"BG1001"
+	"AR1002"	=>	"BG1002"
+	"AR1003"	=>	"BG1003"
+	"AR1004"	=>	"BG1004"
+	"AR1005"	=>	"BG1005"
+	"AR1006"	=>	"BG1006"
+	"AR1007"	=>	"BG1007"
+	"AR1008"	=>	"BG1008"
+	"AR1009"	=>	"BG1009"
+	"AR1010"	=>	"BG1010"
+	"AR1100"	=>	"BG1100"
+	"AR1101"	=>	"BG1101"
+	"AR1102"	=>	"BG1102"
+	"AR1103"	=>	"BG1103"
+	"AR1104"	=>	"BG1104"
+	"AR1105"	=>	"BG1105"
+	"AR1106"	=>	"BG1106"
+	"AR1107"	=>	"BG1107"
+	"AR1108"	=>	"BG1108"
+	"AR1109"	=>	"BG1109"
+	"AR1110"	=>	"BG1110"
+	"AR1111"	=>	"BG1111"
+	"AR1112"	=>	"BG1112"
+	"AR1113"	=>	"BG1113"
+	"AR1114"	=>	"BG1114"
+	"AR1115"	=>	"BG1115"
+	"AR1116"	=>	"BG1116"
+	"AR1117"	=>	"BG1117"
+	"AR1200"	=>	"BG1200"
+	"AR1201"	=>	"BG1201"
+	"AR1202"	=>	"BG1202"
+	"AR1203"	=>	"BG1203"
+	"AR1204"	=>	"BG1204"
+	"AR1205"	=>	"BG1205"
+	"AR1206"	=>	"BG1206"
+	"AR1207"	=>	"BG1207"
+	"AR1208"	=>	"BG1208"
+	"AR1209"	=>	"BG1209"
+	"AR1210"	=>	"BG1210"
+	"AR1211"	=>	"BG1211"
+	"AR1212"	=>	"BG1212"
+	"AR1213"	=>	"BG1213"
+	"AR1214"	=>	"BG1214"
+	"AR1215"	=>	"BG1215"
+	"AR1300"	=>	"BG1300"
+	"AR1301"	=>	"BG1301"
+	"AR1302"	=>	"BG1302"
+	"AR1303"	=>	"BG1303"
+	"AR1304"	=>	"BG1304"
+	"AR1305"	=>	"BG1305"
+	"AR1306"	=>	"BG1306"
+	"AR1307"	=>	"BG1307"
+	"AR1308"	=>	"BG1308"
+	"AR1309"	=>	"BG1309"
+	"AR1310"	=>	"BG1310"
+	"AR1311"	=>	"BG1311"
+	"AR1312"	=>	"BG1312"
+	"AR1313"	=>	"BG1313"
+	"AR1314"	=>	"BG1314"
+	"AR1315"	=>	"BG1315"
+	"AR1316"	=>	"BG1316"
+	"AR1317"	=>	"BG1317"
+	"AR1320"	=>	"BG1320"
+	"AR1400"	=>	"BG1400"
+	"AR1401"	=>	"BG1401"
+	"AR1402"	=>	"BG1402"
+	"AR1403"	=>	"BG1403"
+	"AR1404"	=>	"BG1404"
+	"AR1500"	=>	"BG1500"
+	"AR1501"	=>	"BG1501"
+	"AR1502"	=>	"BG1502"
+	"AR1503"	=>	"BG1503"
+	"AR1504"	=>	"BG1504"
+	"AR1505"	=>	"BG1505"
+	"AR1600"	=>	"BG1600"
+	"AR1601"	=>	"BG1601"
+	"AR1602"	=>	"BG1602"
+	"AR1603"	=>	"BG1603"
+	"AR1700"	=>	"BG1700"
+	"AR1800"	=>	"BG1800"
+	"AR1801"	=>	"BG1801"
+	"AR1802"	=>	"BG1802"
+	"AR1803"	=>	"BG1803"
+	"AR1804"	=>	"BG1804"
+	"AR1805"	=>	"BG1805"
+	"AR1806"	=>	"BG1806"
+	"AR1807"	=>	"BG1807"
+	"AR1808"	=>	"BG1808"
+	"AR1809"	=>	"BG1809"
+	"AR1900"	=>	"BG1900"
+	"AR1901"	=>	"BG1901"
+	"AR1902"	=>	"BG1902"
+	"AR1903"	=>	"BG1903"
+	"AR1904"	=>	"BG1904"
+	"AR1905"	=>	"BG1905"
+	"AR1906"	=>	"BG1906"
+	"AR1907"	=>	"BG1907"
+	"AR2000"	=>	"BG2000"
+	"AR2001"	=>	"BG2001"
+	"AR2002"	=>	"BG2002"
+	"AR2003"	=>	"BG2003"
+	"AR2004"	=>	"BG2004"
+	"AR2005"	=>	"BG2005"
+	"AR2006"	=>	"BG2006"
+	"AR2007"	=>	"BG2007"
+	"AR2008"	=>	"BG2008"
+	"AR2009"	=>	"BG2009"
+	"AR2010"	=>	"BG2010"
+	"AR2011"	=>	"BG2011"
+	"AR2012"	=>	"BG2012"
+	"AR2100"	=>	"BG2100"
+	"AR2101"	=>	"BG2101"
+	"AR2200"	=>	"BG2200"
+	"AR2215"	=>	"BG2215"
+	"AR2300"	=>	"BG2300"
+	"AR2301"	=>	"BG2301"
+	"AR2302"	=>	"BG2302"
+	"AR2303"	=>	"BG2303"
+	"AR2304"	=>	"BG2304"
+	"AR2305"	=>	"BG2305"
+	"AR2306"	=>	"BG2306"
+	"AR2400"	=>	"BG2400"
+	"AR2600"	=>	"BG2600"
+	"AR2602"	=>	"BG2602"
+	"AR2605"	=>	"BG2605"
+	"AR2606"	=>	"BG2606"
+	"AR2607"	=>	"BG2607"
+	"AR2608"	=>	"BG2608"
+	"AR2609"	=>	"BG2609"
+	"AR2610"	=>	"BG2610"
+	"AR2611"	=>	"BG2611"
+	"AR2612"	=>	"BG2612"
+	"AR2613"	=>	"BG2613"
+	"AR2614"	=>	"BG2614"
+	"AR2615"	=>	"BG2615"
+	"AR2616"	=>	"BG2616"
+	"AR2617"	=>	"BG2617"
+	"AR2618"	=>	"BG2618"
+	"AR2619"	=>	"BG2619"
+	"AR2626"	=>	"BG2626"
+	"AR2627"	=>	"BG2627"
+	"AR2628"	=>	"BG2628"
+	"AR2629"	=>	"BG2629"
+	"AR2630"	=>	"BG2630"
+	"AR2631"	=>	"BG2631"
+	"AR2632"	=>	"BG2632"
+	"AR2633"	=>	"BG2633"
+	"AR2643"	=>	"BG2643"
+	"AR2700"	=>	"BG2700"
+	"AR2800"	=>	"BG2800"
+	"AR2900"	=>	"BG2900"
+	"AR3000"	=>	"BG3000"
+	"AR3100"	=>	"BG3100"
+	"AR3200"	=>	"BG3200"
+	"AR3201"	=>	"BG3201"
+	"AR3202"	=>	"BG3202"
+	"AR3300"	=>	"BG3300"
+	"AR3301"	=>	"BG3301"
+	"AR3302"	=>	"BG3302"
+	"AR3303"	=>	"BG3303"
+	"AR3304"	=>	"BG3304"
+	"AR3305"	=>	"BG3305"
+	"AR3306"	=>	"BG3306"
+	"AR3307"	=>	"BG3307"
+	"AR3308"	=>	"BG3308"
+	"AR3309"	=>	"BG3309"
+	"AR3310"	=>	"BG3310"
+	"AR3311"	=>	"BG3311"
+	"AR3312"	=>	"BG3312"
+	"AR3313"	=>	"BG3313"
+	"AR3314"	=>	"BG3314"
+	"AR3315"	=>	"BG3315"
+	"AR3316"	=>	"BG3316"
+	"AR3317"	=>	"BG3317"
+	"AR3318"	=>	"BG3318"
+	"AR3319"	=>	"BG3319"
+	"AR3320"	=>	"BG3320"
+	"AR3321"	=>	"BG3321"
+	"AR3322"	=>	"BG3322"
+	"AR3323"	=>	"BG3323"
+	"AR3324"	=>	"BG3324"
+	"AR3325"	=>	"BG3325"
+	"AR3326"	=>	"BG3326"
+	"AR3327"	=>	"BG3327"
+	"AR3328"	=>	"BG3328"
+	"AR3329"	=>	"BG3329"
+	"AR3330"	=>	"BG3330"
+	"AR3331"	=>	"BG3331"
+	"AR3332"	=>	"BG3332"
+	"AR3333"	=>	"BG3333"
+	"AR3334"	=>	"BG3334"
+	"AR3335"	=>	"BG3335"
+	"AR3336"	=>	"BG3336"
+	"AR3337"	=>	"BG3337"
+	"AR3338"	=>	"BG3338"
+	"AR3339"	=>	"BG3339"
+	"AR3340"	=>	"BG3340"
+	"AR3341"	=>	"BG3341"
+	"AR3342"	=>	"BG3342"
+	"AR3343"	=>	"BG3343"
+	"AR3344"	=>	"BG3344"
+	"AR3345"	=>	"BG3345"
+	"AR3346"	=>	"BG3346"
+	"AR3347"	=>	"BG3347"
+	"AR3348"	=>	"BG3348"
+	"AR3349"	=>	"BG3349"
+	"AR3350"	=>	"BG3350"
+	"AR3351"	=>	"BG3351"
+	"AR3352"	=>	"BG3352"
+	"AR3353"	=>	"BG3353"
+	"AR3354"	=>	"BG3354"
+	"AR3355"	=>	"BG3355"
+	"AR3356"	=>	"BG3356"
+	"AR3357"	=>	"BG3357"
+	"AR3400"	=>	"BG3400"
+	"AR3401"	=>	"BG3401"
+	"AR3402"	=>	"BG3402"
+	"AR3500"	=>	"BG3500"
+	"AR3600"	=>	"BG3600"
+	"AR3601"	=>	"BG3601"
+	"AR3700"	=>	"BG3700"
+	"AR3800"	=>	"BG3800"
+	"AR3802"	=>	"BG3802"
+	"AR3900"	=>	"BG3900"
+	"AR3901"	=>	"BG3901"
+	"AR4000"	=>	"BG4000"
+	"AR4001"	=>	"BG4001"
+	"AR4002"	=>	"BG4002"
+	"AR4003"	=>	"BG4003"
+	"AR4004"	=>	"BG4004"
+	"AR4005"	=>	"BG4005"
+	"AR4006"	=>	"BG4006"
+	"AR4007"	=>	"BG4007"
+	"AR4008"	=>	"BG4008"
+	"AR4009"	=>	"BG4009"
+	"AR4010"	=>	"BG4010"
+	"AR4011"	=>	"BG4011"
+	"AR4012"	=>	"BG4012"
+	"AR4013"	=>	"BG4013"
+	"AR4014"	=>	"BG4014"
+	"AR4100"	=>	"BG4100"
+	"AR4101"	=>	"BG4101"
+	"AR4200"	=>	"BG4200"
+	"AR4201"	=>	"BG4201"
+	"AR4300"	=>	"BG4300"
+	"AR4400"	=>	"BG4400"
+	"AR4401"	=>	"BG4401"
+	"AR4500"	=>	"BG4500"
+	"AR4501"	=>	"BG4501"
+	"AR4600"	=>	"BG4600"
+	"AR4700"	=>	"BG4700"
+	"AR4701"	=>	"BG4701"
+	"AR4800"	=>	"BG4800"
+	"AR4801"	=>	"BG4801"
+	"AR4802"	=>	"BG4802"
+	"AR4803"	=>	"BG4803"
+	"AR4804"	=>	"BG4804"
+	"AR4805"	=>	"BG4805"
+	"AR4806"	=>	"BG4806"
+	"AR4807"	=>	"BG4807"
+	"AR4808"	=>	"BG4808"
+	"AR4809"	=>	"BG4809"
+	"AR4810"	=>	"BG4810"
+	"AR4900"	=>	"BG4900"
+	"AR4901"	=>	"BG4901"
+	"AR4902"	=>	"BG4902"
+	"AR4903"	=>	"BG4903"
+	"AR4904"	=>	"BG4904"
+	"AR4905"	=>	"BG4905"
+	"AR4906"	=>	"BG4906"
+	"AR4907"	=>	"BG4907"
+	"AR4908"	=>	"BG4908"
+	"AR4909"	=>	"BG4909"
+	"AR5000"	=>	"BG5000"
+	"AR5001"	=>	"BG5001"
+	"AR5100"	=>	"BG5100"
+	"AR5101"	=>	"BG5101"
+	"AR5102"	=>	"BG5102"
+	"AR5103"	=>	"BG5103"
+	"AR5200"	=>	"BG5200"
+	"AR5201"	=>	"BG5201"
+	"AR5202"	=>	"BG5202"
+	"AR5300"	=>	"BG5300"
+	"AR5400"	=>	"BG5400"
+	"AR5401"	=>	"BG5401"
+	"AR5402"	=>	"BG5402"
+	"AR5403"	=>	"BG5403"
+	"AR5404"	=>	"BG5404"
+	"AR5405"	=>	"BG5405"
+	"AR5406"	=>	"BG5406"
+	"AR5500"	=>	"BG5500"
+	"AR5506"	=>	"BG5506"
+	"AR5600"	=>	"BG5600"
+	"AR5601"	=>	"BG5601"
+	"AR5700"	=>	"BG5700"
+	"AR5701"	=>	"BG5701"
+	"AR5800"	=>	"BG5800"
+	"AR5801"	=>	"BG5801"
+	"AR5900"	=>	"BG5900"
+	"AR5901"	=>	"BG5901"
+	"AR6000"	=>	"BG6000"
+	"AR6001"	=>	"BG6001"
+	"AR6100"	=>	"BG6100"
+	"AR0100N"	=>	"BG0100N"
+	"AR0200N"	=>	"BG0200N"
+	"AR0300N"	=>	"BG0300N"
+	"AR0600N"	=>	"BG0600N"
+	"AR0621N"	=>	"BG0621N"
+	"AR0700N"	=>	"BG0700N"
+	"AR0800N"	=>	"BG0800N"
+	"AR0900N"	=>	"BG0900N"
+	"AR1100N"	=>	"BG1100N"
+	"AR1200N"	=>	"BG1200N"
+	"AR1300N"	=>	"BG1300N"
+	"AR1900N"	=>	"BG1900N"
+	"AR2300N"	=>	"BG2300N"
+	"AR3200N"	=>	"BG3200N"
+	"AR3400N"	=>	"BG3400N"
+	"AR4700N"	=>	"BG4700N"
+	"AR4900N"	=>	"BG4900N"
+	"AR0506AC"	=>	"BG0506AC"
+	"AR0506AO"	=>	"BG0506AO"
+//added by Baldur's Gate Graphics Overhaul
+	"AR2600N"	=>	"BG2600N"
+	"AR4200N"	=>	"BG4200N"
+	"AR4300N"	=>	"BG4300N"
+	"AR4400N"	=>	"BG4400N"
+	"AR4500N"	=>	"BG4500N"
+	"AR4600N"	=>	"BG4600N"
+	"AR4800N"	=>	"BG4800N"
+	"AR5000N"	=>	"BG5000N"
+	"AR5100N"	=>	"BG5100N"
+	"AR5200N"	=>	"BG5200N"
+	"AR5300N"	=>	"BG5300N"
+	"AR5400N"	=>	"BG5400N"
+	"AR5500N"	=>	"BG5500N"
+	"AR5600N"	=>	"BG5600N"
+	"AR5700N"	=>	"BG5700N"
+	"AR5800N"	=>	"BG5800N"
+	"AR5900N"	=>	"BG5900N"
+	"AR6000N"	=>	"BG6000N"
+	"AR6100N"	=>	"BG6100N"
+	"AR2700N"	=>	"BG2700N"
+	"AR3300N"	=>	"BG3300N"
+	"AR2800N"	=>	"BG2800N"
+	"AR2200N"	=>	"BG2200N"
+	"AR0400N"	=>	"BG0400N"
+	"AR1400N"	=>	"BG1400N"
+	"AR1600N"	=>	"BG1600N"
+	"AR1700N"	=>	"BG1700N"
+	"AR1800N"	=>	"BG1800N"
+	"AR2100N"	=>	"BG2100N"
+	"AR2400N"	=>	"BG2400N"
+	"AR2900N"	=>	"BG2900N"
+	"AR3000N"	=>	"BG3000N"
+	"AR3100N"	=>	"BG3100N"
+	"AR3500N"	=>	"BG3500N"
+	"AR3600N"	=>	"BG3600N"
+	"AR3700N"	=>	"BG3700N"
+	"AR3800N"	=>	"BG3800N"
+	"AR3900N"	=>	"BG3900N"
+	"AR4000N"	=>	"BG4000N"
+	"AR4100N"	=>	"BG4100N"
+	"AR0500N"	=>	"BG0500N"
+	"AR1000N"	=>	"BG1000N"
+	"AR2000N"	=>	"BG2000N"
+	"AR1500N"	=>	"BG1500N"
+END
+
+/////                                                  \\\\\
+///// Preparing VEF variables                          \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_vef BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing WAV / WFX variables                    \\\\\
+/////                                                  \\\\\
+
+//soundsets use BG prefix because last letter is required by engine
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_wav BEGIN
+	"EFF_M46"	=>	"EFF_M46_"
+	"BLACK01"	=>	"BLACK01_"
+	"BLACK02"	=>	"BLACK02_"
+	"BLACK03"	=>	"BLACK03_"
+	"BLACK04"	=>	"BLACK04_"
+	"EDWIN01"	=>	"EDWIN01_"
+	"EDWIN02"	=>	"EDWIN02_"
+	"EDWIN03"	=>	"EDWIN03_"
+	"EDWIN04"	=>	"EDWIN04_"
+	"EDWIN05"	=>	"EDWIN05_"
+	"EDWIN06"	=>	"EDWIN06_"
+	"EDWIN07"	=>	"EDWIN07_"
+	"EDWIN08"	=>	"EDWIN08_"
+	"EDWIN09"	=>	"EDWIN09_"
+	"EDWIN10"	=>	"EDWIN10_"
+	"EDWIN11"	=>	"EDWIN11_"
+	"EDWIN17"	=>	"EDWIN17_"
+	"EDWIN18"	=>	"EDWIN18_"
+	"EDWIN19"	=>	"EDWIN19_"
+	"EDWIN20"	=>	"EDWIN20_"
+	"EDWIN21"	=>	"EDWIN21_"
+	"EDWIN22"	=>	"EDWIN22_"
+	"EDWIN23"	=>	"EDWIN23_"
+	"EDWIN24"	=>	"EDWIN24_"
+	"EDWIN25"	=>	"EDWIN25_"
+	"EDWIN26"	=>	"EDWIN26_"
+	"EDWIN27"	=>	"EDWIN27_"
+	"EDWIN28"	=>	"EDWIN28_"
+	"EDWIN29"	=>	"EDWIN29_"
+	"EDWIN30"	=>	"EDWIN30_"
+	"EDWIN31"	=>	"EDWIN31_"
+	"EDWIN32"	=>	"EDWIN32_"
+	"EDWIN33"	=>	"EDWIN33_"
+	"EDWIN34"	=>	"EDWIN34_"
+	"EDWIN35"	=>	"EDWIN35_"
+	"EDWIN36"	=>	"EDWIN36_"
+	"EDWIN37"	=>	"EDWIN37_"
+	"EDWIN38"	=>	"EDWIN38_"
+	"EDWIN39"	=>	"EDWIN39_"
+	"EDWIN40"	=>	"EDWIN40_"
+	"EDWIN41"	=>	"EDWIN41_"
+	"EDWIN42"	=>	"EDWIN42_"
+	"EDWIN43"	=>	"EDWIN43_"
+	"EDWIN45"	=>	"EDWIN45_"
+	"EDWIN46"	=>	"EDWIN46_"
+	"EDWIN47"	=>	"EDWIN47_"
+	"EDWIN48"	=>	"EDWIN48_"
+	"IMOEN01"	=>	"IMOEN01_"
+	"IMOEN02"	=>	"IMOEN02_"
+	"IMOEN03"	=>	"IMOEN03_"
+	"IMOEN04"	=>	"IMOEN04_"
+	"IMOEN05"	=>	"IMOEN05_"
+	"IMOEN06"	=>	"IMOEN06_"
+	"IMOEN07"	=>	"IMOEN07_"
+	"IMOEN08"	=>	"IMOEN08_"
+	"IMOEN09"	=>	"IMOEN09_"
+	"IMOEN10"	=>	"IMOEN10_"
+	"IMOEN11"	=>	"IMOEN11_"
+	"IMOEN12"	=>	"IMOEN12_"
+	"IMOEN13"	=>	"IMOEN13_"
+	"IMOEN14"	=>	"IMOEN14_"
+	"IMOEN15"	=>	"IMOEN15_"
+	"IMOEN16"	=>	"IMOEN16_"
+	"IMOEN17"	=>	"IMOEN17_"
+	"IMOEN18"	=>	"IMOEN18_"
+	"IMOEN19"	=>	"IMOEN19_"
+	"IMOEN20"	=>	"IMOEN20_"
+	"IMOEN21"	=>	"IMOEN21_"
+	"IMOEN22"	=>	"IMOEN22_"
+	"IMOEN23"	=>	"IMOEN23_"
+	"IMOEN24"	=>	"IMOEN24_"
+	"IMOEN25"	=>	"IMOEN25_"
+	"IMOEN26"	=>	"IMOEN26_"
+	"IMOEN27"	=>	"IMOEN27_"
+	"IMOEN28"	=>	"IMOEN28_"
+	"IMOEN30"	=>	"IMOEN30_"
+	"MINSC01"	=>	"MINSC01_"
+	"MINSC02"	=>	"MINSC02_"
+	"MINSC03"	=>	"MINSC03_"
+	"MINSC04"	=>	"MINSC04_"
+	"MINSC05"	=>	"MINSC05_"
+	"MINSC06"	=>	"MINSC06_"
+	"MINSC07"	=>	"MINSC07_"
+	"MINSC08"	=>	"MINSC08_"
+	"MINSC09"	=>	"MINSC09_"
+	"MINSC10"	=>	"MINSC10_"
+	"MINSC11"	=>	"MINSC11_"
+	"MINSC12"	=>	"MINSC12_"
+	"MINSC14"	=>	"MINSC14_"
+	"MINSC16"	=>	"MINSC16_"
+	"MINSC17"	=>	"MINSC17_"
+	"MINSC18"	=>	"MINSC18_"
+	"MINSC19"	=>	"MINSC19_"
+	"MINSC20"	=>	"MINSC20_"
+	"MINSC21"	=>	"MINSC21_"
+	"MINSC22"	=>	"MINSC22_"
+	"MINSC23"	=>	"MINSC23_"
+	"MINSC24"	=>	"MINSC24_"
+	"MINSC25"	=>	"MINSC25_"
+	"MINSC26"	=>	"MINSC26_"
+	"MINSC27"	=>	"MINSC27_"
+	"MINSC28"	=>	"MINSC28_"
+	"MINSC29"	=>	"MINSC29_"
+	"MINSC30"	=>	"MINSC30_"
+	"MINSC31"	=>	"MINSC31_"
+	"MINSC32"	=>	"MINSC32_"
+	"MINSC33"	=>	"MINSC33_"
+	"MINSC34"	=>	"MINSC34_"
+	"MINSC35"	=>	"MINSC35_"
+	"MINSC36"	=>	"MINSC36_"
+	"MINSC37"	=>	"MINSC37_"
+	"MINSC38"	=>	"MINSC38_"
+	"MINSC39"	=>	"MINSC39_"
+	"MINSC40"	=>	"MINSC40_"
+	"MINSC41"	=>	"MINSC41_"
+	"UMBER01"	=>	"UMBER01_"
+	"UMBER02"	=>	"UMBER02_"
+	"UMBER05"	=>	"UMBER05_"
+	"UMBER06"	=>	"UMBER06_"
+	"FEMALE1A"	=>	"BGFeml1a"
+	"FEMALE1B"	=>	"BGFeml1b"
+	"FEMALE1C"	=>	"BGFeml1c"
+	"FEMALE1D"	=>	"BGFeml1d"
+	"FEMALE1E"	=>	"BGFeml1e"
+	"FEMALE1F"	=>	"BGFeml1f"
+	"FEMALE1G"	=>	"BGFeml1g"
+	"FEMALE1H"	=>	"BGFeml1h"
+	"FEMALE1I"	=>	"BGFeml1i"
+	"FEMALE1J"	=>	"BGFeml1j"
+	"FEMALE1K"	=>	"BGFeml1k"
+	"FEMALE1L"	=>	"BGFeml1l"
+	"FEMALE1M"	=>	"BGFeml1m"
+	"FEMALE2A"	=>	"BGFeml2a"
+	"FEMALE2B"	=>	"BGFeml2b"
+	"FEMALE2C"	=>	"BGFeml2c"
+	"FEMALE2D"	=>	"BGFeml2d"
+	"FEMALE2E"	=>	"BGFeml2e"
+	"FEMALE2F"	=>	"BGFeml2f"
+	"FEMALE2G"	=>	"BGFeml2g"
+	"FEMALE2H"	=>	"BGFeml2h"
+	"FEMALE2I"	=>	"BGFeml2i"
+	"FEMALE2J"	=>	"BGFeml2j"
+	"FEMALE2K"	=>	"BGFeml2k"
+	"FEMALE2L"	=>	"BGFeml2l"
+	"FEMALE2M"	=>	"BGFeml2m"
+	"FEMALE3A"	=>	"BGFeml3a"
+	"FEMALE3B"	=>	"BGFeml3b"
+	"FEMALE3C"	=>	"BGFeml3c"
+	"FEMALE3D"	=>	"BGFeml3d"
+	"FEMALE3E"	=>	"BGFeml3e"
+	"FEMALE3F"	=>	"BGFeml3f"
+	"FEMALE3G"	=>	"BGFeml3g"
+	"FEMALE3H"	=>	"BGFeml3h"
+	"FEMALE3I"	=>	"BGFeml3i"
+	"FEMALE3J"	=>	"BGFeml3j"
+	"FEMALE3K"	=>	"BGFeml3k"
+	"FEMALE3L"	=>	"BGFeml3l"
+	"FEMALE3M"	=>	"BGFeml3m"
+	"FEMALE4A"	=>	"BGFeml4a"
+	"FEMALE4B"	=>	"BGFeml4b"
+	"FEMALE4C"	=>	"BGFeml4c"
+	"FEMALE4D"	=>	"BGFeml4d"
+	"FEMALE4E"	=>	"BGFeml4e"
+	"FEMALE4F"	=>	"BGFeml4f"
+	"FEMALE4G"	=>	"BGFeml4g"
+	"FEMALE4H"	=>	"BGFeml4h"
+	"FEMALE4I"	=>	"BGFeml4i"
+	"FEMALE4J"	=>	"BGFeml4j"
+	"FEMALE4K"	=>	"BGFeml4k"
+	"FEMALE4L"	=>	"BGFeml4l"
+	"FEMALE4M"	=>	"BGFeml4m"
+	"FEMALE5A"	=>	"BGFeml5a"
+	"FEMALE5B"	=>	"BGFeml5b"
+	"FEMALE5C"	=>	"BGFeml5c"
+	"FEMALE5D"	=>	"BGFeml5d"
+	"FEMALE5E"	=>	"BGFeml5e"
+	"FEMALE5F"	=>	"BGFeml5f"
+	"FEMALE5G"	=>	"BGFeml5g"
+	"FEMALE5H"	=>	"BGFeml5h"
+	"FEMALE5I"	=>	"BGFeml5i"
+	"FEMALE5J"	=>	"BGFeml5j"
+	"FEMALE5K"	=>	"BGFeml5k"
+	"FEMALE5L"	=>	"BGFeml5l"
+	"FEMALE5M"	=>	"BGFeml5m"
+	"FEMALE6A"	=>	"BGFeml6a"
+	"FEMALE6B"	=>	"BGFeml6b"
+	"FEMALE6C"	=>	"BGFeml6c"
+	"FEMALE6D"	=>	"BGFeml6d"
+	"FEMALE6E"	=>	"BGFeml6e"
+	"FEMALE6F"	=>	"BGFeml6f"
+	"FEMALE6G"	=>	"BGFeml6g"
+	"FEMALE6H"	=>	"BGFeml6h"
+	"FEMALE6I"	=>	"BGFeml6i"
+	"FEMALE6J"	=>	"BGFeml6j"
+	"FEMALE6K"	=>	"BGFeml6k"
+	"FEMALE6L"	=>	"BGFeml6l"
+	"FEMALE6M"	=>	"BGFeml6m"
+	"FEMALE7A"	=>	"BGFeml7a"
+	"FEMALE7B"	=>	"BGFeml7b"
+	"FEMALE7C"	=>	"BGFeml7c"
+	"FEMALE7D"	=>	"BGFeml7d"
+	"FEMALE7E"	=>	"BGFeml7e"
+	"FEMALE7F"	=>	"BGFeml7f"
+	"FEMALE7G"	=>	"BGFeml7g"
+	"FEMALE7H"	=>	"BGFeml7h"
+	"FEMALE7I"	=>	"BGFeml7i"
+	"FEMALE7J"	=>	"BGFeml7j"
+	"FEMALE7K"	=>	"BGFeml7k"
+	"FEMALE7L"	=>	"BGFeml7l"
+	"FEMALE7M"	=>	"BGFeml7m"
+	"FEMALE7N"	=>	"BGFeml7n"
+	"FEMALE7O"	=>	"BGFeml7o"
+	"FEMALE7P"	=>	"BGFeml7p"
+	"FEMALE7Q"	=>	"BGFeml7q"
+	"FEMALE7R"	=>	"BGFeml7r"
+	"FEMALE7S"	=>	"BGFeml7s"
+	"FEMALE7T"	=>	"BGFeml7t"
+	"FEMALE7U"	=>	"BGFeml7u"
+	"FEMALE7V"	=>	"BGFeml7v"
+	"FEMALE7W"	=>	"BGFeml7w"
+	"FEMALE7X"	=>	"BGFeml7x"
+	"FEMALE7Y"	=>	"BGFeml7y"
+	"FEMALE7Z"	=>	"BGFeml7z"
+	"FEMALE70"	=>	"BGFeml70"
+	"FEMALE71"	=>	"BGFeml71"
+	"FEMALE72"	=>	"BGFeml72"
+	"FEMALE73"	=>	"BGFeml73"
+	"FEMALE74"	=>	"BGFeml74"
+	"FEMALE75"	=>	"BGFeml75"
+	"FEMALE76"	=>	"BGFeml76"
+	"FEMALE77"	=>	"BGFeml77"
+	"FEMALE78"	=>	"BGFeml78"
+	"FEMALE79"	=>	"BGFeml79"
+	"FEMALE8A"	=>	"BGFeml8a"
+	"FEMALE8B"	=>	"BGFeml8b"
+	"FEMALE8C"	=>	"BGFeml8c"
+	"FEMALE8D"	=>	"BGFeml8d"
+	"FEMALE8E"	=>	"BGFeml8e"
+	"FEMALE8F"	=>	"BGFeml8f"
+	"FEMALE8G"	=>	"BGFeml8g"
+	"FEMALE8H"	=>	"BGFeml8h"
+	"FEMALE8I"	=>	"BGFeml8i"
+	"FEMALE8J"	=>	"BGFeml8j"
+	"FEMALE8K"	=>	"BGFeml8k"
+	"FEMALE8L"	=>	"BGFeml8l"
+	"FEMALE8M"	=>	"BGFeml8m"
+	"FEMALE8N"	=>	"BGFeml8n"
+	"FEMALE8O"	=>	"BGFeml8o"
+	"FEMALE8P"	=>	"BGFeml8p"
+	"FEMALE8Q"	=>	"BGFeml8q"
+	"FEMALE8R"	=>	"BGFeml8r"
+	"FEMALE8S"	=>	"BGFeml8s"
+	"FEMALE8T"	=>	"BGFeml8t"
+	"FEMALE8U"	=>	"BGFeml8u"
+	"FEMALE8V"	=>	"BGFeml8v"
+	"FEMALE8W"	=>	"BGFeml8w"
+	"FEMALE8X"	=>	"BGFeml8x"
+	"FEMALE8Y"	=>	"BGFeml8y"
+	"FEMALE8Z"	=>	"BGFeml8z"
+	"FEMALE80"	=>	"BGFeml80"
+	"FEMALE81"	=>	"BGFeml81"
+	"FEMALE82"	=>	"BGFeml82"
+	"FEMALE83"	=>	"BGFeml83"
+	"FEMALE84"	=>	"BGFeml84"
+	"FEMALE85"	=>	"BGFeml85"
+	"FEMALE86"	=>	"BGFeml86"
+	"FEMALE87"	=>	"BGFeml87"
+	"FEMALE88"	=>	"BGFeml88"
+	"FEMALE89"	=>	"BGFeml89"
+	"MAINF03"	=>	"BGMainFa"
+	"MAINF08"	=>	"BGMainFb"
+	"MAINF09"	=>	"BGMainFc"
+	"MAINF10"	=>	"BGMainFd"
+	"MAINF11"	=>	"BGMainFe"
+	"MAINF17"	=>	"BGMainFf"
+	"MAINF18"	=>	"BGMainFg"
+	"MAINF19"	=>	"BGMainFh"
+	"MAINF20"	=>	"BGMainFi"
+	"MAINF21"	=>	"BGMainFj"
+	"MAINF22"	=>	"BGMainFk"
+	"MAINF38"	=>	"BGMainFl"
+	"MAINF39"	=>	"BGMainFm"
+	"MAINM03"	=>	"BGMainMa"
+	"MAINM08"	=>	"BGMainMb"
+	"MAINM09"	=>	"BGMainMc"
+	"MAINM10"	=>	"BGMainMd"
+	"MAINM11"	=>	"BGMainMe"
+	"MAINM17"	=>	"BGMainMf"
+	"MAINM18"	=>	"BGMainMg"
+	"MAINM19"	=>	"BGMainMh"
+	"MAINM20"	=>	"BGMainMi"
+	"MAINM21"	=>	"BGMainMj"
+	"MAINM22"	=>	"BGMainMk"
+	"MAINM38"	=>	"BGMainMl"
+	"MAINM39"	=>	"BGMainMm"
+	"MALE1A"	=>	"BGMale1a"
+	"MALE1B"	=>	"BGMale1b"
+	"MALE1C"	=>	"BGMale1c"
+	"MALE1D"	=>	"BGMale1d"
+	"MALE1E"	=>	"BGMale1e"
+	"MALE1F"	=>	"BGMale1f"
+	"MALE1G"	=>	"BGMale1g"
+	"MALE1H"	=>	"BGMale1h"
+	"MALE1I"	=>	"BGMale1i"
+	"MALE1J"	=>	"BGMale1j"
+	"MALE1K"	=>	"BGMale1k"
+	"MALE1L"	=>	"BGMale1l"
+	"MALE1M"	=>	"BGMale1m"
+	"MALE2A"	=>	"BGMale2a"
+	"MALE2B"	=>	"BGMale2b"
+	"MALE2C"	=>	"BGMale2c"
+	"MALE2D"	=>	"BGMale2d"
+	"MALE2E"	=>	"BGMale2e"
+	"MALE2F"	=>	"BGMale2f"
+	"MALE2G"	=>	"BGMale2g"
+	"MALE2H"	=>	"BGMale2h"
+	"MALE2I"	=>	"BGMale2i"
+	"MALE2J"	=>	"BGMale2j"
+	"MALE2K"	=>	"BGMale2k"
+	"MALE2L"	=>	"BGMale2l"
+	"MALE2M"	=>	"BGMale2m"
+	"MALE3A"	=>	"BGMale3a"
+	"MALE3B"	=>	"BGMale3b"
+	"MALE3C"	=>	"BGMale3c"
+	"MALE3D"	=>	"BGMale3d"
+	"MALE3E"	=>	"BGMale3e"
+	"MALE3F"	=>	"BGMale3f"
+	"MALE3G"	=>	"BGMale3g"
+	"MALE3H"	=>	"BGMale3h"
+	"MALE3I"	=>	"BGMale3i"
+	"MALE3J"	=>	"BGMale3j"
+	"MALE3K"	=>	"BGMale3k"
+	"MALE3L"	=>	"BGMale3l"
+	"MALE3M"	=>	"BGMale3m"
+	"MALE4A"	=>	"BGMale4a"
+	"MALE4B"	=>	"BGMale4b"
+	"MALE4C"	=>	"BGMale4c"
+	"MALE4D"	=>	"BGMale4d"
+	"MALE4E"	=>	"BGMale4e"
+	"MALE4F"	=>	"BGMale4f"
+	"MALE4G"	=>	"BGMale4g"
+	"MALE4H"	=>	"BGMale4h"
+	"MALE4I"	=>	"BGMale4i"
+	"MALE4J"	=>	"BGMale4j"
+	"MALE4K"	=>	"BGMale4k"
+	"MALE4L"	=>	"BGMale4l"
+	"MALE4M"	=>	"BGMale4m"
+	"MALE5A"	=>	"BGMale5a"
+	"MALE5B"	=>	"BGMale5b"
+	"MALE5C"	=>	"BGMale5c"
+	"MALE5D"	=>	"BGMale5d"
+	"MALE5E"	=>	"BGMale5e"
+	"MALE5F"	=>	"BGMale5f"
+	"MALE5G"	=>	"BGMale5g"
+	"MALE5H"	=>	"BGMale5h"
+	"MALE5I"	=>	"BGMale5i"
+	"MALE5J"	=>	"BGMale5j"
+	"MALE5K"	=>	"BGMale5k"
+	"MALE5L"	=>	"BGMale5l"
+	"MALE5M"	=>	"BGMale5m"
+	"MALE6A"	=>	"BGMale6a"
+	"MALE6B"	=>	"BGMale6b"
+	"MALE6C"	=>	"BGMale6c"
+	"MALE6D"	=>	"BGMale6d"
+	"MALE6E"	=>	"BGMale6e"
+	"MALE6F"	=>	"BGMale6f"
+	"MALE6G"	=>	"BGMale6g"
+	"MALE6H"	=>	"BGMale6h"
+	"MALE6I"	=>	"BGMale6i"
+	"MALE6J"	=>	"BGMale6j"
+	"MALE6K"	=>	"BGMale6k"
+	"MALE6L"	=>	"BGMale6l"
+	"MALE6M"	=>	"BGMale6m"
+	"MALE7A"	=>	"BGMale7a"
+	"MALE7B"	=>	"BGMale7b"
+	"MALE7C"	=>	"BGMale7c"
+	"MALE7D"	=>	"BGMale7d"
+	"MALE7E"	=>	"BGMale7e"
+	"MALE7F"	=>	"BGMale7f"
+	"MALE7G"	=>	"BGMale7g"
+	"MALE7H"	=>	"BGMale7h"
+	"MALE7I"	=>	"BGMale7i"
+	"MALE7J"	=>	"BGMale7j"
+	"MALE7K"	=>	"BGMale7k"
+	"MALE7L"	=>	"BGMale7l"
+	"MALE7M"	=>	"BGMale7m"
+	"MALE7N"	=>	"BGMale7n"
+	"MALE7O"	=>	"BGMale7o"
+	"MALE7P"	=>	"BGMale7p"
+	"MALE7Q"	=>	"BGMale7q"
+	"MALE7R"	=>	"BGMale7r"
+	"MALE7S"	=>	"BGMale7s"
+	"MALE7T"	=>	"BGMale7t"
+	"MALE7U"	=>	"BGMale7u"
+	"MALE7V"	=>	"BGMale7v"
+	"MALE7W"	=>	"BGMale7w"
+	"MALE7X"	=>	"BGMale7x"
+	"MALE7Y"	=>	"BGMale7y"
+	"MALE7Z"	=>	"BGMale7z"
+	"MALE70"	=>	"BGMale70"
+	"MALE71"	=>	"BGMale71"
+	"MALE72"	=>	"BGMale72"
+	"MALE73"	=>	"BGMale73"
+	"MALE74"	=>	"BGMale74"
+	"MALE75"	=>	"BGMale75"
+	"MALE76"	=>	"BGMale76"
+	"MALE77"	=>	"BGMale77"
+	"MALE78"	=>	"BGMale78"
+	"MALE79"	=>	"BGMale79"
+	"MALE8A"	=>	"BGMale8a"
+	"MALE8B"	=>	"BGMale8b"
+	"MALE8C"	=>	"BGMale8c"
+	"MALE8D"	=>	"BGMale8d"
+	"MALE8E"	=>	"BGMale8e"
+	"MALE8F"	=>	"BGMale8f"
+	"MALE8G"	=>	"BGMale8g"
+	"MALE8H"	=>	"BGMale8h"
+	"MALE8I"	=>	"BGMale8i"
+	"MALE8J"	=>	"BGMale8j"
+	"MALE8K"	=>	"BGMale8k"
+	"MALE8L"	=>	"BGMale8l"
+	"MALE8M"	=>	"BGMale8m"
+	"MALE8N"	=>	"BGMale8n"
+	"MALE8O"	=>	"BGMale8o"
+	"MALE8P"	=>	"BGMale8p"
+	"MALE8Q"	=>	"BGMale8q"
+	"MALE8R"	=>	"BGMale8r"
+	"MALE8S"	=>	"BGMale8s"
+	"MALE8T"	=>	"BGMale8t"
+	"MALE8U"	=>	"BGMale8u"
+	"MALE8V"	=>	"BGMale8v"
+	"MALE8W"	=>	"BGMale8w"
+	"MALE8X"	=>	"BGMale8x"
+	"MALE8Y"	=>	"BGMale8y"
+	"MALE8Z"	=>	"BGMale8z"
+	"MALE80"	=>	"BGMale80"
+	"MALE81"	=>	"BGMale81"
+	"MALE82"	=>	"BGMale82"
+	"MALE83"	=>	"BGMale83"
+	"MALE84"	=>	"BGMale84"
+	"MALE85"	=>	"BGMale85"
+	"MALE86"	=>	"BGMale86"
+	"MALE87"	=>	"BGMale87"
+	"MALE88"	=>	"BGMale88"
+	"MALE89"	=>	"BGMale89"
+END
+
+/////                                                  \\\\\
+///// Preparing door name variables                    \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_door BEGIN
+END
+
+/////                                                  \\\\\
+///// Preparing entrance name variables                \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_exit BEGIN
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// ARRAYS CREATED DYNAMICALLY DURING INSTALLATION   \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN
+	10	=>	2	//ALLIES
+	CULTIST	=>	ALLIES	//10
+	12	=>	3	//ALLIES3
+	SHARRAN	=>	ALLIES3	//12
+	20	=>	4	//CRUSADERS
+	HOSTILES	=>	CRUSADERS	//20
+	64	=>	6	//SORCERER
+	SHOU_MONK	=>	SORCERER	//64
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN
+	6	=>	2	//ARROW
+	10	=>	7	//AXE
+	11	=>	7	//AXE
+	15	=>	12	//BOLT
+	16	=>	12	//BOLT
+	20	=>	17	//BULLET
+	21	=>	17	//BULLET
+	30	=>	27	//DAGGER
+	31	=>	27	//DAGGER
+	35	=>	32	//DART
+	36	=>	32	//DART
+	59	=>	56	//SPEAR
+	60	=>	56	//SPEAR
+	325	=>	332	//WRITHING
+	327	=>	337	//BDSTINK
+	328	=>	338	//BDBAREA
+	329	=>	339	//BDDRAGGH
+	330	=>	340	//bdarowfl
+	331	=>	341	//PSHAMMA
+	332	=>	342	//PSHAMMB
+	333	=>	343	//PSHAMMG
+	334	=>	344	//PSHAMMN
+	335	=>	345	//PSHAMMO
+	336	=>	346	//BDMIST
+	337	=>	347	//IDPRO282
+	338	=>	348	//bdimodag
+	339	=>	349	//BDVRPO
+	340	=>	350	//BDVRNP
+	341	=>	351	//BDNEARE
+	342	=>	352	//BDDRGGRY
+	343	=>	353	//BDDARK15
+	344	=>	354	//WHIRLW
+	345	=>	355	//BDSHADOW
+	346	=>	356	//BDARRFLM
+	347	=>	357	//BDARRREG
+	348	=>	358	//BDARREXP
+	349	=>	359	//FSTRIKH
+	350	=>	360	//BDBELINF
+	351	=>	361	//BDBELBLZ
+	352	=>	333	//BDSPFIRE
+	353	=>	362	//BDNEOBRE
+	354	=>	334	//BDETHRET
+	355	=>	363	//BDMUCOUS
+	356	=>	364	//BDNEOAWE
+	356	=>	364	//BDNEOAWE
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN
+	1	=>	107	//CDay1
+	2	=>	108	//CDay2
+	3	=>	109	//CNite
+	4	=>	110	//Chants
+	5	=>	111	//Dream
+	6	=>	0	//Unused01
+	7	=>	112	//FDay
+	8	=>	113	//FNite
+	9	=>	114	//PDay
+	10	=>	115	//PNite
+	11	=>	116	//Temple
+	12	=>	0	//Unused02
+	13	=>	117	//TDay1
+	14	=>	118	//TDay2
+	15	=>	119	//TNite
+	16	=>	120	//Dung1
+	17	=>	121	//Dung2
+	18	=>	122	//Dung3
+	19	=>	123	//BC3
+	20	=>	124	//BC4
+	21	=>	125	//BD4
+	22	=>	126	//BD5
+	23	=>	127	//BL1
+	24	=>	128	//BL2
+	25	=>	129	//BF3
+	26	=>	130	//BF4
+	27	=>	131	//BP3
+	28	=>	132	//BP4
+	29	=>	133	//BW1
+	30	=>	0	//Unused03
+	31	=>	134	//Fort
+	32	=>	135	//Chapter
+	33	=>	136	//BGTHEME
+	34	=>	66	//TAV5
+	35	=>	66	//Tav1_d
+	36	=>	67	//TAV6
+	37	=>	137	//TAV7
+	38	=>	138	//TAV8
+	39	=>	0	//Unused05
+	40	=>	0	//Unused06
+	41	=>	0	//Unused07
+	42	=>	0	//Unused08
+	43	=>	0	//Unused09
+	44	=>	0	//Unused10
+	45	=>	0	//Unused11
+	46	=>	0	//Unused12
+	47	=>	0	//Unused13
+	48	=>	0	//Unused14
+	49	=>	0	//Unused15
+	50	=>	0	//Unused16
+	51	=>	0	//Unused17
+	52	=>	0	//Unused18
+	53	=>	0	//Unused19
+	54	=>	0	//Unused20
+	55	=>	0	//Unused21
+	56	=>	0	//Unused22
+	57	=>	0	//Unused23
+	58	=>	0	//Unused24
+	59	=>	0	//Unused25
+	60	=>	139	//BD7100
+	61	=>	140	//BD7200
+	62	=>	141	//BDBGMX
+	63	=>	142	//BDBGNX
+	64	=>	143	//Fort2
+	65	=>	144	//INite
+	66	=>	145	//BDDRM1
+	67	=>	146	//BD100X
+	68	=>	0	//Unused25
+	69	=>	147	//BD200X
+	70	=>	148	//BD300X
+	71	=>	149	//BD410X
+	72	=>	150	//BD440X
+	73	=>	151	//BD510X
+	74	=>	152	//SoDTheme
+	75	=>	153	//BDCW
+	76	=>	154	//BDCU
+	77	=>	155	//BDBFB
+	78	=>	156	//BDDSB
+	79	=>	157	//BDBEC
+	80	=>	158	//BDLBB
+	81	=>	136	//NewTheme
+	82	=>	159	//OldTheme
+	83	=>	160	//BDMANX
+	84	=>	102	//BPC1
+	85	=>	103	//BPC2
+	86	=>	104	//BPC3
+	87	=>	105	//BPStg
+	88	=>	106	//BPTheme
+	89	=>	161	//NAdoys
+	90	=>	162	//NGoblin
+	91	=>	163	//RPeaks
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN
+	SPIN205A	=>	SPIN204A	//MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
+	SPIN205B	=>	SPIN204B	//MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
+	SPIN205C	=>	SPIN204C	//MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN
+	SPIN205A	=>	SPIN204A	//MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
+	SPIN205B	=>	SPIN204B	//MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN
+	SPWI228	=>	SPWI225	//WIZARD_DARKNESS_15_FOOT
+	SPWI975	=>	SPWI901	//WHITE_HOLY_MIGHT
+	SPIN191	=>	SPIN128	//BOMBARDIER_BEETLE_CLOUD
+	SPIN205	=>	SPIN204	//MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
+	SPIN412	=>	SPIN401	//SET_SNARE_ENEMY
+	SPIN413	=>	SPIN402	//THIEF_STEALTH
+	SPIN500	=>	SPIN501	//PSIONIC_DIMENSION_WALK
+	SPIN501	=>	SPIN502	//PSIONIC_TELEKINESIS
+	SPIN502	=>	SPIN503	//PSIONIC_ID_INSINUATION
+	SPIN503	=>	SPIN504	//PSIONIC_CONTROL_BODY
+	SPIN504	=>	SPIN505	//PSIONIC_TASTE_LINK
+	SPIN520	=>	SPIN506	//NEOTHELID_BREATH
+END
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN
+	3191	=>	BOMBARDIER_BEETLE_CLOUD	//BOMBARDIER_BEETLE_CLOUD
+	3205	=>	MKHIIN_SUMMON_ANCESTRAL_GUARDIAN	//MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
+	3412	=>	SET_SNARE_ENEMY	//SET_SNARE_ENEMY
+	3413	=>	THIEF_STEALTH	//THIEF_STEALTH
+	2228	=>	WIZARD_DARKNESS_15_FOOT	//WIZARD_DARKNESS_15_FOOT
+END
+
