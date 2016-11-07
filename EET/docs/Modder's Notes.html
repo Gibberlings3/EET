@@ -565,6 +565,7 @@ LAF ~EET_NPC_TRANSITION~
     override_SoA = "IMOEN2" //name of the override NPC script in SoA
     override_ToB = "IMOEN25" //name of the override NPC script in ToB (use SoA one if doesn't exist)
     dialog_ToB = "IMOEN25A" //name of the dialogue file used after spawning NPC in ToB (use SoA POST dialogue or initial SoA dialogue file if doesn't exist)
+    cre_ToB = "IMOEN15" //name of the CRE file used for ToB Fate Spirit summonning (only if type == 4 and/or default_ToB > 0, so this var can be skipped in most cases)
     traFile = "" //an optional TRA file that will be used for the TRA references defined in "string"
     string = "@1" //FATESP summon text (example: "Bring me Quayle, the gnome cleric/illusionist.") or TRA string number
     stringPosDV = "" //set the DV of NPC right below your response (used for sorting FATESP responses alphabetically)
@@ -589,7 +590,7 @@ LAF ~EET_NPC_TRANSITION~
     dv = "IMOEN2"
     override_BG1 = "IMOEN_"
     override_SoD = "BDIMOEN"
-    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    traFile = "ModFolder/language/%LANGUAGE%/dialog.tra"
     string = "@1"
     stringPosDV = "Jaheira"
 END
@@ -603,7 +604,7 @@ LAF ~EET_NPC_TRANSITION~
     override_SoA = "IMOEN2"
     override_ToB = "IMOEN25"
     dialog_ToB = "IMOEN25A"
-    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    traFile = "ModFolder/language/%LANGUAGE%/dialog.tra"
     string = "@1"
     stringPosDV = "Jaheira"
 END
@@ -619,7 +620,7 @@ LAF ~EET_NPC_TRANSITION~
     override_SoA = "IMOEN2"
     override_ToB = "IMOEN25"
     dialog_ToB = "IMOEN25A"
-    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    traFile = "ModFolder/language/%LANGUAGE%/dialog.tra"
     string = "@1"
     stringPosDV = "Jaheira"
 END
@@ -630,7 +631,8 @@ LAF ~EET_NPC_TRANSITION~
     type = 4
   STR_VAR
     dv = "IMOEN2"
-    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    cre_ToB = "IMOEN15"
+    traFile = "ModFolder/language/%LANGUAGE%/dialog.tra"
     string = "@1"
     stringPosDV = "Jaheira"
 END
@@ -652,7 +654,7 @@ LAF ~EET_NPC_TRANSITION~
     override_SoA = "IMOEN2"
     override_ToB = "IMOEN25"
     dialog_ToB = "IMOEN25A"
-    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    traFile = "ModFolder/language/%LANGUAGE%/dialog.tra"
     string = "@1"
     stringPosDV = "Jaheira"
 END
@@ -772,7 +774,14 @@ THEN
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
+</pre>
+</div>
 
+
+
+<div class="code">
+<pre>
+//appended only if type = 4 and/or default_ToB = 1
 IF
   Global("NEWGAME_TOB","GLOBAL",1)
   Global("%SummonedVar%","GLOBAL",1)
@@ -781,7 +790,7 @@ THEN
   RESPONSE #100
     CreateVisualEffect("SPPORTAL",[1999.1218])
     Wait(2)
-    CreateCreature("%dv%",[1999.1218],S)
+    CreateCreature("%cre_ToB%",[1999.1218],S)
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
 </pre>

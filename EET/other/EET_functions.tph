@@ -19,6 +19,7 @@
     override_SoA = "IMOEN2" //name of the override NPC script in SoA
     override_ToB = "IMOEN25" //name of the override NPC script in ToB (use SoA one if doesn't exist)
     dialog_ToB = "IMOEN25A" //name of the dialogue file used after spawning NPC in ToB (use SoA POST dialogue or initial SoA dialogue file if doesn't exist)
+    cre_ToB = "IMOEN15" //name of the CRE file used for ToB Fate Spirit summonning (only if type == 4 and/or default_ToB > 0, so this var can be skipped in most cases)
     traFile = "" //an optional TRA file that will be used for the TRA references defined in "string"
     string = "@1" //FATESP summon text (example: "Bring me Quayle, the gnome cleric/illusionist.") or TRA string number
     stringPosDV = "" //set the DV of NPC right below your response (used for sorting FATESP responses alphabetically)
@@ -91,7 +92,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
     END
   END ELSE ACTION_IF (type = 4) BEGIN //NPC joinable only in ToB
     PRINT ~EET_NPC_TRANSITION patching for %dv%: NPC joinable only in ToB~
-    ACTION_FOR_EACH var IN dv string BEGIN
+    ACTION_FOR_EACH var IN dv string cre_ToB BEGIN
       OUTER_SPRINT EVAL temp ~%var%~
       ACTION_IF (~%temp%~ STR_EQ ~~) BEGIN
         WARN ~WARNING: EET_NPC_TRANSITION: "%var%" STR_VAR not set~
@@ -101,6 +102,13 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
   END ELSE BEGIN
     WARN ~WARNING: EET_NPC_TRANSITION: unexpected "type" INT_VAR value (%type%)~
     OUTER_SET skip = 1
+  END
+
+  ACTION_IF (default_ToB = 1) BEGIN
+    ACTION_IF (~%cre_ToB%~ STR_EQ ~~) BEGIN
+      WARN ~WARNING: EET_NPC_TRANSITION: "cre_ToB" STR_VAR not set~
+      OUTER_SET skip = 1
+    END
   END
 
   ACTION_IF (skip = 0) BEGIN
@@ -375,7 +383,7 @@ THEN
   RESPONSE #100
     CreateVisualEffect("SPPORTAL",[1999.1218])
     Wait(2)
-    CreateCreature("%dv%",[1999.1218],1)
+    CreateCreature("%cre_ToB%",[1999.1218],1)
     ActionOverride("%dv%",Face(S))
     ActionOverride("%dv%",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
@@ -422,7 +430,11 @@ THEN
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
-
+>>>>>>>>
+        PRINT ~Patching AR4500.BCS~
+        EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb.baf~ EVALUATE_BUFFER
+        ACTION_IF (default_ToB = 1) BEGIN
+<<<<<<<< .../AR4500-eb2.baf
 IF
   Global("NEWGAME_TOB","GLOBAL",1)
   Global("%SummonedVar%","GLOBAL",1)
@@ -431,12 +443,12 @@ THEN
   RESPONSE #100
     CreateVisualEffect("SPPORTAL",[1999.1218])
     Wait(2)
-    CreateCreature("%dv%",[1999.1218],S)
+    CreateCreature("%cre_ToB%",[1999.1218],S)
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
 >>>>>>>>
-        PRINT ~Patching AR4500.BCS~
-        EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb.baf~ EVALUATE_BUFFER
+          EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb2.baf~ EVALUATE_BUFFER
+        END
       END
     END
   END
