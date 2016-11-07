@@ -31,8 +31,7 @@ CLEAR_ARRAYS
 ///// Save patcher                                     \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Yy]~ = 1)
-AND FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~
+ACTION_IF FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~
 AND FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~
 AND !FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~
 AND !FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~ BEGIN
@@ -218,8 +217,8 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 						SPRINT trigger ~ObjectActionListEmpty(Myself)%LNL%%trigger%%LNL%~
 					END
 				END ~%MATCH1%%trigger%%MATCH2%~
-				REPLACE_TEXTUALLY CASE_SENSITIVE ~THEN BEGIN \([0-9]+\)~ ~THEN BEGIN %file%\1~
-				REPLACE_TEXTUALLY CASE_SENSITIVE ~GOTO \([0-9]+\)~ ~GOTO %file%\1~
+				REPLACE_TEXTUALLY CASE_SENSITIVE "THEN BEGIN \([0-9]+\)" "THEN BEGIN ~%file%\1~"
+				REPLACE_TEXTUALLY CASE_SENSITIVE "GOTO \([0-9]+\)" "GOTO ~%file%\1~"
 				REPLACE_TEXTUALLY ~~~~~^BEGIN \(~\)%SOURCE_RES%\(~\)$~~~~~ ~APPEND \1%file_1%\2~
 				APPEND_FILE ~.../end.txt~
 			COMPILE ~EET/temp/append/dlg/%file%.d~

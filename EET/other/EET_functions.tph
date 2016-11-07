@@ -9,6 +9,7 @@
       //1 - BG1/SoD NPC without BG2 content (NPC is disabled from game after BG1, mentioned but not summonable in ToB)
       //2 - BG2 NPC without BG1 content (transition to ToB if joined the party at least once during SoA)
       //3 - NPC with BG1 and BG2 content (full transition to SoA/ToB)
+      //4 - NPC joinable only in ToB (creates new creature)
     default_ToB = 0 //controls if NPC should be spawnable in ToB when the game has been started in ToB (no by default - 0)
     clean_ToB = 0 //cleans out existing EET code in FATESP.DLG, AR4000.BCS, AR4500.BCS for DV specified in clean_ToB_DV
   STR_VAR
@@ -82,6 +83,15 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
   END ELSE ACTION_IF (type = 3) BEGIN //NPC with BG1 and BG2 content
     PRINT ~EET_NPC_TRANSITION patching for %dv%: NPC with BG1 and BG2 content~
     ACTION_FOR_EACH var IN dv are baf override_BG1 override_SoA override_ToB dialog_ToB string BEGIN
+      OUTER_SPRINT EVAL temp ~%var%~
+      ACTION_IF (~%temp%~ STR_EQ ~~) BEGIN
+        WARN ~WARNING: EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+        OUTER_SET skip = 1
+      END
+    END
+  END ELSE ACTION_IF (type = 4) BEGIN //NPC joinable only in ToB
+    PRINT ~EET_NPC_TRANSITION patching for %dv%: NPC joinable only in ToB~
+    ACTION_FOR_EACH var IN dv string BEGIN
       OUTER_SPRINT EVAL temp ~%var%~
       ACTION_IF (~%temp%~ STR_EQ ~~) BEGIN
         WARN ~WARNING: EET_NPC_TRANSITION: "%var%" STR_VAR not set~
@@ -323,7 +333,7 @@ END
     BUT_ONLY
     ACTION_IF (num_matches > 0) BEGIN
       PRINT ~AR4000.BCS already has %SummonedVar% reference. Patching not needed (unless some mod messed it up)~
-    END ELSE ACTION_IF (type != 1) /*not BG1 NPC without BG2 content*/ BEGIN
+    END ELSE ACTION_IF (type != 1) /*not BG1 NPC without BG2 content*/ AND (type != 4) /*not NPC joinable only in ToB*/ BEGIN
 <<<<<<<< .../AR4000-eb1.baf
 IF
   InPartyAllowDead("%dv%")
@@ -340,7 +350,7 @@ END
 
     ACTION_IF (num_matches2 > 0) BEGIN
       PRINT ~AR4000.BCS already has BeenInParty("%dv%") reference. Patching not needed (unless some mod messed it up)~
-    END ELSE BEGIN
+    END ELSE ACTION_IF (type != 4) /*not NPC joinable only in ToB*/ BEGIN
 <<<<<<<< .../AR4000-eb2.baf
 IF
   Global("NEWGAME_TOB","GLOBAL",0)
@@ -356,7 +366,26 @@ END
       EXTEND_BOTTOM ~AR4000.BCS~ ~.../AR4000-eb2.baf~ EVALUATE_BUFFER
     END
 
-    ACTION_IF (type != 1) BEGIN //not BG1 NPC without BG2 content
+    ACTION_IF (type == 4) /*NPC joinable only in ToB*/ BEGIN
+<<<<<<<< .../AR4500-eb.baf
+IF
+  Global("%SummonedVar%","GLOBAL",1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CreateVisualEffect("SPPORTAL",[1999.1218])
+    Wait(2)
+    CreateCreature("%dv%",[1999.1218],1)
+    ActionOverride("%dv%",Face(S))
+    ActionOverride("%dv%",SetGlobal("BD_JOINXP","LOCALS",0))
+    ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
+    ActionOverride("%dv%",SetNumTimesTalkedTo(0))
+    SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
+END
+>>>>>>>>
+      PRINT ~Patching AR4500.BCS~
+      EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb.baf~ EVALUATE_BUFFER
+    END ELSE ACTION_IF (type != 1) BEGIN //not BG1 NPC without BG2 content
       //Expand AR4500.BCS
       COPY_EXISTING ~AR4500.BCS~ ~override~
         DECOMPILE_AND_PATCH BEGIN
@@ -391,6 +420,18 @@ THEN
     ActionOverride("%dv%",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
+    SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",1)
+  Global("%SummonedVar%","GLOBAL",1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CreateVisualEffect("SPPORTAL",[1999.1218])
+    Wait(2)
+    CreateCreature("%dv%",[1999.1218],S)
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
 >>>>>>>>

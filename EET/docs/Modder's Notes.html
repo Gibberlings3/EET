@@ -555,6 +555,7 @@ LAF ~EET_NPC_TRANSITION~
       //1 - BG1/SoD NPC without BG2 content (NPC is disabled from game after BG1, mentioned but not summonable in ToB)
       //2 - BG2 NPC without BG1 content (transition to ToB if joined the party at least once during SoA)
       //3 - NPC with BG1 and BG2 content (full transition to SoA/ToB)
+      //4 - NPC joinable only in ToB (creates new creature)
     default_ToB = 0 //controls if NPC should be spawnable in ToB when the game has been started in ToB (no by default - 0)
     clean_ToB = 0 //cleans out existing EET code in FATESP.DLG, AR4000.BCS, AR4500.BCS for DV specified in clean_ToB_DV
   STR_VAR
@@ -590,6 +591,7 @@ LAF ~EET_NPC_TRANSITION~
     override_SoD = "BDIMOEN"
     traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
     string = "@1"
+    stringPosDV = "Jaheira"
 END
 
 //example for BG2 NPC without BG1 content
@@ -603,6 +605,7 @@ LAF ~EET_NPC_TRANSITION~
     dialog_ToB = "IMOEN25A"
     traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
     string = "@1"
+    stringPosDV = "Jaheira"
 END
 
 //example for NPC with BG1 and BG2 content (type = 3 can be also used to add transition into vanilla BG1 NPC without it)
@@ -618,6 +621,18 @@ LAF ~EET_NPC_TRANSITION~
     dialog_ToB = "IMOEN25A"
     traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
     string = "@1"
+    stringPosDV = "Jaheira"
+END
+
+//example for NPC joinable only in ToB
+LAF ~EET_NPC_TRANSITION~
+  INT_VAR
+    type = 4
+  STR_VAR
+    dv = "IMOEN2"
+    traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
+    string = "@1"
+    stringPosDV = "Jaheira"
 END
 
 //example of implementing type of transition depending on detection if separate mod with type = 1 transition has been installed
@@ -639,6 +654,7 @@ LAF ~EET_NPC_TRANSITION~
     dialog_ToB = "IMOEN25A"
     traFile = "ModFolder/language/%LNGUAGE%/dialog.tra"
     string = "@1"
+    stringPosDV = "Jaheira"
 END
 </pre>
 </div>
@@ -754,6 +770,18 @@ THEN
     ActionOverride("%dv%",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("%dv%",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("%dv%",SetNumTimesTalkedTo(0))
+    SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
+END
+
+IF
+  Global("NEWGAME_TOB","GLOBAL",1)
+  Global("%SummonedVar%","GLOBAL",1)
+  Global("%SpawnPlaneVar%","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CreateVisualEffect("SPPORTAL",[1999.1218])
+    Wait(2)
+    CreateCreature("%dv%",[1999.1218],S)
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
 </pre>

@@ -2303,17 +2303,27 @@ INCLUDE ~EET/lib/bgee_fixpack.tph~
 ///// Exe patching                                     \\\\\
 /////                                                  \\\\\
 
-COPY ~Baldur%exe%~ ~Baldur%exe%~
-	REPLACE_TEXTUALLY ~NITEDAY~ ~~ (7)
-	REPLACE_TEXTUALLY ~DAYNITE~ ~~ (7)
-	REPLACE_TEXTUALLY ~SPIN649~ ~~ (7)
-	REPLACE_TEXTUALLY ~SPIN822~ ~~ (7)
-	//change default campaign
-	REPLACE_TEXTUALLY ~SOD~ ~BG1~
-	REPLACE_TEXTUALLY ~Never Show Nuisance BG1~ ~Never Show Nuisance SOD~
-	REPLACE_TEXTUALLY ~Edition/BG1save~ ~Edition/sodsave~
-	REPLACE_TEXTUALLY ~usingBG1StartMenu~ ~usingSODStartMenu~
-BUT_ONLY
+ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+	OUTER_SPRINT exec ~Baldur.exe~
+END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+	OUTER_SPRINT exec ~../MacOS/BaldursGateIIEnhancedEdition~
+END
+
+ACTION_IF FILE_EXISTS ~%exec%~ BEGIN
+	COPY ~%exec%~ ~%exec%~
+		REPLACE_TEXTUALLY ~NITEDAY~ ~~ (7)
+		REPLACE_TEXTUALLY ~DAYNITE~ ~~ (7)
+		REPLACE_TEXTUALLY ~SPIN649~ ~~ (7)
+		REPLACE_TEXTUALLY ~SPIN822~ ~~ (7)
+		//change default campaign
+		REPLACE_TEXTUALLY ~SOD~ ~BG1~
+		REPLACE_TEXTUALLY ~Never Show Nuisance BG1~ ~Never Show Nuisance SOD~
+		REPLACE_TEXTUALLY ~Edition/BG1save~ ~Edition/sodsave~
+		REPLACE_TEXTUALLY ~usingBG1StartMenu~ ~usingSODStartMenu~
+	BUT_ONLY
+END ELSE BEGIN
+	WARN ~WARNING: %exec% doesn't exist~
+END
 
 /////                                                  \\\\\
 ///// Biffing                                          \\\\\
@@ -2437,7 +2447,7 @@ COPY ~%WEIDU_EXECUTABLE%~ ~setup-EET_end%exe%~
 
 ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Ss]~ = 0) BEGIN
 	PRINT ~Skipping shortcut creation~
-END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~ BEGIN
+END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 <<<<<<<< .../userprofile.bat
 @echo off
 for /f "usebackq tokens=3*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do set DESKTOP=%%D
@@ -2473,7 +2483,7 @@ del %SCRIPT%
 	AT_NOW ~shortcut.bat~
 	DELETE + ~shortcut.bat~
 	COPY ~EET/temp/EET.lnk~ ~%dir%~
-END ELSE ACTION_IF ~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~ BEGIN
+END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	//commented out until someone test it and confirm that it works
 	/*ACTION_FOR_EACH var IN PWD HOME BEGIN
 <<<<<<<< .../path.command
