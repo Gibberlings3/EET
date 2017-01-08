@@ -594,7 +594,6 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 		SPRINT cmd_case ~%cmd%~
 		TO_UPPER cmd_case //uppercased command name
 		SPRINT arg ~%MATCH3%~ //matched arguments
-		SPRINT end ~%MATCH4%~ //matched one or more )
 		PATCH_IF (VARIABLE_IS_SET $EET_cmd_list(~%cmd_case%~)) BEGIN //only if command array exists
 			SET cnt = 0
 			SPRINT array EVAL ~array_%cmd_case%~
@@ -606,7 +605,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 					SET cnt = cnt + 1 //argument column
 					PHP_EACH ~%array%~ AS col => res BEGIN
 						PATCH_IF (col_1 = cnt) BEGIN
-							//PATCH_IF (~%res%~ STR_EQ ~tra~) AND (IS_AN_INT source) AND (source > 0) BEGIN
+							//PATCH_IF (~%res%~ STR_EQ ~tra~) AND (IS_AN_INT source) BEGIN
 							//	INNER_PATCH_SAVE source ~%source%~ BEGIN
 							//		REPLACE_EVALUATE CASE_SENSITIVE ~\([0-9]+\)~ BEGIN
 							//			LPF ~EET_strref~ INT_VAR str = MATCH1 RET str END
@@ -688,7 +687,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 											END
 										END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%%MATCH5%%MATCH6%~
 									END
-								END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) AND (((~%res%~ STR_EQ ~chapter~)=0) OR (chapterUp = 1)) BEGIN //replace text using array corresponding to resref type
+								END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) AND ((NOT ~%res%~ STR_EQ ~chapter~) OR (chapterUp = 1)) BEGIN //replace text using array corresponding to resref type
 									TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source_case%~)
 									SET updated = 1
 									PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source% => %dest% - %res%~

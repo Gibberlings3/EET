@@ -145,8 +145,10 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	AT_NOW ~chmod +x EET/bin/osx/tileconv~ EXACT
 	AT_NOW ~chmod +x EET/bin/osx/tile2ee~ EXACT
 	AT_NOW ~chmod +x EET/bin/osx/ffmpeg~ EXACT
+	AT_NOW ~chmod +x EET/bin/osx/lua~ EXACT
 END
 
+OUTER_SPRINT lua ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%lua%exe%~
 OUTER_SPRINT tileconv ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
 OUTER_SPRINT tile2ee ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tile2ee%exe%~
 OUTER_SPRINT ffmpeg ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
@@ -969,7 +971,6 @@ SetPrivateProfileString('%row%','%option%','%option_1%')
 			"Active Campaign" , 1 => "Program Options"
 			//"Never Show Nuisance SOD" , 0 => "Program Options"
 			"Debug Mode" , 1 => "Program Options"
-			"Logging On" , 1 => "Program Options"
 			"Cheats" , 1 => "Game Options"
 			"BG4LOGO" , 1 => "MOVIES"
 			"BILOGO" , 1 => "MOVIES"
@@ -998,7 +999,6 @@ SetPrivateProfileString('Language','Text','%LANGUAGE_BG2%')
 SetPrivateProfileString('Program Options','EET Installation State','1')
 SetPrivateProfileString('Program Options','Active Campaign','1')
 SetPrivateProfileString('Program Options','Debug Mode','1')
-SetPrivateProfileString('Program Options','Logging On','1')
 SetPrivateProfileString('Game Options','Cheats','1')
 SetPrivateProfileString('MOVIES','BG4LOGO','1')
 SetPrivateProfileString('MOVIES','BILOGO','1')
@@ -1090,21 +1090,57 @@ ACTION_IF FILE_EXISTS ~EET/temp/WeiDU.log~ BEGIN
 END
 
 /////                                                  \\\\\
-///// Decompile BCS / DLG files                        \\\\\
+///// LUA conversion                                   \\\\\
 /////                                                  \\\\\
+
+PRINT ~~
+PRINT ~LUA conversion...~
+
+//generate LUA tables and decompile files
+OUTER_SPRINT tbl_lua ~filelist = {}%LNL%~
 
 ACTION_BASH_FOR ~%patch_dir%/bcs~ ~.*~ BEGIN
 	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
 	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
 		DECOMPILE_BCS_TO_BAF
+	OUTER_SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF'%LNL%~
 END
 
 ACTION_BASH_FOR ~%patch_dir%/dlg~ ~.*~ BEGIN
 	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
 	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
 		DECOMPILE_DLG_TO_D
-		REPLACE_TEXTUALLY ~EET/TEMP/PATCH/DLG/~ ~~
+		//REPLACE_TEXTUALLY ~EET/TEMP/PATCH/DLG/~ ~~ //moved into main.lua
+	OUTER_SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D'%LNL%~
 END
+
+ACTION_FOR_EACH var IN mus sum state ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit tra wmp BEGIN
+	OUTER_SPRINT array EVAL ~remapped_%var%~
+	OUTER_SPRINT tbl_lua ~%tbl_lua%%array% = {}%LNL%~
+	ACTION_PHP_EACH ~%array%~ AS var1 => var2 BEGIN
+		OUTER_SPRINT tbl_lua ~%tbl_lua%%array%['%var1%'] = '%var2%'%LNL%~
+	END
+END
+
+ACTION_PHP_EACH EET_cmd_list AS cmd => res_type BEGIN
+	OUTER_PATCH_SAVE res_type ~%res_type%~ BEGIN
+		SPRINT tbl_lua ~%tbl_lua%array_%cmd% = {}%LNL%~
+		SET cnt = 0
+		REPLACE_EVALUATE CASE_INSENSITIVE ~_\(2*[A-Z]+\)\([0-9]\)~ BEGIN
+			SET cnt = cnt + 1
+			SPRINT tbl_lua ~%tbl_lua%array_%cmd%[%cnt%] = {}%LNL%~
+			SPRINT tbl_lua ~%tbl_lua%array_%cmd%[%cnt%][%MATCH2%] = '%MATCH1%'%LNL%~
+		END ~~
+	END
+END
+
+COPY + ~.../blank.txt~ ~EET/temp/tables.lua~
+APPEND_OUTER + ~EET/temp/tables.lua~ ~%tbl_lua%~
+OUTER_SPRINT tbl_lua ~~
+
+//LUA regexp conversion
+AT_NOW ~%lua% EET/lib/main.lua~
+LAM bash_log
 
 /////                                                  \\\\\
 ///// PCU conversion                                   \\\\\
@@ -1168,7 +1204,7 @@ OUTER_SET ren_check = 0
 PRINT ~Please be patient during the conversion process. This may take some time...~
 
 COPY + ~.../blank.txt~ ~EET/temp/Filelist.txt~
-ACTION_FOR_EACH var IN are bcs cre dlg eff ini itm pro spl sto vef vvc wed "" BEGIN
+ACTION_FOR_EACH var IN are /*bcs*/ cre /*dlg*/ eff ini itm pro spl sto vef vvc wed "" BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
 			SET checked = 0
@@ -1530,7 +1566,7 @@ END
 PRINT ~Installing DLG files...~
 
 COPY + ~%patch_dir%/dlg/BPNAJIM.D~ ~%patch_dir%/dlg~
-	REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]GoToStartScreen()~ ~ClearAllActions()
+	REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]*GoToStartScreen()~ ~ClearAllActions()
     ReallyForceSpellRES("K#FAMREM",Player1)
     ReallyForceSpellRES("K#FAMREM",Player2)
     ReallyForceSpellRES("K#FAMREM",Player3)
@@ -1761,10 +1797,6 @@ COPY ~EET/base/itm/SCRL1V_.ITM~ ~override~
 
 COPY ~%patch_dir%/itm~ ~override~
 	LPF EET_expand_tlk INT_VAR add = 200000 END
-
-COPY_EXISTING ~BPRNG1.ITM~ ~override~
-	LPF DELETE_ITEM_EQEFFECT INT_VAR opcode_to_delete = "208" END //Minimum HP
-BUT_ONLY
 
 //Modify permanent sleep spell effect (SoD Final)
 COPY_EXISTING ~BDDAGG06.ITM~ ~override~
