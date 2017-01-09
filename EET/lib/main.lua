@@ -1,4 +1,4 @@
---weidu can't handle regexp in large files (1 MB+) without significant memory usage spikes which can leads to 'out of memory' error
+--weidu can't handle regexp in large files (1 MB+) without significant memory usage spikes which can lead to 'out of memory' error
 --below code is a direct port of EET_PCU_match macro from lib/macros.tph into pure LUA code which hopefully will fix this problem
 --in case of D files also D_DLG_replace and D_traifyDLG_replace patching from macros.tph is implemented
 --EET/temp/tables.lua is a temporary file with LUA tables (exactly the same data as weidu EET_PCU_match macro uses + list of files for conversion)
