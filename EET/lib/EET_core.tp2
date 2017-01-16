@@ -114,12 +114,12 @@ OUTER_SPRINT log_remapped_splName ~~
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
 	OUTER_SPRINT exe ~.exe~
-	OUTER_SPRINT osxBin ~~
+	OUTER_SPRINT bin ~~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
 	OUTER_SPRINT bash_debug ~ 2>&1|EET\bin\win32\mtee.exe EET\temp\bash.debug~
 	AT_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
-		//AT_EXIT ~rmdir /s /q EET\temp~ EXACT
+		AT_EXIT ~rmdir /s /q EET\temp~ EXACT
 	END
 <<<<<<<< .../arch_var.bat
 ::32/64Bit Switch
@@ -132,26 +132,40 @@ ECHO %arch_var%>EET\temp\arch_var.txt
 		OUTER_SPRINT arch_var ~x86_64\~
 		PRINT ~arch_var = %arch_var%~
 	END
-END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+END ELSE BEGIN //osx, unix
 	OUTER_SPRINT os_slash ~/~
 	OUTER_SPRINT exe ~~
-	OUTER_SPRINT osxBin ~./~
+	OUTER_SPRINT bin ~./~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~./setup-EET~
 	OUTER_SPRINT bash_debug ~ 2>>EET/temp/bash.debug | tee -a EET/temp/bash.debug~
 	AT_UNINSTALL ~rm -rf EET/temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
 		AT_EXIT ~rm -rf EET/temp~ EXACT
 	END
-	AT_NOW ~chmod +x EET/bin/osx/tileconv~ EXACT
-	AT_NOW ~chmod +x EET/bin/osx/tile2ee~ EXACT
-	AT_NOW ~chmod +x EET/bin/osx/ffmpeg~ EXACT
-	AT_NOW ~chmod +x EET/bin/osx/lua~ EXACT
+	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~unix~ BEGIN
+		AT_NOW ~echo $(uname -m) >EET/temp/arch_var.txt~
+		ACTION_IF (FILE_CONTAINS_EVALUATED (~EET/temp/arch_var.txt~ ~AMD64~)) BEGIN
+			OUTER_SPRINT arch_var ~x86_64/~
+			PRINT ~arch_var = %arch_var%~
+		END
+	END ELSE BEGIN //osx
+		AT_NOW ~chmod +x EET/bin/osx/ffmpeg~ EXACT
+		AT_NOW ~chmod +x EET/bin/osx/lua~ EXACT
+	END
+	AT_NOW ~chmod +x EET/bin/%WEIDU_OS%/%arch_var%tileconv~ EXACT
+	AT_NOW ~chmod +x EET/bin/%WEIDU_OS%/%arch_var%tile2ee~ EXACT
 END
 
-OUTER_SPRINT lua ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%lua%exe%~
-OUTER_SPRINT tileconv ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
-OUTER_SPRINT tile2ee ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tile2ee%exe%~
-OUTER_SPRINT ffmpeg ~%osxBin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
+ACTION_IF ~%WEIDU_OS%~ STR_EQ ~unix~ BEGIN
+	OUTER_SPRINT lua ~lua~
+	OUTER_SPRINT ffmpeg ~ffmpeg~
+END ELSE BEGIN
+	OUTER_SPRINT lua ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%lua%exe%~
+	OUTER_SPRINT ffmpeg ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
+END
+OUTER_SPRINT tileconv ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
+OUTER_SPRINT tile2ee ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tile2ee%exe%~
+
 OUTER_SET EET_JOURNAL = 1
 
 COPY - ~EET/other/cpmvars/eet_cpmvars.tpa~ ~.../eet_cpmvars.tpa~
@@ -2339,6 +2353,8 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT exec ~Baldur.exe~
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	OUTER_SPRINT exec ~../MacOS/BaldursGateIIEnhancedEdition~
+END ELSE BEGIN //unix
+	OUTER_SPRINT exec ~./BaldursGateII~
 END
 
 ACTION_IF FILE_EXISTS ~%exec%~ BEGIN

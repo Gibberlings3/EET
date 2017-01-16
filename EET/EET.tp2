@@ -55,11 +55,11 @@ BUT_ONLY
 
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT exe ~.exe~
-	OUTER_SPRINT osxBin ~~
+	OUTER_SPRINT bin ~~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
-END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+END ELSE BEGIN //osx, unix
 	OUTER_SPRINT exe ~~
-	OUTER_SPRINT osxBin ~./~
+	OUTER_SPRINT bin ~./~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~./setup-EET~
 END
 
@@ -137,7 +137,7 @@ ACTION_IF NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialog.bak~ BEGIN
 	//merge all TRA files, including pre-generated blank.tra
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 		AT_NOW ~copy "EET\temp\bg2ee.tra"+"EET\temp\append.tra"+"EET\base\blank.tra"+"EET\temp\bgee.tra" "EET\temp\result.tra"~ EXACT
-	END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+	END ELSE BEGIN //osx, unix
 		AT_NOW ~cat EET/temp/bg2ee.tra EET/temp/append.tra EET/base/blank.tra EET/temp/bgee.tra > EET/temp/result.tra~ EXACT
 	END
 	//make final dialog.tlk / dialogF.tlk
@@ -161,4 +161,4 @@ END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~fr_FR~ BEGIN
 END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~es_ES~ BEGIN
 	OUTER_SET langVar = 4
 END
-AT_EXIT ~%osxBin%setup-EET_core%exe% --force-install 0 --language %langVar% --skip-at-view --use-lang "%LANGUAGE_BG2%" --args-list %argv[0]% "%bgee_dir%"~
+AT_EXIT ~%bin%setup-EET_core%exe% --force-install 0 --language %langVar% --skip-at-view --use-lang "%LANGUAGE_BG2%" --args-list %argv[0]% "%bgee_dir%"~

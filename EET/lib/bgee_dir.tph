@@ -42,7 +42,7 @@ echo %%var%%>EET/temp/programfiles.txt
 			END
 		END
 	END
-END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+END ELSE BEGIN //osx, unix
 	ACTION_FOR_EACH dir IN ~%quote%/Applications/Baldur's Gate - Enhanced Edition/Game Data/00806/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ BEGIN
 		ACTION_IF (FILE_EXISTS ~%dir%/movies/sodcin05.wbm~) AND (valid_dir = 0) AND (NOT VARIABLE_IS_SET $log_dir(~%dir%~)) BEGIN
 			ACTION_DEFINE_ASSOCIATIVE_ARRAY log_dir BEGIN ~%dir%~ => ~dummy~ END
@@ -66,7 +66,7 @@ ACTION_IF (valid_dir = 1) BEGIN
 			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
 			REPLACE_TEXTUALLY ~\~ ~/~ //change slashes
 			REPLACE_TEXTUALLY ~[\\/]*$~ ~~ //remove terminal slashes
-		END ELSE PATCH_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+		END ELSE BEGIN //osx, unix
 			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
 			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
 			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes
@@ -90,7 +90,7 @@ OUTER_WHILE (valid_dir = 0) BEGIN
 			REPLACE_TEXTUALLY ~[*?"<>|]~ ~~ //invalid characters in a path
 			REPLACE_TEXTUALLY ~\~ ~/~ //change slashes
 			REPLACE_TEXTUALLY ~[\\/]*$~ ~~ //remove terminal slashes
-		END ELSE PATCH_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+		END ELSE BEGIN //osx, unix
 			REPLACE_TEXTUALLY ~\\~ ~~ //remove quotes
 			REPLACE_TEXTUALLY ~^"\(.*\)"$~ ~\1~ //if the whole text is quoted, remove quotes
 			REPLACE_TEXTUALLY ~/*$~ ~~ //remove terminal slashes
