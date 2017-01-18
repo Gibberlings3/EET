@@ -116,7 +116,7 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT exe ~.exe~
 	OUTER_SPRINT bin ~~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
-	OUTER_SPRINT bash_debug ~ 2>&1|EET\bin\win32\mtee.exe EET\temp\bash.debug~
+	OUTER_SPRINT bash_debug ~ | EET\bin\win32\mtee.exe /+ EET\temp\bash.debug~
 	AT_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
 		AT_EXIT ~rmdir /s /q EET\temp~ EXACT
@@ -159,7 +159,7 @@ END
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~unix~ BEGIN
 	OUTER_SPRINT lua ~lua~
 	OUTER_SPRINT ffmpeg ~ffmpeg~
-END ELSE BEGIN
+END ELSE BEGIN //win32, osx
 	OUTER_SPRINT lua ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%lua%exe%~
 	OUTER_SPRINT ffmpeg ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
 END
@@ -1717,12 +1717,12 @@ COPY ~EET/base/glsl~ ~override~ //check in future patch if fpYUV.GLSL is fixed i
 PRINT ~Installing GUI...~
 
 ACTION_BASH_FOR ~EET/base/gui~ ~^.+\.mbc$~ BEGIN
-	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%biff%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~
+	AT_NOW ~%tileconv% -e -o "EET%os_slash%temp%os_slash%biff%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
 END
 LAM bash_log
 
 ACTION_BASH_FOR ~EET/base/gui/sod~ ~^.+\.mbc$~ BEGIN
-	AT_NOW ~%tileconv% -e -o "EET%os_slash%SoD_GUI%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%sod%os_slash%%BASH_FOR_FILE%" %bash_debug%~
+	AT_NOW ~%tileconv% -e -o "EET%os_slash%SoD_GUI%os_slash%%BASH_FOR_RES%.mos" "EET%os_slash%base%os_slash%gui%os_slash%sod%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
 END
 LAM bash_log
 
@@ -2477,6 +2477,27 @@ ACTION_PHP_EACH table_EET_biff AS biff => size BEGIN
 	ACTION_IF ( totalSize > 0 ) BEGIN
 		MAKE_BIFF ~%biff%%index%~ BEGIN ~%biff_dir%/%biff%%index%~ ~^.*$~ END
 	END
+END
+
+// Works around a bug in the game engine which fails to load KEY files containing backslashes as pathname separator
+// Problem shows up after MAKE_BIFF is used on osx and linux games
+ACTION_IF (NOT ~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
+	COPY ~chitin.key~ ~chitin.key~
+		READ_LONG 0x08 numBiffs
+		READ_LONG 0x10 ofsBiffs
+		FOR (idx = 0; idx < numBiffs; ++idx) BEGIN
+			SET curOfs = ofsBiffs + idx*12
+			READ_LONG (curOfs + 0x04) ofsBiffName
+			READ_SHORT (curOfs + 0x08) lenBiffName
+			READ_ASCII ofsBiffName biffName ELSE ~~ (lenBiffName) NULL
+			PATCH_IF (NOT ~%biffName%~ STRING_EQUAL_CASE ~~) BEGIN
+				INNER_PATCH_SAVE biffName ~%biffName%~ BEGIN
+					REPLACE_TEXTUALLY ~\\~ ~/~
+				END
+				WRITE_ASCIIE ofsBiffName ~%biffName%~
+			END
+		END
+	BUT_ONLY
 END
 
 /////                                                  \\\\\
