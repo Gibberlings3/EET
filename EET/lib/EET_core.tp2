@@ -136,7 +136,7 @@ END ELSE BEGIN //osx, unix
 	OUTER_SPRINT os_slash ~/~
 	OUTER_SPRINT exe ~~
 	OUTER_SPRINT bin ~./~
-	OUTER_SPRINT WEIDU_EXECUTABLE ~./setup-EET~
+	OUTER_SPRINT WEIDU_EXECUTABLE ~./EET/weidu_%WEIDU_OS%~
 	OUTER_SPRINT bash_debug ~ 2>>EET/temp/bash.debug | tee -a EET/temp/bash.debug~
 	AT_UNINSTALL ~rm -rf EET/temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
