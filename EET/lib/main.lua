@@ -32,7 +32,7 @@ for i=1, #filelist do
 	file = io.open(SOURCE_FILESPEC,"r")
 	str = file:read("*all")
 	file:close()
-	if SOURCE_FILESPEC:match('%.D$') then
+	if SOURCE_FILESPEC:match('%.[Dd]$') then
 		str = str:gsub('EET/TEMP/PATCH/DLG/', '')
 		--D_traifyDLG_replace
 		str = str:gsub('(SAY #)([0-9]+)', function(m1, m2) return D_traifyDLG_replace(m1, m2) end)

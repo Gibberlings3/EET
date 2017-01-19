@@ -1,6 +1,6 @@
 BACKUP ~EET/backup/core~
 AUTHOR ~K4thos (swit)~
-VERSION ~1.0 RC7~
+VERSION ~1.0 RC8~
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -116,8 +116,8 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT exe ~.exe~
 	OUTER_SPRINT bin ~~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
-	OUTER_SPRINT bash_debug ~ | EET\bin\win32\mtee.exe /+ EET\temp\bash.debug~
-	AT_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
+	OUTER_SPRINT bash_debug ~ | EET\bin\win32\wtee.exe -a EET\temp\bash.debug~
+	//AT_UNINSTALL ~rmdir /s /q EET\temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
 		AT_EXIT ~rmdir /s /q EET\temp~ EXACT
 	END
@@ -138,7 +138,7 @@ END ELSE BEGIN //osx, unix
 	OUTER_SPRINT bin ~./~
 	OUTER_SPRINT WEIDU_EXECUTABLE ~./EET/weidu_%WEIDU_OS%~
 	OUTER_SPRINT bash_debug ~ 2>>EET/temp/bash.debug | tee -a EET/temp/bash.debug~
-	AT_UNINSTALL ~rm -rf EET/temp~ EXACT
+	//AT_UNINSTALL ~rm -rf EET/temp~ EXACT
 	ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[dD]~ = 1) BEGIN
 		AT_EXIT ~rm -rf EET/temp~ EXACT
 	END
@@ -1110,22 +1110,23 @@ END
 PRINT ~~
 PRINT ~LUA conversion...~
 
+MKDIR ~%patch_dir%/baf~
+	~%patch_dir%/d~
+
 //generate LUA tables and decompile files
 OUTER_SPRINT tbl_lua ~filelist = {}%LNL%~
 
 ACTION_BASH_FOR ~%patch_dir%/bcs~ ~.*~ BEGIN
-	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
-	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF~
+	COPY + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/baf/%BASH_FOR_RES%.baf~
 		DECOMPILE_BCS_TO_BAF
-	OUTER_SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.BAF'%LNL%~
+		SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%patch_dir%/baf/%BASH_FOR_RES%.baf'%LNL%~
 END
 
 ACTION_BASH_FOR ~%patch_dir%/dlg~ ~.*~ BEGIN
-	MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
-	COPY + ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~ ~%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D~
+	COPY + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/d/%BASH_FOR_RES%.d~
 		DECOMPILE_DLG_TO_D
 		//REPLACE_TEXTUALLY ~EET/TEMP/PATCH/DLG/~ ~~ //moved into main.lua
-	OUTER_SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%BASH_FOR_DIRECTORY%/%BASH_FOR_RES%.D'%LNL%~
+		SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%patch_dir%/d/%BASH_FOR_RES%.d'%LNL%~
 END
 
 ACTION_FOR_EACH var IN mus sum state ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit tra wmp BEGIN
@@ -1443,8 +1444,8 @@ COPY ~%patch_dir%/are~ ~override~
 	LPF EET_expand_tlk INT_VAR add = 200000 END
 	// Area script assigner
 	READ_ASCII 0x94 "script"
-	PATCH_IF (FILE_EXISTS ~%patch_dir%/bcs/%script%.baf~) BEGIN
-	END ELSE PATCH_IF (FILE_EXISTS ~%patch_dir%/bcs/%SOURCE_RES%.baf~) BEGIN
+	PATCH_IF (FILE_EXISTS ~%patch_dir%/baf/%script%.baf~) BEGIN
+	END ELSE PATCH_IF (FILE_EXISTS ~%patch_dir%/baf/%SOURCE_RES%.baf~) BEGIN
 		PATCH_PRINT ~%SOURCE_FILE% - Area script (%SOURCE_RES%.BCS) assigned~
 		WRITE_ASCIIE 0x94 ~%SOURCE_RES%~ #8
 	END ELSE PATCH_IF (~%script%~ STR_CMP ~~) AND (NOT ~%script%~ STR_EQ ~NONE~) BEGIN
@@ -1509,7 +1510,7 @@ COPY_LARGE + ~EET/base/bam~ ~%biff_dir%~
 PRINT ~Installing BCS files...~
 
 //compile scripts
-COMPILE ~%patch_dir%/bcs~
+COMPILE ~%patch_dir%/baf~
 	~EET/compile/baf~
 
 //patching BG:EE scripts
@@ -1579,7 +1580,7 @@ END
 
 PRINT ~Installing DLG files...~
 
-COPY + ~%patch_dir%/dlg/BPNAJIM.D~ ~%patch_dir%/dlg~
+COPY + ~%patch_dir%/d/BPNAJIM.d~ ~%patch_dir%/d~
 	REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]*GoToStartScreen()~ ~ClearAllActions()
     ReallyForceSpellRES("K#FAMREM",Player1)
     ReallyForceSpellRES("K#FAMREM",Player2)
@@ -1590,7 +1591,7 @@ COPY + ~%patch_dir%/dlg/BPNAJIM.D~ ~%patch_dir%/dlg~
     StartCutScene("K#CUTBP2")~
 BUT_ONLY
 
-COMPILE ~%patch_dir%/dlg~
+COMPILE ~%patch_dir%/d~
 	~EET/compile/d~
 
 /////                                                  \\\\\

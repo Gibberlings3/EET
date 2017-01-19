@@ -2,6 +2,12 @@ IF
   Global("K#FrameDelay","LOCALS",0)
 THEN
   RESPONSE #100
+    DisableAI(Player1,FALSE)
+    DisableAI(Player2,FALSE)
+    DisableAI(Player3,FALSE)
+    DisableAI(Player4,FALSE)
+    DisableAI(Player5,FALSE)
+    DisableAI(Player6,FALSE)
     SetGlobal("K#FrameDelay","LOCALS",1)
 END
 
@@ -55,18 +61,6 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#FrameDelay","LOCALS",2)
-    DisableAI(Player1,FALSE)
-    DisableAI(Player2,FALSE)
-    DisableAI(Player3,FALSE)
-    DisableAI(Player4,FALSE)
-    DisableAI(Player5,FALSE)
-    DisableAI(Player6,FALSE)
-    ApplySpellRES("K#REST",Player1) // No such index
-    ApplySpellRES("K#REST",Player2) // No such index
-    ApplySpellRES("K#REST",Player3) // No such index
-    ApplySpellRES("K#REST",Player4) // No such index
-    ApplySpellRES("K#REST",Player5) // No such index
-    ApplySpellRES("K#REST",Player6) // No such index
     SetGlobal("K#temp","GLOBAL",29)
     AdvanceTime(ONE_MONTH)
     AddGlobals("K#DaysPassed","K#temp")

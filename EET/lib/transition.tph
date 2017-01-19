@@ -540,13 +540,25 @@ END
 ///// SharTeel                                         \\\\\
 /////                                                  \\\\\
 
-LAF ~EET_NPC_TRANSITION~
-	INT_VAR
-	type = 1
-	STR_VAR
-	dv = "SharTeel"
-	override_BG1 = "SHARTEEL"
-	string = "@1000015"
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9SHARTEELNPC\.TP2~) BEGIN
+	LAF ~EET_NPC_TRANSITION~
+		INT_VAR
+		type = 1
+		STR_VAR
+		dv = "SharTeel"
+		override_BG1 = "SHARTEEL"
+		override_SoD = "K9SHAR"
+		string = "@1000015"
+	END
+END ELSE BEGIN
+	LAF ~EET_NPC_TRANSITION~
+		INT_VAR
+		type = 1
+		STR_VAR
+		dv = "SharTeel"
+		override_BG1 = "SHARTEEL"
+		string = "@1000015"
+	END
 END
 
 /////                                                  \\\\\
