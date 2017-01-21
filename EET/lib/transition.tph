@@ -824,7 +824,18 @@ END
 ///// Sirene                                           \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~SIRENE\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~SIRENE\.TP2. #[0-9]+ #1 ~) BEGIN //SoD component
+	LAF ~EET_NPC_TRANSITION~
+		INT_VAR
+		type = 1
+		STR_VAR
+		dv = "C0Sirene"
+		override_BG1 = "C0SIRENE"
+		override_SoD = "C02SIREN"
+		string = "@5000007"
+		stringPosDV = "Skie"
+	END
+END ELSE ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~SIRENE\.TP2. #[0-9]+ #0 ~) BEGIN //BG1 component
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1

@@ -50,7 +50,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
 	READ_BYTE 0x245 ~byte245~
 	READ_BYTE 0x246 ~source~
 	READ_BYTE 0x247 ~byte247~
-	PATCH_IF ("%byte244%" = 0) AND ("%byte245%" = 0) AND ("%source%" > 40) AND ("%byte247%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
+	PATCH_IF ("%byte244%" = 0) AND ("%byte245%" = 0) AND ("%byte247%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
 		TEXT_SPRINT dest $remapped_kit(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
