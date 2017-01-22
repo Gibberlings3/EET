@@ -648,7 +648,6 @@ LAF ~EET_NPC_TRANSITION~
     type = type_var
   STR_VAR
     dv = "IMOEN2"
-    are = "AR0602"
     override_BG1 = "IMOEN_" //won't be used if type_var = 2
     override_SoD = "BDIMOEN" //won't be used if type_var = 2
     override_SoA = "IMOEN2"
@@ -676,7 +675,7 @@ THEN
 END
 </pre>
 </div>
-<p>BG1 Override script has additional Global("K#PartySoD","LOCALS",0) trigger to disable the block if NPC has been in party during BG1->SoD transition (this local variable is automatically applied by BD0103.BCS script).</p>
+<p>BG1 Override script and SoA Override script has additional Global("K#PartySoD","LOCALS",0) / Global("K#PartyToB","LOCALS",0) triggers to disable the block if NPC has been in party during BG1->SoD / SoA->ToB transition (these local variables are automatically applied by BD0103.BCS and AR4000 scripts).</p>
 
 <p>SoA Override script is also expanded with this code that flags the NPC as character tied to your destiny in ToB making him/her summonable by Fate Spirit (true if the NPC was in your party during SoA):
 <div class="code">

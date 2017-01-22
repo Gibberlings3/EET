@@ -44,7 +44,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
     override_SoA = ""
     override_ToB = ""
     dialog_ToB = ""
-	traFile = ""
+    traFile = ""
     string = ""
     stringPosDV = ""
     SummonedVar = ""
@@ -149,6 +149,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
 IF
   !InPartyAllowDead(Myself)
   GlobalGT("CHAPTER","GLOBAL",19)
+  Global("K#PartyToB","LOCALS",0)
 THEN
   RESPONSE #100
     DestroySelf()
@@ -217,14 +218,37 @@ END
       EXTEND_TOP ~%override_SoA%.BCS~ ~.../party-et.baf~ EVALUATE_BUFFER
     END
     ACTION_IF (NOT ~%override_SoD%~ STR_EQ ~~) BEGIN
-      PRINT ~Patching %override_SoD%.BCS~
-      EXTEND_TOP ~%override_SoD%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
+      COPY_EXISTING ~%override_SoD%.BCS~ ~override~
+        DECOMPILE_AND_PATCH BEGIN
+          COUNT_REGEXP_INSTANCES ~IF[%newline%]*!InPartyAllowDead(Myself)[%newline%]*GlobalGT("CHAPTER","GLOBAL",13)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~ num_matches
+        END
+      BUT_ONLY
+      ACTION_IF (num_matches = 0) BEGIN
+        PRINT ~Patching %override_SoD%.BCS~
+        EXTEND_TOP ~%override_SoD%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
+      END
     END
     ACTION_IF (NOT ~%override_BG1%~ STR_EQ ~~) BEGIN
       PRINT ~Patching %override_BG1%.BCS~
-      EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterBG1-et.baf~ EVALUATE_BUFFER
+      COPY_EXISTING ~%override_BG1%.BCS~ ~override~
+        DECOMPILE_AND_PATCH BEGIN
+          COUNT_REGEXP_INSTANCES ~IF[%newline%]*!InPartyAllowDead(Myself)[%newline%]*GlobalGT("CHAPTER","GLOBAL",7)[%newline%]*Global("K#PartySoD","LOCALS",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~ num_matches
+        END
+      BUT_ONLY
+      ACTION_IF (num_matches = 0) BEGIN
+        PRINT ~Patching %override_BG1%.BCS~
+        EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterBG1-et.baf~ EVALUATE_BUFFER
+      END
       ACTION_IF (~%override_SoD%~ STR_EQ ~~) BEGIN
-        EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
+        COPY_EXISTING ~%override_BG1%.BCS~ ~override~
+          DECOMPILE_AND_PATCH BEGIN
+            COUNT_REGEXP_INSTANCES ~IF[%newline%]*!InPartyAllowDead(Myself)[%newline%]*GlobalGT("CHAPTER","GLOBAL",13)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~ num_matches
+          END
+        BUT_ONLY
+        ACTION_IF (num_matches = 0) BEGIN
+          PRINT ~Patching %override_BG1%.BCS~
+          EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
+        END
       END
     END
 
@@ -242,7 +266,7 @@ END
         END
       BUT_ONLY
       ACTION_IF (num_matches > 0) BEGIN
-        PRINT ~FATESP.DLG already has %dv% references. Patching not needed (unless some mod messed it up)~
+        PRINT ~FATESP.DLG already has %dv% references. Patching not needed.~
       END ELSE BEGIN
         OUTER_SET match = 0
         ACTION_IF ((~%stringPosDV%~ STR_EQ ~~)=0) BEGIN
@@ -335,12 +359,12 @@ END
             REPLACE_TEXTUALLY ~\(SetGlobal("NEWGAME_TOB","GLOBAL",1)\)~ ~SetGlobal("%dv%PartyBG2","GLOBAL",1)%LNL%\1~
           END
         END
-        COUNT_REGEXP_INSTANCES ~SetGlobal("%SummonedVar%","GLOBAL",2)~ num_matches
+        COUNT_REGEXP_INSTANCES ~ActionOverride("%dv%",ChangeAIScript("%override_ToB%",OVERRIDE))~ num_matches
         COUNT_REGEXP_INSTANCES ~BeenInParty("%dv%")~ num_matches2
       END
     BUT_ONLY
     ACTION_IF (num_matches > 0) BEGIN
-      PRINT ~AR4000.BCS already has %SummonedVar% reference. Patching not needed (unless some mod messed it up)~
+      PRINT ~AR4000.BCS already has %override_ToB% reference. Patching not needed.~
     END ELSE ACTION_IF (type != 1) /*not BG1 NPC without BG2 content*/ AND (type != 4) /*not NPC joinable only in ToB*/ BEGIN
 <<<<<<<< .../AR4000-eb1.baf
 IF
@@ -357,7 +381,7 @@ END
     END
 
     ACTION_IF (num_matches2 > 0) BEGIN
-      PRINT ~AR4000.BCS already has BeenInParty("%dv%") reference. Patching not needed (unless some mod messed it up)~
+      PRINT ~AR4000.BCS already has BeenInParty("%dv%") reference. Patching not needed.~
     END ELSE ACTION_IF (type != 4) /*not NPC joinable only in ToB*/ BEGIN
 <<<<<<<< .../AR4000-eb2.baf
 IF
@@ -401,7 +425,7 @@ END
         END
       BUT_ONLY
       ACTION_IF (num_matches > 0) BEGIN
-        PRINT ~AR4500.BCS already has MoveGlobal reference for %dv%. Patching not needed (unless some mod messed it up)~
+        PRINT ~AR4500.BCS already has MoveGlobal reference for %dv%. Patching not needed.~
       END ELSE BEGIN
 <<<<<<<< .../AR4500-eb.baf
 IF
@@ -447,7 +471,14 @@ THEN
     SetGlobal("%SpawnPlaneVar%","GLOBAL",1)
 END
 >>>>>>>>
-          EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb2.baf~ EVALUATE_BUFFER
+          COPY_EXISTING ~AR4500.BCS~ ~override~
+            DECOMPILE_AND_PATCH BEGIN
+              COUNT_REGEXP_INSTANCES ~CreateCreature("%cre_ToB%"~ num_matches
+            END
+          BUT_ONLY
+          ACTION_IF (num_matches = 0) BEGIN
+            EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb2.baf~ EVALUATE_BUFFER
+          END
         END
       END
     END

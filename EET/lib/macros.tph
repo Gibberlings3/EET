@@ -2151,6 +2151,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_outer_res~ BEGIN
 	PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
 		TEXT_SPRINT match $EVAL ~remapped_%res%~(~%source%~)
 		PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %match% - %res%~
+		SET updated = 1
 	END
 END
 

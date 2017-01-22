@@ -2998,8 +2998,58 @@ BUT_ONLY
 
 <<<<<<<< .../AR4000-et.baf
 IF
-  Global("ENDOFBG1","GLOBAL",0)
   Global("K#NewGame","AR4000",0)
+  InPartyAllowDead(Player2)
+  !Name("None",Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,SetGlobal("K#PartyToB","LOCALS",1))
+    Continue()
+END
+
+IF
+  Global("K#NewGame","AR4000",0)
+  InPartyAllowDead(Player3)
+  !Name("None",Player3)
+THEN
+  RESPONSE #100
+    ActionOverride(Player3,SetGlobal("K#PartyToB","LOCALS",1))
+    Continue()
+END
+
+IF
+  Global("K#NewGame","AR4000",0)
+  InPartyAllowDead(Player4)
+  !Name("None",Player4)
+THEN
+  RESPONSE #100
+    ActionOverride(Player4,SetGlobal("K#PartyToB","LOCALS",1))
+    Continue()
+END
+
+IF
+  Global("K#NewGame","AR4000",0)
+  InPartyAllowDead(Player5)
+  !Name("None",Player5)
+THEN
+  RESPONSE #100
+    ActionOverride(Player5,SetGlobal("K#PartyToB","LOCALS",1))
+    Continue()
+END
+
+IF
+  Global("K#NewGame","AR4000",0)
+  InPartyAllowDead(Player6)
+  !Name("None",Player6)
+THEN
+  RESPONSE #100
+    ActionOverride(Player6,SetGlobal("K#PartyToB","LOCALS",1))
+    Continue()
+END
+
+IF
+  Global("K#NewGame","AR4000",0)
+  Global("ENDOFBG1","GLOBAL",0)
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR4000",1)
@@ -3026,8 +3076,8 @@ THEN
 END
 
 IF
-  !Global("ENDOFBG1","GLOBAL",0)
   Global("K#NewGame","AR4000",0)
+  !Global("ENDOFBG1","GLOBAL",0)
 THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR4000",1)

@@ -1,5 +1,2 @@
-COPY + ~%patch_dir%/bcs/c0sirene.bcs~ ~%patch_dir%/bcs~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~AddKit(.*.)~ ~AddKit(C0ILM)~
-	END
-	
+COPY + ~%patch_dir%/cre/c02siren.cre~ ~%patch_dir%/cre~
+	WRITE_ASCII 0x268 ~~ #8
