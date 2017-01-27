@@ -2476,24 +2476,22 @@ END
 
 // Works around a bug in the game engine which fails to load KEY files containing backslashes as pathname separator
 // Problem shows up after MAKE_BIFF is used on osx and linux games
-ACTION_IF (NOT ~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
-	COPY ~chitin.key~ ~chitin.key~
-		READ_LONG 0x08 numBiffs
-		READ_LONG 0x10 ofsBiffs
-		FOR (idx = 0; idx < numBiffs; ++idx) BEGIN
-			SET curOfs = ofsBiffs + idx*12
-			READ_LONG (curOfs + 0x04) ofsBiffName
-			READ_SHORT (curOfs + 0x08) lenBiffName
-			READ_ASCII ofsBiffName biffName ELSE ~~ (lenBiffName) NULL
-			PATCH_IF (NOT ~%biffName%~ STRING_EQUAL_CASE ~~) BEGIN
-				INNER_PATCH_SAVE biffName ~%biffName%~ BEGIN
-					REPLACE_TEXTUALLY ~\\~ ~/~
-				END
-				WRITE_ASCIIE ofsBiffName ~%biffName%~
+COPY ~chitin.key~ ~chitin.key~
+	READ_LONG 0x08 numBiffs
+	READ_LONG 0x10 ofsBiffs
+	FOR (idx = 0; idx < numBiffs; ++idx) BEGIN
+		SET curOfs = ofsBiffs + idx*12
+		READ_LONG (curOfs + 0x04) ofsBiffName
+		READ_SHORT (curOfs + 0x08) lenBiffName
+		READ_ASCII ofsBiffName biffName ELSE ~~ (lenBiffName) NULL
+		PATCH_IF (NOT ~%biffName%~ STRING_EQUAL_CASE ~~) BEGIN
+			INNER_PATCH_SAVE biffName ~%biffName%~ BEGIN
+				REPLACE_TEXTUALLY ~\\~ ~/~
 			END
+			WRITE_ASCIIE ofsBiffName ~%biffName%~
 		END
-	BUT_ONLY
-END
+	END
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// Finalise installation                            \\\\\

@@ -958,6 +958,7 @@ END
 
 EXTEND_TOP ~BALDUR.BCS~ ~.../timers-et.baf~
 EXTEND_TOP ~BALDUR25.BCS~ ~.../timers-et.baf~
+EXTEND_TOP ~BDBALDUR.BCS~ ~.../timers-et.baf~
 
 /////                                                  \\\\\
 ///// DS3483.BCS (Town Crier)                          \\\\\
@@ -1629,7 +1630,7 @@ THEN
     ActionOverride("Imoen2",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("Imoen2",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("Imoen2",SetNumTimesTalkedTo(0))
-    ActionOverride("Imoen2",DestroyAllEquipment())
+    //ActionOverride("Imoen2",DestroyAllEquipment())
     ActionOverride("Imoen2",CreateItem("IMOENHP1",1,0,0)) // Imoen's Belt
     ActionOverride("Imoen2",FillSlot(SLOT_BELT))
     //ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
@@ -1744,7 +1745,7 @@ THEN
     ActionOverride("Jaheira",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("Jaheira",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
-    ActionOverride("Jaheira",DestroyAllEquipment())
+    //ActionOverride("Jaheira",DestroyAllEquipment())
     //ReallyForceSpellRES("K#PORJAH","Jaheira") // No such index
     SetPlayerSound("Jaheira",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Jaheira",4008,MORALE) // I will not fall here!
@@ -1911,7 +1912,7 @@ THEN
     ActionOverride("Minsc",SetGlobal("BD_JOINXP","LOCALS",0))
     ActionOverride("Minsc",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("Minsc",SetNumTimesTalkedTo(0))
-    ActionOverride("Minsc",DestroyAllEquipment())
+    //ActionOverride("Minsc",DestroyAllEquipment())
     ChangeStat("MINSC",HATEDRACE,125,SET)
     ChangeAlignment("Minsc",CHAOTIC_GOOD)
     //ReallyForceSpellRES("K#PORMIN","Minsc") // No such index
@@ -2111,7 +2112,6 @@ THEN
   RESPONSE #100
     SetGlobal("K#NewGame","AR0602",2)
     SetGlobal("ENDOFBG1","GLOBAL",2)
-    StartMovie("INTRO15F")
     ActionOverride(Player1,MakeUnselectable(1))
     ActionOverride(Player2,MakeUnselectable(1))
     ActionOverride(Player3,MakeUnselectable(1))
