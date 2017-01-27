@@ -1,5 +1,62 @@
 IF
   Global("K#FrameDelay","LOCALS",0)
+  Alignment(Player1,LAWFUL_GOOD)
+  ReputationGT(Player1,10)
+THEN
+  RESPONSE #100
+    ReputationSet(10)
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",0)
+  OR(2)
+    Alignment(Player1,NEUTRAL_GOOD)
+    Alignment(Player1,CHAOTIC_GOOD)
+  ReputationGT(Player1,9)
+THEN
+  RESPONSE #100
+    ReputationSet(9)
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",0)
+  OR(3)
+    Alignment(Player1,LAWFUL_NEUTRAL)
+    Alignment(Player1,NEUTRAL)
+    Alignment(Player1,CHAOTIC_NEUTRAL)
+  ReputationGT(Player1,8)
+THEN
+  RESPONSE #100
+    ReputationSet(8)
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",0)
+  OR(2)
+    Alignment(Player1,LAWFUL_EVIL)
+    Alignment(Player1,NEUTRAL_EVIL)
+  ReputationGT(Player1,7)
+THEN
+  RESPONSE #100
+    ReputationSet(7)
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",0)
+  Alignment(Player1,CHAOTIC_EVIL)
+  ReputationGT(Player1,6)
+THEN
+  RESPONSE #100
+    ReputationSet(6)
+    Continue()
+END
+
+IF
+  Global("K#FrameDelay","LOCALS",0)
 THEN
   RESPONSE #100
     DisableAI(Player1,FALSE)

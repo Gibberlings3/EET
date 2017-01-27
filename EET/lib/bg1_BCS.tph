@@ -186,132 +186,6 @@ COPY_EXISTING ~BDCUT10.BCS~ ~override~
 	END
 BUT_ONLY
 
-COPY_EXISTING ~BDCUT61.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(IF[%newline%]*True()[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)[%newline%]*Wait(1)[%newline%]*ActionOverride(Player2,LeaveAreaLUA("bd0112","",\[855\.370\],S))\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 1) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IF
-  InPartyAllowDead(Player2)
-  !Name("None",Player2)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ActionOverride(Player2,DestroyAllFragileEquipment(ADAMANTINE))
-    ActionOverride(Player2,LeaveParty())
-END
-
-IF
-  InPartyAllowDead(Player3)
-  !Name("None",Player3)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ActionOverride(Player3,DestroyAllFragileEquipment(ADAMANTINE))
-    ActionOverride(Player3,LeaveParty())
-END
-
-IF
-  InPartyAllowDead(Player4)
-  !Name("None",Player4)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ActionOverride(Player4,DestroyAllFragileEquipment(ADAMANTINE))
-    ActionOverride(Player4,LeaveParty())
-END
-
-IF
-  InPartyAllowDead(Player5)
-  !Name("None",Player5)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ActionOverride(Player5,DestroyAllFragileEquipment(ADAMANTINE))
-    ActionOverride(Player5,LeaveParty())
-END
-
-IF
-  InPartyAllowDead(Player6)
-  !Name("None",Player6)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ActionOverride(Player6,DestroyAllFragileEquipment(ADAMANTINE))
-    ActionOverride(Player6,LeaveParty())
-END
-
-IF
-  Alignment(Player1,LAWFUL_GOOD)
-  ReputationGT(Player1,10)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ReputationSet(10)
-    Continue()
-END
-
-IF
-  OR(2)
-    Alignment(Player1,NEUTRAL_GOOD)
-    Alignment(Player1,CHAOTIC_GOOD)
-  ReputationGT(Player1,9)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ReputationSet(9)
-    Continue()
-END
-
-IF
-  OR(3)
-    Alignment(Player1,LAWFUL_NEUTRAL)
-    Alignment(Player1,NEUTRAL)
-    Alignment(Player1,CHAOTIC_NEUTRAL)
-  ReputationGT(Player1,8)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ReputationSet(8)
-    Continue()
-END
-
-IF
-  OR(2)
-    Alignment(Player1,LAWFUL_EVIL)
-    Alignment(Player1,NEUTRAL_EVIL)
-  ReputationGT(Player1,7)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ReputationSet(7)
-    Continue()
-END
-
-IF
-  Alignment(Player1,CHAOTIC_EVIL)
-  ReputationGT(Player1,6)
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    ReputationSet(6)
-    Continue()
-END
-
-IF
-  True()
-THEN
-  RESPONSE #100
-    CutSceneId(Player1)
-    Wait(1)
-    ActionOverride(Player2,LeaveAreaLUA("bd0112","",[855.370],S))~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
 COPY_EXISTING ~BD7100.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~IncrementChapter("SODTXT9")~
@@ -481,13 +355,75 @@ COPY_EXISTING ~BDCUT08.BCS~ ~override~
 	END
 BUT_ONLY
 
-//BDCUT10.BCS (transition to chapter 8)
+//BDCUT61.BCS
+COPY_EXISTING ~BDCUT61.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~\(IF[%newline%]*True()[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)[%newline%]*Wait(1)[%newline%]*ActionOverride(Player2,LeaveAreaLUA("bd0112","",\[855\.370\],S))\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches = 1) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~IF
+  InPartyAllowDead(Player2)
+  !Name("None",Player2)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player2,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player2,LeaveParty())
+END
 
-/*<<<<<<<< .../BDCUT10-et.baf
+IF
+  InPartyAllowDead(Player3)
+  !Name("None",Player3)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player3,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player3,LeaveParty())
+END
 
->>>>>>>>
+IF
+  InPartyAllowDead(Player4)
+  !Name("None",Player4)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player4,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player4,LeaveParty())
+END
 
-EXTEND_TOP ~BDCUT10.BCS~ ~.../BDCUT10-et.baf~*/
+IF
+  InPartyAllowDead(Player5)
+  !Name("None",Player5)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player5,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player5,LeaveParty())
+END
+
+IF
+  InPartyAllowDead(Player6)
+  !Name("None",Player6)
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    ActionOverride(Player6,DestroyAllFragileEquipment(ADAMANTINE))
+    ActionOverride(Player6,LeaveParty())
+END
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    Wait(1)
+    ActionOverride(Player2,LeaveAreaLUA("bd0112","",[855.370],S))~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
 
 //BD0101.BCS
 COPY_EXISTING ~BD0101.BCS~ ~override~
