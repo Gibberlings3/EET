@@ -1540,7 +1540,7 @@ ACTION_IF (FILE_EXISTS ~EET/temp/2da/BDBANTER.2DA~) BEGIN
 		COUNT_2DA_ROWS 2 "cntrow"
 		PHP_EACH table_2DA_bdbanter AS dv => dlg BEGIN
 			COUNT_REGEXP_INSTANCES ~^%dv% ~ num_matches
-			PATCH_IF (num_matches = 0) BEGIN
+			PATCH_IF (num_matches < 1) BEGIN
 				SPRINT append ~%append%%dv% %dlg%%LNL%~
 			END
 		END

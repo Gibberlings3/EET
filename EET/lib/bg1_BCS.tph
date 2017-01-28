@@ -124,7 +124,7 @@ COPY_EXISTING ~BG0705.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~StartMovie("TAVERN")~ num_matches
 	END
 BUT_ONLY
-ACTION_IF (num_matches = 0) BEGIN
+ACTION_IF (num_matches < 1) BEGIN
 <<<<<<<< .../BG0705-et.baf
 IF
   Global("EnteredElfsong","GLOBAL",0)

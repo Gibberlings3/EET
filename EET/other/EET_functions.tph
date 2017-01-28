@@ -1,3 +1,6 @@
+<<<<<<<< .../blank.txt
+>>>>>>>>
+
 /////                                                  \\\\\
 ///// Action function: EET_NPC_TRANSITION              \\\\\
 /////                                                  \\\\\
@@ -204,6 +207,10 @@ END
 
     ACTION_IF (NOT ~%override_ToB%~ STR_EQ ~~) BEGIN
       PRINT ~Patching %override_ToB%.BCS~
+      ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_ToB%.BCS~ BEGIN
+	    COPY - ~.../blank.txt~ ~.../%override_ToB%.baf~
+	    COMPILE ~.../%override_ToB%.baf~
+      END
       ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_ToB%.BCS~ ~"BD_JOINXP"~)) BEGIN
         PRINT ~%override_ToB%.BCS already patched.~
       END ELSE BEGIN
@@ -212,30 +219,42 @@ END
     END
     ACTION_IF (NOT ~%override_SoA%~ STR_EQ ~~) BEGIN
       PRINT ~Patching %override_SoA%.BCS~
+      ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_SoA%.BCS~ BEGIN
+	    COPY - ~.../blank.txt~ ~.../%override_SoA%.baf~
+	    COMPILE ~.../%override_SoA%.baf~
+      END
       ACTION_IF (NOT ~%override_SoA%~ STR_EQ ~%override_ToB%~) BEGIN
         EXTEND_TOP ~%override_SoA%.BCS~ ~.../chapterSoA-et.baf~ EVALUATE_BUFFER
       END
       EXTEND_TOP ~%override_SoA%.BCS~ ~.../party-et.baf~ EVALUATE_BUFFER
     END
     ACTION_IF (NOT ~%override_SoD%~ STR_EQ ~~) BEGIN
+      ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_SoD%.BCS~ BEGIN
+	    COPY - ~.../blank.txt~ ~.../%override_SoD%.baf~
+	    COMPILE ~.../%override_SoD%.baf~
+      END
       COPY_EXISTING ~%override_SoD%.BCS~ ~override~
         DECOMPILE_AND_PATCH BEGIN
           COUNT_REGEXP_INSTANCES ~IF[%newline%]*!InPartyAllowDead(Myself)[%newline%]*GlobalGT("CHAPTER","GLOBAL",13)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~ num_matches
         END
       BUT_ONLY
-      ACTION_IF (num_matches = 0) BEGIN
+      ACTION_IF (num_matches < 1) BEGIN
         PRINT ~Patching %override_SoD%.BCS~
         EXTEND_TOP ~%override_SoD%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
       END
     END
     ACTION_IF (NOT ~%override_BG1%~ STR_EQ ~~) BEGIN
       PRINT ~Patching %override_BG1%.BCS~
+      ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_BG1%.BCS~ BEGIN
+	    COPY - ~.../blank.txt~ ~.../%override_BG1%.baf~
+	    COMPILE ~.../%override_BG1%.baf~
+      END
       COPY_EXISTING ~%override_BG1%.BCS~ ~override~
         DECOMPILE_AND_PATCH BEGIN
           COUNT_REGEXP_INSTANCES ~IF[%newline%]*!InPartyAllowDead(Myself)[%newline%]*GlobalGT("CHAPTER","GLOBAL",7)[%newline%]*Global("K#PartySoD","LOCALS",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~ num_matches
         END
       BUT_ONLY
-      ACTION_IF (num_matches = 0) BEGIN
+      ACTION_IF (num_matches < 1) BEGIN
         PRINT ~Patching %override_BG1%.BCS~
         EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterBG1-et.baf~ EVALUATE_BUFFER
       END
@@ -245,7 +264,7 @@ END
             COUNT_REGEXP_INSTANCES ~IF[%newline%]*!InPartyAllowDead(Myself)[%newline%]*GlobalGT("CHAPTER","GLOBAL",13)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*DestroySelf()[%newline%]*END~ num_matches
           END
         BUT_ONLY
-        ACTION_IF (num_matches = 0) BEGIN
+        ACTION_IF (num_matches < 1) BEGIN
           PRINT ~Patching %override_BG1%.BCS~
           EXTEND_TOP ~%override_BG1%.BCS~ ~.../chapterSoD-et.baf~ EVALUATE_BUFFER
         END
@@ -476,7 +495,7 @@ END
               COUNT_REGEXP_INSTANCES ~CreateCreature("%cre_ToB%"~ num_matches
             END
           BUT_ONLY
-          ACTION_IF (num_matches = 0) BEGIN
+          ACTION_IF (num_matches < 1) BEGIN
             EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb2.baf~ EVALUATE_BUFFER
           END
         END

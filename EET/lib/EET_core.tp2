@@ -315,7 +315,7 @@ COPY + ~EET/temp/array/projectl.ids~ ~EET/temp/array~
 				COPY_EXISTING ~projectl.ids~ ~override~
 					REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
 					COUNT_REGEXP_INSTANCES ~^%col1% %col2%$~ num_matches
-					PATCH_IF (num_matches = 0) BEGIN
+					PATCH_IF (num_matches < 1) BEGIN
 						COUNT_REGEXP_INSTANCES ~^%pro_num_int% %col2%$~ num_matches
 					END
 					COUNT_REGEXP_INSTANCES ~ %col2%$~ num_matches2
@@ -994,7 +994,7 @@ SetPrivateProfileString('%row%','%option%','%option_1%')
 		END
 		PHP_EACH table_EET_ini AS option => row BEGIN
 			COUNT_REGEXP_INSTANCES ~'%option%'~ num_matches
-			PATCH_IF (num_matches = 0) BEGIN
+			PATCH_IF (num_matches < 1) BEGIN
 				APPEND_FILE ~.../Baldur.lua~ EVALUATE_BUFFER
 			END ELSE BEGIN
 				REPLACE_TEXTUALLY ~^.+'%option%'.+$~ ~SetPrivateProfileString('%row%','%option%','%option_1%')~
