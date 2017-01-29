@@ -144,7 +144,7 @@ END ELSE BEGIN //osx, unix
 	END
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~unix~ BEGIN
 		AT_NOW ~echo $(uname -m) >EET/temp/arch_var.txt~
-		ACTION_IF (FILE_CONTAINS_EVALUATED (~EET/temp/arch_var.txt~ ~AMD64~)) BEGIN
+		ACTION_IF (FILE_CONTAINS_EVALUATED (~EET/temp/arch_var.txt~ ~x86_64~)) BEGIN
 			OUTER_SPRINT arch_var ~x86_64/~
 			PRINT ~arch_var = %arch_var%~
 		END
