@@ -282,6 +282,7 @@ a:hover.spoiler {
 	<li><a href="#Adding support for EET chapters/journal system">Adding support for EET chapters/journal system</a></li>
 	<li><a href="#Working with files that are merged during installation">Working with files that are merged during installation</a></li>
 	<li><a href="#Detecting EET within WeiDU code">Detecting EET within WeiDU code</a></li>
+	<li><a href="#Detecting EET within UI.MENU (GUI) code">Detecting EET within UI.MENU (GUI) code</a></li>
 	<li><a href="#Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB">Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</a></li>
 	<li><a href="#Adding AreaType to BG1 ARE files">Adding AreaType to BG1 ARE files</a></li>
 	<li><a href="#Detecting mods installed on BG:EE">Detecting mods installed on BG:EE</a></li>
@@ -418,6 +419,30 @@ END
 </ul>
 
 <p>Once again <a href="../other/EET_modConverter">EET_modConverter</a> may be handy if you need to replace many instances of GAME_IS command in your code - the tool has an option to do it automatically.</p>
+
+<a id="Detecting EET within UI.MENU (GUI) code" name="Detecting EET within UI.MENU (GUI) code"></a>
+<h3>Detecting EET within UI.MENU (GUI) code</h3>
+
+<p>In order to detect EET presence from within UI.MENU LUA code (for example to enable some features in cross platform compatible GUI mods) you can use following code:</p>
+<div class="code">
+<pre>
+eetState = Infinity_GetINIValue('Program Options','EET Installation State')
+</pre>
+</div>
+<p>In this example code 'eetState' variable will return 0 on non EET games and 2 when it's EET installation (or 1 if setup-EET_end component has not been installed yet). Example usage:</p>
+<div class="code">
+<pre>
+enabled "eetState ~= 0" --enabled if game is EET
+
+enabled "eetState == 0" --enabled if game is not EET
+
+if eetState > 0 then --EET installation
+  --some code
+else --not EET installation
+  --some code
+end
+</pre>
+</div>
 
 <a id="Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB" name="Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB"></a>
 <h3>Trigger filtering across BG1, SoD, BG2:SoA, BG2:ToB</h3>

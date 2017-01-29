@@ -730,3 +730,15 @@ COPY ~chitin.key~ ~chitin.key~
 		END
 	END
 BUT_ONLY
+
+//Compatibility with Rough World (installed on BG:EE)
+ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #7 ~) BEGIN //Fixed Insane Difficulty
+	COPY_EXISTING_REGEXP GLOB ~.*\.cre~ ~override~
+		WRITE_LONG 0x10 (THIS | BIT22)
+	BUT_ONLY
+END
+ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #8 ~) BEGIN //Only Autosaves
+	COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
+		WRITE_SHORT 0x0014 (THIS | BIT0)
+	BUT_ONLY
+END
