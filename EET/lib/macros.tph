@@ -1024,7 +1024,7 @@ DEFINE_PATCH_FUNCTION dump_wmp
 						REPLACE_TEXTUALLY 2 S
 						REPLACE_TEXTUALLY 3 E
 					END
-					PATCH_IF (("%link_string%" STRING_CONTAINS_REGEXP "%area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%")=0) BEGIN
+					PATCH_IF (("%link_string%" STRING_CONTAINS_REGEXP "%area% %nesw% %target_are% %entry% ")=0) BEGIN
 						PATCH_PRINT ~Skipping duplicated link: %area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%~
 					END ELSE BEGIN
 						SPRINT link_string "%link_string%%area% %nesw% %target_are% %entry% %time% %flags% %enc1% %enc2% %enc3% %enc4% %enc5% %prob%%LNL%"
@@ -1053,7 +1053,7 @@ DEFINE_PATCH_FUNCTION dump_wmp
 							REPLACE_TEXTUALLY 2 S
 							REPLACE_TEXTUALLY 3 E
 						END
-						PATCH_IF (("%link_string%" STRING_CONTAINS_REGEXP "%MATCH1% %nesw% %source% %MATCH3% %MATCH4% %MATCH2% %MATCH6% %MATCH7% %MATCH8% %MATCH9% %MATCH10% %MATCH5%")=0) BEGIN
+						PATCH_IF (("%link_string%" STRING_CONTAINS_REGEXP "%MATCH1% %nesw% %source% %MATCH3%")=0) BEGIN
 							PATCH_PRINT ~Skipping duplicated link: %MATCH1% %nesw% %source% %MATCH3% %MATCH4% %MATCH2% %MATCH6% %MATCH7% %MATCH8% %MATCH9% %MATCH10% %MATCH5%~
 						END ELSE BEGIN
 							SPRINT link_string "%link_string%%MATCH1% %nesw% %source% %MATCH3% %MATCH4% %MATCH2% %MATCH6% %MATCH7% %MATCH8% %MATCH9% %MATCH10% %MATCH5%%LNL%"
