@@ -1389,8 +1389,15 @@ ACTION_PHP_EACH dir AS from => to BEGIN
 	END ELSE BEGIN
 		OUTER_SPRINT dest_dir ~%dir_name%~
 	END
+	OUTER_SET copy_acm = 1
 	ACTION_IF (NOT DIRECTORY_EXISTS ~music/%dest_dir%~) BEGIN
 		MKDIR ~music/%dest_dir%~
+	END ELSE BEGIN
+		ACTION_BASH_FOR ~music/%dest_dir%~ ~^.+$~ BEGIN
+			OUTER_SET copy_acm = 0
+		END
+	END
+	ACTION_IF (copy_acm = 1) BEGIN
 		ACTION_BASH_FOR ~%to%~ ~^.+$~ BEGIN
 			OUTER_PATCH_SAVE dest_file ~%BASH_FOR_FILE%~ BEGIN
 				REPLACE_TEXTUALLY ~^%dir_name%~ ~%dest_dir%~
