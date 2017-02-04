@@ -1459,7 +1459,8 @@ COPY + ~EET/temp/array/SMTABLES.2DA~ ~EET/temp/array~
 				ACTION_IF (FILE_EXISTS_IN_GAME ~%col2%.2da~) BEGIN
 					OUTER_SPRINT copy_dir ~EET/temp/array~
 					OUTER_SET exists = 1
-					MOVE + ~EET/temp/2da/%col2%.2DA~ ~EET/temp/array~
+					COPY + ~EET/temp/2da/%col2%.2DA~ ~EET/temp/array~
+					DELETE + ~EET/temp/2da/%col2%.2DA~
 					COPY_EXISTING ~%col2%.2da~ ~override~
 						COUNT_2DA_ROWS 4 "col1"
 						SET col1 = col1 + 1

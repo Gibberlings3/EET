@@ -53,6 +53,7 @@ LANGUAGE ~French~
 
 BEGIN ~Core EET (game importation)~
 REQUIRE_PREDICATE MOD_IS_INSTALLED ~EET/EET.tp2~ 0 @900009 //This component requires EET initialise component to be installed first
+FORBID_COMPONENT ~EET_core.tp2~ 0 ~Component already installed~
 
 PRINT ~INTERACTIVE = %INTERACTIVE%~
 PRINT ~LANGUAGE = %LANGUAGE%~
@@ -127,7 +128,7 @@ ECHO %PROCESSOR_ARCHITEW6432%|FINDSTR AMD64>NUL && SET arch_var=AMD64 || SET arc
 ECHO %arch_var%>EET\temp\arch_var.txt
 >>>>>>>>
 	COPY + ~.../arch_var.bat~ ~EET/temp/arch_var.bat~
-	AT_NOW ~CALL EET\temp\arch_var.bat~
+	AT_NOW ~CALL EET\temp\arch_var.bat~ EXACT
 	ACTION_IF (FILE_CONTAINS_EVALUATED (~EET/temp/arch_var.txt~ ~AMD64~)) BEGIN
 		OUTER_SPRINT arch_var ~x86_64\~
 		PRINT ~arch_var = %arch_var%~
@@ -143,7 +144,7 @@ END ELSE BEGIN //osx, unix
 		AT_EXIT ~rm -rf EET/temp~ EXACT
 	END
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~unix~ BEGIN
-		AT_NOW ~echo $(uname -m) >EET/temp/arch_var.txt~
+		AT_NOW ~echo $(uname -m) >EET/temp/arch_var.txt~ EXACT
 		ACTION_IF (FILE_CONTAINS_EVALUATED (~EET/temp/arch_var.txt~ ~x86_64~)) BEGIN
 			OUTER_SPRINT arch_var ~x86_64/~
 			PRINT ~arch_var = %arch_var%~
@@ -475,7 +476,8 @@ COPY + ~EET/temp/array/spell.ids~ ~EET/temp/array~
 										REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
 									END
 									ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
-										MOVE + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
+										COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
+										DELETE + ~%BASH_FOR_FILESPEC%~
 									END ELSE BEGIN
 										WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
 									END
@@ -960,6 +962,7 @@ COPY ~engine.lua~ ~engine.lua~
 OUTER_PATCH_SAVE USER_DIRECTORY_EET ~%USER_DIRECTORY%~ BEGIN
 	REPLACE_TEXTUALLY ~Baldur's Gate II - Enhanced Edition~ ~Baldur's Gate - Enhanced Edition Trilogy~
 END
+
 ACTION_IF (NOT DIRECTORY_EXISTS ~%USER_DIRECTORY_EET%/save~) BEGIN
 	MKDIR ~%USER_DIRECTORY_EET%/save~
 END
@@ -1786,7 +1789,7 @@ ACTION_FOR_EACH file IN ~MAPICONS.BAM~ ~WORLDMAP.MOS~ ~BIGLOGO.BAM~ ~TITLE.BAM~ 
 END
 
 ACTION_BASH_FOR ~%biff_dir%/pvrz~ ~^.+\.pvrz$~ BEGIN
-	MOVE + ~%biff_dir%/pvrz~ ~%biff_dir%~
+	COPY_LARGE + ~%biff_dir%/pvrz~ ~%biff_dir%~
 END
 
 /////                                                  \\\\\
@@ -2467,7 +2470,8 @@ ACTION_PHP_EACH table_EET_biff AS biff => size BEGIN
 			OUTER_SET totalSize = 0
 			MKDIR ~%biff_dir%/%biff%%index%~
 		END
-		MOVE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%/%biff%%index%~
+		COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%/%biff%%index%~
+		//DELETE + ~%BASH_FOR_FILESPEC%~
 		OUTER_SET totalSize = totalSize + BASH_FOR_SIZE
 	END
 	ACTION_IF ( totalSize > 0 ) BEGIN

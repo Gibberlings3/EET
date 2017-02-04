@@ -159,11 +159,12 @@ WEAPPROF
 XPLIST
 BEGIN
 	ACTION_IF (FILE_EXISTS ~EET/temp/2da/%file%.2da~) BEGIN
-		MOVE + ~EET/temp/2da/%file%.2da~ ~EET/temp/array~
+		COPY_LARGE + ~EET/temp/2da/%file%.2da~ ~EET/temp/array~
+		DELETE + ~EET/temp/2da/%file%.2da~
 	END
 END
 
-MOVE + ~EET/temp/2da/INTERDIA.2DA~ ~EET/temp/2da/BGBANTER.2DA~
+COPY_LARGE + ~EET/temp/2da/INTERDIA.2DA~ ~EET/temp/2da/BGBANTER.2DA~
 	~EET/temp/2da/PDIALOG.2DA~ ~EET/temp/2da/BGDIALOG.2DA~
 	~EET/temp/2da/STARTARE.2DA~ ~EET/temp/2da/BGSTARTA.2DA~
 	~EET/temp/2da/TBPPARTY.2DA~ ~EET/temp/2da/TBPPART_.2DA~
@@ -173,7 +174,18 @@ MOVE + ~EET/temp/2da/INTERDIA.2DA~ ~EET/temp/2da/BGBANTER.2DA~
 	~EET/temp/2da/CLASTEXT.2DA~ ~EET/temp/2da/BGCLATXT.2DA~
 	~EET/temp/2da/RACETEXT.2DA~ ~EET/temp/2da/BGRACTXT.2DA~
 
-DELETE + ~EET/temp/2da/25ECRED.2DA~
+//renamed
+DELETE + ~EET/temp/2da/INTERDIA.2DA~
+	~EET/temp/2da/PDIALOG.2DA~
+	~EET/temp/2da/STARTARE.2DA~
+	~EET/temp/2da/TBPPARTY.2DA~
+	~EET/temp/2da/STARTBP.2DA~
+	~EET/temp/2da/STARTPOS.2DA~
+	~EET/temp/2da/YEARS.2DA~
+	~EET/temp/2da/CLASTEXT.2DA~
+	~EET/temp/2da/RACETEXT.2DA~
+//other
+	~EET/temp/2da/25ECRED.2DA~
 	~EET/temp/2da/25STWEAP.2DA~
 	~EET/temp/2da/ABSTART.2DA~
 	~EET/temp/2da/ABRACEAD.2DA~

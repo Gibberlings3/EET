@@ -1,5 +1,5 @@
 //rename dlg conflicting with BG2:EE
-MOVE + ~%patch_dir%/dlg/BDORN.DLG~ ~%patch_dir%/dlg/BDORN_.DLG~
+COPY_LARGE + ~%patch_dir%/dlg/BDORN.DLG~ ~%patch_dir%/dlg/BDORN_.DLG~
 	~%patch_dir%/dlg/BEDWIN.DLG~ ~%patch_dir%/dlg/BEDWIN_.DLG~
 	~%patch_dir%/dlg/BMINSC.DLG~ ~%patch_dir%/dlg/BMINSC_.DLG~
 	~%patch_dir%/dlg/BNEERA.DLG~ ~%patch_dir%/dlg/BNEERA_.DLG~
@@ -56,11 +56,67 @@ MOVE + ~%patch_dir%/dlg/BDORN.DLG~ ~%patch_dir%/dlg/BDORN_.DLG~
 	~%patch_dir%/dlg/BDBART01.DLG~ ~%patch_dir%/dlg/BDBART0_.DLG~
 
 ACTION_IF (FILE_EXISTS ~%patch_dir%/dlg/IMOENJ.DLG~) BEGIN
-	MOVE + ~%patch_dir%/dlg/IMOENJ.DLG~ ~%patch_dir%/dlg/IMOENJ_.DLG~
+	COPY_LARGE + ~%patch_dir%/dlg/IMOENJ.DLG~ ~%patch_dir%/dlg/IMOENJ_.DLG~
+	DELETE + ~%patch_dir%/dlg/IMOENJ.DLG~
 END
 
+//renamed
+DELETE + ~%patch_dir%/dlg/BDORN.DLG~
+	~%patch_dir%/dlg/BEDWIN.DLG~
+	~%patch_dir%/dlg/BMINSC.DLG~
+	~%patch_dir%/dlg/BNEERA.DLG~
+	~%patch_dir%/dlg/BRASAAD.DLG~
+	~%patch_dir%/dlg/CALAHA.DLG~
+	~%patch_dir%/dlg/CARBOS.DLG~
+	~%patch_dir%/dlg/DORN.DLG~
+	~%patch_dir%/dlg/DORNJ.DLG~
+	~%patch_dir%/dlg/DORNP.DLG~
+	~%patch_dir%/dlg/EDWIN.DLG~
+	~%patch_dir%/dlg/EDWINJ.DLG~
+	~%patch_dir%/dlg/EDWINP.DLG~
+	~%patch_dir%/dlg/FAMIL1.DLG~
+	~%patch_dir%/dlg/FAMIL2.DLG~
+	~%patch_dir%/dlg/FAMIL3.DLG~
+	~%patch_dir%/dlg/FRANCO.DLG~
+	~%patch_dir%/dlg/FTOWN2.DLG~
+	~%patch_dir%/dlg/FTOWN3.DLG~
+	~%patch_dir%/dlg/FTOWN4.DLG~
+	~%patch_dir%/dlg/IMOEN2.DLG~
+	~%patch_dir%/dlg/IMOENP.DLG~
+	~%patch_dir%/dlg/KNIGHT.DLG~
+	~%patch_dir%/dlg/MINSCJ.DLG~
+	~%patch_dir%/dlg/MINSCP.DLG~
+	~%patch_dir%/dlg/MTOWN2.DLG~
+	~%patch_dir%/dlg/MTOWN3.DLG~
+	~%patch_dir%/dlg/MTOWN4.DLG~
+	~%patch_dir%/dlg/MTOWN5.DLG~
+	~%patch_dir%/dlg/NEB.DLG~
+	~%patch_dir%/dlg/NEERA.DLG~
+	~%patch_dir%/dlg/NEERAJ.DLG~
+	~%patch_dir%/dlg/NEERAP.DLG~
+	~%patch_dir%/dlg/QUAYLE.DLG~
+	~%patch_dir%/dlg/RASAAD.DLG~
+	~%patch_dir%/dlg/RASAADJ.DLG~
+	~%patch_dir%/dlg/RASAADP.DLG~
+	~%patch_dir%/dlg/ROGER.DLG~
+	~%patch_dir%/dlg/SENDAI.DLG~
+	~%patch_dir%/dlg/SHANK.DLG~
+	~%patch_dir%/dlg/SHOP01.DLG~
+	~%patch_dir%/dlg/SHOP02.DLG~
+	~%patch_dir%/dlg/SHOP03.DLG~
+	~%patch_dir%/dlg/SHOP04.DLG~
+	~%patch_dir%/dlg/SHOP05.DLG~
+	~%patch_dir%/dlg/SHOP06.DLG~
+	~%patch_dir%/dlg/SHOP07.DLG~
+	~%patch_dir%/dlg/SHOP08.DLG~
+	~%patch_dir%/dlg/SHOP09.DLG~
+	~%patch_dir%/dlg/TARNOR.DLG~
+	~%patch_dir%/dlg/TAZOK.DLG~
+	~%patch_dir%/dlg/VICONI.DLG~
+	~%patch_dir%/dlg/WILLIA.DLG~
+	~%patch_dir%/dlg/BDBART01.DLG~
 //delete dlg files duplicated in BG2
-DELETE + ~%patch_dir%/dlg/MULTIG.DLG~//better version in BG2:EE
+	~%patch_dir%/dlg/MULTIG.DLG~//better version in BG2:EE
 	~%patch_dir%/dlg/MULTIJ.DLG~//better version in BG2:EE
 //blank dlg files duplicated in BG2
 	~%patch_dir%/dlg/ARGH.DLG~
