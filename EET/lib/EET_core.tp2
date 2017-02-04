@@ -67,7 +67,7 @@ PRINT ~argv[1] = %argv[1]%~
 <<<<<<<< .../blank.txt
 >>>>>>>>
 
-COPY ~weidu.conf~ ~weidu.conf~
+COPY - ~weidu.conf~ ~.../weidu.conf~
 	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
 	INNER_PATCH_SAVE LANGUAGE_BG2 ~%LANGUAGE_BG2%~ BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
@@ -75,7 +75,6 @@ COPY ~weidu.conf~ ~weidu.conf~
 		END ~%MATCH1%~
 	END
 	PATCH_PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
-BUT_ONLY
 
 ACTION_FOR_EACH var IN ~~ F BEGIN
 	ACTION_IF FILE_EXISTS ~EET/temp/dialog%var%.bak~ BEGIN

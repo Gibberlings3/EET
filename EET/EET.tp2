@@ -43,7 +43,7 @@ FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ @900002 //EET should be install
 <<<<<<<< .../blank.txt
 >>>>>>>>
 
-COPY ~weidu.conf~ ~weidu.conf~
+COPY - ~weidu.conf~ ~.../weidu.conf~
 	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
 	INNER_PATCH_SAVE LANGUAGE_BG2 ~%LANGUAGE_BG2%~ BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
@@ -51,7 +51,6 @@ COPY ~weidu.conf~ ~weidu.conf~
 		END ~%MATCH1%~
 	END
 	PATCH_PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
-BUT_ONLY
 
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT exe ~.exe~
