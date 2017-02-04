@@ -66,11 +66,11 @@ END
 OUTER_SPRINT quote ~"~
 OUTER_SPRINT tilde "~"
 
-ACTION_IF (DIRECTORY_EXISTS ~EET/temp~) BEGIN //just in case "d" flag was set during installation
+ACTION_IF (DIRECTORY_EXISTS ~EET/temp~) BEGIN
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 		AT_NOW ~rmdir /s /q EET\temp~ EXACT
 	END ELSE BEGIN //osx, unix
-		AT_EXIT ~rm -rf EET/temp~ EXACT
+		AT_NOW ~rm -rf EET/temp~ EXACT
 	END
 END
 MKDIR ~EET/temp~
@@ -157,15 +157,18 @@ END
 
 COPY + ~%WEIDU_EXECUTABLE%~ ~setup-EET_core%exe%~
 	~EET/lib/EET_core.tp2~ ~EET_core.tp2~
-ACTION_IF ~%LANGUAGE%~ STR_EQ ~en_US~ BEGIN
-	OUTER_SET langVar = 0
-END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~pl_PL~ BEGIN
-	OUTER_SET langVar = 1
-END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~de_DE~ BEGIN
-	OUTER_SET langVar = 2
-END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~fr_FR~ BEGIN
-	OUTER_SET langVar = 3
-END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~es_ES~ BEGIN
-	OUTER_SET langVar = 4
+
+ACTION_IF NOT FILE_EXISTS ~EET/at_uninstall.txt~ BEGIN
+	ACTION_IF ~%LANGUAGE%~ STR_EQ ~en_US~ BEGIN
+		OUTER_SET langVar = 0
+	END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~pl_PL~ BEGIN
+		OUTER_SET langVar = 1
+	END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~de_DE~ BEGIN
+		OUTER_SET langVar = 2
+	END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~fr_FR~ BEGIN
+		OUTER_SET langVar = 3
+	END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~es_ES~ BEGIN
+		OUTER_SET langVar = 4
+	END
+	AT_EXIT ~%bin%setup-EET_core%exe% --force-install 0 --language %langVar% --skip-at-view --use-lang "%LANGUAGE_BG2%" --args-list %argv[0]% "%bgee_dir%"~
 END
-AT_EXIT ~%bin%setup-EET_core%exe% --force-install 0 --language %langVar% --skip-at-view --use-lang "%LANGUAGE_BG2%" --args-list %argv[0]% "%bgee_dir%"~
