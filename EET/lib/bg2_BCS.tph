@@ -914,7 +914,9 @@ END
 
 IF
   Global("K#DisableSPIN649","GLOBAL",1)
-  !AreaCheckObject("AR4500",Player1)
+  OR(2)
+    AreaCheck("AR4500")
+    !AreaCheckObject("AR4500",Player1)
 THEN
   RESPONSE #100
     ReallyForceSpellRES("K#PP_REM",Player1) // No such index
