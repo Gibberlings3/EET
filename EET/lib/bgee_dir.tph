@@ -50,7 +50,7 @@ END ELSE BEGIN //osx, unix
 			OUTER_SPRINT bgee_prompt ~a~
 			OUTER_WHILE (~%bgee_prompt%~ STRING_MATCHES_REGEXP ~[YyNn]~) BEGIN
 				PRINT @900003 //Detected BG:EE directory as %bgee_dir%. Is this correct? [Y]es or [N]o
-				ACTION_READLN ~bgee_prompt~
+				ACTION_READLN bgee_prompt
 			END
 			ACTION_IF (~%bgee_prompt%~ STR_EQ ~y~) BEGIN
 				OUTER_SET valid_dir = 1
@@ -82,7 +82,7 @@ OUTER_WHILE (valid_dir = 0) BEGIN
 	ACTION_IF (first_prompt = 0) BEGIN
 		PRINT ~~
 		PRINT @900004 //Enter the full path to your BG:EE installation then press Enter. Example: C:\Program Files (x86)\BeamDog\Games\00806
-		ACTION_READLN ~bgee_dir~
+		ACTION_READLN bgee_dir
 		OUTER_SET first_prompt = 1
 	END
 	OUTER_PATCH_SAVE bgee_dir ~%bgee_dir%~ BEGIN
@@ -100,7 +100,7 @@ OUTER_WHILE (valid_dir = 0) BEGIN
 		PRINT ~~
 		PRINT @900005 //Invalid BG:EE directory, or incorrect BG:EE installation. It is safe to abort this installation by closing this window or pressing Ctrl+C.
 		PRINT @900004 //Enter the full path to your BG:EE installation then press Enter. Example: C:\Program Files (x86)\BeamDog\Games\00806
-		ACTION_READLN ~bgee_dir~
+		ACTION_READLN bgee_dir
 	END ELSE BEGIN
 		OUTER_SET valid_dir = 1
 		PRINT ~BG:EE directory used for this installation:

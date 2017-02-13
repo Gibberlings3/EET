@@ -476,6 +476,14 @@ BUT_ONLY
 //BD0103.BCS
 COPY_EXISTING ~BD0103.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~ApplySpellRES("bddest","IMOEN2")~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("IMOEN2",DestroySelf())~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 		SPRINT textToReplace ~SetGlobal("BD_ENSURE_PARTY_GONE","BD0103",1)[%newline%]*END~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
