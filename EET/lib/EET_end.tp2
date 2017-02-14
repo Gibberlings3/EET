@@ -192,9 +192,6 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 					PATCH_PRINT ~Preparing %file%.dlg source file (%num_states% states starting from 0)~
 					REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\([^~]+\)~" BEGIN
 						SPRINT trigger ~~
-						PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~ObjectActionListEmpty(Myself)~) BEGIN	
-							SPRINT trigger ~ObjectActionListEmpty(Myself)%LNL%~
-						END
 						PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
 							PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
 								SPRINT trigger ~%var%%LNL%~
@@ -229,9 +226,6 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 				DECOMPILE_DLG_TO_D
 				REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\([^~]+\)~" BEGIN
 					SPRINT trigger ~~
-					PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~ObjectActionListEmpty(Myself)~) BEGIN
-						SPRINT trigger ~ObjectActionListEmpty(Myself)%LNL%~
-					END
 					PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
 						PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
 							SPRINT trigger ~%var%%LNL%~
