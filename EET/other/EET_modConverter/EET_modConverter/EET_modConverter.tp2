@@ -80,11 +80,12 @@ INCLUDE ~EET_modConverter/lib/macros.tph~
 //menu
 
 OUTER_SPRINT option ~~
-OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 3) || (option < 1) BEGIN
+OUTER_WHILE NOT (IS_AN_INT %option%) || (option > 4) || (option < 1) BEGIN
 	PRINT ~Choose which tool should be used
  1. Custom version of PCU for mods with BG1 content
- 2. BG2:EE mod GAME_IS patcher
- 3. BG2:EE mod chapter patcher~
+ 2. GAME_IS patcher
+ 3. BG2:EE mod chapter patcher
+ 4. Variable exporter~
 	ACTION_READLN option
 END
 
@@ -94,6 +95,8 @@ END ELSE ACTION_IF (option = 2) BEGIN
 	INCLUDE ~EET_modConverter/lib/GAME_IS_patcher.tph~
 END ELSE ACTION_IF (option = 3) BEGIN
 	INCLUDE ~EET_modConverter/lib/Chapter_patcher.tph~
+END ELSE ACTION_IF (option = 4) BEGIN
+	INCLUDE ~EET_modConverter/lib/var_exporter.tph~
 END
 
 //show log

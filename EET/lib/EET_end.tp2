@@ -203,7 +203,10 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 									SPRINT trigger ~Global("EndofBG1","GLOBAL",1)%LNL%%trigger%%LNL%~
 									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
 								END ELSE PATCH_IF ~%file_2%~ STR_EQ ~BG2~ BEGIN
-									SPRINT trigger ~GlobalLT("CHAPTER","GLOBAL",20)%LNL%%trigger%%LNL%~
+									SPRINT trigger ~Global("EndofBG1","GLOBAL",2) GlobalLT("CHAPTER","GLOBAL",20)%LNL%%trigger%%LNL%~
+									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
+								END ELSE PATCH_IF ~%file_2%~ STR_EQ ~ToB~ BEGIN
+									SPRINT trigger ~GlobalGT("CHAPTER","GLOBAL",19)%LNL%%trigger%%LNL%~
 									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
 								END
 							END
@@ -237,7 +240,10 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 								SPRINT trigger ~Global("EndofBG1","GLOBAL",1)%LNL%%trigger%%LNL%~
 								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
 							END ELSE PATCH_IF ~%file_2%~ STR_EQ ~BG2~ BEGIN
-								SPRINT trigger ~GlobalLT("CHAPTER","GLOBAL",20)%LNL%%trigger%%LNL%~
+								SPRINT trigger ~Global("EndofBG1","GLOBAL",2) GlobalLT("CHAPTER","GLOBAL",20)%LNL%%trigger%%LNL%~
+								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
+							END ELSE PATCH_IF ~%file_2%~ STR_EQ ~ToB~ BEGIN
+								SPRINT trigger ~GlobalGT("CHAPTER","GLOBAL",19)%LNL%%trigger%%LNL%~
 								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
 							END
 						END
@@ -729,7 +735,7 @@ COPY + ~.../saves.txt~ ~%USER_DIRECTORY%/save/saves.txt~ EVALUATE_BUFFER
 	END
 
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.lua~) BEGIN
-	COPY ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY%~
+	COPY + ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY%~
 		REPLACE_TEXTUALLY ~^.+'EET Installation State'.+$~ ~SetPrivateProfileString('Program Options','EET Installation State','2')~
 	BUT_ONLY
 END

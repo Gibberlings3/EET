@@ -187,8 +187,8 @@ BUT_ONLY
 //code from BG:EE
 IF
   Global("TanariXP","GLOBAL",1)
-  Dead("DeathK")  // ~Demon Knight~
-  Dead("loupgar")  // ~Loup Garou~
+  Dead("DeathK") // Demon Knight
+  Dead("loupgar") // Loup Garou
   Global("FinishedExpansion","GLOBAL",0)
 THEN
   RESPONSE #100
@@ -198,7 +198,7 @@ END
 
 IF
   Global("HasTranzigScroll","GLOBAL",0)
-  PartyHasItem("SCRL2X")  // ~Letter~
+  PartyHasItem("SCRL2X") // Letter
 THEN
   RESPONSE #100
     SetGlobal("HasTranzigScroll","GLOBAL",1)
@@ -206,7 +206,7 @@ THEN
 END
 
 IF
-  InParty("Baeloth")  // ~Baeloth~
+  InParty("Baeloth") // Baeloth
   Global("BaelothJoinedParty","GLOBAL",0)
 THEN
   RESPONSE #100
@@ -215,8 +215,8 @@ THEN
 END
 
 IF
-  !InParty("Baeloth")  // ~Baeloth~
-  !Dead("Baeloth")  // ~Baeloth~
+  !InParty("Baeloth") // Baeloth
+  !Dead("Baeloth") // Baeloth
   Global("BaelothJoinedParty","GLOBAL",1)
 THEN
   RESPONSE #100
@@ -247,6 +247,45 @@ THEN
   RESPONSE #1000
     SetGlobal("BD_XHOST_SWORD","GLOBAL",2)
     DisplayStringHeadOwner("BDSW1HX5",267252) // Your sword blade snaps in half with a crack that almost sounds like a rasping laugh.
+END
+
+//code from DPLAYER2.BCS (which doesn't work when AI is off)
+IF
+  GlobalTimerExpired("PoisonParty","GLOBAL")
+  GlobalLT("PoisonWarning","GLOBAL",9)
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
+    IncrementGlobal("PoisonWarning","GLOBAL",1)
+    DisplayString(Player1,11833) // You feel very ill, and you have thrown up your previous meal. Your head is fuzzy, and you are confused as to why you are sick. Then you remember what Lothander had told you. You've been poisoned! Lothander wasn't lying after all, and only he has the cure.
+END
+
+IF
+  GlobalTimerExpired("PoisonParty2","GLOBAL")
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    Kill(Player6)
+    Kill(Player5)
+    Kill(Player4)
+    Kill(Player3)
+    Kill(Player2)
+    Kill(Player1)
+END
+
+IF
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3") // Mendas
+  Exists(Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
 END
 >>>>>>>>
 
@@ -923,6 +962,45 @@ THEN
     SetGlobal("K#DisableSPIN649","GLOBAL",0)
     Continue()
 END
+
+//code from DPLAYER2.BCS (which doesn't work when AI is off)
+IF
+  GlobalTimerExpired("PoisonParty","GLOBAL")
+  GlobalLT("PoisonWarning","GLOBAL",9)
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
+    IncrementGlobal("PoisonWarning","GLOBAL",1)
+    DisplayString(Player1,11833) // You feel very ill, and you have thrown up your previous meal. Your head is fuzzy, and you are confused as to why you are sick. Then you remember what Lothander had told you. You've been poisoned! Lothander wasn't lying after all, and only he has the cure.
+END
+
+IF
+  GlobalTimerExpired("PoisonParty2","GLOBAL")
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    Kill(Player6)
+    Kill(Player5)
+    Kill(Player4)
+    Kill(Player3)
+    Kill(Player2)
+    Kill(Player1)
+END
+
+IF
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3") // Mendas
+  Exists(Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+END
 >>>>>>>>
 
 EXTEND_BOTTOM ~BALDUR25.BCS~ ~.../BALDUR25-eb.baf~
@@ -1031,32 +1109,6 @@ COPY_EXISTING ~DPLAYER2.BCS~ ~override~
 		END
 	END
 
-<<<<<<<< .../DPLAYER2-et.baf
-IF
-  GlobalTimerExpired("PoisonParty","GLOBAL")
-  GlobalLT("PoisonWarning","GLOBAL",9)
-  Global("PartyCured","GLOBAL",0)
-THEN
-  RESPONSE #100
-    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
-    IncrementGlobal("PoisonWarning","GLOBAL",1)
-    DisplayString(Myself,11833)  // ~You feel very ill, and you have thrown up your previous meal. Your head is fuzzy, and you are confused as to why you are sick. Then you remember what Lothander had told you. You've been poisoned! Lothander wasn't lying after all, and only he has the cure.~
-END
-
-IF
-  GlobalTimerExpired("PoisonParty2","GLOBAL")
-  Global("PartyCured","GLOBAL",0)
-THEN
-  RESPONSE #100
-    Kill(Player6)
-    Kill(Player5)
-    Kill(Player4)
-    Kill(Player3)
-    Kill(Player2)
-    Kill(Player1)
-END
->>>>>>>>
-
 <<<<<<<< .../DPLAYER2-eb.baf
 IF
   GlobalLT("ENDOFBG1","GLOBAL",2)
@@ -1125,36 +1177,19 @@ THEN
     EscapeArea()
 END
 
-IF
-  //GlobalLT("ENDOFBG1","GLOBAL",2)
-  CheckStat(Myself,0,DEX)
-  See("Kiel")  // ~Kiel the Legion Killer~
-THEN
-  RESPONSE #100
-    ActionOverride("Kiel",DestroySelf())
-    LeaveParty()
-    SetDialogue("KielPC")
-    SetGlobal("KielPC","GLOBAL",1)
-    ChangeAIScript("",DEFAULT)
-END
-
-IF
-  //GlobalLT("ENDOFBG1","GLOBAL",2)
-  Global("Infected","GLOBAL",1)
-  GlobalTimerExpired("PlayerInfected","GLOBAL")
-  !Dead("Mendas3")  // ~Mendas~
-  Exists(Player2)
-THEN
-  RESPONSE #100
-    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-END
+//IF
+//  CheckStat(Myself,0,DEX)
+//  See("Kiel") // Kiel the Legion Killer
+//THEN
+//  RESPONSE #100
+//    ActionOverride("Kiel",DestroySelf())
+//    LeaveParty()
+//    SetDialogue("KielPC")
+//    SetGlobal("KielPC","GLOBAL",1)
+//    ChangeAIScript("",DEFAULT)
+//END
 >>>>>>>>
 
-EXTEND_TOP ~DPLAYER2.BCS~ ~.../DPLAYER2-et.baf~
 EXTEND_BOTTOM ~DPLAYER2.BCS~ ~.../DPLAYER2-eb.baf~
 
 /////                                                  \\\\\
@@ -1174,24 +1209,44 @@ COPY_EXISTING ~DPLAYER3.BCS~ ~override~
 		END
 	END
 
-<<<<<<<< .../DPLAYER3-eb.baf
+<<<<<<<< .../oDPLAYER3.baf
 IF
-  //GlobalLT("ENDOFBG1","GLOBAL",2)
-  Global("Infected","GLOBAL",1)
-  GlobalTimerExpired("PlayerInfected","GLOBAL")
-  !Dead("Mendas3")  // ~Mendas~
-  Exists(Player2)
+  GlobalTimerExpired("EndGame","GLOBAL")
 THEN
   RESPONSE #100
-    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    Kill(Player1)
 END
+
+IF
+  GlobalTimerExpired("PoisonParty","GLOBAL")
+  GlobalLT("PoisonWarning","GLOBAL",9)
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
+    IncrementGlobal("PoisonWarning","GLOBAL",1)
+    DisplayString(Myself,11833)
+END
+
+IF
+  GlobalTimerExpired("PoisonParty2","GLOBAL")
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    Kill(Player6)
+    Kill(Player5)
+    Kill(Player4)
+    Kill(Player3)
+    Kill(Player2)
+    Kill(Player1)
+END
+>>>>>>>> 
+
+<<<<<<<< .../nDPLAYER3.baf
 >>>>>>>>
 
-EXTEND_BOTTOM ~DPLAYER3.BCS~ ~.../DPLAYER3-eb.baf~
+COPY_EXISTING ~DPLAYER3.bcs~ ~override~
+R_B_B ~.../oDPLAYER3.baf~ ~.../nDPLAYER3.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oDPLAYER3.baf in %SOURCE_FILE%~ END
 
 /////                                                  \\\\\
 ///// PLAYER1D.BCS                                     \\\\\

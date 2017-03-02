@@ -1,0 +1,47 @@
+
+PRINT ~~
+PRINT ~Exporting global variables...~
+
+OUTER_SET cntcurrent = 0
+OUTER_SET ignore_cnt = 0
+OUTER_SET patch_cnt = 0
+OUTER_SPRINT log ~~
+
+COPY - ~EET_modConverter/Filelist.txt~ ~.../Filelist.txt~
+	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
+	COUNT_REGEXP_INSTANCES ~^Input[/\\]+~ cntrow
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^Input[/\\]+\(.+\)$~ BEGIN
+		SET cntcurrent = cntcurrent + 1
+		INNER_PATCH_SAVE ~patch_name~ ~%MATCH1%~ BEGIN
+			REPLACE_TEXTUALLY ~\\~ ~/~
+		END
+		INNER_PATCH_SAVE ~patch_ext~ ~%patch_name%~ BEGIN
+			REPLACE_TEXTUALLY ~^.+\.~ ~~
+		END
+		INNER_PATCH_SAVE ~patch_dir~ ~%patch_name%~ BEGIN
+			REPLACE_TEXTUALLY ~[^/]+$~ ~~
+		END
+		//PATCH_PRINT ~patch_name = %patch_name%; ;patch_dir = %patch_dir%; patch_ext = %patch_ext%~
+		INNER_ACTION BEGIN
+			ACTION_IF ~%patch_ext%~ STR_EQ ~BAF~ OR
+				~%patch_ext%~ STR_EQ ~D~ OR
+				~%patch_ext%~ STR_EQ ~TP2~ OR
+				~%patch_ext%~ STR_EQ ~TPA~ OR
+				~%patch_ext%~ STR_EQ ~TPH~ OR
+				~%patch_ext%~ STR_EQ ~TPP~ BEGIN
+				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_name%~
+					REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*G[A-Za-z]*([ %TAB%]*"\)\([^" %TAB%]+\)\("[ %TAB%]*,?[ %TAB%]*"?G?L?O?B?A?L?"?[ %TAB%]*,[ %TAB%]*[0-9]+[ %TAB%]*)\)~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT, SG, G, GGT, GLT
+						SPRINT log_temp ~%patch_name%: %MATCH0%~
+						//SPRINT log ~%log%%log_temp%%LNL%~
+						PATCH_PRINT ~%log_temp%~
+						DEFINE_ASSOCIATIVE_ARRAY var_list BEGIN ~%MATCH2%~ => ~~ END
+					END
+					~%MATCH0%~
+			END
+		END
+	END
+	~~
+
+ACTION_PHP_EACH var_list AS var => dummy BEGIN
+	OUTER_SPRINT log ~%log%%var%%LNL%~
+END

@@ -307,8 +307,8 @@ BUT_ONLY
 //code from BG:EE
 IF
   Global("TanariXP","GLOBAL",1)
-  Dead("DeathK")  // ~Demon Knight~
-  Dead("loupgar")  // ~Loup Garou~
+  Dead("DeathK") // Demon Knight
+  Dead("loupgar") // Loup Garou
   Global("FinishedExpansion","GLOBAL",0)
 THEN
   RESPONSE #100
@@ -318,11 +318,50 @@ END
 
 IF
   Global("HasTranzigScroll","GLOBAL",0)
-  PartyHasItem("SCRL2X")  // ~Letter~
+  PartyHasItem("SCRL2X") // Letter
 THEN
   RESPONSE #100
     SetGlobal("HasTranzigScroll","GLOBAL",1)
     AddJournalEntry(231449,QUEST)
+END
+
+//code from DPLAYER2.BCS (which doesn't work when AI is off)
+IF
+  GlobalTimerExpired("PoisonParty","GLOBAL")
+  GlobalLT("PoisonWarning","GLOBAL",9)
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
+    IncrementGlobal("PoisonWarning","GLOBAL",1)
+    DisplayString(Player1,11833) // You feel very ill, and you have thrown up your previous meal. Your head is fuzzy, and you are confused as to why you are sick. Then you remember what Lothander had told you. You've been poisoned! Lothander wasn't lying after all, and only he has the cure.
+END
+
+IF
+  GlobalTimerExpired("PoisonParty2","GLOBAL")
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    Kill(Player6)
+    Kill(Player5)
+    Kill(Player4)
+    Kill(Player3)
+    Kill(Player2)
+    Kill(Player1)
+END
+
+IF
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3") // Mendas
+  Exists(Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
 END
 >>>>>>>>
 

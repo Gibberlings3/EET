@@ -13,7 +13,7 @@ showTextFlash = function (title, str, displayTime)
 	local line2 = splitLines()
 	if(line2 == nil) then return end
 	fps = Infinity_GetINIValue('Program Options','Maximum Frame Rate')
-	textflashes[textflashidx] = {title, line1, line2, 15000 * (fps / 30), str}
+	textflashes[textflashidx] = {title, line1, line2, displayTime * (fps / 30), str}
 	textflashidx = textflashidx + 1
 end
 
