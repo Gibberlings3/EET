@@ -723,7 +723,7 @@ LAF ~EET_NPC_TRANSITION~
 	dv = "Yoshimo"
 	override_SoA = "YOSHIMO"
 	override_ToB = "YOSH25"
-	dialog_ToB = "YOSH25A"
+	dialog_ToB = "YOSHP"
 	cre_ToB = "YOSHI12"
 	string = "#65027"
 END
@@ -926,8 +926,25 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~DR
 		STR_VAR
 		dv = "C0DRAKE"
 		override_BG1 = "C0DRAKE"
-		override_SoD = "C0DRAKE"
+		//override_SoD = "C0DRAKE"
 		string = "@5000011"
 		stringPosDV = "Dynaheir"
+	END
+END
+
+/////                                                  \\\\\
+///// Verr'Sza                                         \\\\\
+/////                                                  \\\\\
+
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~VERRSZA\.TP2~) BEGIN
+	LAF ~EET_NPC_TRANSITION~
+		INT_VAR
+		type = 1
+		STR_VAR
+		dv = "L#1VERR" //L#1DVER
+		override_BG1 = "L#1VERR"
+		override_SoD = "L#1DVER"
+		string = "@5000012"
+		stringPosDV = "Viconia"
 	END
 END

@@ -1736,12 +1736,12 @@ END
 LAM bash_log
 
 /*ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileIndex BEGIN
+	"MAPICONS" , "BAM" => "40"
 	"WORLDMAP" , "MOS" => "20"
 	"BIGLOGO" , "BAM" => "30"
 	"TITLE" , "BAM" => "40"
 	"CMPGEET" , "BAM" => "50"
 	"STARTSOD" , "MOS" => "60"
-	"MAPICONS" , "BAM" => "70"
 	"STARTBG2" , "MOS" => "80"
 END
 ACTION_PHP_EACH table_EET_fileIndex AS file => index BEGIN
@@ -1846,14 +1846,18 @@ COPY ~%patch_dir%/pro~ ~override~
 
 PRINT ~Installing SPL files...~
 
-//Find Familiar related spells
 COPY ~EET/base/spl/SPWI123.SPL~ ~override~
 	~EET/base/spl/SPCL342.SPL~ ~override~
 	~EET/base/spl/K#FAMKIL.SPL~ ~override~
 	~EET/base/spl/K#FAMREM.SPL~ ~override~
+	~EET/base/spl/K#REMBHA.SPL~ ~override~
+	~EET/base/spl/K#PP_ADD.SPL~ ~override~
+	~EET/base/spl/K#PP_REM.SPL~ ~override~
 	~EET/base/spl/K#FATIGP.SPL~ ~override~
 	~EET/base/spl/K#REST.SPL~ ~override~
 	~EET/base/spl/K#UNREST.SPL~ ~override~
+	~EET/base/spl/K#UNSELE.SPL~ ~override~
+	~EET/base/spl/K#UNSELR.SPL~ ~override~
 ACTION_FOR_EACH var IN 4 6 9 12 24 BEGIN
 	COPY ~EET/base/spl/K#CURE.SPL~ ~override/K#CURE%var%.SPL~
 		WRITE_LONG 0x9e "%var%"
@@ -1861,13 +1865,6 @@ ACTION_FOR_EACH var IN 4 6 9 12 24 BEGIN
 	//COPY ~EET/base/spl/K#DMG.SPL~ ~override/K#DMG%value%.SPL~
 	//	WRITE_LONG 0x9e "%value%"
 END
-
-//remove Bhaal Powers
-COPY ~EET/base/spl/K#REMBHA.SPL~ ~override~
-
-//disable/enable SPIN649.SPL
-COPY ~EET/base/spl/K#PP_ADD.SPL~ ~override~
-	~EET/base/spl/K#PP_REM.SPL~ ~override~
 
 //assign BG2 portraits on transition
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_portraitID BEGIN

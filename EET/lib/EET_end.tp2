@@ -120,10 +120,12 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 							PATCH_IF (!VARIABLE_IS_SET $table_dv(~%dv%~)) BEGIN
 								DEFINE_ASSOCIATIVE_ARRAY table_dv BEGIN ~%dv%~ => ~%join%~ END
 								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~~ , ~%game%~ => ~~ END
+								SPRINT $EVAL ~%join%~(~%game%~) ~%dv%~
 							END ELSE /*PATCH_IF (!VARIABLE_IS_SET $table_append_dlg(~%join%~))*/ BEGIN
 								TEXT_SPRINT join_main $table_dv(~%dv%~)
 								PATCH_IF (NOT ~%join%~ STR_EQ ~%join_main%~) BEGIN
 									DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~%join_main%~ , ~%game%~ => ~~ END
+									SPRINT $EVAL ~%join_main%~(~%game%~) ~%dv%~
 								END
 								SET_2DA_ENTRY j 2 3 ~%join_main%~
 							END
@@ -138,6 +140,7 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 							READ_2DA_ENTRY_FORMER pdialog j 7 25override
 							PATCH_IF (join_exists = 1) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) AND (NOT ~%25join%~ STR_EQ ~%join%~) BEGIN
 								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%25join%~ , ~%join%~ , ~ToB~ => ~~ END
+								SPRINT $EVAL ~%join%~(~ToB~) ~%dv%~
 							END
 							PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25DIALOG.2DA~ ~^%dv% ~)) BEGIN
 								INNER_ACTION BEGIN
@@ -162,7 +165,7 @@ COPY_EXISTING ~BDDIALOG.2DA~ ~override~
 BUT_ONLY
 
 ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
-	PRINT "~%file%~ , ~%file_1%~ , ~%file_2%~ => ~%var%~"
+	PRINT "~%file%~ , ~%file_1%~ , ~%file_2%~ => ~%var%~" //append , source, game => var
 END
 
 /////                                                  \\\\\
@@ -182,6 +185,47 @@ END
 BEGIN ~%file%~
 >>>>>>>>
 
+DEFINE_PATCH_FUNCTION ~PID_patching~
+	STR_VAR
+		source = ~~
+		array = ~~
+	RET
+		pid_trigger
+		pid_patched
+	BEGIN
+	SET pid_patched = 0
+	SPRINT pid_trigger ~~
+	PATCH_IF ~%source%~ STR_EQ ~BG1~ BEGIN
+		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) OR VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) OR VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
+			SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",0)%LNL%~
+			SET pid_patched = 1
+		END
+	END ELSE PATCH_IF ~%source%~ STR_EQ ~SoD~ BEGIN
+		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) BEGIN
+			SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",1)%LNL%~
+			SET pid_patched = 1
+		END
+		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) OR VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
+			SPRINT pid_trigger ~%pid_trigger%GlobalLT("CHAPTER","GLOBAL",13)%LNL%~
+			SET pid_patched = 1
+		END
+	END ELSE PATCH_IF ~%source%~ STR_EQ ~BG2~ BEGIN
+		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) OR VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) BEGIN
+			SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",2)%LNL%~
+			SET pid_patched = 1
+		END
+		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
+			SPRINT pid_trigger ~%pid_trigger%GlobalLT("CHAPTER","GLOBAL",20)%LNL%~
+			SET pid_patched = 1
+		END
+		END ELSE PATCH_IF ~%source%~ STR_EQ ~ToB~ BEGIN
+		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) OR VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) OR VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) BEGIN
+			SPRINT pid_trigger ~%pid_trigger%GlobalGT("CHAPTER","GLOBAL",19)%LNL%~
+			SET pid_patched = 1
+		END
+	END
+END
+
 ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 	ACTION_IF FILE_EXISTS_IN_GAME ~%file%.dlg~ BEGIN
 		ACTION_IF ~%file_1%~ STR_EQ ~~ BEGIN //source file
@@ -196,18 +240,10 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 							PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
 								SPRINT trigger ~%var%%LNL%~
 							END ELSE PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
-								PATCH_IF ~%file_2%~ STR_EQ ~BG1~ BEGIN
-									SPRINT trigger ~Global("EndofBG1","GLOBAL",0)%LNL%%trigger%%LNL%~
+								LPF PID_patching STR_VAR source = EVAL ~%file_2%~ array = EVAL ~%file%~ RET pid_trigger pid_patched END
+								PATCH_IF pid_patched = 1 BEGIN
 									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-								END ELSE PATCH_IF ~%file_2%~ STR_EQ ~SoD~ BEGIN
-									SPRINT trigger ~Global("EndofBG1","GLOBAL",1)%LNL%%trigger%%LNL%~
-									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-								END ELSE PATCH_IF ~%file_2%~ STR_EQ ~BG2~ BEGIN
-									SPRINT trigger ~Global("EndofBG1","GLOBAL",2) GlobalLT("CHAPTER","GLOBAL",20)%LNL%%trigger%%LNL%~
-									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-								END ELSE PATCH_IF ~%file_2%~ STR_EQ ~ToB~ BEGIN
-									SPRINT trigger ~GlobalGT("CHAPTER","GLOBAL",19)%LNL%%trigger%%LNL%~
-									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
+									SPRINT trigger ~%pid_trigger%%trigger%~
 								END
 							END
 						END
@@ -233,18 +269,10 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 						PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
 							SPRINT trigger ~%var%%LNL%~
 						END ELSE PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
-							PATCH_IF ~%file_2%~ STR_EQ ~BG1~ BEGIN
-								SPRINT trigger ~Global("EndofBG1","GLOBAL",0)%LNL%%trigger%%LNL%~
+							LPF PID_patching STR_VAR source = EVAL ~%file_2%~ array = EVAL ~%file_1%~ RET pid_trigger pid_patched END
+							PATCH_IF pid_patched = 1 BEGIN
 								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-							END ELSE PATCH_IF ~%file_2%~ STR_EQ ~SoD~ BEGIN
-								SPRINT trigger ~Global("EndofBG1","GLOBAL",1)%LNL%%trigger%%LNL%~
-								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-							END ELSE PATCH_IF ~%file_2%~ STR_EQ ~BG2~ BEGIN
-								SPRINT trigger ~Global("EndofBG1","GLOBAL",2) GlobalLT("CHAPTER","GLOBAL",20)%LNL%%trigger%%LNL%~
-								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-							END ELSE PATCH_IF ~%file_2%~ STR_EQ ~ToB~ BEGIN
-								SPRINT trigger ~GlobalGT("CHAPTER","GLOBAL",19)%LNL%%trigger%%LNL%~
-								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
+								SPRINT trigger ~%pid_trigger%%trigger%~
 							END
 						END
 					END

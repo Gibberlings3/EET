@@ -3850,7 +3850,24 @@ COPY_EXISTING ~MAGE1.BCS~ ~override~
 BUT_ONLY
 
 //MAGE2.BCS
-COPY_EXISTING ~MAGE2.BCS~ ~override/BG2MAGE2.BCS~//compatibility with BGT mods, used only by GARRICK.cre in BG2:EE
+<<<<<<<< .../oMAGE2.baf
+IF
+  ActionListEmpty()
+  See(NearestEnemyOf(Myself))
+  HaveSpell(WIZARD_DELETED)
+  !HasBounceEffects(LastSeenBy(Myself))
+  !HasImmunityEffects(LastSeenBy(Myself))
+THEN
+  RESPONSE #100
+    Spell(Myself,WIZARD_DELETED)
+END
+>>>>>>>> 
+
+<<<<<<<< .../nMAGE2.baf
+>>>>>>>>
+
+COPY_EXISTING ~MAGE2.BCS~ ~override/BG2MAGE2.BCS~ //compatibility with BGT mods, used only by GARRICK.cre in BG2:EE
+R_B_B ~.../oMAGE2.baf~ ~.../nMAGE2.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oMAGE2.baf in %SOURCE_FILE%~ END
 
 //MAGE3.BCS
 COPY_EXISTING ~MAGE3.BCS~ ~override~
@@ -4534,7 +4551,7 @@ END
 
 IF
   Global("CHAPTER","GLOBAL",7)
-  AreaCheck("ar2626")
+  AreaCheck("BG2626")
   Global("ACH_ON_MY_OWN_AGAIN","GLOBAL",0)
 THEN
   RESPONSE #100
