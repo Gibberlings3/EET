@@ -984,6 +984,8 @@ BUT_ONLY
 ///// SONGLIST.2DA                                     \\\\\
 /////                                                  \\\\\
 
+APPEND ~SONGLIST.IDS~ ~106 BPTHEME~ UNLESS ~ BPTHEME~
+
 COPY_EXISTING ~SONGLIST.2DA~ ~override~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "last_entry"
@@ -1066,6 +1068,25 @@ COPY + ~EET/temp/array/SONGLIST.2DA~ ~EET/temp/array~
 COPY_EXISTING ~SONGLIST.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
+
+COPY_EXISTING ~SONGLIST.IDS~ ~override~
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		PATCH_IF IS_AN_INT col1 BEGIN
+			READ_2DA_ENTRY cnt 1 2 "col2"
+			DEFINE_ASSOCIATIVE_ARRAY ids_songlist_name BEGIN ~%col1%~ => ~%col2%~ END
+		END
+	END
+BUT_ONLY
+
+ACTION_PHP_EACH remapped_mus AS song_old => song_new BEGIN
+	OUTER_TEXT_SPRINT songName_old $ids_songlist_name(~%song_old%~)
+	OUTER_TEXT_SPRINT songName_new $ids_songlist_name(~%song_new%~)
+	ACTION_TO_UPPER songName_old
+	ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_musName BEGIN ~%songName_old%~ => ~%songName_new%~ END
+	OUTER_SPRINT log_remapped_musName ~%log_remapped_musName%%TAB%%songName_old%%TAB%=>%TAB%%songName_new%%TAB%%slash%%slash%%song_old%%LNL%~
+END
 
 /////                                                  \\\\\
 ///// SPAWNGRP.2DA                                     \\\\\

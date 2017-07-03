@@ -1380,8 +1380,8 @@ DEFINE_PATCH_FUNCTION fix_table BEGIN
   REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(SHORT_NAME\)~ ~\1%LNL%%LNL%\2~
   REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(//\)~ ~\1%LNL%%LNL%\2~
   REPLACE_TEXTUALLY EVALUATE_REGEXP ~\([0-9]+\)\(SRC_AREA\)~ ~\1%LNL%%LNL%\2~
-  REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(@\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~
-  REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(//\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~
+  REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(@\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~ //"~
+  REPLACE_TEXTUALLY EVALUATE_REGEXP ~~~~~\("\|~\|%\)\(//\)~~~~~ ~~~~~\1%LNL%%LNL%\2~~~~~ //"~
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1728,6 +1728,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"PICKUPITEM" => "_itm1_" //PickUpItem
 	"PLAYERDIALOG" => "_dv1_" //PlayerDialog
 	"PLAYERDIALOGUE" => "_dv1_" //PlayerDialogue
+	"PLAYSONG" => "_mus1_" //PlaySong
 	"PLAYSOUND" => "_wav1_" //PlaySound
 	"POLYMORPHCOPY" => "_dv1_" //PolymorphCopy
 	"POLYMORPHCOPYBASE" => "_dv1_" //PolymorphCopyBase
@@ -1764,6 +1765,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"SETGLOBALTIMERRANDOM" => "_var1_are2_" //SetGlobalTimerRandom
 	"SETITEMFLAGS" => "_itm1_" //SetItemFlags
 	"SETMASTERAREA" => "_are1_" //SetMasterArea
+	"SETMUSIC" => "_musName2_mus2_" //SetMusic
 	"SETNAME" => "_tra1_" //SetName
 	"SETPLAYERSOUND" => "_dv1_tra2_" //SetPlayerSound
 	"SETQUESTDONE" => "_tra1_" //SetQuestDone
@@ -2015,6 +2017,11 @@ ACTION_PHP_EACH EET_cmd_list AS cmd => res_type BEGIN
 END
 
 DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
+	REPLACE_EVALUATE ~\("[^"%LNL%%WNL%]+"\)~ BEGIN
+		INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+			REPLACE_TEXTUALLY ~ ~ ~#AOspace#~
+		END
+	END ~%MATCH1%~
 	REPLACE_TEXTUALLY ~\(ActionOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #AOcomma# \2) #AObracket#~
 	REPLACE_TEXTUALLY ~\(TriggerOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #AOcomma# \2) #AObracket#~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\([%WNL%%LNL%%MNL%%TAB% %tilde%%quote%\!]\)\([A-Z]+\)(\([^%WNL%%LNL%%MNL%%TAB% ]+\))~ BEGIN //loop through all commands
@@ -2141,6 +2148,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 		END
 	END ~%init%%cmd%(%arg%)~
 	REPLACE_TEXTUALLY ~) #AOcomma# \([^ ]+\) #AObracket#~ ~,\1)~
+	REPLACE_TEXTUALLY ~#AOspace#~ ~ ~
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

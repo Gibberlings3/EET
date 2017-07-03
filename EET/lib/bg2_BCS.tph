@@ -166,8 +166,39 @@ COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
-///// BALDUR.BCS, BALDUR25                             \\\\\
+///// BALDUR.BCS, BALDUR25.BCS                         \\\\\
 /////                                                  \\\\\
+
+<<<<<<<< .../oBALDUR.baf
+IF
+  StoryModeOn()
+  Exists(Familiar)
+  !CheckSpellState(Familiar,STORY_MODE)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ReallyForceSpellDeadRES("OHSMODE4",Familiar)
+    SetInterrupt(TRUE)
+END
+
+IF
+  !StoryModeOn()
+  Exists(Familiar)
+  CheckSpellState(Familiar,STORY_MODE)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ReallyForceSpellDeadRES("OHSMODE3",Familiar)
+    SetInterrupt(TRUE)
+END
+>>>>>>>> 
+
+<<<<<<<< .../nBALDUR.baf
+>>>>>>>>
+
+COPY_EXISTING ~BALDUR.BCS~ ~override~
+	~BALDUR25.BCS~ ~override~
+R_B_B ~.../oBALDUR.baf~ ~.../nBALDUR.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBALDUR.baf in %SOURCE_FILE%~ END
 
 COPY_EXISTING ~BALDUR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -1246,7 +1277,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~DPLAYER3.bcs~ ~override~
-R_B_B ~.../oDPLAYER3.baf~ ~.../nDPLAYER3.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oDPLAYER3.baf in %SOURCE_FILE%~ END
+R_B_B ~.../oDPLAYER3.baf~ ~.../nDPLAYER3.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oDPLAYER3.baf in %SOURCE_FILE%~ END
 
 /////                                                  \\\\\
 ///// PLAYER1D.BCS                                     \\\\\
@@ -3867,7 +3898,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~MAGE2.BCS~ ~override/BG2MAGE2.BCS~ //compatibility with BGT mods, used only by GARRICK.cre in BG2:EE
-R_B_B ~.../oMAGE2.baf~ ~.../nMAGE2.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oMAGE2.baf in %SOURCE_FILE%~ END
+R_B_B ~.../oMAGE2.baf~ ~.../nMAGE2.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oMAGE2.baf in %SOURCE_FILE%~ END
 
 //MAGE3.BCS
 COPY_EXISTING ~MAGE3.BCS~ ~override~

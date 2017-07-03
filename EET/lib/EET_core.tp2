@@ -105,6 +105,7 @@ OUTER_SPRINT log_remapped_class ~~
 OUTER_SPRINT log_remapped_spec ~~
 OUTER_SPRINT log_remapped_ipro ~~
 OUTER_SPRINT log_remapped_mus ~~
+OUTER_SPRINT log_remapped_musName ~~
 OUTER_SPRINT log_remapped_bam ~~
 OUTER_SPRINT log_remapped_eff ~~
 OUTER_SPRINT log_remapped_itm ~~
@@ -383,9 +384,17 @@ COPY_EXISTING ~spell.ids~ ~override~
 	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
 	REPLACE_TEXTUALLY ~2924 BERESH_CHANGE%LNL%~ ~~ //WIZARD_SUMMON_PLANATAR_EVIL dupe
 	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~ //WIZARD_COMET dupe
+	COUNT_2DA_ROWS 2 cntrow
+	FOR (cnt = 0; cnt <= "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 idscode
+		PATCH_IF IS_AN_INT idscode BEGIN
+			READ_2DA_ENTRY cnt 1 2 spell_name
+			DEFINE_ASSOCIATIVE_ARRAY game_name_idscode BEGIN ~%spell_name%~ => ~%idscode%~ END
+			DEFINE_ASSOCIATIVE_ARRAY game_idscode_name BEGIN ~%idscode%~ => ~%spell_name%~ END
+		END
+	END
 BUT_ONLY
 
-OUTER_SPRINT log ~~
 COPY + ~EET/temp/array/spell.ids~ ~EET/temp/array~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
 	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
@@ -398,158 +407,132 @@ COPY + ~EET/temp/array/spell.ids~ ~EET/temp/array~
 		READ_2DA_ENTRY cnt 0 2 idscode
 		PATCH_IF IS_AN_INT idscode BEGIN
 			READ_2DA_ENTRY cnt 1 2 spell_name
-			PATCH_IF (idscode >= 4000) BEGIN
-				SPRINT type ~SPCL~
-				SET spell_type = 4
-			END ELSE PATCH_IF (idscode >= 3000) BEGIN
-				SPRINT type ~SPIN~
-				SET spell_type = 3
-			END ELSE PATCH_IF (idscode >= 2000) BEGIN
-				SPRINT type ~SPWI~
-				SET spell_type = 2
+			DEFINE_ASSOCIATIVE_ARRAY source_idscode_name BEGIN ~%idscode%~ => ~%spell_name%~ END
+		END
+	END
+
+ACTION_PHP_EACH source_idscode_name AS source_idscode => source_name BEGIN
+	ACTION_IF (source_idscode >= 4000) BEGIN
+		OUTER_SPRINT type ~SPCL~
+		OUTER_SET spell_type = 4
+	END ELSE ACTION_IF (source_idscode >= 3000) BEGIN
+		OUTER_SPRINT type ~SPIN~
+		OUTER_SET spell_type = 3
+	END ELSE ACTION_IF (source_idscode >= 2000) BEGIN
+		OUTER_SPRINT type ~SPWI~
+		OUTER_SET spell_type = 2
+	END ELSE BEGIN
+		OUTER_SPRINT type ~SPPR~
+		OUTER_SET spell_type = 1
+	END
+	OUTER_PATCH_SAVE source_res ~%source_idscode%~ BEGIN
+		REPLACE_TEXTUALLY ~^[1-4]~ ~%type%~
+	END
+	OUTER_PATCH_SAVE spell_level ~%source_idscode%~ BEGIN
+		REPLACE_TEXTUALLY ~^.\(.\).+$~ ~\1~
+	END
+	ACTION_IF (NOT FILE_EXISTS ~%patch_dir%/spl/%source_res%.spl~) BEGIN
+		PRINT ~Skipping SPELL.IDS reference: %source_res%%TAB%%source_idscode%%TAB%%source_name%~
+	END ELSE BEGIN
+		OUTER_SET ref_exists = 0
+		ACTION_IF (VARIABLE_IS_SET $game_name_idscode(~%source_name%~)) BEGIN
+			LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%source_name%~ RET spell_res spell_num END
+			ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%spell_res%.spl~) BEGIN
+				PRINT ~Resource from SPELL.IDS is referenced but doesn't exist in game: %source_res%%TAB%%source_idscode%%TAB%%source_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%source_name%~
+			END ELSE ACTION_IF (~%source_idscode%~ STR_EQ ~%spell_num%~) BEGIN
+				PRINT ~Resource from SPELL.IDS already exists in game: %source_res%%TAB%%source_idscode%%TAB%%source_name%~
+				OUTER_SET ref_exists = 1
 			END ELSE BEGIN
-				SPRINT type ~SPPR~
-				SET spell_type = 1
+				PRINT ~Resource from SPELL.IDS already exists in game under different ID: %source_res%%TAB%%source_idscode%%TAB%%source_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%source_name%~
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY splName_list BEGIN ~%source_idscode%~ => ~%source_name%~ END
+				OUTER_SET ref_exists = 1
 			END
-			INNER_PATCH_SAVE source_res ~%idscode%~ BEGIN
-				REPLACE_TEXTUALLY ~^[1-4]~ ~%type%~
-			END
-			INNER_PATCH_SAVE spell_level ~%idscode%~ BEGIN
-				REPLACE_TEXTUALLY ~^.\(.\).+$~ ~\1~
-			END
-			INNER_ACTION BEGIN
-				ACTION_IF (NOT FILE_EXISTS ~%patch_dir%/spl/%source_res%.spl~) BEGIN
-					PRINT ~Skipping SPELL.IDS reference: %source_res%%TAB%%idscode%%TAB%%spell_name%~
-				END ELSE BEGIN
-					OUTER_SET ref_exists = 0
-					ACTION_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~ %spell_name%$~)) BEGIN
-						LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
-						ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%spell_res%.spl~) BEGIN
-							PRINT ~Resource from SPELL.IDS is referenced but doesn't exist in game: %source_res%%TAB%%idscode%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%~
-						END ELSE ACTION_IF (~%idscode%~ STR_EQ ~%spell_num%~) BEGIN
-							PRINT ~Resource from SPELL.IDS already exists in game: %source_res%%TAB%%idscode%%TAB%%spell_name%~
-							OUTER_SET ref_exists = 1
-						END ELSE BEGIN
-							PRINT ~Resource from SPELL.IDS already exists in game under different ID: %source_res%%TAB%%idscode%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%~
-							OUTER_SPRINT log ~%log%%source_res%%TAB%%idscode%%TAB%%spell_name%%TAB%%spell_res%%TAB%%spell_num%%TAB%%spell_name%%LNL%~
-							OUTER_SET ref_exists = 1
+			ACTION_IF ref_exists = 1 BEGIN //already exists, delete resources
+				ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ BEGIN
+					ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+						OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
+							REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
 						END
-						ACTION_IF (ref_exists = 1) BEGIN
-							ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ BEGIN
-								ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
-									OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
-										REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
-									END
-									DELETE + ~%BASH_FOR_FILESPEC%~
-									ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
-										ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
-											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-											OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
-										END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
-											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-											OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
-										END
-									END
-								END
+						DELETE + ~%BASH_FOR_FILESPEC%~
+						ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
+							ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
+								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+								OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+							END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
+								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+								OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
 							END
 						END
 					END
-					ACTION_IF (ref_exists = 0) BEGIN
-						/*ACTION_IF (spell_type = 3) AND (spell_level = 1) BEGIN
-							OUTER_SET spell_level = 2 //not enough level 1 slots
+				END
+			END
+		END
+		ACTION_IF ref_exists = 0 BEGIN //new, ADD_SPELL, delete old files
+			/*ACTION_IF (spell_type = 3) AND (spell_level = 1) BEGIN
+				OUTER_SET spell_level = 2 //not enough level 1 slots
+			END
+			ACTION_IF ~%source_res%~ STR_EQ ~name_of_the_spell~ BEGIN
+				OUTER_SET spell_level = 0 //not enough level 7 slots
+			END*/
+			PRINT ~ADD_SPELL: %patch_dir%/spl/%source_res%.spl %spell_type% %spell_level% %source_name%~
+			ADD_SPELL ~%patch_dir%/spl/%source_res%.spl~ spell_type spell_level ~%source_name%~
+			LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%source_name%~ RET spell_res spell_num END
+			PRINT ~Renamed spell: %source_res% -> %spell_res%~
+			OUTER_SPRINT EVAL ~%source_name%_RES~ ~%spell_res%~
+			ACTION_IF ~%spell_res%~ STRING_CONTAINS_REGEXP ~[A-Z]+[0-9]+~ BEGIN
+				WARN ~WARNING: ADD_SPELL failed to add %patch_dir%/spl/%source_res%.spl~
+			END ELSE BEGIN
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY game_idscode_name BEGIN ~%spell_num%~ => ~%source_name%~ END
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY splName_list BEGIN ~%source_idscode%~ => ~%source_name%~ END
+				/*COPY + ~%backup_dir%/0/UNINSTALL.0~ ~%backup_dir%/0~ //the file is not patched yet
+					REPLACE_TEXTUALLY ~override.%spell_res%.spl~ ~~
+				DELETE + ~override/%spell_res%.spl~*/
+				ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
+					MKDIR ~%dir%/ADD_SPELL~
+					ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+						OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
+							REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
 						END
-						ACTION_IF ~%source_res%~ STR_EQ ~name_of_the_spell~ BEGIN
-							OUTER_SET spell_level = 0 //not enough level 7 slots
-						END*/
-						PRINT ~ADD_SPELL: %patch_dir%/spl/%source_res%.spl %spell_type% %spell_level% %spell_name%~
-						ADD_SPELL ~%patch_dir%/spl/%source_res%.spl~ spell_type spell_level ~%spell_name%~
-						LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
-						PRINT ~Renamed spell: %source_res% -> %spell_res%~
-						OUTER_SPRINT EVAL ~%spell_name%_RES~ ~%spell_res%~
-						ACTION_IF ~%spell_res%~ STRING_CONTAINS_REGEXP ~[A-Z]+[0-9]+~ BEGIN
-							PRINT ~ADD_SPELL failed to add %patch_dir%/spl/%source_res%.spl~
+						ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
+							COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
+							DELETE + ~%BASH_FOR_FILESPEC%~
 						END ELSE BEGIN
-							/*COPY + ~%backup_dir%/0/UNINSTALL.0~ ~%backup_dir%/0~ //the file is not patched yet
-								REPLACE_TEXTUALLY ~override.%spell_res%.spl~ ~~
-							DELETE + ~override/%spell_res%.spl~*/
-							ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
-								MKDIR ~%dir%/ADD_SPELL~
-								ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
-									OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
-										REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
-									END
-									ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
-										COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
-										DELETE + ~%BASH_FOR_FILESPEC%~
-									END ELSE BEGIN
-										WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
-									END
-									ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
-										ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
-											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-											OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
-										END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
-											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-											OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
-										END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~bam~ BEGIN
-											ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-											OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
-										END
-									END
-								END
+							WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
+						END
+						ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
+							ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
+								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+								OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
+							END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
+								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+								OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
+							END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~bam~ BEGIN
+								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+								OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
 							END
 						END
-						COPY_EXISTING ~spell.ids~ ~override~
-							REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~ //just to be sure that ADD_SPELL didn't brake it
-						BUT_ONLY
 					END
 				END
 			END
 		END
 	END
+END
 
-//below code need to be done after all new spells are already present within spell.ids
-
-//expand remaining PCU variables
-COPY + ~.../blank.txt~ ~EET/temp/add_spell_temp.txt~
-APPEND_OUTER + ~EET/temp/add_spell_temp.txt~ ~%log%~
-COPY + ~EET/temp/add_spell_temp.txt~ ~EET/temp~
-	COUNT_2DA_ROWS 3 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "col1" //file name
-		READ_2DA_ENTRY cnt 1 3 "col2" //IDS num
-		READ_2DA_ENTRY cnt 2 3 "col3" //IDS name
-		INNER_ACTION BEGIN
-			ACTION_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~^%col2% ~)) BEGIN
-				LAF RES_NAME_OF_SPELL_NUM INT_VAR spell_num = col2 RET spell_name END
-				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%spell_name%~ => ~%col3%~ END
-				OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_name%%TAB%=>%TAB%%col3%%TAB%%slash%%slash%%col3%%LNL%~
-			END ELSE BEGIN
-				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%col2%~ => ~%col3%~ END
-				OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%col2%%TAB%=>%TAB%%col3%%TAB%%slash%%slash%%col3%%LNL%~
-			END
+//needs to be done after all spells are added
+ACTION_PHP_EACH splName_list AS source_idscode => source_name BEGIN
+	ACTION_IF (VARIABLE_IS_SET $game_idscode_name(~%source_idscode%~)) BEGIN
+		LAF RES_NAME_OF_SPELL_NUM INT_VAR spell_num = source_idscode RET spell_name END
+		ACTION_IF (NOT ~%spell_name%~ STR_EQ ~%source_name%~) BEGIN
+			ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%spell_name%~ => ~%source_name%~ END
+			OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_name%%TAB%=>%TAB%%source_name%%TAB%%slash%%slash%%source_name%%LNL%~
+		END
+	END ELSE BEGIN
+		LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%source_name%~ RET spell_res spell_num END
+		ACTION_IF (source_idscode != spell_num) BEGIN
+			ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%source_idscode%~ => ~%source_name%~ END
+			OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%source_idscode%%TAB%=>%TAB%%source_name%%TAB%%slash%%slash%%source_name%%LNL%~
 		END
 	END
-
-ACTION_BASH_FOR ~%patch_dir%/spl/ADD_SPELL~ ~^[A-Z]+[1-4][0-9][0-9].spl$~ BEGIN //loop only through spells added by ADD_SPELL (ignores those just renamed)
-	LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~%BASH_FOR_RES%~ RET spell_num spell_name END
-	OUTER_SET spell_num_sav = spell_num
-	OUTER_SPRINT spell_name_sav ~%spell_name%~
-	COPY - ~EET/temp/array/spell.ids~ ~.../temp/array/spell.ids~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([0-9]+\) %spell_name%$~ BEGIN
-			PATCH_IF (FILE_CONTAINS_EVALUATED (~spell.ids~ ~^%MATCH1% ~)) BEGIN
-				INNER_ACTION BEGIN
-					LAF RES_NAME_OF_SPELL_NUM INT_VAR spell_num = MATCH1 RET spell_name END
-					ACTION_IF (NOT ~%spell_name%~ STR_EQ ~%spell_name_sav%~) BEGIN
-						ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%spell_name%~ => ~%spell_name_sav%~ END
-						OUTER_SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%spell_name%%TAB%=>%TAB%%spell_name_sav%%TAB%%slash%%slash%%spell_name_sav%%LNL%~
-					END
-				END
-			END ELSE PATCH_IF (MATCH1 != spell_num_sav) BEGIN
-				DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN ~%MATCH1%~ => ~%spell_name_sav%~ END
-				SPRINT log_remapped_splName ~%log_remapped_splName%%TAB%%MATCH1%%TAB%=>%TAB%%spell_name_sav%%TAB%%slash%%slash%%spell_name_sav%%LNL%~
-			END
-		END ~~
 END
 
 ACTION_FOR_EACH dir IN ~%biff_dir%~ ~%patch_dir%/eff~ ~%patch_dir%/spl~ BEGIN
@@ -1130,7 +1113,7 @@ ACTION_BASH_FOR ~%patch_dir%/dlg~ ~.*~ BEGIN
 		SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%patch_dir%/d/%BASH_FOR_RES%.d'%LNL%~
 END
 
-ACTION_FOR_EACH var IN mus sum state ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit tra wmp BEGIN
+ACTION_FOR_EACH var IN mus musName sum state ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit tra wmp BEGIN
 	OUTER_SPRINT array EVAL ~remapped_%var%~
 	OUTER_SPRINT tbl_lua ~%tbl_lua%%array% = {}%LNL%~
 	ACTION_PHP_EACH ~%array%~ AS var1 => var2 BEGIN
@@ -1174,6 +1157,7 @@ PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_cl
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN%LNL%%log_remapped_spec%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN%LNL%%log_remapped_ipro%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_musName BEGIN%LNL%%log_remapped_musName%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN%LNL%%log_remapped_bam%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END~
@@ -1181,7 +1165,19 @@ PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END~
 
 COPY + ~.../blank.txt~ ~EET/temp/new_vars.tph~
-APPEND_OUTER + ~EET/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN%LNL%%log_remapped_sum%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN%LNL%%log_remapped_race%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN%LNL%%log_remapped_spec%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN%LNL%%log_remapped_ipro%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN%LNL%%log_remapped_bam%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%%LNL%ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%~
+APPEND_OUTER + ~EET/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN%LNL%%log_remapped_sum%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN%LNL%%log_remapped_kit%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN%LNL%%log_remapped_race%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN%LNL%%log_remapped_class%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN%LNL%%log_remapped_spec%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_ipro BEGIN%LNL%%log_remapped_ipro%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mus BEGIN%LNL%%log_remapped_mus%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_musName BEGIN%LNL%%log_remapped_musName%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN%LNL%%log_remapped_bam%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%~
 
 COPY ~EET/lib/pcu_dict.tph~ ~EET/lib~
 	APPEND_FILE ~EET/temp/new_vars.tph~
@@ -1736,7 +1732,7 @@ END
 LAM bash_log
 
 /*ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileIndex BEGIN
-	"MAPICONS" , "BAM" => "40"
+	"MAPICONS" , "BAM" => "10"
 	"WORLDMAP" , "MOS" => "20"
 	"BIGLOGO" , "BAM" => "30"
 	"TITLE" , "BAM" => "40"
@@ -1955,8 +1951,6 @@ ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/sounds~ ~%bgee_dir%/lang/
 	END
 END
 
-COPY_LARGE + ~EET/base/wav~ ~EET/temp/wav~
-
 /////                                                  \\\\\
 ///// WBM                                              \\\\\
 /////                                                  \\\\\
@@ -1964,6 +1958,7 @@ COPY_LARGE + ~EET/base/wav~ ~EET/temp/wav~
 PRINT ~Installing WBM files...~
 
 MKDIR ~lang/%LANGUAGE_BG2%/movies~
+	~EET/EE_movies~
 
 //BG1 movies with voice over
 ACTION_FOR_EACH vidname IN BEREGOST INTRO_ NASHKELL WYVERN BEGIN
@@ -1988,6 +1983,8 @@ ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/movies~ ~%bgee_dir%/lang/
 		END
 		ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~) BEGIN
 			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~
+		END ELSE BEGIN
+			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~EET/EE_movies/%dest_file%.wbm~
 		END
 	END
 END

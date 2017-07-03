@@ -290,6 +290,36 @@ END
 
 //BDBALDUR.BCS
 
+<<<<<<<< .../oBALDUR.baf
+IF
+  StoryModeOn()
+  Exists(Familiar)
+  !CheckSpellState(Familiar,STORY_MODE)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ReallyForceSpellDeadRES("OHSMODE4",Familiar)
+    SetInterrupt(TRUE)
+END
+
+IF
+  !StoryModeOn()
+  Exists(Familiar)
+  CheckSpellState(Familiar,STORY_MODE)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    ReallyForceSpellDeadRES("OHSMODE3",Familiar)
+    SetInterrupt(TRUE)
+END
+>>>>>>>> 
+
+<<<<<<<< .../nBALDUR.baf
+>>>>>>>>
+
+COPY_EXISTING ~BDBALDUR.BCS~ ~override~
+R_B_B ~.../oBALDUR.baf~ ~.../nBALDUR.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBALDUR.baf in %SOURCE_FILE%~ END
+
 COPY_EXISTING ~BDBALDUR.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		SPRINT textToReplace ~FamiliarSummoner~

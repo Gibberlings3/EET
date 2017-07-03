@@ -42,6 +42,10 @@ for i=1, #filelist do
 		str = str:gsub('(BEGIN%s+[~"]?)([A-Za-z0-9#_-]+)', function(m1, m2) return D_DLG_replace(m1, m2) end)
 		str = str:gsub('(EXTERN%s+[~"]?)([A-Za-z0-9#_-]+)', function(m1, m2) return D_DLG_replace(m1, m2) end)
 	end
+	str = str:gsub('("[^"\n]+")', function(var)
+		var = var:gsub(' ', '#AOspace#')
+		return var
+	end)
 	str = str:gsub('(ActionOverride%([^,]+),([^%s]+)%)%)', '%1) #AOcomma# %2) #AObracket#')
 	str = str:gsub('(TriggerOverride%([^,]+),([^%s]+)%)%)', '%1) #AOcomma# %2) #AObracket#')	
 	str = str:gsub('([%s~"!])([A-Za-z]+)%(([^%s]+)%)', function(init, cmd, arg)
@@ -151,6 +155,7 @@ for i=1, #filelist do
 		return init .. cmd .. '(' .. arg .. ')'
 	end)
 	str = str:gsub('%) #AOcomma# ([^ ]+) #AObracket#', ',%1)')
+	str = str:gsub('#AOspace#', ' ')
 	file = io.open(SOURCE_FILESPEC,"w+")
 	file:write(str)
 	file:close()
