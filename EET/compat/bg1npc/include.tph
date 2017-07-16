@@ -1,6 +1,6 @@
 //Compatibility with BG1NPC Required Modifications
 ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
-	EXTEND_TOP ~REDDEATH.BCS~ ~EET/compat/bg1npc/baf/X#BRDWI.BAF~ EVALUATE_BUFFER //Interjection scripting changes, BG1 NPCs
+	EXTEND_TOP ~REDDEATH.BCS~ ~%MOD_FOLDER%/compat/bg1npc/baf/X#BRDWI.BAF~ EVALUATE_BUFFER //Interjection scripting changes, BG1 NPCs
 	//conflict with BG2:EE resources
 	ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
 		"PLAYER1" => "PLAYER1_"
@@ -11,7 +11,7 @@ END
 
 //Compatibility with BG1NPC Banters, Quests, and Interjections
 ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #1 ~) BEGIN
-	EXTEND_TOP ~NIEMAIN.BCS~ ~EET/compat/bg1npc/baf/X#NIEMAIN.BAF~ EVALUATE_BUFFER
+	EXTEND_TOP ~NIEMAIN.BCS~ ~%MOD_FOLDER%/compat/bg1npc/baf/X#NIEMAIN.BAF~ EVALUATE_BUFFER
 
 	COPY_EXISTING ~BEARBL.CRE~ ~override~
 		WRITE_ASCII DEATHVAR ~bearbl~ #32
@@ -23,8 +23,8 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG
 	
 	//delete files existing in BG2:EE
 	DELETE + ~%patch_dir%/itm/dagg11.itm~
-			 ~EET/temp/wav/imppp04.wav~
-			 ~EET/temp/wav/itemharp.wav~
+			 ~%MOD_FOLDER%/temp/wav/imppp04.wav~
+			 ~%MOD_FOLDER%/temp/wav/itemharp.wav~
 			 ~%patch_dir%/itm/misc3m.itm~
 			 ~%patch_dir%/itm/misc3n.itm~
 			 ~%patch_dir%/itm/misc3o.itm~
@@ -49,11 +49,11 @@ END
 ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #12 ~) BEGIN
 	//delete files existing in BG2:EE
 	DELETE + ~%patch_dir%/itm/brac25.itm~
-			 ~EET/temp/wav/IRENIC01.wav~
-			 ~EET/temp/wav/IRENIC03.wav~
-			 ~EET/temp/wav/IRENIC04.wav~
-			 ~EET/temp/wav/IRENIC05.wav~
-			 ~EET/temp/wav/IRENIC06.wav~
+			 ~%MOD_FOLDER%/temp/wav/IRENIC01.wav~
+			 ~%MOD_FOLDER%/temp/wav/IRENIC03.wav~
+			 ~%MOD_FOLDER%/temp/wav/IRENIC04.wav~
+			 ~%MOD_FOLDER%/temp/wav/IRENIC05.wav~
+			 ~%MOD_FOLDER%/temp/wav/IRENIC06.wav~
 			 ~%patch_dir%/itm/minhp20.itm~
 END
 

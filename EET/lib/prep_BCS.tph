@@ -13,7 +13,7 @@ ACTION_PHP_EACH table_prepBCS_rename AS source => dest BEGIN
 		COPY_LARGE + ~%patch_dir%/bcs/%source%.BCS~ ~%patch_dir%/bcs/%dest%.BCS~
 		DELETE + ~%patch_dir%/bcs/%source%.BCS~
 	END ELSE BEGIN
-		COPY_LARGE + ~EET/base/blank.bcs~ ~%patch_dir%/bcs/%dest%.BCS~
+		COPY_LARGE + ~%MOD_FOLDER%/base/blank.bcs~ ~%patch_dir%/bcs/%dest%.BCS~
 	END
 END
 

@@ -7,20 +7,20 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Pp]~ = 0) BEGIN
 	OUTER_SPRINT bgee_dir ~%argv[1]%~
 	OUTER_SET valid_dir = 1
 	PRINT ~%bgee_dir% directory assigned via auto install batch command~
-END ELSE ACTION_IF (FILE_EXISTS ~EET/bgee_dir.txt~) BEGIN
-	COPY - ~EET/bgee_dir.txt~ ~EET~
+END ELSE ACTION_IF (FILE_EXISTS ~%MOD_FOLDER%/bgee_dir.txt~) BEGIN
+	COPY - ~%MOD_FOLDER%/bgee_dir.txt~ ~EET~
 		READ_ASCII 0x0 bgee_dir (%SOURCE_SIZE%)
 	OUTER_SET valid_dir = 1
-	PRINT ~%bgee_dir% directory assigned via EET/bgee_dir.txt~
+	PRINT ~%bgee_dir% directory assigned via %MOD_FOLDER%/bgee_dir.txt~
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 <<<<<<<< .../programfiles.bat
-echo %%var%%>EET/temp/programfiles.txt
+echo %%var%%>%MOD_FOLDER%/temp/programfiles.txt
 >>>>>>>>
 	ACTION_FOR_EACH var IN ~programfiles~ ~programfiles(x86)~ ~ProgramW6432~ BEGIN
 		ACTION_IF (valid_dir = 0) BEGIN
-			COPY + ~.../programfiles.bat~ ~EET/temp~ EVALUATE_BUFFER
-			AT_NOW ~EET/temp/programfiles.bat~
-			COPY + ~EET/temp/programfiles.txt~ ~EET/temp~
+			COPY + ~.../programfiles.bat~ ~%MOD_FOLDER%/temp~ EVALUATE_BUFFER
+			AT_NOW ~%MOD_FOLDER%/temp/programfiles.bat~
+			COPY + ~%MOD_FOLDER%/temp/programfiles.txt~ ~%MOD_FOLDER%/temp~
 				READ_ASCII 0x0 dir (%SOURCE_SIZE%)
 			OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
 				REPLACE_TEXTUALLY ~%WNL%~ ~~ //needed due to newline added by windows > command
@@ -110,7 +110,7 @@ END
 
 <<<<<<<< .../bgee_dir.txt
 %bgee_dir%>>>>>>>>
-COPY + ~.../bgee_dir.txt~ ~EET/bgee_dir.txt~ EVALUATE_BUFFER
+COPY + ~.../bgee_dir.txt~ ~%MOD_FOLDER%/bgee_dir.txt~ EVALUATE_BUFFER
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/weidu.conf~ BEGIN
 	COPY - ~%bgee_dir%/weidu.conf~ ~.../%bgee_dir%~

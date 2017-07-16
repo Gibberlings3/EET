@@ -59,30 +59,30 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 END ELSE BEGIN //osx, unix
 	OUTER_SPRINT exe ~~
 	OUTER_SPRINT bin ~./~
-	OUTER_SPRINT WEIDU_EXECUTABLE ~./EET/weidu_%WEIDU_OS%~
+	OUTER_SPRINT WEIDU_EXECUTABLE ~./%MOD_FOLDER%/weidu_%WEIDU_OS%~
 END
 
 OUTER_SPRINT quote ~"~
 OUTER_SPRINT tilde "~"
 
-ACTION_IF (DIRECTORY_EXISTS ~EET/temp~) BEGIN
+ACTION_IF (DIRECTORY_EXISTS ~%MOD_FOLDER%/temp~) BEGIN
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-		AT_NOW ~rmdir /s /q EET\temp~ EXACT
+		AT_NOW ~rmdir /s /q %MOD_FOLDER%\temp~ EXACT
 	END ELSE BEGIN //osx, unix
-		AT_NOW ~rm -rf EET/temp~ EXACT
+		AT_NOW ~rm -rf %MOD_FOLDER%/temp~ EXACT
 	END
 END
-MKDIR ~EET/temp~
+MKDIR ~%MOD_FOLDER%/temp~
 
-INCLUDE ~EET/lib/bgee_dir.tph~
-INCLUDE ~EET/lib/pcu_dict.tph~
+INCLUDE ~%MOD_FOLDER%/lib/bgee_dir.tph~
+INCLUDE ~%MOD_FOLDER%/lib/pcu_dict.tph~
 
 /////                                                  \\\\\
 ///// Detect mods installed on BG:EE                   \\\\\
 /////                                                  \\\\\
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	COPY + ~%bgee_dir%/WeiDU.log~ ~EET/temp~
+	COPY + ~%bgee_dir%/WeiDU.log~ ~%MOD_FOLDER%/temp~
 		REPLACE_TEXTUALLY ~^//.*~ ~~ //removes "Recently uninstalled" lines
 		COUNT_REGEXP_INSTANCES "^~SOA/SETUP-SOA\.TP2~ #[0-9]+ #1 " num_matches
 		PATCH_IF (num_matches > 0) BEGIN
@@ -100,7 +100,7 @@ ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 		PATCH_PRINT ~%cntrow% BG:EE mods detected. Checking compatibility with EET...~
 		FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 			READ_2DA_ENTRY cnt 0 1 "col1"
-			PATCH_IF (FILE_CONTAINS_EVALUATED (~EET/tbl/compatibility.tbl~ ~^%col1% ~)) BEGIN
+			PATCH_IF (FILE_CONTAINS_EVALUATED (~%MOD_FOLDER%/tbl/compatibility.tbl~ ~^%col1% ~)) BEGIN
 				PATCH_PRINT ~%col1% BG:EE component detected~
 			END ELSE PATCH_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Mm]~ = 0) BEGIN
 				PATCH_WARN ~WARNING: %col1% BG:EE mod is not recognized by EET, but M/m flag is assigned, so installation will continue~
@@ -121,7 +121,7 @@ ACTION_IF NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialog.bak~ BEGIN
 	//create backups
 	ACTION_FOR_EACH var IN ~~ F BEGIN
 		ACTION_IF FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialog%var%.tlk~ BEGIN
-			COPY_LARGE + ~lang/%LANGUAGE_BG2%/dialog%var%.tlk~ ~EET/temp/dialog%var%.bak~
+			COPY_LARGE + ~lang/%LANGUAGE_BG2%/dialog%var%.tlk~ ~%MOD_FOLDER%/temp/dialog%var%.bak~
 		END
 	END
 
@@ -133,21 +133,21 @@ ACTION_IF NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/dialog.bak~ BEGIN
 	END
 	<<<<<<<< .../append.tra
 	>>>>>>>>
-	COPY + ~.../append.tra~ ~EET/temp~
-	APPEND_OUTER + ~EET/temp/append.tra~ ~%log%~
+	COPY + ~.../append.tra~ ~%MOD_FOLDER%/temp~
+	APPEND_OUTER + ~%MOD_FOLDER%/temp/append.tra~ ~%log%~
 
 	//export BG2:EE TLK to TRA
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --traify-tlk --out "EET/temp/bg2ee.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --traify-tlk --out "%MOD_FOLDER%/temp/bg2ee.tra"~
 	//export BG:EE TLK to TRA
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "EET/temp/bgee.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
 	//merge all TRA files, including pre-generated blank.tra
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-		AT_NOW ~copy "EET\temp\bg2ee.tra"+"EET\temp\append.tra"+"EET\base\blank.tra"+"EET\temp\bgee.tra" "EET\temp\result.tra"~ EXACT
+		AT_NOW ~copy "%MOD_FOLDER%\temp\bg2ee.tra"+"%MOD_FOLDER%\temp\append.tra"+"%MOD_FOLDER%\base\blank.tra"+"%MOD_FOLDER%\temp\bgee.tra" "%MOD_FOLDER%\temp\result.tra"~ EXACT
 	END ELSE BEGIN //osx, unix
-		AT_NOW ~cat EET/temp/bg2ee.tra EET/temp/append.tra EET/base/blank.tra EET/temp/bgee.tra > EET/temp/result.tra~ EXACT
+		AT_NOW ~cat %MOD_FOLDER%/temp/bg2ee.tra %MOD_FOLDER%/temp/append.tra %MOD_FOLDER%/base/blank.tra %MOD_FOLDER%/temp/bgee.tra > %MOD_FOLDER%/temp/result.tra~ EXACT
 	END
 	//make final dialog.tlk / dialogF.tlk
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "EET/temp/bash.debug" --make-tlk "EET/temp/result.tra"~
+	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --make-tlk "%MOD_FOLDER%/temp/result.tra"~
 END
 
 /////                                                  \\\\\
@@ -155,9 +155,9 @@ END
 /////                                                  \\\\\
 
 COPY + ~%WEIDU_EXECUTABLE%~ ~setup-EET_core%exe%~
-	~EET/lib/EET_core.tp2~ ~EET_core.tp2~
+	~%MOD_FOLDER%/lib/EET_core.tp2~ ~EET_core.tp2~
 
-ACTION_IF NOT FILE_EXISTS ~EET/at_uninstall.txt~ BEGIN
+ACTION_IF NOT FILE_EXISTS ~%MOD_FOLDER%/at_uninstall.txt~ BEGIN
 	ACTION_IF ~%LANGUAGE%~ STR_EQ ~en_US~ BEGIN
 		OUTER_SET langVar = 0
 	END ELSE ACTION_IF ~%LANGUAGE%~ STR_EQ ~pl_PL~ BEGIN

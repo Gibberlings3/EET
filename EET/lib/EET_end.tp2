@@ -256,7 +256,7 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 				SET num_states_src = EVAL ~num_states_%file_1%~
 				PATCH_PRINT ~Appending %file%.dlg to %file_1%.dlg (%num_states% appended states starting from %num_states_src%)~
 				SET EVAL ~num_states_%file_1%~ = num_states_src + num_states
-				DEFINE_ASSOCIATIVE_ARRAY remapped_state BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY remapped_states BEGIN
 					~%file%~ , ~%file_1%~ => ~%num_states_src%~
 				END
 				DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
@@ -295,7 +295,7 @@ INCLUDE ~EET/lib/macros.tph~
 
 COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		PHP_EACH remapped_state AS file => state BEGIN
+		PHP_EACH remapped_states AS file => state BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~\( EXTERN .\)%file%\(. \)\([0-9]+\)~ BEGIN
 				SET match = state + MATCH3
 				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %file% => %file_1% - dlg; %MATCH3% => %match% - state~

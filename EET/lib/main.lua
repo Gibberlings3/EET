@@ -39,8 +39,8 @@ for i=1, #filelist do
 		str = str:gsub('(REPLY #)([0-9]+)', function(m1, m2) return D_traifyDLG_replace(m1, m2) end)
 		str = str:gsub('(JOURNAL #)([0-9]+)', function(m1, m2) return D_traifyDLG_replace(m1, m2) end)
 		--D_DLG_replace
-		str = str:gsub('(BEGIN%s+[~"]?)([A-Za-z0-9#_-]+)', function(m1, m2) return D_DLG_replace(m1, m2) end)
-		str = str:gsub('(EXTERN%s+[~"]?)([A-Za-z0-9#_-]+)', function(m1, m2) return D_DLG_replace(m1, m2) end)
+		str = str:gsub('(BEGIN%s+[~"]?)([A-Za-z0-9#_%-]+)', function(m1, m2) return D_DLG_replace(m1, m2) end)
+		str = str:gsub('(EXTERN%s+[~"]?)([A-Za-z0-9#_%-]+)', function(m1, m2) return D_DLG_replace(m1, m2) end)
 	end
 	str = str:gsub('("[^"\n]+")', function(var)
 		var = var:gsub(' ', '#AOspace#')
@@ -82,7 +82,8 @@ for i=1, #filelist do
 								source_case = source:upper()
 								if res == 'var' and source_case == 'CHAPTER' then
 									chapterUp = 1
-								elseif res == 'dv' then
+								end
+								if res == 'dv' then
 									--EnemyAlly<-General<-Race<-Class<-Specifics
 									if source_case:match('%[[A-Z0-9]+%.[A-Z0-9]+%.') then
 										source = source:gsub('(%[[A-Z0-9]+%.[A-Z0-9]+%.)([A-Z0-9]*)(%.?)([A-Z0-9]*)(%.?)([A-Z0-9]*)', function(m1, m2, m3, m4, m5, m6)

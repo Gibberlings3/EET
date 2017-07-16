@@ -1,12 +1,12 @@
 ACTION_BASH_FOR ~%biff_dir%~ ~^BOX[1-8]\.PVRZ~ BEGIN
-	COPY ~%BASH_FOR_FILESPEC%~ ~EET/SoD_GUI~
+	COPY ~%BASH_FOR_FILESPEC%~ ~%MOD_FOLDER%/SoD_GUI~
 	DELETE + ~%BASH_FOR_FILESPEC%~
 END
 
 LAF ~FIND_FREE_PVRZ_INDEX~ RET free_index END
 OUTER_SET reserve_index_start = free_index
 OUTER_SET reserve_index_cnt = 0
-ACTION_FOR_EACH dir IN ~%biff_dir%~ ~EET/SoD_GUI~ BEGIN
+ACTION_FOR_EACH dir IN ~%biff_dir%~ ~%MOD_FOLDER%/SoD_GUI~ BEGIN
 	ACTION_FOR_EACH var IN bam mos BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
 			ACTION_IF (FILE_CONTAINS_EVALUATED (~%BASH_FOR_FILESPEC%~ ~%var% V2~)) BEGIN
@@ -46,7 +46,7 @@ ACTION_FOR_EACH dir IN ~%biff_dir%~ ~EET/SoD_GUI~ BEGIN
 								ACTION_IF ~%dir%~ STR_EQ ~%biff_dir%~ BEGIN
 									COPY_LARGE + ~%biff_dir%/mos%original_base_index%.pvrz~ ~%biff_dir%/pvrz/mos%new_base_index%.pvrz~
 								END ELSE BEGIN
-									COPY_LARGE + ~%biff_dir%/mos%original_base_index%.pvrz~ ~%biff_dir%/eetGui/mos%new_base_index%.pvrz~
+									COPY_LARGE + ~%biff_dir%/mos%original_base_index%.pvrz~ ~%biff_dir%/eetGUI/mos%new_base_index%.pvrz~
 								END
 								DELETE + ~%biff_dir%/mos%original_base_index%.pvrz~
 							END
