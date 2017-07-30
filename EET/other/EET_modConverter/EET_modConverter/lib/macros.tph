@@ -35,6 +35,20 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_long~ BEGIN
 	END
 END
 
+DEFINE_PATCH_MACRO ~EET_PCU_off_short~ BEGIN
+	READ_SHORT off "source"
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+		PATCH_IF (source != dest) BEGIN
+			SET updated = 1
+			WRITE_SHORT off "%dest%"
+			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
+			SPRINTF str ~%s %x~ ("%str%" off)
+			PATCH_PRINT ~%str%~
+		END
+	END
+END
+
 DEFINE_PATCH_MACRO ~EET_PCU_off_byte~ BEGIN
 	READ_BYTE off "source"
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
@@ -544,7 +558,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"ONSCREEN" => "_dv1_door1_" //OnScreen
 	"OPENED" => "_dv1_" //Opened
 	"OPENSTATE" => "_door1_" //OpenState
-	"ORIGINALCLASS" => "_dv1_" //OriginalClass
+	"ORIGINALCLASS" => "_dv1_class2_" //OriginalClass
 	"PARTYHASITEM" => "_itm1_" //PartyHasItem
 	"PARTYHASITEMIDENTIFIED" => "_itm1_" //PartyHasItemIdentified
 	"PARTYMEMBERDIED" => "_dv1_" //PartyMemberDied
@@ -891,7 +905,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 	OR ("%fx_type%" = 169) //Prevent Special Effect Icon
 	OR ("%fx_type%" = 240) //Remove Special Effect Icon
 	BEGIN
-		SET off = param2 SPRINT res ~state~ LPM EET_PCU_off_long
+		SET off = param2 SPRINT res ~icon~ LPM EET_PCU_off_long
 	END
 
 	PATCH_IF ("%fx_type%" = 146) //Cast Spell (at Creature)
@@ -963,16 +977,12 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 
 	PATCH_IF ("%fx_type%" = 218) BEGIN //Protection: Stoneskin
 		PATCH_IF ver = 2 BEGIN
-			SET off = special SPRINT res ~state~ LPM EET_PCU_off_long
+			SET off = special SPRINT res ~icon~ LPM EET_PCU_off_long
 		END
 	END
 
-	PATCH_IF ("%fx_type%" = 232) BEGIN //Cast Spell on Condition
-		READ_LONG param1 "ids_file"
-		PATCH_IF (ids_file = 15) BEGIN //State.ids
-			SET off = param2 SPRINT res ~state~ LPM EET_PCU_off_long
-		END
-	END
+	//PATCH_IF ("%fx_type%" = 232) BEGIN //Cast Spell on Condition
+	//END
 
 	PATCH_IF ("%fx_type%" = 256) BEGIN //Spell sequencer
 		SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
@@ -1441,48 +1451,53 @@ CO") BEGIN
 	END
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	//CRE patching                                                                                     //
+	//CRE / CHR patching                                                                               //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	ELSE PATCH_IF ("%filetype%" STR_EQ "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ AND (option != 5) BEGIN
-		//Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
-		LPF ~FJ_CRE_VALIDITY~ RET vl=valid END
-		PATCH_IF vl BEGIN
+	ELSE PATCH_IF ("%filetype%" STR_EQ "CRE V1.0") /*AND (SOURCE_SIZE > 0x2d3)*/ OR ("%filetype%" STR_EQ "CHR V2.0") BEGIN
+		PATCH_IF ("%filetype%" STR_EQ "CRE V1.0") BEGIN
 			PATCH_PRINT ~%cntcurrent%/%cntrow% Patching creature version 1.0 file %patch_name%...~
-
+			SET cre_struct_off = 0
+			LPF ~FJ_CRE_VALIDITY~ RET valid END //Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
+		END ELSE BEGIN //chr
+			PATCH_PRINT ~%cntcurrent%/%cntrow% Patching character version 2.0 file %patch_name%...~
+			READ_LONG 0x28 "cre_struct_off"
+			SET valid = 1
+		END
+		PATCH_IF valid = 1 BEGIN
 			//0x34 small portrait BMP resref
-			SET off = 0x34 SPRINT res ~bmp~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x34) SPRINT res ~bmp~ LPM EET_PCU_off_res
 			//0x3c large portrait BMP resref
-			SET off = 0x3c SPRINT res ~bmp~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x3c) SPRINT res ~bmp~ LPM EET_PCU_off_res
 			//0x241 racial enemy number
-			SET off = 0x241 SPRINT res ~race~ LPM EET_PCU_off_byte
+			SET off = ("%cre_struct_off%"+0x241) SPRINT res ~race~ LPM EET_PCU_off_byte
 			//0x244 kit internal number
-			SET off = 0x244 LPM EET_PCU_off_kit
+			SET off = ("%cre_struct_off%"+0x244) LPM EET_PCU_off_kit
 			//0x248 override BCS resref
-			SET off = 0x248 SPRINT res ~bcs~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x248) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0x250 class BCS resref
-			SET off = 0x250 SPRINT res ~bcs~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x250) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0x258 race BCS resref
-			SET off = 0x258 SPRINT res ~bcs~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x258) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0x260 general BCS resref
-			SET off = 0x260 SPRINT res ~bcs~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x260) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0x268 default BCS resref
-			SET off = 0x268 SPRINT res ~bcs~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x268) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0x272 Race number
-			SET off = 0x272 SPRINT res ~race~ LPM EET_PCU_off_byte
+			SET off = ("%cre_struct_off%"+0x272) SPRINT res ~race~ LPM EET_PCU_off_byte
 			//0x273 Class number
-			SET off = 0x273 SPRINT res ~class~ LPM EET_PCU_off_byte
+			SET off = ("%cre_struct_off%"+0x273) SPRINT res ~class~ LPM EET_PCU_off_byte
 			//0x274 Specific number
-			SET off = 0x274 SPRINT res ~spec~ LPM EET_PCU_off_byte
+			SET off = ("%cre_struct_off%"+0x274) SPRINT res ~spec~ LPM EET_PCU_off_byte
 			//0x280 Death Variable
-			SET off = 0x280 SPRINT res ~dv~ LPM EET_PCU_off_32
+			SET off = ("%cre_struct_off%"+0x280) SPRINT res ~dv~ LPM EET_PCU_off_32
 			//0x2cc DLG resref
-			SET off = 0x2cc SPRINT res ~dlg~ LPM EET_PCU_off_res
+			SET off = ("%cre_struct_off%"+0x2cc) SPRINT res ~dlg~ LPM EET_PCU_off_res
 
 			//////////////
 			//Known Spells
 			//////////////
-			READ_LONG 0x2a0 "kspell_off"
-			READ_SHORT 0x2a4 "kspell_cnt"
+			READ_LONG ("%cre_struct_off%"+0x2a0) "kspell_off"
+			READ_SHORT ("%cre_struct_off%"+0x2a4) "kspell_cnt"
 			FOR (cnt=0; cnt<"%kspell_cnt%"; cnt=cnt+1) BEGIN
 				//0x0 SPL resref
 				SET off = ("%kspell_off%"+0xc*cnt) SPRINT res ~spl~ LPM EET_PCU_off_res
@@ -1491,8 +1506,8 @@ CO") BEGIN
 			//////////////////
 			//Memorised Spells
 			//////////////////
-			READ_LONG 0x2b0 "mspell_off"
-			READ_SHORT 0x2b4 "mspell_cnt"
+			READ_LONG ("%cre_struct_off%"+0x2b0) "mspell_off"
+			READ_SHORT ("%cre_struct_off%"+0x2b4) "mspell_cnt"
 			FOR (cnt=0; cnt<"%mspell_cnt%"; cnt=cnt+1) BEGIN
 				//0x0 SPL resref
 				SET off = ("%mspell_off%"+0xc*cnt) SPRINT res ~spl~ LPM EET_PCU_off_res
@@ -1501,8 +1516,8 @@ CO") BEGIN
 			///////
 			//Items
 			///////
-			READ_LONG 0x2bc "item_off"
-			READ_SHORT 0x2c0 "item_cnt"
+			READ_LONG ("%cre_struct_off%"+0x2bc) "item_off"
+			READ_SHORT ("%cre_struct_off%"+0x2c0) "item_cnt"
 			FOR (cnt=0; cnt<"%item_cnt%"; cnt=cnt+1) BEGIN
 				//0x0 ITM resref
 				SET off = ("%item_off%"+0x14*cnt) SPRINT res ~itm~ LPM EET_PCU_off_res
@@ -1511,8 +1526,8 @@ CO") BEGIN
 			/////////
 			//Effects
 			/////////
-			READ_LONG 0x2c4 "fx_off"
-			READ_LONG 0x2c8 "fx_cnt"
+			READ_LONG ("%cre_struct_off%"+0x2c4) "fx_off"
+			READ_LONG ("%cre_struct_off%"+0x2c8) "fx_cnt"
 			FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
 				READ_LONG ("%fx_off%"+0x108*cnt+0x8) "fx_type"
 				SET param1 = ("%fx_off%"+0x108*cnt+0x14)
@@ -2061,7 +2076,7 @@ CO") BEGIN
 		READ_LONG 0x10 "overlays_off"
 		FOR (cnt=0; cnt<"%overlays_num%"; cnt=cnt+1) BEGIN
 			//0x4 tileset TIS resref
-			SET off = ("%overlays_off%"+0xa*cnt+0x4) SPRINT res ~tis~ LPM EET_PCU_off_res
+			SET off = ("%overlays_off%"+0x18*cnt+0x4) SPRINT res ~tis~ LPM EET_PCU_off_res
 		END
 
 		SET wed_check += 1

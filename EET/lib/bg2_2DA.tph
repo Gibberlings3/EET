@@ -130,26 +130,33 @@ END
 ACTION_FOR_EACH file IN WEAPPROF CLASCOLR CLASISKL THIEFSCL CLASTHAC BEGIN
 	COPY_EXISTING ~%file%.2DA~ ~override~
 		PRETTY_PRINT_2DA
-		REPLACE_TEXTUALLY ~$~ ~ ~
-		REPLACE_TEXTUALLY ~^ $~ ~~
 		COUNT_2DA_ROWS 3 "cntrow"
+		COUNT_2DA_COLS "cntcol"
+		FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+			READ_2DA_ENTRY 0 i 3 "name"
+			TO_UPPER name
+			TEXT_SPRINT $EVAL ~%file%_array~(~%name%~) ~~
+		END
 	BUT_ONLY
 	COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_COLS "cntcol"
-		FOR (cnt = 1; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
-			READ_2DA_ENTRY 0 cnt 3 "name"
-			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~ %name% ~)) BEGIN
+		FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+			READ_2DA_ENTRY 0 i 3 "name"
+			SPRINT name_case ~%name%~
+			TO_UPPER name_case
+			PATCH_IF (NOT VARIABLE_IS_SET $EVAL ~%file%_array~(~%name_case%~)) BEGIN
 				PATCH_PRINT ~Patching %SOURCE_RES%.2DA: %name%~
 				SPRINT col ~%name%~
-				FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
-					READ_2DA_ENTRY cnt2 (cnt + 1) 3 "add"
+				FOR (j = 1; j < cntrow; j = j + 1) BEGIN
+					READ_2DA_ENTRY j (i + 1) 3 "add"
 					SPRINT col ~%col% %add%~
 				END
 				INNER_ACTION BEGIN
 					APPEND_COL ~%SOURCE_RES%.2DA~ ~dummy_entry dummy_entry %col%~
 					PRINT ~%col% column appended to %SOURCE_FILE%~
 				END
+				TEXT_SPRINT $EVAL ~%file%_array~(~%name_case%~) ~~
 			END
 		END
 	COPY_EXISTING ~%file%.2DA~ ~override~
@@ -213,15 +220,12 @@ END
 %index% %append%
 >>>>>>>>
 
-COPY_EXISTING ~CHARSND.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
 COPY + ~%MOD_FOLDER%/temp/array/CHARSND.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
-	FOR (cnt = 1; cnt < cntrow; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "index"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^%index% ~)) BEGIN
+	FOR (i = 1; i < cntrow; i = i + 1) BEGIN
+		READ_2DA_ENTRY i 0 3 "index"
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[ %TAB%]*%index%[ %TAB%]+~)) BEGIN
 			DEFINE_ASSOCIATIVE_ARRAY table_2DA_charsnd_missing BEGIN ~%index%~ => ~~ END
 		END
 	END
@@ -230,7 +234,7 @@ COPY_EXISTING ~CHARSND.2DA~ ~override~
 	COUNT_2DA_ROWS 3 "cntrow"
 	COUNT_2DA_COLS "cntcol"
 	SPRINT append ~~
-	FOR (cnt = 1; cnt < cntcol; cnt = cnt + 1) BEGIN
+	FOR (i = 1; i < cntcol; i = i + 1) BEGIN
 		INNER_PATCH_SAVE append ~%append%~ BEGIN
 			REPLACE_TEXTUALLY ~$~ ~ -1~
 		END
@@ -239,32 +243,38 @@ COPY_EXISTING ~CHARSND.2DA~ ~override~
 		APPEND_FILE ~.../CHARSND.txt~ EVALUATE_BUFFER
 	END
 	//generate index array in correct order
-	FOR (cnt = 1; cnt < cntrow; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "index"
+	FOR (i = 1; i < cntrow; i = i + 1) BEGIN
+		READ_2DA_ENTRY i 0 3 "index"
 		DEFINE_ASSOCIATIVE_ARRAY table_2DA_charsnd_index BEGIN ~%index%~ => ~-1~ END
 	END
 	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	REPLACE_TEXTUALLY ~^ $~ ~~
+	COUNT_2DA_COLS "cntcol"
+	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+		READ_2DA_ENTRY 0 i 3 "name"
+		TO_UPPER name
+		TEXT_SPRINT $charsnd_array(~%name%~) ~~
+	END
 BUT_ONLY
 COPY + ~%MOD_FOLDER%/temp/array/CHARSND.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	COUNT_2DA_COLS "cntcol"
-	FOR (cnt = 0; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY 0 cnt 3 "name"
-		TO_UPPER name
-		PATCH_IF (VARIABLE_IS_SET $table_2DA_charsnd_name(~%name%~)) BEGIN
-			TEXT_SPRINT name $table_2DA_charsnd_name(~%name%~)
+	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+		READ_2DA_ENTRY 0 i 3 "name"
+		SPRINT name_case ~%name%~
+		TO_UPPER name_case
+		PATCH_IF (VARIABLE_IS_SET $table_2DA_charsnd_name(~%name_case%~)) BEGIN
+			TEXT_SPRINT name $table_2DA_charsnd_name(~%name_case%~)
+			SPRINT name_case ~%name%~
 		END
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~ %name% ~)) BEGIN
+		PATCH_IF (NOT VARIABLE_IS_SET $charsnd_array(~%name_case%~)) BEGIN
 			PATCH_PRINT ~Patching %SOURCE_RES%.2DA: %name%~
 			PHP_EACH table_2DA_charsnd_index AS index => strref BEGIN
 				DEFINE_ASSOCIATIVE_ARRAY table_2DA_charsnd_index BEGIN ~%index%~ => ~-1~ END //reset array
 			END
-			FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
-				READ_2DA_ENTRY cnt2 0 3 "index"
-				READ_2DA_ENTRY cnt2 (cnt + 1) 3 "strref"
+			FOR (j = 1; j < cntrow; j = j + 1) BEGIN
+				READ_2DA_ENTRY j 0 3 "index"
+				READ_2DA_ENTRY j (i + 1) 3 "strref"
 				LPF EET_strref INT_VAR str = strref RET str END
 				DEFINE_ASSOCIATIVE_ARRAY table_2DA_charsnd_index BEGIN ~%index%~ => ~%str%~ END
 			END
@@ -276,6 +286,7 @@ COPY + ~%MOD_FOLDER%/temp/array/CHARSND.2DA~ ~%MOD_FOLDER%/temp/array~
 				APPEND_COL ~%SOURCE_RES%.2DA~ ~dummy_entry dummy_entry %col%~
 				PRINT ~%col% column appended to %SOURCE_FILE%~
 			END
+			TEXT_SPRINT $charsnd_array(~%name_case%~) ~~
 		END
 	END
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
@@ -675,7 +686,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_moviedesc BEGIN
 	BHAAL => 219661
 	BILOGO => 220699
 	BGBLACKP => 231833
-	BWDRAGON => 262089
+	BWDRAGON => 62089
 	CAMP => 219662
 	CNDLKEEP => 219663
 	CREDITS => 215591
@@ -686,7 +697,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_moviedesc BEGIN
 	ENDMOVIE => 219666
 	FRARMINN => 219667
 	GNOLL => 219668
-	INFELOGO => 262096
+	INFELOGO => 62096
 	BGINTRO => 219669
 	IRONTHRN => 219670
 	MINEFLOD => 219671
@@ -1094,28 +1105,35 @@ END
 
 COPY_EXISTING ~SPAWNGRP.2DA~ ~override~
 	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	REPLACE_TEXTUALLY ~^ $~ ~~
+	COUNT_2DA_ROWS 3 "cntrow"
+	COUNT_2DA_COLS "cntcol"
+	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+		READ_2DA_ENTRY 0 i 3 "name"
+		TO_UPPER name
+		TEXT_SPRINT $spawngrp_array(~%name%~) ~~
+	END
 BUT_ONLY
 COPY + ~%MOD_FOLDER%/temp/array/SPAWNGRP.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	COUNT_2DA_COLS "cntcol"
-	FOR (cnt = 0; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY 0 cnt 3 "name"
-		TO_UPPER name
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[ ]+.* %name% ~)) BEGIN
+	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+		READ_2DA_ENTRY 0 i 3 "name"
+		SPRINT name_case ~%name%~
+		TO_UPPER name_case
+		PATCH_IF (NOT VARIABLE_IS_SET $spawngrp_array(~%name_case%~)) BEGIN
 			PATCH_PRINT ~Patching %SOURCE_RES%.2DA: %name%~
 			SPRINT col ~%name%~
-			FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
-				READ_2DA_ENTRY cnt2 (cnt + 1) 3 "add"
-				SPRINT match ~%add%~ SPRINT res ~cre~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%file%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt2 (cnt + 1) 3 "%match%" SPRINT add ~%match%~ END
+			FOR (j = 1; j < cntrow; j = j + 1) BEGIN
+				READ_2DA_ENTRY j (i + 1) 3 "add"
+				SPRINT match ~%add%~ SPRINT res ~cre~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%file%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY j (i + 1) 3 "%match%" SPRINT add ~%match%~ END
 				SPRINT col ~%col% %add%~
 			END
 			INNER_ACTION BEGIN
 				APPEND_COL ~%SOURCE_RES%.2DA~ ~dummy_entry dummy_entry %col%~
 				PRINT ~%col% column appended to %SOURCE_FILE%~
 			END
+			TEXT_SPRINT $spawngrp_array(~%name_case%~) ~~
 		END
 	END
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
@@ -1195,26 +1213,20 @@ BUT_ONLY
 ///// TOOLTIP.2DA                                      \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING ~TOOLTIP.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	REPLACE_TEXTUALLY ~^ $~ ~~
-BUT_ONLY
-
 INCLUDE ~%MOD_FOLDER%/lib/tooltip.tpa~
 
 COPY + ~%MOD_FOLDER%/temp/array/TOOLTIP.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	COUNT_2DA_COLS "cntcol"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+	FOR (i = 1; i < "%cntrow%"; i = i + 1) BEGIN
 		SPRINT strings ~~
-		READ_2DA_ENTRY cnt 0 3 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~TOOLTIP.2DA~ ~^%col1% ~)) BEGIN
-			FOR (cnt2 = 1; cnt2 < cntcol; cnt2 = cnt2 + 1) BEGIN
-				READ_2DA_ENTRY cnt cnt2 3 "colx"
-				LPF EET_strref INT_VAR str = colx RET str END
+		READ_2DA_ENTRY i 0 3 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY i 0 3 "%match%" SPRINT col1 ~%match%~ END
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~TOOLTIP.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			FOR (j = 1; j < cntcol; j = j + 1) BEGIN
+				READ_2DA_ENTRY i j 3 "col"
+				LPF EET_strref INT_VAR str = col RET str END
 				SPRINT strings ~%strings% %str% ~
 			END
 			INNER_ACTION BEGIN
@@ -1238,10 +1250,10 @@ COPY + ~%MOD_FOLDER%/temp/array/TRACKING.2DA~ ~%MOD_FOLDER%/temp/array~
 		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 	END
 	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
-		READ_2DA_ENTRY cnt 1 2 "col2"
+	FOR (i = 1; i < "%cntrow%"; i = i + 1) BEGIN
+		READ_2DA_ENTRY i 0 2 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY i 0 2 "%match%" SPRINT col1 ~%match%~ END
+		READ_2DA_ENTRY i 1 2 "col2"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
 				OUTER_PATCH_SAVE col2_new ~%col2%~ BEGIN
@@ -1843,27 +1855,34 @@ COPY + ~%MOD_FOLDER%/temp/2da/INTERACT.2DA~ ~%MOD_FOLDER%/temp/2da~
 
 COPY_EXISTING ~REPUTATI.2DA~ ~override~
 	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	REPLACE_TEXTUALLY ~^ $~ ~~
 	COUNT_2DA_ROWS 3 "cntrow"
+	COUNT_2DA_COLS "cntcol"
+	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+		READ_2DA_ENTRY 0 i 3 "name"
+		TO_UPPER name
+		TEXT_SPRINT $reputati_array(~%name%~) ~~
+	END
 BUT_ONLY
 COPY + ~%MOD_FOLDER%/temp/array/REPUTATI.2DA~ ~%MOD_FOLDER%/temp/array~
 	~%MOD_FOLDER%/temp/2da/SODREPUT.2DA~ ~%MOD_FOLDER%/temp/2da~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_COLS "cntcol"
-	FOR (cnt = 1; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY 0 cnt 3 "name"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~REPUTATI.2DA~ ~ %name% ~)) BEGIN
+	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+		READ_2DA_ENTRY 0 i 3 "name"
+		SPRINT name_case ~%name%~
+		TO_UPPER name_case
+		PATCH_IF (NOT VARIABLE_IS_SET $reputati_array(~%name_case%~)) BEGIN
 			PATCH_PRINT ~Patching REPUTATI.2DA: %name%~
 			SPRINT col ~%name%~
-			FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
-				READ_2DA_ENTRY cnt2 (cnt + 1) 3 "add"
+			FOR (j = 1; j < cntrow; j = j + 1) BEGIN
+				READ_2DA_ENTRY j (i + 1) 3 "add"
 				SPRINT col ~%col% %add%~
 			END
 			INNER_ACTION BEGIN
 				APPEND_COL ~REPUTATI.2DA~ ~dummy_entry dummy_entry %col%~
 				PRINT ~%col% column appended to %SOURCE_FILE%~
 			END
+			TEXT_SPRINT $reputati_array(~%name_case%~) ~~
 		END
 	END
 COPY_EXISTING ~REPUTATI.2DA~ ~override~
