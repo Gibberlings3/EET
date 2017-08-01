@@ -230,7 +230,6 @@ PRINT ~TLK merging...~
 
 OUTER_SET tlk_start = NEXT_STRREF - 1
 
-//generate dummy strings up to 111000 if needed
 OUTER_SPRINT log ~~
 OUTER_FOR (i=%tlk_start% ; i<111000 ; i=i+1) BEGIN
 	OUTER_SPRINT log "%log%%LNL%@%i% = ~~"
@@ -238,24 +237,25 @@ END
 <<<<<<<< .../append.tra
 >>>>>>>>
 COPY + ~.../append.tra~ ~%MOD_FOLDER%/temp~
-APPEND_OUTER + ~%MOD_FOLDER%/temp/append.tra~ ~%log%~
+ACTION_IF NOT ~%log%~ STR_EQ ~~ BEGIN
+	APPEND_OUTER + ~%MOD_FOLDER%/temp/append.tra~ ~%log%~
+END
 
-//export BG:EE TLK to TRA
-COPY + ~%bgee_dir%/lang/%LANGUAGE_BG1%/dialog.tlk~ ~%bgee_dir%/lang/%LANGUAGE_BG1%~
+AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
+
+AT_NOW ~%lua% %MOD_FOLDER%/lib/tlk_cnt.lua~
+COPY + ~%MOD_FOLDER%/temp/tlk_cnt.txt~ ~%MOD_FOLDER%/temp~
 	READ_LONG 0xa "tlk_end"
 	SET tlk_end = tlk_end + 200000 - 1
-AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
-COPY + ~%MOD_FOLDER%/temp/append.tra~ ~%MOD_FOLDER%/temp~
-	APPEND_FILE ~%MOD_FOLDER%/base/blank.tra~
-	APPEND_FILE ~%MOD_FOLDER%/temp/bgee.tra~
 
-//merge all TRA files, including pre-generated blank.tra
-<<<<<<<< .../tlk_merge.tph
+AT_NOW ~%lua% %MOD_FOLDER%/lib/tra_merge.lua~
+
+<<<<<<<< .../string_set.tph
 PRINT ~tlk_start = %tlk_start%; tlk_end = %tlk_end%~
-STRING_SET_RANGE #%tlk_start% #%tlk_end% USING ~%MOD_FOLDER%/temp/append.tra~
+STRING_SET_RANGE #%tlk_start% #%tlk_end% USING ~%MOD_FOLDER%/temp/string_set.tra~
 >>>>>>>>
-COPY + ~.../tlk_merge.tph~ ~%MOD_FOLDER%/temp~ EVALUATE_BUFFER
-INCLUDE ~%MOD_FOLDER%/temp/tlk_merge.tph~
+COPY + ~.../string_set.tph~ ~%MOD_FOLDER%/temp~ EVALUATE_BUFFER
+INCLUDE ~%MOD_FOLDER%/temp/string_set.tph~
 
 /////                                                  \\\\\
 ///// prepare BG:EE resources for PCU conversion       \\\\\
