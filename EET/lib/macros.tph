@@ -2171,7 +2171,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 								END ELSE PATCH_IF (~%res%~ STR_EQ ~dv~) AND ((~%source%~ STRING_CONTAINS_REGEXP ~\[[A-Z0-9]+\.[A-Z0-9]+\.~)=0) BEGIN
 									INNER_PATCH_SAVE source ~%source%~ BEGIN
 										// EnemyAlly<-General<-Race<-Class<-Specifics
-										REPLACE_EVALUATE CASE_INSENSITIVE ~\(\[[A-Z0-9]+\.[A-Z0-9]+\.\)\([A-Z0-9]*\)\(\.?\)\([A-Z0-9]*\)\(\.?\)\([A-Z0-9]*\)~ BEGIN
+										REPLACE_EVALUATE CASE_INSENSITIVE ~\(\[[A-Z0-9_]+\.[A-Z0-9_]+\.\)\([A-Z0-9_]*\)\(\.?\)\([A-Z0-9_]*\)\(\.?\)\([A-Z0-9_]*\)~ BEGIN
 											PATCH_IF (~%MATCH2%~ STR_CMP ~~) AND (VARIABLE_IS_SET $remapped_race(~%MATCH2%~)) BEGIN
 												TEXT_SPRINT dest $remapped_race(~%MATCH2%~)
 												SET updated = 1
