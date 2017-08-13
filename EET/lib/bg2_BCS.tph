@@ -3155,9 +3155,11 @@ THEN
     SetGlobal("SPRITE_IS_DEADYOSHIMO","GLOBAL",1)
     SetGlobal("NEWGAME_TOB","GLOBAL",1)
     StartMovie("INTRO")
-    AddWorldmapAreaFlag("ID9100",EXPLORED) //Has been visited
+    AddWorldmapAreaFlag("AR4000",EXPLORED) //Has been visited
     RemoveWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
     ReallyForceSpellRES("K#REMBHA",Player1)
+    //ActionOverride(Player1,ApplySpell(Myself,GIVE_SLAYER_POWER))
+    ActionOverride(Player1,AddSpecialAbility("SPIN822"))
     TakeItemListPartyNum("K#PLOT",99)
     GiveItemCreate("BAG19",Player1,1,0,0)
     GiveItemCreate("AMUL27",Player1,1,0,0)
