@@ -2427,26 +2427,32 @@ INCLUDE ~%MOD_FOLDER%/lib/bgee_fixpack.tph~
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT exec ~Baldur.exe~
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
-	OUTER_SPRINT exec ~../MacOS/BaldursGateIIEnhancedEdition~
+	ACTION_IF FILE_EXISTS ~BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~ BEGIN
+		OUTER_SPRINT exec ~./BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~
+	END ELSE ACTION_IF FILE_EXISTS ~../MacOS/BaldursGateIIEnhancedEdition~ BEGIN
+		OUTER_SPRINT exec ~../MacOS/BaldursGateIIEnhancedEdition~
+	END ELSE BEGIN
+		FAIL ~Baldur's Gate II executable not found~
+	END
 END ELSE BEGIN //unix
-	OUTER_SPRINT exec ~./BaldursGateII~
+	ACTION_IF FILE_EXISTS ~BaldursGateII~ BEGIN
+		OUTER_SPRINT exec ~./BaldursGateII~
+	END ELSE BEGIN
+		FAIL ~Baldur's Gate II executable not found~
+	END
 END
 
-ACTION_IF FILE_EXISTS ~%exec%~ BEGIN
-	COPY ~%exec%~ ~%exec%~
-		REPLACE_TEXTUALLY ~NITEDAY~ ~~ (7)
-		REPLACE_TEXTUALLY ~DAYNITE~ ~~ (7)
-		REPLACE_TEXTUALLY ~SPIN649~ ~~ (7)
-		REPLACE_TEXTUALLY ~SPIN822~ ~~ (7)
-		//change default campaign
-		REPLACE_TEXTUALLY ~SOD~ ~BG1~
-		REPLACE_TEXTUALLY ~Never Show Nuisance BG1~ ~Never Show Nuisance SOD~
-		REPLACE_TEXTUALLY ~Edition/BG1save~ ~Edition/sodsave~
-		REPLACE_TEXTUALLY ~usingBG1StartMenu~ ~usingSODStartMenu~
-	BUT_ONLY
-END ELSE BEGIN
-	WARN ~WARNING: %exec% doesn't exist~
-END
+COPY ~%exec%~ ~%exec%~
+	REPLACE_TEXTUALLY ~NITEDAY~ ~~ (7)
+	REPLACE_TEXTUALLY ~DAYNITE~ ~~ (7)
+	REPLACE_TEXTUALLY ~SPIN649~ ~~ (7)
+	REPLACE_TEXTUALLY ~SPIN822~ ~~ (7)
+	//change default campaign
+	REPLACE_TEXTUALLY ~SOD~ ~BG1~
+	REPLACE_TEXTUALLY ~Never Show Nuisance BG1~ ~Never Show Nuisance SOD~
+	REPLACE_TEXTUALLY ~Edition/BG1save~ ~Edition/sodsave~
+	REPLACE_TEXTUALLY ~usingBG1StartMenu~ ~usingSODStartMenu~
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// Biffing                                          \\\\\
@@ -2608,56 +2614,4 @@ del %SCRIPT%
 	AT_NOW ~shortcut.bat~
 	DELETE + ~shortcut.bat~
 	COPY ~%MOD_FOLDER%/temp/EET.lnk~ ~%dir%~
-END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
-	//commented out until someone test it and confirm that it works
-	/*ACTION_FOR_EACH var IN PWD HOME BEGIN
-<<<<<<<< .../path.command
-echo -n $%var%>EET/temp/path.txt
->>>>>>>>
-		COPY + ~.../path.command~ ~path.command~ EVALUATE_BUFFER
-		AT_NOW ~./path.command~
-		COPY + ~%MOD_FOLDER%/temp/path.txt~ ~%MOD_FOLDER%/temp~
-			READ_ASCII 0x0 dir (%SOURCE_SIZE%)
-		OUTER_PATCH_SAVE ~dir~ ~%dir%~ BEGIN
-			REPLACE_TEXTUALLY ~%LNL%~ ~~
-		END
-		OUTER_TEXT_SPRINT EVAL ~%var%~ ~%dir%~
-	END
-	DELETE + ~path.command~
-	PRINT ~PWD = %PWD%; HOME = %HOME%~
-<<<<<<<< .../EET.desktop
-[Desktop Entry]
-Encoding=UTF-8
-Value=1.0
-Type=Application
-Name=Enhanced Edition Trilogy
-GenericName=Enhanced Edition Trilogy
-Comment=Enhanced Edition Trilogy (EET)
-Icon=%PWD%/EET/docs/images/EET.ico
-Exec="%PWD%/start.sh" ""
-Categories=Game;
-Path=%PWD%
->>>>>>>>
-	COPY ~.../EET.desktop~ ~%HOME%~ EVALUATE_BUFFER*/
-
-//this code doesn't register shortcut for uninstallation
-<<<<<<<< .../shortcut.sh
-#!/bin/sh
-cat > $HOME/EET.desktop << TEETEE
-[Desktop Entry]
-Encoding=UTF-8
-Value=1.0
-Type=Application
-Name=Enhanced Edition Trilogy
-GenericName=Enhanced Edition Trilogy
-Comment=Enhanced Edition Trilogy (EET)
-Icon=$PWD/EET/docs/images/EET.ico
-Exec="$PWD/start.sh" ""
-Categories=Game;
-Path=$PWD
-TEETEE
->>>>>>>>
-	COPY + ~.../shortcut.sh~ ~shortcut.sh~
-	AT_NOW ~./shortcut.sh~
-	DELETE + ~shortcut.sh~
 END

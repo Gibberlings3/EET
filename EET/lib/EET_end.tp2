@@ -743,8 +743,8 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	AT_NOW ~del /f "%USER_DIRECTORY%\save\saves.tra"~ EXACT
 	AT_NOW ~setup-EET.exe --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%\save\saves.tra"~
 END ELSE BEGIN //osx, unix
-	AT_NOW ~rm -f %USER_DIRECTORY%/save/saves.tra~ EXACT
-	AT_NOW ~./setup-EET --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%/save/saves.tra"~
+	AT_NOW ~rm -f "%USER_DIRECTORY%/save/saves.tra"~ EXACT
+	AT_NOW ~./EET/weidu_%WEIDU_OS% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%/save/saves.tra"~
 END
 
 ACTION_IF FILE_EXISTS_IN_GAME ~add_spell.ids~ BEGIN
