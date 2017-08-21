@@ -2443,9 +2443,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 	END
 
 	PATCH_IF ("%fx_type%" = 218) BEGIN //Protection: Stoneskin
-		PATCH_IF ver = 2 BEGIN
-			SET off = special SPRINT res ~icon~ LPM EET_PCU_off_long
-		END
+		SET off = special SPRINT res ~icon~ LPM EET_PCU_off_long
 	END
 
 	//PATCH_IF ("%fx_type%" = 232) BEGIN //Cast Spell on Condition
@@ -2628,6 +2626,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 							SET param1 = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4)
 							SET param2 = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8)
 							SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x14) //Resource
+							SET special = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x2c) //Special
 							SET ver = 1
 							LPM EET_PCU_effects
 						END ELSE BEGIN //EFF v2
@@ -3144,6 +3143,7 @@ CO") BEGIN
 			SET param1 = ("%fx_off%"+0x30*cnt+0x4)
 			SET param2 = ("%fx_off%"+0x30*cnt+0x8)
 			SET offset = ("%fx_off%"+0x30*cnt+0x14) //Resource
+			SET special = ("%fx_off%"+0x30*cnt+0x2c) //Special
 			SET ver = 1
 			LPM EET_PCU_effects
 		END
@@ -3249,6 +3249,7 @@ CO") BEGIN
 			SET param1 = ("%fx_off%"+0x30*cnt+0x4)
 			SET param2 = ("%fx_off%"+0x30*cnt+0x8)
 			SET offset = ("%fx_off%"+0x30*cnt+0x14) //Resource
+			SET special = ("%fx_off%"+0x30*cnt+0x2c) //Special
 			SET ver = 1
 			LPM EET_PCU_effects
 		END
