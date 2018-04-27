@@ -3194,6 +3194,16 @@ THEN
     GiveItemCreate("AMUL27",Player1,1,0,0)
     Continue()
 END
+
+IF
+Global("TurnDay","AR4000",0)
+GlobalLT("Chapter","GLOBAL",20)
+Global("MoveChapter","ar4000",0)
+THEN
+RESPONSE #100
+SetGlobal("MoveChapter","ar4000",1)
+SetGlobal("Chapter","GLOBAL",20)
+END
 >>>>>>>>
 
 EXTEND_TOP ~AR4000.BCS~ ~.../AR4000-et.baf~
