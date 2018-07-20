@@ -1,6 +1,6 @@
 BACKUP ~EET/backup~
 AUTHOR ~K4thos (swit)~
-VERSION ~1.0 RC9.2~
+VERSION ~1.0 RC10~
 README ~EET/lang/%LANGUAGE%/readme-EET.html~ ~EET/readme-EET.html~
 
 LANGUAGE ~English~
@@ -120,6 +120,7 @@ OUTER_SPRINT log_remapped_itm ~~
 OUTER_SPRINT log_remapped_spl ~~
 OUTER_SPRINT log_remapped_splName ~~
 OUTER_SPRINT log_remapped_icon ~~
+OUTER_SPRINT log_remapped_splProt ~~
 
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	OUTER_SPRINT os_slash ~\~
@@ -846,7 +847,6 @@ COPY_EXISTING ~BGEE.LUA~ ~override~
 BUT_ONLY
 
 COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
-	//REPLACE_TEXTUALLY ~--{'sodcin0~ ~{'sodcin0~ //http://redmine.beamdog.com/issues/24733
 	REPLACE_TEXTUALLY ~'intro', 719, 779,~ ~'intro', 569, 629,~
 	REPLACE_TEXTUALLY ~'intro', 809, 869,~ ~'intro', 618, 668,~
 	REPLACE_TEXTUALLY ~'intro', 889, 959,~ ~'intro', 669, 741,~
@@ -861,14 +861,7 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 	SPRINT chapterBackgrounds_var ~~
 	SPRINT createQuest_var ~~
 	SPRINT createEntry_var ~~
-	//SPRINT portraits_var ~~ //check if this will be fixed in future: http://redmine.beamdog.com/issues/21516
-	SPRINT portraits_var ~	{'YANNER4', 1},
-	{'YANNER5', 1},
-	{'YANNER6', 1},
-	{'YANNER1', 2},
-	{'YANNER2', 2},
-	{'YANNER3', 2},
-	{'OHHEXX', 2},
+	SPRINT portraits_var ~	{'OHHEXX', 2},
 ~
 	SPRINT movies_var ~~
 	PATCH_INCLUDE ~%MOD_FOLDER%/lib/cheat_var.tph~ //check if adding these areas will be needed in future patches
@@ -1003,9 +996,11 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 %chapterBackgrounds_var%
 >>>>>>>>
 COPY_EXISTING ~bgee.lua~ ~override~
+	REPLACE_TEXTUALLY ~\(cheatAreasTutorial = {[%newline%]*{"\)AR0015\([^}]+},[%newline%]*{"\)AR0016\([^}]+},[%newline%]*{"\)AR0017\([^}]+},[%newline%]*{"\)AR0018~ ~\1TU0015\2TU0016\3TU0017\4TU0018~
 	REPLACE_TEXTUALLY ~},?[%newline%]*\(}[%newline%]*movies =\)~ ~},%LNL%%portraits_var%\1~
 	REPLACE_TEXTUALLY ~\(movies[ %TAB%]*=[%newline%]*{\)~ ~\1%LNL%%movies_var%~
-	REPLACE_TEXTUALLY ~\(cheatAreas[ %TAB%]*=[%newline%]*{\)~ ~\1%LNL%%cheat_var%~
+	REPLACE_TEXTUALLY ~\(cheatAreas[ %TAB%]*=[%newline%]*{\)~ ~\1%LNL%%cheat_var%	--SoA Areas~
+	REPLACE_TEXTUALLY ~}\([%newline%]*\)\(cheatAreasArena = {\)~ ~%cheat_var_tob%}\1cheatAreasArena_BG1 = {%cheat_var_bp1%}\1\2~
 	REPLACE_TEXTUALLY ~\(createEntry.+)\)[%newline%]*end~ ~\1%LNL%%createQuest_var%%createEntry_var%end~
 	APPEND_FILE ~.../bgee.lua~ EVALUATE_BUFFER
 BUT_ONLY
@@ -1232,6 +1227,7 @@ PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_icon BEGIN%LNL%%log_remapped_icon%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN%LNL%%log_remapped_splProt%END~
 
 COPY + ~.../blank.txt~ ~%MOD_FOLDER%/temp/new_vars.tph~
 APPEND_OUTER + ~%MOD_FOLDER%/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN%LNL%%log_remapped_sum%END%LNL%
@@ -1247,7 +1243,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN%LNL%%log_remapped_eff%END%LNL
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL%
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%
-ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_icon BEGIN%LNL%%log_remapped_icon%END%LNL%~
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_icon BEGIN%LNL%%log_remapped_icon%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN%LNL%%log_remapped_splProt%END%LNL%~
 
 COPY ~%MOD_FOLDER%/lib/pcu_dict.tph~ ~%MOD_FOLDER%/lib~
 	APPEND_FILE ~%MOD_FOLDER%/temp/new_vars.tph~
@@ -1359,6 +1356,10 @@ COPY + ~%MOD_FOLDER%/temp/2da/DPALACE.2DA~ ~%MOD_FOLDER%/temp/2da~
 	SET_2DA_ENTRY 3 2 3 "%str%"
 	PATCH_IF (~%SOURCE_RES%~ STR_EQ ~DPALACE~) BEGIN
 		SET_2DA_ENTRY 8 1 2 "135" //SONG
+	END ELSE PATCH_IF (~%SOURCE_RES%~ STR_EQ ~ISLON~) BEGIN
+		SET_2DA_ENTRY 1 0 1 ~ARRIVEA~ //MOS
+	END ELSE PATCH_IF (~%SOURCE_RES%~ STR_EQ ~ISLOFF~) BEGIN
+		SET_2DA_ENTRY 1 0 1 ~LEAVEA~ //MOS
 	END
 	PRETTY_PRINT_2DA
 
@@ -2424,35 +2425,39 @@ INCLUDE ~%MOD_FOLDER%/lib/bgee_fixpack.tph~
 ///// Exe patching                                     \\\\\
 /////                                                  \\\\\
 
+OUTER_SET found_exe = 0
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-	OUTER_SPRINT exec ~Baldur.exe~
+	ACTION_IF FILE_EXISTS ~Baldur.exe~ BEGIN
+		COPY ~Baldur.exe~ ~Baldur.exe~
+		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua Baldur.exe~
+		OUTER_SET found_exe = 1
+	END
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 	ACTION_IF FILE_EXISTS ~BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~ BEGIN
 		OUTER_SPRINT exec ~./BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~
 	END ELSE ACTION_IF FILE_EXISTS ~../MacOS/BaldursGateIIEnhancedEdition~ BEGIN
 		OUTER_SPRINT exec ~../MacOS/BaldursGateIIEnhancedEdition~
-	END ELSE BEGIN
-		FAIL ~Baldur's Gate II executable not found~
+	END
+	ACTION_IF VARIABLE_IS_SET exec BEGIN
+		COPY ~%exec%~ ~%exec%~
+		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua %exec%~
+		OUTER_SET found_exe = 1
 	END
 END ELSE BEGIN //unix
 	ACTION_IF FILE_EXISTS ~BaldursGateII~ BEGIN
-		OUTER_SPRINT exec ~./BaldursGateII~
-	END ELSE BEGIN
-		FAIL ~Baldur's Gate II executable not found~
+		COPY ~BaldursGateII~ ~BaldursGateII~
+		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua ./BaldursGateII~
+		OUTER_SET found_exe = 1
+	END
+	ACTION_IF FILE_EXISTS ~BaldursGateII64~ BEGIN
+		COPY ~BaldursGateII64~ ~BaldursGateII64~
+		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua ./BaldursGateII64~
+		OUTER_SET found_exe = 1
 	END
 END
-
-COPY ~%exec%~ ~%exec%~
-	REPLACE_TEXTUALLY ~NITEDAY~ ~~ (7)
-	REPLACE_TEXTUALLY ~DAYNITE~ ~~ (7)
-	REPLACE_TEXTUALLY ~SPIN649~ ~~ (7)
-	REPLACE_TEXTUALLY ~SPIN822~ ~~ (7)
-	//change default campaign
-	REPLACE_TEXTUALLY ~SOD~ ~BG1~
-	REPLACE_TEXTUALLY ~Never Show Nuisance BG1~ ~Never Show Nuisance SOD~
-	REPLACE_TEXTUALLY ~Edition/BG1save~ ~Edition/sodsave~
-	REPLACE_TEXTUALLY ~usingBG1StartMenu~ ~usingSODStartMenu~
-BUT_ONLY
+ACTION_IF found_exe = 0 BEGIN
+	FAIL ~Baldur's Gate II executable not found~
+END
 
 /////                                                  \\\\\
 ///// Biffing                                          \\\\\

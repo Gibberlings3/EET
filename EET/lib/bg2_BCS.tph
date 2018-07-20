@@ -172,24 +172,26 @@ BUT_ONLY
 <<<<<<<< .../oBALDUR.baf
 IF
   StoryModeOn()
-  Exists(Familiar)
+  InMyArea(Familiar)
   !CheckSpellState(Familiar,STORY_MODE)
 THEN
   RESPONSE #100
     SetInterrupt(FALSE)
-    ReallyForceSpellDeadRES("OHSMODE4",Familiar)
+    ApplySpellRES("OHSMODE4",Familiar)
     SetInterrupt(TRUE)
+    Continue()
 END
 
 IF
   !StoryModeOn()
-  Exists(Familiar)
+  InMyArea(Familiar)
   CheckSpellState(Familiar,STORY_MODE)
 THEN
   RESPONSE #100
     SetInterrupt(FALSE)
-    ReallyForceSpellDeadRES("OHSMODE3",Familiar)
+    ApplySpellRES("OHSMODE3",Familiar)
     SetInterrupt(TRUE)
+    Continue()
 END
 >>>>>>>> 
 
@@ -449,7 +451,10 @@ THEN
   RESPONSE #100
     Wait(2)
     SetGlobal("DruidADSpawn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("DRUIDAD",Player1,0,0,0) // Druid
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("DRUIDAD","bdoffscr",0,0,0)  // Druid
 END
 
 IF
@@ -470,7 +475,10 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("DruidADSpawn","GLOBAL",2)
-    CreateCreatureObjectOffScreen("DRUIDAD",Player1,0,0,0) // Druid
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("DRUIDAD","bdoffscr",0,0,0)  // Druid
 END
 
 IF
@@ -573,12 +581,30 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("SpawnTanadv","GLOBAL",1)
-    CreateCreatureObjectOffScreen("TANADV01",Player1,0,0,0) // Strachan Fireblade
-    CreateCreatureObjectOffScreen("TANADV02",Player1,0,0,0) // Adventurer
-    CreateCreatureObjectOffScreen("TANADV03",Player1,0,0,0) // Adventurer
-    CreateCreatureObjectOffScreen("TANADV04",Player1,0,0,0) // Adventurer
-    CreateCreatureObjectOffScreen("TANADV05",Player1,0,0,0) // Adventurer
-    CreateCreatureObjectOffScreen("TANADV06",Player1,0,0,0) // Dunbar the Fifth
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("TANADV01","bdoffscr",0,0,0)  // Strachan Fireblade
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("TANADV02","bdoffscr",0,0,0)  // Adventurer
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("TANADV03","bdoffscr",0,0,0)  // Adventurer
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("TANADV04","bdoffscr",0,0,0)  // Adventurer
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("TANADV05","bdoffscr",0,0,0)  // Adventurer
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("TANADV06","bdoffscr",0,0,0)  // Dunbar the Fifth
 END
 
 IF
@@ -621,7 +647,10 @@ THEN
   RESPONSE #100
     SetGlobal("DelonSpawn","GLOBAL",1)
     SetGlobal("OgronAttack","GLOBAL",1)
-    CreateCreatureObjectOffScreen("DELON",Player1,0,0,0) // Delon
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("DELON","bdoffscr",0,0,0)  // Delon
     ActionOverride("delon",StartDialogueNoSet(Player1))
 END
 
@@ -636,7 +665,10 @@ THEN
   RESPONSE #100
     SetGlobal("DelonSpawn","GLOBAL",2)
     SetGlobal("UmarPlot","GLOBAL",1)
-    CreateCreatureObjectOffScreen("DELON",Player1,0,0,0) // Delon
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("DELON","bdoffscr",0,0,0)  // Delon
     ActionOverride("delon",StartDialogueNoSet(Player1))
 END
 
@@ -657,7 +689,10 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("MeckComesFirst","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -677,7 +712,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",4)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -697,7 +735,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",7)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -717,7 +758,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",10)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -737,7 +781,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",13)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -757,7 +804,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",17)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -776,7 +826,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",40)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -796,7 +849,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",45)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -816,7 +872,10 @@ THEN
   RESPONSE #100
     SetGlobal("BardPlot1","GLOBAL",51)
     SetGlobal("BardPlotOn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("bdgoph01",Player1,0,0,0) // Meck
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("bdgoph01","bdoffscr",0,0,0)  // Meck
 END
 
 IF
@@ -881,7 +940,10 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("KPRunnerSpawn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("KPRUNN01","bdoffscr",0,0,0)  // Keep Messenger
 END
 
 IF
@@ -902,7 +964,10 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("KPRunnerSpawn","GLOBAL",1)
-    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("KPRUNN01","bdoffscr",0,0,0)  // Keep Messenger
 END
 
 IF
@@ -922,7 +987,10 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("KPRunnerSpawn","GLOBAL",2)
-    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("KPRUNN01","bdoffscr",0,0,0)  // Keep Messenger
 END
 
 IF
@@ -942,7 +1010,10 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("KPRunnerSpawn","GLOBAL",3)
-    CreateCreatureObjectOffScreen("KPRUNN01",Player1,0,0,0) // Keep Messenger
+    CreateCreatureObject("bdoffscr",Player1,0,0,0)  // No such index
+    ApplySpellRES("bdoffscr","bdoffscr")  // No such index
+    SmallWait(1)
+    CreateCreatureObject("KPRUNN01","bdoffscr",0,0,0)  // Keep Messenger
 END
 
 IF
@@ -3073,6 +3144,14 @@ BUT_ONLY
 
 COPY_EXISTING ~AR4000.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~OnCreation()[%newline%]*\(Global("TurnDay","AR4000",0)\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 		SPRINT textToReplace ~IF[%newline%]*InParty(".+")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches >= 21) BEGIN
@@ -3714,22 +3793,6 @@ COPY_EXISTING ~DEMSUC.BCS~ ~override~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
-//ETTERCAP.BCS
-COPY_EXISTING ~ETTERCAP.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~See(NearestEnemyOf(Myself))[%newline%]THEN~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~See(NearestEnemyOf(Myself))
-  Delay(12)
-THEN~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~

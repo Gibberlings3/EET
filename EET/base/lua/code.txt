@@ -1,3 +1,9 @@
+OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
+OUTER_SPRINT slash ~/~
+OUTER_SPRINT quote ~"~
+OUTER_SPRINT tilde "~"
+
+COPY_EXISTING ~UI.MENU~ ~override/UI_SoD.MENU~
 //add _sod to SoD font declarations
 REPLACE_TEXTUALLY ~text[%TAB% ]+style[%TAB% "']*([a-zA-Z0-9_]+)[%TAB% "']*~ ~text style '\1_sod'~
 
@@ -36,7 +42,12 @@ REPLACE_TEXTUALLY ~'SPELL_CAST_LABEL',24432,~ ~'SPELL_CAST_LABEL',31872,~
 REPLACE_TEXTUALLY ~'TRAP_FOUND_LABEL',24433,~ ~'TRAP_FOUND_LABEL',58171,~
 REPLACE_TEXTUALLY ~'CENTER_MEMBER_LABEL',24434,~ ~'CENTER_MEMBER_LABEL',10571,~
 
-//BG2:EE GUI icon placement correction
+//REPLACE_TEXTUALLY ~if not (key == 0) then[%newline%]return ~ ~if not (key == 0) then
+//		return 102621~
+//REPLACE_TEXTUALLY ~createCharGenderHelp = ~ ~createCharGenderHelp = 17236~
+
+
+COPY_EXISTING ~UI.MENU~ ~override/UI_BG2.MENU~
 REPLACE_TEXTUALLY ~area 112 294 262 74~ ~area 113 296 262 74~
 REPLACE_TEXTUALLY ~area 649 300 266 74~ ~area 645 298 266 74~
 REPLACE_TEXTUALLY ~area 116 462 262 76~ ~area 114 461 262 76~

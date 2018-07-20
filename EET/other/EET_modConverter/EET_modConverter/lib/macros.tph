@@ -89,17 +89,29 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_ipro~ BEGIN
 END
 
 DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
-	READ_BYTE off ~byte0~
-	READ_BYTE (off+1) ~byte1~
-	READ_BYTE (off+2) ~source~
-	READ_BYTE (off+3) ~byte3~
+	PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
+		SET byte0 = 0
+		SET byte1 = 0
+		READ_BYTE off ~source~
+		READ_BYTE (off+1) ~byte3~
+	END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
+		READ_BYTE off ~byte0~
+		READ_BYTE (off+1) ~byte1~
+		READ_BYTE (off+2) ~source~
+		READ_BYTE (off+3) ~byte3~
+	END
 	PATCH_IF ("%byte0%" = 0) AND ("%byte1%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
 		TEXT_SPRINT dest $remapped_kit(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
-			WRITE_SHORT off 0
-			WRITE_BYTE (off+2) ~%dest%~
-			WRITE_BYTE (off+3) 0x40
+			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
+				WRITE_SHORT off 0
+				WRITE_BYTE (off+2) ~%dest%~
+				WRITE_BYTE (off+3) 0x40
+			END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
+				WRITE_BYTE off ~%dest%~
+				WRITE_BYTE (off+1) 0x40
+			END
 			SPRINT str ~Patching %SOURCE_FILESPEC%: KIT = %source% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)
 			PATCH_PRINT ~%str%~
@@ -204,6 +216,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"ATTACKREEVALUATE" => "_dv1_" //AttackReevaluate
 	"BACKSTAB" => "_dv1_" //BackStab
 	"BASHDOOR" => "_door1_" //BashDoor
+	"BITSET" => "_var1_" //BitSet
+	"BITCLEAR" => "_var1_" //BitClear
 	"CALLLIGHTNING" => "_dv1_" //CallLightning
 	"CALM" => "_dv1_" //Calm
 	"CHANGEAISCRIPT" => "_bcs1_" //ChangeAIScript
@@ -263,8 +277,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"DISPLAYSTRINGNONAME" => "_dv1_tra2_" //DisplayStringNoName
 	"DISPLAYSTRINGNONAMEDLG" => "_dv1_tra2_" //DisplayStringNoNameDlg
 	"DISPLAYSTRINGNONAMEHEAD" => "_dv1_tra2_" //DisplayStringNoNameHead
-	"DISPLAYSTRINGPOINT" => "_tra1_" //DisplayStringPoint
-	"DISPLAYSTRINGPOINTLOG" => "_tra1_" //DisplayStringPointLog
+	"DISPLAYSTRINGPOINT" => "_tra2_" //DisplayStringPoint
+	"DISPLAYSTRINGPOINTLOG" => "_tra2_" //DisplayStringPointLog
 	"DISPLAYSTRINGWAIT" => "_dv1_tra2_" //DisplayStringWait
 	"DROPITEM" => "_itm1_" //DropItem
 	"EQUIPITEM" => "_itm1_" //EquipItem
@@ -297,7 +311,9 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"GROUPATTACK" => "_dv1_" //GroupAttack
 	"HIDEAREAONMAP" => "_are1_" //HideAreaOnMap
 	"INCREMENTCHAPTER" => "_2da1_" //IncrementChapter
-	"INCREMENTGLOBAL" => "_var1_are2_" //IncrementGlobal
+	"INCREMENTGLOBAL" => "_var1_are2_chapter3_" //IncrementGlobal
+	"INCREMENTGLOBALONCE" => "_var1_are2_var3_are4_" //IncrementGlobalOnce
+	"INCREMENTGLOBALONCEEX" => "_var1_var2_" //IncrementGlobalOnceEx
 	"INTERACT" => "_dv1_" //Interact
 	"JUMPTOOBJECT" => "_dv1_door1_" //JumpToObject
 	"KILL" => "_dv1_" //Kill
@@ -332,6 +348,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"PLAYERDIALOGUE" => "_dv1_" //PlayerDialogue
 	"PLAYSONG" => "_mus1_" //PlaySong
 	"PLAYSOUND" => "_wav1_" //PlaySound
+	"PLAYSOUNDNOTRANGED" => "_wav1_" //PlaySoundNotRanged
+	"PLAYSOUNDTHROUGHVOICE" => "_wav1_" //PlaySoundThroughVoice
 	"POLYMORPHCOPY" => "_dv1_" //PolymorphCopy
 	"POLYMORPHCOPYBASE" => "_dv1_" //PolymorphCopyBase
 	"PROTECTOBJECT" => "_dv1_door1_" //ProtectObject
@@ -433,6 +451,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"AREACHECKOBJECT" => "_are1_dv2_door2_" //AreaCheckObject
 	"ATTACKEDBY" => "_dv1_" //AttackedBy
 	"BEENINPARTY" => "_dv1_" //BeenInParty
+	"BITCHECK" => "_var1_are2_" //BitCheck
 	"CANTURN" => "_dv1_" //CanTurn
 	"CHARNAME" => "_dv1_dv2_" //CharName
 	"CHECKITEMSLOT" => "_dv1_itm2_" //CheckItemSlot
@@ -565,6 +584,9 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"PERSONALSPACEDISTANCE" => "_dv1_door1_" //PersonalSpaceDistance
 	"PICKLOCKFAILED" => "_dv1_door1_" //PickLockFailed
 	"PICKPOCKETFAILED" => "_dv1_" //PickPocketFailed
+	"PROFICIENCY" => "_dv1_" //Proficiency
+	"PROFICIENCYGT" => "_dv1_" //ProficiencyGT
+	"PROFICIENCYLT" => "_dv1_" //ProficiencyLT
 	"RACE" => "_dv1_race2_" //Race
 	"RANGE" => "_dv1_" //Range
 	"REACTION" => "_dv1_" //Reaction
@@ -809,18 +831,25 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
-	PATCH_IF ("%fx_type%" = 55) //Death: Kill Creature Type
-	OR ("%fx_type%" = 100) //Protection: from Creature Type
-	OR ("%fx_type%" = 109) //State: Hold
-	OR ("%fx_type%" = 175) //State: Hold
-	OR ("%fx_type%" = 177) //Use EFF File
-	OR ("%fx_type%" = 178) //Spell Effect: THAC0 vs. Creature Type Modifier
-	OR ("%fx_type%" = 179) //Spell Effect: Damage vs. Creature Type Modifier
-	OR ("%fx_type%" = 185) //State: Hold
-	OR ("%fx_type%" = 219) //Stat: AC vs. Creature Type Modifier
-	OR ("%fx_type%" = 238) //Death: Disintegrate
-	OR ("%fx_type%" = 283) //Use EFF File (Cursed)
-	OR ("%fx_type%" = 319) //Usability: Item Usability
+	PATCH_IF ("%fx_type%" = 39) //Sleep
+	OR ("%fx_type%" = 213) //Maze
+	OR ("%fx_type%" = 218) //Stoneskin effect
+	BEGIN
+		SET off = special SPRINT res ~icon~ LPM EET_PCU_off_long
+	END
+
+	PATCH_IF ("%fx_type%" = 55) //Slay
+	OR ("%fx_type%" = 100) //Protection from creature type
+	OR ("%fx_type%" = 109) //Paralyze
+	OR ("%fx_type%" = 175) //Hold creature
+	OR ("%fx_type%" = 177) //Use EFF file
+	OR ("%fx_type%" = 178) //THAC0 vs. type bonus
+	OR ("%fx_type%" = 179) //Damage vs. type bonus
+	OR ("%fx_type%" = 185) //Hold creature 2
+	OR ("%fx_type%" = 219) //Attack roll penalty
+	OR ("%fx_type%" = 238) //Disintegrate
+	OR ("%fx_type%" = 283) //Use EFF file as curse
+	OR ("%fx_type%" = 319) //Restrict item
 	OR ("%fx_type%" = 344) //Enchantment vs. creature type
 	BEGIN
 		READ_LONG param2 "ids_file"
@@ -831,11 +860,11 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
 			SET off = param1 SPRINT res ~spec~ LPM EET_PCU_off_long
 		END ELSE PATCH_IF (ids_file = 9) BEGIN //Kit.ids
-			SET off = param1 LPM EET_PCU_off_kit
+			SET off = param1 SPRINT read_len ~l~ LPM EET_PCU_off_kit
 		END
 	END
 
-	PATCH_IF ("%fx_type%" = 67) BEGIN //Summon Creature
+	PATCH_IF ("%fx_type%" = 67) BEGIN //Summon creature
 		SET off = offset SPRINT res ~cre~ LPM EET_PCU_off_res
 		PATCH_IF ver = 2 BEGIN
 			SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
@@ -843,14 +872,26 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 	END
 
 	PATCH_IF ("%fx_type%" = 68) //Unsummon creature
-	OR ("%fx_type%" = 215) //Play 3D Effect
-	OR ("%fx_type%" = 296) //Protection from Specific Animation
+	OR ("%fx_type%" = 153) //Sanctuary
+	OR ("%fx_type%" = 154) //Entangle overlay
+	OR ("%fx_type%" = 155) //Minor globe overlay
+	OR ("%fx_type%" = 156) //Protection from normal missiles overlay
+	OR ("%fx_type%" = 157) //Web effect
+	OR ("%fx_type%" = 158) //Grease overlay
+	OR ("%fx_type%" = 215) //Play visual effect
+	OR ("%fx_type%" = 296) //Immunity to specific animation
 	OR ("%fx_type%" = 336) //Seven eyes overlay
+	OR ("%fx_type%" = 368) //Effect from Opcode 375
+	OR ("%fx_type%" = 369) //Play BAM file (single/dual)
+	OR ("%fx_type%" = 370) //Play BAM file
+	OR ("%fx_type%" = 371) //Play BAM file 2
+	OR ("%fx_type%" = 372) //Play BAM file 3
+	OR ("%fx_type%" = 373) //Play BAM file 4
 	BEGIN
 		SET off = offset SPRINT res ~bam~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 72) BEGIN //IDS: Set IDS State
+	PATCH_IF ("%fx_type%" = 72) BEGIN //Change AI type
 		READ_LONG param2 "ids_file"
 		PATCH_IF (ids_file = 2) BEGIN //Race.ids
 			SET off = param1 SPRINT res ~race~ LPM EET_PCU_off_long
@@ -861,105 +902,113 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		END
 	END
 
-	PATCH_IF ("%fx_type%" = 82) BEGIN //Set AI Script
+	PATCH_IF ("%fx_type%" = 82) BEGIN //Set AI script
 		SET off = offset SPRINT res ~bcs~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 83) //Charm Specific Creature
-	OR ("%fx_type%" = 197) //Spell: Bounce Projectile
-	OR ("%fx_type%" = 327) //Graphics: Icewind Visual Spell Hit (plays sound)
+	PATCH_IF ("%fx_type%" = 83) //Immunity to projectile
+	OR ("%fx_type%" = 197) //Physical mirror
+	OR ("%fx_type%" = 327) //Show visual effect
+	OR ("%fx_type%" = 339) //Alter visual animation effect
 	BEGIN
 		SET off = param2 SPRINT read_len ~l~ SET sub = 1 LPM EET_PCU_off_ipro
 	END
 
-	PATCH_IF ("%fx_type%" = 107) BEGIN //Change Portrait
+	PATCH_IF ("%fx_type%" = 107) BEGIN //Change portrait
 		SET off = offset SPRINT res ~bmp~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 111) //Create Item in Magical Weapon Slot
-	OR ("%fx_type%" = 112) //Remove Item
-	OR ("%fx_type%" = 122) //Create Inventory Item
-	OR ("%fx_type%" = 123) //Remove Inventory Item
-	OR ("%fx_type%" = 143) //Create Item in Slot
-	OR ("%fx_type%" = 180) //Cannot Use Item
-	OR ("%fx_type%" = 255) //Create Inventory Item (days)
+	PATCH_IF ("%fx_type%" = 111) //Create weapon
+	OR ("%fx_type%" = 112) //Remove item
+	OR ("%fx_type%" = 122) //Create inventory item
+	OR ("%fx_type%" = 123) //Remove inventory item
+	OR ("%fx_type%" = 143) //Create item in slot
+	OR ("%fx_type%" = 180) //Disallow item
+	OR ("%fx_type%" = 255) //Create item (days)
 	BEGIN
 		SET off = offset SPRINT res ~itm~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 127) BEGIN //Monster Summoning
+	PATCH_IF ("%fx_type%" = 127) BEGIN //Summon monsters
 		SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 		PATCH_IF ver = 2 BEGIN
 			SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
 		END
 	END
 
-	PATCH_IF ("%fx_type%" = 135) //Polymorph into Specific
-	OR ("%fx_type%" = 151) //Replace Creature
-	OR ("%fx_type%" = 168) //Remove Creature
+	PATCH_IF ("%fx_type%" = 135) //Polymorph
+	OR ("%fx_type%" = 151) //Replace self
+	OR ("%fx_type%" = 168) //Remove creature
 	BEGIN
 		SET off = offset SPRINT res ~cre~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 142) //Display Special Effect Icon
-	OR ("%fx_type%" = 169) //Prevent Special Effect Icon
-	OR ("%fx_type%" = 240) //Remove Special Effect Icon
+	PATCH_IF ("%fx_type%" = 140) BEGIN //Casting glow
+		SET off = param1 SPRINT read_len ~l~ SET sub = 1 LPM EET_PCU_off_ipro
+	END
+
+	PATCH_IF ("%fx_type%" = 142) //Display portrait icon
+	OR ("%fx_type%" = 169) //Prevent portrait icon
+	OR ("%fx_type%" = 240) //Remove portrait icon
 	BEGIN
 		SET off = param2 SPRINT res ~icon~ LPM EET_PCU_off_long
 	END
 
-	PATCH_IF ("%fx_type%" = 146) //Cast Spell (at Creature)
-	OR ("%fx_type%" = 147) //Learn Spell
-	OR ("%fx_type%" = 148) //Cast Spell (at Point)
-	OR ("%fx_type%" = 171) //Give Innate Ability
-	OR ("%fx_type%" = 172) //Remove Spell
-	OR ("%fx_type%" = 183) //Apply Effect Itemtype (SPL ResRef?)
-	OR ("%fx_type%" = 206) //Protection from Spell
-	OR ("%fx_type%" = 207) //Bounce Specified Spell
-	OR ("%fx_type%" = 232) //Cast Spell on Condition
-	OR ("%fx_type%" = 251) //Change Bard Song Effect
-	OR ("%fx_type%" = 252) //Set Trap
-	OR ("%fx_type%" = 258) //Activate spell sequencer
-	OR ("%fx_type%" = 266) //Remove Protection from Spell
-	OR ("%fx_type%" = 313) //High-Level Ability Denotation
-	OR ("%fx_type%" = 318) //Immunity to Spell
-	OR ("%fx_type%" = 321) //Effects specified by Resource
-	OR ("%fx_type%" = 324) //Immunity to spell and message
+	PATCH_IF ("%fx_type%" = 146) //Cast spell
+	OR ("%fx_type%" = 147) //Learn spell
+	OR ("%fx_type%" = 148) //Cast spell at point
+	OR ("%fx_type%" = 171) //Give innate ability
+	OR ("%fx_type%" = 172) //Remove spell
+	OR ("%fx_type%" = 200) //Spell turning
+	OR ("%fx_type%" = 201) //Spell turning
+	OR ("%fx_type%" = 206) //Protection from spell
+	OR ("%fx_type%" = 207) //Reflect specified spell
+	OR ("%fx_type%" = 223) //Spell school deflection
+	OR ("%fx_type%" = 226) //Spell type deflection
+	OR ("%fx_type%" = 227) //Spell school turning
+	OR ("%fx_type%" = 228) //Spell type turning
+	OR ("%fx_type%" = 232) //Cast spell on condition
+	OR ("%fx_type%" = 251) //Change bard song
+	OR ("%fx_type%" = 252) //Set trap
+	OR ("%fx_type%" = 259) //Spell trap
+	OR ("%fx_type%" = 266) //Remove protection from spell
+	OR ("%fx_type%" = 313) //High-level ability
 	OR ("%fx_type%" = 326) //Apply effects list
-	OR ("%fx_type%" = 333) //Static Charge
-	OR ("%fx_type%" = 335) //Seven Eyes
-	OR ("%fx_type%" = 340) //Change Backstab Effect
-	OR ("%fx_type%" = 341) //Change Critical Hit Effect
+	OR ("%fx_type%" = 333) //Static charge
+	OR ("%fx_type%" = 335) //Seven eyes
+	OR ("%fx_type%" = 340) //Backstab hit effect
+	OR ("%fx_type%" = 341) //Critical hit effect
 	OR ("%fx_type%" = 361) //Cast spell on critical miss
-	OR ("%fx_type%" = 366) //Spell: Apply Spell On Move
+	OR ("%fx_type%" = 366) //Apply spell on movement
 	BEGIN
 		SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 152) BEGIN //Play Movie
+	PATCH_IF ("%fx_type%" = 152) BEGIN //Play movie
 		SET off = offset SPRINT res ~mve~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 174) BEGIN //Play Sound
+	PATCH_IF ("%fx_type%" = 174) BEGIN //Play sound
 		SET off = offset SPRINT res ~wav~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 177) //Use EFF File
-	OR ("%fx_type%" = 272) //Apply Repeating EFF
-	OR ("%fx_type%" = 283) //Use EFF File (Cursed)
-	OR ("%fx_type%" = 248) //Set Melee Effect
-	OR ("%fx_type%" = 249) //Set Ranged Effect
+	PATCH_IF ("%fx_type%" = 177) //Use EFF file
+	OR ("%fx_type%" = 183) //Use EFF file while on type
+	OR ("%fx_type%" = 248) //Melee hit effect
+	OR ("%fx_type%" = 249) //Ranged hit effect
+	OR ("%fx_type%" = 272) //Use EFF file on condition
+	OR ("%fx_type%" = 283) //Use EFF file as curse
 	BEGIN
 		SET off = offset SPRINT res ~eff~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 186) BEGIN //MoveToArea
+	PATCH_IF ("%fx_type%" = 186) BEGIN //Move creature
 		SET off = offset SPRINT res ~are~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 187) //Store Local Variable
-	OR ("%fx_type%" = 265) //Modify Global Variable
-	OR ("%fx_type%" = 309) //Modify Local Variable
+	PATCH_IF ("%fx_type%" = 187) //Set local variable
+	OR ("%fx_type%" = 265) //Set global variable
+	OR ("%fx_type%" = 309) //Set local variable
 	BEGIN
 		//PATCH_IF ver = 2 BEGIN
 		//	READ_ASCII offset "str1" (8) NULL
@@ -971,18 +1020,11 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		SET off = offset SPRINT res ~var~ LPM EET_PCU_off_res
 	END
 
-	PATCH_IF ("%fx_type%" = 214) BEGIN //Select Spell
+	PATCH_IF ("%fx_type%" = 214) //Select spell
+	OR ("%fx_type%" = 273) //Zone of sweet air
+	BEGIN
 		SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 	END
-
-	PATCH_IF ("%fx_type%" = 218) BEGIN //Protection: Stoneskin
-		PATCH_IF ver = 2 BEGIN
-			SET off = special SPRINT res ~icon~ LPM EET_PCU_off_long
-		END
-	END
-
-	//PATCH_IF ("%fx_type%" = 232) BEGIN //Cast Spell on Condition
-	//END
 
 	PATCH_IF ("%fx_type%" = 256) BEGIN //Spell sequencer
 		SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
@@ -992,28 +1034,25 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		END
 	END
 
-	PATCH_IF ("%fx_type%" = 318) //Protection: Immunity to Spell
-	OR ("%fx_type%" = 324) //Protection: Immunity to Spell and Message
-	OR ("%fx_type%" = 326) //Add Effects List
+	PATCH_IF ("%fx_type%" = 258) //Activate spell sequencer
+	OR ("%fx_type%" = 260) //Activate spell sequencer at point
+	OR ("%fx_type%" = 318) //Protection from spell
+	OR ("%fx_type%" = 321) //Remove effects by resource
+	OR ("%fx_type%" = 324) //Immunity to spell and message
 	BEGIN
-		READ_LONG param2 "ids_file"
-		PATCH_IF (ids_file = 104) BEGIN //Race.ids
-			SET off = param1 SPRINT res ~race~ LPM EET_PCU_off_long
-		END ELSE PATCH_IF (ids_file = 105) BEGIN //Class.ids
-			SET off = param1 SPRINT res ~class~ LPM EET_PCU_off_long
-		END ELSE PATCH_IF (ids_file = 106) BEGIN //Specific.ids
-			SET off = param1 SPRINT res ~spec~ LPM EET_PCU_off_long
+		READ_ASCII offset "source" (8) NULL
+		SET off = offset SPRINT res ~itm~ LPM EET_PCU_off_res
+		READ_ASCII offset "dest" (8) NULL
+		PATCH_IF ~%source%~ STRING_EQUAL_CASE ~%dest%~ BEGIN
+			SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
 		END
 	END
 
-	PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
-		READ_LONG param2 "ids_target"
-		PATCH_IF (ids_target = 11) BEGIN //Actor's script name
-			SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
-		END
-	END
-
-	PATCH_IF ("%fx_type%" = 324) BEGIN //Protection: Immunity Spell and Message
+	PATCH_IF ("%fx_type%" = 318) //Protection from spell
+	OR ("%fx_type%" = 324) //Immunity to spell and message
+	OR ("%fx_type%" = 326) //Apply effects list
+	BEGIN
+		SET off = param1 SPRINT res ~splProt~ LPM EET_PCU_off_long
 		READ_LONG param2 "ids_file"
 		PATCH_IF (ids_file = 104) OR (ids_file = 114) BEGIN //Race.ids
 			SET off = param1 SPRINT res ~race~ LPM EET_PCU_off_long
@@ -1021,12 +1060,19 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 			SET off = param1 SPRINT res ~class~ LPM EET_PCU_off_long
 		END ELSE PATCH_IF (ids_file = 106) OR (ids_file = 116) BEGIN //Specific.ids
 			SET off = param1 SPRINT res ~spec~ LPM EET_PCU_off_long
-		END ELSE PATCH_IF (ids_file = 109) OR (ids_file = 118) BEGIN //Kit.ids
-			SET off = param1 LPM EET_PCU_off_kit
+		END ELSE PATCH_IF (ids_file = 109) BEGIN //Kit.ids
+			SET off = param1 SPRINT read_len ~l~ LPM EET_PCU_off_kit
 		END
 	END
 
-	PATCH_IF ("%fx_type%" = 331) BEGIN //Random Monster Summoning
+	PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
+		READ_LONG param2 "ids_target"
+		PATCH_IF (ids_target = 11) BEGIN //Actor's script name
+			SET off = offset SPRINT res ~dv~ LPM EET_PCU_off_res
+		END
+	END
+
+	PATCH_IF ("%fx_type%" = 331) BEGIN //Summon creatures 2
 		SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 		PATCH_IF ver = 2 BEGIN
 			SET off = offset2 SPRINT res ~bam~ LPM EET_PCU_off_res
@@ -1096,7 +1142,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 					//0x241 racial enemy number
 					SET off = ("%actors_emb_off%"+0x241) SPRINT res ~race~ LPM EET_PCU_off_byte
 					//0x244 kit internal number
-					SET off = ("%actors_emb_off%"+0x244) LPM EET_PCU_off_kit
+					SET off = ("%actors_emb_off%"+0x244) SPRINT read_len ~l~ LPM EET_PCU_off_kit
 					//0x248 override BCS resref
 					SET off = ("%actors_emb_off%"+0x248) SPRINT res ~bcs~ LPM EET_PCU_off_res
 					//0x250 class BCS resref
@@ -1174,6 +1220,8 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 							LPM EET_PCU_effects
 							//0x8c source spell SPL resref
 							SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x8c) SPRINT res ~spl~ LPM EET_PCU_off_res
+							//0x98 impact projectile
+							SET off = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x98) SPRINT read_len ~l~ SET sub = 1 LPM EET_PCU_off_ipro
 						END
 					END
 				END
@@ -1471,7 +1519,7 @@ CO") BEGIN
 			//0x241 racial enemy number
 			SET off = ("%cre_struct_off%"+0x241) SPRINT res ~race~ LPM EET_PCU_off_byte
 			//0x244 kit internal number
-			SET off = ("%cre_struct_off%"+0x244) LPM EET_PCU_off_kit
+			SET off = ("%cre_struct_off%"+0x244) SPRINT read_len ~l~ LPM EET_PCU_off_kit
 			//0x248 override BCS resref
 			SET off = ("%cre_struct_off%"+0x248) SPRINT res ~bcs~ LPM EET_PCU_off_res
 			//0x250 class BCS resref
@@ -1540,6 +1588,8 @@ CO") BEGIN
 				LPM EET_PCU_effects
 				//0x8c source spell SPL resref
 				SET off = ("%fx_off%"+0x108*cnt+0x8c) SPRINT res ~spl~ LPM EET_PCU_off_res
+				//0x98 impact projectile
+				SET off = ("%fx_off%"+0x108*cnt+0x98) SPRINT read_len ~l~ SET sub = 1 LPM EET_PCU_off_ipro
 			END
 
 			SET cre_check += 1
@@ -1606,6 +1656,8 @@ CO") BEGIN
 		LPM EET_PCU_effects
 		//0x94 source spell SPL resref
 		SET off = 0x94 SPRINT res ~spl~ LPM EET_PCU_off_res
+		//0xa0 impact projectile
+		SET off = 0xa4 SPRINT read_len ~l~ SET sub = 1 LPM EET_PCU_off_ipro
 
 		SET eff_check += 1
 		SET checked = 1
@@ -1700,6 +1752,56 @@ CO") BEGIN
 		SET off = 0x44 SPRINT res ~spl~ LPM EET_PCU_off_res
 		//0x4c success spell SPL resref
 		SET off = 0x4c SPRINT res ~spl~ LPM EET_PCU_off_res
+
+		///////////////
+		//IDS targeting
+		///////////////
+		READ_LONG 0x2c "pro_flags"
+		PATCH_IF (~%pro_flags%~ BAND BIT30) BEGIN //IWD style check
+			SET off = 0x3e SPRINT res ~splProt~ LPM EET_PCU_off_short
+			READ_SHORT 0x3e "ids_file"
+			PATCH_IF (ids_file = 104) OR (ids_file = 114) BEGIN //Race.ids
+				SET off = 0x3c SPRINT res ~race~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 105) OR (ids_file = 115) BEGIN //Class.ids
+				SET off = 0x3c SPRINT res ~class~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 106) OR (ids_file = 116) BEGIN //Specific.ids
+				SET off = 0x3c SPRINT res ~spec~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 109) BEGIN //Kit.ids
+				SET off = 0x3c SPRINT read_len ~s~ LPM EET_PCU_off_kit
+			END
+			SET off = 0x42 SPRINT res ~splProt~ LPM EET_PCU_off_short
+			READ_SHORT 0x42 "ids_file"
+			PATCH_IF (ids_file = 104) OR (ids_file = 114) BEGIN //Race.ids
+				SET off = 0x40 SPRINT res ~race~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 105) OR (ids_file = 115) BEGIN //Class.ids
+				SET off = 0x40 SPRINT res ~class~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 106) OR (ids_file = 116) BEGIN //Specific.ids
+				SET off = 0x40 SPRINT res ~spec~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 109) BEGIN //Kit.ids
+				SET off = 0x40 SPRINT read_len ~s~ LPM EET_PCU_off_kit
+			END
+		END ELSE BEGIN
+			READ_SHORT 0x3e "ids_file"
+			PATCH_IF (ids_file = 4) BEGIN //Race.ids
+				SET off = 0x3c SPRINT res ~race~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+				SET off = 0x3c SPRINT res ~class~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+				SET off = 0x3c SPRINT res ~spec~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 9) BEGIN //Kit.ids
+				SET off = 0x3c SPRINT read_len ~s~ LPM EET_PCU_off_kit
+			END
+			READ_SHORT 0x42 "ids_file"
+			PATCH_IF (ids_file = 4) BEGIN //Race.ids
+				SET off = 0x40 SPRINT res ~race~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 5) BEGIN //Class.ids
+				SET off = 0x40 SPRINT res ~class~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 6) BEGIN //Specific.ids
+				SET off = 0x40 SPRINT res ~spec~ LPM EET_PCU_off_short
+			END ELSE PATCH_IF (ids_file = 9) BEGIN //Kit.ids
+				SET off = 0x40 SPRINT read_len ~s~ LPM EET_PCU_off_kit
+			END
+		END
 
 		/////////////////
 		//Projectile info

@@ -1153,6 +1153,55 @@ BUT_ONLY
 BUT_ONLY*/
 
 /////                                                  \\\\\
+///// SPLPROT.2DA                                      \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~SPLPROT.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 4 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 4 "col1"
+		READ_2DA_ENTRY cnt 1 4 "col2"
+		READ_2DA_ENTRY cnt 2 4 "col3"
+		READ_2DA_ENTRY cnt 3 4 "col4"
+		DEFINE_ASSOCIATIVE_ARRAY table_2DA_splProt BEGIN ~%col1%~ , ~%col2%~ , ~%col3%~ , ~%col4%~ => ~%cnt%~ END
+	END
+	SET splProt_cnt = cntrow - 1
+	PATCH_PRINT ~splProt_cnt = %splProt_cnt%~
+BUT_ONLY
+COPY + ~%MOD_FOLDER%/temp/array/SPLPROT.2DA~ ~%MOD_FOLDER%/temp/array~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 4 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 4 "col1"
+		READ_2DA_ENTRY cnt 1 4 "col2"
+		INNER_PATCH_SAVE col2_check ~%col2%~ BEGIN
+			REPLACE_TEXTUALLY ~^\*$~ ~x~ //workaround for weidu not detecting * with STR_EQ
+		END
+		READ_2DA_ENTRY cnt 2 4 "col3"
+		READ_2DA_ENTRY cnt 3 4 "col4"
+		PATCH_IF (VARIABLE_IS_SET $table_2DA_splProt(~%col1%~ ~%col2%~ ~%col3%~ ~%col4%~)) BEGIN
+			TEXT_SPRINT compare_cnt $table_2DA_splProt(~%col1%~ ~%col2%~ ~%col3%~ ~%col4%~)
+			PATCH_IF cnt != compare_cnt BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN ~%cnt%~ => ~%compare_cnt%~ END
+				SPRINT log_remapped_splProt ~%log_remapped_splProt%%TAB%%cnt%%TAB%=>%TAB%%compare_cnt%%TAB%%slash%%slash%%col1%%LNL%~
+			END
+		END ELSE PATCH_IF (NOT ~%col2_check%~ STR_EQ ~x~) BEGIN
+			INNER_ACTION BEGIN
+				APPEND ~SPLPROT.2DA~ ~%col1% %col2% %col3% %col4%~
+				OUTER_SET splProt_cnt = splProt_cnt + 1
+			END
+			PATCH_IF cnt != splProt_cnt BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN ~%cnt%~ => ~%splProt_cnt%~ END
+				SPRINT log_remapped_splProt ~%log_remapped_splProt%%TAB%%cnt%%TAB%=>%TAB%%splProt_cnt%%TAB%%slash%%slash%%col1%%LNL%~
+			END
+		END
+	END
+COPY_EXISTING ~SPLPROT.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// SNDRESRF.2DA                                     \\\\\
 /////                                                  \\\\\
 
@@ -1705,10 +1754,8 @@ COPY + ~%MOD_FOLDER%/temp/2da/BDDIALOG.2DA~ ~%MOD_FOLDER%/temp/2da~
 ///// STARTARE.2DA                                     \\\\\
 /////                                                  \\\\\
 
-APPEND ~STARTARE.2DA~ ~START_MP_XP_CAP 8000000~ UNLESS ~START_MP_XP_CAP~
 COPY_EXISTING ~STARTARE.2DA~ ~override~
 	REPLACE_TEXTUALLY ~AR0015~ ~TU0015~
-	REPLACE_TEXTUALLY ~START_MP_XP_CAP[ %TAB%]+[0-9]+$~ ~START_MP_XP_CAP 8000000~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -1755,8 +1802,6 @@ COPY_EXISTING ~CLASTEXT.2DA~ ~override~
 	//REPLACE_TEXTUALLY ~^ARCHER ~ ~FERALAN ~
 	//REPLACE_TEXTUALLY ~^FALLEN_ARCHER ~ ~FALLEN_FERALAN ~
 	//REPLACE_TEXTUALLY ~^WILD_MAGE ~ ~WILDMAGE ~
-	REPLACE_TEXTUALLY ~ 24230[ ]+24205 ~ ~9559 32088~ //FALLEN_CLERIC
-	REPLACE_TEXTUALLY ~ 24309[ ]+24206 ~ ~25223 32090~ //FALLEN_GODLATHANDER
 	REPLACE_TEXTUALLY ~^\(GRIZZLY_BEAR[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+\)$~ ~\1 -1 -1~
 	REPLACE_TEXTUALLY ~^GODXXXXXXXXX .+[%newline%]*~ ~~
 	COUNT_2DA_ROWS 10 "cntrow"

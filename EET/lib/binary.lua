@@ -1,0 +1,16 @@
+file = io.open(arg[1], "rb")
+str = file:read("*all")
+file:close()
+
+str = str:gsub('NITEDAY', '\0\0\0\0\0\0\0')
+str = str:gsub('DAYNITE', '\0\0\0\0\0\0\0')
+str = str:gsub('SPIN649', '\0\0\0\0\0\0\0')
+str = str:gsub('SPIN822', '\0\0\0\0\0\0\0')
+str = str:gsub('SOD', 'BG1')
+str = str:gsub('Nuisance BG1', 'Nuisance SOD')
+str = str:gsub('Edition/BG1save', 'Edition/sodsave')
+str = str:gsub('usingBG1StartMenu', 'usingSODStartMenu')
+
+file = io.open(arg[1], "wb")
+str = file:write(str)
+file:close()

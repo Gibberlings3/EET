@@ -285,6 +285,347 @@ ACTION_PHP_EACH table_sourceBase AS source => base BEGIN
 END
 
 /////                                                  \\\\\
+///// Imoen dual class XP                              \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../IMOEN-eb.baf
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  OR(2)
+    !OriginalClass(Myself,THIEF)
+    ClassLevelLT(Myself,ROGUE,2)
+THEN
+  RESPONSE #100
+    SetGlobal("BD_JOINXP","LOCALS",2)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,2)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",2)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,3)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",3)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,4)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",4)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,5)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",5)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,6)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",6)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,7)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",7)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,8)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",8)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,9)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",9)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,10)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",10)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,11)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",11)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevel(Myself,ROGUE,12)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",12)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",0)
+  InParty(Myself)
+  Class(Myself,MAGE_ALL)
+  OriginalClass(Myself,THIEF)
+  ClassLevelGT(Myself,ROGUE,12)
+THEN
+  RESPONSE #100
+    SetGlobal("K#OriginalClass","LOCALS",13)
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",2)
+  InParty(Myself)
+  XPGT(Myself,1250)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-1250,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",3)
+  InParty(Myself)
+  XPGT(Myself,2500)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-2500,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",4)
+  InParty(Myself)
+  XPGT(Myself,5000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-5000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",5)
+  InParty(Myself)
+  XPGT(Myself,10000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-10000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",6)
+  InParty(Myself)
+  XPGT(Myself,20000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-20000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",7)
+  InParty(Myself)
+  XPGT(Myself,40000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-40000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",8)
+  InParty(Myself)
+  XPGT(Myself,70000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-70000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",9)
+  InParty(Myself)
+  XPGT(Myself,110000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-110000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",10)
+  InParty(Myself)
+  XPGT(Myself,160000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-160000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",11)
+  InParty(Myself)
+  XPGT(Myself,220000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-220000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",12)
+  InParty(Myself)
+  XPGT(Myself,440000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-440000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+
+IF
+  Global("BD_JOINXP","LOCALS",1)
+  Global("K#OriginalClass","LOCALS",13)
+  InParty(Myself)
+  XPGT(Myself,660000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    ChangeStat(Myself,XP,-660000,ADD)
+    SetInterrupt(TRUE)
+    Continue()
+END
+>>>>>>>>
+
+ACTION_FOR_EACH file IN IMOEN_ IMOEN IMOEN2 IMOE25 BEGIN
+	EXTEND_BOTTOM ~%file%.BCS~ ~.../IMOEN-eb.baf~
+	COPY_EXISTING  ~%file%.BCS~ ~override~
+		DECOMPILE_AND_PATCH BEGIN
+			REPLACE_TEXTUALLY ~SetInterrupt(FALSE)[%newline]*SetGlobal("BD_JOINXP","LOCALS",1)[%newline]*SetInterrupt(TRUE)~ ~SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",2)
+    SetInterrupt(TRUE)~
+		END
+	BUT_ONLY
+END
+
+/////                                                  \\\\\
 ///// added by BG:EE                                   \\\\\
 /////                                                  \\\\\
 

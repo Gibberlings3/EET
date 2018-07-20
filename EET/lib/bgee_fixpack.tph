@@ -219,90 +219,14 @@ BUT_ONLY
 //missing XP and story mode code in Imoen script
 COPY_EXISTING ~IMOEN_.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		COUNT_REGEXP_INSTANCES ~BD_JOINXP~ num_matches
-		COUNT_REGEXP_INSTANCES ~OHSMODE3~ num_matches2
+		COUNT_REGEXP_INSTANCES ~OHSMODE3~ num_matches
 	END
 BUT_ONLY
 
-ACTION_IF (num_matches > 0) OR (num_matches2 > 0) BEGIN
+ACTION_IF (num_matches > 0) BEGIN
 	WARN ~WARNING: .../IMOEN_-eb.baf fix for IMOEN_.BCS is no longer needed.~
 END ELSE BEGIN
 <<<<<<<< .../IMOEN_-eb.baf
-IF
-  Global("BD_JOINXP","LOCALS",0)
-  InParty(Myself)
-  XPGT(Player1,31999)
-  XPLT(Myself,32000)
-THEN
-  RESPONSE #100
-    SetInterrupt(FALSE)
-    SetGlobal("BD_JOINXP","LOCALS",1)
-    ChangeStat(Myself,XP,32000,SET)
-    SetInterrupt(TRUE)
-END
-
-IF
-  Global("BD_JOINXP","LOCALS",0)
-  InParty(Myself)
-  XPGT(Player1,15999)
-  XPLT(Myself,16000)
-THEN
-  RESPONSE #100
-    SetInterrupt(FALSE)
-    SetGlobal("BD_JOINXP","LOCALS",1)
-    ChangeStat(Myself,XP,16000,SET)
-    SetInterrupt(TRUE)
-END
-
-IF
-  Global("BD_JOINXP","LOCALS",0)
-  InParty(Myself)
-  XPGT(Player1,7999)
-  XPLT(Myself,8000)
-THEN
-  RESPONSE #100
-    SetInterrupt(FALSE)
-    SetGlobal("BD_JOINXP","LOCALS",1)
-    ChangeStat(Myself,XP,8000,SET)
-    SetInterrupt(TRUE)
-END
-
-IF
-  Global("BD_JOINXP","LOCALS",0)
-  InParty(Myself)
-  XPGT(Player1,3999)
-  XPLT(Myself,4000)
-THEN
-  RESPONSE #100
-    SetInterrupt(FALSE)
-    SetGlobal("BD_JOINXP","LOCALS",1)
-    ChangeStat(Myself,XP,4000,SET)
-    SetInterrupt(TRUE)
-END
-
-IF
-  Global("BD_JOINXP","LOCALS",0)
-  InParty(Myself)
-  XPGT(Player1,1999)
-  XPLT(Myself,2000)
-THEN
-  RESPONSE #100
-    SetInterrupt(FALSE)
-    SetGlobal("BD_JOINXP","LOCALS",1)
-    ChangeStat(Myself,XP,2000,SET)
-    SetInterrupt(TRUE)
-END
-
-IF
-  Global("BD_JOINXP","LOCALS",0)
-  InParty(Myself)
-  XPLT(Player1,1000)
-THEN
-  RESPONSE #100
-    SetInterrupt(FALSE)
-    SetGlobal("BD_JOINXP","LOCALS",1)
-    SetInterrupt(TRUE)
-END
 
 IF
   !InParty(Myself)
