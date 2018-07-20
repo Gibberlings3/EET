@@ -160,14 +160,10 @@ END ELSE BEGIN //osx, unix
 	END
 	AT_NOW ~chmod +x %MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%lua~ EXACT
 	AT_NOW ~chmod +x %MOD_FOLDER%/bin/%WEIDU_OS%/ffmpeg~ EXACT
-	AT_NOW ~chmod +x %MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%tileconv~ EXACT
-	AT_NOW ~chmod +x %MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%tile2ee~ EXACT
 END
 
 OUTER_SPRINT lua ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%lua%exe%~
 OUTER_SPRINT ffmpeg ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
-OUTER_SPRINT tileconv ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tileconv%exe%~
-OUTER_SPRINT tile2ee ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%tile2ee%exe%~
 
 OUTER_SET EET_JOURNAL = 1
 
@@ -1792,7 +1788,7 @@ COPY ~%MOD_FOLDER%/base/glsl~ ~override~ //check in future patch if fpYUV.GLSL i
 
 PRINT ~Installing GUI...~
 
-ACTION_BASH_FOR ~%MOD_FOLDER%/base/gui~ ~^.+\.mbc$~ BEGIN
+/*ACTION_BASH_FOR ~%MOD_FOLDER%/base/gui~ ~^.+\.mbc$~ BEGIN
 	AT_NOW ~%tileconv% -s -e -o "%MOD_FOLDER%%os_slash%temp%os_slash%biff%os_slash%%BASH_FOR_RES%.mos" "%MOD_FOLDER%%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
 END
 LAM bash_log
@@ -1800,7 +1796,7 @@ LAM bash_log
 ACTION_BASH_FOR ~%MOD_FOLDER%/base/gui/sod~ ~^.+\.mbc$~ BEGIN
 	AT_NOW ~%tileconv% -s -e -o "%MOD_FOLDER%%os_slash%SoD_GUI%os_slash%%BASH_FOR_RES%.mos" "%MOD_FOLDER%%os_slash%base%os_slash%gui%os_slash%sod%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
 END
-LAM bash_log
+LAM bash_log*/
 
 /*ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileIndex BEGIN
 	"MAPICONS" , "BAM" => "10"
@@ -1825,8 +1821,22 @@ END*/
 
 //ACTION_CLEAR_ARRAY remapped_pvrz
 
-ACTION_FOR_EACH file IN ~MAPICONS.BAM~ ~WORLDMAP.MOS~ ~BIGLOGO.BAM~ ~TITLE.BAM~ ~CMPGEET.BAM~ ~STARTSOD.MOS~ ~STARTBG2.MOS~ BEGIN
-	COPY + ~%MOD_FOLDER%/base/gui/%file%~ ~%biff_dir%~
+ACTION_FOR_EACH file IN ~MAPICONS.BAM~ ~WORLDMAP.MOS~ ~BIGLOGO.BAM~ ~TITLE.BAM~ ~CMPGEET.BAM~ ~STARTSOD.MOS~ ~STARTBG2.MOS~
+                        ~ARRIVEA.MOS~ ~BPENDA.MOS~ ~DLCDN_.MOS~ ~DLCNE_.MOS~ ~DLCP1.MOS~ ~DLCV1.MOS~ ~GUICHP0A.MOS~ ~GUICHP0B.MOS~
+                        ~GUICHP1A.MOS~ ~GUICHP1B.MOS~ ~GUICHP2A.MOS~ ~GUICHP2B.MOS~ ~GUICHP3A.MOS~ ~GUICHP3B.MOS~ ~GUICHP4A.MOS~ ~GUICHP4B.MOS~
+                        ~GUICHP5A.MOS~ ~GUICHP5B.MOS~ ~GUICHP6A.MOS~ ~GUICHP6B.MOS~ ~GUICHP7A.MOS~ ~GUICHP8A.MOS~ ~GUIDRM2.MOS~ ~GUIDRM3.MOS~
+                        ~GUIDRM4.MOS~ ~GUIDRM5.MOS~ ~GUIDRM6.MOS~ ~GUIDRM7.MOS~ ~GUIVERB2.MOS~ ~LEAVEA.MOS~ ~TOSCENDA.MOS~ ~ULGOTHST.MOS~
+                        ~sod/CH01AJON.MOS~ ~sod/CH02AGLN.MOS~ ~sod/CH03AMON.MOS~ ~sod/CH04ASHP.MOS~ ~sod/CH04BGTH.MOS~ ~sod/CH04CSAH.MOS~ ~sod/CH05AUND.MOS~
+                        ~sod/CH06ADRW.MOS~ ~sod/CH07ASUL.MOS~ ~sod/CHPTAMKE.MOS~ ~sod/CHPTMANA.MOS~ ~sod/CHPTODRE.MOS~ ~sod/CHPTSARA.MOS~ BEGIN
+	ACTION_IF (~%file%~ STRING_MATCHES_REGEXP ~sod/.+~ = 0) BEGIN
+		OUTER_TEXT_SPRINT gui_src_dir ~%MOD_FOLDER%/base/gui/sod~
+		OUTER_TEXT_SPRINT gui_dest_dir ~%MOD_FOLDER%/SoD_GUI~
+		OUTER_PATCH_SAVE file ~%file%~ BEGIN REPLACE_TEXTUALLY ~^sod/\(.+\)~ ~\1~ END
+	END ELSE BEGIN
+		OUTER_TEXT_SPRINT gui_src_dir ~%MOD_FOLDER%/base/gui~
+		OUTER_TEXT_SPRINT gui_dest_dir ~%biff_dir%~
+	END
+	COPY + ~%gui_src_dir%/%file%~ ~%gui_dest_dir%~
 		READ_LONG 0x10 "blocks_cnt"
 		PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~bam~) BEGIN
 			READ_LONG 0x1c "blocks_off"
@@ -1858,8 +1868,8 @@ ACTION_FOR_EACH file IN ~MAPICONS.BAM~ ~WORLDMAP.MOS~ ~BIGLOGO.BAM~ ~TITLE.BAM~ 
 					END
 				END
 				INNER_ACTION BEGIN
-					//LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%MOD_FOLDER%/base/gui/mos%pvrz_name%.pvrz~ target_folder = EVAL ~%biff_dir%~ END
-					COPY_LARGE + ~%MOD_FOLDER%/base/gui/mos%original_base_index%.pvrz~ ~%biff_dir%/mos%new_base_index%.pvrz~
+					//LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%gui_src_dir%/mos%pvrz_name%.pvrz~ target_folder = EVAL ~%gui_dest_dir%~ END
+					COPY_LARGE + ~%gui_src_dir%/mos%original_base_index%.pvrz~ ~%gui_dest_dir%/mos%new_base_index%.pvrz~
 				END
 			END
 		END
