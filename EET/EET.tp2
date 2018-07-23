@@ -2453,15 +2453,12 @@ END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 		OUTER_SET found_exe = 1
 	END
 END ELSE BEGIN //unix
-	ACTION_IF FILE_EXISTS ~BaldursGateII~ BEGIN
-		COPY ~BaldursGateII~ ~BaldursGateII~
-		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua ./BaldursGateII~
-		OUTER_SET found_exe = 1
-	END
-	ACTION_IF FILE_EXISTS ~BaldursGateII64~ BEGIN
-		COPY ~BaldursGateII64~ ~BaldursGateII64~
-		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua ./BaldursGateII64~
-		OUTER_SET found_exe = 1
+	ACTION_FOR_EACH file IN BaldursGateII BaldursGateII64 BaldursGateIIEnhancedEdition BaldursGateIIEnhancedEdition64 BEGIN
+		ACTION_IF FILE_EXISTS ~%file%~ BEGIN
+			COPY ~%file%~ ~%file%~
+			AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua ./%file%~
+			OUTER_SET found_exe = 1
+		END
 	END
 END
 ACTION_IF found_exe = 0 BEGIN
