@@ -141,7 +141,6 @@ ECHO %arch_var%>EET\temp\arch_var.txt
 	ACTION_IF (FILE_CONTAINS_EVALUATED (~%MOD_FOLDER%/temp/arch_var.txt~ ~AMD64~)) BEGIN
 		OUTER_SPRINT arch_var ~x86_64\~
 	END
-	OUTER_SPRINT WEIDU_EXECUTABLE ~setup-EET.exe~
 END ELSE BEGIN //osx, unix
 	OUTER_SPRINT os_slash ~/~
 	OUTER_SPRINT exe ~~
@@ -154,15 +153,23 @@ END ELSE BEGIN //osx, unix
 	ACTION_IF (FILE_CONTAINS_EVALUATED (~%MOD_FOLDER%/temp/arch_var.txt~ ~x86_64~)) BEGIN
 		OUTER_SPRINT arch_var ~x86_64/~
 	END
-	AT_NOW ~chmod +x %MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%lua~ EXACT
-	AT_NOW ~chmod +x %MOD_FOLDER%/bin/%WEIDU_OS%/ffmpeg~ EXACT
-	AT_NOW ~chmod +x %MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%weidu~ EXACT
-	OUTER_SPRINT WEIDU_EXECUTABLE ~./%MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%weidu~
 END
-PRINT ~arch_var = %arch_var%~
 
-OUTER_SPRINT lua ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%lua%exe%~
-OUTER_SPRINT ffmpeg ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%ffmpeg%exe%~
+PRINT ~arch_var = %arch_var%~
+ACTION_FOR_EACH file IN lua ffmpeg weidu BEGIN
+	ACTION_IF FILE_EXISTS ~EET/bin/%WEIDU_OS%/%arch_var%%file%%exe%~ BEGIN
+		OUTER_SPRINT EVAL ~%file%~ ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%file%%exe%~
+	END ELSE ACTION_IF (NOT ~%arch_var%~ STR_EQ ~~) AND (FILE_EXISTS ~EET/bin/%WEIDU_OS%/%file%%exe%~) BEGIN
+		OUTER_SPRINT EVAL ~%file%~ ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%file%%exe%~
+	END ELSE BEGIN
+		FAIL ~%file% not found~
+	END
+	OUTER_SPRINT tool EVAL ~%%file%%~
+	ACTION_IF NOT ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+		AT_NOW ~chmod +x %tool%~ EXACT
+	END
+	PRINT ~%file% assigned to %tool%~
+END
 
 OUTER_SET EET_JOURNAL = 1
 
@@ -237,7 +244,7 @@ ACTION_IF NOT ~%log%~ STR_EQ ~~ BEGIN
 	APPEND_OUTER + ~%MOD_FOLDER%/temp/append.tra~ ~%log%~
 END
 
-AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
+AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
 
 AT_NOW ~%lua% %MOD_FOLDER%/lib/tlk_cnt.lua~
 COPY + ~%MOD_FOLDER%/temp/tlk_cnt.txt~ ~%MOD_FOLDER%/temp~
@@ -264,7 +271,7 @@ ACTION_FOR_EACH var IN are bcs chr cre dlg eff ini itm pro spl sto vef vvc wed B
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
@@ -280,7 +287,7 @@ ACTION_FOR_EACH file IN baldur.gam worldmap.wmp bgmap.wmp sodmap.wmp BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%patch_dir%~
 	END ELSE BEGIN
-		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%" --biff-get-rest "%file%"~
+		AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%" --biff-get-rest "%file%"~
 		LAM bash_log
 	END
 END
@@ -303,7 +310,7 @@ END
 ACTION_FOR_EACH var IN bam bmp mos tis pvrz BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%%os_slash%temp%os_slash%biff" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%%os_slash%temp%os_slash%biff" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
@@ -319,7 +326,7 @@ ACTION_FOR_EACH var IN 2da /*plt*/ wav wbm wfx BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%MOD_FOLDER%/temp/%var%~
-	AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/%var%" --biff-get-rest "^.*\.%var%$"~
 	LAM bash_log
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
@@ -335,7 +342,7 @@ ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids miss
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%MOD_FOLDER%/temp/array~
 	END ELSE BEGIN
-		AT_NOW ~%WEIDU_EXECUTABLE% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/array" --biff-get-rest "%file%"~
+		AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/array" --biff-get-rest "%file%"~
 		LAM bash_log
 	END
 END
@@ -2581,11 +2588,14 @@ COPY ~.../blank.txt~ ~override/EET.flag~
 APPEND ~EET.flag~ ~EET_JOURNAL~
 PRINT ~'EET.flag' file is used by WeiDU to recognize the installation as EET~
 
-COPY + ~%MOD_FOLDER%/lib/EET_end.tp2~ ~EET_end.tp2~
-	~%MOD_FOLDER%/lib/EET_gui.tp2~ ~EET_gui.tp2~
-
-COPY ~%WEIDU_EXECUTABLE%~ ~setup-EET_end%exe%~
-	~%WEIDU_EXECUTABLE%~ ~setup-EET_gui%exe%~
+ACTION_FOR_EACH file IN EET_end EET_gui BEGIN
+	COPY + ~%MOD_FOLDER%/lib/%file%.tp2~ ~%file%.tp2~
+	COPY ~%weidu%~ ~setup-%file%%exe%~
+	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+		COPY ~setup-EET.command~ ~setup-%file%.command~
+			REPLACE_TEXTUALLY ~EET/EET.tp2 --log SETUP-EET.DEBUG~ ~%file%.tp2 --log SETUP-%file%.DEBUG~
+	END
+END
 
 ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Ss]~ = 0) BEGIN
 	PRINT ~Skipping shortcut creation~
