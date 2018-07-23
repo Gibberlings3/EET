@@ -2,6 +2,6 @@
 
 command_path=${0%/*}
 cd "$command_path"
-chmod +x ./EET/weidu_osx_amd64
-./EET/weidu_osx_amd64
+chmod +x EET/bin/osx/x86_64/weidu
+./EET/bin/osx/x86_64/weidu
 exit 0
