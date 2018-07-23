@@ -2387,13 +2387,21 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 
 	PATCH_IF ("%fx_type%" = 111) //Create weapon
 	OR ("%fx_type%" = 112) //Remove item
-	OR ("%fx_type%" = 122) //Create inventory item
 	OR ("%fx_type%" = 123) //Remove inventory item
 	OR ("%fx_type%" = 143) //Create item in slot
 	OR ("%fx_type%" = 180) //Disallow item
+	BEGIN
+		SET off = offset SPRINT res ~itm~ LPM EET_PCU_off_res
+	END
+
+	PATCH_IF ("%fx_type%" = 122) //Create inventory item
 	OR ("%fx_type%" = 255) //Create item (days)
 	BEGIN
 		SET off = offset SPRINT res ~itm~ LPM EET_PCU_off_res
+		PATCH_IF ver = 2 BEGIN
+			SET off = offset2 SPRINT res ~itm~ LPM EET_PCU_off_res
+			SET off = offset3 SPRINT res ~itm~ LPM EET_PCU_off_res
+		END
 	END
 
 	PATCH_IF ("%fx_type%" = 127) BEGIN //Summon monsters
