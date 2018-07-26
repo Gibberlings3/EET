@@ -1129,12 +1129,40 @@ END
 
 //counts total in-game days passed
 IF
-  !GlobalTimerNotExpired("K#TimerOneDay","GLOBAL")
+  Global("K#SetTimerOneDay","GLOBAL",0)
 THEN
   RESPONSE #100
-    IncrementGlobal("K#DaysPassed","GLOBAL",1)
+    SetGlobal("K#SetTimerOneDay","GLOBAL",1)
     SetGlobalTimer("K#TimerOneDay","GLOBAL",ONE_DAY)
     Continue()
+END
+
+IF
+  GlobalTimerExpired("K#TimerOneDay","GLOBAL")
+  Global("K#CheckDays","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("K#CheckDays","GLOBAL",1)
+    SetGlobalTimer("K#TimerCheckDay","GLOBAL",1)
+    Continue()
+END
+
+IF
+  GlobalsGT("K#TimerOneDay","K#TimerCheckDay")
+  Global("K#CheckDays","GLOBAL",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#CheckDays","GLOBAL",0)
+    Continue()
+END
+
+IF
+  GlobalsGT("K#TimerCheckDay","K#TimerOneDay")
+  Global("K#CheckDays","GLOBAL",1)
+THEN
+  RESPONSE #100
+    IncrementGlobal("K#TimerOneDay","GLOBAL",108000) //FIFTEEN_DAYS
+    IncrementGlobal("K#DaysPassed","GLOBAL",1)
 END
 >>>>>>>>
 
