@@ -157,10 +157,10 @@ END
 
 PRINT ~arch_var = %arch_var%~
 ACTION_FOR_EACH file IN lua ffmpeg weidu BEGIN
-	ACTION_IF FILE_EXISTS ~EET/bin/%WEIDU_OS%/%arch_var%%file%%exe%~ BEGIN
-		OUTER_SPRINT EVAL ~%file%~ ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%file%%exe%~
-	END ELSE ACTION_IF (NOT ~%arch_var%~ STR_EQ ~~) AND (FILE_EXISTS ~EET/bin/%WEIDU_OS%/%file%%exe%~) BEGIN
-		OUTER_SPRINT EVAL ~%file%~ ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%file%%exe%~
+	ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%%file%%exe%~ BEGIN
+		OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%file%%exe%~
+	END ELSE ACTION_IF (NOT ~%arch_var%~ STR_EQ ~~) AND (FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%file%%exe%~) BEGIN
+		OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%file%%exe%~
 	END ELSE BEGIN
 		FAIL ~%file% not found~
 	END
@@ -322,7 +322,7 @@ ACTION_FOR_EACH var IN bam bmp mos tis pvrz BEGIN
 	END
 END
 
-ACTION_FOR_EACH var IN 2da /*plt*/ wav wbm wfx BEGIN
+ACTION_FOR_EACH var IN 2da /*plt*/ ttf wav wbm wfx BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%MOD_FOLDER%/temp/%var%~
@@ -1794,39 +1794,6 @@ COPY ~%MOD_FOLDER%/base/glsl~ ~override~ //check in future patch if fpYUV.GLSL i
 
 PRINT ~Installing GUI...~
 
-/*ACTION_BASH_FOR ~%MOD_FOLDER%/base/gui~ ~^.+\.mbc$~ BEGIN
-	AT_NOW ~%tileconv% -s -e -o "%MOD_FOLDER%%os_slash%temp%os_slash%biff%os_slash%%BASH_FOR_RES%.mos" "%MOD_FOLDER%%os_slash%base%os_slash%gui%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
-END
-LAM bash_log
-
-ACTION_BASH_FOR ~%MOD_FOLDER%/base/gui/sod~ ~^.+\.mbc$~ BEGIN
-	AT_NOW ~%tileconv% -s -e -o "%MOD_FOLDER%%os_slash%SoD_GUI%os_slash%%BASH_FOR_RES%.mos" "%MOD_FOLDER%%os_slash%base%os_slash%gui%os_slash%sod%os_slash%%BASH_FOR_FILE%" %bash_debug%~ EXACT
-END
-LAM bash_log*/
-
-/*ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileIndex BEGIN
-	"MAPICONS" , "BAM" => "10"
-	"WORLDMAP" , "MOS" => "20"
-	"BIGLOGO" , "BAM" => "30"
-	"TITLE" , "BAM" => "40"
-	"CMPGEET" , "BAM" => "50"
-	"STARTSOD" , "MOS" => "60"
-	"STARTBG2" , "MOS" => "80"
-END
-ACTION_PHP_EACH table_EET_fileIndex AS file => index BEGIN
-	COPY + ~%MOD_FOLDER%/base/gui/%file%.%file_1%~ ~%biff_dir%~
-		LPF ~UPDATE_PVRZ_INDICES~ RET original_base_index new_base_index END
-	ACTION_IF original_base_index >= 0 AND new_base_index >= 0 BEGIN
-		ACTION_BASH_FOR ~%MOD_FOLDER%/base/gui~ ~mos%index%.*\.pvrz~ BEGIN
-			LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%BASH_FOR_FILESPEC%~ END
-		END
-	END ELSE BEGIN
-		WARN ~WARNING: Couldn't install PVRZ files~
-	END
-END*/
-
-//ACTION_CLEAR_ARRAY remapped_pvrz
-
 ACTION_FOR_EACH file IN ~MAPICONS.BAM~ ~WORLDMAP.MOS~ ~BIGLOGO.BAM~ ~TITLE.BAM~ ~CMPGEET.BAM~ ~STARTSOD.MOS~ ~STARTBG2.MOS~
                         ~ARRIVEA.MOS~ ~BPENDA.MOS~ ~DLCDN_.MOS~ ~DLCNE_.MOS~ ~DLCP1.MOS~ ~DLCV1.MOS~ ~GUICHP0A.MOS~ ~GUICHP0B.MOS~
                         ~GUICHP1A.MOS~ ~GUICHP1B.MOS~ ~GUICHP2A.MOS~ ~GUICHP2B.MOS~ ~GUICHP3A.MOS~ ~GUICHP3B.MOS~ ~GUICHP4A.MOS~ ~GUICHP4B.MOS~
@@ -2001,6 +1968,14 @@ COPY ~%patch_dir%/sto~ ~override~
 	LPF EET_expand_tlk INT_VAR add = 200000 END
 
 COPY_EXISTING ~BAG31.STO~ ~override/K#IMPORT.STO~
+
+/////                                                  \\\\\
+///// TTF                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing TTF files...~
+
+COPY ~%MOD_FOLDER%/temp/ttf~ ~override~
 
 /////                                                  \\\\\
 ///// VEF                                              \\\\\
@@ -2590,10 +2565,11 @@ PRINT ~'EET.flag' file is used by WeiDU to recognize the installation as EET~
 
 ACTION_FOR_EACH file IN EET_end EET_gui BEGIN
 	COPY + ~%MOD_FOLDER%/lib/%file%.tp2~ ~%file%.tp2~
-	COPY ~%weidu%~ ~setup-%file%%exe%~
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 		COPY ~setup-EET.command~ ~setup-%file%.command~
 			REPLACE_TEXTUALLY ~EET/EET.tp2 --log SETUP-EET.DEBUG~ ~%file%.tp2 --log SETUP-%file%.DEBUG~
+	END ELSE BEGIN
+		COPY ~%weidu%~ ~setup-%file%%exe%~
 	END
 END
 
