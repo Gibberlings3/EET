@@ -452,7 +452,9 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 								READ_LONG offset "strref"
 								LPM EET_expand_str
 								WRITE_LONG offset "%str%"
-							END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Disallow item type
+							END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+							OR ("%fx_type%" = 324) //Immunity to spell and message
+							BEGIN
 								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x2c)
 								READ_LONG offset "strref"
 								LPM EET_expand_str
@@ -493,7 +495,9 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 								READ_LONG offset "strref"
 								LPM EET_expand_str
 								WRITE_LONG offset "%str%"
-							END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Disallow item type
+							END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+							OR ("%fx_type%" = 324) //Immunity to spell and message
+							BEGIN
 								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x40)
 								READ_LONG offset "strref"
 								LPM EET_expand_str
@@ -620,7 +624,9 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				READ_LONG offset "strref"
 				LPM EET_expand_str
 				WRITE_LONG offset "%str%"
-			END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Disallow item type
+			END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+			OR ("%fx_type%" = 324) //Immunity to spell and message
+			BEGIN
 				SET offset = ("%fx_off%"+0x108*cnt+0x40)
 				READ_LONG offset "strref"
 				LPM EET_expand_str
@@ -666,7 +672,9 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "strref"
 			LPM EET_expand_str
 			WRITE_LONG offset "%str%"
-		END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Disallow item type
+		END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+		OR ("%fx_type%" = 324) //Immunity to spell and message
+		BEGIN
 			SET offset = 0x48
 			READ_LONG offset "strref"
 			LPM EET_expand_str
@@ -727,7 +735,9 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 					READ_LONG offset "strref"
 					LPM EET_expand_str
 					WRITE_LONG offset "%str%"
-				END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Disallow item type
+				END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+				OR ("%fx_type%" = 324) //Immunity to spell and message
+				BEGIN
 					SET offset = ("%fx_off%"+0x30*cnt+0x2c)
 					READ_LONG offset "strref"
 					LPM EET_expand_str
@@ -805,7 +815,9 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 					READ_LONG offset "strref"
 					LPM EET_expand_str
 					WRITE_LONG offset "%str%"
-				END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Disallow item type
+				END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+				OR ("%fx_type%" = 324) //Immunity to spell and message
+				BEGIN
 					SET offset = ("%fx_off%"+0x30*cnt+0x2c)
 					READ_LONG offset "strref"
 					LPM EET_expand_str
@@ -1469,6 +1481,51 @@ END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//vars: array, src_dir, dest_dir, del_pvrz, SOURCE_EXT, reserve_index_start, reserve_index_cnt
+DEFINE_PATCH_MACRO ~EET_install_pvrz~ BEGIN
+	READ_LONG 0x10 "blocks_cnt"
+	PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~bam~) BEGIN
+		READ_LONG 0x1c "blocks_off"
+	END ELSE BEGIN //mos
+		READ_LONG 0x14 "blocks_off"
+	END
+	FOR (cnt=0; cnt<"%blocks_cnt%"; cnt=cnt+1) BEGIN
+		READ_LONG ("%blocks_off%"+0x1c*cnt+0x0) "original_base_index"
+		//PATCH_PRINT ~cnt = %cnt%, original_base_index = %original_base_index%~
+		PATCH_IF (VARIABLE_IS_SET $EVAL ~%array%~(~%original_base_index%~)) BEGIN
+			TEXT_SPRINT new_base_index $EVAL ~%array%~(~%original_base_index%~)
+			WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
+		END ELSE BEGIN
+			SET new_base_index = reserve_index_start + reserve_index_cnt //variables already set via prep_PVRZ.tph
+			SET reserve_index_cnt = reserve_index_cnt + 1
+			//PATCH_PRINT ~%array% = %original_base_index% => %new_base_index%~
+			SPRINT $EVAL "%array%"("%original_base_index%") "%new_base_index%"
+			WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
+			PATCH_FOR_EACH index IN original_base_index new_base_index BEGIN
+				SET value = EVAL ~%index%~
+				PATCH_IF (value < 10) BEGIN
+					SPRINT EVAL ~%index%~ ~000%value%~
+				END ELSE PATCH_IF (value < 100) BEGIN
+					SPRINT EVAL ~%index%~ ~00%value%~
+				END ELSE PATCH_IF (value < 1000) BEGIN
+					SPRINT EVAL ~%index%~ ~0%value%~
+				END ELSE BEGIN
+					SPRINT EVAL ~%index%~ ~%value%~
+				END
+			END
+			INNER_ACTION BEGIN
+				//LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%src_dir_1%/mos%pvrz_name%.pvrz~ target_folder = EVAL ~%dest_dir%~ END
+				COPY_LARGE + ~%src_dir_1%/mos%original_base_index%.pvrz~ ~%dest_dir%/mos%new_base_index%.pvrz~
+				ACTION_IF del_pvrz = 1 BEGIN
+					DELETE + ~%src_dir_1%/mos%original_base_index%.pvrz~
+				END
+			END
+		END
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 DEFINE_PATCH_MACRO ~EET_PCU_off_mus~ BEGIN
 	READ_LONG off "source"
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $remapped_mus(~%source%~)) BEGIN
@@ -1557,27 +1614,23 @@ END
 
 DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
 	PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
-		SET byte0 = 0
-		SET byte1 = 0
+		SET short = 0
 		READ_BYTE off ~source~
 		READ_BYTE (off+1) ~byte3~
 	END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
-		READ_BYTE off ~byte0~
-		READ_BYTE (off+1) ~byte1~
+		READ_SHORT off ~short~
 		READ_BYTE (off+2) ~source~
 		READ_BYTE (off+3) ~byte3~
 	END
-	PATCH_IF ("%byte0%" = 0) AND ("%byte1%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
+	PATCH_IF ("%short%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
 		TEXT_SPRINT dest $remapped_kit(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
-				WRITE_SHORT off 0
-				WRITE_BYTE (off+2) ~%dest%~
-				WRITE_BYTE (off+3) 0x40
+				WRITE_SHORT off 0x4000 + ~%dest%~
 			END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
-				WRITE_BYTE off ~%dest%~
-				WRITE_BYTE (off+1) 0x40
+				WRITE_SHORT off 0
+				WRITE_SHORT (off+2) 0x4000 + ~%dest%~
 			END
 			SPRINT str ~Patching %SOURCE_FILESPEC%: KIT = %source% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)

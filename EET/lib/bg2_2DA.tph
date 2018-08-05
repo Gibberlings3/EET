@@ -332,6 +332,32 @@ ACTION_FOR_EACH file IN CLEARAIR CLEARCLD CLEARTRP CLEARWHR BEGIN
 END
 
 /////                                                  \\\\\
+///// CONTAINR.2DA                                      \\\\\
+/////                                                  \\\\\
+
+COPY + ~%MOD_FOLDER%/temp/array/CONTAINR.2DA~ ~%MOD_FOLDER%/temp/array~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 4 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 4 "col1"
+		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+			READ_2DA_ENTRY cnt 1 4 "col2" //SOUND
+			SPRINT match ~%col2%~ SPRINT res ~wav~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 4 "%match%" SPRINT col2 ~%match%~ END
+			READ_2DA_ENTRY cnt 2 4 "col3" //BAM
+			SPRINT match ~%col3%~ SPRINT res ~bam~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 4 "%match%" SPRINT col3 ~%match%~ END
+			READ_2DA_ENTRY cnt 3 4 "col4" //CLOSE
+			SPRINT match ~%col4%~ SPRINT res ~wav~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col4%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 3 4 "%match%" SPRINT col4 ~%match%~ END
+			INNER_ACTION BEGIN
+				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4%~
+				PRINT ~%col1% %col2% %col3% %col4% appended to %SOURCE_FILESPEC%~
+			END
+		END
+	END
+COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// ENTRIES.2DA                                      \\\\\
 /////                                                  \\\\\
 
@@ -1145,7 +1171,7 @@ BUT_ONLY
 ///// SPELLS.2DA                                       \\\\\
 /////                                                  \\\\\
 
-//overwrite instead, in patch 2.0 there are 2 missing columns
+//overwrite instead, in patch 2.x there are 2 missing columns
 /*COPY_EXISTING ~SPELLS.2DA~ ~override~
 	REPLACE_TEXTUALLY ~50~ ~99~
 	SET_2DA_ENTRY 1 9 3 ~199~ //the cap for level 9 spells can be set to 199, for which spells 100-199 refer to SPWI0**.SPL

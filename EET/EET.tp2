@@ -178,7 +178,7 @@ COPY - ~%MOD_FOLDER%/other/cpmvars/eet_cpmvars.tpa~ ~.../eet_cpmvars.tpa~
 	REPLACE_TEXTUALLY ~\(GAME_IS .eet\)~ ~\1 bg2ee~ //at this point WeiDU thinks it's still BG2:EE installation, unless you're reinstalling the mod
 INCLUDE ~.../eet_cpmvars.tpa~
 INCLUDE ~.../EET_functions.tph~
-
+INCLUDE ~%MOD_FOLDER%/lib/replace_multiline.tpa~
 INCLUDE ~%MOD_FOLDER%/lib/macros.tph~
 INCLUDE ~%MOD_FOLDER%/lib/strref_tables.tph~
 INCLUDE ~%MOD_FOLDER%/lib/bgee_dir.tph~
@@ -338,7 +338,7 @@ ACTION_FOR_EACH var IN 2da /*plt*/ ttf wav wbm wfx BEGIN
 	END
 END
 
-ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids specific.ids spell.ids bgee.lua bgee.sql BEGIN
+ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids specific.ids spell.ids bgee.lua ui.menu BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%MOD_FOLDER%/temp/array~
 	END ELSE BEGIN
@@ -666,10 +666,7 @@ END
 ///// LUA / MENU BG2:EE patching                       \\\\\
 /////                                                  \\\\\
 
-//no point in patching UI.MENU
-COPY ~%MOD_FOLDER%/base/lua/UI_BG2.MENU~ ~override/UI.MENU~
-
-COPY ~%MOD_FOLDER%/base/lua/UI_SoD.MENU~ ~%MOD_FOLDER%/SoD_GUI/UI.MENU~
+INCLUDE ~%MOD_FOLDER%/lib/bg2_GUI.tph~
 
 OUTER_SPRINT L_LUA ~~
 ACTION_FOR_EACH entry IN EET_CMP_TEXT_BG1 EET_CMP_TEXT_SOD EET_CMP_TEXT_SOA EET_CMP_TEXT_TOB EET_CMP_TEXT_BP1 EET_CMP_TEXT_BP2 EET_CMP_TEXT_TUT EET_CMP_TITLE_BG1 EET_CMP_TITLE_SOD EET_CMP_TITLE_SOA EET_CMP_TITLE_TOB EET_CMP_TITLE_BP1 EET_CMP_TITLE_BP2 EET_CMP_TITLE_TUT EET_WARNING_TITLE EET_WARNING_TEXT EET_CHAPTER_8 EET_CHAPTER_9 EET_CHAPTER_10 EET_CHAPTER_11 EET_CHAPTER_12 BEGIN
@@ -1794,63 +1791,27 @@ COPY ~%MOD_FOLDER%/base/glsl~ ~override~ //check in future patch if fpYUV.GLSL i
 
 PRINT ~Installing GUI...~
 
-ACTION_FOR_EACH file IN ~MAPICONS.BAM~ ~WORLDMAP.MOS~ ~BIGLOGO.BAM~ ~TITLE.BAM~ ~CMPGEET.BAM~ ~STARTSOD.MOS~ ~STARTBG2.MOS~
-                        ~ARRIVEA.MOS~ ~BPENDA.MOS~ ~DLCDN_.MOS~ ~DLCNE_.MOS~ ~DLCP1.MOS~ ~DLCV1.MOS~ ~GUICHP0A.MOS~ ~GUICHP0B.MOS~
-                        ~GUICHP1A.MOS~ ~GUICHP1B.MOS~ ~GUICHP2A.MOS~ ~GUICHP2B.MOS~ ~GUICHP3A.MOS~ ~GUICHP3B.MOS~ ~GUICHP4A.MOS~ ~GUICHP4B.MOS~
-                        ~GUICHP5A.MOS~ ~GUICHP5B.MOS~ ~GUICHP6A.MOS~ ~GUICHP6B.MOS~ ~GUICHP7A.MOS~ ~GUICHP8A.MOS~ ~GUIDRM2.MOS~ ~GUIDRM3.MOS~
-                        ~GUIDRM4.MOS~ ~GUIDRM5.MOS~ ~GUIDRM6.MOS~ ~GUIDRM7.MOS~ ~GUIVERB2.MOS~ ~LEAVEA.MOS~ ~TOSCENDA.MOS~ ~ULGOTHST.MOS~
-                        ~sod/CH01AJON.MOS~ ~sod/CH02AGLN.MOS~ ~sod/CH03AMON.MOS~ ~sod/CH04ASHP.MOS~ ~sod/CH04BGTH.MOS~ ~sod/CH04CSAH.MOS~ ~sod/CH05AUND.MOS~
-                        ~sod/CH06ADRW.MOS~ ~sod/CH07ASUL.MOS~ ~sod/CHPTAMKE.MOS~ ~sod/CHPTMANA.MOS~ ~sod/CHPTODRE.MOS~ ~sod/CHPTSARA.MOS~ BEGIN
-	ACTION_IF (~%file%~ STRING_MATCHES_REGEXP ~sod/.+~ = 0) BEGIN
-		OUTER_TEXT_SPRINT gui_src_dir ~%MOD_FOLDER%/base/gui/sod~
-		OUTER_TEXT_SPRINT gui_dest_dir ~%MOD_FOLDER%/SoD_GUI~
-		OUTER_PATCH_SAVE file ~%file%~ BEGIN REPLACE_TEXTUALLY ~^sod/\(.+\)~ ~\1~ END
-	END ELSE BEGIN
-		OUTER_TEXT_SPRINT gui_src_dir ~%MOD_FOLDER%/base/gui~
-		OUTER_TEXT_SPRINT gui_dest_dir ~%biff_dir%~
+ACTION_DEFINE_ASSOCIATIVE_ARRAY gui_dir BEGIN
+	~%MOD_FOLDER%/base/gui~ , ~%MOD_FOLDER%/base/gui~ => ~%biff_dir%/eetGUI~
+	~%MOD_FOLDER%/base/gui/bg2~ , ~%MOD_FOLDER%/base/gui/bg2~ => ~%biff_dir%/eetGUI~
+	~%MOD_FOLDER%/base/gui/sod~ , ~%MOD_FOLDER%/base/gui/sod~ => ~%biff_dir%/eetGUI~
+END
+OUTER_SPRINT array ~remapped_pvrz_base~
+OUTER_SET del_pvrz = 0
+
+ACTION_PHP_EACH gui_dir AS src_dir => dest_dir BEGIN
+	ACTION_BASH_FOR ~%src_dir%~ ~^.+\.[bm][ao][ms]$~ BEGIN
+		ACTION_IF ~%src_dir%~ STR_EQ ~%MOD_FOLDER%/base/gui/sod~ BEGIN
+			COPY ~%BASH_FOR_FILESPEC%~ ~%MOD_FOLDER%/SoD_GUI~
+				LPM EET_install_pvrz
+		END ELSE BEGIN
+			COPY + ~%BASH_FOR_FILESPEC%~ ~%dest_dir%~
+				LPM EET_install_pvrz
+		END
 	END
-	COPY + ~%gui_src_dir%/%file%~ ~%gui_dest_dir%~
-		READ_LONG 0x10 "blocks_cnt"
-		PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~bam~) BEGIN
-			READ_LONG 0x1c "blocks_off"
-		END ELSE BEGIN //mos
-			READ_LONG 0x14 "blocks_off"
-		END
-		FOR (cnt=0; cnt<"%blocks_cnt%"; cnt=cnt+1) BEGIN
-			READ_LONG ("%blocks_off%"+0x1c*cnt+0x0) "original_base_index"
-			//PATCH_PRINT ~cnt = %cnt%, original_base_index = %original_base_index%~
-			PATCH_IF (VARIABLE_IS_SET $remapped_pvrz_base(~%original_base_index%~)) BEGIN
-				TEXT_SPRINT new_base_index $remapped_pvrz_base(~%original_base_index%~)
-				WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
-			END ELSE BEGIN
-				SET new_base_index = reserve_index_start + reserve_index_cnt //variables already set via prep_PVRZ.tph
-				SET reserve_index_cnt = reserve_index_cnt + 1
-				//PATCH_PRINT ~remapped_pvrz_base = %original_base_index% => %new_base_index%~
-				DEFINE_ASSOCIATIVE_ARRAY remapped_pvrz_base BEGIN ~%original_base_index%~ => ~%new_base_index%~ END
-				WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
-				PATCH_FOR_EACH index IN original_base_index new_base_index BEGIN
-					SET value = EVAL ~%index%~
-					PATCH_IF (value < 10) BEGIN
-						SPRINT EVAL ~%index%~ ~000%value%~
-					END ELSE PATCH_IF (value < 100) BEGIN
-						SPRINT EVAL ~%index%~ ~00%value%~
-					END ELSE PATCH_IF (value < 1000) BEGIN
-						SPRINT EVAL ~%index%~ ~0%value%~
-					END ELSE BEGIN
-						SPRINT EVAL ~%index%~ ~%value%~
-					END
-				END
-				INNER_ACTION BEGIN
-					//LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%gui_src_dir%/mos%pvrz_name%.pvrz~ target_folder = EVAL ~%gui_dest_dir%~ END
-					COPY_LARGE + ~%gui_src_dir%/mos%original_base_index%.pvrz~ ~%gui_dest_dir%/mos%new_base_index%.pvrz~
-				END
-			END
-		END
 END
 
-ACTION_BASH_FOR ~%biff_dir%/pvrz~ ~^.+\.pvrz$~ BEGIN
-	COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%~
-END
+INCLUDE ~%MOD_FOLDER%/lib/bg1_GUI.tph~
 
 /////                                                  \\\\\
 ///// INI                                              \\\\\

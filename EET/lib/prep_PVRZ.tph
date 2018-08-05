@@ -6,52 +6,20 @@ END
 LAF ~FIND_FREE_PVRZ_INDEX~ RET free_index END
 OUTER_SET reserve_index_start = free_index
 OUTER_SET reserve_index_cnt = 0
-ACTION_FOR_EACH dir IN ~%biff_dir%~ ~%MOD_FOLDER%/SoD_GUI~ BEGIN
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY pvrz_dir BEGIN
+	~%biff_dir%~ , ~%biff_dir%~ => ~%biff_dir%/pvrz~
+	~%MOD_FOLDER%/SoD_GUI~ , ~%biff_dir%~ => ~%biff_dir%/eetGUI~
+END
+OUTER_SPRINT array ~remapped_pvrz~
+OUTER_SET del_pvrz = 1
+
+ACTION_PHP_EACH pvrz_dir AS src_dir => dest_dir BEGIN
 	ACTION_FOR_EACH var IN bam mos BEGIN
-		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
+		ACTION_BASH_FOR ~%src_dir%~ ~^.+\.%var%$~ BEGIN
 			ACTION_IF (FILE_CONTAINS_EVALUATED (~%BASH_FOR_FILESPEC%~ ~%var% V2~)) BEGIN
 				COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
-					READ_LONG 0x10 "blocks_cnt"
-					PATCH_IF (~%BASH_FOR_EXT%~ STR_EQ ~bam~) BEGIN
-						READ_LONG 0x1c "blocks_off"
-					END ELSE BEGIN //mos
-						READ_LONG 0x14 "blocks_off"
-					END
-					FOR (cnt=0; cnt<"%blocks_cnt%"; cnt=cnt+1) BEGIN
-						READ_LONG ("%blocks_off%"+0x1c*cnt+0x0) "original_base_index"
-						//PATCH_PRINT ~cnt = %cnt%, original_base_index = %original_base_index%~
-						PATCH_IF (VARIABLE_IS_SET $remapped_pvrz(~%original_base_index%~)) BEGIN
-							TEXT_SPRINT new_base_index $remapped_pvrz(~%original_base_index%~)
-							WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
-						END ELSE BEGIN
-							SET new_base_index = reserve_index_start + reserve_index_cnt
-							SET reserve_index_cnt = reserve_index_cnt + 1
-							//PATCH_PRINT ~remapped_pvrz = %original_base_index% => %new_base_index%~
-							DEFINE_ASSOCIATIVE_ARRAY remapped_pvrz BEGIN ~%original_base_index%~ => ~%new_base_index%~ END
-							WRITE_LONG ("%blocks_off%"+0x1c*cnt+0x0) "new_base_index"
-							PATCH_FOR_EACH index IN original_base_index new_base_index BEGIN
-								SET value = EVAL ~%index%~
-								PATCH_IF (value < 10) BEGIN
-									SPRINT EVAL ~%index%~ ~000%value%~
-								END ELSE PATCH_IF (value < 100) BEGIN
-									SPRINT EVAL ~%index%~ ~00%value%~
-								END ELSE PATCH_IF (value < 1000) BEGIN
-									SPRINT EVAL ~%index%~ ~0%value%~
-								END ELSE BEGIN
-									SPRINT EVAL ~%index%~ ~%value%~
-								END
-							END
-							INNER_ACTION BEGIN
-								//LAF ~INSTALL_PVRZ~ INT_VAR original_base_index new_base_index STR_VAR source_file = EVAL ~%biff_dir%/mos%original_base_index%.pvrz~ target_folder = EVAL ~%biff_dir%/pvrz~ END
-								ACTION_IF ~%dir%~ STR_EQ ~%biff_dir%~ BEGIN
-									COPY_LARGE + ~%biff_dir%/mos%original_base_index%.pvrz~ ~%biff_dir%/pvrz/mos%new_base_index%.pvrz~
-								END ELSE BEGIN
-									COPY_LARGE + ~%biff_dir%/mos%original_base_index%.pvrz~ ~%biff_dir%/eetGUI/mos%new_base_index%.pvrz~
-								END
-								DELETE + ~%biff_dir%/mos%original_base_index%.pvrz~
-							END
-						END
-					END
+					LPM EET_install_pvrz
 			END
 		END
 	END
@@ -5019,5 +4987,10 @@ DELETE + ~%biff_dir%/A0100N00.PVRZ~
 	~%biff_dir%/BGBACK.PVRZ~
 
 ACTION_BASH_FOR ~%biff_dir%~ ~^MOS~ BEGIN
+	DELETE + ~%BASH_FOR_FILESPEC%~
+END
+
+ACTION_BASH_FOR ~%biff_dir%/pvrz~ ~^.+\.pvrz$~ BEGIN
+	COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%~
 	DELETE + ~%BASH_FOR_FILESPEC%~
 END

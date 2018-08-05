@@ -12,5 +12,5 @@ str = str:gsub('Edition/BG1save', 'Edition/sodsave')
 str = str:gsub('usingBG1StartMenu', 'usingSODStartMenu')
 
 file = io.open(arg[1], "wb")
-str = file:write(str)
+file:write(str)
 file:close()

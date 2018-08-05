@@ -1,0 +1,55 @@
+//Patch function that replaces set or all occurrences of the given regexp pattern in the file with the given string.
+//Use EVAL to perform variable substitution on the string and/or the regexp pattern.
+//Unlike REPLACE_TEXTUALLY the pattern can be multi-line text, even without using regexp.
+//Just like REPLACE_BCS_BLOCK the function ignores pattern whitespace.
+//The function can be also used as a COUNT_REGEXP_INSTANCES alternative with the above mentioned features.
+//Optional PATCH_WARN message is printed if the task could not be performed (pattern not found or different amount of pattern matches than expected).
+
+DEFINE_PATCH_FUNCTION REPLACE_MULTILINE
+	INT_VAR
+		num = "-1"     //amount of times the pattern should be replaced with string (-1 by default which is at least 1 but without max limit)
+		strict = 0     //set to 1 to enable strict checking (auto escapes $^.*+?[]\ special characters)
+		verbose = 1    //set to 0 to skip printing patching message
+		warn = 1       //set to 0 to skip printing warning message if the function can't do what you ask it to do
+		only_count = 0 //set to to 1 to skip pattern replacing and just return num_matches (COUNT_REGEXP_INSTANCES alternative)
+	STR_VAR
+		pattern = ""   //pattern that you want to replace
+		string = ""    //string that the pattern will be replaced with
+	RET
+		num_matches    //amount of times the pattern has been found
+	BEGIN
+	INNER_PATCH_SAVE textToReplace ~%pattern%~ BEGIN
+		PATCH_IF strict = 1 BEGIN
+			REPLACE_TEXTUALLY ~\\~ ~\\\\~
+			REPLACE_TEXTUALLY ~\[~ ~\[~
+			REPLACE_TEXTUALLY ~\]~ ~\]~
+			REPLACE_EVALUATE ~\([\$\^\.\*\+\?]\)~ BEGIN END ~\%MATCH1%~
+		END
+		REPLACE_TEXTUALLY ~[%WNL%%LNL%%MNL%%TAB% ]+~ ~[%WNL%%LNL%%MNL%%TAB% ]+~
+	END
+	SET num_matches = 0
+	PATCH_IF only_count = 0 BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~%textToReplace%~ BEGIN
+			SET num_matches = num_matches + 1
+		END ~%string%~
+		SET warned = 0
+		PATCH_IF num_matches != num BEGIN
+			PATCH_IF num_matches = 0 BEGIN
+				PATCH_IF warn = 1 BEGIN
+					PATCH_WARN ~WARNING %SOURCE_FILESPEC% - pattern not found:%LNL%%pattern%~
+				END
+				SET warned = 1
+			END ELSE PATCH_IF num >= 0 AND (num_matches > num OR num_matches < num) BEGIN
+				PATCH_IF warn = 1 BEGIN
+					PATCH_WARN ~WARNING %SOURCE_FILESPEC% - pattern replaced %num_matches% time(s) instead of %num%:%LNL%%pattern%~
+				END
+				SET warned = 1
+			END
+		END
+		PATCH_IF verbose = 1 AND warned = 0 BEGIN
+			PATCH_PRINT ~Patching %SOURCE_FILESPEC% - pattern replaced %num_matches% time(s):%LNL%%pattern% => %string%~
+		END
+	END ELSE BEGIN
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+	END
+END

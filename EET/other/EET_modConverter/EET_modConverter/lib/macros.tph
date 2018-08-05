@@ -90,27 +90,23 @@ END
 
 DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
 	PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
-		SET byte0 = 0
-		SET byte1 = 0
+		SET short = 0
 		READ_BYTE off ~source~
 		READ_BYTE (off+1) ~byte3~
 	END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
-		READ_BYTE off ~byte0~
-		READ_BYTE (off+1) ~byte1~
+		READ_SHORT off ~short~
 		READ_BYTE (off+2) ~source~
 		READ_BYTE (off+3) ~byte3~
 	END
-	PATCH_IF ("%byte0%" = 0) AND ("%byte1%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
+	PATCH_IF ("%short%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
 		TEXT_SPRINT dest $remapped_kit(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
-				WRITE_SHORT off 0
-				WRITE_BYTE (off+2) ~%dest%~
-				WRITE_BYTE (off+3) 0x40
+				WRITE_SHORT off 0x4000 + ~%dest%~
 			END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
-				WRITE_BYTE off ~%dest%~
-				WRITE_BYTE (off+1) 0x40
+				WRITE_SHORT off 0
+				WRITE_SHORT (off+2) 0x4000 + ~%dest%~
 			END
 			SPRINT str ~Patching %SOURCE_FILESPEC%: KIT = %source% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)
