@@ -56,27 +56,29 @@ DEFINE_PATCH_MACRO ~EET_CRE_structure~ BEGIN
 	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
 		PATCH_IF (eff_ver = 0) BEGIN //EFF v1
 			READ_SHORT ("%structure_offset%"+"%fx_off%"+0x30*cnt) "fx_type"
-			PATCH_IF ("%fx_type%" = 139) //Display String
-			OR ("%fx_type%" = 267) //Protection from Display Specific String
+			PATCH_IF ("%fx_type%" = 139) //Display string
+			OR ("%fx_type%" = 267) //Disable display string
 			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
 				LPM SAVE_SAY_match
-			END ELSE PATCH_IF ("%fx_type%" = 103) //Change Name
-			OR ("%fx_type%" = 180) //Can't Use Item
-			OR ("%fx_type%" = 183) //Apply Effect Itemtype
-			OR ("%fx_type%" = 206) //Protection from Spell
-			OR ("%fx_type%" = 253) //Add Map Marker
-			OR ("%fx_type%" = 254) //Remove Map Marker
-			OR ("%fx_type%" = 290) //Change Title
+			END ELSE PATCH_IF ("%fx_type%" = 103) //Change name
+			OR ("%fx_type%" = 180) //Disallow item
+			OR ("%fx_type%" = 183) //Use EFF file while on type
+			OR ("%fx_type%" = 206) //Protection from spell
+			OR ("%fx_type%" = 253) //Set automap note
+			OR ("%fx_type%" = 254) //Remove automap note
+			OR ("%fx_type%" = 290) //Change title
 			OR ("%fx_type%" = 330) //Float text
 			OR ("%fx_type%" = 338) //Disable rest or save
 			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
 				LPM SAVE_SAY
-			END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Can't Use Itemtype
+			END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+			OR ("%fx_type%" = 324) //Immunity to spell and message
+			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x2c)
 				LPM SAVE_SAY
-			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x2c)
 				LPM SAVE_SAY
 				READ_LONG ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x8) "ids_target"
@@ -87,27 +89,29 @@ DEFINE_PATCH_MACRO ~EET_CRE_structure~ BEGIN
 			END
 		END ELSE BEGIN //EFF v2
 			READ_LONG ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x8) "fx_type"
-			PATCH_IF ("%fx_type%" = 139) //Display String
-			OR ("%fx_type%" = 267) //Protection from Display Specific String
+			PATCH_IF ("%fx_type%" = 139) //Display string
+			OR ("%fx_type%" = 267) //Disable display string
 			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
 				LPM SAVE_SAY_match
-			END ELSE PATCH_IF ("%fx_type%" = 103) //Change Name
-			OR ("%fx_type%" = 180) //Can't Use Item
-			OR ("%fx_type%" = 183) //Apply Effect Itemtype
-			OR ("%fx_type%" = 206) //Protection from Spell
-			OR ("%fx_type%" = 253) //Add Map Marker
-			OR ("%fx_type%" = 254) //Remove Map Marker
-			OR ("%fx_type%" = 290) //Change Title
+			END ELSE PATCH_IF ("%fx_type%" = 103) //Change name
+			OR ("%fx_type%" = 180) //Disallow item
+			OR ("%fx_type%" = 183) //Use EFF file while on type
+			OR ("%fx_type%" = 206) //Protection from spell
+			OR ("%fx_type%" = 253) //Set automap note
+			OR ("%fx_type%" = 254) //Remove automap note
+			OR ("%fx_type%" = 290) //Change title
 			OR ("%fx_type%" = 330) //Float text
 			OR ("%fx_type%" = 338) //Disable rest or save
 			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
 				LPM SAVE_SAY
-			END ELSE PATCH_IF ("%fx_type%" = 181) BEGIN //Can't Use Itemtype
+			END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+			OR ("%fx_type%" = 324) //Immunity to spell and message
+			BEGIN
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x40)
 				LPM SAVE_SAY
-			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Item Usability
+			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
 				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x40)
 				LPM SAVE_SAY
 				READ_LONG ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x18) "ids_target"
@@ -610,8 +614,12 @@ ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
 						READ_SHORT 0x58 "actors_cnt"
 						FOR (i=0; i<"%actors_cnt%"; ++i) BEGIN
 							//CRE structure (embedded CRE files)
-							READ_BYTE ("%actors_off%"+0x110*i+0x28) "actors_flags"
+							READ_LONG ("%actors_off%"+0x110*i+0x28) "actors_flags"
+							READ_LONG ("%actors_off%"+0x110*i+0x8c) "actors_emb_size"
 							PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
+							END ELSE PATCH_IF (actors_emb_size = 0) BEGIN
+								SET actors_flags = actors_flags + BIT0
+								WRITE_LONG ("%actors_off%"+0x110*i+0x28) "%actors_flags%"
 							END ELSE BEGIN //CRE attached
 								READ_LONG ("%actors_off%"+0x110*i+0x88) "structure_offset"
 								PATCH_IF (structure_offset != 0) BEGIN

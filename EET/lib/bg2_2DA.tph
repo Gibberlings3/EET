@@ -17,6 +17,8 @@ END
 
 COPY + ~%MOD_FOLDER%/temp/array/KITLIST.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~^38[ 	]+OHTYR_OLD[%newline%]+~ ~~
+	REPLACE_TEXTUALLY ~^39[ 	]+FAKIE[%newline%]+~ ~~
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 3 "kit_num"
@@ -555,21 +557,24 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY + ~%MOD_FOLDER%/temp/array/ITEM_USE.2DA~ ~%MOD_FOLDER%/temp/array~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 4 "cntrow"
+	LPF 2DA_MISSING_COLS INT_VAR cols = 5 STR_VAR entry ~-1~ END
+	COUNT_2DA_ROWS 5 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 4 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 4 "%match%" SPRINT col1 ~%match%~ END
-		READ_2DA_ENTRY cnt 1 4 "col2"
-		SPRINT match ~%col2%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 4 "%match%" SPRINT col2 ~%match%~ END
-		READ_2DA_ENTRY cnt 2 4 "col3"
-		READ_2DA_ENTRY cnt 3 4 "col4"
+		READ_2DA_ENTRY cnt 0 5 "col1"
+		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 5 "%match%" SPRINT col1 ~%match%~ END
+		READ_2DA_ENTRY cnt 1 5 "col2"
+		SPRINT match ~%col2%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 5 "%match%" SPRINT col2 ~%match%~ END
+		READ_2DA_ENTRY cnt 2 5 "col3"
+		READ_2DA_ENTRY cnt 3 5 "col4"
+		READ_2DA_ENTRY cnt 4 5 "col5"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
 				LAF EET_strref INT_VAR str = col3 RET str END
 				OUTER_SET col3 = str
-				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4%~
-				PRINT ~%col1% %col2% %col3% %col4% appended to %SOURCE_FILESPEC%~
+				LAF EET_strref INT_VAR str = col4 RET str END
+				OUTER_SET col4 = str
+				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5%~
+				PRINT ~%col1% %col2% %col3% %col4% %col5% appended to %SOURCE_FILESPEC%~
 			END
 		END
 	END
@@ -1391,31 +1396,6 @@ COPY_EXISTING ~XPLIST.2DA~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
-///// ACHIEVEM.2DA                                     \\\\\
-/////                                                  \\\\\
-
-COPY_EXISTING ~ACHIEVEM.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/ACHIEVEM.2DA~ ~%MOD_FOLDER%/temp/array~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~var~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 2 "%match%" SPRINT col1 ~%match%~ END
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_FILE%~ ~^%col1%[ ]+~)) BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			INNER_ACTION BEGIN
-				APPEND ~%SOURCE_FILE%~ ~%col1% %col2%~
-				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
-			END
-		END
-	END
-COPY_EXISTING ~%SOURCE_FILE%~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
-
-/////                                                  \\\\\
 ///// FOGAREA.2DA                                      \\\\\
 /////                                                  \\\\\
 
@@ -1840,6 +1820,7 @@ BUT_ONLY
 COPY + ~%MOD_FOLDER%/temp/2da/BGCLATXT.2DA~ ~%MOD_FOLDER%/temp/2da~
 	~%MOD_FOLDER%/temp/2da/SODCLTXT.2DA~ ~%MOD_FOLDER%/temp/2da~
 	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~^OHTYR_OLD[%newline%]+~ ~~
 	PATCH_FOR_EACH class IN FIGHTER_MAGE FIGHTER_CLERIC FIGHTER_THIEF FIGHTER_MAGE_THIEF MAGE_THIEF CLERIC_MAGE CLERIC_THIEF FIGHTER_DRUID FIGHTER_MAGE_CLERIC CLERIC_RANGER BEGIN //assign correct biography for multi-class characters
 		REPLACE_TEXTUALLY ~^\(%class%[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+\)[-0-9]+~ ~\1 15889~
 	END
@@ -1987,7 +1968,7 @@ BUT_ONLY
 >>>>>>>>
 
 COPY_EXISTING ~SAVENAME.2DA~ ~override~
-	SET_2DA_ENTRY 1 3 4 "1" //4
+	//SET_2DA_ENTRY 1 3 4 "1" //4
 	SET_2DA_ENTRY 4 3 4 "1" //4
 	APPEND_FILE ~.../SAVENAME.2da~
 	PRETTY_PRINT_2DA

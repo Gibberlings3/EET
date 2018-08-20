@@ -634,23 +634,23 @@ END
 <<<<<<<< .../oBALDUR.baf
 IF
   StoryModeOn()
-  Exists(Familiar)
+  InMyArea(Familiar)
   !CheckSpellState(Familiar,STORY_MODE)
 THEN
   RESPONSE #100
     SetInterrupt(FALSE)
-    ReallyForceSpellDeadRES("OHSMODE4",Familiar)
+    ApplySpellRES("OHSMODE4",Familiar)  // No such index
     SetInterrupt(TRUE)
 END
 
 IF
   !StoryModeOn()
-  Exists(Familiar)
+  InMyArea(Familiar)
   CheckSpellState(Familiar,STORY_MODE)
 THEN
   RESPONSE #100
     SetInterrupt(FALSE)
-    ReallyForceSpellDeadRES("OHSMODE3",Familiar)
+    ApplySpellRES("OHSMODE3",Familiar)  // No such index
     SetInterrupt(TRUE)
 END
 >>>>>>>> 
@@ -964,26 +964,6 @@ BUT_ONLY
 //BD0108.BCS
 COPY_EXISTING ~BD0108.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreature("MINSC7_",\[403\.571\],SE)[%newline%]*ApplySpellRES("bdbump1","MINSC")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("MINSC7_",[403.571],SE)
-    ActionOverride("Minsc",MakeGlobalOverride())
-    ApplySpellRES("bdbump1","MINSC")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~CreateCreature("dynahe7",\[244\.463\],SE)[%newline%]*SetGlobal("BD_DYNAHEIR","BD0108",1)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("dynahe7",[244.463],SE)
-    ActionOverride("Dynaheir",MakeGlobalOverride())
-    SetGlobal("BD_DYNAHEIR","BD0108",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
 		SPRINT textToReplace ~^\(  Global("BD_MINSC","BD0108",0)\)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
@@ -1006,32 +986,6 @@ COPY_EXISTING ~BD0108.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
-	END
-BUT_ONLY
-
-//BD0110.BCS
-COPY_EXISTING ~BD0110.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreature("safana7",\[889\.620\],N)[%newline%]*SetGlobal("BD_SPAWN_SAFANA","BD0110",1)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("safana7",[889.620],N)
-    ActionOverride("Safana",MakeGlobalOverride())
-    SetGlobal("BD_SPAWN_SAFANA","BD0110",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		/*SPRINT textToReplace ~^\(  Global("BD_SPAWN_SAFANA","BD0110",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
-  Global("Chapter","GLOBAL",7)
-  !StateCheck("Safana",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
 	END
 BUT_ONLY
 

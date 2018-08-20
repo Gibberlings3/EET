@@ -1,20 +1,5 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
 
-//Bug in BDBAN103.BCS (VOGHLIN DV instead of VOGHILN)
-//http://redmine.beamdog.com/issues/26940
-COPY_EXISTING ~BDBAN103.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~"VOGHLIN"~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~"VOGHILN"~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
-BUT_ONLY
-
 //referenced BG2:EE strrefs (doesn't matter that much since these are mostly debug resources)
 ACTION_CLEAR_ARRAY strref_tlk
 ACTION_DEFINE_ASSOCIATIVE_ARRAY strref_tlk BEGIN
@@ -73,99 +58,6 @@ COPY_EXISTING ~BDPETR01.CRE~ ~override~
 		PATCH_WARN ~WARNING: %BASH_FOR_FILE% no longer needs fixing~
 	END
 BUT_ONLY
-
-//same problem as:
-//https://forums.beamdog.com/discussion/comment/789128#Comment_789128
-//http://redmine.beamdog.com/issues/22244
-<<<<<<<< .../oBG4800.baf
-IF
-  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
-  Global("RASAAD_1ST_SPAWN","BG4800",0)
-  !Dead("RASAAD")
-  !InPartyAllowDead("RASAAD")
-  XPLT(Player1,1500)
-THEN
-  RESPONSE #100
-    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
-    ActionOverride("RASAAD",MakeGlobal())
-    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
-    SetGlobal("RASAAD_1ST_SPAWN","BG4800",1)
-END
-
-IF
-  !Global("RASAADFIGHT","BG4800",1)
-  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
-  Global("RASAAD_2ND_SPAWN","BG4800",0)
-  !Dead("RASAAD")
-  !InPartyAllowDead("RASAAD")
-  XPGT(Player1,1499)
-  XPLT(Player1,6050)
-THEN
-  RESPONSE #100
-    ActionOverride("RASAAD",DestroySelf())
-    SmallWait(2)
-    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
-    ActionOverride("RASAAD",MakeGlobal())
-    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
-    SetGlobal("RasaadTalkedTo","BG4800",1)
-    SetGlobal("RASAAD_2ND_SPAWN","BG4800",1)
-END
-
-IF
-  !Global("RASAADFIGHT","BG4800",1)
-  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
-  Global("RASAAD_3RD_SPAWN","BG4800",0)
-  !Dead("RASAAD")
-  !InPartyAllowDead("RASAAD")
-  XPGT(Player1,6049)
-  XPLT(Player1,27550)
-THEN
-  RESPONSE #100
-    ActionOverride("RASAAD",DestroySelf())
-    SmallWait(2)
-    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
-    ActionOverride("RASAAD",MakeGlobal())
-    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
-    SetGlobal("RasaadTalkedTo","BG4800",1)
-    SetGlobal("RASAAD_3RD_SPAWN","BG4800",1)
-END
-
-IF
-  !Global("RASAADFIGHT","BG4800",1)
-  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
-  Global("RASAAD_4TH_SPAWN","BG4800",0)
-  !Dead("RASAAD")
-  !InPartyAllowDead("RASAAD")
-  XPGT(Player1,27549)
-THEN
-  RESPONSE #100
-    ActionOverride("RASAAD",DestroySelf())
-    SmallWait(2)
-    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
-    ActionOverride("RASAAD",MakeGlobal())
-    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
-    SetGlobal("RasaadTalkedTo","BG4800",1)
-    SetGlobal("RASAAD_4TH_SPAWN","BG4800",1)
-END
->>>>>>>>
-
-<<<<<<<< .../nBG4800.baf
-IF
-  Global("RASAAD_SPAWN_STOP","GLOBAL",0)
-  Global("RASAAD_1ST_SPAWN","BG4800",0)
-  !Dead("RASAAD")
-  !InPartyAllowDead("RASAAD")
-THEN
-  RESPONSE #100
-    CreateCreature("RASAAD",[1100.782],SSE) // Rasaad
-    ActionOverride("RASAAD",MakeGlobal())
-    ActionOverride("RASAAD",ChangeAIScript("RASAADX",DEFAULT))
-    SetGlobal("RASAAD_1ST_SPAWN","BG4800",1)
-END
->>>>>>>>
-
-COPY_EXISTING ~BG4800.bcs~ ~override~
-R_B_B ~.../oBG4800.baf~ ~.../nBG4800.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBG4800.baf in %SOURCE_FILE%~ END
 
 //junk in BG1801.ARE Rest Spawn entries (harmless but annoying during save update)
 COPY_EXISTING ~BG1801.ARE~ ~override~
@@ -268,58 +160,10 @@ COPY_EXISTING ~NEERA_.DLG~ ~override~
 	END
 BUT_ONLY
 
-//http://redmine.beamdog.com/issues/25129
-//Unique save file should be created at the beginning of chapter 11
-<<<<<<<< .../oBD4000.baf
-IF
-  GlobalLT("bd_plot","global",406)
-  Global("chapter","global",11)
-THEN
-  RESPONSE #100
-    StartCutSceneMode()
-    SetGlobal("bd_plot","global",406)
-    SetCursorState(FALSE)
-    StartCutSceneEx("bdcut41",TRUE)
-END
->>>>>>>>
-
-<<<<<<<< .../nBD4000.baf
-IF
-  GlobalLT("BD_Chapter_Save","GLOBAL",11)
-  Global("Chapter","GLOBAL",11)
-THEN
-  RESPONSE #100
-    SetGlobal("BD_Chapter_Save","GLOBAL",11)
-    SaveGame(37)
-END
-
-IF
-  GlobalLT("bd_plot","global",406)
-  Global("chapter","global",11)
-THEN
-  RESPONSE #100
-    StartCutSceneMode()
-    SetGlobal("bd_plot","global",406)
-    SetCursorState(FALSE)
-    StartCutSceneEx("bdcut41",TRUE)
-END
->>>>>>>>
-
-COPY_EXISTING ~BD4000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		COUNT_REGEXP_INSTANCES ~BD_Chapter_Save~ num_matches
-	END
-	PATCH_IF (num_matches > 0) BEGIN
-		PATCH_WARN ~WARNING: .../oBD4000.baf fix for BD4000.BCS is no longer needed.~
-	END ELSE BEGIN
-		R_B_B ~.../oBD4000.baf~ ~.../nBD4000.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBD4000.baf in %SOURCE_FILE%~ END
-	END
-BUT_ONLY
-
 //http://www.shsforums.net/topic/56960-bgtee/page-7#entry585091
 //IMOEN.CRE has wrong stats and BG:EE added DV to it. Conflict with BG2 Tweaks ToB-Style NPCs unless fixed
 COPY_EXISTING ~IMOEN1.CRE~ ~override/IMOEN.CRE~
-WRITE_ASCII 0x2CC ~IMOEN~ #8
+	WRITE_ASCII 0x2CC ~IMOEN~ #8
 
 //https://forums.beamdog.com/discussion/44826/bugged-dopplegangers-in-ar2619
 //Bugged ELMINS4.DLG if you kill either TETHTO3 or GORION3 before dialogue is triggered, also fix for 1-hit KO doppleganger change
@@ -409,15 +253,6 @@ COPY_EXISTING ~NETHGUA1.CRE~ ~override~
 	WRITE_BYTE 0x27b ~35~ //Alignment
 BUT_ONLY
 
-//https://forums.beamdog.com/discussion/40059/killing-winski-perorate
-//Killing Winski Perorate in the Thieves' Maze yields reputation loss
-COPY_EXISTING ~WINSKI2.CRE~ ~override~
-	READ_BYTE 0x273 ~class~
-	PATCH_IF (class = 155) BEGIN //INNOCENT
-		WRITE_BYTE 0x273 ~1~ //MAGE
-	END
-BUT_ONLY
-
 //Tanari Aec'Letec is able follow you upstairs during fight due to "improved" (not at all) pathfinding added in BG2:EE patch 1.3, which allows for cheesy tactics. This code prevents such situation by disabling stairs during this fight
 COPY_EXISTING ~BG1002.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
@@ -452,56 +287,3 @@ COPY_EXISTING ~IMPORT02.2DA~ ~override~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~ SLNG03$~ ~ SLNG05~
 BUT_ONLY
-
-//https://forums.beamdog.com/discussion/39023/tazoksays-blocks-in-ar2400-bcs-and-ar2900-bcs-prevent-further-script-blocks-from-firing#latest
-//Script blocks added at the end of BG2400.BCS or BG2900.BCS will not execute once BG1900 has been entered.
-//Thanks to AstroBryGuy
-
-ACTION_IF !FILE_EXISTS ~override/AY#BGEEARBCSFIX.000~ BEGIN
-
-	COPY_EXISTING ~BG2400.bcs~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-  			//Add Exists(Raiken) check to TazokSays script block
-  			REPLACE_TEXTUALLY ~Global("TazokSays","GLOBAL",1)~ ~Global("TazokSays","GLOBAL",1) Exists("Raiken")~
-  		END
-
-	COPY_EXISTING ~BG2900.bcs~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-  			//Add Exists(Teven) check to TazokSays script block
-  			REPLACE_TEXTUALLY ~Global("TazokSays","GLOBAL",1)~ ~Global("TazokSays","GLOBAL",1) Exists("Teven")~
-  		END
-		
-	COPY_EXISTING ~sw1h01.itm~ ~override/AY#BGEEARBCSFIX.000~
-
-END
-
-//In BG:EE Colquetle Family is added by the are file, the are file has no script attached
-//There is an existing AR4300.bcs which also adds the family to the area
-//EET assigned these script, now there are 2 Colquetle Families...
-
-<<<<<<<< .../oBG4300.baf
-IF
-Global("PoorMrColquetleFamily","GLOBAL",0)
-THEN
-RESPONSE #100
-SetGlobal("PoorMrColquetleFamily","GLOBAL",1)
-CreateCreature("mrcolson",[2686.874],NNW)
-ActionOverride("mrcolson",DropInventory())
-CreateCreature("mrcolwif",[2738.879],SW)
-CreateCreature("mrcolboy",[2720.890],SW)
-END
->>>>>>>> 
-
-<<<<<<<< .../nBG4300.baf
->>>>>>>>
-
-COPY_EXISTING ~BG4300.bcs~ ~override~
-R_B_B ~.../oBG4300.baf~ ~.../nBG4300.baf~ ON_MISMATCH PATCH_PRINT ~Could not find block matching .../oBG4300.baf in %SOURCE_FILE% (not a problem, some mod probably fixed it before)~ END
-
-//Gorions Letter and Belt should be unstealable
-//https://forums.beamdog.com/discussion/41463/win-steam-gorions-letter-shouldnt-appear-on-his-corpse-when-pickpocketed-before#latest
-
-COPY_EXISTING ~gorion.cre~ ~override~
-SPRINT item_to_change ~BELT16~
-SPRINT flags ~UNSTEALABLE~
-LPM ADD_CRE_ITEM_FLAGS

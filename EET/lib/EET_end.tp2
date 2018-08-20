@@ -687,7 +687,7 @@ ACTION_PHP_EACH valid_race AS race => dummy BEGIN
 	OUTER_SPRINT content EVAL ~%%race%%~
 	OUTER_SPRINT append_race ~%append_race%%LNL%%TAB%%content%}, --%race%~
 END
-COPY_EXISTING ~M_EET.lua~ ~override~
+COPY_EXISTING ~M_K#EET.lua~ ~override~
 	REPLACE_TEXTUALLY ~\(bioClassData = {\)~ ~\1%append_class%~
 	REPLACE_TEXTUALLY ~\(bioRaceData = {\)~ ~\1%append_race%~
 BUT_ONLY
@@ -744,7 +744,8 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	AT_NOW ~setup-EET.exe --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%\save\saves.tra"~
 END ELSE BEGIN //osx, unix
 	AT_NOW ~rm -f "%USER_DIRECTORY%/save/saves.tra"~ EXACT
-	AT_NOW ~./EET/weidu_%WEIDU_OS% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%/save/saves.tra"~
+	AT_NOW ~chmod +x ./EET/bin/%WEIDU_OS%/weidu~ EXACT
+	AT_NOW ~./EET/bin/%WEIDU_OS%/weidu --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%/save/saves.tra"~
 END
 
 ACTION_IF FILE_EXISTS_IN_GAME ~add_spell.ids~ BEGIN

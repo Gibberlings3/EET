@@ -1,3 +1,30 @@
+function generateBioText()
+	bioClass = ""
+	bioRace = ""
+	MyRace = chargen.races[currentChargenRace].id
+	MyClass = chargen.class[currentChargenClass].id
+	MyKit = -1
+	MyKit = chargen.kit[currentChargenKit].id
+	colClass = 2 + Infinity_GetINIValue('Program Options','Active Campaign')
+	colRace = 1 + Infinity_GetINIValue('Program Options','Active Campaign')
+	-- Go through each row of bioClassData
+	for i=1,#bioClassData,1 do
+		-- Check chargen.class and chargen.kit to find a match against the current row 
+		if MyClass == bioClassData[i][1] and MyKit == bioClassData[i][2] then
+			-- On match, set bioClass string equal to bioClassData text
+			bioClass = Infinity_FetchString(bioClassData[i][colClass])
+		end
+	end
+	-- Go through each row of bioRaceData
+	for i=1,#bioRaceData,1 do
+		-- Check chargen.race to find a match against the current row
+		if MyRace == bioRaceData[i][1] then
+			-- On match, set bioRace string equal to bioRaceData text
+			bioRace = Infinity_FetchString(bioRaceData[i][colRace])
+		end
+	end
+end
+
 -- -- -- -- --
 -- UTIL.LUA --
 -- -- -- -- --

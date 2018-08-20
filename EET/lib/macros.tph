@@ -2,6 +2,44 @@
 //BEGIN Macros
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+DEFINE_ACTION_FUNCTION GET_SYSTEM_ARCH RET SYSTEM_ARCH BEGIN
+	ACTION_MATCH "%WEIDU_OS%" WITH
+	win32 BEGIN
+<<<<<<<< .../arch_var.bat
+@echo off
+if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" goto AMD64
+if /i "%PROCESSOR_ARCHITEW6432%"=="AMD64" goto AMD64
+SET arch_var=x86
+goto OUT
+:AMD64
+SET arch_var=amd64
+:OUT
+echo %arch_var%>override\arch_var.txt
+>>>>>>>>
+		COPY ~.../arch_var.bat~ ~override/arch_var.bat~
+		AT_NOW ~call override\arch_var.bat~
+		DELETE + ~override/arch_var.bat~
+		COPY - ~override\arch_var.txt~ ~override~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~amd64~ BEGIN
+				SPRINT SYSTEM_ARCH ~amd64~
+			END ~~
+		DELETE + ~override\arch_var.txt~
+	END
+	osx unix BEGIN
+		OUTER_SPRINT SYSTEM_ARCH ~x86~
+		AT_NOW ~echo $(uname -m) >override\arch_var.txt~
+		COPY - ~override\arch_var.txt~ ~override~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~x86_64~ BEGIN
+				SPRINT SYSTEM_ARCH ~amd64~
+			END ~~
+		DELETE + ~override\arch_var.txt~
+	END
+    DEFAULT END
+	ACTION_IF (~%SYSTEM_ARCH%~ STRING_EQUAL ~~) BEGIN
+		OUTER_SPRINT SYSTEM_ARCH ~%WEIDU_ARCH%~
+	END
+END
+
 DEFINE_PATCH_FUNCTION ~EET_spellbooks~
 	INT_VAR
 		cheat = 0 //1 means Cleric/Ranger gains Druid spells up to level 7
@@ -414,8 +452,12 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 		READ_SHORT 0x58 "actors_cnt"
 		FOR (cnt=0; cnt<"%actors_cnt%"; cnt=cnt+1) BEGIN
 			//CRE structure (embedded CRE files)
-			READ_BYTE ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			READ_LONG ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			READ_LONG ("%actors_off%"+0x110*cnt+0x8c) "actors_emb_size"
 			PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
+			END ELSE PATCH_IF (actors_emb_size = 0) BEGIN
+				SET actors_flags = actors_flags + BIT0
+				WRITE_LONG ("%actors_off%"+0x110*cnt+0x28) "%actors_flags%"
 			END ELSE BEGIN //CRE attached
 				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
 				PATCH_IF (actors_emb_off != 0) BEGIN
@@ -2351,9 +2393,13 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
-	PATCH_IF ("%fx_type%" = 39) //Sleep
+	PATCH_IF ("%fx_type%" = 25) //Poison
+	OR ("%fx_type%" = 39) //Sleep
+	OR ("%fx_type%" = 78) //Disease
+	OR ("%fx_type%" = 98) //Regeneration
 	OR ("%fx_type%" = 213) //Maze
 	OR ("%fx_type%" = 218) //Stoneskin effect
+	OR ("%fx_type%" = 272) //Use EFF file on condition
 	BEGIN
 		SET off = special SPRINT res ~icon~ LPM EET_PCU_off_long
 	END
@@ -2576,6 +2622,10 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		END
 	END
 
+	PATCH_IF ("%fx_type%" = 290) BEGIN //Change title
+		SET off = special SPRINT res ~class~ LPM EET_PCU_off_long
+	END
+
 	PATCH_IF ("%fx_type%" = 318) //Protection from spell
 	OR ("%fx_type%" = 324) //Immunity to spell and message
 	OR ("%fx_type%" = 326) //Apply effects list
@@ -2659,8 +2709,12 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 			////////////////////////////////////
 			//CRE structure (embedded CRE files)
 			////////////////////////////////////
-			READ_BYTE ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			READ_LONG ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
+			READ_LONG ("%actors_off%"+0x110*cnt+0x8c) "actors_emb_size"
 			PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
+			END ELSE PATCH_IF (actors_emb_size = 0) BEGIN
+				SET actors_flags = actors_flags + BIT0
+				WRITE_LONG ("%actors_off%"+0x110*cnt+0x28) "%actors_flags%"
 			END ELSE BEGIN //CRE attached
 				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
 				PATCH_IF (actors_emb_off != 0) BEGIN

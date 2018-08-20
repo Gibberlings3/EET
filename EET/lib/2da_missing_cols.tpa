@@ -1,0 +1,57 @@
+// Automatically fixes missing column entries in 2da files. Can be used as both patch and action function
+
+DEFINE_ACTION_FUNCTION 2DA_MISSING_COLS
+	INT_VAR
+	cols = 0 //minimum amount of columns that should have values (if not set function will automatically read max number of columns in file)
+	STR_VAR
+	2da = ~~ //2da file that should be patched, e.g. kitlist
+	entry = ~~ //what entry should be set in missing columns (if not set function will automatically read default entry from loaded 2da, e.g. *)
+BEGIN
+	ACTION_IF ~%2da%~ STR_EQ ~~ BEGIN
+		FAIL ~2DA_MISSING_COLS: %2da% STR_VAR not set~
+	END
+	COPY_EXISTING ~%2da%.2da~ ~override~
+		PRETTY_PRINT_2DA
+		PATCH_IF ~%entry%~ STR_EQ ~~ BEGIN
+			READ_2DA_ENTRY 1 0 1 "entry"
+		END
+		PATCH_IF cols = 0 BEGIN
+			COUNT_2DA_COLS "cols"
+		END
+		REPLACE_EVALUATE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
+			INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+				COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
+				WHILE (num_matches < (cols - 1)) BEGIN
+					REPLACE_TEXTUALLY ~$~ ~ %entry%~
+					SET num_matches = num_matches + 1
+				END
+			END
+		END ~%MATCH1%~
+		PRETTY_PRINT_2DA
+	BUT_ONLY
+END
+
+DEFINE_PATCH_FUNCTION 2DA_MISSING_COLS
+	INT_VAR
+	cols = 0 //minimum amount of columns that should have values (if not set function will automatically read max number of columns in file)
+	STR_VAR
+	entry = ~~ //what entry should be used in missing columns (if not set function will automatically read default entry from loaded 2da, e.g. *)
+BEGIN
+	PRETTY_PRINT_2DA
+	PATCH_IF ~%entry%~ STR_EQ ~~ BEGIN
+		READ_2DA_ENTRY 1 0 1 "entry"
+	END
+	PATCH_IF cols = 0 BEGIN
+		COUNT_2DA_COLS "cols"
+	END
+	REPLACE_EVALUATE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
+		INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+			COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
+			WHILE (num_matches < (cols - 1)) BEGIN
+				REPLACE_TEXTUALLY ~$~ ~ %entry%~
+				SET num_matches = num_matches + 1
+			END
+		END
+	END ~%MATCH1%~
+	PRETTY_PRINT_2DA
+END
