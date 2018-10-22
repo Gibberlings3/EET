@@ -58,36 +58,12 @@ chapterText = function ()
 		chapter = Infinity_GetMaxChapterPage()
 		updateDisplayJournal()
 	end
-	if (chapter == 0) and (currentCampaign == const.START_CAMPAIGN_BP1) or (currentCampaign == const.START_CAMPAIGN_BP2) then
+	if (currentCampaign == const.START_CAMPAIGN_BP1) or (currentCampaign == const.START_CAMPAIGN_BP2) then
 		return t("ARENA_MODE_LABEL")
-	elseif (chapter < 8) then
-		return Infinity_FetchString(216202 + chapter)
-	elseif (chapter == 8) then
-		return eetStrings.EET_CHAPTER_8
-	elseif (chapter == 9) then
-		return eetStrings.EET_CHAPTER_9
-	elseif (chapter == 10) then
-		return eetStrings.EET_CHAPTER_10
-	elseif (chapter == 11) then
-		return eetStrings.EET_CHAPTER_11
-	elseif (chapter == 12) then
-		return eetStrings.EET_CHAPTER_12
-	elseif (chapter == 13) then
-		return Infinity_FetchString(74414)
-	elseif (chapter == 14) then
-		return Infinity_FetchString(74412)
-	elseif (chapter == 15) then
-		return Infinity_FetchString(74390)
-	elseif (chapter == 16) then
-		return Infinity_FetchString(74407)
-	elseif (chapter == 17) then
-		return Infinity_FetchString(74399)
-	elseif (chapter == 18) then
-		return Infinity_FetchString(74400)
-	elseif (chapter == 19) then
-		return Infinity_FetchString(74353)
+	elseif (chapter == 0) then
+		return Infinity_FetchString(216202)
 	elseif (chapter < 23) then
-		return Infinity_FetchString(71000 + chapter)
+		return eetStrings.EET_CHAPTER .. chapter
 	else
 		return Infinity_FetchString(-1)
 	end
@@ -159,13 +135,13 @@ end
 
 --obviously theres some redundancy in this data but I dislike the idea of assuming what our frame/sequence will be.
 startCampaignData = {
-	{name = 'EET_CMP_TITLE_BG1', description = 'EET_CMP_TEXT_BG1', title = 0, bigLogo = 0, icon = 0, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false}, --bg1
-	{name = 'EET_CMP_TITLE_SOD', description = 'EET_CMP_TEXT_SOD', title = 1, bigLogo = 1, icon = 1, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false}, --sod
-	{name = 'EET_CMP_TITLE_SOA', description = 'EET_CMP_TEXT_SOA', title = 2, bigLogo = 2, icon = 2, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false}, --soa
-	{name = 'EET_CMP_TITLE_TOB', description = 'EET_CMP_TEXT_TOB', title = 3, bigLogo = 3, icon = 3, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false}, --tob
-	{name = 'EET_CMP_TITLE_BP1', description = 'EET_CMP_TEXT_BP1', title = 4, bigLogo = 4, icon = 4, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false}, --bp1
-	{name = 'EET_CMP_TITLE_BP2', description = 'EET_CMP_TEXT_BP2', title = 5, bigLogo = 5, icon = 5, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false}, --bp2
-	{name = 'EET_CMP_TITLE_TUT', description = 'EET_CMP_TEXT_TUT', title = 6, bigLogo = 6, icon = 6, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false}, --tut
+	{id = 'BG1', name = 'EET_CMP_TITLE_BG1', description = 'EET_CMP_TEXT_BG1', title = 0, bigLogo = 0, icon = 0, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false, forceParty = false, cheatAreasTable = cheatAreas},
+	{id = 'SOD', name = 'EET_CMP_TITLE_SOD', description = 'EET_CMP_TEXT_SOD', title = 1, bigLogo = 1, icon = 1, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false, forceParty = false, cheatAreasTable = cheatAreas},
+	{id = 'SOA', name = 'EET_CMP_TITLE_SOA', description = 'EET_CMP_TEXT_SOA', title = 2, bigLogo = 2, icon = 2, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false, forceParty = false, cheatAreasTable = cheatAreas},
+	{id = 'TOB', name = 'EET_CMP_TITLE_TOB', description = 'EET_CMP_TEXT_TOB', title = 3, bigLogo = 3, icon = 3, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false, forceParty = false, cheatAreasTable = cheatAreas},
+	{id = 'BP1', name = 'EET_CMP_TITLE_BP1', description = 'EET_CMP_TEXT_BP1', title = 4, bigLogo = 4, icon = 4, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false, forceParty = true, cheatAreasTable = cheatAreasArena_BP1},
+	{id = 'BP2', name = 'EET_CMP_TITLE_BP2', description = 'EET_CMP_TEXT_BP2', title = 5, bigLogo = 5, icon = 5, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false, forceParty = true, cheatAreasTable = cheatAreasArena},
+	{id = 'TUT', name = 'EET_CMP_TITLE_TUT', description = 'EET_CMP_TEXT_TUT', title = 6, bigLogo = 6, icon = 6, background = 2, button = 2, sidebar = 2, importEnabled = false, tutorialEnabled = false, forceParty = false, cheatAreasTable = cheatAreasTutorial},
 }
 
 -- class, kit, clastxtBIO: BG1, SOD, SOA, TOB, BP1, BP2, TUT, (...)

@@ -290,6 +290,7 @@ END
 ///// Patch files                                      \\\\\
 /////                                                  \\\\\
 
+OUTER_SPRINT remappedPrefix ~remapped~
 INCLUDE ~EET/lib/macros.tph~
 
 COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
@@ -737,7 +738,7 @@ END
 
 //some strings exported from TLK to TRA becomes messed up if the new file overwrites previous one. DELETE command used before exporting doesn't fix it. Only deleting the file via AT_NOW seems to make weidu not screw the output file
 
-OUTER_SET str_min = 271337
+OUTER_SET str_min = 271375
 
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 	AT_NOW ~del /f "%USER_DIRECTORY%\save\saves.tra"~ EXACT

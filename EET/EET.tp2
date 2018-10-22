@@ -116,6 +116,7 @@ OUTER_SPRINT log_remapped_spl ~~
 OUTER_SPRINT log_remapped_splName ~~
 OUTER_SPRINT log_remapped_icon ~~
 OUTER_SPRINT log_remapped_splProt ~~
+OUTER_SPRINT log_remapped_splState ~~
 
 OUTER_SET EET_JOURNAL = 1 //legacy flag
 
@@ -144,6 +145,7 @@ INCLUDE ~.../eet_cpmvars.tpa~
 INCLUDE ~.../EET_functions.tph~
 INCLUDE ~%MOD_FOLDER%/lib/replace_multiline.tpa~
 INCLUDE ~%MOD_FOLDER%/lib/2da_missing_cols.tpa~
+OUTER_SPRINT remappedPrefix ~remapped~
 INCLUDE ~%MOD_FOLDER%/lib/macros.tph~
 INCLUDE ~%MOD_FOLDER%/lib/strref_tables.tph~
 INCLUDE ~%MOD_FOLDER%/lib/bgee_dir.tph~
@@ -323,7 +325,7 @@ ACTION_FOR_EACH var IN 2da /*plt*/ ttf wav wbm wfx BEGIN
 	END
 END
 
-ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids specific.ids spell.ids bgee.lua ui.menu BEGIN
+ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids specific.ids spell.ids splstate.ids bgee.lua ui.menu BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%MOD_FOLDER%/temp/array~
 	END ELSE BEGIN
@@ -655,12 +657,8 @@ END
 INCLUDE ~%MOD_FOLDER%/lib/bg2_GUI.tph~
 
 OUTER_SPRINT L_LUA ~~
-ACTION_FOR_EACH entry IN EET_CMP_TEXT_BG1 EET_CMP_TEXT_SOD EET_CMP_TEXT_SOA EET_CMP_TEXT_TOB EET_CMP_TEXT_BP1 EET_CMP_TEXT_BP2 EET_CMP_TEXT_TUT EET_CMP_TITLE_BG1 EET_CMP_TITLE_SOD EET_CMP_TITLE_SOA EET_CMP_TITLE_TOB EET_CMP_TITLE_BP1 EET_CMP_TITLE_BP2 EET_CMP_TITLE_TUT EET_WARNING_TITLE EET_WARNING_TEXT EET_CHAPTER_8 EET_CHAPTER_9 EET_CHAPTER_10 EET_CHAPTER_11 EET_CHAPTER_12 BEGIN
-	ACTION_IF (~%entry%~ STR_EQ ~EET_CMP_TEXT_BG1~) BEGIN
-		OUTER_SET cnt = 4000100
-	END ELSE ACTION_IF (~%entry%~ STR_EQ ~EET_CHAPTER_8~) BEGIN
-		OUTER_SET cnt = 2000059
-	END
+OUTER_SET cnt = 4000100
+ACTION_FOR_EACH entry IN EET_CMP_TEXT_BG1 EET_CMP_TEXT_SOD EET_CMP_TEXT_SOA EET_CMP_TEXT_TOB EET_CMP_TEXT_BP1 EET_CMP_TEXT_BP2 EET_CMP_TEXT_TUT EET_CMP_TITLE_BG1 EET_CMP_TITLE_SOD EET_CMP_TITLE_SOA EET_CMP_TITLE_TOB EET_CMP_TITLE_BP1 EET_CMP_TITLE_BP2 EET_CMP_TITLE_TUT EET_WARNING_TITLE EET_WARNING_TEXT EET_CHAPTER BEGIN
 	OUTER_SPRINT string (AT cnt)
 	OUTER_PATCH_SAVE string ~%string%~ BEGIN
 		REPLACE_TEXTUALLY ~%LNL%~ ~\n~
@@ -675,7 +673,7 @@ COPY ~%MOD_FOLDER%/base/lua/M_K#EET.lua~ ~override~
 %L_LUA%~
 
 COPY_EXISTING ~BGEE.LUA~ ~override~
-	REPLACE_TEXTUALLY ~chapterBackgrounds\[[0-9]+\][ %TAB%]*=[ %TAB%]*"GUICHP.+"[%newline%]*~ ~~
+	REPLACE_TEXTUALLY ~chapterBackgrounds\[[0-9]+\][ %TAB%]*=[ %TAB%]*"[^"]+"[%newline%]*~ ~~
 	REPLACE_TEXTUALLY ~{'intro',.+[%newline%]*~ ~~
 	REPLACE_TEXTUALLY ~{'blackpit',.+[%newline%]*~ ~~
 	REPLACE_TEXTUALLY ~{'sodcin0[1-3]',.+[%newline%]*~ ~~
@@ -709,7 +707,7 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 ~
 	SPRINT movies_var ~~
 	SPRINT fontcolors_var ~~
-	PATCH_INCLUDE ~%MOD_FOLDER%/lib/cheat_var.tph~ //check if adding these areas will be needed in future patches
+	PATCH_INCLUDE ~%MOD_FOLDER%/lib/cheat_var.tph~
 	REPLACE_TEXTUALLY ~filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'MALE\([0-9]+\)'~ ~filenames_stringrefs['BGMALE\1'~
 	REPLACE_TEXTUALLY ~filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'FEMALE\([0-9]+\)'~ ~filenames_stringrefs['BGFEML\1'~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*fontcolors\['\([A-Z0-9#_]+\)'\][ %TAB%]*=[ %TAB%]*'\([^']+\)'\([^%LNL%%WNL%]*\)~ BEGIN
@@ -852,7 +850,7 @@ COPY_EXISTING ~bgee.lua~ ~override~
 	REPLACE_TEXTUALLY ~},?[%newline%]*\(}[%newline%]*movies =\)~ ~},%LNL%%portraits_var%\1~
 	REPLACE_TEXTUALLY ~\(movies[ %TAB%]*=[%newline%]*{\)~ ~\1%LNL%%movies_var%~
 	REPLACE_TEXTUALLY ~\(cheatAreas[ %TAB%]*=[%newline%]*{\)~ ~\1%LNL%%cheat_var%	--SoA Areas~
-	REPLACE_TEXTUALLY ~}\([%newline%]*\)\(cheatAreasArena = {\)~ ~%cheat_var_tob%}\1cheatAreasArena_BG1 = {%cheat_var_bp1%}\1\2~
+	REPLACE_TEXTUALLY ~}\([%newline%]*\)\(cheatAreasArena = {\)~ ~%cheat_var_tob%}\1cheatAreasArena_BP1 = {%cheat_var_bp1%}\1\2~
 	REPLACE_TEXTUALLY ~\(createEntry.+)\)[%newline%]*end~ ~\1%LNL%%createQuest_var%%createEntry_var%end~
 	APPEND_FILE ~.../bgee.lua~ EVALUATE_BUFFER
 BUT_ONLY
@@ -1028,7 +1026,7 @@ ACTION_BASH_FOR ~%patch_dir%/dlg~ ~.*~ BEGIN
 		SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%patch_dir%/d/%BASH_FOR_RES%.d'%LNL%~
 END
 
-ACTION_FOR_EACH var IN mus musName sum state ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit tra wmp BEGIN
+ACTION_FOR_EACH var IN mus musName splProt splState sum icon ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit wmp tra BEGIN
 	OUTER_SPRINT array EVAL ~remapped_%var%~
 	OUTER_SPRINT tbl_lua ~%tbl_lua%%array% = {}%LNL%~
 	ACTION_PHP_EACH ~%array%~ AS var1 => var2 BEGIN
@@ -1080,6 +1078,7 @@ PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_icon BEGIN%LNL%%log_remapped_icon%END~
 PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN%LNL%%log_remapped_splProt%END~
+PRINT ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN%LNL%%log_remapped_splState%END~
 
 COPY + ~.../blank.txt~ ~%MOD_FOLDER%/temp/new_vars.tph~
 APPEND_OUTER + ~%MOD_FOLDER%/temp/new_vars.tph~ ~ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_sum BEGIN%LNL%%log_remapped_sum%END%LNL%
@@ -1096,7 +1095,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_itm BEGIN%LNL%%log_remapped_itm%END%LNL
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN%LNL%%log_remapped_spl%END%LNL%
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splName BEGIN%LNL%%log_remapped_splName%END%LNL%
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_icon BEGIN%LNL%%log_remapped_icon%END%LNL%
-ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN%LNL%%log_remapped_splProt%END%LNL%~
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN%LNL%%log_remapped_splProt%END%LNL%
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN%LNL%%log_remapped_splState%END%LNL%~
 
 COPY ~%MOD_FOLDER%/lib/pcu_dict.tph~ ~%MOD_FOLDER%/lib~
 	APPEND_FILE ~%MOD_FOLDER%/temp/new_vars.tph~
@@ -1138,8 +1138,6 @@ COPY + ~.../blank.txt~ ~%MOD_FOLDER%/temp/Filelist.txt~
 ACTION_FOR_EACH var IN are /*bcs*/ cre /*dlg*/ eff ini itm pro spl sto vef vvc wed "" BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
-			SET checked = 0
-			READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
 			LPM EET_PCU_core
 	END
 END
@@ -1190,52 +1188,43 @@ END
 
 PRINT ~Installing 2DA files...~
 
-COPY + ~%MOD_FOLDER%/temp/2da/BPENDA.2DA~ ~%MOD_FOLDER%/temp/2da~
-	READ_2DA_ENTRY 1 1 3 "strref"
-	LPF EET_strref INT_VAR str = strref RET str END
-	SET_2DA_ENTRY 1 1 3 "%str%"
-	SET_2DA_ENTRY 1 2 3 "%str%"
-	PRETTY_PRINT_2DA
-
-COPY + ~%MOD_FOLDER%/temp/2da/DPALACE.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/ISLOFF.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/ISLON.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/TOSCEND.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/TOSCST.2DA~ ~%MOD_FOLDER%/temp/2da~
-	READ_2DA_ENTRY 2 2 3 "strref"
-	LPF EET_strref INT_VAR str = strref RET str END
-	SET_2DA_ENTRY 2 2 3 "%str%"
-	SET_2DA_ENTRY 3 2 3 "%str%"
-	PATCH_IF (~%SOURCE_RES%~ STR_EQ ~DPALACE~) BEGIN
-		SET_2DA_ENTRY 8 1 2 "135" //SONG
-	END ELSE PATCH_IF (~%SOURCE_RES%~ STR_EQ ~ISLON~) BEGIN
-		SET_2DA_ENTRY 1 0 1 ~ARRIVEA~ //MOS
-	END ELSE PATCH_IF (~%SOURCE_RES%~ STR_EQ ~ISLOFF~) BEGIN
-		SET_2DA_ENTRY 1 0 1 ~LEAVEA~ //MOS
-	END
-	PRETTY_PRINT_2DA
-
 <<<<<<<< .../song.2da
-SONG					%song%
+SONG %song%
 >>>>>>>>
-OUTER_SET song = 111
-COPY + ~%MOD_FOLDER%/temp/2da/DRMTXT2.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/DRMTXT3.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/DRMTXT4.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/DRMTXT5.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/DRMTXT6.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/DRMTXT7.2DA~ ~%MOD_FOLDER%/temp/2da~
-	READ_2DA_ENTRY 2 2 3 "strref"
-	LPF EET_strref INT_VAR str = strref RET str END
-	SET_2DA_ENTRY 2 2 3 "%str%"
-	READ_2DA_ENTRY 3 2 3 "strref"
-	LPF EET_strref INT_VAR str = strref RET str END
-	SET_2DA_ENTRY 3 2 3 "%str%"
-	APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
-	PRETTY_PRINT_2DA
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_2da BEGIN
+	GUIDRM2 , 111 => DRMTXT2 //Textscreen
+	GUIDRM3 , 111 => DRMTXT3 //Textscreen
+	GUIDRM4 , 111 => DRMTXT4 //Textscreen
+	GUIDRM5 , 111 => DRMTXT5 //Textscreen
+	GUIDRM6 , 111 => DRMTXT6 //Textscreen
+	GUIDRM7 , 111 => DRMTXT7 //Textscreen
+	GUICHP0B , 135 => DPALACE //Textscreen
+	LEAVEA , ~~ => ISLOFF //Textscreen
+	ARRIVEA , ~~ => ISLON //Textscreen
+	TOSCENDA , ~~ => TOSCEND //Textscreen
+	ULGOTHST , ~~ => TOSCST //Textscreen
+END
+ACTION_PHP_EACH table_EET_2da AS data => file BEGIN
+	COPY + ~%MOD_FOLDER%/temp/2da/%file%.2DA~ ~%MOD_FOLDER%/temp/2da~
+		SET_2DA_ENTRY 1 0 1 "%data%"
+		READ_2DA_ENTRY 2 2 3 "strref"
+		LPF EET_strref INT_VAR str = strref RET str END
+		SET_2DA_ENTRY 2 2 3 "%str%"
+		READ_2DA_ENTRY 3 2 3 "strref"
+		LPF EET_strref INT_VAR str = strref RET str END
+		SET_2DA_ENTRY 3 2 3 "%str%"
+		PATCH_IF ~%data_1%~ STR_EQ ~111~ BEGIN
+			SET song = "%data_1%"
+			APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
+		END ELSE PATCH_IF NOT ~%data_1%~ STR_EQ ~~ BEGIN
+			SET_2DA_ENTRY 8 1 2 "%data_1%"
+		END
+		PRETTY_PRINT_2DA
+END
 
 OUTER_SET song = 107
-COPY + ~%MOD_FOLDER%/temp/2da/CHPTXT0.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%MOD_FOLDER%/temp/2da/CHPTXT0.2DA~ ~%MOD_FOLDER%/temp/2da~ //BG1 Prologue
+	SET_2DA_ENTRY 1 0 1 "GUICHP0A"
 	FOR (i= 1 ; i<=5 ; i=i+1) BEGIN
 		READ_2DA_ENTRY 2 ~%i%~ 6 "strref"
 		LPF EET_strref INT_VAR str = strref RET str END
@@ -1244,47 +1233,87 @@ COPY + ~%MOD_FOLDER%/temp/2da/CHPTXT0.2DA~ ~%MOD_FOLDER%/temp/2da~
 	APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
 	PRETTY_PRINT_2DA
 
+OUTER_SET title = RESOLVE_STR_REF (@2000074)
 OUTER_SET strref = RESOLVE_STR_REF (@2000000)
 <<<<<<<< .../CHPTXT1.2da
-2DA     V1.0
-NONE
-        0       1        2        3
-SWITCH  DEFAULT DEFAULT  DEFAULT  DEFAULT
-DEFAULT 216203  %strref% 211898   211899
+2DA      V1.0
+GUICHP1A
+        0        1        2        3        4
+SWITCH  DEFAULT  DEFAULT  DEFAULT  DEFAULT  DEFAULT
+DEFAULT 216203   %title% %strref%  211898   211899
 SONG    135
 >>>>>>>>
-COPY ~.../CHPTXT1.2da~ ~override~ EVALUATE_BUFFER
+COPY ~.../CHPTXT1.2da~ ~override~ EVALUATE_BUFFER //BG1 Chapter 1
 	PRETTY_PRINT_2DA
 
 <<<<<<<< .../CHPTXT.2da
 2DA V1.0
-NONE
-        0           1
-SWITCH  DEFAULT     DEFAULT
-DEFAULT %strref%  %strref_1%
-SONG    135
+%data%
+        0        1        2
+SWITCH  DEFAULT  DEFAULT  DEFAULT
+DEFAULT %data_1% %data_2% %data_3%
+%data_4%
 >>>>>>>>
+
+<<<<<<<< .../CHPTXTb.2da
+2DA V1.0
+%data%
+        0        1
+SWITCH  DEFAULT  DEFAULT
+DEFAULT %data_1% %data_3%
+%data_4%
+>>>>>>>>
+
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_CHPTXT BEGIN
-	216204 , 2000001 => CHPTXT2
-	216205 , 2000002 => CHPTXT3
-	216206 , 2000003 => CHPTXT4
-	216207 , 2000004 => CHPTXT5
-	216208 , 2000005 => CHPTXT6
-	216209 , 2000006 => CHPTXT7
-	2000059 , 2000008 => CHPTXT8
-	2000060 , 2000009 => SODTXT9
-	2000061 , 2000010 => SODTXT10
-	2000062 , 2000011 => CHPTXT11
-	2000063 , 2000012 => CHPTXT12
-	2000065 , 2000013 => CHPTXT13
+	//BG1
+	GUICHP2A , 216204 , 2000075 , 2000001 , "SONG 135" => CHPTXT2 //BG1 Chapter 2
+	GUICHP3A , 216205 , 2000076 , 2000002 , "SONG 135" => CHPTXT3 //BG1 Chapter 3
+	GUICHP4A , 216206 , 2000077 , 2000003 , "SONG 135" => CHPTXT4 //BG1 Chapter 4
+	GUICHP5A , 216207 , 2000078 , 2000004 , "SONG 135" => CHPTXT5 //BG1 Chapter 5
+	GUICHP6A , 216208 , 2000079 , 2000005 , "SONG 135" => CHPTXT6 //BG1 Chapter 6
+	GUICHP7A , 216209 , 2000080 , 2000006 , "SONG 135" => CHPTXT7 //BG1 Chapter 7
+	//SoD
+	GUICHP1B , 256369 , 2000081 , 2000008 , "SONG 135" => CHPTXT8 //SoD Chapter 8
+	GUICHP2B , 256370 , 2000082 , 2000009 , "SONG 135" => SODTXT9 //SoD Chapter 9
+	GUICHP3B , 256372 , 2000083 , 2000010 , "SONG 135" => SODTXT10 //SoD Chapter 10
+	GUICHP4B , 256374 , 2000084 , 2000011 , "SONG 135" => CHPTXT11 //SoD Chapter 11
+	GUICHP5B , 256376 , 2000085 , 2000012 , "SONG 135" => CHPTXT12 //SoD Chapter 12
+	GUICHP6B , 256975 , 2000086 , 2000013 , "SONG 135" => CHPTXT13 //SoD Chapter 13
+	//SoA
+	CH01AJON , "-1" , "-1" , 17698 , "" => SCENE01 //Textscreen
+	CH02AGLN , 74412 , 2000087 , 48005 , "" => SCENE02 //BG2 Chapter 14
+	CH03AMON , 74390 , 2000088 , 61359 , "" => SCENE03 //BG2 Chapter 15a
+	CH03AMON , 74390 , 2000088 , 61360 , "" => SCENE04 //BG2 Chapter 15b
+	CH04ASHP , 74407 , 2000089 , 55714 , "" => SCRTXT01 //BG2 Chapter 16a
+	CH04ASHP , 74407 , 2000089 , 8633 , "" => SCRTXT02 //BG2 Chapter 16b
+	CH04CSAH , "-1" , "-1" , 57350 , "" => SCRTXT03 //Textscreen
+	CH04ASHP , "-1" , "-1" , 57351 , "" => SCRTXT04 //Textscreen
+	CH04ASHP , "-1" , "-1" , 46003 , "" => SCRTXT05 //Textscreen
+	CH05AUND , 74399 , 2000090 , 61361 , "" => SCRTXT07 //BG2 Chapter 17
+	CH06ADRW , 74400 , 2000091 , 1389 , "" => SCRTXT06 //BG2 Chapter 18
+	CH07ASUL , 74353 , 2000092 , 61362 , "" => SCRTXT08 //BG2 Chapter 19
+	//ToB
+	CHPTAMKE , 71021 , 2000094 , 71591 , "" => CHPTXT9 //ToB Chapter 21
+	CHPTMANA , 71022 , 2000095 , 71592 , "" => CHPTXT10 //ToB Chapter 22
+	CHPTODRE , "-1" , "-1" , 71593 , "" => SCRODRE //Textscreen
+	CHPTSARA , "-1" , "-1" , 71590 , "" => SCRSARA //Textscreen
+	//other
+	GUICHP2A , "-1" , "-1" , 31809 , "SONG 81" => BPENDA //Textscreen
 END
-ACTION_PHP_EACH table_EET_CHPTXT AS strref => file BEGIN
-	ACTION_IF (strref > 2000000) BEGIN
-		OUTER_SET strref = RESOLVE_STR_REF ((AT strref))
+ACTION_PHP_EACH table_EET_CHPTXT AS data => file BEGIN
+	ACTION_IF (data_2 > 2000000) BEGIN
+		OUTER_SET data_2 = RESOLVE_STR_REF ((AT data_2))
 	END
-	OUTER_SET strref_1 = RESOLVE_STR_REF ((AT strref_1))
-	COPY ~.../CHPTXT.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
-		PRETTY_PRINT_2DA
+	ACTION_IF (data_3 > 2000000) BEGIN
+		OUTER_SET data_3 = RESOLVE_STR_REF ((AT data_3))
+	END
+	ACTION_IF (data_1 > 0) BEGIN
+		COPY ~.../CHPTXT.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
+			PRETTY_PRINT_2DA
+	END ELSE BEGIN
+		COPY ~.../CHPTXTb.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
+			PRETTY_PRINT_2DA
+	END
 END
 
 COPY ~%MOD_FOLDER%/base/2da~ ~override~
@@ -1653,7 +1682,7 @@ OUTER_SPRINT array ~remapped_pvrz_base~
 OUTER_SET del_pvrz = 0
 
 ACTION_PHP_EACH gui_dir AS src_dir => dest_dir BEGIN
-	ACTION_BASH_FOR ~%src_dir%~ ~^.+\.[bm][ao][ms]$~ BEGIN
+	ACTION_BASH_FOR ~%src_dir%~ ~^.+\.[BM][AO][MS]$~ BEGIN
 		ACTION_IF ~%src_dir%~ STR_EQ ~%MOD_FOLDER%/base/gui/sod~ BEGIN
 			COPY ~%BASH_FOR_FILESPEC%~ ~%MOD_FOLDER%/SoD_GUI~
 				LPM EET_install_pvrz

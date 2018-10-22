@@ -230,7 +230,6 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 			DEFAULT
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_output%~
 					PATCH_IF (type < 3) BEGIN
-						READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
 						LAUNCH_PATCH_MACRO ~EET_PCU_core~
 					END
 			END

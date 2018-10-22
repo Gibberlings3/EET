@@ -257,6 +257,178 @@ THEN
     SetGlobal("BaelothJoinedParty","GLOBAL",0)
 END
 
+IF
+  GlobalTimerExpired("EndGame","GLOBAL")
+THEN
+  RESPONSE #100
+    Kill(Player1)
+END
+
+IF
+  GlobalTimerExpired("PoisonParty","GLOBAL")
+  GlobalLT("PoisonWarning","GLOBAL",9)
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
+    IncrementGlobal("PoisonWarning","GLOBAL",1)
+    DisplayString(Myself,211833)
+    Continue()
+END
+
+IF
+  Global("PartyCured","GLOBAL",0)
+  GlobalTimerExpired("PoisonParty","GLOBAL")
+  Global("PoisonPartyIcon","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("PoisonPartyIcon","GLOBAL",1)
+    ApplySpellRES("bdmarek",Player1)
+END
+
+IF
+  GlobalTimerExpired("PoisonParty2","GLOBAL")
+  Global("PartyCured","GLOBAL",0)
+THEN
+  RESPONSE #100
+    Kill(Player1)
+END
+
+IF
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3")
+  Exists(Player2)
+THEN
+  RESPONSE #100
+    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+END
+
+IF
+  GlobalTimerExpired("bd_taerom_vial","GLOBAL")
+  Global("bd_taerom_newitems","GLOBAL",0)
+THEN
+  RESPONSE #100
+    AddStoreItem("taerum","ax1h01q",9,1)
+    AddStoreItem("taerum","blun02q",15,1)
+    AddStoreItem("taerum","blun04q",5,1)
+    AddStoreItem("taerum","blun06q",5,1)
+    AddStoreItem("taerum","dagg01q",0,1)
+    AddStoreItem("taerum","halb01q",5,1)
+    AddStoreItem("taerum","hamm01q",5,1)
+    AddStoreItem("taerum","sper01q",10,1)
+    AddStoreItem("taerum","sw1h01q",3,1)
+    AddStoreItem("taerum","sw1h04q",6,1)
+    AddStoreItem("taerum","sw1h07q",8,1)
+    RemoveStoreItem("taerum","ax1h01",0)
+    RemoveStoreItem("taerum","blun02",0)
+    RemoveStoreItem("taerum","blun04",0)
+    RemoveStoreItem("taerum","blun06",0)
+    RemoveStoreItem("taerum","dagg01",0)
+    RemoveStoreItem("taerum","halb01",0)
+    RemoveStoreItem("taerum","hamm01",0)
+    RemoveStoreItem("taerum","sper01",0)
+    RemoveStoreItem("taerum","sw1h01",0)
+    RemoveStoreItem("taerum","sw1h04",0)
+    RemoveStoreItem("taerum","sw1h07",0)
+    SetGlobal("bd_taerom_newitems","GLOBAL",1)
+END
+
+IF
+  Global("CDLetterCheckscrl2z","GLOBAL",1)
+  !ActuallyInCombat()
+  Global("CHAPTER","GLOBAL",3)
+THEN
+  RESPONSE #100
+    Wait(2)
+    RevealAreaOnMap("BG2200")
+    IncrementChapter("CHPTXT4")
+    AddJournalEntry(215838,INFO)
+    EraseJournalEntry(231450)
+    EraseJournalEntry(231448)
+    EraseJournalEntry(227218)
+    EraseJournalEntry(227217)
+    EraseJournalEntry(227381)
+    EraseJournalEntry(226856)
+    EraseJournalEntry(226861)
+    EraseJournalEntry(227378)
+    EraseJournalEntry(227383)
+    EraseJournalEntry(226850)
+    EraseJournalEntry(227468)
+    EraseJournalEntry(227473)
+    EraseJournalEntry(226862)
+    EraseJournalEntry(227379)
+    EraseJournalEntry(227382)
+    EraseJournalEntry(227469)
+    EraseJournalEntry(227474)
+    EraseJournalEntry(227492)
+    EraseJournalEntry(226858)
+    EraseJournalEntry(227380)
+    EraseJournalEntry(226857)
+    EraseJournalEntry(226859)
+    EraseJournalEntry(227476)
+    EraseJournalEntry(226860)
+    AddJournalEntry(231451,QUEST)
+END
+
+IF
+  Global("Chapter","GLOBAL",4)
+  GlobalLT("BD_Chapter_Save","GLOBAL",4)
+THEN
+  RESPONSE #100
+    SetGlobal("BD_Chapter_Save","GLOBAL",4)
+    SaveGame(29)
+END
+
+IF
+  Global("PartyCured","GLOBAL",0)
+  TriggerOverride(Player1,Global("bdmarek","LOCALS",1))
+  Dead("Marek")
+THEN
+  RESPONSE #100
+    SetGlobal("PartyCured","GLOBAL",1)
+    AddJournalEntry(227253,QUEST_DONE)
+    EraseJournalEntry(226793)
+    EraseJournalEntry(226982)
+    EraseJournalEntry(227240)
+    EraseJournalEntry(227241)
+    EraseJournalEntry(227242)
+    EraseJournalEntry(227243)
+    EraseJournalEntry(227183)
+    DisplayString(Player1,220675)
+    AddexperienceParty(10000)
+END
+
+IF
+  Global("PartyCured","GLOBAL",0)
+  TriggerOverride(Player1,Global("bdmarek","LOCALS",1))
+  !Dead("Marek")
+THEN
+  RESPONSE #100
+    SetGlobal("PartyCured","GLOBAL",1)
+    AddJournalEntry(231188,QUEST_DONE)
+    EraseJournalEntry(226793)
+    EraseJournalEntry(226982)
+    EraseJournalEntry(227240)
+    EraseJournalEntry(227241)
+    EraseJournalEntry(227242)
+    EraseJournalEntry(227243)
+    EraseJournalEntry(227183)
+    DisplayString(Player1,220675)
+    AddexperienceParty(10000)
+END
+
+IF
+  !InParty(Player1)
+THEN
+  RESPONSE #100
+    GameOver(19377)
+END
+
 //code from SoD
 IF
   Global("bd_spect","global",3)
@@ -282,43 +454,26 @@ THEN
     DisplayStringHeadOwner("BDSW1HX5",267252) // Your sword blade snaps in half with a crack that almost sounds like a rasping laugh.
 END
 
-//code from DPLAYER2.BCS (which doesn't work when AI is off)
 IF
-  GlobalTimerExpired("PoisonParty","GLOBAL")
-  GlobalLT("PoisonWarning","GLOBAL",9)
-  Global("PartyCured","GLOBAL",0)
+  Global("BD_PARTY_HAS_BDCLCK05","GLOBAL",0)
+  PartyHasItem("bdclck05")  // Cloak of the Gargoyle
 THEN
   RESPONSE #100
-    SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
-    IncrementGlobal("PoisonWarning","GLOBAL",1)
-    DisplayString(Player1,11833) // You feel very ill, and you have thrown up your previous meal. Your head is fuzzy, and you are confused as to why you are sick. Then you remember what Lothander had told you. You've been poisoned! Lothander wasn't lying after all, and only he has the cure.
+    SetGlobal("BD_PARTY_HAS_BDCLCK05","GLOBAL",1)
 END
 
 IF
-  GlobalTimerExpired("PoisonParty2","GLOBAL")
-  Global("PartyCured","GLOBAL",0)
+  AreaCheck("bd1000")
+  Global("bd_remove_bdrep","GLOBAL",0)
 THEN
   RESPONSE #100
-    Kill(Player6)
-    Kill(Player5)
-    Kill(Player4)
-    Kill(Player3)
-    Kill(Player2)
-    Kill(Player1)
-END
-
-IF
-  Global("Infected","GLOBAL",1)
-  GlobalTimerExpired("PlayerInfected","GLOBAL")
-  !Dead("Mendas3") // Mendas
-  Exists(Player2)
-THEN
-  RESPONSE #100
-    ActionOverride(Player2,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player3,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player4,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player5,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
-    ActionOverride(Player6,ForceSpell(Myself,PLAYER_WEREWOLF_CHANGE))
+    SetGlobal("bd_remove_bdrep","GLOBAL",1)
+    SetGlobalTimer("bd_reputation_warning_timer","global",3)
+    ApplySpellRES("BDREP1",Player2)  // No such index
+    ApplySpellRES("BDREP1",Player3)  // No such index
+    ApplySpellRES("BDREP1",Player4)  // No such index
+    ApplySpellRES("BDREP1",Player5)  // No such index
+    ApplySpellRES("BDREP1",Player6)  // No such index
 END
 >>>>>>>>
 
@@ -2381,6 +2536,14 @@ COPY_EXISTING ~AR0602.BCS~ ~override~
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player5,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player6,ALL))
     MoveContainerContents("BD6100*K#ImportContainer","AR0602*K#ImportContainer")~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+		SPRINT textToReplace ~ActionOverride("Picture1",CreateItem("MISC47",0,0,0))~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("Picture1",TakePartyItem("MISC47")~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~

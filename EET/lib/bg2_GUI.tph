@@ -5,18 +5,24 @@ COPY_EXISTING ~UI.MENU~ ~override~
 		num = 1
 		strict = 1
 		STR_VAR
-		pattern = ~~~~~if game:GetMissionPackInfo() then
+		pattern = ~~~~~"
+		if game:GetMissionPackInfo() then
 			cheatAreaDisplayList = cheatAreasTutorial
 		elseif game:GetMissionPackInfoTBP() then
 			cheatAreaDisplayList = cheatAreasArena
 		elseif game:GetMissionPackInfo25() then
-			cheatAreaDisplayList = cheatAreasExpansion~~~~~
-		string = ~~~~~if checkCampaign == const.START_CAMPAIGN_TUT then
-			cheatAreaDisplayList = cheatAreasTutorial
-		elseif checkCampaign == const.START_CAMPAIGN_BP2 then
-			cheatAreaDisplayList = cheatAreasArena
-		elseif checkCampaign == const.START_CAMPAIGN_BP1 then
-			cheatAreaDisplayList = cheatAreasArena_BG1~~~~~
+			cheatAreaDisplayList = cheatAreasExpansion
+		else
+			cheatAreaDisplayList = cheatAreas
+		end
+	"~~~~~
+		string = ~~~~~"
+		if startCampaignData[currentCampaign].cheatAreasTable ~= nil then
+			cheatAreaDisplayList = startCampaignData[currentCampaign].cheatAreasTable
+		else
+			cheatAreaDisplayList = cheatAreas
+		end
+	"~~~~~ //"
 	END
 	//==========================================================================
 	LPF REPLACE_MULTILINE
@@ -329,109 +335,6 @@ menu
 			Infinity_PopMenu()
 			"
 	}
-}
-menu
-{
-	name 'START_SP'
-	align center center
-	ignoreEsc
-
-	label
-	{
-		area 0 0 1024 768
-		mosaic 'START'
-	}
-
-	label
-	{
-		area 112 26 786 202	
-		bam 'TITLE'
-		sequence 0
-		align center center
-		frame lua 'logoFrame'
-	}
-	label
-	{
-		area 340 192 352 456	
-		bam 'BIGLOGO'
-		align center center
-		frame lua 'logoFrame'
-	}
-
-
-	button
-	{
-		bam 'STARTMBT'
-		sequence 0
-		area 112 294 262 74
-		pad 10 8 10 8
-		text style "button"
-		text "NEW_GAME_BUTTON"
-		action 
-		"
-			Infinity_PopMenu(); 
-			startEngine:OnNewGameButtonClick();
-		"
-	}
-	button
-	{
-		bam 'STARTMBT'
-		sequence 3
-		area 649 300 266 74
-		pad 10 8 10 8
-		text style "button"
-		text "LOAD_GAME_BUTTON"
-		action "Infinity_PopMenu(); startEngine:OnLoadGameButtonClick()"
-	}
-	button
-	{
-		bam 'STARTMBT'
-		sequence 1
-		area 112 374 236 84
-		pad 10 8 10 8
-		text style "button"
-		text "PREGENERATE_BUTTON"
-		action "Infinity_PopMenu(); startEngine:OnPreGenerateButtonClick()"
-	}
-	button
-	{
-		bam 'STARTMBT'
-		sequence 4
-		area 682 378 233 84
-		pad 10 8 10 8
-		text style "button"
-		text "IMPORT_GAME_BUTTON"
-		action 
-		"
-			Infinity_PopMenu();
-			startEngine:OnImportCharacterButtonClick();
-		"
-	}
-	button
-	{
-		bam 'STARTMBT'
-		sequence 2
-		area 116 462 262 76
-		pad 10 8 10 8
-		text style "button"
-		text "OPTIONS_BUTTON"
-		action "
-			Infinity_TransitionMenu('START_OPTIONS')
-			optionsScreen:SetEngineState(1)
-			startEngine:OnOptionsButtonClick()
-			lastStartMenu = 'START_SP'
-		"
-	}
-	button
-	{
-		area 649 462 260 76
-		bam 'STARTMBT'
-		sequence 5
-		pad 10 8 10 8
-		text style "button"
-		text "BACK_BUTTON"
-		action "startEngine:SetEngineState(0); Infinity_TransitionMenu('START')"
-	}
 }~~~~~ //"
 		string = ~~~~~menu
 {
@@ -562,27 +465,9 @@ menu
 	end
 	
 	function onCampaignButton(buttonNum)
-		if(buttonNum == const.START_CAMPAIGN_BG1) then
-			startEngine:OnCampaignButtonClick('BG1',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BG1)
-		elseif(buttonNum == const.START_CAMPAIGN_SOD) then
-			startEngine:OnCampaignButtonClick('SOD',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_SOD)
-		elseif(buttonNum == const.START_CAMPAIGN_SOA) then
-			startEngine:OnCampaignButtonClick('SOA',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_SOA)
-		elseif(buttonNum == const.START_CAMPAIGN_TOB) then
-			startEngine:OnCampaignButtonClick('TOB',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_TOB)
-		elseif(buttonNum == const.START_CAMPAIGN_BP1) then
-			startEngine:OnCampaignButtonClick('BP1',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BP1)
-		elseif(buttonNum == const.START_CAMPAIGN_BP2) then
-			startEngine:OnCampaignButtonClick('BP2',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BP2)
-		elseif(buttonNum == const.START_CAMPAIGN_TUT) then
-			startEngine:OnCampaignButtonClick('TUT',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_TUT)
+		if startCampaignData[buttonNum] ~= nil then
+			startEngine:OnCampaignButtonClick(startCampaignData[buttonNum].id,true)
+			Infinity_SetINIValue('Program Options','Active Campaign',buttonNum)
 		else
 			startEngine:OnCampaignButtonClick('BG1',true)
 			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BG1)
@@ -775,10 +660,118 @@ menu
 		text align center center
 		text lua "CBaldurChitin:GetVersionString()"
 	}
-}
+}~~~~~ //~
+	END
+	//==========================================================================
+	LPF REPLACE_MULTILINE
+		INT_VAR
+		num = 1
+		strict = 1
+		STR_VAR
+		pattern = ~~~~~menu
+{
+	name 'START_SP'
+	align center center
+	ignoreEsc
+
+	label
+	{
+		area 0 0 1024 768
+		mosaic 'START'
+	}
+
+	label
+	{
+		area 112 26 786 202	
+		bam 'TITLE'
+		sequence 0
+		align center center
+		frame lua 'logoFrame'
+	}
+	label
+	{
+		area 340 192 352 456	
+		bam 'BIGLOGO'
+		align center center
+		frame lua 'logoFrame'
+	}
 
 
-menu
+	button
+	{
+		bam 'STARTMBT'
+		sequence 0
+		area 112 294 262 74
+		pad 10 8 10 8
+		text style "button"
+		text "NEW_GAME_BUTTON"
+		action 
+		"
+			Infinity_PopMenu(); 
+			startEngine:OnNewGameButtonClick();
+		"
+	}
+	button
+	{
+		bam 'STARTMBT'
+		sequence 3
+		area 649 300 266 74
+		pad 10 8 10 8
+		text style "button"
+		text "LOAD_GAME_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnLoadGameButtonClick()"
+	}
+	button
+	{
+		bam 'STARTMBT'
+		sequence 1
+		area 112 374 236 84
+		pad 10 8 10 8
+		text style "button"
+		text "PREGENERATE_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnPreGenerateButtonClick()"
+	}
+	button
+	{
+		bam 'STARTMBT'
+		sequence 4
+		area 682 378 233 84
+		pad 10 8 10 8
+		text style "button"
+		text "IMPORT_GAME_BUTTON"
+		action 
+		"
+			Infinity_PopMenu();
+			startEngine:OnImportCharacterButtonClick();
+		"
+	}
+	button
+	{
+		bam 'STARTMBT'
+		sequence 2
+		area 116 462 262 76
+		pad 10 8 10 8
+		text style "button"
+		text "OPTIONS_BUTTON"
+		action "
+			Infinity_TransitionMenu('START_OPTIONS')
+			optionsScreen:SetEngineState(1)
+			startEngine:OnOptionsButtonClick()
+			lastStartMenu = 'START_SP'
+		"
+	}
+	button
+	{
+		area 649 462 260 76
+		bam 'STARTMBT'
+		sequence 5
+		pad 10 8 10 8
+		text style "button"
+		text "BACK_BUTTON"
+		action "startEngine:SetEngineState(0); Infinity_TransitionMenu('START')"
+	}
+}~~~~~
+		string = ~~~~~menu
 {
 	name 'START_SP'
 	align center center
@@ -823,7 +816,7 @@ menu
 		"
 			Infinity_PopMenu(); 
 			checkCampaign = Infinity_GetINIValue('Program Options','Active Campaign')
-			if (checkCampaign == const.START_CAMPAIGN_BP1) or (checkCampaign == const.START_CAMPAIGN_BP2) then
+			if startCampaignData[checkCampaign].forceParty then
 				startEngine:OnCreatePartyButtonClick();
 			else
 				startEngine:OnNewGameButtonClick();
@@ -911,7 +904,7 @@ menu
 		text align center center
 		text lua "CBaldurChitin:GetVersionString()"
 	}
-}~~~~~ //"
+}~~~~~
 	END
 	//==========================================================================
 	LPF REPLACE_MULTILINE

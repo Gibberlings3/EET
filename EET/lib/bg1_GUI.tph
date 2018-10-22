@@ -16,18 +16,24 @@ COPY ~%MOD_FOLDER%/temp/array/UI.MENU~ ~%MOD_FOLDER%/SoD_GUI~
 		num = 1
 		strict = 1
 		STR_VAR
-		pattern = ~~~~~if game:GetMissionPackInfo() then
+		pattern = ~~~~~"
+		if game:GetMissionPackInfo() then
 			cheatAreaDisplayList = cheatAreasTutorial
 		elseif game:GetMissionPackInfoTBP() then
 			cheatAreaDisplayList = cheatAreasArena
 		elseif startEngine:GetCampaign() == 3 then
-			cheatAreaDisplayList = cheatAreasExpansion~~~~~
-		string = ~~~~~if checkCampaign == const.START_CAMPAIGN_TUT then
-			cheatAreaDisplayList = cheatAreasTutorial
-		elseif checkCampaign == const.START_CAMPAIGN_BP2 then
-			cheatAreaDisplayList = cheatAreasArena
-		elseif checkCampaign == const.START_CAMPAIGN_BP1 then
-			cheatAreaDisplayList = cheatAreasArena_BG1~~~~~
+			cheatAreaDisplayList = cheatAreasExpansion
+		else
+			cheatAreaDisplayList = cheatAreas
+		end
+	"~~~~~
+		string = ~~~~~"
+		if startCampaignData[currentCampaign].cheatAreasTable ~= nil then
+			cheatAreaDisplayList = startCampaignData[currentCampaign].cheatAreasTable
+		else
+			cheatAreaDisplayList = cheatAreas
+		end
+	"~~~~~ //"
 	END
 	//==========================================================================
 	LPF REPLACE_MULTILINE
@@ -539,27 +545,9 @@ menu
 	end
 	
 	function onCampaignButton(buttonNum)
-		if(buttonNum == const.START_CAMPAIGN_BG1) then
-			startEngine:OnCampaignButtonClick('BG1',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BG1)
-		elseif(buttonNum == const.START_CAMPAIGN_SOD) then
-			startEngine:OnCampaignButtonClick('SOD',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_SOD)
-		elseif(buttonNum == const.START_CAMPAIGN_SOA) then
-			startEngine:OnCampaignButtonClick('SOA',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_SOA)
-		elseif(buttonNum == const.START_CAMPAIGN_TOB) then
-			startEngine:OnCampaignButtonClick('TOB',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_TOB)
-		elseif(buttonNum == const.START_CAMPAIGN_BP1) then
-			startEngine:OnCampaignButtonClick('BP1',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BP1)
-		elseif(buttonNum == const.START_CAMPAIGN_BP2) then
-			startEngine:OnCampaignButtonClick('BP2',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BP2)
-		elseif(buttonNum == const.START_CAMPAIGN_TUT) then
-			startEngine:OnCampaignButtonClick('TUT',true)
-			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_TUT)
+		if startCampaignData[buttonNum] ~= nil then
+			startEngine:OnCampaignButtonClick(startCampaignData[buttonNum].id,true)
+			Infinity_SetINIValue('Program Options','Active Campaign',buttonNum)
 		else
 			startEngine:OnCampaignButtonClick('BG1',true)
 			Infinity_SetINIValue('Program Options','Active Campaign',const.START_CAMPAIGN_BG1)
@@ -771,7 +759,329 @@ menu
 	//==========================================================================
 	LPF REPLACE_MULTILINE
 		INT_VAR
-		num = 2
+		num = 1
+		strict = 1
+		STR_VAR
+		pattern = ~~~~~menu
+{
+	name 'START_SP'
+	align center center
+	size 1024 768
+	ignoreEsc
+	onopen "Infinity_PlayMovie('flames','flames2')"
+
+
+	label
+	{
+		--center this under the menu
+		--(2160/2) - (768/2) = 696
+		area 660 -696 390 2160
+		bam "STRTSIDE"
+		frame lua "getSidebarFrame()"
+	}
+
+	label
+	{
+		area 152 252 378 376
+		bam "BIGLOGO"
+		sequence 0
+		frame lua "getBigLogo()"
+	}
+	
+	
+	label
+	{
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BG"
+		area 90 78 510 130
+		bam 'TITLE'
+		sequence 0
+		frame 0
+	}
+	label
+	{
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+		area 94 40 494 194
+		bam 'TITLE'
+		sequence 0
+		frame 1
+	}
+	label
+	{
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_BP"
+		area 94 127 504 62
+		bam 'TITLE'
+		sequence 0
+		frame 2
+	}
+
+	label
+	{
+		area 210 692 271 30
+		bam "DNDLOGO"
+		scaleToClip
+	}
+
+	button
+	{
+		bam 'STARTBUT'
+		enabled "getTutorialEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 732 146 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "TUTORIAL_BUTTON"
+		action 
+		"
+			Infinity_PopMenu();
+			startEngine:OnTutorialButtonClick()
+		"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		enabled "getCampaignImportEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 732 146 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "IMPORT_GAME_BUTTON"
+		action 
+		"
+			Infinity_PopMenu();
+			startEngine:OnImportCharacterButtonClick();
+		"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 216 249 45	
+		pad 10 8 10 8
+		text style "button"
+		text "NEW_GAME_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnNewGameButtonClick();"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 286 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "LOAD_GAME_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnLoadGameButtonClick()"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 356 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "PREGENERATE_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnPreGenerateButtonClick()"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 426 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "OPTIONS_BUTTON"
+		action "
+			Infinity_TransitionMenu('START_OPTIONS')
+			optionsScreen:SetEngineState(1)
+			startEngine:OnOptionsButtonClick()
+			lastStartMenu = 'START_SP'
+		"
+	}
+	button
+	{
+		on escape
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 496 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "BACK_BUTTON"
+		action "startEngine:SetEngineState(0); Infinity_TransitionMenu('START')"
+	}
+	movie
+	{
+		enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+		name "flames2"
+		area 86 222 512 512
+		loop
+	}
+	label
+	{
+		area 816 692 94 47
+		text style "normal"
+		text align center center
+		text lua "CBaldurChitin:GetVersionString()"
+	}
+
+}~~~~~
+		string = ~~~~~menu
+{
+	name 'START_SP'
+	align center center
+	size 1024 768
+	ignoreEsc
+	onopen "Infinity_PlayMovie('flames','flames2')"
+
+
+	label
+	{
+		--center this under the menu
+		--(2160/2) - (768/2) = 696
+		area 660 -696 390 2160
+		bam "STRTSIDE"
+		frame lua "getSidebarFrame()"
+	}
+
+	label
+	{
+		area 100 205 488 460
+		bam "BIGLOGO"
+		sequence 0
+		frame lua "getBigLogo()"
+	}
+	
+	
+	label
+	{
+		area -52 76 786 202
+		bam 'TITLE'
+		sequence 0
+		align center center
+		frame lua "getTitle()"
+	}
+
+	label
+	{
+		area 210 692 271 30
+		bam "DNDLOGO"
+		scaleToClip
+	}
+
+	button
+	{
+		bam 'STARTBUT'
+		enabled "getTutorialEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 732 146 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "TUTORIAL_BUTTON"
+		action 
+		"
+			Infinity_PopMenu();
+			startEngine:OnTutorialButtonClick()
+		"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		enabled "getCampaignImportEnabled()"
+		sequence lua "getCampaignButtonSequence()"
+		area 732 146 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "IMPORT_GAME_BUTTON"
+		action 
+		"
+			Infinity_PopMenu();
+			startEngine:OnImportCharacterButtonClick();
+		"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 216 249 45	
+		pad 10 8 10 8
+		text style "button"
+		text "NEW_GAME_BUTTON"
+		action 
+		"
+			Infinity_PopMenu(); 
+			checkCampaign = Infinity_GetINIValue('Program Options','Active Campaign')
+			if startCampaignData[checkCampaign].forceParty then
+				startEngine:OnCreatePartyButtonClick();
+			else
+				startEngine:OnNewGameButtonClick();
+			end
+		"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 286 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "LOAD_GAME_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnLoadGameButtonClick()"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 356 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "PREGENERATE_BUTTON"
+		action "Infinity_PopMenu(); startEngine:OnPreGenerateButtonClick()"
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 426 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "OPTIONS_BUTTON"
+		action "
+			Infinity_TransitionMenu('START_OPTIONS')
+			optionsScreen:SetEngineState(1)
+			startEngine:OnOptionsButtonClick()
+			lastStartMenu = 'START_SP'
+		"
+	}
+	button
+	{
+		on escape
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 496 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "BACK_BUTTON"
+		action "startEngine:SetEngineState(0); Infinity_TransitionMenu('START')"
+	}
+	movie
+	{
+		--enabled "Infinity_GetINIValue('Program Options','Active Campaign') == const.START_CAMPAIGN_SOD"
+		name "flames2"
+		area 86 222 512 512
+		loop
+	}
+	label
+	{
+		area 816 692 94 47
+		text style "normal"
+		text align center center
+		text lua "CBaldurChitin:GetVersionString()"
+	}
+
+}~~~~~
+	END
+	//==========================================================================
+	LPF REPLACE_MULTILINE
+		INT_VAR
+		num = 1
 		strict = 1
 		STR_VAR
 		pattern = ~~~~~label
@@ -828,7 +1138,7 @@ menu
 	//==========================================================================
 	LPF REPLACE_MULTILINE
 		INT_VAR
-		num = 2
+		num = 1
 		strict = 1
 		STR_VAR
 		pattern = ~~~~~enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
@@ -1068,7 +1378,32 @@ menu
 		STR_VAR
 		pattern = ~~~~~`
 TEXT_popup_big = 0~~~~~
-		string = ~~~~~menu
+		string = ~~~~~`
+currentHLASelection = nil
+function chargenHLADescription()
+	if currentHLASelection == nil then
+		return 63817
+	else
+		return chargen.HLAs[currentHLASelection].description
+	end
+end
+function chargenHLAPlusMinusFrame(cell, rownumber)
+	if cell == 3 then
+		if chargen.HLAs[rownumber].canAdd then
+			return currentCellCheck(cell)
+		else
+			return 3
+		end
+	elseif cell == 4 then
+		if chargen.HLAs[rownumber].canSubtract then
+			return currentCellCheck(cell)
+		else
+			return 3
+		end
+	end
+end
+`
+menu
 {
 	name 'CHARGEN_HIGH_LEVEL_ABILITIES'
 	align center center
@@ -1086,7 +1421,7 @@ TEXT_popup_big = 0~~~~~
 	label
 	{
 		area 86 26 748 60
-		text "ABILITIES_TITLE"
+		text "HIGH_LEVEL_ABILITIES_TITLE"
 		text style "title"
 	}
 	label
@@ -1163,7 +1498,6 @@ TEXT_popup_big = 0~~~~~
 		var currentHLASelection
 		action 
 		"
-			print(chargen.HLAs[currentHLASelection].count)
 			if cellNumber == 3 and chargenHLAPlusMinusFrame(3, currentHLASelection) ~= 3 then
 				createCharScreen:OnHLAButtonClick(currentHLASelection, 1)
 			elseif cellNumber == 4 and chargenHLAPlusMinusFrame(4, currentHLASelection) ~= 3 then

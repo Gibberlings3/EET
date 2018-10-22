@@ -435,3 +435,68 @@ COPY + ~%MOD_FOLDER%/temp/array/SPECIFIC.IDS~ ~%MOD_FOLDER%/temp/array~
 			END
 		END
 	END
+
+/////                                                  \\\\\
+///// SPLSTATE.IDS                                     \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~SPLSTATE.IDS~ ~override~
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "ids_index"
+		READ_2DA_ENTRY cnt 1 2 "ids_name"
+		TO_UPPER ids_name
+		DEFINE_ASSOCIATIVE_ARRAY splstate_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
+		DEFINE_ASSOCIATIVE_ARRAY splstate_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
+	END
+BUT_ONLY
+
+COPY + ~%MOD_FOLDER%/temp/array/SPLSTATE.IDS~ ~%MOD_FOLDER%/temp/array~
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		SET noupdate = 0
+		READ_2DA_ENTRY cnt 0 2 "col1"
+		PATCH_IF IS_AN_INT col1 BEGIN
+			READ_2DA_ENTRY cnt 1 2 "col2"
+			TO_UPPER col2
+			PATCH_IF (VARIABLE_IS_SET $splstate_ids_name(~%col2%~)) BEGIN
+				TEXT_SPRINT compare_col1 $splstate_ids_name(~%col2%~)
+				TEXT_SPRINT compare_col2 $splstate_ids_index(~%col1%~)
+				PATCH_IF (col1 != compare_col1) BEGIN
+					DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col1%~ => ~%compare_col1%~ END
+					DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col2%~ => ~%compare_col2%~ END
+					SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+					SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
+				END
+				SET noupdate = 1
+			END ELSE PATCH_IF (VARIABLE_IS_SET $splstate_ids_index(~%col1%~)) BEGIN
+				TEXT_SPRINT compare_col2 $splstate_ids_index(~%col1%~)
+				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
+					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+						PATCH_IF (NOT VARIABLE_IS_SET $splstate_ids_index(~%cnt2%~)) BEGIN
+							SET ids_index = cnt2
+							DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col1%~ => ~%ids_index%~ END
+							DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%compare_col2%~ => ~%col2%~ END
+							SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+							SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
+							SET cnt2 = 255
+						END
+						PATCH_IF (cnt2 = 254) BEGIN
+							PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
+							SET noupdate = 1
+						END
+					END
+				END
+			END ELSE BEGIN
+				SET ids_index = col1
+			END
+			PATCH_IF (noupdate = 0) BEGIN
+				INNER_ACTION BEGIN
+					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
+					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
+					ACTION_DEFINE_ASSOCIATIVE_ARRAY splstate_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
+					ACTION_DEFINE_ASSOCIATIVE_ARRAY splstate_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
+				END
+			END
+		END
+	END

@@ -1191,10 +1191,10 @@ COPY_EXISTING ~SPLPROT.2DA~ ~override~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 4 "col1"
-		READ_2DA_ENTRY cnt 1 4 "col2"
-		READ_2DA_ENTRY cnt 2 4 "col3"
-		READ_2DA_ENTRY cnt 3 4 "col4"
+		READ_2DA_ENTRY cnt 0 4 "col1" //name
+		READ_2DA_ENTRY cnt 1 4 "col2" //stat
+		READ_2DA_ENTRY cnt 2 4 "col3" //value
+		READ_2DA_ENTRY cnt 3 4 "col4" //relation
 		DEFINE_ASSOCIATIVE_ARRAY table_2DA_splProt BEGIN ~%col1%~ , ~%col2%~ , ~%col3%~ , ~%col4%~ => ~%cnt%~ END
 	END
 	SET splProt_cnt = cntrow - 1
@@ -1204,13 +1204,13 @@ COPY + ~%MOD_FOLDER%/temp/array/SPLPROT.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 4 "col1"
-		READ_2DA_ENTRY cnt 1 4 "col2"
+		READ_2DA_ENTRY cnt 0 4 "col1" //name
+		READ_2DA_ENTRY cnt 1 4 "col2" //stat
 		INNER_PATCH_SAVE col2_check ~%col2%~ BEGIN
 			REPLACE_TEXTUALLY ~^\*$~ ~x~ //workaround for weidu not detecting * with STR_EQ
 		END
-		READ_2DA_ENTRY cnt 2 4 "col3"
-		READ_2DA_ENTRY cnt 3 4 "col4"
+		READ_2DA_ENTRY cnt 2 4 "col3" //value
+		READ_2DA_ENTRY cnt 3 4 "col4" //relation
 		PATCH_IF (VARIABLE_IS_SET $table_2DA_splProt(~%col1%~ ~%col2%~ ~%col3%~ ~%col4%~)) BEGIN
 			TEXT_SPRINT compare_cnt $table_2DA_splProt(~%col1%~ ~%col2%~ ~%col3%~ ~%col4%~)
 			PATCH_IF cnt != compare_cnt BEGIN

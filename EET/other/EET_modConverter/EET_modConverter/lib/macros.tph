@@ -4,8 +4,8 @@
 
 DEFINE_PATCH_MACRO ~EET_PCU_off_mus~ BEGIN
 	READ_LONG off "source"
-	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $remapped_mus(~%source%~)) BEGIN
-		TEXT_SPRINT dest $remapped_mus(~%source%~)
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_mus~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_mus~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_LONG off "%dest%"
@@ -23,8 +23,8 @@ END
 
 DEFINE_PATCH_MACRO ~EET_PCU_off_long~ BEGIN
 	READ_LONG off "source"
-	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_LONG off "%dest%"
@@ -37,8 +37,8 @@ END
 
 DEFINE_PATCH_MACRO ~EET_PCU_off_short~ BEGIN
 	READ_SHORT off "source"
-	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_SHORT off "%dest%"
@@ -51,8 +51,8 @@ END
 
 DEFINE_PATCH_MACRO ~EET_PCU_off_byte~ BEGIN
 	READ_BYTE off "source"
-	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_BYTE off "%dest%"
@@ -70,8 +70,8 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_ipro~ BEGIN
 		READ_LONG off "source"
 	END
 	SET source = source - sub
-	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $remapped_ipro(~%source%~)) BEGIN
-		TEXT_SPRINT dest $remapped_ipro(~%source%~)
+	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_ipro~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_ipro~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
@@ -98,8 +98,8 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
 		READ_BYTE (off+2) ~source~
 		READ_BYTE (off+3) ~byte3~
 	END
-	PATCH_IF ("%short%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $remapped_kit(~%source%~)) BEGIN
-		TEXT_SPRINT dest $remapped_kit(~%source%~)
+	PATCH_IF ("%short%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_kit~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_kit~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
@@ -118,8 +118,8 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_off_res~ BEGIN
 	READ_ASCII off "source" (8) NULL
 	TO_UPPER source
-	PATCH_IF (NOT ~%source%~ STR_EQ ~~) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+	PATCH_IF (NOT ~%source%~ STR_EQ ~~) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 		SET updated = 1
 		WRITE_ASCIIE off "%dest%" #8
 		SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
@@ -131,8 +131,8 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_off_32~ BEGIN
 	READ_ASCII off "source" (32) NULL
 	TO_UPPER source
-	PATCH_IF (NOT ~%source%~ STR_EQ ~~) AND (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+	PATCH_IF (NOT ~%source%~ STR_EQ ~~) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 		SET updated = 1
 		WRITE_ASCIIE off "%dest%" #32
 		SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
@@ -151,29 +151,29 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_8675~ BEGIN
 		TO_UPPER source7
 		READ_ASCII off "source5" (5) NULL
 		TO_UPPER source5
-		PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+		PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+			TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 			SET updated = 1
 			WRITE_ASCIIE off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)
 			PATCH_PRINT ~%str%~
-		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source6%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source6%~)
+		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source6%~)) BEGIN
+			TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source6%~)
 			SET updated = 1
 			WRITE_ASCIIE off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source6% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)
 			PATCH_PRINT ~%str%~
-		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source7%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source7%~)
+		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source7%~)) BEGIN
+			TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source7%~)
 			SET updated = 1
 			WRITE_ASCIIE off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source7% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)
 			PATCH_PRINT ~%str%~
-		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source5%~)) BEGIN
-			TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source5%~)
+		END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source5%~)) BEGIN
+			TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source5%~)
 			SET updated = 1
 			WRITE_ASCIIE off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source5% => %dest% -~
@@ -451,7 +451,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
 	"CANTURN" => "_dv1_" //CanTurn
 	"CHARNAME" => "_dv1_dv2_" //CharName
 	"CHECKITEMSLOT" => "_dv1_itm2_" //CheckItemSlot
-	"CHECKSPELLSTATE" => "_dv1_" //CheckSpellState
+	"CHECKSPELLSTATE" => "_dv1_splState2_" //CheckSpellState
 	"CHECKSTAT" => "_dv1_" //CheckStat
 	"CHECKSTATGT" => "_dv1_" //CheckStatGT
 	"CHECKSTATLT" => "_dv1_" //CheckStatLT
@@ -692,27 +692,27 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 									INNER_PATCH_SAVE source5 ~%source_case%~ BEGIN
 										REPLACE_TEXTUALLY ~^\(.?.?.?.?.?\).*~ ~\1~
 									END
-									PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) BEGIN
-										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source_case%~)
+									PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source_case%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source_case%~)
 										SET updated = 1
 										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source_case% => %dest% - %res%~
 										SPRINT source ~%dest%~
-									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source6%~)) BEGIN
-										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source6%~)
+									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source6%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source6%~)
 										SET updated = 1
 										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source6% => %dest% - %res%~
 										INNER_PATCH_SAVE source ~%source%~ BEGIN
 											REPLACE_TEXTUALLY ~^%source6%~ ~%dest%~
 										END
-									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source7%~)) BEGIN
-										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source7%~)
+									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source7%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source7%~)
 										SET updated = 1
 										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source7% => %dest% - %res%~
 										INNER_PATCH_SAVE source ~%source%~ BEGIN
 											REPLACE_TEXTUALLY ~^%source7%~ ~%dest%~
 										END
-									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source5%~)) BEGIN
-										TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source5%~)
+									END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source5%~)) BEGIN
+										TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source5%~)
 										SET updated = 1
 										PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source5% => %dest% - %res%~
 										INNER_PATCH_SAVE source ~%source%~ BEGIN
@@ -722,29 +722,29 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 								END ELSE PATCH_IF (~%res%~ STR_EQ ~dv~) AND ((~%source%~ STRING_CONTAINS_REGEXP ~\[[A-Z0-9]+\.[A-Z0-9]+\.~)=0) BEGIN
 									INNER_PATCH_SAVE source ~%source%~ BEGIN
 										// EnemyAlly<-General<-Race<-Class<-Specifics
-										REPLACE_EVALUATE CASE_INSENSITIVE ~\(\[[A-Z0-9]+\.[A-Z0-9]+\.\)\([A-Z0-9]*\)\(\.?\)\([A-Z0-9]*\)\(\.?\)\([A-Z0-9]*\)~ BEGIN
-											PATCH_IF (~%MATCH2%~ STR_CMP ~~) AND (VARIABLE_IS_SET $remapped_race(~%MATCH2%~)) BEGIN
-												TEXT_SPRINT dest $remapped_race(~%MATCH2%~)
+										REPLACE_EVALUATE CASE_INSENSITIVE ~\(\[[A-Z0-9_]+\.[A-Z0-9_]+\.\)\([A-Z0-9_]*\)\(\.?\)\([A-Z0-9_]*\)\(\.?\)\([A-Z0-9_]*\)~ BEGIN
+											PATCH_IF (~%MATCH2%~ STR_CMP ~~) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_race~(~%MATCH2%~)) BEGIN
+												TEXT_SPRINT dest $EVAL ~%remappedPrefix%_race~(~%MATCH2%~)
 												SET updated = 1
 												PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %MATCH2% => %dest% - race~
 												SPRINT MATCH2 ~%dest%~
 											END
-											PATCH_IF (~%MATCH4%~ STR_CMP ~~) AND (VARIABLE_IS_SET $remapped_class(~%MATCH4%~)) BEGIN
-												TEXT_SPRINT dest $remapped_class(~%MATCH4%~)
+											PATCH_IF (~%MATCH4%~ STR_CMP ~~) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_class~(~%MATCH4%~)) BEGIN
+												TEXT_SPRINT dest $EVAL ~%remappedPrefix%_class~(~%MATCH4%~)
 												SET updated = 1
 												PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %MATCH4% => %dest% - class~
 												SPRINT MATCH4 ~%dest%~
 											END
-											PATCH_IF (~%MATCH6%~ STR_CMP ~~) AND (VARIABLE_IS_SET $remapped_spec(~%MATCH6%~)) BEGIN
-												TEXT_SPRINT dest $remapped_spec(~%MATCH6%~)
+											PATCH_IF (~%MATCH6%~ STR_CMP ~~) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_spec~(~%MATCH6%~)) BEGIN
+												TEXT_SPRINT dest $EVAL ~%remappedPrefix%_spec~(~%MATCH6%~)
 												SET updated = 1
 												PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %MATCH6% => %dest% - spec~
 												SPRINT MATCH6 ~%dest%~
 											END
 										END ~%MATCH1%%MATCH2%%MATCH3%%MATCH4%%MATCH5%%MATCH6%~
 									END
-								END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source_case%~)) AND ((NOT ~%res%~ STR_EQ ~chapter~) OR (chapterUp = 1)) BEGIN //replace text using array corresponding to resref type
-									TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source_case%~)
+								END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source_case%~)) AND ((NOT ~%res%~ STR_EQ ~chapter~) OR (chapterUp = 1)) BEGIN //replace text using array corresponding to resref type
+									TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source_case%~)
 									SET updated = 1
 									PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %cmd% - %source% => %dest% - %res%~
 									SPRINT source ~%dest%~
@@ -776,8 +776,8 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_outer_res~ BEGIN
 	SPRINT source ~%match%~
 	TO_UPPER source
-	PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		TEXT_SPRINT match $EVAL ~remapped_%res%~(~%source%~)
+	PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT match $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 		PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %match% - %res%~
 		SET updated = 1
 	END
@@ -795,27 +795,27 @@ DEFINE_PATCH_MACRO ~EET_PCU_outer_8675~ BEGIN
 	INNER_PATCH_SAVE source5 ~%source%~ BEGIN
 		REPLACE_TEXTUALLY ~^\(.?.?.?.?.?\).*~ ~\1~
 	END
-	PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source%~)
+	PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
 		SET updated = 1
 		PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - %res%~
 		SPRINT match ~%dest%~
-	END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source6%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source6%~)
+	END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source6%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source6%~)
 		SET updated = 1
 		PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source6% => %dest% - %res%~
 		INNER_PATCH_SAVE match ~%match%~ BEGIN
 			REPLACE_TEXTUALLY ~^%source6%~ ~%dest%~
 		END
-	END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source7%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source7%~)
+	END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source7%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source7%~)
 		SET updated = 1
 		PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source7% => %dest% - %res%~
 		INNER_PATCH_SAVE match ~%match%~ BEGIN
 			REPLACE_TEXTUALLY ~^%source7%~ ~%dest%~
 		END
-	END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~remapped_%res%~(~%source5%~)) BEGIN
-		TEXT_SPRINT dest $EVAL ~remapped_%res%~(~%source5%~)
+	END ELSE PATCH_IF (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source5%~)) BEGIN
+		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source5%~)
 		SET updated = 1
 		PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source5% => %dest% - %res%~
 		INNER_PATCH_SAVE match ~%match%~ BEGIN
@@ -1034,6 +1034,13 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 	END
 
+	PATCH_IF ("%fx_type%" = 232) BEGIN //Cast spell on condition
+		READ_LONG param2 "condition"
+		PATCH_IF (condition = 21) BEGIN //Target's spell state is 'Special'
+			SET off = special SPRINT res ~splState~ LPM EET_PCU_off_long
+		END
+	END
+
 	PATCH_IF ("%fx_type%" = 256) BEGIN //Spell sequencer
 		SET off = offset SPRINT res ~spl~ LPM EET_PCU_off_res
 		PATCH_IF ver = 2 BEGIN
@@ -1064,9 +1071,11 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 	OR ("%fx_type%" = 324) //Immunity to spell and message
 	OR ("%fx_type%" = 326) //Apply effects list
 	BEGIN
-		SET off = param1 SPRINT res ~splProt~ LPM EET_PCU_off_long
+		SET off = param2 SPRINT res ~splProt~ LPM EET_PCU_off_long
 		READ_LONG param2 "ids_file"
-		PATCH_IF (ids_file = 104) OR (ids_file = 114) BEGIN //Race.ids
+		PATCH_IF (ids_file = 76) OR (ids_file = 110) OR (ids_file = 111) BEGIN //Splstate.ids
+			SET off = param1 SPRINT res ~splState~ LPM EET_PCU_off_long
+		END ELSE PATCH_IF (ids_file = 104) OR (ids_file = 114) BEGIN //Race.ids
 			SET off = param1 SPRINT res ~race~ LPM EET_PCU_off_long
 		END ELSE PATCH_IF (ids_file = 105) OR (ids_file = 115) BEGIN //Class.ids
 			SET off = param1 SPRINT res ~class~ LPM EET_PCU_off_long
@@ -1084,6 +1093,13 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		END
 	END
 
+	PATCH_IF ("%fx_type%" = 328) BEGIN //Set spell state
+		READ_LONG special "mode"
+		PATCH_IF (mode = 1) BEGIN
+			SET off = param2 SPRINT res ~splState~ LPM EET_PCU_off_long
+		END
+	END
+
 	PATCH_IF ("%fx_type%" = 331) BEGIN //Summon creatures 2
 		SET off = offset SPRINT res ~2da~ LPM EET_PCU_off_res
 		PATCH_IF ver = 2 BEGIN
@@ -1097,6 +1113,7 @@ END
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
+	READ_ASCII 0x0 "filetype" ELSE ~Ignoring 0 byte file~
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//ARE patching                                                                                     //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1222,6 +1239,7 @@ DEFINE_PATCH_MACRO ~EET_PCU_core~ BEGIN
 							SET param1 = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x4)
 							SET param2 = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x8)
 							SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x14) //Resource
+							SET special = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x2c) //Special
 							SET ver = 1
 							LPM EET_PCU_effects
 						END ELSE BEGIN //EFF v2
@@ -1744,6 +1762,7 @@ CO") BEGIN
 			SET param1 = ("%fx_off%"+0x30*cnt+0x4)
 			SET param2 = ("%fx_off%"+0x30*cnt+0x8)
 			SET offset = ("%fx_off%"+0x30*cnt+0x14) //Resource
+			SET special = ("%fx_off%"+0x30*cnt+0x2c) //Special
 			SET ver = 1
 			LPM EET_PCU_effects
 		END
@@ -1822,7 +1841,6 @@ CO") BEGIN
 		/////////////////
 		//Projectile info
 		/////////////////
-
 		//0x104 projectile animation BAM resref
 		SET off = 0x104 SPRINT res ~bam~ LPM EET_PCU_off_res
 		//0x10c shadow animation BAM resref
@@ -1899,6 +1917,7 @@ CO") BEGIN
 			SET param1 = ("%fx_off%"+0x30*cnt+0x4)
 			SET param2 = ("%fx_off%"+0x30*cnt+0x8)
 			SET offset = ("%fx_off%"+0x30*cnt+0x14) //Resource
+			SET special = ("%fx_off%"+0x30*cnt+0x2c) //Special
 			SET ver = 1
 			LPM EET_PCU_effects
 		END
