@@ -563,10 +563,13 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 								READ_LONG offset "strref"
 								LPM EET_expand_str
 								WRITE_LONG offset "%str%"
-								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x58)
-								READ_LONG offset "strref"
-								LPM EET_expand_str
-								WRITE_LONG offset "%str%"
+								READ_LONG ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x18) "display_type"
+								PATCH_IF (display_type = 1) BEGIN //Cynicism
+									SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x58)
+									READ_LONG offset "strref"
+									LPM EET_expand_str
+									WRITE_LONG offset "%str%"
+								END
 							END
 						END
 					END
@@ -749,10 +752,13 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 					READ_LONG offset "strref"
 					LPM EET_expand_str
 					WRITE_LONG offset "%str%"
-					SET offset = ("%fx_off%"+0x108*cnt+0x58)
-					READ_LONG offset "strref"
-					LPM EET_expand_str
-					WRITE_LONG offset "%str%"
+					READ_LONG ("%fx_off%"+0x108*cnt+0x18) "display_type"
+					PATCH_IF (display_type = 1) BEGIN //Cynicism
+						SET offset = ("%fx_off%"+0x108*cnt+0x58)
+						READ_LONG offset "strref"
+						LPM EET_expand_str
+						WRITE_LONG offset "%str%"
+					END
 				END
 			END
 		END
@@ -798,10 +804,13 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 			READ_LONG offset "strref"
 			LPM EET_expand_str
 			WRITE_LONG offset "%str%"
-			SET offset = 0x60
-			READ_LONG offset "strref"
-			LPM EET_expand_str
-			WRITE_LONG offset "%str%"
+			READ_LONG 0x20 "display_type"
+			PATCH_IF (display_type = 1) BEGIN //Cynicism
+				SET offset = 0x60
+				READ_LONG offset "strref"
+				LPM EET_expand_str
+				WRITE_LONG offset "%str%"
+			END
 		END
 	//ITM
 	END ELSE PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~itm~) BEGIN
