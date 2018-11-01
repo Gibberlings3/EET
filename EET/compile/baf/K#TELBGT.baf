@@ -61,9 +61,7 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#FrameDelay","LOCALS",2)
-    SetGlobal("K#temp","GLOBAL",29)
     AdvanceTime(ONE_MONTH)
-    AddGlobals("K#DaysPassed","K#temp")
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player1,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player2,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player3,ALL))

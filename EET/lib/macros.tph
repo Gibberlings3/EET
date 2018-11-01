@@ -503,7 +503,7 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 								READ_LONG offset "strref"
 								LPM EET_expand_str
 								WRITE_LONG offset "%str%"
-								SPRINT headerType ~global~ LPM EET_clone
+								//SPRINT headerType ~global~ LPM EET_clone
 							END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
 								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x30*cnt2+0x2c)
 								READ_LONG offset "strref"
@@ -527,7 +527,6 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 							OR ("%fx_type%" = 253) //Set automap note
 							OR ("%fx_type%" = 254) //Remove automap note
 							OR ("%fx_type%" = 290) //Change title
-							OR ("%fx_type%" = 330) //Float text
 							OR ("%fx_type%" = 338) //Disable rest or save
 							BEGIN
 								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14)
@@ -559,6 +558,15 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 									LPM EET_expand_str
 									WRITE_LONG offset "%str%"
 								END
+							END ELSE PATCH_IF ("%fx_type%" = 330) BEGIN //Float text
+								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x14)
+								READ_LONG offset "strref"
+								LPM EET_expand_str
+								WRITE_LONG offset "%str%"
+								SET offset = ("%actors_emb_off%"+"%fx_off%"+0x108*cnt2+0x58)
+								READ_LONG offset "strref"
+								LPM EET_expand_str
+								WRITE_LONG offset "%str%"
 							END
 						END
 					END
@@ -646,46 +654,102 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 		END
 		READ_LONG ("%cre_struct_off%"+0x2c4) "fx_off"
 		READ_LONG ("%cre_struct_off%"+0x2c8) "fx_cnt"
+		READ_BYTE ("%cre_struct_off%"+0x33) "eff_ver"
 		FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
-			READ_LONG ("%fx_off%"+0x108*cnt+0x8) "fx_type"
-			PATCH_IF ("%fx_type%" = 103) //Change name
-			OR ("%fx_type%" = 139) //Display string
-			OR ("%fx_type%" = 180) //Disallow item
-			OR ("%fx_type%" = 183) //Use EFF file while on type
-			OR ("%fx_type%" = 206) //Protection from spell
-			OR ("%fx_type%" = 253) //Set automap note
-			OR ("%fx_type%" = 254) //Remove automap note
-			OR ("%fx_type%" = 290) //Change title
-			OR ("%fx_type%" = 330) //Float text
-			OR ("%fx_type%" = 338) //Disable rest or save
-			BEGIN
-				SET offset = ("%fx_off%"+0x108*cnt+0x14)
-				READ_LONG offset "strref"
-				LPM EET_expand_str
-				WRITE_LONG offset "%str%"
-			END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
-			OR ("%fx_type%" = 324) //Immunity to spell and message
-			BEGIN
-				SET offset = ("%fx_off%"+0x108*cnt+0x40)
-				READ_LONG offset "strref"
-				LPM EET_expand_str
-				WRITE_LONG offset "%str%"
-			END ELSE PATCH_IF ("%fx_type%" = 267) BEGIN //Disable display string
-				SET offset = ("%fx_off%"+0x108*cnt+0x14)
-				READ_LONG offset "strref"
-				LPM EET_expand_str
-				WRITE_LONG offset "%str%"
-				PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~cre~) BEGIN
-					SPRINT headerType ~global~ LPM EET_clone
+			PATCH_IF (eff_ver = 0) BEGIN //EFF v1
+				READ_SHORT ("%fx_off%"+0x30*cnt) "fx_type"
+				PATCH_IF ("%fx_type%" = 103) //Change name
+				OR ("%fx_type%" = 139) //Display string
+				OR ("%fx_type%" = 180) //Disallow item
+				OR ("%fx_type%" = 183) //Use EFF file while on type
+				OR ("%fx_type%" = 206) //Protection from spell
+				OR ("%fx_type%" = 253) //Set automap note
+				OR ("%fx_type%" = 254) //Remove automap note
+				OR ("%fx_type%" = 290) //Change title
+				OR ("%fx_type%" = 330) //Float text
+				OR ("%fx_type%" = 338) //Disable rest or save
+				BEGIN
+					SET offset = ("%fx_off%"+0x30*cnt+0x4)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+				END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+				OR ("%fx_type%" = 324) //Immunity to spell and message
+				BEGIN
+					SET offset = ("%fx_off%"+0x30*cnt+0x2c)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+				END ELSE PATCH_IF ("%fx_type%" = 267) BEGIN //Disable display string
+					SET offset = ("%fx_off%"+0x30*cnt+0x4)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+					PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~cre~) BEGIN
+						SPRINT headerType ~global~ LPM EET_clone
+					END
+				END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
+					SET offset = ("%fx_off%"+0x30*cnt+0x2c)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+					READ_LONG ("%fx_off%"+0x30*cnt+0x8) "ids_target"
+					PATCH_IF (ids_target = 10) BEGIN //Actor's name
+						SET offset = ("%fx_off%"+0x30*cnt+0x4)
+						READ_LONG offset "strref"
+						LPM EET_expand_str
+						WRITE_LONG offset "%str%"
+					END
 				END
-			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
-				SET offset = ("%fx_off%"+0x108*cnt+0x40)
-				READ_LONG offset "strref"
-				LPM EET_expand_str
-				WRITE_LONG offset "%str%"
-				READ_LONG ("%fx_off%"+0x108*cnt+0x18) "ids_target"
-				PATCH_IF (ids_target = 10) BEGIN //Actor's name
+			END ELSE BEGIN //EFF v2
+				READ_LONG ("%fx_off%"+0x108*cnt+0x8) "fx_type"
+				PATCH_IF ("%fx_type%" = 103) //Change name
+				OR ("%fx_type%" = 139) //Display string
+				OR ("%fx_type%" = 180) //Disallow item
+				OR ("%fx_type%" = 183) //Use EFF file while on type
+				OR ("%fx_type%" = 206) //Protection from spell
+				OR ("%fx_type%" = 253) //Set automap note
+				OR ("%fx_type%" = 254) //Remove automap note
+				OR ("%fx_type%" = 290) //Change title
+				OR ("%fx_type%" = 338) //Disable rest or save
+				BEGIN
 					SET offset = ("%fx_off%"+0x108*cnt+0x14)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+				END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+				OR ("%fx_type%" = 324) //Immunity to spell and message
+				BEGIN
+					SET offset = ("%fx_off%"+0x108*cnt+0x40)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+				END ELSE PATCH_IF ("%fx_type%" = 267) BEGIN //Disable display string
+					SET offset = ("%fx_off%"+0x108*cnt+0x14)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+					PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~cre~) BEGIN
+						SPRINT headerType ~global~ LPM EET_clone
+					END
+				END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
+					SET offset = ("%fx_off%"+0x108*cnt+0x40)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+					READ_LONG ("%fx_off%"+0x108*cnt+0x18) "ids_target"
+					PATCH_IF (ids_target = 10) BEGIN //Actor's name
+						SET offset = ("%fx_off%"+0x108*cnt+0x14)
+						READ_LONG offset "strref"
+						LPM EET_expand_str
+						WRITE_LONG offset "%str%"
+					END
+				END ELSE PATCH_IF ("%fx_type%" = 330) BEGIN //Float text
+					SET offset = ("%fx_off%"+0x108*cnt+0x14)
+					READ_LONG offset "strref"
+					LPM EET_expand_str
+					WRITE_LONG offset "%str%"
+					SET offset = ("%fx_off%"+0x108*cnt+0x58)
 					READ_LONG offset "strref"
 					LPM EET_expand_str
 					WRITE_LONG offset "%str%"
@@ -704,7 +768,6 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 		OR ("%fx_type%" = 254) //Remove automap note
 		OR ("%fx_type%" = 267) //Disable display string
 		OR ("%fx_type%" = 290) //Change title
-		OR ("%fx_type%" = 330) //Float text
 		OR ("%fx_type%" = 338) //Disable rest or save
 		BEGIN
 			SET offset = 0x1c
@@ -730,6 +793,15 @@ DEFINE_PATCH_FUNCTION ~EET_expand_tlk~
 				LPM EET_expand_str
 				WRITE_LONG offset "%str%"
 			END
+		END ELSE PATCH_IF ("%fx_type%" = 330) BEGIN //Float text
+			SET offset = 0x1c
+			READ_LONG offset "strref"
+			LPM EET_expand_str
+			WRITE_LONG offset "%str%"
+			SET offset = 0x60
+			READ_LONG offset "strref"
+			LPM EET_expand_str
+			WRITE_LONG offset "%str%"
 		END
 	//ITM
 	END ELSE PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~itm~) BEGIN

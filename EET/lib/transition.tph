@@ -745,22 +745,6 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~IN
 END
 
 /////                                                  \\\\\
-///// Mur'Neth                                         \\\\\
-/////                                                  \\\\\
-
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~MUR'NETH\.TP2~) BEGIN
-	LAF ~EET_NPC_TRANSITION~
-		INT_VAR
-		type = 1
-		STR_VAR
-		dv = "A#MURN"
-		override_BG1 = "A#MURN"
-		string = "@5000001"
-		stringPosDV = "Nalia"
-	END
-END
-
-/////                                                  \\\\\
 ///// Finch                                            \\\\\
 /////                                                  \\\\\
 
@@ -821,22 +805,6 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~IS
 		override_BG1 = "RH#ISRA"
 		string = "@5000005"
 		stringPosDV = "Jaheira"
-	END
-END
-
-/////                                                  \\\\\
-///// Vynd                                             \\\\\
-/////                                                  \\\\\
-
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~VYND\.TP2~) BEGIN
-	LAF ~EET_NPC_TRANSITION~
-		INT_VAR
-		type = 1
-		STR_VAR
-		dv = "GV#VYND"
-		override_BG1 = "GV#VYND"
-		string = "@5000006"
-		stringPosDV = "Wilson"
 	END
 END
 
