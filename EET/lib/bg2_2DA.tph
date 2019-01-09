@@ -562,17 +562,17 @@ COPY + ~%MOD_FOLDER%/temp/array/ITEM_USE.2DA~ ~%MOD_FOLDER%/temp/array~
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 5 "col1"
 		SPRINT match ~%col1%~ SPRINT res ~itm~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 5 "%match%" SPRINT col1 ~%match%~ END
-		READ_2DA_ENTRY cnt 1 5 "col2"
+		READ_2DA_ENTRY cnt 1 5 "col2" //USER
 		SPRINT match ~%col2%~ SPRINT res ~dv~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 5 "%match%" SPRINT col2 ~%match%~ END
-		READ_2DA_ENTRY cnt 2 5 "col3"
-		READ_2DA_ENTRY cnt 3 5 "col4"
-		READ_2DA_ENTRY cnt 4 5 "col5"
+		READ_2DA_ENTRY cnt 2 5 "col3" //STRREF
+		READ_2DA_ENTRY cnt 3 5 "col4" //FLAG
+		READ_2DA_ENTRY cnt 4 5 "col5" //USERNAME
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
 				LAF EET_strref INT_VAR str = col3 RET str END
 				OUTER_SET col3 = str
-				LAF EET_strref INT_VAR str = col4 RET str END
-				OUTER_SET col4 = str
+				LAF EET_strref INT_VAR str = col5 RET str END
+				OUTER_SET col5 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5%~
 				PRINT ~%col1% %col2% %col3% %col4% %col5% appended to %SOURCE_FILESPEC%~
 			END
