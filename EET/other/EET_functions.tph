@@ -293,7 +293,7 @@ END
             DECOMPILE_AND_PATCH BEGIN
               SPRINT tilde "~"
               SET match = 0
-              SET position = 1 //first is already taken by exit response
+              SET position = 0
               REPLACE_EVALUATE CASE_INSENSITIVE ~\(IF[ ]+.[%newline%]*Global("[^"]+","GLOBAL",0)[%newline%]*Dead("\)\([^"]+\)\(")\)~ BEGIN
                 PATCH_IF (match = 0) BEGIN
                   PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~.*%stringPosDV%~) BEGIN
