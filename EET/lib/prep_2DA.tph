@@ -9,7 +9,7 @@ ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #4 ~) BEGI
 		COUNT_2DA_ROWS 2 "cntrow"
 		FOR (cnt = 1; cnt < cntrow; cnt = cnt + 1) BEGIN
 			READ_2DA_ENTRY cnt 1 2 "strref"
-			LPF EET_strref INT_VAR str = strref RET str END
+			LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 			SET_2DA_ENTRY cnt 1 2 ~%str%~
 		END
 	BUT_ONLY

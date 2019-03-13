@@ -65,12 +65,12 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
     ACTION_FOR_EACH var IN dv string BEGIN
       OUTER_SPRINT EVAL temp ~%var%~
       ACTION_IF (~%temp%~ STR_EQ ~~) BEGIN
-        WARN ~WARNING: EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+        WARN ~WARNING EET_NPC_TRANSITION: "%var%" STR_VAR not set~
         OUTER_SET skip = 1
       END
     END
     ACTION_IF (~%override_BG1%~ STR_EQ ~~) AND (~%override_SoD%~ STR_EQ ~~) BEGIN
-      WARN ~WARNING: EET_NPC_TRANSITION: "override_BG1 and override_SoD STR_VAR not set~
+      WARN ~WARNING EET_NPC_TRANSITION: both "override_BG1" and "override_SoD" STR_VAR not set~
       OUTER_SET skip = 1
     END
     OUTER_SPRINT override_SoA ~~
@@ -79,7 +79,7 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
     ACTION_FOR_EACH var IN dv override_SoA override_ToB dialog_ToB string BEGIN
       OUTER_SPRINT EVAL temp ~%var%~
       ACTION_IF (~%temp%~ STR_EQ ~~) BEGIN
-        WARN ~WARNING: EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+        WARN ~WARNING EET_NPC_TRANSITION: "%var%" STR_VAR not set~
         OUTER_SET skip = 1
       END
     END
@@ -87,10 +87,10 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
     OUTER_SPRINT override_SoD ~~
   END ELSE ACTION_IF (type = 3) BEGIN //NPC with BG1 and BG2 content
     PRINT ~EET_NPC_TRANSITION patching for %dv%: NPC with BG1 and BG2 content~
-    ACTION_FOR_EACH var IN dv are baf override_BG1 override_SoA override_ToB dialog_ToB string BEGIN
+    ACTION_FOR_EACH var IN dv override_BG1 override_SoA override_ToB dialog_ToB string BEGIN
       OUTER_SPRINT EVAL temp ~%var%~
       ACTION_IF (~%temp%~ STR_EQ ~~) BEGIN
-        WARN ~WARNING: EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+        WARN ~WARNING EET_NPC_TRANSITION: "%var%" STR_VAR not set~
         OUTER_SET skip = 1
       END
     END
@@ -99,18 +99,34 @@ DEFINE_ACTION_FUNCTION ~EET_NPC_TRANSITION~
     ACTION_FOR_EACH var IN dv string cre_ToB BEGIN
       OUTER_SPRINT EVAL temp ~%var%~
       ACTION_IF (~%temp%~ STR_EQ ~~) BEGIN
-        WARN ~WARNING: EET_NPC_TRANSITION: "%var%" STR_VAR not set~
+        WARN ~WARNING EET_NPC_TRANSITION: "%var%" STR_VAR not set~
         OUTER_SET skip = 1
       END
     END
   END ELSE BEGIN
-    WARN ~WARNING: EET_NPC_TRANSITION: unexpected "type" INT_VAR value (%type%)~
+    WARN ~WARNING EET_NPC_TRANSITION: unexpected "type" INT_VAR value (%type%)~
     OUTER_SET skip = 1
   END
 
   ACTION_IF (default_ToB = 1) BEGIN
     ACTION_IF (~%cre_ToB%~ STR_EQ ~~) BEGIN
-      WARN ~WARNING: EET_NPC_TRANSITION: "cre_ToB" STR_VAR not set~
+      WARN ~WARNING EET_NPC_TRANSITION: "cre_ToB" STR_VAR not set~
+      OUTER_SET skip = 1
+    END ELSE ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%cre_ToB%.cre~) BEGIN
+      WARN ~WARNING EET_NPC_TRANSITION: "%cre_ToB%.cre" doesn't exist in game~
+      OUTER_SET skip = 1
+    END
+  END
+
+  ACTION_IF (skip = 0) BEGIN
+    ACTION_FOR_EACH var IN ~%override_BG1%~ ~%override_SoD%~ ~%override_SoA%~ ~%override_ToB%~ BEGIN
+      ACTION_IF (NOT ~%var%~ STR_EQ ~~) AND (NOT FILE_EXISTS_IN_GAME ~%var%.bcs~) BEGIN
+        WARN ~WARNING EET_NPC_TRANSITION: "%var%.bcs" doesn't exist in game~
+        OUTER_SET skip = 1
+      END
+    END
+    ACTION_IF (NOT ~%dialog_ToB%~ STR_EQ ~~) AND (NOT FILE_EXISTS_IN_GAME ~%dialog_ToB%.dlg~) BEGIN
+      WARN ~WARNING EET_NPC_TRANSITION: "%dialog_ToB%.dlg" doesn't exist in game~
       OUTER_SET skip = 1
     END
   END
@@ -209,8 +225,8 @@ END
     ACTION_IF (NOT ~%override_ToB%~ STR_EQ ~~) BEGIN
       PRINT ~Patching %override_ToB%.BCS~
       ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_ToB%.BCS~ BEGIN
-	    COPY - ~.../blank.txt~ ~.../%override_ToB%.baf~
-	    COMPILE ~.../%override_ToB%.baf~
+        COPY - ~.../blank.txt~ ~.../%override_ToB%.baf~
+        COMPILE ~.../%override_ToB%.baf~
       END
       ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_ToB%.BCS~ ~"BD_JOINXP"~)) BEGIN
         PRINT ~%override_ToB%.BCS already patched.~
@@ -221,8 +237,8 @@ END
     ACTION_IF (NOT ~%override_SoA%~ STR_EQ ~~) BEGIN
       PRINT ~Patching %override_SoA%.BCS~
       ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_SoA%.BCS~ BEGIN
-	    COPY - ~.../blank.txt~ ~.../%override_SoA%.baf~
-	    COMPILE ~.../%override_SoA%.baf~
+        COPY - ~.../blank.txt~ ~.../%override_SoA%.baf~
+        COMPILE ~.../%override_SoA%.baf~
       END
       ACTION_IF (NOT ~%override_SoA%~ STR_EQ ~%override_ToB%~) BEGIN
         EXTEND_TOP ~%override_SoA%.BCS~ ~.../chapterSoA-et.baf~ EVALUATE_BUFFER
@@ -231,8 +247,8 @@ END
     END
     ACTION_IF (NOT ~%override_SoD%~ STR_EQ ~~) BEGIN
       ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_SoD%.BCS~ BEGIN
-	    COPY - ~.../blank.txt~ ~.../%override_SoD%.baf~
-	    COMPILE ~.../%override_SoD%.baf~
+        COPY - ~.../blank.txt~ ~.../%override_SoD%.baf~
+        COMPILE ~.../%override_SoD%.baf~
       END
       COPY_EXISTING ~%override_SoD%.BCS~ ~override~
         DECOMPILE_AND_PATCH BEGIN
@@ -247,8 +263,8 @@ END
     ACTION_IF (NOT ~%override_BG1%~ STR_EQ ~~) BEGIN
       PRINT ~Patching %override_BG1%.BCS~
       ACTION_IF NOT FILE_EXISTS_IN_GAME ~%override_BG1%.BCS~ BEGIN
-	    COPY - ~.../blank.txt~ ~.../%override_BG1%.baf~
-	    COMPILE ~.../%override_BG1%.baf~
+        COPY - ~.../blank.txt~ ~.../%override_BG1%.baf~
+        COMPILE ~.../%override_BG1%.baf~
       END
       COPY_EXISTING ~%override_BG1%.BCS~ ~override~
         DECOMPILE_AND_PATCH BEGIN
@@ -754,7 +770,7 @@ DEFINE_PATCH_FUNCTION ~BG1_RND_ITM~
       //CRE structure (embedded CRE files)
       ////////////////////////////////////
       READ_LONG ("%actors_off%"+0x110*cnt+0x28) "actors_flags"
-	  READ_LONG ("%actors_off%"+0x110*cnt+0x8c) "actors_emb_size"
+      READ_LONG ("%actors_off%"+0x110*cnt+0x8c) "actors_emb_size"
       PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
       END ELSE PATCH_IF (actors_emb_size = 0) BEGIN
         SET actors_flags = actors_flags + BIT0

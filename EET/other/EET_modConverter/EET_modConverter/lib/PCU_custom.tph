@@ -212,7 +212,6 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 		INNER_PATCH_SAVE ~patch_dir~ ~%patch_output%~ BEGIN
 			REPLACE_TEXTUALLY ~[^/]+$~ ~~
 		END
-		SET checked = 0
 		SET updated = 0
 		PATCH_IF (NOT ~%patch_name%~ STR_EQ ~%patch_output%~) BEGIN
 			PATCH_PRINT ~Renaming %patch_name% to %patch_output%...~
@@ -221,7 +220,7 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 		END
 		PATCH_SILENT
 		INNER_ACTION BEGIN
-			ACTION_MATCH ~%patch_ext%~ WITH ~2DA~ ~BAM~ ~BMP~ ~MOS~ ~MVE~ ~PLT~ ~TIS~ ~TIZ~ ~WAV~ ~WFX~ ~WBM~ BEGIN
+			ACTION_MATCH ~%patch_ext%~ WITH 2DA BAM BMP MOS MVE PLT TIS TIZ WAV WFX WBM BEGIN
 				ACTION_IF (updated = 1) BEGIN
 					MKDIR ~EET_modConverter/Output/%patch_dir%~
 					COPY_LARGE ~EET_modConverter/Input/%patch_name%~ ~EET_modConverter/Output/%patch_output%~
@@ -229,14 +228,22 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 			END
 			DEFAULT
 				COPY - ~EET_modConverter/Input/%patch_name%~ ~.../Output/%patch_output%~
+					PATCH_PRINT ~%cntcurrent%/%cntrow% Patching %patch_name%...~
+					SPRINT ext_check ~~
 					PATCH_IF (type < 3) BEGIN
-						LAUNCH_PATCH_MACRO ~EET_PCU_core~
+						PATCH_IF (option = 5) BEGIN
+							PATCH_MATCH ~%SOURCE_EXT%~ WITH ARE EFF GAM ITM PRO SPL STO TRA VEF VVC WED WMP BEGIN
+								SPRINT ext_check ~ignore~
+							END
+							DEFAULT END
+						END
+						PATCH_IF (NOT ~%ext_check%~ STR_EQ ~~) AND (NOT ~%ext_check%~ STR_EQ ~ignore~) BEGIN
+							LPF EET_PCU_core RET ext_check updated END
+							SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
+						END
 					END
 			END
-			ACTION_IF (checked = 0) BEGIN
-				OUTER_SET ignore_check = ignore_check + 1
-				PRINT ~%cntcurrent%/%cntrow% Ignoring patching %patch_name%...~
-			END ELSE ACTION_IF ("%updated%" = 1) BEGIN
+			ACTION_IF (updated = 1) BEGIN
 				MKDIR ~EET_modConverter/Output/%patch_dir%~
 				COPY ~.../Output/%patch_output%~ ~EET_modConverter/Output/%patch_output%~
 			END

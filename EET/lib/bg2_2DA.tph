@@ -32,7 +32,7 @@ COPY + ~%MOD_FOLDER%/temp/array/KITLIST.2DA~ ~%MOD_FOLDER%/temp/array~
 					PATCH_IF (NOT IS_AN_INT strref) BEGIN
 						SPRINT EVAL ~%var%~ ~*~
 					END ELSE BEGIN
-						LPF EET_strref INT_VAR str = strref RET str END
+						LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 						SPRINT EVAL ~%var%~ ~%str%~
 					END
 				END
@@ -277,7 +277,7 @@ COPY + ~%MOD_FOLDER%/temp/array/CHARSND.2DA~ ~%MOD_FOLDER%/temp/array~
 			FOR (j = 1; j < cntrow; j = j + 1) BEGIN
 				READ_2DA_ENTRY j 0 3 "index"
 				READ_2DA_ENTRY j (i + 1) 3 "strref"
-				LPF EET_strref INT_VAR str = strref RET str END
+				LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 				DEFINE_ASSOCIATIVE_ARRAY table_2DA_charsnd_index BEGIN ~%index%~ => ~%str%~ END
 			END
 			INNER_ACTION BEGIN
@@ -457,9 +457,9 @@ COPY + ~%MOD_FOLDER%/temp/array/HATERACE.2DA~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 3 4 "col4" //STRREF_HELP
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*[^%TAB% ]+[%TAB% ]+[0-9]+[%TAB% ]+%col3%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
-				LAF EET_strref INT_VAR str = col2 RET str END
+				LAF EET_strref INT_VAR str = col2 add = strrefAdd RET str END
 				OUTER_SET col2 = str
-				LAF EET_strref INT_VAR str = col4 RET str END
+				LAF EET_strref INT_VAR str = col4 add = strrefAdd RET str END
 				OUTER_SET col4 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4%~
 				PRINT ~%col1% %col2% %col3% %col4% appended to %SOURCE_FILESPEC%~
@@ -499,9 +499,10 @@ ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPPR[1-7][5-9][0-9]\.SPL~ BEGIN //Priest leve
 END
 
 COPY_EXISTING ~HIDESPL.2DA~ ~override~
-	COUNT_2DA_ROWS 3 "cntrow"
+	REPLACE_TEXTUALLY ~^SPWI93[5-7] .+%LNL%~ ~~ //free 3 level 9 slots (SUMMON_SKELETON_WARRIOR entries)
+	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET_2DA_ENTRY cnt 2 3 "0"
+		SET_2DA_ENTRY cnt 2 4 "0"
 	END
 	PRETTY_PRINT_2DA
 BUT_ONLY
@@ -509,15 +510,22 @@ BUT_ONLY
 OUTER_SPRINT logHide ~~
 COPY + ~%MOD_FOLDER%/temp/array/HIDESPL.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~^SPWI93[5-7] .+%LNL%~ ~~ //SUMMON_SKELETON_WARRIOR
+	//https://forums.beamdog.com/discussion/55314/dancing-lights-and-darkness-15-radius
+	REPLACE_TEXTUALLY ~^SPPR116 .+%LNL%~ ~~ //CLERIC_FAERIE_FIRE
+	REPLACE_TEXTUALLY ~^SPWI126 .+%LNL%~ ~~ //WIZARD_DANCING_LIGHTS
+	REPLACE_TEXTUALLY ~^SPWI228 .+%LNL%~ ~~ //WIZARD_DARKNESS_15_FOOT
 	FOR (i=924; i<=999; i=i+1) BEGIN
 		REPLACE_TEXTUALLY ~^SPWI%i% .+%LNL%~ ~~
     END
-	COUNT_2DA_ROWS 3 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~spl~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 3 "%match%" SPRINT col1 ~%match%~ END
-		READ_2DA_ENTRY cnt 1 3 "col2"
-		READ_2DA_ENTRY cnt 2 3 "col3"
+	COUNT_2DA_ROWS 4 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 4 "col1"
+		TO_UPPER col1
+		SPRINT match ~%col1%~ SPRINT res ~spl~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 4 "%match%" SPRINT col1 ~%match%~ END
+		DEFINE_ASSOCIATIVE_ARRAY hidespl_array BEGIN ~%col1%~ => ~~ END
+		READ_2DA_ENTRY cnt 1 4 "col2"
+		READ_2DA_ENTRY cnt 2 4 "col3"
 		INNER_ACTION BEGIN
 			LAF NAME_NUM_OF_SPELL_RES STR_VAR spell_res = EVAL ~%col1%~ RET spell_num spell_name END
 			ACTION_IF (FILE_EXISTS ~%patch_dir%/spl/%col1%.spl~) BEGIN
@@ -569,9 +577,9 @@ COPY + ~%MOD_FOLDER%/temp/array/ITEM_USE.2DA~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 4 5 "col5" //USERNAME
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
-				LAF EET_strref INT_VAR str = col3 RET str END
+				LAF EET_strref INT_VAR str = col3 add = strrefAdd RET str END
 				OUTER_SET col3 = str
-				LAF EET_strref INT_VAR str = col5 STR_VAR array = ~strref_tlk~ RET str END
+				LAF EET_strref INT_VAR str = col5 add = strrefAdd STR_VAR array = ~remapped_tra~ RET str END
 				OUTER_SET col5 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5%~
 				PRINT ~%col1% %col2% %col3% %col4% %col5% appended to %SOURCE_FILESPEC%~
@@ -619,7 +627,7 @@ COPY + ~%MOD_FOLDER%/temp/array/ITEMDIAL.2DA~ ~%MOD_FOLDER%/temp/array~
 		SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 3 "%match%" SPRINT col3 ~%match%~ END
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
-				LAF EET_strref INT_VAR str = col2 RET str END
+				LAF EET_strref INT_VAR str = col2 add = strrefAdd RET str END
 				OUTER_SET col2 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3%~
 				PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILESPEC%~
@@ -773,7 +781,7 @@ COPY + ~%MOD_FOLDER%/temp/array/MOVIDESC.2DA~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 1 2 "col2"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
-				LAF EET_strref INT_VAR str = col2 RET str END
+				LAF EET_strref INT_VAR str = col2 add = strrefAdd RET str END
 				OUTER_SET col2 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
@@ -796,7 +804,7 @@ COPY + ~%MOD_FOLDER%/temp/array/MSECTYPE.2DA~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 1 2 "col2"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
-				LAF EET_strref INT_VAR str = col2 RET str END
+				LAF EET_strref INT_VAR str = col2 add = strrefAdd RET str END
 				OUTER_SET col2 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
@@ -1009,9 +1017,9 @@ COPY + ~%MOD_FOLDER%/temp/array/SCRPDESC.2DA~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 2 3 "col3"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
-				LAF EET_strref INT_VAR str = col2 RET str END
+				LAF EET_strref INT_VAR str = col2 add = strrefAdd RET str END
 				OUTER_SET col2 = str
-				LAF EET_strref INT_VAR str = col3 RET str END
+				LAF EET_strref INT_VAR str = col3 add = strrefAdd RET str END
 				OUTER_SET col3 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3%~
 				PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILESPEC%~
@@ -1268,7 +1276,7 @@ COPY + ~%MOD_FOLDER%/temp/array/SPELDESC.2DA~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 1 2 "col2"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			INNER_ACTION BEGIN
-				LAF EET_strref INT_VAR str = col2 RET str END
+				LAF EET_strref INT_VAR str = col2 add = strrefAdd RET str END
 				OUTER_SET col2 = str
 				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2%~
 				PRINT ~%col1% %col2% appended to %SOURCE_FILESPEC%~
@@ -1306,7 +1314,7 @@ COPY + ~%MOD_FOLDER%/temp/array/TOOLTIP.2DA~ ~%MOD_FOLDER%/temp/array~
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~TOOLTIP.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
 			FOR (j = 1; j < cntcol; j = j + 1) BEGIN
 				READ_2DA_ENTRY i j 3 "col"
-				LPF EET_strref INT_VAR str = col RET str END
+				LPF EET_strref INT_VAR str = col add = strrefAdd RET str END
 				SPRINT strings ~%strings% %str% ~
 			END
 			INNER_ACTION BEGIN
@@ -1339,7 +1347,7 @@ COPY + ~%MOD_FOLDER%/temp/array/TRACKING.2DA~ ~%MOD_FOLDER%/temp/array~
 				OUTER_PATCH_SAVE col2_new ~%col2%~ BEGIN
 					REPLACE_TEXTUALLY ~O_~ ~~
 				END
-				LAF EET_strref INT_VAR str = col2_new RET str END
+				LAF EET_strref INT_VAR str = col2_new add = strrefAdd RET str END
 				OUTER_PATCH_SAVE col2 ~%col2%~ BEGIN
 					REPLACE_TEXTUALLY ~^\(O*_*\)[0-9]+$~ ~\1%str%~
 				END
@@ -1862,7 +1870,7 @@ COPY + ~%MOD_FOLDER%/temp/2da/BGCLATXT.2DA~ ~%MOD_FOLDER%/temp/2da~
 		SET_2DA_ENTRY cnt 2 10 "%kitid%"
 		PATCH_FOR_EACH cnt2 IN 3 4 5 6 8 9 BEGIN
 			READ_2DA_ENTRY cnt cnt2 10 "strref"
-			LPF EET_strref INT_VAR str = strref RET str END
+			LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 			SET_2DA_ENTRY cnt cnt2 10 "%str%"
 		END
 	END
@@ -1887,7 +1895,7 @@ COPY + ~%MOD_FOLDER%/temp/2da/BGRACTXT.2DA~ ~%MOD_FOLDER%/temp/2da~
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		FOR (cnt2 = 2; cnt2 < 6; cnt2 = cnt2 + 1) BEGIN
 			READ_2DA_ENTRY cnt cnt2 6 "strref"
-			LPF EET_strref INT_VAR str = strref RET str END
+			LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 			SET_2DA_ENTRY cnt cnt2 6 "%str%"
 		END
 	END

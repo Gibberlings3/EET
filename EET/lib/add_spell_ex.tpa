@@ -1,0 +1,140 @@
+//Action function similar to WeiDU ADD_SPELL (adding a spell of type and level into spell.ids, in the first empty slot possible), but more flexible: this one also allows to set output directory, min and max spell.ids num range, auto spell level lookup for innate and class spells (for which exact level doesn't matter) and FAIL state if no free slot is found (rather than printing normal message and continuing like nothing happened).
+//If spell.ids already contains a spell with the same name, of the same type and level than the one you're adding, then that spell is overwritten (rather than adding a duplicate version).
+//If spell.ids already contains a spell with the same name, but of different type (and/or level if precise level has been set) than the one you're adding, then the current reference is removed from spell.ids, and then the action proceeds as usual.
+
+//Example usage:
+//LAF ADD_SPELL_EX INT_VAR type = 2 level = 4 STR_VAR file = EVAL ~%MOD_FOLDER%/resource.SPL~ name = ~SYMBOLIC_NAME~ RET DEST_FILE END
+//COPY_EXISTING ~%DEST_FILE%~ ~override~
+
+DEFINE_ACTION_FUNCTION ADD_SPELL_EX
+	INT_VAR
+	type = "-1" //1 = priest (SPPR); 2 = wizard (SPWI); 3 = innate (SPIN); 4 = class (SPCL)
+	level = "-1" //spell level slot (from 0 to 9). If omitted the function will lookup first free slot starting from level 0 and increasing it if needed. Notice that this option only affects spell name, not 0x34 offset in SPL file
+	min = 0 //add spell at this slot or higher
+	max = 49 //add spell at this slot or lower
+	hide = 0 //0 = normal availability; 1 = spell added to HIDESPL.2DA
+	STR_VAR
+	file = "" //path to spell you want to add
+	output = "override" //output directory where the added spell should be copied
+	name = "" //IDS symbolic reference of this spell
+	RET
+	outcome //1 = spell added to new slot; 2 = spell added to new slot, previous reference with the same name, but of different type/level removed; 3 = previous spell of the same type and level overwritten
+	spell_res //resource name of the added spell
+	spell_num //IDS numerical reference of the added spell
+	spell_name //IDS symbolic reference of the added spell - same as name STR_VAR
+	spell_level //spell level slot (from 0 to 9) - same as level INT_VAR or first free slot possible if level was not set
+	// Below variables are usual WeiDU style COPY vars that can be used for additional spell patching. They are set the same way as in vanilla ADD_SPELL case
+	SOURCE_DIRECTORY
+	SOURCE_FILESPEC
+	SOURCE_FILE
+	SOURCE_RES
+	SOURCE_EXT
+	DEST_DIRECTORY
+	DEST_FILESPEC
+	DEST_FILE
+	DEST_RES
+	DEST_EXT
+BEGIN
+	ACTION_IF ~%name%~ STR_EQ ~~ BEGIN
+		FAIL ~ADD_SPELL_EX: %file% name not specified~
+	END
+	PRINT ~ADD_SPELL_EX: adding spell %name% (type = %type%; level = %level%; min = %min%; max = %max%; hide = %hide%)~
+	ACTION_IF ~%file%~ STR_EQ ~~ BEGIN
+		FAIL ~ADD_SPELL_EX: path to spell file not specified~
+	END
+	ACTION_MATCH ~%type%~ WITH
+		1 BEGIN OUTER_SPRINT prefix ~SPPR~ END
+		2 BEGIN OUTER_SPRINT prefix ~SPWI~ END
+		3 BEGIN OUTER_SPRINT prefix ~SPIN~ END
+		4 BEGIN OUTER_SPRINT prefix ~SPCL~ END
+		DEFAULT FAIL ~ADD_SPELL_EX: %file% valid type not specified~
+	END
+	COPY_EXISTING - ~spell.ids~ ~override~
+		COUNT_2DA_ROWS 2 "cntrow"
+		FOR (i = 1; i < cntrow; ++i) BEGIN
+			READ_2DA_ENTRY i 0 2 "ids_num"
+			READ_2DA_ENTRY i 1 2 "ids_name"
+			INNER_PATCH_SAVE ids_level ~%ids_num%~ BEGIN
+				REPLACE_TEXTUALLY ~^.\(.\).+$~ ~\1~
+			END
+			PATCH_IF (~%ids_num%~ STRING_CONTAINS_REGEXP ~^%type%~ = 0) BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY local_spellNameLevel BEGIN ~%ids_name%~ => ~%ids_level%~ END
+				DEFINE_ASSOCIATIVE_ARRAY local_spellNum BEGIN ~%ids_num%~ => ~~ END
+			END ELSE BEGIN
+				DEFINE_ASSOCIATIVE_ARRAY local_spellNameExt BEGIN ~%ids_name%~ => ~~ END
+			END
+		END
+	ACTION_IF level = "-1" BEGIN
+		OUTER_SET spell_level = 0
+		OUTER_SET lookup = 1
+	END ELSE BEGIN
+		OUTER_SET spell_level = level
+		OUTER_SET lookup = 0
+	END
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~add_spell.ids~ BEGIN
+<<<<<<<< .../add_spell.ids
+>>>>>>>>
+		COPY ~.../add_spell.ids~ ~override~
+	END
+	OUTER_SET outcome = 0
+	OUTER_SET end_while = 0
+	OUTER_WHILE end_while != 1 BEGIN
+		OUTER_FOR (i = min; i <= max; ++i) BEGIN
+			ACTION_IF i < 10 BEGIN
+				OUTER_SPRINT num ~0%i%~
+			END ELSE BEGIN
+				OUTER_SET num = i
+			END
+			ACTION_IF (outcome = 0) AND (VARIABLE_IS_SET $local_spellNameExt("%name%")) BEGIN //name of the different type already present
+				LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%name%~ RET spell_num spell_res END
+				PRINT ~ADD_SPELL_EX: removing old %spell_num% %name% reference~
+				COPY_EXISTING ~spell.ids~ ~override~
+					~add_spell.ids~ ~override~
+					REPLACE_TEXTUALLY ~%spell_num%[%TAB% ]+%name%[%WNL%%LNL%%MNL%%TAB% ]*~ ~~
+				OUTER_SET outcome = 2
+			END ELSE ACTION_IF (outcome = 0) AND (VARIABLE_IS_SET $local_spellNameLevel("%name%")) BEGIN //name of the same type already present
+				LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%name%~ RET spell_num spell_res END
+				OUTER_TEXT_SPRINT ids_level $local_spellNameLevel("%name%")
+				ACTION_IF (ids_level = level) OR (lookup = 1) BEGIN //spell of the same level or level irrelevant
+					PRINT ~ADD_SPELL_EX: overwritting old %spell_res%.SPL file~
+					OUTER_SET outcome = 3
+					OUTER_SET i = max
+				END ELSE BEGIN //spell of different level (lookup not set)
+					PRINT ~ADD_SPELL_EX: removing old %spell_num% %name% reference~
+					COPY_EXISTING ~spell.ids~ ~override~
+						~add_spell.ids~ ~override~
+						REPLACE_TEXTUALLY ~%spell_num%[%TAB% ]+%name%[%WNL%%LNL%%MNL%%TAB% ]*~ ~~
+					OUTER_SET outcome = 2
+				END
+			END
+			ACTION_IF (outcome != 3) AND (NOT VARIABLE_IS_SET $local_spellNum("%type%%spell_level%%num%")) AND (NOT FILE_EXISTS_IN_GAME ~%prefix%%spell_level%%num%.SPL~) BEGIN
+				OUTER_SPRINT spell_num ~%type%%spell_level%%num%~
+				OUTER_SPRINT spell_res ~%prefix%%spell_level%%num%~
+				OUTER_SET outcome = 1
+				OUTER_SET i = max
+			END
+		END
+		ACTION_IF outcome > 0 BEGIN
+			OUTER_SET end_while = 1
+		END ELSE ACTION_IF (lookup = 1) AND (spell_level < 9) BEGIN
+			OUTER_SET spell_level = spell_level + 1
+		END ELSE BEGIN
+			FAIL ~ADD_SPELL_EX: couldn't add %name% to spell.ids as no slots remain~
+		END
+	END
+	ACTION_IF hide = 1 AND (NOT FILE_CONTAINS_EVALUATED (~hidespl.2da~ ~^%spell_res%[ %TAB%]~)) BEGIN
+		COPY_EXISTING ~hidespl.2da~ ~override~
+			REPLACE_TEXTUALLY ~IS_REMOVED~ ~IS_REMOVED%LNL%%spell_res% 1 0 0~
+			PRETTY_PRINT_2DA
+		BUT_ONLY
+	END
+	COPY ~%file%~ ~%output%/%spell_res%.SPL~
+	OUTER_SPRINT spell_name ~%name%~
+	ACTION_IF (NOT FILE_CONTAINS_EVALUATED (~add_spell.ids~ ~^%spell_num%[ %TAB%]%spell_name%~)) BEGIN
+		APPEND ~add_spell.ids~ ~%spell_num% %spell_name%~
+	END
+	ACTION_IF (NOT FILE_CONTAINS_EVALUATED (~spell.ids~ ~^%spell_num%[ %TAB%]%spell_name%~)) BEGIN
+		APPEND ~spell.ids~ ~%spell_num% %spell_name%~
+	END
+	PRINT ~ADD_SPELL_EX: added spell %spell_num% %name% (%SOURCE_RES% => %DEST_RES%)~
+END

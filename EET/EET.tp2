@@ -146,10 +146,13 @@ INCLUDE ~.../EET_functions.tph~
 INCLUDE ~%MOD_FOLDER%/lib/replace_multiline.tpa~
 INCLUDE ~%MOD_FOLDER%/lib/2da_missing_cols.tpa~
 OUTER_SPRINT remappedPrefix ~remapped~
+OUTER_SET strrefAdd = 200000
+OUTER_SET ddsClonning = 1
+OUTER_SET traifyDLG = 1
 INCLUDE ~%MOD_FOLDER%/lib/macros.tph~
-INCLUDE ~%MOD_FOLDER%/lib/strref_tables.tph~
 INCLUDE ~%MOD_FOLDER%/lib/bgee_dir.tph~
 INCLUDE ~%MOD_FOLDER%/lib/pcu_dict.tph~
+INCLUDE ~%MOD_FOLDER%/lib/add_spell_ex.tpa~
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGEE.log~
@@ -342,6 +345,53 @@ PRINT ~~
 PRINT ~BG2:EE files patching...~
 
 /////                                                  \\\\\
+///// Chapter numbers                                  \\\\\
+/////                                                  \\\\\
+
+//changes chapter numbers in BG2 to use EET continuous chapter convention
+ACTION_FOR_EACH var IN BCS DLG BEGIN
+	COPY_EXISTING_REGEXP GLOB ~^.+\.%var%$~ ~override~
+		PATCH_IF (NOT FILE_EXISTS ~%MOD_FOLDER%/temp/patch/%var%/%SOURCE_FILE%~) BEGIN //need to be added before converting BCS and DLG to BAF and D
+			DECOMPILE_AND_PATCH BEGIN
+				REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
+				REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
+					SET value = MATCH2 + 12
+					PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %MATCH2% => %MATCH1%%value%)~
+				END
+				~%MATCH1%%value%)~
+				REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
+			END
+		END
+	BUT_ONLY
+END
+
+/////                                                  \\\\\
+///// Patching each group of BG2:EE resources          \\\\\
+/////                                                  \\\\\
+
+////////////////////////
+// Viader's Extended Animations
+////////////////////////
+//0xE240 - 0xE2FF - reserved by Extended Animations
+//0xE330 - 0xE3FF - free
+//0xE440 - 0xE4FF - free
+//0xE530 - 0xE5FF - free
+//0xE620 - 0xE6FF - free
+//0xE730 - 0xE7FF - free
+//0xE850 - 0xE8FF - free
+//0xE920 - 0xE9FF - free
+//0xEA30 - 0xEAFF - free
+//0xEB30 - 0xEBFF - free
+//0xEC30 - 0xECFF - free
+//0xED30 - 0xEDFF - free
+//0xEE20 - 0xEEFF - free
+
+ACTION_FOR_EACH var IN IDS TLK 2DA CRE BCS DLG BEGIN
+	PRINT ~Patching BG2:EE %var% files~
+	INCLUDE ~%MOD_FOLDER%/lib/bg2_%var%.tph~
+END
+
+/////                                                  \\\\\
 ///// ADD_PROJECTILE                                   \\\\\
 /////                                                  \\\\\
 
@@ -435,13 +485,38 @@ COPY + ~%MOD_FOLDER%/temp/array/projectl.ids~ ~%MOD_FOLDER%/temp/array~
 
 PRINT ~Adding spells...~
 
+//free up 3 level 9 slots
+DISABLE_FROM_KEY ~SPWI935.SPL~ //SUMMON_SKELETON_WARRIOR3
+DISABLE_FROM_KEY ~SPWI936.SPL~ //SUMMON_SKELETON_WARRIOR2
+DISABLE_FROM_KEY ~SPWI937.SPL~ //SUMMON_SKELETON_WARRIOR
+
 COPY_EXISTING ~spell.ids~ ~override~
 	REPLACE_TEXTUALLY ~%WNL%~ ~%LNL%~
 	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
 	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
 	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	REPLACE_TEXTUALLY ~2935 SUMMON_SKELETON_WARRIOR3%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2936 SUMMON_SKELETON_WARRIOR2%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2937 SUMMON_SKELETON_WARRIOR%LNL%~ ~~
 	REPLACE_TEXTUALLY ~2924 BERESH_CHANGE%LNL%~ ~~ //WIZARD_SUMMON_PLANATAR_EVIL dupe
 	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~ //WIZARD_COMET dupe
+	REPLACE_TEXTUALLY ~1112 CLERIC_CIRCLE_OF_PROTECTION%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1114 CLERIC_ANIMAL_FRIENDSHIP%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1115 CLERIC_ENDURE_HEAT_COLD%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1215 CLERIC_RESIST_COLD%LNL%~ ~~ //referenced in CEFALDOR.BCS
+	REPLACE_TEXTUALLY ~1316 CLERIC_CURE_BLIND_DEAF%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1716 CLERIC_SPACE_WARP%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2109 WIZARD_HOLD_PORTAL%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2121 WIZARD_REVEAL_MAGIC%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2122 WIZARD_PROTECTION_CIRCLE%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2204 WIZARD_FOG_CLOUD%LNL%~ ~~ //referenced in RERAK02.BCS
+	REPLACE_TEXTUALLY ~2216 WIZARD_WIZARD_LOCK%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2709 WIZARD_TATTOOS_OF_POWER%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2801 WIZARD_DELETED%LNL%~ ~~ //referenced in MAGE2.BCS, NPCMAGE1.BCS
+	REPLACE_TEXTUALLY ~2814 WIZARD_OTTOS_IRRESISTIBLE_DANCE%LNL%~ ~~
+	REPLACE_TEXTUALLY ~3620 DECK_STAR%LNL%~ ~~
+	REPLACE_TEXTUALLY ~3705 TRAP_PENDULUM%LNL%~ ~~
+	REPLACE_TEXTUALLY ~3928 MEPHIT_GAS_FORM%LNL%~ ~~
 	COUNT_2DA_ROWS 2 cntrow
 	FOR (cnt = 0; cnt <= "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 idscode
@@ -458,8 +533,28 @@ COPY + ~%MOD_FOLDER%/temp/array/spell.ids~ ~%MOD_FOLDER%/temp/array~
 	REPLACE_TEXTUALLY ~[%TAB% ]+~ ~ ~
 	REPLACE_TEXTUALLY ~^[%TAB% ]+~ ~~
 	REPLACE_TEXTUALLY ~[%TAB% ]+$~ ~~
+	REPLACE_TEXTUALLY ~2935 SUMMON_SKELETON_WARRIOR3%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2936 SUMMON_SKELETON_WARRIOR2%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2937 SUMMON_SKELETON_WARRIOR%LNL%~ ~~
 	REPLACE_TEXTUALLY ~2924 BERESH_CHANGE%LNL%~ ~~
 	REPLACE_TEXTUALLY ~2925 KAISHAS_CHANGE%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1112 CLERIC_CIRCLE_OF_PROTECTION%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1114 CLERIC_ANIMAL_FRIENDSHIP%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1115 CLERIC_ENDURE_HEAT_COLD%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1215 CLERIC_RESIST_COLD%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1316 CLERIC_CURE_BLIND_DEAF%LNL%~ ~~
+	REPLACE_TEXTUALLY ~1716 CLERIC_SPACE_WARP%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2109 WIZARD_HOLD_PORTAL%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2121 WIZARD_REVEAL_MAGIC%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2122 WIZARD_PROTECTION_CIRCLE%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2204 WIZARD_FOG_CLOUD%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2216 WIZARD_WIZARD_LOCK%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2709 WIZARD_TATTOOS_OF_POWER%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2801 WIZARD_DELETED%LNL%~ ~~
+	REPLACE_TEXTUALLY ~2814 WIZARD_OTTOS_IRRESISTIBLE_DANCE%LNL%~ ~~
+	REPLACE_TEXTUALLY ~3620 DECK_STAR%LNL%~ ~~
+	REPLACE_TEXTUALLY ~3705 TRAP_PENDULUM%LNL%~ ~~
+	REPLACE_TEXTUALLY ~3928 MEPHIT_GAS_FORM%LNL%~ ~~
 	COUNT_2DA_ROWS 2 cntrow
 	FOR (cnt = 0; cnt <= "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 idscode
@@ -468,6 +563,10 @@ COPY + ~%MOD_FOLDER%/temp/array/spell.ids~ ~%MOD_FOLDER%/temp/array~
 			DEFINE_ASSOCIATIVE_ARRAY source_idscode_name BEGIN ~%idscode%~ => ~%spell_name%~ END
 		END
 	END
+
+MKDIR ~%patch_dir%/spl/ADD_SPELL~
+	~%patch_dir%/eff/ADD_SPELL~
+	~%biff_dir%/ADD_SPELL~
 
 ACTION_PHP_EACH source_idscode_name AS source_idscode => source_name BEGIN
 	ACTION_IF (source_idscode >= 4000) BEGIN
@@ -526,48 +625,57 @@ ACTION_PHP_EACH source_idscode_name AS source_idscode => source_name BEGIN
 			END
 		END
 		ACTION_IF ref_exists = 0 BEGIN //new, ADD_SPELL, delete old files
-			/*ACTION_IF (spell_type = 3) AND (spell_level = 1) BEGIN
-				OUTER_SET spell_level = 2 //not enough level 1 slots
+			ACTION_IF (VARIABLE_IS_SET $hidespl_array(~%source_res%~)) OR ((spell_type <= 2) AND (~%source_res%~ STRING_CONTAINS_REGEXP ~^.....[5-9]~ = 0)) BEGIN
+				OUTER_SET spell_min = 50
+				OUTER_SET spell_max = 99
+				OUTER_SET spell_hide = 1
+			END ELSE ACTION_IF spell_type >= 3 BEGIN
+				OUTER_SET spell_min = 0
+				OUTER_SET spell_max = 99
+				OUTER_SET spell_hide = 0
+			END ELSE BEGIN //SPPR or SPWI, not hidden
+				OUTER_SET spell_min = 0
+				OUTER_SET spell_max = 49
+				OUTER_SET spell_hide = 0
 			END
-			ACTION_IF ~%source_res%~ STR_EQ ~name_of_the_spell~ BEGIN
-				OUTER_SET spell_level = 0 //not enough level 7 slots
-			END*/
-			PRINT ~ADD_SPELL: %patch_dir%/spl/%source_res%.spl %spell_type% %spell_level% %source_name%~
-			ADD_SPELL ~%patch_dir%/spl/%source_res%.spl~ spell_type spell_level ~%source_name%~
-			LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%source_name%~ RET spell_res spell_num END
-			PRINT ~Renamed spell: %source_res% -> %spell_res%~
+			LAF ADD_SPELL_EX
+				INT_VAR
+				type = spell_type
+				level = spell_level
+				min = spell_min
+				max = spell_max
+				hide = spell_hide
+				STR_VAR
+				file = EVAL ~%patch_dir%/spl/%source_res%.spl~
+				output = EVAL ~%patch_dir%/spl/ADD_SPELL~
+				name = EVAL ~%source_name%~
+				RET spell_res spell_num spell_name
+			END
+			DELETE + ~%patch_dir%/spl/%source_res%.spl~
 			OUTER_SPRINT EVAL ~%source_name%_RES~ ~%spell_res%~
-			ACTION_IF ~%spell_res%~ STRING_CONTAINS_REGEXP ~[A-Z]+[0-9]+~ BEGIN
-				WARN ~WARNING: ADD_SPELL failed to add %patch_dir%/spl/%source_res%.spl~
-			END ELSE BEGIN
-				ACTION_DEFINE_ASSOCIATIVE_ARRAY game_idscode_name BEGIN ~%spell_num%~ => ~%source_name%~ END
-				ACTION_DEFINE_ASSOCIATIVE_ARRAY splName_list BEGIN ~%source_idscode%~ => ~%source_name%~ END
-				/*COPY + ~%backup_dir%/0/UNINSTALL.0~ ~%backup_dir%/0~ //the file is not patched yet
-					REPLACE_TEXTUALLY ~override.%spell_res%.spl~ ~~
-				DELETE + ~override/%spell_res%.spl~*/
-				ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
-					MKDIR ~%dir%/ADD_SPELL~
-					ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
-						OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
-							REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
-						END
-						ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
-							COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
-							DELETE + ~%BASH_FOR_FILESPEC%~
-						END ELSE BEGIN
-							WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
-						END
-						ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
-							ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
-								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-								OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
-							END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
-								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-								OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
-							END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~bam~ BEGIN
-								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-								OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
-							END
+			ACTION_DEFINE_ASSOCIATIVE_ARRAY game_idscode_name BEGIN ~%spell_num%~ => ~%source_name%~ END
+			ACTION_DEFINE_ASSOCIATIVE_ARRAY splName_list BEGIN ~%source_idscode%~ => ~%source_name%~ END
+			ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
+				ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+					OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
+						REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
+					END
+					ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
+						COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
+						DELETE + ~%BASH_FOR_FILESPEC%~
+					END ELSE BEGIN
+						WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
+					END
+					ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
+						ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
+							ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+							OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
+						END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
+							ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+							OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
+						END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~bam~ BEGIN
+							ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
+							OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
 						END
 					END
 				END
@@ -603,52 +711,14 @@ ACTION_FOR_EACH dir IN ~%biff_dir%~ ~%patch_dir%/eff~ ~%patch_dir%/spl~ BEGIN
 	END
 END
 
-/////                                                  \\\\\
-///// Chapter numbers                                  \\\\\
-/////                                                  \\\\\
-
-//changes chapter numbers in BG2 to use EET continuous chapter convention
-ACTION_FOR_EACH var IN BCS DLG BEGIN
-	COPY_EXISTING_REGEXP GLOB ~^.+\.%var%$~ ~override~
-		PATCH_IF (NOT FILE_EXISTS ~%MOD_FOLDER%/temp/patch/%var%/%SOURCE_FILE%~) BEGIN //need to be added before converting BCS and DLG to BAF and D
-			DECOMPILE_AND_PATCH BEGIN
-				REPLACE_TEXTUALLY ~IncrementGlobal~ ~IncrementReplaceMe~ //we don't want to patch this one
-				REPLACE_EVALUATE CASE_INSENSITIVE ~\([A-Za-z]*Global[A-Za-z]*("CHAPTER","GLOBAL",\)\([0-9]+\))~ BEGIN //this should take care of SetGlobal, Global, GlobalGT, GlobalLT
-					SET value = MATCH2 + 12
-					PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %MATCH2% => %MATCH1%%value%)~
-				END
-				~%MATCH1%%value%)~
-				REPLACE_TEXTUALLY ~IncrementReplaceMe~ ~IncrementGlobal~
-			END
-		END
-	BUT_ONLY
+//hide usable spells that can be enabled externally
+ACTION_FOR_EACH spell_name IN CLERIC_FAERIE_FIRE WIZARD_DANCING_LIGHTS WIZARD_DARKNESS_15_FOOT BEGIN
+	LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res END
+	APPEND ~HIDESPL.2DA~ ~%spell_res% 1 0 0~
 END
-
-/////                                                  \\\\\
-///// Patching each group of BG2:EE resources          \\\\\
-/////                                                  \\\\\
-
-////////////////////////
-// Viader's Extended Animations
-////////////////////////
-//0xE240 - 0xE2FF - reserved by Extended Animations
-//0xE330 - 0xE3FF - free
-//0xE440 - 0xE4FF - free
-//0xE530 - 0xE5FF - free
-//0xE620 - 0xE6FF - free
-//0xE730 - 0xE7FF - free
-//0xE850 - 0xE8FF - free
-//0xE920 - 0xE9FF - free
-//0xEA30 - 0xEAFF - free
-//0xEB30 - 0xEBFF - free
-//0xEC30 - 0xECFF - free
-//0xED30 - 0xEDFF - free
-//0xEE20 - 0xEEFF - free
-
-ACTION_FOR_EACH var IN IDS TLK 2DA CRE BCS DLG BEGIN
-	PRINT ~Patching BG2:EE %var% files~
-	INCLUDE ~%MOD_FOLDER%/lib/bg2_%var%.tph~
-END
+COPY_EXISTING ~HIDESPL.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// LUA / MENU BG2:EE patching                       \\\\\
@@ -719,8 +789,8 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*Infinity_AddDLC[ %TAB%]*([ %TAB%]*'\(.*\)'[ %TAB%]*,[ %TAB%]*'\(.*\)'[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*'\(.*\)'[ %TAB%]*,[ %TAB%]*'\(.*\)'[ %TAB%]*)~ BEGIN
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*Infinity_AddDLC[ %TAB%]*([ %TAB%]*'%MATCH1%'~)) BEGIN
 			SPRINT match ~%MATCH2%~ SPRINT res ~bmp~ LPM EET_PCU_outer_res SPRINT MATCH2 ~%match%~
-			PATCH_IF (MATCH3 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH3 RET str END SET MATCH3 = str END
-			PATCH_IF (MATCH4 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH4 RET str END SET MATCH4 = str END
+			PATCH_IF (MATCH3 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH3 add = strrefAdd RET str END SET MATCH3 = str END
+			PATCH_IF (MATCH4 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH4 add = strrefAdd RET str END SET MATCH4 = str END
 			SPRINT addDLC_var ~%addDLC_var%Infinity_AddDLC( '%MATCH1%', '%MATCH2%', %MATCH3%, %MATCH4%, '%MATCH5%', '%MATCH6%' )%LNL%~
 			//PATCH_PRINT ~Infinity_AddDLC: %MATCH1% ; %MATCH2% ; %MATCH3% ; %MATCH4% ; %MATCH5% ; %MATCH6%~
 		END
@@ -749,7 +819,7 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 	END
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'\(.*\)'[ %TAB%]*\][ %TAB%]*=[ %TAB%]*{\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([0-9]+\)[ %TAB%]*}~ BEGIN
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'%MATCH1%'~)) BEGIN
-			LPF EET_strref INT_VAR str = MATCH2 RET str END
+			LPF EET_strref INT_VAR str = MATCH2 add = strrefAdd RET str END
 			SET MATCH2 = str
 			INNER_ACTION BEGIN
 				ALTER_TLK_LIST BEGIN MATCH2 END BEGIN REPLACE_TEXTUALLY ~^~ ~BG1 ~ END
@@ -765,7 +835,7 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 		END
 	END ~~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*createQuest[ %TAB%]*([ %TAB%]*\([-0-9]+\)[ %TAB%]*)~ BEGIN
-		PATCH_IF (MATCH1 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH1 RET str END SET MATCH1 = str END
+		PATCH_IF (MATCH1 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH1 add = strrefAdd RET str END SET MATCH1 = str END
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*createQuest[ %TAB%]*([ %TAB%]*%MATCH1%[ %TAB%]*)~)) BEGIN
 			SPRINT createQuest_var ~%createQuest_var%%TAB%createQuest    ( %MATCH1% )%LNL%~
 			//DEFINE_ASSOCIATIVE_ARRAY createQuest BEGIN ~%TAB%createQuest    ( %MATCH1% )~ => ~dummy~ END
@@ -773,8 +843,8 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 		END
 	END ~~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*createEntry[ %TAB%]*([ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*\([-0-9]+\)[ %TAB%]*,[ %TAB%]*{[ %TAB%]*\(.*\)[ %TAB%]*}[ %TAB%]*,[ %TAB%]*\(.*\)[ %TAB%]*)~ BEGIN
-		PATCH_IF (MATCH1 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH1 RET str END SET MATCH1 = str END
-		PATCH_IF (MATCH3 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH3 RET str END SET MATCH3 = str END
+		PATCH_IF (MATCH1 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH1 add = strrefAdd RET str END SET MATCH1 = str END
+		PATCH_IF (MATCH3 > 0) BEGIN LPF EET_strref INT_VAR str = MATCH3 add = strrefAdd RET str END SET MATCH3 = str END
 		SPRINT createEntry_var ~%createEntry_var%%TAB%createEntry    ( %MATCH1%, %MATCH2%, %MATCH3%, {%MATCH4%}, %MATCH5%)%LNL%~
 		//DEFINE_ASSOCIATIVE_ARRAY createQuest BEGIN ~%TAB%createEntry    ( %MATCH1%, %MATCH2%, %MATCH3%, {%MATCH4%}, %MATCH5% )~ => ~dummy~ END
 		//PATCH_PRINT ~createEntry: : %MATCH1% ; %MATCH2% ; %MATCH3% ; %MATCH4% ; %MATCH5%~
@@ -818,7 +888,7 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 			READ_2DA_ENTRY cnt 1 2 "col2"
 			READ_2DA_ENTRY cnt 2 2 "col3"
 			READ_2DA_ENTRY cnt 3 2 "col4"
-			LPF EET_strref INT_VAR str = col4 RET str END SET col4 = str
+			LPF EET_strref INT_VAR str = col4 add = strrefAdd RET str END SET col4 = str
 			READ_2DA_ENTRY cnt 4 2 "col5"
 			READ_2DA_ENTRY cnt 5 2 "col6"
 			SPRINT movies_var ~%movies_var%%TAB%{'%col1%', %col2%, %col3%, %col4%, %col5%, %col6%},%LNL%~
@@ -1026,7 +1096,7 @@ ACTION_BASH_FOR ~%patch_dir%/dlg~ ~.*~ BEGIN
 		SPRINT tbl_lua ~%tbl_lua%filelist[#filelist+1] = '%patch_dir%/d/%BASH_FOR_RES%.d'%LNL%~
 END
 
-ACTION_FOR_EACH var IN mus musName splProt splState sum icon ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit wmp tra BEGIN
+ACTION_FOR_EACH var IN anim stat mus musName splProt splState sum icon ipro kit race class spec chapter save dv var 2da are bam bcs bmp cre dlg eff itm mos mve pro spl splRes splName sto tis vef wav door exit wmp tra BEGIN
 	OUTER_SPRINT array EVAL ~remapped_%var%~
 	OUTER_SPRINT tbl_lua ~%tbl_lua%%array% = {}%LNL%~
 	ACTION_PHP_EACH ~%array%~ AS var1 => var2 BEGIN
@@ -1101,6 +1171,59 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN%LNL%%log_remapped_splSta
 COPY ~%MOD_FOLDER%/lib/pcu_dict.tph~ ~%MOD_FOLDER%/lib~
 	APPEND_FILE ~%MOD_FOLDER%/temp/new_vars.tph~
 
+ACTION_DEFINE_ASSOCIATIVE_ARRAY arrayDDS_list BEGIN
+	//Blind
+	17399	=>	1474_14674_14071
+	1474	=>	17399_14674_14071
+	14674	=>	17399_1474_14071
+	14071	=>	17399_1474_14674
+	//Deaf
+	54318	=>	14073
+	14073	=>	54318
+	//Dire Charm
+	17392	=>	14780
+	14780	=>	17392
+	//Haste
+	10954	=>	14023_14022
+	14023	=>	10954_14022
+	14022	=>	10954_14023
+	//Held
+	340		=>	384_915_1473_8823_14102_17404
+	384		=>	340_915_1473_8823_14102_17404
+	915		=>	340_384_1473_8823_14102_17404
+	1473	=>	340_384_915_8823_14102_17404
+	8823	=>	340_384_915_1473_14102_17404
+	14102	=>	340_384_915_1473_8823_17404
+	17404	=>	340_384_915_1473_8823_14102
+	//Panic
+	14007	=>	17427_20568
+	17427	=>	14007_20568
+	20568	=>	14007_17427
+	//Paralyze
+	23083	=>	14650
+	14650	=>	23083
+	//Poison
+	14017	=>	14662
+	14662	=>	14017
+	//Silence
+	14002	=>	14676_17425
+	14676	=>	14002_17425
+	17425	=>	14002_14676
+	//Slow
+	14000	=>	14668
+	14668	=>	14000
+	//Stun
+	14043	=>	1280
+	1280	=>	14043
+END
+ACTION_PHP_EACH arrayDDS_list AS clone => strref BEGIN
+	OUTER_PATCH_SAVE strref ~%strref%~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\([0-9]+\)~ BEGIN
+			SPRINT $EVAL ~arrayDDS_%clone%~("%MATCH1%") ""
+		END ~%MATCH1%~
+	END
+END
+
 //FOR variables
 OUTER_SET count = 0
 OUTER_SET cntrow = 0
@@ -1134,11 +1257,11 @@ OUTER_SET ren_check = 0
 //conversion
 PRINT ~Please be patient during the conversion process. This may take some time...~
 
-COPY + ~.../blank.txt~ ~%MOD_FOLDER%/temp/Filelist.txt~
 ACTION_FOR_EACH var IN are /*bcs*/ cre /*dlg*/ eff ini itm pro spl sto vef vvc wed "" BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
-			LPM EET_PCU_core
+			LPF EET_PCU_core RET ext_check END
+			SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
 	END
 END
 
@@ -1208,10 +1331,10 @@ ACTION_PHP_EACH table_EET_2da AS data => file BEGIN
 	COPY + ~%MOD_FOLDER%/temp/2da/%file%.2DA~ ~%MOD_FOLDER%/temp/2da~
 		SET_2DA_ENTRY 1 0 1 "%data%"
 		READ_2DA_ENTRY 2 2 3 "strref"
-		LPF EET_strref INT_VAR str = strref RET str END
+		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 		SET_2DA_ENTRY 2 2 3 "%str%"
 		READ_2DA_ENTRY 3 2 3 "strref"
-		LPF EET_strref INT_VAR str = strref RET str END
+		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 		SET_2DA_ENTRY 3 2 3 "%str%"
 		PATCH_IF ~%data_1%~ STR_EQ ~111~ BEGIN
 			SET song = "%data_1%"
@@ -1227,7 +1350,7 @@ COPY + ~%MOD_FOLDER%/temp/2da/CHPTXT0.2DA~ ~%MOD_FOLDER%/temp/2da~ //BG1 Prologu
 	SET_2DA_ENTRY 1 0 1 "GUICHP0A"
 	FOR (i= 1 ; i<=5 ; i=i+1) BEGIN
 		READ_2DA_ENTRY 2 ~%i%~ 6 "strref"
-		LPF EET_strref INT_VAR str = strref RET str END
+		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 		SET_2DA_ENTRY 2 ~%i%~ 6 "%str%"
 	END
 	APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
@@ -1397,7 +1520,6 @@ BUT_ONLY
 
 COPY ~%patch_dir%/are~ ~override~
 	WRITE_SHORT 0x48 THIS | (1 << BG1AREA)
-	LPF EET_expand_tlk INT_VAR add = 200000 END
 	// Area script assigner
 	READ_ASCII 0x94 "script"
 	PATCH_IF (FILE_EXISTS ~%patch_dir%/baf/%script%.baf~) BEGIN
@@ -1506,7 +1628,6 @@ ACTION_BASH_FOR ~%patch_dir%/chr~ ~^0.+\.chr$~ BEGIN //only starting with 0 numb
 		REPLACE_TEXTUALLY ~^[0-9].~ ~BG~
 	END
 	COPY ~%BASH_FOR_FILESPEC%~ ~characters/%file%.chr~
-		LPF EET_expand_tlk INT_VAR add = 200000 END
 END
 
 /////                                                  \\\\\
@@ -1516,9 +1637,7 @@ END
 PRINT ~Installing CRE files...~
 
 COPY ~%patch_dir%/cre~ ~override~
-	LPF EET_expand_tlk INT_VAR add = 200000 END
-
-COPY ~%MOD_FOLDER%/base/cre~ ~override~
+	~%MOD_FOLDER%/base/cre~ ~override~
 
 // patching BG:EE cre files
 INCLUDE ~%MOD_FOLDER%/lib/bg1_cre.tph~
@@ -1557,9 +1676,7 @@ COMPILE ~%patch_dir%/d~
 PRINT ~Installing EFF files...~
 
 COPY ~%patch_dir%/eff~ ~override~
-	LPF EET_expand_tlk INT_VAR add = 200000 END
-
-COPY ~%MOD_FOLDER%/base/eff~ ~override~
+	~%MOD_FOLDER%/base/eff~ ~override~
 
 /////                                                  \\\\\
 ///// GAM                                              \\\\\
@@ -1715,7 +1832,6 @@ PRINT ~Installing ITM files...~
 COPY ~%MOD_FOLDER%/base/itm/SCRL1V_.ITM~ ~override~
 
 COPY ~%patch_dir%/itm~ ~override~
-	LPF EET_expand_tlk INT_VAR add = 200000 END
 
 //Modify permanent sleep spell effect (SoD Final)
 COPY_EXISTING ~BDDAGG06.ITM~ ~override~
@@ -1802,7 +1918,6 @@ ACTION_PHP_EACH table_EET_fileID AS file => ID BEGIN
 END
 
 COPY ~%patch_dir%/spl~ ~override~
-	LPF EET_expand_tlk INT_VAR add = 200000 END
 
 /////                                                  \\\\\
 ///// STO                                              \\\\\
@@ -1811,7 +1926,6 @@ COPY ~%patch_dir%/spl~ ~override~
 PRINT ~Installing STO files...~
 
 COPY ~%patch_dir%/sto~ ~override~
-	LPF EET_expand_tlk INT_VAR add = 200000 END
 
 COPY_EXISTING ~BAG31.STO~ ~override/K#IMPORT.STO~
 
@@ -2138,6 +2252,124 @@ COPY + ~Worldmap/map_mods_trans.tra~ ~%MOD_FOLDER%/temp/map_eet_trans.tra~
 
 LAM merge_in_translations
 
+ACTION_DEFINE_ASSOCIATIVE_ARRAY strref_wmp BEGIN
+	//BG:EE
+	bg0100	=>	199000	//Baldur's Gate North West
+	bg0200	=>	199001	//Baldur's Gate North
+	bg0300	=>	199002	//Baldur's Gate North East
+	bg0400	=>	199003	//Upper Chionthar
+	bg0500	=>	199004	//Durlag's Tower
+	bg0600	=>	199005	//Baldur's Gate West
+	bg0700	=>	199006	//Baldur's Gate Center
+	bg0800	=>	199007	//Baldur's Gate East
+	bg0900	=>	199008	//Wyrm's Crossing
+	bg1000	=>	199009	//Ulgoth's Beard
+	bg1008	=>	199010	//Ice Island
+	bg1100	=>	199011	//Baldur's Gate South West
+	bg1200	=>	199012	//Baldur's Gate South
+	bg1300	=>	199013	//Baldur's Gate South East
+	bg1400	=>	199014	//Lower Chionthar
+	bg1600	=>	199015	//Cloakwood Grove
+	bg1700	=>	199016	//Cloakwood Crossings
+	bg1800	=>	199017	//Cloakwood Mines
+	bg1900	=>	199018	//Bandit Camp
+	bg2000	=>	199019	//Balduran's Isle
+	bg2100	=>	199020	//Cloakwood Falls
+	bg2200	=>	199021	//Cloakwood
+	bg2300	=>	199022	//Friendly Arm Inn
+	bg2400	=>	199023	//Peldvale
+	bg2600	=>	199024	//Candlekeep
+	bg2626	=>	199024	//Candlekeep
+	bg2700	=>	199025	//Lion's Way
+	bg2800	=>	199026	//Coast Way
+	bg2900	=>	199027	//Larswood
+	bg3000	=>	199028	//Spider Wood
+	bg3100	=>	199029	//Shipwreck's Coast
+	bg3200	=>	199030	//High Hedge
+	bg3300	=>	199031	//Beregost
+	bg3400	=>	199032	//Temple of Lathander
+	bg3500	=>	199033	//Sharp Teeth Plain
+	bg3600	=>	199034	//The Lighthouse
+	bg3700	=>	199035	//Red Canyons
+	bg3800	=>	199036	//Trade Way North
+	bg3900	=>	199037	//Ulcaster
+	bg4000	=>	199038	//Gullykin
+	bg4100	=>	199039	//Ancient Ruins
+	bg4200	=>	199040	//Wilderness Lake
+	bg4300	=>	199041	//Trade Way South
+	bg4400	=>	199042	//Lonely Peaks
+	bg4500	=>	199043	//Firewine Bridge
+	bg4600	=>	199044	//Bear River
+	bg4700	=>	199045	//Xvart Village
+	bg4800	=>	199046	//Nashkel
+	bg4900	=>	199047	//Carnival
+	bg5000	=>	199048	//Valley of the Tombs
+	bg5100	=>	199049	//Gnoll Stronghold
+	bg5200	=>	199050	//Dryad Falls
+	bg5300	=>	199051	//Fire Leaf Forest
+	bg5400	=>	199052	//Nashkel Mines
+	bg5500	=>	199053	//Gibberling Mountains
+	oh2000	=>	199054	//Adoy's Enclave
+	oh3000	=>	199055	//Cloud Peaks
+	//SoD
+	bd1000	=>	244151	//Coast Way Crossing
+	bd2000	=>	244152	//Boareskyr Bridge
+	bd3000	=>	244153	//Coalition Camp
+	bd4000	=>	244154	//Dragonspear Castle
+	bd5000	=>	244155	//Underground River
+	bd7000	=>	258679	//Coast Way Forest
+	bd7100	=>	258680	//Troll Claw Woods
+	bd7200	=>	258681	//Forest of Wyrms
+	bd7300	=>	258682	//Dead Man's Pass
+	bd7400	=>	258683	//Bloodbark Grove
+	//SoA
+	ar0020	=>	40271	//City Gates
+	ar0300	=>	23726	//Docks
+	ar0400	=>	20935	//Slums
+	ar0500	=>	26465	//Bridge
+	ar0700	=>	20853	//Waukeen's Promenade
+	ar0800	=>	26799	//Graveyard
+	ar0900	=>	29743	//Temple
+	ar1000	=>	29744	//Government
+	ar1100	=>	2151	//Umar Hills
+	ar1200	=>	2150	//Windspear Hills
+	ar1300	=>	39973	//de'Arnise Hold
+	ar1304	=>	39973	//de'Arnise Hold
+	ar1400	=>	39972	//Temple Ruins
+	ar1404	=>	39972	//Temple Ruins
+	ar1500	=>	61426	//The Asylum
+	ar1600	=>	466		//Brynnlaw
+	ar1700	=>	61427	//Small Teeth Pass
+	ar1800	=>	61428	//North Forest
+	ar1900	=>	44999	//Druid Grove
+	ar2000	=>	44980	//Trademeet
+	ar2100	=>	61424	//Underdark
+	ar2300	=>	61425	//Underwater City
+	ar2500	=>	61252	//Underdark Exit
+	ar2600	=>	61253	//Forest of Tethir
+	ar2800	=>	61254	//Suldanessellar
+	oh4000	=>	84799	//Abandoned Amphitheater
+	oh4100	=>	84800	//Heretic Temple
+	oh5100	=>	80786	//Resurrection Gorge
+	oh5300	=>	80785	//Helmite Camp
+	oh6000	=>	88426	//Wild Forest
+	oh6100	=>	88427	//Hidden Refuge
+	oh6200	=>	88427	//Hidden Refuge
+	//ToB
+	ar3000	=>	66122	//Watcher's Keep
+	ar4000	=>	199056	//Sacred Groove
+	ar5000	=>	70658	//Saradush
+	ar5200	=>	70662	//Marching Mountains
+	ar5202	=>	70660	//Forest of Mir—The Temple
+	ar5203	=>	70661	//Siege Camp
+	ar5500	=>	70659	//Amkethran
+	ar6000	=>	71739	//Abazigal's Lair
+	ar6100	=>	71738	//Sendai's Enclave
+	ar6300	=>	71740	//The Oasis
+	ar6400	=>	199057	//Forest Valley
+	oh4200	=>	84801	//Deepstone Clanhold
+	oh6400	=>	90195	//Clearing
+END
 ACTION_PHP_EACH strref_wmp AS content => strref BEGIN
 	ACTION_IF (strref >= 199000) AND (strref < 200000) BEGIN
 		ACTION_IF (VARIABLE_IS_SET $fl#NAME("%content%")) AND ($fl#NAME("%content%") STR_CMP "") BEGIN 
@@ -2175,7 +2407,6 @@ INCLUDE ~%MOD_FOLDER%/lib/build_worldmap.tpa~
 //SOD BG Worldmap
 
 COPY ~%patch_dir%/BGMAP.wmp~ ~override~
-	LPF EET_expand_tlk INT_VAR add = 200000 END
 
 /////                                                  \\\\\
 ///// Iron Crisis (item shattering)                    \\\\\

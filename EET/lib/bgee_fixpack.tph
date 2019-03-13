@@ -1,8 +1,11 @@
 //here goes fixes for BG:EE content not covered by Beamdog yet
+OUTER_SET strrefAdd = 0
+OUTER_SET ddsClonning = 0
+OUTER_SET traifyDLG = 0
+OUTER_SPRINT remappedPrefix = ~remapped_fixpack~
 
 //referenced BG2:EE strrefs (doesn't matter that much since these are mostly debug resources)
-ACTION_CLEAR_ARRAY strref_tlk
-ACTION_DEFINE_ASSOCIATIVE_ARRAY strref_tlk BEGIN
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_fixpack_tra BEGIN
 	200340 => 340 //Held
 	200384 => 384 //Held
 	200915 => 915 //Held
@@ -42,7 +45,7 @@ COPY_EXISTING ~PRINCESS.ITM~ ~override~
 	~BDDTRAI.ITM~ ~override~
 	~REF1.ITM~ ~override~
 	~BDCONSTR.ITM~ ~override~
-	LPF EET_expand_tlk INT_VAR add = 0 END
+	LPF EET_PCU_core END
 BUT_ONLY
 
 //http://gibberlings3.net/forums/index.php?showtopic=28161&page=19#entry246196

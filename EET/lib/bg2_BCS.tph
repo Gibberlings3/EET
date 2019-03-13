@@ -1,4 +1,63 @@
 /////                                                  \\\\\
+///// Broken spell.ids refs (removed to free up slots) \\\\\
+/////                                                  \\\\\
+
+<<<<<<<< .../NPCMAGE1.baf
+IF
+  OR(4)
+    See(NearestEnemyOfType([0.0.0.MAGE_ALL]))
+    See(NearestEnemyOfType([0.0.0.CLERIC_ALL]))
+    See(NearestEnemyOfType([0.0.0.BARD_ALL]))
+    See(NearestEnemyOfType([0.0.0.DRUID_ALL]))
+  HaveSpell(WIZARD_DELETED)
+  !HasBounceEffects(Myself)
+  !HasImmunityEffects(Myself)
+THEN
+  RESPONSE #100
+    Spell(Myself,WIZARD_DELETED)
+END
+>>>>>>>>
+<<<<<<<< .../MAGE2.baf
+IF
+  ActionListEmpty()
+  See(NearestEnemyOf(Myself))
+  HaveSpell(WIZARD_DELETED)
+  !HasBounceEffects(LastSeenBy(Myself))
+  !HasImmunityEffects(LastSeenBy(Myself))
+THEN
+  RESPONSE #100
+    Spell(Myself,WIZARD_DELETED)
+END
+>>>>>>>>
+<<<<<<<< .../RERAK02.baf
+IF
+  See(NearestEnemyOf(Myself))
+  HaveSpell(WIZARD_FOG_CLOUD)
+THEN
+  RESPONSE #100
+    Spell(NearestEnemyOf(Myself),WIZARD_FOG_CLOUD)
+END
+>>>>>>>>
+ACTION_FOR_EACH file IN NPCMAGE1 MAGE2 RERAK02 BEGIN
+	COPY_EXISTING ~%file%.BCS~ ~override~
+		REPLACE_BCS_BLOCK ~.../%file%.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~WARNING: .../%file%.baf doesn't exist within %file%.BCS~ END
+	BUT_ONLY
+END
+
+COPY_EXISTING ~CEFALDOR.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~ApplySpell(Myself,CLERIC_RESIST_COLD)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// Leftover BG:EE code in BG2:EE                    \\\\\
 /////                                                  \\\\\
 
@@ -4134,26 +4193,6 @@ COPY_EXISTING ~MAGE1.BCS~ ~override~
 		END
 	END
 BUT_ONLY
-
-//MAGE2.BCS
-<<<<<<<< .../oMAGE2.baf
-IF
-  ActionListEmpty()
-  See(NearestEnemyOf(Myself))
-  HaveSpell(WIZARD_DELETED)
-  !HasBounceEffects(LastSeenBy(Myself))
-  !HasImmunityEffects(LastSeenBy(Myself))
-THEN
-  RESPONSE #100
-    Spell(Myself,WIZARD_DELETED)
-END
->>>>>>>> 
-
-<<<<<<<< .../nMAGE2.baf
->>>>>>>>
-
-COPY_EXISTING ~MAGE2.BCS~ ~override/BG2MAGE2.BCS~ //compatibility with BGT mods, used only by GARRICK.cre in BG2:EE
-R_B_B ~.../oMAGE2.baf~ ~.../nMAGE2.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oMAGE2.baf in %SOURCE_FILE%~ END
 
 //MAGE3.BCS
 COPY_EXISTING ~MAGE3.BCS~ ~override~

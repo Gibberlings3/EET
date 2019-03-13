@@ -18,6 +18,7 @@ DEFINE_PATCH_FUNCTION REPLACE_MULTILINE
 	RET
 		num_matches    //amount of times the pattern has been found
 	BEGIN
+	TEXT_SPRINT percent ~%~
 	INNER_PATCH_SAVE textToReplace ~%pattern%~ BEGIN
 		PATCH_IF strict = 1 BEGIN
 			REPLACE_TEXTUALLY ~\\~ ~\\\\~
@@ -31,6 +32,9 @@ DEFINE_PATCH_FUNCTION REPLACE_MULTILINE
 	PATCH_IF only_count = 0 BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~%textToReplace%~ BEGIN
 			SET num_matches = num_matches + 1
+			INNER_PATCH_SAVE string ~%string%~ BEGIN
+				REPLACE_TEXTUALLY ~%percent%MATCH\([0-9]+\)%percent%~ ~%MATCH\1%~
+			END
 		END ~%string%~
 		SET warned = 0
 		PATCH_IF num_matches != num BEGIN

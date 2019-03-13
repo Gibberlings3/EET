@@ -11,7 +11,7 @@ ACTION_BASH_FOR ~%MOD_FOLDER%/compat/DarkHorizonsBGee~ ~.*.itm~ BEGIN
 				COPY - ~%patch_dir%/itm/%BASH_FOR_FILE%~ ~%patch_dir%/itm~
 					READ_LONG offset "strref"
 			END
-			LPF EET_strref INT_VAR str = strref RET str END
+			LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
 			WRITE_LONG offset "%str%"
 		END
 	DELETE + ~%patch_dir%/itm/%BASH_FOR_FILE%~
