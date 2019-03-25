@@ -18,13 +18,18 @@ BEGIN
 		PATCH_IF cols = 0 BEGIN
 			COUNT_2DA_COLS "cols"
 		END
-		REPLACE_EVALUATE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
-			INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
-				COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
-				WHILE (num_matches < (cols - 1)) BEGIN
-					REPLACE_TEXTUALLY ~$~ ~ %entry%~
-					SET num_matches = num_matches + 1
+		SET cnt = 0
+		REPLACE_EVALUATE ~^\(.+\)$~ BEGIN
+			PATCH_IF cnt >= 3 BEGIN
+				INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+					COUNT_REGEXP_INSTANCES ~ +~ num_matches
+					WHILE (num_matches < (cols - 1)) BEGIN
+						REPLACE_TEXTUALLY ~$~ ~ %entry%~
+						SET num_matches = num_matches + 1
+					END
 				END
+			END ELSE BEGIN
+				SET cnt = cnt + 1
 			END
 		END ~%MATCH1%~
 		PRETTY_PRINT_2DA
@@ -44,13 +49,18 @@ BEGIN
 	PATCH_IF cols = 0 BEGIN
 		COUNT_2DA_COLS "cols"
 	END
-	REPLACE_EVALUATE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
-		INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
-			COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
-			WHILE (num_matches < (cols - 1)) BEGIN
-				REPLACE_TEXTUALLY ~$~ ~ %entry%~
-				SET num_matches = num_matches + 1
+	SET cnt = 0
+	REPLACE_EVALUATE ~^\(.+\)$~ BEGIN
+		PATCH_IF cnt >= 3 BEGIN
+			INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+				COUNT_REGEXP_INSTANCES ~ +~ num_matches
+				WHILE (num_matches < (cols - 1)) BEGIN
+					REPLACE_TEXTUALLY ~$~ ~ %entry%~
+					SET num_matches = num_matches + 1
+				END
 			END
+		END ELSE BEGIN
+			SET cnt = cnt + 1
 		END
 	END ~%MATCH1%~
 	PRETTY_PRINT_2DA

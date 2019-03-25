@@ -1684,11 +1684,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 					PHP_EACH ~%array%~ AS col => res BEGIN
 						PATCH_IF (col_1 = cnt) BEGIN
 							PATCH_IF (~%res%~ STR_EQ ~tra~) AND (IS_AN_INT source) BEGIN
-								INNER_PATCH_SAVE source ~%source%~ BEGIN
-									REPLACE_EVALUATE CASE_SENSITIVE ~\([0-9]+\)~ BEGIN
-										LPF EET_strref INT_VAR str = MATCH1 add = strrefAdd RET str END
-										SET MATCH1 = str
-									END ~%MATCH1%~
+								LPF EET_strref INT_VAR str = source add = strrefAdd RET str END
+								PATCH_IF source != str BEGIN
+									SET source = str
 									SET updated = 1
 								END
 							END ELSE BEGIN
@@ -3584,15 +3582,24 @@ END
 DEFINE_PATCH_MACRO ~D_traifyDLG_replace~ BEGIN
 	REPLACE_EVALUATE CASE_SENSITIVE ~SAY #\([0-9]+\)~ BEGIN
 		LPF EET_strref INT_VAR str = MATCH1 add = strrefAdd RET str END
-		SET MATCH1 = str
+		PATCH_IF MATCH1 != str BEGIN
+			SET MATCH1 = str
+			SET updated = 1
+		END
 	END ~SAY #%MATCH1%~
 	REPLACE_EVALUATE CASE_SENSITIVE ~REPLY #\([0-9]+\)~ BEGIN
 		LPF EET_strref INT_VAR str = MATCH1 add = strrefAdd RET str END
-		SET MATCH1 = str
+		PATCH_IF MATCH1 != str BEGIN
+			SET MATCH1 = str
+			SET updated = 1
+		END
 	END ~REPLY #%MATCH1%~
 	REPLACE_EVALUATE CASE_SENSITIVE ~JOURNAL #\([0-9]+\)~ BEGIN
 		LPF EET_strref INT_VAR str = MATCH1 add = strrefAdd RET str END
-		SET MATCH1 = str
+		PATCH_IF MATCH1 != str BEGIN
+			SET MATCH1 = str
+			SET updated = 1
+		END
 	END ~JOURNAL #%MATCH1%~
 END
 

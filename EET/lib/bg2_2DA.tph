@@ -446,6 +446,27 @@ BUT_ONLY
 ///// HATERACE.2DA                                     \\\\\
 /////                                                  \\\\\
 
+COPY_EXISTING ~HATERACE.2DA~ ~override~
+	REPLACE_TEXTUALLY ~GIANTS~ ~GIANT~
+	REPLACE_TEXTUALLY ~YUAN_TI~ ~YUANTI~
+	REPLACE_TEXTUALLY ~GOBLINS~ ~GOBLIN~
+	REPLACE_TEXTUALLY ~LIZARD_MEN~ ~LIZARDMAN~
+	REPLACE_TEXTUALLY ~SALAMANDERS~ ~SALAMANDER~
+	COUNT_2DA_ROWS 4 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 1 4 "col2" //STRREF
+		GET_STRREF col2 "strref"
+		READ_2DA_ENTRY cnt 3 4 "col4" //STRREF_HELP
+		GET_STRREF col4 "strref_help"
+		INNER_PATCH_SAVE strref_help ~%strref_help%~ BEGIN
+			REPLACE_TEXTUALLY ~^%strref%[%newline%]+~ ~~ //get rid of the duplicated name in the first line
+		END
+		INNER_ACTION BEGIN
+			STRING_SET_EVALUATE col4 ~%strref_help%~
+		END
+	END
+BUT_ONLY
+
 COPY + ~%MOD_FOLDER%/temp/array/HATERACE.2DA~ ~%MOD_FOLDER%/temp/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"

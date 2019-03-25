@@ -342,7 +342,7 @@ COPY + ~%MOD_FOLDER%/temp/array/RACE.IDS~ ~%MOD_FOLDER%/temp/array~
 			END ELSE PATCH_IF (VARIABLE_IS_SET $race_ids_index(~%col1%~)) BEGIN
 				TEXT_SPRINT compare_col2 $race_ids_index(~%col1%~)
 				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
-					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+					FOR (cnt2 = 100; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
 						PATCH_IF (NOT VARIABLE_IS_SET $race_ids_index(~%cnt2%~)) BEGIN
 							SET ids_index = cnt2
 							DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col1%~ => ~%ids_index%~ END

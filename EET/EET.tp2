@@ -655,6 +655,10 @@ ACTION_PHP_EACH source_idscode_name AS source_idscode => source_name BEGIN
 			OUTER_SPRINT EVAL ~%source_name%_RES~ ~%spell_res%~
 			ACTION_DEFINE_ASSOCIATIVE_ARRAY game_idscode_name BEGIN ~%spell_num%~ => ~%source_name%~ END
 			ACTION_DEFINE_ASSOCIATIVE_ARRAY splName_list BEGIN ~%source_idscode%~ => ~%source_name%~ END
+			ACTION_IF (NOT ~%source_res%~ STR_EQ ~%spell_res%~) BEGIN
+				ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%source_res%~ => ~%spell_res%~ END
+				OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%source_res%%TAB%=>%TAB%%spell_res%%TAB%%slash%%slash%%source_name%%LNL%~
+			END
 			ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
 				ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
 					OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
