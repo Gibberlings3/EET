@@ -2611,8 +2611,8 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[bB]~ = 1) BEGIN
 	MAKE_BIFF ~eetGUI~ BEGIN ~%biff_dir%/eetGUI~ ~^.*$~ END
 	MAKE_BIFF ~eetWBM~ BEGIN ~%MOD_FOLDER%/temp/wbm~ ~^.*$~ END
 	ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_biff BEGIN
-		~eetWAV~ , ~%MOD_FOLDER%/temp/wav~ , ~^.*\.wav$~ => 150000000 //150 MB
 		~eetRES~ , ~%biff_dir%~ , ~^.*$~ => 50000000 //50 MB
+		~eetWAV~ , ~%MOD_FOLDER%/temp/wav~ , ~^.*\.wav$~ => 150000000 //150 MB
 	END
 	ACTION_PHP_EACH table_EET_biff AS biff => size BEGIN
 		OUTER_SET totalSize = 0

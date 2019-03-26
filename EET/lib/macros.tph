@@ -1112,22 +1112,20 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
 	PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
 		SET short = 0
-		READ_BYTE off ~source~
-		READ_BYTE (off+1) ~byte3~
+		READ_SHORT off ~source~
 	END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
 		READ_SHORT off ~short~
-		READ_BYTE (off+2) ~source~
-		READ_BYTE (off+3) ~byte3~
+		READ_SHORT (off+0x2) ~source~
 	END
-	PATCH_IF ("%short%" = 0) AND ("%byte3%" = 64) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_kit~(~%source%~)) BEGIN
+	PATCH_IF ("%short%" = 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_kit~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_kit~(~%source%~)
 		PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
-				WRITE_SHORT off 0x4000 + ~%dest%~
+				WRITE_SHORT off ~%dest%~
 			END ELSE PATCH_IF ~%read_len%~ STR_EQ ~l~ BEGIN
 				WRITE_SHORT off 0
-				WRITE_SHORT (off+2) 0x4000 + ~%dest%~
+				WRITE_SHORT (off+0x2) ~%dest%~
 			END
 			SPRINT str ~Patching %SOURCE_FILESPEC%: KIT = %source% => %dest% -~
 			SPRINTF str ~%s %x~ ("%str%" off)

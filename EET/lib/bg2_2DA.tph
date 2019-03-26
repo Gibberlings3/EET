@@ -22,6 +22,7 @@ COPY + ~%MOD_FOLDER%/temp/array/KITLIST.2DA~ ~%MOD_FOLDER%/temp/array~
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 3 "kit_num"
+		SET kit_num = kit_num + 0x4000
 		READ_2DA_ENTRY cnt 1 3 "name"
 		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~KITLIST.2DA~ ~^[0-9]+[ ]+%name% ~)) BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~^[0-9]+[ ]+%name%[ ]+\([0-9\*\-]+\)[ ]+\([0-9\*\-]+\)[ ]+\([0-9\*\-]+\)[ ]+\(.+\)[ ]+[A-Za-z0-9]+$~ BEGIN
@@ -54,9 +55,10 @@ COPY + ~%MOD_FOLDER%/temp/array/KITLIST.2DA~ ~%MOD_FOLDER%/temp/array~
 						END
 					APPEND ~KITLIST.2DA~ ~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint%~
 					PRINT ~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint% appended to KITLIST.2DA~
-					ACTION_IF (kit_num != kit_index) AND (NOT VARIABLE_IS_SET $remapped_kit(~%kit_num%~)) BEGIN
-						ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN ~%kit_num%~ => ~%kit_index%~ END
-						OUTER_SPRINT log_remapped_kit ~%log_remapped_kit%%TAB%%kit_num%%TAB%=>%TAB%%kit_index%%TAB%%slash%%slash%%name%%LNL%~
+					OUTER_SET kit_short = kit_index + 0x4000
+					ACTION_IF (kit_num != kit_short) AND (NOT VARIABLE_IS_SET $remapped_kit(~%kit_num%~)) BEGIN
+						ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN ~%kit_num%~ => ~%kit_short%~ END
+						OUTER_SPRINT log_remapped_kit ~%log_remapped_kit%%TAB%%kit_num%%TAB%=>%TAB%%kit_short%%TAB%%slash%%slash%%name%%LNL%~
 					END
 				END
 			END ~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint%~
