@@ -1,64 +1,8 @@
 BACKUP ~EET/backup/end~
 AUTHOR ~K4thos (swit)~
 
-LANGUAGE ~English~
-	~en_US~
-	~EET/lang/en_US/prompts.tra~
-	~EET/lang/en_US/setup.tra~
-LANGUAGE ~Polski (Polish)~
-	~pl_PL~
-	~EET/lang/pl_PL/prompts.tra~
-	~EET/lang/pl_PL/setup.tra~
-LANGUAGE ~Spanish~
-	~es_ES~
-	~EET/lang/es_ES/prompts.tra~
-	~EET/lang/es_ES/setup.tra~
-/*LANGUAGE ~Deutsch (German)~
-	~de_DE~
-	~EET/lang/de_DE/prompts.tra~
-	~EET/lang/de_DE/setup.tra~
-LANGUAGE ~French~
-	~fr_FR~
-	~EET/lang/fr_FR/prompts.tra~
-	~EET/lang/fr_FR/setup.tra~*/
-
-BEGIN @910001 //EET end - last mod in install order
-REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910002 //This component requires EET core component to be installed first
-
+ALWAYS
 CLEAR_ARRAYS
-
-/////                                                  \\\\\
-///// Save patcher                                     \\\\\
-/////                                                  \\\\\
-
-ACTION_IF FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~
-AND FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~
-AND !FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~
-AND !FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~ BEGIN
-	OUTER_SET valid_answer = 0
-END ELSE BEGIN
-	OUTER_SET valid_answer = 1
-END
-
-OUTER_SET button = 0
-OUTER_WHILE (valid_answer = 0) BEGIN
-	ACTION_IF (button = 1) BEGIN //Yes, update saves
-		OUTER_SET valid_answer = 1
-	END ELSE ACTION_IF (button = 2) BEGIN //No, continue without updating
-		OUTER_SET valid_answer = 1
-	END ELSE BEGIN
-		PRINT @910003 //In EET saves behave exactly the same as in vanilla game which means there never will be saves problem with BG:EE, SoD and BG2:EE vanilla content. Of course this functionality is not extended to mod content not related to EET, which doesn't use persistent TLK entries. Would you like to update your old saves made on previous installation to work with this new installation before installing the finalise component? Please keep in mind that it won't be possible to uninstall these changes. This step is also quite lengthy (may take several minutes depending on how many saves are located in %SAVE_DIRECTORY%). If you didn't use other mods that adds text to game than there is no need to update saves at all. 1] Yes, update saves 2] No, continue without updating
-		ACTION_READLN button
-		ACTION_IF NOT IS_AN_INT button BEGIN
-			OUTER_SET button = 0
-		END
-	END
-END
-
-ACTION_IF (button = 1) BEGIN
-	INCLUDE ~EET/lib/EET_end_saves.tph~
-	APPEND + ~EET.flag~ ~SAVES_UPDATED~
-END
 
 /////                                                  \\\\\
 ///// Prepare arrays, update 25DIALOG.2DA              \\\\\
@@ -296,7 +240,7 @@ OUTER_SET ddsClonning = 0
 OUTER_SET traifyDLG = 0
 INCLUDE ~EET/lib/macros.tph~
 
-COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
+COPY_EXISTING_REGEXP GLOB ~.+\.DLG$~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		PHP_EACH remapped_states AS file => state BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~\( EXTERN .\)%file%\(. \)\([0-9]+\)~ BEGIN
@@ -308,13 +252,13 @@ COPY_EXISTING_REGEXP GLOB ~.+\.DLG~ ~override~
 	END
 BUT_ONLY
 
-COPY_EXISTING_REGEXP GLOB ~.+\.BCS~ ~override~
+COPY_EXISTING_REGEXP GLOB ~.+\.BCS$~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\([Tt]Dialog[A-Za-z]*("\)\([^"]+\)"~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res END ~\1%match%"~
 	END
 BUT_ONLY
 
-COPY_EXISTING_REGEXP GLOB ~.+\.CRE~ ~override~
+COPY_EXISTING_REGEXP GLOB ~.+\.CRE$~ ~override~
 	LPF ~FJ_CRE_VALIDITY~ RET valid END
 	PATCH_IF valid = 1 BEGIN
 		SET off = 0x2cc SPRINT res ~dlg~ LPM EET_PCU_off_res
@@ -797,12 +741,62 @@ BUT_ONLY
 
 //Compatibility with Rough World (installed on BG:EE)
 ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #7 ~) BEGIN //Fixed Insane Difficulty
-	COPY_EXISTING_REGEXP GLOB ~.*\.cre~ ~override~
+	COPY_EXISTING_REGEXP GLOB ~.*\.CRE$~ ~override~
 		WRITE_LONG 0x10 (THIS | BIT22)
 	BUT_ONLY
 END
 ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #8 ~) BEGIN //Only Autosaves
-	COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
+	COPY_EXISTING_REGEXP GLOB ~.*\.ARE$~ ~override~
 		WRITE_SHORT 0x0014 (THIS | BIT0)
 	BUT_ONLY
 END
+
+/////                                                  \\\\\
+///// IWD-in-EET late patching                         \\\\\
+/////                                                  \\\\\
+
+ACTION_IF (MOD_IS_INSTALLED ~IWD-in-EET/IWD-in-EET.tp2~ ~0~) BEGIN
+	INCLUDE ~IWD-in-EET/lib/end.tph~
+END
+
+END
+
+LANGUAGE ~English~
+	~en_US~
+	~EET/lang/en_US/prompts.tra~
+	~EET/lang/en_US/setup.tra~
+LANGUAGE ~Polski (Polish)~
+	~pl_PL~
+	~EET/lang/pl_PL/prompts.tra~
+	~EET/lang/pl_PL/setup.tra~
+LANGUAGE ~Spanish~
+	~es_ES~
+	~EET/lang/es_ES/prompts.tra~
+	~EET/lang/es_ES/setup.tra~
+/*LANGUAGE ~Deutsch (German)~
+	~de_DE~
+	~EET/lang/de_DE/prompts.tra~
+	~EET/lang/de_DE/setup.tra~
+LANGUAGE ~French~
+	~fr_FR~
+	~EET/lang/fr_FR/prompts.tra~
+	~EET/lang/fr_FR/setup.tra~*/
+
+BEGIN @910002 //Standard installation
+SUBCOMPONENT @910000 //EET end - last mod in install order
+REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910001 //This component requires EET core component to be installed first
+
+BEGIN @910003 //Also update saves (no backups, check the readme file)
+SUBCOMPONENT @910000 //EET end - last mod in install order
+REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910001 //This component requires EET core component to be installed first
+REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.tra~ ~~
+REQUIRE_PREDICATE FILE_EXISTS ~%USER_DIRECTORY%/save/saves.txt~ ~~
+REQUIRE_PREDICATE !FILE_CONTAINS ~override/EET.flag~ ~SAVES_UPDATED~ ~~
+REQUIRE_PREDICATE !FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~ ~~
+
+/////                                                  \\\\\
+///// Save patcher                                     \\\\\
+/////                                                  \\\\\
+
+INCLUDE ~EET/lib/EET_end_saves.tph~
+APPEND + ~EET.flag~ ~SAVES_UPDATED~

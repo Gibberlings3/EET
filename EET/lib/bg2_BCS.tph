@@ -1833,7 +1833,7 @@ THEN
     ActionOverride("Edwin",FillSlot(SLOT_WEAPON))
     ActionOverride("Edwin",FillSlot(SLOT_AMULET))
     ActionOverride("Edwin",EquipMostDamagingMelee())
-    //ReallyForceSpellRES("K#POREDW","Edwin") // No such index
+    ReallyForceSpellRES("K#POREDW","Edwin") // No such index
     SetPlayerSound("Edwin",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Edwin",3966,MORALE) // I'll not die to incompetence!
     SetPlayerSound("Edwin",3968,HAPPY) // I had not thought this group capable of pleasing me, but I am impressed.
@@ -2034,7 +2034,7 @@ THEN
     //ActionOverride("Imoen2",DestroyAllEquipment())
     ActionOverride("Imoen2",CreateItem("IMOENHP1",1,0,0)) // Imoen's Belt
     ActionOverride("Imoen2",FillSlot(SLOT_BELT))
-    //ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
+    ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
     SetPlayerSound("Imoen2",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Imoen2",11037,MORALE) // No, no! No, I'm not gonna end up dead in this place! I have to get out! I have to get to the surface!
     SetPlayerSound("Imoen2",30726,HAPPY) // Now I remember why traveling with you was always so much fun.
@@ -2147,7 +2147,7 @@ THEN
     ActionOverride("Jaheira",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
     //ActionOverride("Jaheira",DestroyAllEquipment())
-    //ReallyForceSpellRES("K#PORJAH","Jaheira") // No such index
+    ReallyForceSpellRES("K#PORJAH","Jaheira") // No such index
     SetPlayerSound("Jaheira",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Jaheira",4008,MORALE) // I will not fall here!
     SetPlayerSound("Jaheira",4010,HAPPY) // Our actions are good, and will serve the greater balance.
@@ -2316,7 +2316,7 @@ THEN
     //ActionOverride("Minsc",DestroyAllEquipment())
     ChangeStat("MINSC",HATEDRACE,125,SET)
     ChangeAlignment("Minsc",CHAOTIC_GOOD)
-    //ReallyForceSpellRES("K#PORMIN","Minsc") // No such index
+    ReallyForceSpellRES("K#PORMIN","Minsc") // No such index
     SetPlayerSound("Minsc",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Minsc",30788,MORALE) // Despair not! I will inspire you by charging blindly on!
     SetPlayerSound("Minsc",4087,HAPPY) // We are all heroes, you and Boo and I! Hamsters and rangers everywhere, rejoice!
@@ -2649,7 +2649,7 @@ THEN
     ActionOverride("Viconia",SetGlobal("KickedOut","LOCALS",0))
     ActionOverride("Viconia",SetNumTimesTalkedTo(0))
     ActionOverride("Viconia",DestroyAllEquipment())
-    //ReallyForceSpellRES("K#PORVIC","Viconia") // No such index
+    ReallyForceSpellRES("K#PORVIC","Viconia") // No such index
     SetPlayerSound("Viconia",-1,INITIAL_MEETING) // No such index
     SetPlayerSound("Viconia",3613,MORALE) // We must flee to fight another day!
     SetPlayerSound("Viconia",3615,HAPPY) // I find this a most satisfactory arrangement.
@@ -3481,7 +3481,6 @@ THEN
     SetGlobal("ENDOFBG1","GLOBAL",2)
     SetGlobal("SPRITE_IS_DEADYOSHIMO","GLOBAL",1)
     SetGlobal("NEWGAME_TOB","GLOBAL",1)
-    StartMovie("INTRO")
     AddWorldmapAreaFlag("AR4000",EXPLORED) //Has been visited
     RemoveWorldmapAreaFlag("AR0020",ENABLED) //Reveal from linked area
     ReallyForceSpellRES("K#REMBHA",Player1)

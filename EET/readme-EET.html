@@ -173,7 +173,7 @@ If you use Steam or GOG version of Siege of Dragonspear than you first need to u
 <p><strong>Finalise EET (setup-EET_end)</strong></p>
 
 <div class="code">
-<p>setup-EET_end.exe --force-install 0 --language <em>X</em> --args-list <em>[flags]</em></p>
+<p>setup-EET_end.exe --force-install Y --language <em>X</em></p>
 </div>
 
 <p>Parameters:</p>
@@ -181,7 +181,7 @@ If you use Steam or GOG version of Siege of Dragonspear than you first need to u
 <div class="code">
 <table border="1">
 	<tr>
-		<td><em>X</em></td>
+		<td width="3%"><em>X</em></td>
 		<td class="grow">
 		<p>0 - English<br />
 		1 - Polski (Polish)<br />
@@ -191,9 +191,10 @@ If you use Steam or GOG version of Siege of Dragonspear than you first need to u
 		</td>
 	</tr>
 	<tr>
-		<td><em>[flags]</em></td>
+		<td width="3%"><em>Y</em></td>
 		<td class="grow">
-		<p>y or Y - <a href="#What about compatibility with saves?">updates all save files</a></p>
+		<p>0 - Standard installation<br />
+		1 - <a href="#What about compatibility with saves?">Also update saves</a><br />
 		</td>
 	</tr>
 </table>
@@ -282,7 +283,7 @@ If you use Steam or GOG version of Siege of Dragonspear than you first need to u
 
 <a id="What about compatibility with saves?" name="What about compatibility with saves?"></a>
 <h3>What about compatibility with saves?</h3>
-<p>Saves in EET behave exactly the same as in vanilla games which means you won't encounter any save problems when it comes to BG:EE, SoD and BG2:EE vanilla content, regardless of language chosen during installation and mod selection. It's also possible to share saves between different players without issues. Like in vanilla games this functionality is not extended to mod content (mods not related to EET don't use persistent TLK entries). There is however an option to update mod added string references in saves via setup-EET_end component installation (you will be asked about it if files needed for update from previous installation are available within saves directory). If you didn't use other mods that add text to game than there is no need to update saves between different installations at all.</p>
+<p>Saves in EET behave exactly the same as in vanilla games which means you won't encounter any save problems when it comes to BG:EE, SoD and BG2:EE vanilla content (same is true for IWD:EE and IWD2 content, if you install IWD-in-EET mod), regardless of language chosen during installation and mod selection. It's also possible to share saves between different players without issues. Like in vanilla games this functionality is not extended to mod added content (mods not related to EET don't use persistent TLK entries). There is however an option to update mod added string references in saves via optional setup-EET_end component, if files needed for update from previous installation are available within saves directory. Saves updating can't be uninstalled, so manual saves backup is recommended before component installation. Depending on how many saves exist, this step may be quite lengthy. Keep in mind that if you didn't use other mods that add text to game than there is no need to update saves between different installations at all.</p>
 
 <p>Save games from original BG:EE, SoD and BG2:EE are not directly supported - you need to start a new game.</p>
 

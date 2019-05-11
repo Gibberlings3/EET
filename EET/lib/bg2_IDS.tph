@@ -15,16 +15,13 @@ BUT_ONLY
 ///// ANIMATE.IDS                                      \\\\\
 /////                                                  \\\\\
 
-//COPY_EXISTING ~ANIMATE.IDS~ ~override~
-//	REPLACE_TEXTUALLY ~SOD_TMP01~ ~BELHIFET~
-//	REPLACE_TEXTUALLY ~SOD_TMP02~ ~BELHIFET_PRIEST~
-//	REPLACE_TEXTUALLY ~SOD_TMP03~ ~HEPHERNAAN~
-//BUT_ONLY
+COPY_EXISTING ~ANIMATE.IDS~ ~override~
+	REPLACE_TEXTUALLY ~SOD_TMP01~ ~BELHIFET~
+	REPLACE_TEXTUALLY ~SOD_TMP02~ ~BELHIFET_PRIEST~
+	REPLACE_TEXTUALLY ~SOD_TMP03~ ~HEPHERNAAN~
+BUT_ONLY
 
 COPY + ~%MOD_FOLDER%/temp/array/ANIMATE.IDS~ ~%MOD_FOLDER%/temp/array~
-//	REPLACE_TEXTUALLY ~SOD_TMP01~ ~BELHIFET~
-//	REPLACE_TEXTUALLY ~SOD_TMP02~ ~BELHIFET_PRIEST~
-//	REPLACE_TEXTUALLY ~SOD_TMP03~ ~HEPHERNAAN~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
@@ -375,6 +372,7 @@ COPY + ~%MOD_FOLDER%/temp/array/RACE.IDS~ ~%MOD_FOLDER%/temp/array~
 ///// SPECIFIC.IDS                                     \\\\\
 /////                                                  \\\\\
 
+APPEND ~SPECIFIC.IDS~ ~150 WATER_DWELLING~ UNLESS ~^150[ %TAB%]~
 COPY_EXISTING ~SPECIFIC.IDS~ ~override~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN

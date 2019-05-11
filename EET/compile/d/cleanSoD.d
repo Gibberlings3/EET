@@ -169,7 +169,7 @@ EXTEND_TOP BDSCHAEL 113
 END
 
 EXTEND_TOP BDSCHAEL 114
-  IF ~OR(2) Dead("Dynaheir") Dead("Minsc") !Dead("Rasaad")~ THEN REPLY #260952 /* ~What do we have for options? ~ */ GOTO 115c
+  IF ~!Dead("Dynaheir") !Dead("Minsc") Dead("Rasaad")~ THEN REPLY #260952 /* ~What do we have for options? ~ */ GOTO 115b
   IF ~OR(2) Dead("Dynaheir") Dead("Minsc") !Dead("Rasaad")~ THEN REPLY #260952 /* ~What do we have for options? ~ */ GOTO 115c
   IF ~OR(2) Dead("Dynaheir") Dead("Minsc") Dead("Rasaad")~ THEN REPLY #260952 /* ~What do we have for options? ~ */ GOTO 115d
 END

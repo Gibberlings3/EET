@@ -879,7 +879,7 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		SPRINT match ~%col1%~ SPRINT res ~bmp~ LPM EET_PCU_outer_res SPRINT col1 ~%match%~
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*{[ %TAB%]*'%col1%'[ %TAB%]*,[ %TAB%]*%col2%[ %TAB%]*}~)) BEGIN
+		PATCH_IF (~%portraits_var%~ STRING_CONTAINS_REGEXP ~'%col1%'~ = 1) AND (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*{[ %TAB%]*'%col1%'[ %TAB%]*,[ %TAB%]*%col2%[ %TAB%]*}~)) BEGIN
 			SPRINT portraits_var ~%portraits_var%%TAB%{'%col1%', %col2%},%LNL%~
 			//PATCH_PRINT ~portraits: %col1% ; %col2%~
 		END
@@ -1892,8 +1892,9 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_portraitID BEGIN
 END
 ACTION_PHP_EACH table_EET_portraitID AS portrait => ID BEGIN
 	COPY ~%MOD_FOLDER%/base/spl/K#PORTR.SPL~ ~override/K#POR%ID%.SPL~
-		WRITE_ASCIIE ~0xae~ ~%portrait%S~ #8 // Small portrait
-		WRITE_ASCIIE ~0xde~ ~%portrait%M~ #8 // Medium portrait
+		WRITE_ASCIIE ~0xae~ ~K#POR%ID%~ #8
+		WRITE_ASCIIE ~0xde~ ~%portrait%M~ #8 //Small portrait
+		WRITE_ASCIIE ~0x10e~ ~%portrait%L~ #8 //Large portrait
 END
 
 //assign NPC colors after resurrection from chunk death
@@ -2636,15 +2637,15 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[bB]~ = 1) BEGIN
 	END
 END ELSE BEGIN
 	ACTION_BASH_FOR ~%biff_dir%~ ~^.*$~ BEGIN
-		COPY ~%BASH_FOR_FILESPEC%~ ~override~
+		COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~override~
 	END
 	GET_DIRECTORY_ARRAY dir_array ~%biff_dir%~ ~~
 	ACTION_PHP_EACH dir_array AS index => dir BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.*$~ BEGIN
-			COPY ~%BASH_FOR_FILESPEC%~ ~override~
+			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~override~
 		END
 	END
-	COPY ~%MOD_FOLDER%/temp/wav~ ~override~
+	COPY_LARGE ~%MOD_FOLDER%/temp/wav~ ~override~
 		~%MOD_FOLDER%/temp/wbm~ ~override~
 END
 

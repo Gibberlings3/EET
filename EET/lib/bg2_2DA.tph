@@ -1219,6 +1219,8 @@ BUT_ONLY*/
 /////                                                  \\\\\
 
 COPY_EXISTING ~SPLPROT.2DA~ ~override~
+	REPLACE_TEXTUALLY ~47[ %TAB%]+0x104[ %TAB%]+32[ %TAB%]+27~ ~47 0x104 31 27~ //bug already fixed in BG:EE
+	REPLACE_TEXTUALLY ~48[ %TAB%]+0x103[ %TAB%]+32[ %TAB%]+27~ ~48 0x103 31 27~ //bug already fixed in BG:EE
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN

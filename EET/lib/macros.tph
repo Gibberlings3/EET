@@ -1856,7 +1856,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 		SET off = special SPRINT res ~icon~ LPM EET_PCU_off_long
 	END
 
-	PATCH_IF ("%fx_type%" = 53) BEGIN //Animation change
+	PATCH_IF ("%fx_type%" = 53)  //Animation change
+	OR ("%fx_type%" = 135) //Polymorph
+	BEGIN
 		SET off = param1 SPRINT res ~anim~ LPM EET_PCU_off_long
 	END
 
