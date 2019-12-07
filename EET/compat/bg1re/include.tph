@@ -1,6 +1,6 @@
 //Compatibility with BG1RE "Amount of -ahem- details and BG-style vs. description text!" component
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1RE\.TP2. #[0-9]+ #0 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1RE\.TP2. #[0-9]+ #0 ~) BEGIN
 	EXTEND_BOTTOM ~BALDUR.bcs~ ~%MOD_FOLDER%/compat/bg1re/baf/c#lc_details.baf~
 	EXTEND_BOTTOM ~BALDUR.bcs~ ~%MOD_FOLDER%/compat/bg1re/baf/c#lc_descriptiontext.baf~
 END

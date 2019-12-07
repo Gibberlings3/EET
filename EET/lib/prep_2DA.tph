@@ -1,10 +1,10 @@
 //Compatibility with Rough World
-ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #5 ~) BEGIN //Reputation Rebalanced Component
+ACTION_IF (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #5 ~) BEGIN //Reputation Rebalanced Component
 	ACTION_FOR_EACH file IN REPMODST REPSTART REPTXT REPUTATI RMODREP BEGIN
 		COPY ~%MOD_FOLDER%/temp/2da/%file%.2DA~ ~override~
 	END
 END
-ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #4 ~) BEGIN //New Reputation Names Component
+ACTION_IF (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #4 ~) BEGIN //New Reputation Names Component
 	COPY_EXISTING ~REPTXT.2DA~ ~override~
 		COUNT_2DA_ROWS 2 "cntrow"
 		FOR (cnt = 1; cnt < cntrow; cnt = cnt + 1) BEGIN
