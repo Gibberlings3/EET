@@ -163,10 +163,10 @@ INCLUDE ~%MOD_FOLDER%/lib/pcu_dict.tph~
 INCLUDE ~%MOD_FOLDER%/lib/add_spell_ex.tpa~
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
-	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGEE.log~
+	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGSoD.log~
 		REPLACE_TEXTUALLY ~^//.*[%newline%]*~ ~~ //removes "Recently uninstalled" lines
 END ELSE BEGIN
-	COPY ~.../blank.txt~ ~WeiDU-BGEE.log~
+	COPY ~.../blank.txt~ ~WeiDU-BGSoD.log~
 END
 
 LAF GET_SYSTEM_ARCH RET SYSTEM_ARCH END

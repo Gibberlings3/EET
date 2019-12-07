@@ -1,5 +1,5 @@
 //Compatibility with BG1NPC Required Modifications
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
 	EXTEND_TOP ~REDDEATH.BCS~ ~%MOD_FOLDER%/compat/bg1npc/baf/X#BRDWI.BAF~ EVALUATE_BUFFER //Interjection scripting changes, BG1 NPCs
 	//conflict with BG2:EE resources
 	ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
@@ -10,7 +10,7 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG
 END
 
 //Compatibility with BG1NPC Banters, Quests, and Interjections
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #1 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #1 ~) BEGIN
 	EXTEND_TOP ~NIEMAIN.BCS~ ~%MOD_FOLDER%/compat/bg1npc/baf/X#NIEMAIN.BAF~ EVALUATE_BUFFER
 
 	COPY_EXISTING ~BEARBL.CRE~ ~override~
@@ -20,7 +20,7 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG
 	COPY_EXISTING ~BEARBR.CRE~ ~override~
 		WRITE_ASCII DEATHVAR ~bearbr~ #32
 	BUT_ONLY
-	
+
 	//delete files existing in BG2:EE
 	DELETE + ~%patch_dir%/itm/dagg11.itm~
 			 ~%MOD_FOLDER%/temp/wav/imppp04.wav~
@@ -40,13 +40,13 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG
 END
 
 //Compatibility with BG1NPC "The BG1 NPC Project: Add Non-Joinable NPC portraits to quests and dialogues" component
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #8 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #8 ~) BEGIN
 	//delete files existing in BG2:EE
 	DELETE + ~%biff_dir%/sarevoks.bmp~
 END
 
 //Compatibility with BG1NPC "Dynaheir's Romance Core (teen content)" component
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #12 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #12 ~) BEGIN
 	//delete files existing in BG2:EE
 	DELETE + ~%patch_dir%/itm/brac25.itm~
 			 ~%MOD_FOLDER%/temp/wav/IRENIC01.wav~
@@ -58,7 +58,7 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG
 END
 
 //Compatibility with BG1NPC "The BG1 NPC Project: Female Romance Challenges, Ajantis vs Xan vs Coran" component
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #15 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #15 ~) BEGIN
 	//delete files existing in BG2:EE
 	DELETE + ~%patch_dir%/itm/dragred1.itm~
 			 ~%patch_dir%/itm/dragring.itm~
@@ -67,6 +67,6 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG
 END
 
 //Compatibility with BG1NPC "The BG1 NPC Project: Player-Initiated Dialogues" component
-/*ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #200 ~) BEGIN
+/*ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #200 ~) BEGIN
 
 END*/
