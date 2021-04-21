@@ -35,6 +35,7 @@ COPY_EXISTING ~UI.MENU~ ~override~
 	highlightSOD = false
 	highlightBP = false
 	logoFrame = 0
+	-- initCampaign = 0
 
 	function startThreeBookHighlight(book)
 		if book == 1 and highlightBG == true then
@@ -96,6 +97,7 @@ menu
 		action 
 		"
 			logoFrame = 0
+			-- initCampaign = 1
 			startEngine:OnSoAButtonClick(true)
 			Infinity_PushMenu('START_MAIN')
 		"
@@ -118,6 +120,7 @@ menu
 		action 
 		"
 			logoFrame = 1
+			-- initCampaign = 1
 			startEngine:OnToBButtonClick(true)
 			Infinity_PushMenu('START_MAIN')
 		"
@@ -140,6 +143,7 @@ menu
 		action 
 		"
 			logoFrame = 2
+			-- initCampaign = 1
 			startEngine:OnTBPButtonClick(true)
 			Infinity_PushMenu('START_MAIN')
 		"
@@ -331,11 +335,14 @@ menu
 		text "BACK_BUTTON"
 		action 
 		"
+			-- logoFrame = 0
+            -- initCampaign = 0
 			e:GetObjectGame():SetCampaign('')
+			startEngine:SetEngineState(3)
 			Infinity_PopMenu()
 			"
 	}
-}~~~~~ //"
+}~~~~~ 
 		string = ~~~~~menu
 {
 	name 'START_INSTALLATION_WARNING'
@@ -660,7 +667,7 @@ menu
 		text align center center
 		text lua "CBaldurChitin:GetVersionString()"
 	}
-}~~~~~ //~
+}~~~~~ 
 	END
 	//==========================================================================
 	LPF REPLACE_MULTILINE
@@ -1017,104 +1024,6 @@ mapnoteSettings = {}~~~~~
 }
 `
 mapnoteSettings = {}~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'STORE_BUYSELL'
-	align center top
-	onOpen~~~~~
-		string = ~~~~~name 'STORE_BUYSELL'
-	align center center
-	offset 0 -56
-	onOpen~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'STORE_IDENTIFY'
-	align center top
-	onOpen~~~~~
-		string = ~~~~~name 'STORE_IDENTIFY'
-	align center center
-	offset 0 -56
-	onOpen~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'STORE_DONATE'
-	align center top
-	ignoreEsc~~~~~
-		string = ~~~~~name 'STORE_DONATE'
-	align center center
-	offset 0 -56
-	ignoreEsc~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'STORE_ROOMS'
-	align center top
-	onOpen~~~~~
-		string = ~~~~~name 'STORE_ROOMS'
-	align center center
-	offset 0 -56
-	onOpen~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'STORE_HEALING'
-	align center top
-	onOpen~~~~~
-		string = ~~~~~name 'STORE_HEALING'
-	align center center
-	offset 0 -56
-	onOpen~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'STORE_DRINKS'
-	align center top
-	ignoreEsc~~~~~
-		string = ~~~~~name 'STORE_DRINKS'
-	align center center
-	offset 0 -56
-	ignoreEsc~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'STORE_CHOOSER'
-	align center bottom
-	onOpen~~~~~
-		string = ~~~~~name 'STORE_CHOOSER'
-	align center center
-	offset 0 299
-	onOpen~~~~~
 	END
 	//==========================================================================
 	LPF REPLACE_MULTILINE

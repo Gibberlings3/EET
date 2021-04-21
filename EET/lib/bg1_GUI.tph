@@ -42,6 +42,7 @@ COPY ~%MOD_FOLDER%/temp/array/UI.MENU~ ~%MOD_FOLDER%/SoD_GUI~
 		strict = 1
 		STR_VAR
 		pattern = ~~~~~menu
+
 {
 	name 'START_CAMPAIGN_SELECT'
 	align center center
@@ -278,6 +279,20 @@ menu
 		area 210 692 271 30
 		bam "DNDLOGO"
 		scaleToClip
+	}
+	button
+	{
+		bam 'STARTBUT'
+		sequence lua "getCampaignButtonSequence()"
+		area 732 72 249 45
+		pad 10 8 10 8
+		text style "button"
+		text "STRREF_GUI_LOWER_DLC_STORE"
+		enabled "e:IsTouchUI()"
+		action 
+		"
+			startEngine:OnDLCImageClick()
+		"
 	}
 	button
 	{
