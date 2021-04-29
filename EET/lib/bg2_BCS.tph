@@ -2852,51 +2852,12 @@ EXTEND_TOP ~AR1000.BCS~ ~.../AR1000-et.baf~
 IF
   HasDLC("dorn")
   GlobalLT("OHD_PLOT","GLOBAL",1)
-  !Global("OHH_DORN_INIT","ar0900",1)
-  XPLT(Player1,280501)
+  !Global("OHH_DORN_INIT","ar0900",1)  // Temple District
 THEN
   RESPONSE #100
     ActionOverride("dorn",DestroySelf())
-    CreateCreature("DORN8",[2550.3394],E) // Dorn
-    SetGlobal("OHH_DORN_INIT","ar0900",1)
-END
-
-IF
-  HasDLC("dorn")
-  GlobalLT("OHD_PLOT","GLOBAL",1)
-  !Global("OHH_DORN_INIT","ar0900",2)
-  XPGT(Player1,280500)
-  XPLT(Player1,600001)
-THEN
-  RESPONSE #100
-    ActionOverride("dorn",DestroySelf())
-    CreateCreature("DORN9",[2550.3394],E) // Dorn
-    SetGlobal("OHH_DORN_INIT","ar0900",2)
-END
-
-IF
-  HasDLC("dorn")
-  GlobalLT("OHD_PLOT","GLOBAL",1)
-  !Global("OHH_DORN_INIT","ar0900",3)
-  XPGT(Player1,600000)
-  XPLT(Player1,1000001)
-THEN
-  RESPONSE #100
-    ActionOverride("dorn",DestroySelf())
-    CreateCreature("DORN10",[2550.3394],E) // Dorn
-    SetGlobal("OHH_DORN_INIT","ar0900",3)
-END
-
-IF
-  HasDLC("dorn")
-  GlobalLT("OHD_PLOT","GLOBAL",1)
-  !Global("OHH_DORN_INIT","ar0900",4)
-  XPGT(Player1,1000000)
-THEN
-  RESPONSE #100
-    ActionOverride("dorn",DestroySelf())
-    CreateCreature("DORN12",[2550.3394],E) // Dorn
-    SetGlobal("OHH_DORN_INIT","ar0900",4)
+    CreateCreature("DORN8",[2550.3394],E)  // Dorn
+    SetGlobal("OHH_DORN_INIT","ar0900",1)  // Temple District
 END
 >>>>>>>>
 
