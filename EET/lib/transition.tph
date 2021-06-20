@@ -557,7 +557,7 @@ END
 ///// SharTeel                                         \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9SHARTEELNPC\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?K9SHARTEELNPC\.TP2") BEGIN
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -729,58 +729,10 @@ LAF ~EET_NPC_TRANSITION~
 END
 
 /////                                                  \\\\\
-///// Indira                                           \\\\\
-/////                                                  \\\\\
-
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~INDINPC\.TP2~) BEGIN
-	LAF ~EET_NPC_TRANSITION~
-		INT_VAR
-		type = 1
-		STR_VAR
-		dv = "J#Indi"
-		override_BG1 = "J#INDI"
-		string = "@5000000"
-		stringPosDV = "Jaheira"
-	END
-END
-
-/////                                                  \\\\\
-///// Finch                                            \\\\\
-/////                                                  \\\\\
-
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~FINCHNPC\.TP2~) BEGIN
-	LAF ~EET_NPC_TRANSITION~
-		INT_VAR
-		type = 1
-		STR_VAR
-		dv = "SUFINCH"
-		override_BG1 = "SUFINCH"
-		string = "@5000002"
-		stringPosDV = "Garrick"
-	END
-END
-
-/////                                                  \\\\\
-///// Gavin                                            \\\\\
-/////                                                  \\\\\
-
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~GAVIN\.TP2~) BEGIN
-	LAF ~EET_NPC_TRANSITION~
-		INT_VAR
-		type = 1
-		STR_VAR
-		dv = "B!GAVIN"
-		override_BG1 = "B!GAVIN"
-		string = "@5000003"
-		stringPosDV = "HaerDalis"
-	END
-END
-
-/////                                                  \\\\\
 ///// Valerie                                          \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~VALERIE\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?VALERIE\.TP2") BEGIN
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -793,26 +745,10 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~VA
 END
 
 /////                                                  \\\\\
-///// Isra                                             \\\\\
-/////                                                  \\\\\
-
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~ISRA\.TP2~) BEGIN
-	LAF ~EET_NPC_TRANSITION~
-		INT_VAR
-		type = 1
-		STR_VAR
-		dv = "rh#isra"
-		override_BG1 = "RH#ISRA"
-		string = "@5000005"
-		stringPosDV = "Jaheira"
-	END
-END
-
-/////                                                  \\\\\
 ///// Sirene                                           \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~SIRENE\.TP2. #[0-9]+ #1 ~) BEGIN //SoD component
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?SIRENE\.TP2. #[0-9]+ #1 ") BEGIN //SoD component
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -823,7 +759,7 @@ ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~SI
 		string = "@5000007"
 		stringPosDV = "Skie"
 	END
-END ELSE ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~SIRENE\.TP2. #[0-9]+ #0 ~) BEGIN //BG1 component
+END ELSE ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?SIRENE\.TP2. #[0-9]+ #0 ") BEGIN //BG1 component
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -839,7 +775,7 @@ END
 ///// Tenya                                            \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~TENYATHERMIDOR\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?TENYATHERMIDOR\.TP2") BEGIN
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -855,7 +791,7 @@ END
 ///// Margarita                                        \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~MARGARITA\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?MARGARITA\.TP2") BEGIN
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -871,7 +807,7 @@ END
 ///// White                                            \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~WHITE\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?WHITE\.TP2") BEGIN
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -887,7 +823,7 @@ END
 ///// Drake                                            \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~DRAKE\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?DRAKE\.TP2") BEGIN
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
@@ -904,7 +840,7 @@ END
 ///// Verr'Sza                                         \\\\\
 /////                                                  \\\\\
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~VERRSZA\.TP2~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?VERRSZA\.TP2") BEGIN
 	LAF ~EET_NPC_TRANSITION~
 		INT_VAR
 		type = 1
