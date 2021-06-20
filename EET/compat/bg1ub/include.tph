@@ -2,7 +2,7 @@
 
 //Compatibility with BG1UB "Creature Corrections" component
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1UB\.TP2. #[0-9]+ #16 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1UB\.TP2. #[0-9]+ #16 ~) BEGIN
 	COPY_EXISTING ~PLYOGRE.CRE~ ~override~ // Ogre (OGRE animation)
 		PATCH_IF (SOURCE_SIZE > 0x2d4) BEGIN
 			WRITE_BYTE 0x237 1                  // Sex: Male
@@ -13,7 +13,7 @@ END
 
 //Compatibility with BG1UB "Item Corrections and Restorations" component
 
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1UB\.TP2. #[0-9]+ #22 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1UB\.TP2. #[0-9]+ #22 ~) BEGIN
 	COPY_EXISTING ~misc76.itm~ ~override~ // Dream Potion
 		WRITE_ASCIIE 0x3a "imisc76" #8
 		WRITE_ASCIIE 0x58 "cpotn13" #8

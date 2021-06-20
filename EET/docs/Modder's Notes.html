@@ -66,9 +66,9 @@ th {
   font-weight: bold;
   }
 hr {
-  display: block; 
-  clear: both; 
-  margin: 0; 
+  display: block;
+  clear: both;
+  margin: 0;
   visibility: hidden;
   }
 .leftalign, table.leftalign tr th, table.leftalign tr td {text-align: left;}
@@ -105,9 +105,9 @@ a:hover.spoiler {
   border: 1px dotted #ccc;
   }
 .code {
-  font-family: 'Courier New', Courier, mono; 
-  border: 1px solid #555; 
-  border-left: 10px solid #555; 
+  font-family: 'Courier New', Courier, mono;
+  border: 1px solid #555;
+  border-left: 10px solid #555;
   background-color: #eee;
   padding: 5px;
   }
@@ -187,7 +187,7 @@ a:hover.spoiler {
 			<li><a href="#Adding new animations">Adding new animations</a></li>
 			<li><a href="#Adding support for EET Worldmap">Adding support for EET Worldmap</a></li>
 		</ul>
-	</ol> 
+	</ol>
 </div>
 
 <!-- ================== O v e r v i e w ================== --><a id="overview" name="Overview"></a>
@@ -483,17 +483,17 @@ WRITE_SHORT 0x48 THIS | (1 << BG1AREA)
 
 <ul>
 <li><strong>dummy files</strong> are often used by mods to make them detectable by other mods. They are copied to EET override directory during installation, so can be normally detected via FILE_EXISTS_IN_GAME WeiDU command.</li>
-<li><strong>WeiDU.log file</strong> from BG:EE is copied to main directory as "WeiDU-BGEE.log", which allows modders to use workarounds for existing WeiDU functions. Here are few examples using BG1 NPC Project component 0, any language:</li>
+<li><strong>WeiDU.log file</strong> from BG:EE is copied to main directory as "WeiDU-BGSoD.log", which allows modders to use workarounds for existing WeiDU functions. Here are few examples using BG1 NPC Project component 0, any language:</li>
 <div class="code">
 <pre>
 //works the same as REQUIRE_COMPONENT
-REQUIRE_PREDICATE (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) ~~
+REQUIRE_PREDICATE (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) ~~
 
 //works the same as FORBID_COMPONENT
-REQUIRE_PREDICATE (!FILE_EXISTS ~WeiDU-BGEE.log~) OR ((FILE_EXISTS ~WeiDU-BGEE.log~) AND (!FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
+REQUIRE_PREDICATE (!FILE_EXISTS ~WeiDU-BGSoD.log~) OR ((FILE_EXISTS ~WeiDU-BGSoD.log~) AND (!FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~)) ~~
 
 //works the same as MOD_IS_INSTALLED
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGSoD.log~) AND (FILE_CONTAINS ~WeiDU-BGSoD.log~ ~BG1NPC\.TP2. #[0-9]+ #0 ~) BEGIN
     //do something if component has been detected
 END ELSE BEGIN
     //do something if component has NOT been detected
@@ -893,7 +893,7 @@ BUT_ONLY
 
 <a id="Adding support for EET Worldmap" name="Adding support for EET Worldmap"></a>
 <h3>Adding support for EET Worldmap</h3>
-<p>EET Worldmap consists of BG1, SoD, BG2, ToB maps merged together. It also covers lands from both IWD games (related to IWD-in-EET mod). When it comes to BG2 and ToB areas it allows for cross-platform modding without separate script blocks for patching EET Worldmap. For EET you can use the same coordinates as in vanilla maps but with added X and Y correction that represents where the old map starts compared to the upper-left corner of the EET map. Preferable way of doing so is using <a href="../other/cpmvars">cpmvars variable libraries</a> 
+<p>EET Worldmap consists of BG1, SoD, BG2, ToB maps merged together. It also covers lands from both IWD games (related to IWD-in-EET mod). When it comes to BG2 and ToB areas it allows for cross-platform modding without separate script blocks for patching EET Worldmap. For EET you can use the same coordinates as in vanilla maps but with added X and Y correction that represents where the old map starts compared to the upper-left corner of the EET map. Preferable way of doing so is using <a href="../other/cpmvars">cpmvars variable libraries</a>
 
 Modders can use the same weidu code as for SoA/ToB worldmaps, by simply assigning additional X and Y coordinate correction depending on the platform. BG2 and ToB icons have the same numbers as in vanilla BG2:EE. BG1 icons also preserve the numbering, but you need to add a starting number correction, if you want to use the same code for worldmap patching between BG1 and EET. BG1 and ToB icons have been appended to MAPICONS.BAM file, so you also need to take it into account. EET uses the same icon numbers as BP-BGT Worldmap.
 
