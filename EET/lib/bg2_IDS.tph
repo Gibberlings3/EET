@@ -242,6 +242,12 @@ APPEND ~SOUNDOFF.IDS~ ~74 BIO~                     UNLESS ~ BIO~
 /////                                                  \\\\\
 
 COPY_EXISTING ~CLASS.IDS~ ~override~
+	COUNT_REGEXP_INSTANCES ~^[ %TAB%]*22[ %TAB%]~ num_matches
+	PATCH_IF (num_matches >= 1) BEGIN
+		PATCH_WARN ~WARNING: CLASS.IDS already contains class assigned to slot 22~
+	END
+	REPLACE_TEXTUALLY ~\(21[ %TAB%]+SHAMAN\)~ ~\1
+22 CUSTOM_CLASS~
 	REPLACE_TEXTUALLY ~[ %TAB%]*221[ %TAB%]+SOD_TMP~ ~221 NEOTHELID~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -274,7 +280,7 @@ COPY + ~%MOD_FOLDER%/temp/array/CLASS.IDS~ ~%MOD_FOLDER%/temp/array~
 			END ELSE PATCH_IF (VARIABLE_IS_SET $class_ids_index(~%col1%~)) BEGIN
 				TEXT_SPRINT compare_col2 $class_ids_index(~%col1%~)
 				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
-					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+					FOR (cnt2 = 224; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
 						PATCH_IF (NOT VARIABLE_IS_SET $class_ids_index(~%cnt2%~)) BEGIN
 							SET ids_index = cnt2
 							DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col1%~ => ~%ids_index%~ END

@@ -741,7 +741,7 @@ COPY_EXISTING ~HIDESPL.2DA~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
-///// LUA / MENU BG2:EE patching                       \\\\\
+///// LUA BG2:EE patching                              \\\\\
 /////                                                  \\\\\
 
 INCLUDE ~%MOD_FOLDER%/lib/bg2_GUI.tph~
@@ -759,6 +759,8 @@ ACTION_FOR_EACH entry IN EET_CMP_TEXT_BG1 EET_CMP_TEXT_SOD EET_CMP_TEXT_SOA EET_
 END
 
 COPY ~%MOD_FOLDER%/base/lua/M_K#EET.lua~ ~override~
+
+COPY ~%MOD_FOLDER%/base/lua/M_K#TBL.lua~ ~override~
 	REPLACE_TEXTUALLY ~\(eetStrings = {\)~ ~\1
 %L_LUA%~
 
@@ -895,7 +897,7 @@ COPY + ~%MOD_FOLDER%/temp/array/BGEE.lua~ ~%MOD_FOLDER%/temp/array~
 		READ_2DA_ENTRY cnt 0 2 "col1"
 		SPRINT match ~%col1%~ SPRINT res ~bmp~ LPM EET_PCU_outer_res SPRINT col1 ~%match%~
 		READ_2DA_ENTRY cnt 1 2 "col2"
-		PATCH_IF (~%portraits_var%~ STRING_CONTAINS_REGEXP ~'%col1%'~ = 1) AND (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*{[ %TAB%]*'%col1%'[ %TAB%]*,[ %TAB%]*%col2%[ %TAB%]*}~)) BEGIN
+		PATCH_IF (~%portraits_var%~ STRING_CONTAINS_REGEXP ~'%col1%'~ = 1) AND (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*{[ %TAB%]*'%col1%'[ %TAB%]*,[ %TAB%]*%col2%[ %TAB%]*}~)) AND (NOT ~%col1%~ STR_EQ ~DSCLARA~) BEGIN
 			SPRINT portraits_var ~%portraits_var%%TAB%{'%col1%', %col2%},%LNL%~
 			//PATCH_PRINT ~portraits: %col1% ; %col2%~
 		END
@@ -1326,143 +1328,6 @@ ACTION_FOR_EACH var IN b g3 000 UB xxx BEGIN
 END
 
 /////                                                  \\\\\
-///// 2DA                                              \\\\\
-/////                                                  \\\\\
-
-PRINT ~Installing 2DA files...~
-
-<<<<<<<< .../song.2da
-SONG %song%
->>>>>>>>
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_2da BEGIN
-	GUIDRM2 , 111 => DRMTXT2 //Textscreen
-	GUIDRM3 , 111 => DRMTXT3 //Textscreen
-	GUIDRM4 , 111 => DRMTXT4 //Textscreen
-	GUIDRM5 , 111 => DRMTXT5 //Textscreen
-	GUIDRM6 , 111 => DRMTXT6 //Textscreen
-	GUIDRM7 , 111 => DRMTXT7 //Textscreen
-	GUICHP0B , 135 => DPALACE //Textscreen
-	LEAVEA , ~~ => ISLOFF //Textscreen
-	ARRIVEA , ~~ => ISLON //Textscreen
-	TOSCENDA , ~~ => TOSCEND //Textscreen
-	ULGOTHST , ~~ => TOSCST //Textscreen
-END
-ACTION_PHP_EACH table_EET_2da AS data => file BEGIN
-	COPY + ~%MOD_FOLDER%/temp/2da/%file%.2DA~ ~%MOD_FOLDER%/temp/2da~
-		SET_2DA_ENTRY 1 0 1 "%data%"
-		READ_2DA_ENTRY 2 2 3 "strref"
-		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
-		SET_2DA_ENTRY 2 2 3 "%str%"
-		READ_2DA_ENTRY 3 2 3 "strref"
-		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
-		SET_2DA_ENTRY 3 2 3 "%str%"
-		PATCH_IF ~%data_1%~ STR_EQ ~111~ BEGIN
-			SET song = "%data_1%"
-			APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
-		END ELSE PATCH_IF NOT ~%data_1%~ STR_EQ ~~ BEGIN
-			SET_2DA_ENTRY 8 1 2 "%data_1%"
-		END
-		PRETTY_PRINT_2DA
-END
-
-OUTER_SET song = 107
-COPY + ~%MOD_FOLDER%/temp/2da/CHPTXT0.2DA~ ~%MOD_FOLDER%/temp/2da~ //BG1 Prologue
-	SET_2DA_ENTRY 1 0 1 "GUICHP0A"
-	FOR (i= 1 ; i<=5 ; i=i+1) BEGIN
-		READ_2DA_ENTRY 2 ~%i%~ 6 "strref"
-		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
-		SET_2DA_ENTRY 2 ~%i%~ 6 "%str%"
-	END
-	APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
-	PRETTY_PRINT_2DA
-
-OUTER_SET title = RESOLVE_STR_REF (@2000074)
-OUTER_SET strref = RESOLVE_STR_REF (@2000000)
-<<<<<<<< .../CHPTXT1.2da
-2DA      V1.0
-GUICHP1A
-        0        1        2        3        4
-SWITCH  DEFAULT  DEFAULT  DEFAULT  DEFAULT  DEFAULT
-DEFAULT 216203   %title% %strref%  211898   211899
-SONG    135
->>>>>>>>
-COPY ~.../CHPTXT1.2da~ ~override~ EVALUATE_BUFFER //BG1 Chapter 1
-	PRETTY_PRINT_2DA
-
-<<<<<<<< .../CHPTXT.2da
-2DA V1.0
-%data%
-        0        1        2
-SWITCH  DEFAULT  DEFAULT  DEFAULT
-DEFAULT %data_1% %data_2% %data_3%
-%data_4%
->>>>>>>>
-
-<<<<<<<< .../CHPTXTb.2da
-2DA V1.0
-%data%
-        0        1
-SWITCH  DEFAULT  DEFAULT
-DEFAULT %data_1% %data_3%
-%data_4%
->>>>>>>>
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_CHPTXT BEGIN
-	//BG1
-	GUICHP2A , 216204 , 2000075 , 2000001 , "SONG 135" => CHPTXT2 //BG1 Chapter 2
-	GUICHP3A , 216205 , 2000076 , 2000002 , "SONG 135" => CHPTXT3 //BG1 Chapter 3
-	GUICHP4A , 216206 , 2000077 , 2000003 , "SONG 135" => CHPTXT4 //BG1 Chapter 4
-	GUICHP5A , 216207 , 2000078 , 2000004 , "SONG 135" => CHPTXT5 //BG1 Chapter 5
-	GUICHP6A , 216208 , 2000079 , 2000005 , "SONG 135" => CHPTXT6 //BG1 Chapter 6
-	GUICHP7A , 216209 , 2000080 , 2000006 , "SONG 135" => CHPTXT7 //BG1 Chapter 7
-	//SoD
-	GUICHP1B , 256369 , 2000081 , 2000008 , "SONG 135" => CHPTXT8 //SoD Chapter 8
-	GUICHP2B , 256370 , 2000082 , 2000009 , "SONG 135" => SODTXT9 //SoD Chapter 9
-	GUICHP3B , 256372 , 2000083 , 2000010 , "SONG 135" => SODTXT10 //SoD Chapter 10
-	GUICHP4B , 256374 , 2000084 , 2000011 , "SONG 135" => CHPTXT11 //SoD Chapter 11
-	GUICHP5B , 256376 , 2000085 , 2000012 , "SONG 135" => CHPTXT12 //SoD Chapter 12
-	GUICHP6B , 256975 , 2000086 , 2000013 , "SONG 135" => CHPTXT13 //SoD Chapter 13
-	//SoA
-	CH01AJON , "-1" , "-1" , 17698 , "" => SCENE01 //Textscreen
-	CH02AGLN , 74412 , 2000087 , 48005 , "" => SCENE02 //BG2 Chapter 14
-	CH03AMON , 74390 , 2000088 , 61359 , "" => SCENE03 //BG2 Chapter 15a
-	CH03AMON , 74390 , 2000088 , 61360 , "" => SCENE04 //BG2 Chapter 15b
-	CH04ASHP , 74407 , 2000089 , 55714 , "" => SCRTXT01 //BG2 Chapter 16a
-	CH04ASHP , 74407 , 2000089 , 8633 , "" => SCRTXT02 //BG2 Chapter 16b
-	CH04CSAH , "-1" , "-1" , 57350 , "" => SCRTXT03 //Textscreen
-	CH04ASHP , "-1" , "-1" , 57351 , "" => SCRTXT04 //Textscreen
-	CH04ASHP , "-1" , "-1" , 46003 , "" => SCRTXT05 //Textscreen
-	CH05AUND , 74399 , 2000090 , 61361 , "" => SCRTXT07 //BG2 Chapter 17
-	CH06ADRW , 74400 , 2000091 , 1389 , "" => SCRTXT06 //BG2 Chapter 18
-	CH07ASUL , 74353 , 2000092 , 61362 , "" => SCRTXT08 //BG2 Chapter 19
-	//ToB
-	CHPTAMKE , 71021 , 2000094 , 71591 , "" => CHPTXT9 //ToB Chapter 21
-	CHPTMANA , 71022 , 2000095 , 71592 , "" => CHPTXT10 //ToB Chapter 22
-	CHPTODRE , "-1" , "-1" , 71593 , "" => SCRODRE //Textscreen
-	CHPTSARA , "-1" , "-1" , 71590 , "" => SCRSARA //Textscreen
-	//other
-	GUICHP2A , "-1" , "-1" , 31809 , "SONG 81" => BPENDA //Textscreen
-END
-ACTION_PHP_EACH table_EET_CHPTXT AS data => file BEGIN
-	ACTION_IF (data_2 > 2000000) BEGIN
-		OUTER_SET data_2 = RESOLVE_STR_REF ((AT data_2))
-	END
-	ACTION_IF (data_3 > 2000000) BEGIN
-		OUTER_SET data_3 = RESOLVE_STR_REF ((AT data_3))
-	END
-	ACTION_IF (data_1 > 0) BEGIN
-		COPY ~.../CHPTXT.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
-			PRETTY_PRINT_2DA
-	END ELSE BEGIN
-		COPY ~.../CHPTXTb.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
-			PRETTY_PRINT_2DA
-	END
-END
-
-COPY ~%MOD_FOLDER%/base/2da~ ~override~
-	~%MOD_FOLDER%/temp/2da~ ~override~
-
-/////                                                  \\\\\
 ///// ACM / MUS                                        \\\\\
 /////                                                  \\\\\
 
@@ -1695,8 +1560,11 @@ COMPILE ~%patch_dir%/d~
 
 PRINT ~Installing EFF files...~
 
+COPY ~%MOD_FOLDER%/base/eff/K#FAMKIL.EFF~ ~override~
+	~%MOD_FOLDER%/base/eff/K#FAMREM.EFF~ ~override~
+	~%MOD_FOLDER%/base/eff/K#FAMSUM.EFF~ ~override~
+
 COPY ~%patch_dir%/eff~ ~override~
-	~%MOD_FOLDER%/base/eff~ ~override~
 
 /////                                                  \\\\\
 ///// GAM                                              \\\\\
@@ -1829,6 +1697,10 @@ ACTION_PHP_EACH gui_dir AS src_dir => dest_dir BEGIN
 		END
 	END
 END
+
+COPY_EXISTING + ~NOPORTLG.BMP~ ~%biff_dir%/eetGUI/NOPORTLL.BMP~
+	~NOPORTMD.BMP~ ~%biff_dir%/eetGUI/NOPORTLM.BMP~
+	~NOPORTSM.BMP~ ~%biff_dir%/eetGUI/NOPORTLS.BMP~
 
 COPY ~%MOD_FOLDER%/base/lua/M_K#GUI.LUA~ ~%MOD_FOLDER%/SoD_GUI~
 	~.../blank.txt~ ~override/M_K#GUI.LUA~
@@ -2429,6 +2301,143 @@ INCLUDE ~%MOD_FOLDER%/lib/build_worldmap.tpa~
 //SOD BG Worldmap
 
 COPY ~%patch_dir%/BGMAP.wmp~ ~override~
+
+/////                                                  \\\\\
+///// 2DA                                              \\\\\
+/////                                                  \\\\\
+
+PRINT ~Installing 2DA files...~
+
+<<<<<<<< .../song.2da
+SONG %song%
+>>>>>>>>
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_2da BEGIN
+	GUIDRM2 , 111 => DRMTXT2 //Textscreen
+	GUIDRM3 , 111 => DRMTXT3 //Textscreen
+	GUIDRM4 , 111 => DRMTXT4 //Textscreen
+	GUIDRM5 , 111 => DRMTXT5 //Textscreen
+	GUIDRM6 , 111 => DRMTXT6 //Textscreen
+	GUIDRM7 , 111 => DRMTXT7 //Textscreen
+	GUICHP0B , 135 => DPALACE //Textscreen
+	LEAVEA , ~~ => ISLOFF //Textscreen
+	ARRIVEA , ~~ => ISLON //Textscreen
+	TOSCENDA , ~~ => TOSCEND //Textscreen
+	ULGOTHST , ~~ => TOSCST //Textscreen
+END
+ACTION_PHP_EACH table_EET_2da AS data => file BEGIN
+	COPY + ~%MOD_FOLDER%/temp/2da/%file%.2DA~ ~%MOD_FOLDER%/temp/2da~
+		SET_2DA_ENTRY 1 0 1 "%data%"
+		READ_2DA_ENTRY 2 2 3 "strref"
+		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
+		SET_2DA_ENTRY 2 2 3 "%str%"
+		READ_2DA_ENTRY 3 2 3 "strref"
+		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
+		SET_2DA_ENTRY 3 2 3 "%str%"
+		PATCH_IF ~%data_1%~ STR_EQ ~111~ BEGIN
+			SET song = "%data_1%"
+			APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
+		END ELSE PATCH_IF NOT ~%data_1%~ STR_EQ ~~ BEGIN
+			SET_2DA_ENTRY 8 1 2 "%data_1%"
+		END
+		PRETTY_PRINT_2DA
+END
+
+OUTER_SET song = 107
+COPY + ~%MOD_FOLDER%/temp/2da/CHPTXT0.2DA~ ~%MOD_FOLDER%/temp/2da~ //BG1 Prologue
+	SET_2DA_ENTRY 1 0 1 "GUICHP0A"
+	FOR (i= 1 ; i<=5 ; i=i+1) BEGIN
+		READ_2DA_ENTRY 2 ~%i%~ 6 "strref"
+		LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
+		SET_2DA_ENTRY 2 ~%i%~ 6 "%str%"
+	END
+	APPEND_FILE ~.../song.2da~ EVALUATE_BUFFER
+	PRETTY_PRINT_2DA
+
+OUTER_SET title = RESOLVE_STR_REF (@2000074)
+OUTER_SET strref = RESOLVE_STR_REF (@2000000)
+<<<<<<<< .../CHPTXT1.2da
+2DA      V1.0
+GUICHP1A
+        0        1        2        3        4
+SWITCH  DEFAULT  DEFAULT  DEFAULT  DEFAULT  DEFAULT
+DEFAULT 216203   %title% %strref%  211898   211899
+SONG    135
+>>>>>>>>
+COPY ~.../CHPTXT1.2da~ ~override~ EVALUATE_BUFFER //BG1 Chapter 1
+	PRETTY_PRINT_2DA
+
+<<<<<<<< .../CHPTXT.2da
+2DA V1.0
+%data%
+        0        1        2
+SWITCH  DEFAULT  DEFAULT  DEFAULT
+DEFAULT %data_1% %data_2% %data_3%
+%data_4%
+>>>>>>>>
+
+<<<<<<<< .../CHPTXTb.2da
+2DA V1.0
+%data%
+        0        1
+SWITCH  DEFAULT  DEFAULT
+DEFAULT %data_1% %data_3%
+%data_4%
+>>>>>>>>
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_CHPTXT BEGIN
+	//BG1
+	GUICHP2A , 216204 , 2000075 , 2000001 , "SONG 135" => CHPTXT2 //BG1 Chapter 2
+	GUICHP3A , 216205 , 2000076 , 2000002 , "SONG 135" => CHPTXT3 //BG1 Chapter 3
+	GUICHP4A , 216206 , 2000077 , 2000003 , "SONG 135" => CHPTXT4 //BG1 Chapter 4
+	GUICHP5A , 216207 , 2000078 , 2000004 , "SONG 135" => CHPTXT5 //BG1 Chapter 5
+	GUICHP6A , 216208 , 2000079 , 2000005 , "SONG 135" => CHPTXT6 //BG1 Chapter 6
+	GUICHP7A , 216209 , 2000080 , 2000006 , "SONG 135" => CHPTXT7 //BG1 Chapter 7
+	//SoD
+	GUICHP1B , 256369 , 2000081 , 2000008 , "SONG 135" => CHPTXT8 //SoD Chapter 8
+	GUICHP2B , 256370 , 2000082 , 2000009 , "SONG 135" => SODTXT9 //SoD Chapter 9
+	GUICHP3B , 256372 , 2000083 , 2000010 , "SONG 135" => SODTXT10 //SoD Chapter 10
+	GUICHP4B , 256374 , 2000084 , 2000011 , "SONG 135" => CHPTXT11 //SoD Chapter 11
+	GUICHP5B , 256376 , 2000085 , 2000012 , "SONG 135" => CHPTXT12 //SoD Chapter 12
+	GUICHP6B , 256975 , 2000086 , 2000013 , "SONG 135" => CHPTXT13 //SoD Chapter 13
+	//SoA
+	CH01AJON , "-1" , "-1" , 17698 , "" => SCENE01 //Textscreen
+	CH02AGLN , 74412 , 2000087 , 48005 , "" => SCENE02 //BG2 Chapter 14
+	CH03AMON , 74390 , 2000088 , 61359 , "" => SCENE03 //BG2 Chapter 15a
+	CH03AMON , 74390 , 2000088 , 61360 , "" => SCENE04 //BG2 Chapter 15b
+	CH04ASHP , 74407 , 2000089 , 55714 , "" => SCRTXT01 //BG2 Chapter 16a
+	CH04ASHP , 74407 , 2000089 , 8633 , "" => SCRTXT02 //BG2 Chapter 16b
+	CH04CSAH , "-1" , "-1" , 57350 , "" => SCRTXT03 //Textscreen
+	CH04ASHP , "-1" , "-1" , 57351 , "" => SCRTXT04 //Textscreen
+	CH04ASHP , "-1" , "-1" , 46003 , "" => SCRTXT05 //Textscreen
+	CH05AUND , 74399 , 2000090 , 61361 , "" => SCRTXT07 //BG2 Chapter 17
+	CH06ADRW , 74400 , 2000091 , 1389 , "" => SCRTXT06 //BG2 Chapter 18
+	CH07ASUL , 74353 , 2000092 , 61362 , "" => SCRTXT08 //BG2 Chapter 19
+	//ToB
+	CHPTAMKE , 71021 , 2000094 , 71591 , "" => CHPTXT9 //ToB Chapter 21
+	CHPTMANA , 71022 , 2000095 , 71592 , "" => CHPTXT10 //ToB Chapter 22
+	CHPTODRE , "-1" , "-1" , 71593 , "" => SCRODRE //Textscreen
+	CHPTSARA , "-1" , "-1" , 71590 , "" => SCRSARA //Textscreen
+	//other
+	GUICHP2A , "-1" , "-1" , 31809 , "SONG 81" => BPENDA //Textscreen
+END
+ACTION_PHP_EACH table_EET_CHPTXT AS data => file BEGIN
+	ACTION_IF (data_2 > 2000000) BEGIN
+		OUTER_SET data_2 = RESOLVE_STR_REF ((AT data_2))
+	END
+	ACTION_IF (data_3 > 2000000) BEGIN
+		OUTER_SET data_3 = RESOLVE_STR_REF ((AT data_3))
+	END
+	ACTION_IF (data_1 > 0) BEGIN
+		COPY ~.../CHPTXT.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
+			PRETTY_PRINT_2DA
+	END ELSE BEGIN
+		COPY ~.../CHPTXTb.2da~ ~override/%file%.2DA~ EVALUATE_BUFFER
+			PRETTY_PRINT_2DA
+	END
+END
+
+COPY ~%MOD_FOLDER%/base/2da~ ~override~
+	~%MOD_FOLDER%/temp/2da~ ~override~
 
 /////                                                  \\\\\
 ///// Iron Crisis (item shattering)                    \\\\\

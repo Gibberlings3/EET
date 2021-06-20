@@ -278,6 +278,17 @@ BUT_ONLY
 <<<<<<<< .../BALDUR-eb.baf
 //code from BG:EE
 IF
+  TriggerOverride(Player1,Global("bdmarek","LOCALS",1))
+  OR(3)
+    AreaCheck("BG2600")  // Candlekeep (prologue), exterior
+    AreaCheck("tu0015")  // Baldur's Gate Estate (Tutorial starts here)
+    AreaCheck("oh9310")  // The Black Pits: Arena 1
+THEN
+  RESPONSE #100
+    ActionOverride(Player1,SetGlobal("bdmarek","LOCALS",0))
+END
+
+IF
   Global("TanariXP","GLOBAL",1)
   Dead("DeathK") // Demon Knight
   Dead("loupgar") // Loup Garou
@@ -317,13 +328,6 @@ THEN
 END
 
 IF
-  GlobalTimerExpired("EndGame","GLOBAL")
-THEN
-  RESPONSE #100
-    Kill(Player1)
-END
-
-IF
   GlobalTimerExpired("PoisonParty","GLOBAL")
   GlobalLT("PoisonWarning","GLOBAL",9)
   Global("PartyCured","GLOBAL",0)
@@ -351,6 +355,19 @@ IF
 THEN
   RESPONSE #100
     Kill(Player1)
+END
+
+IF
+  Global("Infected_Protection","GLOBAL",0)
+  Global("Infected","GLOBAL",1)
+  GlobalTimerExpired("PlayerInfected","GLOBAL")
+  !Dead("Mendas3")  // Mendas
+  Exists(Player2)
+  AreaCheck("BG1000")  // Ulgoth's Beard (Shandalar, Ike, Mendas)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("PlayerInfected","GLOBAL",ONE_DAY)
+    SetGlobal("Infected_Protection","GLOBAL",1)
 END
 
 IF
@@ -409,28 +426,6 @@ THEN
     AddJournalEntry(215838,INFO)
     EraseJournalEntry(231450)
     EraseJournalEntry(231448)
-    EraseJournalEntry(227218)
-    EraseJournalEntry(227217)
-    EraseJournalEntry(227381)
-    EraseJournalEntry(226856)
-    EraseJournalEntry(226861)
-    EraseJournalEntry(227378)
-    EraseJournalEntry(227383)
-    EraseJournalEntry(226850)
-    EraseJournalEntry(227468)
-    EraseJournalEntry(227473)
-    EraseJournalEntry(226862)
-    EraseJournalEntry(227379)
-    EraseJournalEntry(227382)
-    EraseJournalEntry(227469)
-    EraseJournalEntry(227474)
-    EraseJournalEntry(227492)
-    EraseJournalEntry(226858)
-    EraseJournalEntry(227380)
-    EraseJournalEntry(226857)
-    EraseJournalEntry(226859)
-    EraseJournalEntry(227476)
-    EraseJournalEntry(226860)
     AddJournalEntry(231451,QUEST)
 END
 
@@ -450,6 +445,12 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("PartyCured","GLOBAL",1)
+    ActionOverride(Player1,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player2,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player3,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player4,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player5,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player6,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
     AddJournalEntry(227253,QUEST_DONE)
     EraseJournalEntry(226793)
     EraseJournalEntry(226982)
@@ -469,6 +470,12 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("PartyCured","GLOBAL",1)
+    ActionOverride(Player1,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player2,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player3,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player4,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player5,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
+    ActionOverride(Player6,DestroyItem("LOPOTN20"))  // Lothander's Potion of Antidote
     AddJournalEntry(231188,QUEST_DONE)
     EraseJournalEntry(226793)
     EraseJournalEntry(226982)
@@ -483,9 +490,36 @@ END
 
 IF
   !InParty(Player1)
+  Global("bdtgaze","GLOBAL",1)
 THEN
   RESPONSE #100
     GameOver(19377)
+END
+
+IF
+  Global("bd_tranzig_dead","GLOBAL",0)
+  Dead("tranzig")  // Tranzig
+THEN
+  RESPONSE #100
+    SetGlobal("bd_tranzig_dead","GLOBAL",1)
+    AddJournalEntry(227490,QUEST_DONE)
+    EraseJournalEntry(227489)
+    EraseJournalEntry(227405)
+    EraseJournalEntry(227491)
+    EraseJournalEntry(231447)
+    EraseJournalEntry(231448)
+    AddJournalEntry(231449,QUEST)
+END
+
+IF
+  Global("RevealBandits","GLOBAL",0)
+  OR(2)
+    Global("bd_tranzig_let_go","global",1)
+    Dead("tranzig")  // Tranzig
+THEN
+  RESPONSE #100
+    SetGlobal("RevealBandits","GLOBAL",1)
+    RevealAreaOnMap("BG1900")  // Bandit Camp
 END
 
 //code from SoD
@@ -1288,7 +1322,7 @@ THEN
   RESPONSE #100
     SetGlobalTimer("PoisonParty","GLOBAL",ONE_DAY)
     IncrementGlobal("PoisonWarning","GLOBAL",1)
-    DisplayString(Player1,11833) // You feel very ill, and you have thrown up your previous meal. Your head is fuzzy, and you are confused as to why you are sick. Then you remember what Lothander had told you. You've been poisoned! Lothander wasn't lying after all, and only he has the cure.
+    DisplayString(Player1,211833)
 END
 
 IF
@@ -2980,7 +3014,6 @@ IF
   !StateCheck("Dorn",STATE_REALLY_DEAD)
   GlobalLT("OHD_PLOT","GLOBAL",1)
   !Global("OHH_DORN_INIT","ar0900",1)
-  //XPLT(Player1,280501)
 THEN
   RESPONSE #100
     CreateCreature("DORN8",[2550.3394],E) // Dorn

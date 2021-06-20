@@ -1,0 +1,787 @@
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Macros                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+/////                                                  \\\\\
+///// SAVE_SAY                                          \\\\\
+/////                                                  \\\\\
+
+DEFINE_PATCH_MACRO ~SAVE_SAY~ BEGIN
+	READ_LONG offset "strref"
+	PATCH_IF ((strref >= str_min) AND (strref <= str_max)) BEGIN
+		SAY offset ( AT "strref" )
+		//SPRINT log ~%log%  SAY %offset% @%strref%%LNL%~
+	END
+END
+
+/////                                                  \\\\\
+///// SAVE_SAY_match                                   \\\\\
+/////                                                  \\\\\
+
+DEFINE_PATCH_MACRO ~SAVE_SAY_match~ BEGIN
+	READ_LONG offset "strref"
+	PATCH_IF ((strref >= str_min) AND (strref <= str_max)) BEGIN
+		GET_STRREF strref "string_old"
+		SET strref_new = RESOLVE_STR_REF ((AT strref))
+		GET_STRREF strref_new "string_new"
+		PATCH_IF ~%string_old%~ STR_EQ ~%string_new%~ BEGIN
+			//PATCH_PRINT ~skipping TLK reference updating: %string_old%~
+		END ELSE BEGIN
+			WRITE_LONG offset "%strref_new%"
+			//SPRINT log ~%log%  SAY %offset% @%strref%%LNL%~
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// EET_CRE_structure                                \\\\\
+/////                                                  \\\\\
+
+DEFINE_PATCH_MACRO ~EET_CRE_structure~ BEGIN
+	PATCH_FOR_EACH offset IN 0x8 0xc BEGIN //Long name, Short name (tooltip)
+		SET offset = ("%structure_offset%"+"%offset%")
+		LPM SAVE_SAY
+	END
+	FOR (cnt=0; cnt<99; cnt=cnt+1) BEGIN
+		SET offset = ("%structure_offset%"+0xa4+0x4*cnt)
+		LPM SAVE_SAY
+	END
+	READ_LONG ("%structure_offset%"+0x2c4) "fx_off"
+	READ_LONG ("%structure_offset%"+0x2c8) "fx_cnt"
+	READ_BYTE ("%structure_offset%"+0x33) "eff_ver"
+	FOR (cnt=0; cnt<"%fx_cnt%"; cnt=cnt+1) BEGIN
+		PATCH_IF (eff_ver = 0) BEGIN //EFF v1
+			READ_SHORT ("%structure_offset%"+"%fx_off%"+0x30*cnt) "fx_type"
+			PATCH_IF ("%fx_type%" = 139) //Display string
+			OR ("%fx_type%" = 267) //Disable display string
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
+				LPM SAVE_SAY_match
+			END ELSE PATCH_IF ("%fx_type%" = 103) //Change name
+			OR ("%fx_type%" = 180) //Disallow item
+			OR ("%fx_type%" = 183) //Use EFF file while on type
+			OR ("%fx_type%" = 206) //Protection from spell
+			OR ("%fx_type%" = 253) //Set automap note
+			OR ("%fx_type%" = 254) //Remove automap note
+			OR ("%fx_type%" = 290) //Change title
+			OR ("%fx_type%" = 330) //Float text
+			OR ("%fx_type%" = 338) //Disable rest or save
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
+				LPM SAVE_SAY
+			END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+			OR ("%fx_type%" = 324) //Immunity to spell and message
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x2c)
+				LPM SAVE_SAY
+			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x2c)
+				LPM SAVE_SAY
+				READ_LONG ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x8) "ids_target"
+				PATCH_IF (ids_target = 10) BEGIN //Actor's name
+					SET offset = ("%structure_offset%"+"%fx_off%"+0x30*cnt+0x4)
+					LPM SAVE_SAY
+				END
+			END
+		END ELSE BEGIN //EFF v2
+			READ_LONG ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x8) "fx_type"
+			PATCH_IF ("%fx_type%" = 139) //Display string
+			OR ("%fx_type%" = 267) //Disable display string
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
+				LPM SAVE_SAY_match
+			END ELSE PATCH_IF ("%fx_type%" = 103) //Change name
+			OR ("%fx_type%" = 180) //Disallow item
+			OR ("%fx_type%" = 183) //Use EFF file while on type
+			OR ("%fx_type%" = 206) //Protection from spell
+			OR ("%fx_type%" = 253) //Set automap note
+			OR ("%fx_type%" = 254) //Remove automap note
+			OR ("%fx_type%" = 290) //Change title
+			OR ("%fx_type%" = 330) //Float text
+			OR ("%fx_type%" = 338) //Disable rest or save
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
+				LPM SAVE_SAY
+			END ELSE PATCH_IF ("%fx_type%" = 181) //Disallow item type
+			OR ("%fx_type%" = 324) //Immunity to spell and message
+			BEGIN
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x40)
+				LPM SAVE_SAY
+			END ELSE PATCH_IF ("%fx_type%" = 319) BEGIN //Restrict item
+				SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x40)
+				LPM SAVE_SAY
+				READ_LONG ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x18) "ids_target"
+				PATCH_IF (ids_target = 10) BEGIN //Actor's name
+					SET offset = ("%structure_offset%"+"%fx_off%"+0x108*cnt+0x14)
+					LPM SAVE_SAY
+				END
+			END
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// EET_ARE_fixer                                    \\\\\
+/////                                                  \\\\\
+
+DEFINE_PATCH_MACRO ~EET_ARE_fixer~ BEGIN
+	// Container Content Validator
+	READ_LONG  0x70 "cont_off" ELSE 0
+	READ_SHORT 0x74 "cont_num" ELSE 0
+	READ_SHORT 0x76 "itm_num"  ELSE 0
+	READ_LONG  0x78 "itm_off"  ELSE 0
+
+	PATCH_IF (cont_off > 0x11b) BEGIN
+		FOR (index = 0 ; index < cont_num ; index = index + 1) BEGIN
+			// Invalid container content checker
+			READ_LONG  ("%cont_off%" + 0x40 + (0xc0 * "%index%")) "cont_itm_idx"
+			READ_LONG  ("%cont_off%" + 0x44 + (0xc0 * "%index%")) "cont_itm_num"
+			FOR (index2 = 0 ; index2 < cont_itm_num ; index2 = index2 + 1) BEGIN
+				READ_ASCII ("%itm_off%" + (("%index2%" + "%cont_itm_idx%") * 0x14)) "resref"
+				SET exists = 0
+				PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.itm~ BEGIN
+					SET exists = 1
+				END
+				PATCH_IF ("%exists%" = 0) BEGIN
+					SET "converted" = 0
+					PATCH_IF ("%converted%" = 0) BEGIN
+						PATCH_PRINT "%SAV_FILE% issue: Container #%index% Item #%index2% does not exist (%resref%.itm)! Removing Item #%index2%..."
+						LAUNCH_PATCH_FUNCTION  ~fj_are_structure~
+							INT_VAR fj_delete_mode    = "%index2%" + "%cont_itm_idx%"
+							STR_VAR fj_structure_type = ~itm~
+						END
+						READ_LONG  0x70 "cont_off" ELSE 0
+						READ_SHORT 0x74 "cont_num" ELSE 0
+						READ_SHORT 0x76 "itm_num"  ELSE 0
+						READ_LONG  0x78 "itm_off"  ELSE 0
+						READ_LONG  ("%cont_off%" + 0x44 + (0xc0 * "%index%")) "cont_itm_num"
+						SET index = 0 - 1
+						SET index2 = cont_itm_num
+					END
+				END
+			END
+		END
+	END
+
+	// Missing Ambient Remover
+	READ_SHORT 0x82 "amb_num" ELSE 0
+	READ_LONG  0x84 "amb_off" ELSE 0
+
+	PATCH_IF (amb_off > 0x11b) BEGIN
+		FOR (index = 0 ; index < amb_num ; index = index + 1) BEGIN
+			FOR (index2 = 0 ; index2 < 10 ; index2 = index2 + 1) BEGIN
+				READ_ASCII ("%amb_off%" + 0x30 + ("%index2%" * 0x08) + (0xd4 * "%index%")) "resref"
+				PATCH_IF NOT (("%resref%" STRING_EQUAL_CASE "") OR ("%resref%" STRING_EQUAL_CASE "none")) BEGIN
+					SET exists = 0
+					PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.wav~ BEGIN
+						SET exists = 1
+					END
+					PATCH_IF ("%exists%" = 0) BEGIN
+						PATCH_PRINT "%SAV_FILE% issue: Ambient #%index% does not exist (%resref%.wav)! Nulling..."
+						WRITE_ASCII ("%amb_off%" + 0x30 + ("%index2%" * 0x08) + (0xd4 * "%index%")) ~NONE~ #8
+					END
+				END
+			END
+		END
+	END
+
+	// Missing Actor Remover
+	READ_LONG  0x54 "actor_off" ELSE 0
+	READ_SHORT 0x58 "actor_num" ELSE 0
+
+	PATCH_IF (actor_off > 0x11b) BEGIN
+		FOR (index = 0 ; index < actor_num ; index = index + 1) BEGIN
+			READ_BYTE  ("%actor_off%" + 0x28 + (0x110 * "%index%")) "flags"  // flags first byte
+			READ_ASCII ("%actor_off%" + 0x80 + (0x110 * "%index%")) "resref" // cre file
+			PATCH_IF ("%resref%" STRING_COMPARE_REGEXP "^[Rr][Dd].+$") BEGIN // ignore creatures starting with RD
+				SET exists = 0
+				PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.cre~ BEGIN
+					SET exists = 1
+				END
+				PATCH_IF (("%exists%" = 0) AND (("%flags%" BAND 0b00000001) = 0b00000001)) BEGIN
+					PATCH_PRINT "%SAV_FILE% issue: Actor #%index% does not exist (%resref%.cre)! Removing actor..."
+					LPF fj_are_structure
+						INT_VAR fj_delete_mode    = "%index%"
+						STR_VAR fj_structure_type = actor
+					END
+					SET "index" = 0 - 1
+					READ_SHORT 0x58 "actor_num"
+				END
+			END
+		END
+	END
+
+	// Missing Spawn Remover
+	READ_LONG  0x60 "spawn_off" ELSE 0
+	READ_LONG  0x64 "spawn_num" ELSE 0
+
+	PATCH_IF (spawn_off > 0x11b) BEGIN
+		FOR (index = 0 ; index < spawn_num ; index = index + 1) BEGIN
+			FOR (index2 = 0 ; index2 < 10 ; index2 = index2 + 1) BEGIN
+				READ_ASCII ("%spawn_off%" + 0x24 + ("%index2%" * 0x08) + ("%index%" * 0xc8)) "resref"
+				PATCH_IF (("%resref%" STRING_COMPARE_CASE "")                // ignore empty entries
+				AND ("%resref%" STRING_COMPARE_CASE "none")                  // ignore 'none'
+				AND ("%resref%" STRING_COMPARE_REGEXP "^[Rr][Dd].+$")) BEGIN // ignore creatures starting with RD
+					SET exists = 0
+					PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.cre~ BEGIN
+						SET exists = 1
+					END
+					PATCH_IF ("%exists%" = 0) BEGIN
+						PATCH_PRINT "%SAV_FILE% issue: Spawn Point #%index% creature file does not exist (%resref%.cre)! Nulling..."
+						WRITE_ASCII ("%spawn_off%" + 0x24 + ("%index2%" * 0x08) + ("%index%" * 0xc8)) ~NONE~ #8
+					END
+				END
+			END
+			SET "none_count" = 0
+			FOR (index2 = 0 ; index2 < 10 ; index2 = index2 + 1) BEGIN
+				READ_ASCII ("%spawn_off%" + 0x24 + ("%index2%" * 0x08) + ("%index%" * 0xc8)) "resref"
+				PATCH_IF (("%resref%" STRING_EQUAL_CASE "") OR ("%resref%" STRING_EQUAL_CASE "none")) BEGIN
+					SET "none_count" = "none_count" + 1
+				END
+			END
+			PATCH_IF ("%none_count%" = 10) BEGIN
+				PATCH_PRINT "%SAV_FILE% issue: Spawn Point #%index% has no creatures to spawn! Removing spawn entry..."
+				LPF fj_are_structure
+					INT_VAR fj_delete_mode    = "%index%"
+					STR_VAR fj_structure_type = spawn
+				END
+				SET "index" = 0 - 1
+				READ_LONG  0x64 "spawn_num"
+			END
+		END
+	END
+
+	// Missing Rest Spawn Remover
+	READ_LONG  0xc0 "rest_off" ELSE 0
+
+	PATCH_IF (rest_off > 0x11b) BEGIN
+		FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
+			READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
+			PATCH_IF (("%resref%" STRING_COMPARE_CASE "")                // ignore empty entries
+			AND ("%resref%" STRING_COMPARE_CASE "none")                  // ignore 'none'
+			AND ("%resref%" STRING_COMPARE_REGEXP "^[Rr][Dd].+$")) BEGIN // ignore creatures starting with RD
+				SET exists = 0
+				PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.cre~ BEGIN
+					SET exists = 1
+				END
+				PATCH_IF ("%exists%" = 0) BEGIN
+					PATCH_PRINT "%SAV_FILE% issue: Rest Spawn creature file does not exist (%resref%.cre)! Nulling..."
+					WRITE_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "NONE" #8
+				END
+			END
+		END
+		SET "none_count" = 0
+		FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
+			READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
+			PATCH_IF (("%resref%" STRING_EQUAL_CASE "") OR ("%resref%" STRING_EQUAL_CASE "none")) BEGIN
+				SET "none_count" = "none_count" + 1
+			END
+		END
+		READ_SHORT ("%rest_off%" + 0x98) "spawncount"
+		PATCH_IF (("%none_count%" = 10) AND ("%spawncount%" != 0)) BEGIN
+			PATCH_PRINT "%SAV_FILE% issue: No creatures in Rest Spawn Entry but area still set to spawn something! Setting number of spawnable creatures to 0..."
+			WRITE_SHORT ("%rest_off%" + 0x98) 0
+		END
+	END
+END
+
+/////                                                  \\\\\
+///// EET_STO_fixer                                    \\\\\
+/////                                                  \\\\\
+
+DEFINE_PATCH_MACRO ~EET_STO_fixer~ BEGIN
+	READ_LONG 0x08 "type"
+
+	// Missing Item Remover
+	READ_LONG 0x34 "sales_off" ELSE 0
+	READ_LONG 0x38 "sales_num" ELSE 0
+
+	PATCH_IF (sales_off > 0x9b) THEN BEGIN
+		FOR (index = 0 ; index < sales_num ; index = index + 1) BEGIN
+			READ_ASCII ("%sales_off%" + (0x1c * "%index%")) "resref"
+			PATCH_IF NOT (FILE_EXISTS_IN_GAME ~%resref%.itm~) BEGIN
+				PATCH_PRINT "Stocked Item #%index% does not exist (%resref%.itm)! Removing item..."
+				REMOVE_STORE_ITEM ~%resref%~
+				SET "index" = 0 - 1
+				READ_LONG 0x38 "sales_num"
+			END
+		END
+	END
+
+	// Sales Manager
+	READ_BYTE 0x10 "flags"
+	READ_LONG 0x30 "purch_num"
+	READ_LONG 0x38 "sales_num"
+	READ_LONG 0x50 "drink_num"
+	READ_LONG 0x74 "cures_num"
+
+	PATCH_IF (("%flags%" BAND 0b00000001) = 0b00000000) AND ("%sales_num%" > 0) AND ("%type%" = 0) BEGIN
+		PATCH_PRINT "Stocked Items exist but store set to not sell! Initiating sales..."
+		WRITE_BYTE 0x10 ("%flags%" BOR 0b00000001)
+	END
+	PATCH_IF (("%flags%" BAND 0b00000010) = 0b00000000) AND ("%purch_num%" > 0) AND ("%type%" = 0) BEGIN
+		PATCH_PRINT "Purchasable Items exist but store set to not buy! Initiating sales..."
+		WRITE_BYTE 0x10 ("%flags%" BOR 0b00000010)
+	END
+	PATCH_IF (("%flags%" BAND 0b00100000) = 0b00000000) AND ("%cures_num%" > 0) AND ("%type%" = 3) BEGIN
+		PATCH_PRINT "Stocked Cures exist but temple set to not sell! Initiating sales..."
+		WRITE_BYTE 0x10 ("%flags%" BOR 0b00100000)
+	END
+	PATCH_IF (("%flags%" BAND 0b01000000) = 0b00000000) AND ("%drink_num%" > 0) AND ("%type%" = 1) BEGIN
+		PATCH_PRINT "Stocked Drinks exist but tavern set to not sell! Initiating sales..."
+		WRITE_BYTE 0x10 ("%flags%" BOR 0b01000000)
+	END
+	PATCH_IF (("%flags%" BAND 0b01000000) = 0b00000000) AND ("%drink_num%" > 0) AND ("%type%" = 2) BEGIN
+		PATCH_PRINT "Stocked Drinks exist but inn set to not sell! Initiating sales..."
+		WRITE_BYTE 0x10 ("%flags%" BOR 0b01000000)
+	END
+		PATCH_IF (("%flags%" BAND 0b00000001) = 0b00000001) AND ("%sales_num%" = 0) AND ("%type%" = 0) BEGIN
+		PATCH_PRINT "Store selling items but does not have any in stock! Stopping sales..."
+		WRITE_BYTE 0x10 ("%flags%" BAND 0b11111110)
+	END
+	PATCH_IF (("%flags%" BAND 0b00000010) = 0b00000010) AND ("%purch_num%" = 0) AND ("%type%" = 0) BEGIN
+		PATCH_PRINT "Store buying items but cannot buy any kind! Stopping sales..."
+		WRITE_BYTE 0x10 ("%flags%" BAND 0b11111101)
+	END
+	PATCH_IF (("%flags%" BAND 0b00100000) = 0b00100000) AND ("%cures_num%" = 0) AND ("%type%" = 3) BEGIN
+		PATCH_PRINT "Temple selling cures but does not have any in stock! Stopping sales..."
+		WRITE_BYTE 0x10 ("%flags%" BAND 0b11011111)
+	END
+	PATCH_IF (("%flags%" BAND 0b01000000) = 0b01000000) AND ("%drink_num%" = 0) AND ("%type%" = 1) BEGIN
+		PATCH_PRINT "Tavern selling drinks but does not have any in stock! Stopping sales..."
+		WRITE_BYTE 0x10 ("%flags%" BAND 0b10111111)
+	END
+	PATCH_IF (("%flags%" BAND 0b01000000) = 0b01000000) AND ("%drink_num%" = 0) AND ("%type%" = 2) BEGIN
+		PATCH_PRINT "Inn selling drinks but does not have any in stock! Stopping sales..."
+		WRITE_BYTE 0x10 ("%flags%" BAND 0b10111111)
+	END
+END
+
+/////                                                  \\\\\
+///// EET_CRE_fixer                                    \\\\\
+/////                                                  \\\\\
+
+DEFINE_PATCH_MACRO ~EET_CRE_fixer~ BEGIN
+	// Inventory Cleaner
+	READ_LONG ("%structure_offset%" + 0x2bc) "itm_off" ELSE 0
+	READ_LONG ("%structure_offset%" + 0x2c0) "itm_num" ELSE 0
+
+	PATCH_IF ("itm_off" > 0x2d3) BEGIN
+		FOR (index = 0 ; index < itm_num ; index = index + 1) BEGIN
+			READ_ASCII ("%structure_offset%" + "%itm_off%" + (0x14 * "%index%")) "resref"
+			PATCH_IF (NOT (FILE_EXISTS_IN_GAME ~%resref%.itm~) AND ("%resref%" STRING_COMPARE_REGEXP "^[Rr][Nn][Dd].+$")) BEGIN
+				PATCH_PRINT "Inventory Item #%index% (%resref%.itm) does not exist! Nulling..."
+				WRITE_ASCII ("%structure_offset%" + "%itm_off%" + (0x14 * "%index%")) ~~ #8
+			END
+		END
+	END
+
+	// Missing Animation Fixer
+	READ_SHORT ("%structure_offset%" + 0x28) "anim"
+
+	LOOKUP_IDS_SYMBOL_OF_INT animation ~animate~ %anim%
+	PATCH_IF ("%anim%" STRING_EQUAL "%animation%") BEGIN
+		PATCH_PRINT "Missing animation! Assigning Gibberling animation..."
+		WRITE_SHORT ("%structure_offset%" + 0x28) 30720 // Gibberling
+	END
+
+	// Missing Script Remover
+	FOR (index = 0 ; index < 5 ; index = index + 1) BEGIN
+		READ_ASCII ("%structure_offset%" + 0x248 + (0x08 * "%index%")) "script"
+		PATCH_IF NOT (("%script%" STRING_EQUAL_CASE "NONE") OR ("%script%" STRING_EQUAL_CASE "")) BEGIN
+			SET exists = 0
+			PATCH_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ BEGIN
+				SET exists = 1
+			END
+			PATCH_IF ("%exists%" = 0) BEGIN
+				PATCH_IF ("%script%" STRING_EQUAL_CASE "_DPLAYER") BEGIN
+					PATCH_PRINT "Non-existent script (%script%.BCS) changed into DPLAYER.BCS..."
+					WRITE_ASCII ("%structure_offset%" + 0x248 + (0x08 * "%index%")) ~DPLAYER~ #8
+				END ELSE PATCH_IF ("%script%" STRING_EQUAL_CASE "BPMAG12D") BEGIN
+					PATCH_PRINT "Non-existent script (%script%.BCS) changed into MAGE12D.BCS..."
+					WRITE_ASCII ("%structure_offset%" + 0x248 + (0x08 * "%index%")) ~MAGE12D~ #8
+				END ELSE PATCH_IF ("%script%" STRING_EQUAL_CASE "BPMAG14D") BEGIN
+					PATCH_PRINT "Non-existent script (%script%.BCS) changed into MAGE14D.BCS..."
+					WRITE_ASCII ("%structure_offset%" + 0x248 + (0x08 * "%index%")) ~MAGE14D~ #8
+				END ELSE PATCH_IF ("%script%" STRING_EQUAL_CASE "BPWDASGT") BEGIN
+					PATCH_PRINT "Non-existent script (%script%.BCS) changed into WDASIGHT.BCS..."
+					WRITE_ASCII ("%structure_offset%" + 0x248 + (0x08 * "%index%")) ~WDASIGHT~ #8
+				END ELSE PATCH_IF ("%script%" STRING_EQUAL_CASE "BPWTSIGT")
+				OR ("%script%" STRING_EQUAL_CASE "WTSIGHT")
+				OR ("%script%" STRING_EQUAL_CASE "WSASIGHT") BEGIN
+					PATCH_PRINT "Non-existent script (%script%.BCS) changed into WTASIGHT.BCS..."
+					WRITE_ASCII ("%structure_offset%" + 0x248 + (0x08 * "%index%")) ~WTASIGHT~ #8
+				END ELSE BEGIN
+					//Keeping the name changed by mod is easier to investigate, there are no problems if file doesn't exist
+					//PATCH_PRINT ~Non-existent script (%script%.BCS) - no changes being made~
+					//PATCH_PRINT "Non-existent script (%script%.BCS) nulled..."
+					//WRITE_ASCII ("%structure_offset%" + 0x248 + (0x08 * "%index%")) ~~ #8
+				END
+			END
+		END
+	END
+
+	// Missing Dialogue Remover
+	READ_ASCII ("%structure_offset%" + 0x2cc) "dialog"
+
+	PATCH_IF NOT (("%dialog%" STRING_EQUAL_CASE "NONE") OR ("%dialog%" STRING_EQUAL_CASE "")) BEGIN
+		SET exists = 0
+		PATCH_IF FILE_EXISTS_IN_GAME ~%dialog%.dlg~ BEGIN
+			SET exists = 1
+		END
+		PATCH_IF ("%exists%" = 0) BEGIN
+			//Keeping the name changed by mod is easier to investigate, there are no problems if file doesn't exist
+			//PATCH_PRINT ~Non-existent dialogue (%dialog%.DLG) - no changes being made~
+			//PATCH_PRINT "Non-existent dialogue (%dialog%.DLG) nulled..."
+			//WRITE_ASCII ("%structure_offset%" + 0x2cc) ~~ #8
+		END
+	END
+
+	// Missing Known Spell Remover
+	READ_LONG ("%structure_offset%" + 0x2a0) "known_off" ELSE 0
+	READ_LONG ("%structure_offset%" + 0x2a4) "known_num" ELSE 0
+
+	PATCH_IF (known_off > 0x2d3) BEGIN
+		FOR (index = 0 ; index < known_num ; index = index + 1) BEGIN
+			READ_ASCII ("%structure_offset%" + "%known_off%" + ("%index%" * 0x0c)) "resref"
+			INNER_PATCH_SAVE spell_num ~%resref%~ BEGIN
+				REPLACE_TEXTUALLY ~^SPPR~ ~1~
+				REPLACE_TEXTUALLY ~^SPWI~ ~2~
+				REPLACE_TEXTUALLY ~^SPIN~ ~3~
+				REPLACE_TEXTUALLY ~^SPCL~ ~4~
+			END
+			PATCH_IF (VARIABLE_IS_SET $array_spl_glob(~%spell_num%~)) BEGIN
+				TEXT_SPRINT spell_name $array_spl_glob(~%spell_num%~)
+				LPF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
+				PATCH_IF ((~%resref%~ STRING_EQUAL_CASE ~%spell_res%~)=0) BEGIN
+					PATCH_IF FILE_EXISTS_IN_GAME ~%spell_res%.spl~ BEGIN
+						PATCH_PRINT "Known spell %spell_name% exists under different file name (%spell_res%.SPL)! Reassigning..."
+						WRITE_ASCII ("%structure_offset%" + "%known_off%" + ("%index%" * 0x0c)) ~%spell_res%~ #8
+					END ELSE BEGIN
+						PATCH_PRINT "Known spell %spell_name% does not exist (%resref%.SPL)! Removing..."
+						WRITE_ASCII ("%structure_offset%" + "%known_off%" + ("%index%" * 0x0c)) ~~ #8
+					END
+				END
+			END ELSE PATCH_IF NOT FILE_EXISTS_IN_GAME ~%resref%.spl~ BEGIN
+				PATCH_PRINT "Known spell does not exist (%resref%.SPL)! Removing..."
+				WRITE_ASCII ("%structure_offset%" + "%known_off%" + ("%index%" * 0x0c)) ~~ #8
+			END
+		END
+	END
+
+    // Missing Memorized Spell Remover
+	READ_LONG ("%structure_offset%" + 0x2b0) "mem_off" ELSE 0
+	READ_LONG ("%structure_offset%" + 0x2b4) "mem_num" ELSE 0
+
+	PATCH_IF (mem_off > 0x2d3) BEGIN
+		FOR (index = 0 ; index < mem_num ; index = index + 1) BEGIN
+			READ_ASCII ("%structure_offset%" + "%mem_off%" + ("%index%" * 0x0c)) "resref"
+			INNER_PATCH_SAVE spell_num ~%resref%~ BEGIN
+				REPLACE_TEXTUALLY ~^SPPR~ ~1~
+				REPLACE_TEXTUALLY ~^SPWI~ ~2~
+				REPLACE_TEXTUALLY ~^SPIN~ ~3~
+				REPLACE_TEXTUALLY ~^SPCL~ ~4~
+			END
+			PATCH_IF (VARIABLE_IS_SET $array_spl_glob(~%spell_num%~)) BEGIN
+				TEXT_SPRINT spell_name $array_spl_glob(~%spell_num%~)
+				LPF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%spell_name%~ RET spell_res spell_num END
+				PATCH_IF ((~%resref%~ STRING_EQUAL_CASE ~%spell_res%~)=0) BEGIN
+					PATCH_IF FILE_EXISTS_IN_GAME ~%spell_res%.spl~ BEGIN
+						PATCH_PRINT "Memorized spell %spell_name% exists under different file name (%spell_res%.SPL)! Reassigning..."
+						WRITE_ASCII ("%structure_offset%" + "%mem_off%" + ("%index%" * 0x0c)) ~%spell_res%~ #8
+					END ELSE BEGIN
+						PATCH_PRINT "Memorized spell %spell_name% does not exist (%resref%.SPL)! Removing..."
+						WRITE_ASCII ("%structure_offset%" + "%mem_off%" + ("%index%" * 0x0c)) ~~ #8
+					END
+				END
+			END ELSE PATCH_IF NOT FILE_EXISTS_IN_GAME ~%resref%.spl~ BEGIN
+				PATCH_PRINT "Memorized spell does not exist (%resref%.SPL)! Removing..."
+				WRITE_ASCII ("%structure_offset%" + "%mem_off%" + ("%index%" * 0x0c)) ~~ #8
+			END
+		END
+	END
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Installation                                     \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+LOAD_TRA ~%USER_DIRECTORY%/save/saves.tra~
+
+COPY - ~%USER_DIRECTORY%/save/saves.txt~ ~%USER_DIRECTORY%/save~
+	READ_2DA_ENTRY 0 2 3 "str_min"
+	READ_2DA_ENTRY 1 2 3 "str_max"
+	REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*([0-9]+)[ %TAB%]+([.]+)~ BEGIN
+		SPRINT $array_spl_glob("%MATCH1%") "%MATCH2%"
+	END ~~
+
+COPY_EXISTING_REGEXP - GLOB ~.+\.WMP~ ~override~
+	COMPRESS_INTO_VAR 0 SOURCE_SIZE 9 wmpData
+	SET uncLen = SOURCE_SIZE
+	SET compLen = STRING_LENGTH ~%wmpData%~
+	SPRINT $array_wmp_glob("%SOURCE_FILE%" "%uncLen%" "%compLen%") "%wmpData%"
+
+COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
+	COUNT_2DA_ROWS 32 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 12 32 "save_dir"
+		TO_LOWER save_dir
+		SPRINT $array_dir_glob("%save_dir%") "dummy"
+	END
+	SPRINT $array_dir_glob("mpsave") "dummy"
+
+ACTION_PHP_EACH array_dir_glob AS save_dir => dummy BEGIN
+	ACTION_IF (NOT DIRECTORY_EXISTS ~%USER_DIRECTORY%/%save_dir%~) BEGIN
+		MKDIR ~%USER_DIRECTORY%/%save_dir%~
+	END
+	ACTION_CLEAR_ARRAY array_save
+	GET_DIRECTORY_ARRAY array_save ~%USER_DIRECTORY%/%save_dir%~ ~~
+	ACTION_PHP_EACH array_save AS index => dir BEGIN
+		PRINT ~Updating saved game %dir% ...~
+		ACTION_IF FILE_EXISTS ~%dir%/baldur.gam~ BEGIN
+			COPY ~%dir%/baldur.gam~ ~%dir%~
+				READ_LONG 0x20 "party_offset"
+				READ_LONG 0x24 "party_count"
+				READ_LONG 0x30 "nonparty_offset"
+				READ_LONG 0x34 "nonparty_count"
+				READ_LONG 0x4c "journal_count"
+				READ_LONG 0x50 "journal_offset"
+				/////                                                  \\\\\
+				///// CRE Party Members                                \\\\\
+				/////                                                  \\\\\
+				FOR (i=0; i<"%party_count%"; ++i) BEGIN
+					READ_LONG ("%party_offset%"+0x160*i+0x4) "structure_offset"
+					//READ_LONG ("%party_offset%"+0x160*i+0x8) "structure_length"
+					//most powerful foe vanquished
+					SET offset = ("%party_offset%"+0x160*i+0xe4)
+					LPM SAVE_SAY
+					//favorite spells
+					
+					//fixer
+					LPM EET_CRE_fixer
+					//update CRE structure
+					LPM EET_CRE_structure
+				END
+				/////                                                  \\\\\
+				///// CRE Non-Party Members                            \\\\\
+				/////                                                  \\\\\
+				FOR (i=0; i<"%nonparty_count%"; ++i) BEGIN
+					READ_LONG ("%nonparty_offset%"+0x160*i+0x4) "structure_offset"
+					//READ_LONG ("%nonparty_offset%"+0x160*i+0x8) "structure_length"
+					//most powerful foe vanquished
+					SET offset = ("%nonparty_offset%"+0x160*i+0xe4)
+					LPM SAVE_SAY
+					//favorite spells
+					
+					//fixer
+					LPM EET_CRE_fixer				
+					//update CRE structure
+					LPM EET_CRE_structure
+				END
+				/////                                                  \\\\\
+				///// Journal entries                                  \\\\\
+				/////                                                  \\\\\
+				FOR (i=0; i<"%journal_count%"; ++i) BEGIN
+					READ_LONG ("%journal_offset%"+0xc*i+0xb) "source_tlk"
+					PATCH_IF (source_tlk = 0xff) BEGIN
+						SET offset = ("%journal_offset%"+0xc*i)
+						LPM SAVE_SAY
+					END
+				END
+			BUT_ONLY
+		END
+		ACTION_IF FILE_EXISTS ~%dir%/baldur.sav~ BEGIN
+			COPY ~%dir%/baldur.sav~ ~%dir%~
+				EDIT_SAV_FILE 9 BEGIN
+					TO_UPPER SAV_FILE
+					/////                                                  \\\\\
+					///// ARE                                              \\\\\
+					/////                                                  \\\\\
+					PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.ARE$~)=0) BEGIN
+						//PATCH_PRINT ~Editing *%SAV_FILE%* ...~
+						//Lolfixer
+						LPM EET_ARE_fixer
+						//Actors
+						READ_LONG 0x54 "actors_off"
+						READ_SHORT 0x58 "actors_cnt"
+						FOR (i=0; i<"%actors_cnt%"; ++i) BEGIN
+							//CRE structure (embedded CRE files)
+							READ_LONG ("%actors_off%"+0x110*i+0x28) "actors_flags"
+							READ_LONG ("%actors_off%"+0x110*i+0x8c) "actors_emb_size"
+							PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
+							END ELSE PATCH_IF (actors_emb_size = 0) BEGIN
+								//SET actors_flags = actors_flags + BIT0
+								//WRITE_LONG ("%actors_off%"+0x110*i+0x28) "%actors_flags%"
+							END ELSE BEGIN //CRE attached
+								READ_LONG ("%actors_off%"+0x110*i+0x88) "structure_offset"
+								PATCH_IF (structure_offset != 0) BEGIN
+									LPM EET_CRE_fixer
+									LPM EET_CRE_structure
+								END
+							END
+						END
+						//Info points, trigger points, and exit (regions/triggers)
+						READ_LONG 0x5c "info_off"
+						READ_SHORT 0x5a "info_cnt"
+						FOR (i=0; i<"%info_cnt%"; ++i) BEGIN
+							PATCH_FOR_EACH add_off IN 0x64 0xb8 BEGIN
+								SET offset = ("%info_off%"+0xc4*i+"%add_off%") //Information text (for info points), Name
+								LPM SAVE_SAY
+							END
+						END
+						//Containers
+						READ_LONG 0x70 "contain_off"
+						READ_SHORT 0x74 "contain_cnt"
+						FOR (i=0; i<"%contain_cnt%"; ++i) BEGIN
+							SET offset = ("%contain_off%"+0xc0*i+0x84) //Lockpick string
+							LPM SAVE_SAY
+						END
+						//Doors
+						READ_LONG 0xa8 "door_off"
+						READ_LONG 0xa4 "door_cnt"
+						FOR (i=0; i<"%door_cnt%"; ++i) BEGIN
+							PATCH_FOR_EACH add_off IN 0x98 0xb4 BEGIN
+								SET offset = ("%door_off%"+0xc8*i+"%add_off%") //Lockpick string, Dialog speaker name
+								LPM SAVE_SAY
+							END
+						END
+						//Automap Notes
+						READ_LONG 0xc4 "note_off"
+						READ_LONG 0xc8 "note_cnt"
+						FOR (i=0; i<"%note_cnt%"; ++i) BEGIN
+							SET offset = ("%note_off%"+0x34*i+0x4) //Note text
+							LPM SAVE_SAY
+						END
+						//Projectile traps
+						READ_LONG 0xcc "pro_off"
+						READ_LONG 0xd0 "pro_cnt"
+						FOR (i=0; i<"%pro_cnt%"; ++i) BEGIN
+							//PRO structure (embedded PRO files)
+							READ_LONG ("%pro_off%"+0x1c*i+0x8) "pro_emb_off"
+							PATCH_IF (pro_emb_off != 0) BEGIN
+								SET offset = ("%pro_emb_off%"+0x30) //String
+								LPM SAVE_SAY
+							END
+						END
+						//Rest Interruptions
+						READ_LONG 0xc0 "rest_off"
+						FOR (i=0; i<10; ++i) BEGIN
+							SET offset = ("%rest_off%"+0x4*i+0x20) //Interruption explanation text (10*0x4)
+							LPM SAVE_SAY
+						END
+					END
+					/////                                                  \\\\\
+					///// STO                                              \\\\\
+					/////                                                  \\\\\
+					ELSE PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.STO$~)=0) BEGIN
+						//PATCH_PRINT ~Editing *%SAV_FILE%* ...~
+						LPM EET_STO_fixer
+						SET offset = 0xc //Name
+						LPM SAVE_SAY
+						READ_LONG 0x4c "drink_off"
+						READ_SHORT 0x50 "drink_cnt"
+						FOR (i=0; i<"%drink_cnt%"; ++i) BEGIN
+							SET offset = ("%drink_off%"+0x14*i+0x8) //Drink name
+							LPM SAVE_SAY
+						END
+					END
+					/////                                                  \\\\\
+					///// WMP                                              \\\\\
+					/////                                                  \\\\\
+					ELSE PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.WMP$~)=0) BEGIN
+						//PATCH_PRINT ~Editing *%SAV_FILE%* ...~
+						READ_LONG 0xc "mapentry_off"
+						READ_LONG ("%mapentry_off%"+0x20) "areaentry_num"
+						READ_LONG ("%mapentry_off%"+0x24) "areaentry_off"
+						FOR (i=0; i<"%areaentry_num%"; ++i) BEGIN
+							PATCH_FOR_EACH add_off IN 0x40 0x44 BEGIN
+								SET offset = ("%areaentry_off%"+0xf0*i+"%add_off%") //Name (caption), Name (tooltips)
+								LPM SAVE_SAY
+							END
+						END
+						// local wmp arrays
+						GET_OFFSET_ARRAY are_array WMP_AREAS //get predefined array WMP_AREAS
+						PHP_EACH are_array AS are_num => are_offset BEGIN //go through the array WMP_AREAS
+							READ_ASCII are_offset are_name //write area reference in variable
+							TO_UPPER are_name
+							READ_LONG are_offset+0x30 are_flags
+							SPRINT $EVAL ~array_%SAV_FILE%~("%are_name%") "%are_flags%"
+						END
+					END
+				END
+			BUT_ONLY
+			// replacing old worldmap with new worldmap and removing not existing resources
+			COPY ~%dir%/baldur.sav~ ~%dir%~ //can't be added into previous patching block
+				PATCH_IF (SOURCE_SIZE >= 0x8) BEGIN
+					READ_ASCII 0 sig ( 8 )
+					PATCH_IF (~%sig%~ STRING_EQUAL ~SAV V1.0~) BEGIN
+						SET curOfs = 0x8
+						WHILE (curOfs < SOURCE_SIZE) BEGIN // scanning resource entries...
+							READ_LONG curOfs lenFileName //Length of filename
+							READ_ASCII (curOfs + 0x4) fileName ( lenFileName ) NULL //Filename (length specified by previous field)
+							READ_LONG (curOfs + lenFileName + 0x8) lenCompressed //Compressed data length
+							SET entrySize = lenFileName + lenCompressed + 0xc
+							//remove not existing resources
+							PATCH_IF (NOT FILE_EXISTS_IN_GAME ~%fileName%~) AND (~%fileName%~ STRING_CONTAINS_REGEXP ~\.[Tt][Oo][HhTt]$~) BEGIN
+								PATCH_PRINT ~%fileName% issue: does not exist in game! Removing file...~
+								// remove header and data from the BALDUR.SAV
+								DELETE_BYTES curOfs entrySize
+								SET SOURCE_SIZE = SOURCE_SIZE - entrySize
+							END ELSE PATCH_IF ((~%fileName%~ STRING_CONTAINS_REGEXP ~\.[Ww][Mm][Pp]$~)=0) BEGIN
+								// remove header and data from the BALDUR.SAV
+								DELETE_BYTES (curOfs + lenFileName + 0xc) lenCompressed
+								// inserting new data to the BALDUR.SAV
+								PHP_EACH array_wmp_glob AS x => y BEGIN
+									PATCH_IF ~%x%~ STRING_EQUAL_CASE ~%fileName%~ BEGIN
+										SPRINT uncLen "%x_1%"
+										SPRINT compLen "%x_2%"
+										WRITE_LONG (curOfs + lenFileName + 0x4) uncLen
+										WRITE_LONG (curOfs + lenFileName + 0x8) compLen
+										INSERT_BYTES (curOfs + lenFileName + 0xc) compLen
+										WRITE_ASCIIE (curOfs + lenFileName + 0xc) ~%y%~ //%wmpData%
+									END
+								END
+								// optional if we want to continue scanning for other files
+								SET SOURCE_SIZE = SOURCE_SIZE + compLen - lenCompressed
+								SET entrySize = lenFileName + compLen + 0xc
+								SET curOfs = curOfs + entrySize
+								// terminate WHILE loop
+								//SET curOfs = SOURCE_SIZE
+							END ELSE BEGIN
+								// skipping entry
+								SET curOfs = curOfs + entrySize
+							END
+						END
+					END
+				END
+			BUT_ONLY
+			// updating wmp flags
+			COPY ~%dir%/baldur.sav~ ~%dir%~
+				EDIT_SAV_FILE 9 BEGIN
+					TO_UPPER SAV_FILE
+					PATCH_IF ((~%SAV_FILE%~ STRING_CONTAINS_REGEXP ~\.WMP$~)=0) BEGIN
+						GET_OFFSET_ARRAY are_array WMP_AREAS //get predefined array WMP_AREAS
+						PHP_EACH are_array AS are_num => are_offset BEGIN //go through the array WMP_AREAS
+							READ_ASCII are_offset are_name //write area reference in variable
+							TO_UPPER are_name
+							PATCH_IF (VARIABLE_IS_SET $EVAL ~array_%SAV_FILE%~(~%are_name%~)) BEGIN
+								TEXT_SPRINT flags $EVAL ~array_%SAV_FILE%~(~%are_name%~)
+								WRITE_LONG are_offset+0x30 flags
+							END
+						END
+					END
+				END
+			BUT_ONLY
+		END
+	END
+END
+
+//PRINT ~%log%~

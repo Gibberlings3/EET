@@ -27,7 +27,7 @@ COPY_LARGE + ~%patch_dir%/itm/BAG02.ITM~ ~%patch_dir%/itm/BAG02_.ITM~
 	~%patch_dir%/itm/WAND12.ITM~ ~%patch_dir%/itm/WAND12_.ITM~
 
 //Compatibility with BG1UB "Item Corrections and Restorations" component
-ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND NOT (FILE_CONTAINS ~WeiDU-BGEE.log~ ~BG1UB\.TP2. #[0-9]+ #22 ~) BEGIN
+ACTION_IF (FILE_EXISTS ~WeiDU-BGEE.log~) AND NOT (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?BG1UB\.TP2. #[0-9]+ #22 ") BEGIN
 	DELETE + ~%patch_dir%/itm/AX1H07.ITM~
 	~%patch_dir%/itm/MAGE02.ITM~
 END

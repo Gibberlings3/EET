@@ -1,4 +1,4 @@
-BACKUP ~EET/backup/end~
+BACKUP ~EET_end/backup~
 AUTHOR ~K4thos (swit)~
 
 ALWAYS
@@ -8,7 +8,7 @@ CLEAR_ARRAYS
 ///// Prepare arrays, update 25DIALOG.2DA              \\\\\
 /////                                                  \\\\\
 
-INCLUDE ~EET/lib/EET_end.tph~
+INCLUDE ~%MOD_FOLDER%/lib/tables.tph~
 
 COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 	READ_2DA_ENTRIES_NOW campaign_tbl 32
@@ -740,23 +740,15 @@ COPY ~chitin.key~ ~chitin.key~
 BUT_ONLY
 
 //Compatibility with Rough World (installed on BG:EE)
-ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #7 ~) BEGIN //Fixed Insane Difficulty
+ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?K9ROUGHWORLD\.TP2. #[0-9]+ #7 ") BEGIN //Fixed Insane Difficulty
 	COPY_EXISTING_REGEXP GLOB ~.*\.CRE$~ ~override~
 		WRITE_LONG 0x10 (THIS | BIT22)
 	BUT_ONLY
 END
-ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ ~K9ROUGHWORLD\.TP2. #[0-9]+ #8 ~) BEGIN //Only Autosaves
+ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?K9ROUGHWORLD\.TP2. #[0-9]+ #8 ") BEGIN //Only Autosaves
 	COPY_EXISTING_REGEXP GLOB ~.*\.ARE$~ ~override~
 		WRITE_SHORT 0x0014 (THIS | BIT0)
 	BUT_ONLY
-END
-
-/////                                                  \\\\\
-///// IWD-in-EET late patching                         \\\\\
-/////                                                  \\\\\
-
-ACTION_IF (MOD_IS_INSTALLED ~IWD-in-EET/IWD-in-EET.tp2~ ~0~) BEGIN
-	INCLUDE ~IWD-in-EET/lib/end.tph~
 END
 
 END
@@ -806,5 +798,5 @@ REQUIRE_PREDICATE !FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~ ~~
 ///// Save patcher                                     \\\\\
 /////                                                  \\\\\
 
-INCLUDE ~EET/lib/EET_end_saves.tph~
+INCLUDE ~%MOD_FOLDER%/lib/saves.tph~
 APPEND + ~EET.flag~ ~SAVES_UPDATED~

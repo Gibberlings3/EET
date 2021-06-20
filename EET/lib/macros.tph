@@ -5,6 +5,19 @@
 DEFINE_ACTION_FUNCTION GET_SYSTEM_ARCH RET SYSTEM_ARCH BEGIN
 	ACTION_MATCH "%WEIDU_OS%" WITH
 	win32 BEGIN
+/*<<<<<<<< .../arch_var.bat
+@echo OFF
+reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32BIT || set OS=64BIT
+if %OS%==32BIT goto 32BIT
+if %OS%==64BIT goto 64BIT
+:32BIT
+SET arch_var=x86
+goto OUT
+:64BIT
+SET arch_var=amd64
+:OUT
+echo %arch_var% >arch_var.txt
+>>>>>>>>*/
 <<<<<<<< .../arch_var.bat
 @echo off
 if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" goto AMD64
@@ -16,18 +29,23 @@ SET arch_var=amd64
 :OUT
 echo %arch_var% >arch_var.txt
 >>>>>>>>
-		COPY ~.../arch_var.bat~ ~arch_var.bat~
+		COPY + ~.../arch_var.bat~ ~arch_var.bat~
 		AT_NOW ~call arch_var.bat~
 		ACTION_IF (FILE_CONTAINS_EVALUATED (~arch_var.txt~ ~amd64~)) BEGIN
 			OUTER_SPRINT SYSTEM_ARCH ~amd64~
+		END ELSE BEGIN
+			OUTER_SPRINT SYSTEM_ARCH ~x86~
 		END
 		DELETE + ~arch_var.txt~
+			~arch_var.bat~
 	END
 	osx unix BEGIN
 		OUTER_SPRINT SYSTEM_ARCH ~x86~
 		AT_NOW ~echo $(uname -m) >arch_var.txt~
 		ACTION_IF (FILE_CONTAINS_EVALUATED (~arch_var.txt~ ~x86_64~)) BEGIN
 			OUTER_SPRINT SYSTEM_ARCH ~amd64~
+		END ELSE BEGIN
+			OUTER_SPRINT SYSTEM_ARCH ~x86~
 		END
 		DELETE + ~arch_var.txt~
 	END
@@ -1027,7 +1045,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_mus~ BEGIN
 	READ_LONG off "source"
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_mus~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_mus~(~%source%~)
-		PATCH_IF (source != dest) BEGIN
+		PATCH_IF (NOT IS_AN_INT dest) BEGIN
+			PATCH_WARN ~WARNING EET_PCU_off_mus: missing %source%~
+		END ELSE PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_LONG off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: MUSIC = %source% => %dest% -~
@@ -1046,7 +1066,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_long~ BEGIN
 	READ_LONG off "source"
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
-		PATCH_IF (source != dest) BEGIN
+		PATCH_IF (NOT IS_AN_INT dest) BEGIN
+			PATCH_WARN ~WARNING EET_PCU_off_long: missing %source%~
+		END ELSE PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_LONG off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
@@ -1060,7 +1082,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_short~ BEGIN
 	READ_SHORT off "source"
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
-		PATCH_IF (source != dest) BEGIN
+		PATCH_IF (NOT IS_AN_INT dest) BEGIN
+			PATCH_WARN ~WARNING EET_PCU_off_short: missing %source%~
+		END ELSE PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_SHORT off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
@@ -1074,7 +1098,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_byte~ BEGIN
 	READ_BYTE off "source"
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_%res%~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_%res%~(~%source%~)
-		PATCH_IF (source != dest) BEGIN
+		PATCH_IF (NOT IS_AN_INT dest) BEGIN
+			PATCH_WARN ~WARNING EET_PCU_off_byte: missing %source%~
+		END ELSE PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			WRITE_BYTE off "%dest%"
 			SPRINT str ~Patching %SOURCE_FILESPEC%: %res% = %source% => %dest% -~
@@ -1093,7 +1119,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_ipro~ BEGIN
 	SET source = source - sub
 	PATCH_IF ("%source%" > 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_ipro~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_ipro~(~%source%~)
-		PATCH_IF (source != dest) BEGIN
+		PATCH_IF (NOT IS_AN_INT dest) BEGIN
+			PATCH_WARN ~WARNING EET_PCU_off_ipro: missing %source%~
+		END ELSE PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
 				WRITE_SHORT off "%dest%"
@@ -1119,7 +1147,9 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_kit~ BEGIN
 	END
 	PATCH_IF ("%short%" = 0) AND (VARIABLE_IS_SET $EVAL ~%remappedPrefix%_kit~(~%source%~)) BEGIN
 		TEXT_SPRINT dest $EVAL ~%remappedPrefix%_kit~(~%source%~)
-		PATCH_IF (source != dest) BEGIN
+		PATCH_IF (NOT IS_AN_INT dest) BEGIN
+			PATCH_WARN ~WARNING EET_PCU_off_kit: missing %source%~
+		END ELSE PATCH_IF (source != dest) BEGIN
 			SET updated = 1
 			PATCH_IF ~%read_len%~ STR_EQ ~s~ BEGIN
 				WRITE_SHORT off ~%dest%~
@@ -1659,11 +1689,11 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 	REPLACE_EVALUATE ~\("[^"%LNL%%WNL%]+"\)~ BEGIN
 		INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
-			REPLACE_TEXTUALLY ~ ~ ~#AOspace#~
+			REPLACE_TEXTUALLY ~ ~ ~#space#~
 		END
 	END ~%MATCH1%~
-	REPLACE_TEXTUALLY ~\(ActionOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #AOcomma# \2) #AObracket#~
-	REPLACE_TEXTUALLY ~\(TriggerOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #AOcomma# \2) #AObracket#~
+	REPLACE_TEXTUALLY ~\(ActionOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #comma# \2) #bracket#~
+	REPLACE_TEXTUALLY ~\(TriggerOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #comma# \2) #bracket#~
 	REPLACE_EVALUATE CASE_INSENSITIVE ~\([%WNL%%LNL%%MNL%%TAB% %tilde%%quote%!]\)\([A-Z]+\)(\([^%WNL%%LNL%%MNL%%TAB% ]+\))~ BEGIN //loop through all commands
 		SPRINT init ~%MATCH1%~ //matched 
 		SPRINT cmd ~%MATCH2%~ //matched command name
@@ -1785,8 +1815,8 @@ DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
 			END
 		END
 	END ~%init%%cmd%(%arg%)~
-	REPLACE_TEXTUALLY ~) #AOcomma# \([^ ]+\) #AObracket#~ ~,\1)~
-	REPLACE_TEXTUALLY ~#AOspace#~ ~ ~
+	REPLACE_TEXTUALLY ~) #comma# \([^ ]+\) #bracket#~ ~,\1)~
+	REPLACE_TEXTUALLY ~#space#~ ~ ~
 END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2077,14 +2107,54 @@ DEFINE_PATCH_MACRO ~EET_PCU_effects~ BEGIN
 	OR ("%fx_type%" = 265) //Set global variable
 	OR ("%fx_type%" = 309) //Set local variable
 	BEGIN
-		//PATCH_IF ver = 2 BEGIN
-		//	READ_ASCII resource1 "str1" (8) NULL
-		//	READ_ASCII resource2 "str2" (8) NULL
-		//	READ_ASCII resource3 "str3" (8) NULL
-		//	SPRINT str123 ~%str1%%str2%%str3%~
-		//	SPRINT match ~%str123%~
-		//END
-		SET off = resource1 SPRINT res ~var~ LPM EET_PCU_off_res
+		PATCH_IF ver = 1 BEGIN
+			SET off = resource1 SPRINT res ~var~ LPM EET_PCU_off_res
+		END ELSE BEGIN
+			READ_ASCII resource1 "var1" (8) NULL
+			READ_ASCII resource2 "var2" (8) NULL
+			READ_ASCII resource3 "var3" (8) NULL
+			SPRINT match ~%var1%%var2%%var3%~ SPRINT res ~var~ LPM EET_PCU_outer_res
+			PATCH_IF (NOT ~%match%~ STR_EQ ~%var1%%var2%%var3%~) BEGIN
+				SET length = STRING_LENGTH ~%match%~
+				SPRINT var1 ~~
+				SPRINT var2 ~~
+				SPRINT var3 ~~
+				PATCH_IF length <= 8 BEGIN
+					SPRINT var1 ~%match%~
+				END ELSE PATCH_IF length = 9 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~.$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF length = 10 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~..$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF length = 11 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~...$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF length = 12 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~....$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF length = 13 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~.....$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF length = 14 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~......$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF length = 15 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~.......$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF length = 16 BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~........$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........~ ~~ END
+				END ELSE PATCH_IF (length >= 17) AND (length <= 24) BEGIN
+					INNER_PATCH_SAVE var1 ~%match%~ BEGIN REPLACE_TEXTUALLY ~........$~ ~~ END
+					INNER_PATCH_SAVE var2 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^........\(........\).+$~ ~\1~ END
+					INNER_PATCH_SAVE var3 ~%match%~ BEGIN REPLACE_TEXTUALLY ~^................~ ~~ END
+				END
+				WRITE_ASCIIE resource1 ~%var1%~ #8
+				WRITE_ASCIIE resource2 ~%var2%~ #8
+				WRITE_ASCIIE resource3 ~%var3%~ #8
+			END
+		END
 	END
 
 	PATCH_IF ("%fx_type%" = 214) //Select spell
@@ -2309,8 +2379,8 @@ BEGIN
 			READ_LONG ("%actors_off%"+0x110*cnt+0x8c) "actors_emb_size"
 			PATCH_IF (~%actors_flags%~ BAND BIT0) BEGIN
 			END ELSE PATCH_IF (actors_emb_size = 0) BEGIN
-				SET actors_flags = actors_flags + BIT0
-				WRITE_LONG ("%actors_off%"+0x110*cnt+0x28) "%actors_flags%"
+				//SET actors_flags = actors_flags + BIT0
+				//WRITE_LONG ("%actors_off%"+0x110*cnt+0x28) "%actors_flags%"
 			END ELSE BEGIN //CRE attached
 				READ_LONG ("%actors_off%"+0x110*cnt+0x88) "actors_emb_off"
 				PATCH_IF (actors_emb_off != 0) BEGIN
@@ -2722,7 +2792,7 @@ CO") BEGIN
 		PATCH_IF ("%filetype%" STR_EQ "CRE V1.0") BEGIN
 			//PATCH_PRINT ~Patching creature version 1.0 file %SOURCE_FILESPEC%...~
 			SET cre_struct_off = 0
-			LPF ~FJ_CRE_VALIDITY~ RET valid END //Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
+			LPF ~FJ_CRE_VALIDITY~ RET valid END //Checks whether a file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not.
 		END ELSE BEGIN //chr
 			//PATCH_PRINT ~Patching character version 2.0 file %SOURCE_FILESPEC%...~
 			READ_LONG 0x28 "cre_struct_off"
@@ -2810,7 +2880,7 @@ CO") BEGIN
 				SET param2 = ("%fx_off%"+0x108*cnt+0x18)
 				SET resource1 = ("%fx_off%"+0x108*cnt+0x28)
 				SET special = ("%fx_off%"+0x108*cnt+0x40)
-				SET param3 = ("%fx_off%"+0x108*cnt2+0x58)
+				SET param3 = ("%fx_off%"+0x108*cnt+0x58)
 				SET resource2 = ("%fx_off%"+0x108*cnt+0x68)
 				SET resource3 = ("%fx_off%"+0x108*cnt+0x70)
 				SET ver = 2
@@ -2879,7 +2949,7 @@ CO") BEGIN
 	ELSE PATCH_IF ("%filetype%" STR_EQ "EFF V2.0") BEGIN
 		//PATCH_PRINT ~Patching effect version 2.0 file %SOURCE_FILESPEC%...~
 
-		READ_SHORT 0x10 "fx_type"
+		READ_LONG 0x10 "fx_type"
 		SET param1 = 0x1c
 		SET param2 = 0x20
 		SET resource1 = 0x30
