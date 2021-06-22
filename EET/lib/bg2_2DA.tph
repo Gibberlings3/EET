@@ -1,75 +1,5 @@
 /////                                                  \\\\\
-///// KITLIST.2DA                                      \\\\\
-/////                                                  \\\\\
-
-COPY_EXISTING ~KITLIST.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 3 "cntrow"
-	READ_2DA_ENTRY (cntrow - 1) 0 3 "kit_index"
-	PATCH_PRINT ~kit_index = %kit_index%~
-BUT_ONLY
-
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_kitStrref BEGIN
-	MATCH1 => strref1
-	MATCH2 => strref2
-	MATCH3 => strref3
-END
-
-COPY + ~%MOD_FOLDER%/temp/array/KITLIST.2DA~ ~%MOD_FOLDER%/temp/array~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^38[ 	]+OHTYR_OLD[%newline%]+~ ~~
-	REPLACE_TEXTUALLY ~^39[ 	]+FAKIE[%newline%]+~ ~~
-	COUNT_2DA_ROWS 3 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "kit_num"
-		SET kit_num = kit_num + 0x4000
-		READ_2DA_ENTRY cnt 1 3 "name"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~KITLIST.2DA~ ~^[0-9]+[ ]+%name% ~)) BEGIN
-			REPLACE_EVALUATE CASE_INSENSITIVE ~^[0-9]+[ ]+%name%[ ]+\([0-9\*\-]+\)[ ]+\([0-9\*\-]+\)[ ]+\([0-9\*\-]+\)[ ]+\(.+\)[ ]+[A-Za-z0-9]+$~ BEGIN
-				PATCH_PRINT ~Patching KITLIST.2DA: %name%~
-				SET kit_index = kit_index + 1
-				PHP_EACH table_2DA_kitStrref AS match => var BEGIN
-					SPRINT strref EVAL ~%%match%%~
-					PATCH_IF (NOT IS_AN_INT strref) BEGIN
-						SPRINT EVAL ~%var%~ ~*~
-					END ELSE BEGIN
-						LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
-						SPRINT EVAL ~%var%~ ~%str%~
-					END
-				END
-				INNER_ACTION BEGIN
-					COPY_EXISTING - ~KIT.IDS~ ~.../KIT.IDS~
-						PRETTY_PRINT_2DA
-						COUNT_REGEXP_INSTANCES ~ %name%\([%newline%]+\)~ num_matches
-						PATCH_IF (num_matches > 0) BEGIN
-							REPLACE_EVALUATE CASE_INSENSITIVE ~^\([A-Za-z0-9]+\)[ ]+%name%\([%newline%]+\)~ BEGIN
-								SPRINT ids_index_sprint ~%MATCH1%~
-								INNER_PATCH_SAVE ids_index_sprint ~%ids_index_sprint%~ BEGIN
-									REPLACE_TEXTUALLY ~^0x~ ~0x0000~
-								END
-								PATCH_PRINT ~%name% KITIDS = %ids_index_sprint%~
-							END ~%MATCH1% %name%%MATCH2%~
-						END ELSE BEGIN
-							SPRINT ids_index_sprint ~~
-							PATCH_WARN ~WARNING: %name% kit was not found in kit.ids~
-						END
-					APPEND ~KITLIST.2DA~ ~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint%~
-					PRINT ~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint% appended to KITLIST.2DA~
-					OUTER_SET kit_short = kit_index + 0x4000
-					ACTION_IF (kit_num != kit_short) AND (NOT VARIABLE_IS_SET $remapped_kit(~%kit_num%~)) BEGIN
-						ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN ~%kit_num%~ => ~%kit_short%~ END
-						OUTER_SPRINT log_remapped_kit ~%log_remapped_kit%%TAB%%kit_num%%TAB%=>%TAB%%kit_short%%TAB%%slash%%slash%%name%%LNL%~
-					END
-				END
-			END ~%kit_index% %name% %strref1% %strref2% %strref3% %MATCH4% %ids_index_sprint%~
-		END
-	END
-COPY_EXISTING ~KITLIST.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
-
-/////                                                  \\\\\
-///// other KIT files                                  \\\\\
+///// KIT files                                        \\\\\
 /////                                                  \\\\\
 
 ACTION_FOR_EACH file IN CLASWEAP ABCLASRQ ABCLSMOD ABDCDSRQ ABDCSCRQ ALIGNMNT DUALCLAS KITTABLE BACKSTAB CLSWPBON THIEFSKL CLSRCREQ SNEAKATT CRIPPSTR BEGIN
@@ -194,6 +124,112 @@ ACTION_BASH_FOR ~%MOD_FOLDER%/temp/array~ ~^K_.+$~ BEGIN
 		PRETTY_PRINT_2DA
 	BUT_ONLY
 END
+
+/////                                                  \\\\\
+///// KITLIST.2DA                                      \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~WEAPPROF.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 3 "cntrow"
+	COUNT_2DA_COLS "cntcol"
+	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
+		READ_2DA_ENTRY 0 i 3 "name"
+		TO_UPPER name
+		SET $PROFICIENCY_array(~%name%~) = i
+	END
+	BUT_ONLY
+
+COPY_EXISTING ~KITLIST.2DA~ ~override~
+	PRETTY_PRINT_2DA
+	COUNT_2DA_ROWS 3 "cntrow"
+	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 1 3 "name"
+		TO_UPPER name
+		TEXT_SPRINT $KITLIST_array(~%name%~) ~~
+	END
+	READ_2DA_ENTRY (cntrow - 1) 0 3 "kit_index"
+	PATCH_PRINT ~kit_index = %kit_index%~
+BUT_ONLY
+
+COPY_EXISTING ~KIT.IDS~ ~override~
+	COUNT_2DA_ROWS 2 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 2 "ids_index"
+		READ_2DA_ENTRY cnt 1 2 "ids_name"
+		TO_UPPER ids_name
+		TEXT_SPRINT $KITIDS_array(~%ids_name%~) ~%ids_index%~
+	END
+BUT_ONLY
+
+COPY + ~%MOD_FOLDER%/temp/array/KITLIST.2DA~ ~%MOD_FOLDER%/temp/array~
+	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~^38[ 	]+OHTYR_OLD[%newline%]+~ ~~
+	REPLACE_TEXTUALLY ~^39[ 	]+FAKIE[%newline%]+~ ~~
+	COUNT_2DA_ROWS 10 "cntrow"
+	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+		READ_2DA_ENTRY cnt 0 10 "kit_num"
+		READ_2DA_ENTRY cnt 1 10 "ROWNAME"
+		SPRINT name_case ~%ROWNAME%~
+		TO_UPPER name_case
+		PATCH_IF (NOT VARIABLE_IS_SET $KITLIST_array(~%name_case%~)) BEGIN
+			PATCH_PRINT ~Patching KITLIST.2DA: %ROWNAME%~
+			READ_2DA_ENTRY cnt 2 10 "LOWER"
+			READ_2DA_ENTRY cnt 3 10 "MIXED"
+			READ_2DA_ENTRY cnt 4 10 "HELP"
+			READ_2DA_ENTRY cnt 5 10 "ABILITIES"
+			READ_2DA_ENTRY cnt 6 10 "PROFICIENCY"
+			READ_2DA_ENTRY cnt 7 10 "UNUSABLE"
+			READ_2DA_ENTRY cnt 8 10 "CLASS"
+			READ_2DA_ENTRY cnt 9 10 "KITIDS"
+			//strings
+			PATCH_FOR_EACH var IN LOWER MIXED HELP BEGIN
+				SPRINT strref EVAL ~%%var%%~
+				PATCH_IF (NOT IS_AN_INT strref) BEGIN
+					SPRINT EVAL ~%var%~ ~*~
+				END ELSE BEGIN
+					LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
+					SPRINT EVAL ~%var%~ ~%str%~
+				END
+			END
+			//proficiency column number
+			PATCH_IF (VARIABLE_IS_SET $PROFICIENCY_array(~%name_case%~)) BEGIN
+				SET PROFICIENCY = $PROFICIENCY_array(~%name_case%~)
+			END ELSE BEGIN
+				PATCH_WARN ~WARNING: %name_case% kit with unrecognized PROFICIENCY: %PROFICIENCY%~
+			END
+			//class
+			PATCH_IF (VARIABLE_IS_SET $remapped_class(~%CLASS%~)) BEGIN
+				TEXT_SPRINT CLASS $remapped_class(~%CLASS%~)
+			END
+			//append kit
+			SET kit_index = kit_index + 1
+			SET kit_num = kit_num + 0x4000
+			SET kit_short = kit_index + 0x4000
+			SPRINTF ids_index_sprint ~%x~ (kit_short) //%~
+			INNER_ACTION BEGIN
+				//kit ids
+				ACTION_IF (VARIABLE_IS_SET $KITIDS_array(~%name_case%~)) BEGIN
+					OUTER_TEXT_SPRINT ids_index_sprint $KITIDS_array(~%name_case%~)
+				END ELSE BEGIN
+					APPEND ~KIT.IDS~ ~%ids_index_sprint% %ROWNAME%~
+					PRINT ~%ids_index_sprint% %ROWNAME% appended to KIT.IDS~
+				END
+				OUTER_PATCH_SAVE KITIDS ~%ids_index_sprint%~ BEGIN
+					REPLACE_TEXTUALLY ~^0x~ ~0x0000~
+				END
+				APPEND ~KITLIST.2DA~ ~%kit_index% %ROWNAME% %LOWER% %MIXED% %HELP% %ABILITIES% %PROFICIENCY% %UNUSABLE% %CLASS% %KITIDS%~
+				PRINT ~%kit_index% %ROWNAME% %LOWER% %MIXED% %HELP% %ABILITIES% %PROFICIENCY% %UNUSABLE% %CLASS% %KITIDS% appended to KITLIST.2DA~
+				ACTION_IF (kit_num != kit_short) AND (NOT VARIABLE_IS_SET $remapped_kit(~%kit_num%~)) BEGIN
+					ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_kit BEGIN ~%kit_num%~ => ~%kit_short%~ END
+					OUTER_SPRINT log_remapped_kit ~%log_remapped_kit%%TAB%%kit_num%%TAB%=>%TAB%%kit_short%%TAB%%slash%%slash%%ROWNAME%%LNL%~
+				END
+			END
+		END
+	END
+COPY_EXISTING ~KITLIST.2DA~ ~override~
+	PRETTY_PRINT_2DA
+BUT_ONLY
 
 /////                                                  \\\\\
 ///// CHARSND.2DA                                      \\\\\
@@ -522,6 +558,7 @@ ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPPR[1-7][5-9][0-9]\.SPL~ BEGIN //Priest leve
 END
 
 COPY_EXISTING ~HIDESPL.2DA~ ~override~
+	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~^SPWI93[5-7] .+%LNL%~ ~~ //free 3 level 9 slots (SUMMON_SKELETON_WARRIOR entries)
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1853,7 +1890,7 @@ BUT_ONLY
 COPY + ~%MOD_FOLDER%/temp/2da/BGCLATXT.2DA~ ~%MOD_FOLDER%/temp/2da~
 	~%MOD_FOLDER%/temp/2da/SODCLTXT.2DA~ ~%MOD_FOLDER%/temp/2da~
 	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~^OHTYR_OLD[%newline%]+~ ~~
+	REPLACE_TEXTUALLY ~^OHTYR_OLD .+[%newline%]+~ ~~
 	PATCH_FOR_EACH class IN FIGHTER_MAGE FIGHTER_CLERIC FIGHTER_THIEF FIGHTER_MAGE_THIEF MAGE_THIEF CLERIC_MAGE CLERIC_THIEF FIGHTER_DRUID FIGHTER_MAGE_CLERIC CLERIC_RANGER BEGIN //assign correct biography for multi-class characters
 		REPLACE_TEXTUALLY ~^\(%class%[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+[-0-9]+[ ]+\)[-0-9]+~ ~\1 15889~
 	END
