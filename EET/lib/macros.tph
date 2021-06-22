@@ -476,13 +476,13 @@ DEFINE_PATCH_FUNCTION dump_wmp
 				END
 			END ELSE BEGIN
 				PATCH_IF (name > 0) BEGIN
-					LPF EET_strref INT_VAR str = name add = strrefAdd RET str END
+					LPF EET_strref INT_VAR str = name RET str END
 					GET_STRREF str name
 				END ELSE BEGIN
 					SPRINT name ~~
 				END
 				PATCH_IF (tool > 0) BEGIN
-					LPF EET_strref INT_VAR str = tool add = strrefAdd RET str END
+					LPF EET_strref INT_VAR str = tool RET str END
 					GET_STRREF str tool
 				END ELSE BEGIN
 					SPRINT tool ~~
