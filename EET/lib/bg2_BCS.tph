@@ -225,6 +225,24 @@ COPY_EXISTING_REGEXP GLOB ~.*\.are~ ~override~
 BUT_ONLY
 
 /////                                                  \\\\\
+///// ACHIEVEM.BCS                                     \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~ACHIEVEM.BCS~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~\(^[%TAB% ]*Dead("Sendai")\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  AreaCheck("AR6108")~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// BALDUR.BCS, BALDUR25.BCS                         \\\\\
 /////                                                  \\\\\
 
