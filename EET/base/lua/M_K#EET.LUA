@@ -4,7 +4,10 @@ function generateBioText(t)
 	bioRace = ""
 	local myRace = t.races[currentChargenRace].id
 	local myClass = t.class[currentChargenClass].id
-	local myKit = t.kit[currentChargenKit].id
+	local myKit = -1
+	if t.kit[currentChargenKit] ~= nil then
+		myKit = t.kit[currentChargenKit].id
+	end
 	local colClass = 2 + Infinity_GetINIValue('Program Options','Active Campaign')
 	local colRace = 1 + Infinity_GetINIValue('Program Options','Active Campaign')
 	-- Go through each row of bioClassData

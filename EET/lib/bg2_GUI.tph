@@ -1107,3 +1107,4 @@ end~~~~~
 	END
 	//==========================================================================
 	REPLACE_TEXTUALLY ~^\([ %TAB%]\)\(text "Recent events text will go here."\)~ ~\1--\2~
+	REPLACE_TEXTUALLY ~clickable[ 	]+false~ ~clickable lua "false"~ //fixes Beamdog's wrong syntax

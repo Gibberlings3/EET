@@ -499,8 +499,14 @@ BUT_ONLY
 ///// Generate biography tables                        \\\\\
 /////                                                  \\\\\
 
-COPY_EXISTING ~kitlist.2da~ ~override~
+COPY_EXISTING - ~KITLIST.2da~ ~.../override~
 	PRETTY_PRINT_2DA
+	REPLACE_TEXTUALLY ~BEASTMASTER~ ~BEAST_MASTER~
+	REPLACE_TEXTUALLY ~TALOS~ ~GODTALOS~
+	REPLACE_TEXTUALLY ~HELM~ ~GODHELM~
+	REPLACE_TEXTUALLY ~LATHANDER~ ~GODLATHANDER~
+	REPLACE_TEXTUALLY ~BEAST_FRIEND~ ~AVENGER~
+	REPLACE_TEXTUALLY ~ASSASIN~ ~ASSASSIN~
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 3 "kit_num"
@@ -510,7 +516,7 @@ COPY_EXISTING ~kitlist.2da~ ~override~
 	END
 BUT_ONLY
 
-COPY_EXISTING ~CLASTEXT.2da~ ~override~
+COPY_EXISTING - ~CLASTEXT.2da~ ~.../override~
 	READ_2DA_ENTRIES_NOW clastext_tbl 10
 	FOR (i=0; i < clastext_tbl; ++i) BEGIN
 		READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
@@ -558,7 +564,7 @@ COPY_EXISTING ~CLASTEXT.2da~ ~override~
 	END
 BUT_ONLY
 
-COPY_EXISTING ~RACETEXT.2da~ ~override~
+COPY_EXISTING - ~RACETEXT.2da~ ~.../override~
 	READ_2DA_ENTRIES_NOW racetext_tbl 6
 	FOR (i=0; i < racetext_tbl; ++i) BEGIN
 		READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
@@ -635,7 +641,7 @@ ACTION_PHP_EACH valid_race AS race => dummy BEGIN
 	OUTER_SPRINT content EVAL ~%%race%%~
 	OUTER_SPRINT append_race ~%append_race%%LNL%%TAB%%content%}, --%race%~
 END
-COPY_EXISTING ~M_K#EET.lua~ ~override~
+COPY_EXISTING ~M_K#TBL.lua~ ~override~
 	REPLACE_TEXTUALLY ~\(bioClassData = {\)~ ~\1%append_class%~
 	REPLACE_TEXTUALLY ~\(bioRaceData = {\)~ ~\1%append_race%~
 BUT_ONLY
