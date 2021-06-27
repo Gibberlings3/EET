@@ -2,10 +2,6 @@
 
 -------------
 
-Version 1.0 Release Candidate (a version that is nearly ready for release but may still have a few bugs; the status between beta version and release version.) 
-
--------------
-
 Baldur's Gate: Enhanced Edition Trilogy (EET) is a modification for Baldur's Gate II: Enhanced Edition that merges whole saga into one game and provides continuity between the events of Baldur's Gate, Tales of the Sword Coast, Shadows of Amn, Throne of Bhaal and Siege of Dragonspear expansion (also for both Black Pits adventures). The name of this this modification probably rings a bell to those who have been following IE modding scene, thanks to the classic mod that inspired this project, called Baldur's Gate Trilogy (BGT), developed by Bardez and Ascension64. While EET remains mostly faithful to the premise of the BGT, it shouldn't be considered a direct continuation of that project. In fact both mods share little to no common code and took different design decisions in many aspects.
 
 Baldur's Gate: Enhanced Edition Trilogy has two main goals:
