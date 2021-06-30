@@ -3324,7 +3324,7 @@ CO") BEGIN
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//TP2/TPH/TPP/TPA patching                                                                         //
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	ELSE PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TP2$")=0) OR (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TPH$")=0) OR (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TPP$")=0) OR (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TPA$")=0) BEGIN
+	ELSE PATCH_IF (("%SOURCE_FILE%" STRING_COMPARE_REGEXP ".*.\.TP.$")=0) BEGIN
 
 		//PATCH_PRINT ~Patching WeiDU script file %SOURCE_FILESPEC%...~
 

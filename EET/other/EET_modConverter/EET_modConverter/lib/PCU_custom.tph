@@ -237,7 +237,7 @@ COPY + ~EET_modConverter/Filelist.txt~ ~EET_modConverter~
 							END
 							DEFAULT END
 						END
-						PATCH_IF (NOT ~%ext_check%~ STR_EQ ~~) AND (NOT ~%ext_check%~ STR_EQ ~ignore~) BEGIN
+						PATCH_IF (NOT ~%ext_check%~ STR_EQ ~ignore~) BEGIN
 							LPF EET_PCU_core RET ext_check updated END
 							SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
 						END
