@@ -2532,7 +2532,11 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 		OUTER_SET found_exe = 1
 	END
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
-	ACTION_IF FILE_EXISTS ~BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~ BEGIN
+	ACTION_IF FILE_EXISTS ~BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGate-macOS~ BEGIN
+		OUTER_SPRINT exec ~./BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGate-macOS~
+	END ELSE ACTION_IF FILE_EXISTS ~../MacOS/BaldursGate-macOS~ BEGIN
+		OUTER_SPRINT exec ~../MacOS/BaldursGate-macOS~
+	END ELSE ACTION_IF FILE_EXISTS ~BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~ BEGIN
 		OUTER_SPRINT exec ~./BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~
 	END ELSE ACTION_IF FILE_EXISTS ~../MacOS/BaldursGateIIEnhancedEdition~ BEGIN
 		OUTER_SPRINT exec ~../MacOS/BaldursGateIIEnhancedEdition~
