@@ -2,6 +2,66 @@
 >>>>>>>>
 
 /////                                                  \\\\\
+///// Action function: EET_PLATFORM_CONVERSION         \\\\\
+/////                                                  \\\\\
+
+// Action function for automatic mod content conversion from one platform to another.
+// Requires providing pcu_tables containing associative arrays used during PCU conversion.
+
+//Example usage:
+/*LAF EET_PLATFORM_CONVERSION STR_VAR path = EVAL ~%MOD_FOLDER%~ skip_array = "skip_array" END*/
+
+DEFINE_ACTION_FUNCTION ~EET_PLATFORM_CONVERSION~
+	INT_VAR
+	strrefAdd = 0 //value added to strref references during conversion
+	STR_VAR
+	path = "" //path to top directory from which files and directories lookup starts (optional, convert_array parameter can be used instead)
+	convert_array = "" //associative array containing file paths that should be converted (optional, see path parameter)
+	skip_array = "" //associative array containing file paths that should be skipped (only matters is path parameter is used)
+	pcu_tables = "EET/other/EET_modConverter/EET_modConverter/lib/PCU_Dict_bgee-eet.tph" //path to file containing PCU tables (defaults to BG:EE => EET conversion)
+	remappedPrefix = "remapped" //prefix used in pcu_tables (defaults to 'remapped')
+BEGIN
+	//define variables used by EET_PCU_core macros
+	OUTER_SET ddsClonning = 0
+	OUTER_SET traifyDLG = 0
+	OUTER_SET skipTpBafD = 1
+	OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
+	OUTER_SPRINT slash ~/~
+	OUTER_SPRINT quote ~"~
+	OUTER_SPRINT tilde "~"
+	//load functions and macros
+	INCLUDE ~EET/lib/macros.tph~
+	INCLUDE ~EET/lib/generate_filelist_array.tpa~
+	INCLUDE ~%pcu_tables%~
+	//generate array out of all files and directories at specified path
+	LAF GENERATE_FILELIST_ARRAY
+		STR_VAR
+		path = EVAL ~%path%~
+		RET_ARRAY
+		platform_conversion_array = filelist
+	END
+	//append entries from convert_array to above array
+	ACTION_PHP_EACH ~%convert_array%~ AS filespec => ~~ BEGIN
+		ACTION_TO_UPPER filespec
+		OUTER_PATCH_SAVE ext ~%filespec%~ BEGIN
+			REPLACE_TEXTUALLY ~^.+\.\([^\.]+\)$~ ~\1~
+		END
+		OUTER_SPRINT $platform_conversion_array("%filespec%") "%ext%"
+	END
+	//PCU patch all listed files
+	ACTION_PHP_EACH platform_conversion_array AS file => ext BEGIN
+		ACTION_IF (NOT VARIABLE_IS_SET $EVAL "%skip_array%"("%file%")) BEGIN
+			ACTION_MATCH ~%ext%~ WITH are baf bcs cre chr d dlg eff gam itm pro spl sto tbl tra tp2 tph tpp tpa vef vvc wed wmp BEGIN
+				COPY ~%file%~ ~%file%~
+					LPF EET_PCU_core END
+				BUT_ONLY
+			END
+			DEFAULT END
+		END
+	END
+END
+
+/////                                                  \\\\\
 ///// Action function: EET_NPC_TRANSITION              \\\\\
 /////                                                  \\\\\
 

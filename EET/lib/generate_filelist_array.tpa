@@ -1,0 +1,45 @@
+// Action function for generating associative array listing all files inside specified path and all its subdirectories.
+
+//Example usage:
+/*LAF GENERATE_FILELIST_ARRAY STR_VAR path = EVAL ~%MOD_FOLDER%~ RET_ARRAY filelist_array = filelist END
+
+ACTION_PHP_EACH filelist_array AS filepath => extension BEGIN
+	PRINT ~%filepath% => %extension%~
+END*/
+
+DEFINE_ACTION_FUNCTION GENERATE_FILELIST_ARRAY
+	STR_VAR
+	path = EVAL "%MOD_FOLDER%" //path to top directory from which files and directories lookup starts (defaults to %MOD_FOLDER%)
+	RET_ARRAY
+	filelist //returned associative array containing all filenames and additional file data
+BEGIN
+	OUTER_PATCH_SAVE path ~%path%~ BEGIN
+		REPLACE_TEXTUALLY ~\\~ ~/~
+		REPLACE_TEXTUALLY ~^\./~ ~~
+		REPLACE_TEXTUALLY ~/$~ ~~
+	END
+	LAF generate_filelist_internal STR_VAR path = EVAL ~%path%~ RET_ARRAY filelist END
+END
+
+//used internally by GENERATE_FILELIST_ARRAY function
+DEFINE_ACTION_FUNCTION generate_filelist_internal
+	STR_VAR
+	path = ""
+	RET_ARRAY
+	filelist
+BEGIN
+	ACTION_CLEAR_ARRAY loopfiles_array
+	GET_FILE_ARRAY loopfiles_array ~%path%~ ~~
+	ACTION_PHP_EACH loopfiles_array AS index => file BEGIN
+		OUTER_PATCH_SAVE ext ~%file%~ BEGIN
+			REPLACE_TEXTUALLY ~^.+\.\([^\.]+\)$~ ~\1~
+		END
+		ACTION_TO_LOWER ext
+		OUTER_SPRINT $filelist("%file%") "%ext%"
+	END
+	ACTION_CLEAR_ARRAY loopdirs_array
+	GET_DIRECTORY_ARRAY loopdirs_array ~%path%~ ~~
+	ACTION_PHP_EACH loopdirs_array AS index => dir BEGIN
+		LAF generate_filelist_internal STR_VAR path = EVAL ~%dir%~ RET_ARRAY filelist END
+	END
+END

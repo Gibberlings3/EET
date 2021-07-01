@@ -3373,8 +3373,10 @@ CO") BEGIN
 		PHP_EACH remapped_bcs AS source => dest BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.BCS\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.BCS\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~#d#%dest%\1~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.BAF\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~\1#d#%dest%\2~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.BAF\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~#d#%dest%\1~
+			PATCH_IF skipTpBafD = 0 BEGIN
+				REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.BAF\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~\1#d#%dest%\2~
+				REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.BAF\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - bcs~ END ~#d#%dest%\1~
+			END
 
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - bcs~ END ~\1#d#%source%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - bcs~ END ~\1#d#%source%~
@@ -3395,13 +3397,15 @@ CO") BEGIN
 		PHP_EACH remapped_dlg AS source => dest BEGIN
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.DLG\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~\1#d#%dest%\2~
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.DLG\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~#d#%dest%\1~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.D\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~\1#d#%dest%\2~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.D\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~#d#%dest%\1~
+			PATCH_IF skipTpBafD = 0 BEGIN
+				REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\(\.D\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~\1#d#%dest%\2~
+				REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\(\.D\)~~~~~ BEGIN SET updated = 1 PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %source% => %dest% - dlg~ END ~#d#%dest%\1~
+			END
 
 			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - dlg~ END ~\1#d#%source%\2~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - dlg~ END ~\1#d#%source%~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - dlg~ END ~#d#%source%\1~
-			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, no extension, proposed change: %source% => %dest% - dlg~ END ~#d#%source%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~\([ %TAB%~"/\\]+\)%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, proposed change: %source% => %dest% - dlg~ END ~\1#d#%source%~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%\([ %TAB%~"]+\)~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, proposed change: %source% => %dest% - dlg~ END ~#d#%source%\1~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~~~~~^%source%$~~~~~ BEGIN PATCH_PRINT ~Analyzing %SOURCE_FILESPEC%, proposed change: %source% => %dest% - dlg~ END ~#d#%source%~
 		END
 
 		PHP_EACH remapped_dv AS source => dest BEGIN
