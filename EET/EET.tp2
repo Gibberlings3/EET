@@ -1755,6 +1755,7 @@ COPY ~%MOD_FOLDER%/base/spl/SPWI123.SPL~ ~override~
 	~%MOD_FOLDER%/base/spl/SPCL342.SPL~ ~override~
 	~%MOD_FOLDER%/base/spl/K#FAMKIL.SPL~ ~override~
 	~%MOD_FOLDER%/base/spl/K#FAMREM.SPL~ ~override~
+	~%MOD_FOLDER%/base/spl/K#IN649.SPL~ ~override~
 	~%MOD_FOLDER%/base/spl/K#REMBHA.SPL~ ~override~
 	~%MOD_FOLDER%/base/spl/K#PP_ADD.SPL~ ~override~
 	~%MOD_FOLDER%/base/spl/K#PP_REM.SPL~ ~override~
@@ -1907,6 +1908,12 @@ ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/movies~ ~%bgee_dir%/lang/
 		END
 	END
 END
+
+//disable hardcoded DAYNITE/NITEDAY playback
+COPY ~movies/daynite.wbm~ ~movies/daynite_.wbm~
+	~movies/niteday.wbm~ ~movies/niteday_.wbm~
+	~.../blank.txt~ ~movies/daynite.wbm~
+	~.../blank.txt~ ~movies/niteday.wbm~
 
 /////                                                  \\\\\
 ///// WED                                              \\\\\
@@ -2520,45 +2527,6 @@ INCLUDE ~%MOD_FOLDER%/lib/transition.tph~
 /////                                                  \\\\\
 
 INCLUDE ~%MOD_FOLDER%/lib/bgee_fixpack.tph~
-
-/////                                                  \\\\\
-///// Exe patching                                     \\\\\
-/////                                                  \\\\\
-
-OUTER_SET found_exe = 0
-ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-	ACTION_IF FILE_EXISTS ~Baldur.exe~ BEGIN
-		COPY ~Baldur.exe~ ~Baldur.exe~
-		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua Baldur.exe~
-		OUTER_SET found_exe = 1
-	END
-END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
-	ACTION_IF FILE_EXISTS ~BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGate-macOS~ BEGIN
-		OUTER_SPRINT exec ~./BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGate-macOS~
-	END ELSE ACTION_IF FILE_EXISTS ~../MacOS/BaldursGate-macOS~ BEGIN
-		OUTER_SPRINT exec ~../MacOS/BaldursGate-macOS~
-	END ELSE ACTION_IF FILE_EXISTS ~BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~ BEGIN
-		OUTER_SPRINT exec ~./BaldursGateIIEnhancedEdition.app/Contents/MacOS/BaldursGateIIEnhancedEdition~
-	END ELSE ACTION_IF FILE_EXISTS ~../MacOS/BaldursGateIIEnhancedEdition~ BEGIN
-		OUTER_SPRINT exec ~../MacOS/BaldursGateIIEnhancedEdition~
-	END
-	ACTION_IF VARIABLE_IS_SET exec BEGIN
-		COPY ~%exec%~ ~%exec%~
-		AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua %exec%~
-		OUTER_SET found_exe = 1
-	END
-END ELSE BEGIN //unix
-	ACTION_FOR_EACH file IN BaldursGateII BaldursGateII64 BaldursGateIIEnhancedEdition BaldursGateIIEnhancedEdition64 BEGIN
-		ACTION_IF FILE_EXISTS ~%file%~ BEGIN
-			COPY ~%file%~ ~%file%~
-			AT_NOW ~%lua% %MOD_FOLDER%/lib/binary.lua ./%file%~
-			OUTER_SET found_exe = 1
-		END
-	END
-END
-ACTION_IF found_exe = 0 BEGIN
-	FAIL ~Baldur's Gate II executable not found~
-END
 
 /////                                                  \\\\\
 ///// Biffing                                          \\\\\

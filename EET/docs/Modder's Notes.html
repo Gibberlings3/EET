@@ -466,13 +466,13 @@ end
 <p>You can patch area files with WeiDU code during your mod installation. First retrieve the BIT number associated with BG1AREA from AREATYPE.IDS using this action command:</p>
 <div class="code">
 <pre>
-ADD_AREA_TYPE BG1AREA
+OUTER_SET BG1AREA = IDS_OF_SYMBOL (AREATYPE BG1AREA)
 </pre>
 </div>
 <p>And than patch area files with this code:</p>
 <div class="code">
 <pre>
-WRITE_SHORT 0x48 THIS | (1 << BG1AREA)
+WRITE_SHORT 0x48 THIS BOR BG1AREA
 </pre>
 </div>
 

@@ -231,6 +231,67 @@ ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
 END
 
 /////                                                  \\\\\
+///// DAYNITE/NITEDAY movies                           \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mve BEGIN
+	~DAYNITE~ => ~DAYNITE_~
+	~NITEDAY~ => ~NITEDAY_~
+END
+
+<<<<<<<< .../DAYNITE_NITEDAY-eb.baf
+IF
+  Time(DUSK_END)
+  !GlobalTimerNotExpired("K#TimerSunset","GLOBAL")
+  OR(6)
+    AreaCheckObject("%SOURCE_RES%",Player1)
+    AreaCheckObject("%SOURCE_RES%",Player2)
+    AreaCheckObject("%SOURCE_RES%",Player3)
+    AreaCheckObject("%SOURCE_RES%",Player4)
+    AreaCheckObject("%SOURCE_RES%",Player5)
+    AreaCheckObject("%SOURCE_RES%",Player6)
+THEN
+  RESPONSE #100
+    StartMovie("%DAYNITE%")
+    SetGlobalTimer("K#TimerSunset","GLOBAL",ONE_HOUR)
+END
+
+IF
+  Time(DAWN_END)
+  !GlobalTimerNotExpired("K#TimerSunrise","GLOBAL")
+  OR(6)
+    AreaCheckObject("%SOURCE_RES%",Player1)
+    AreaCheckObject("%SOURCE_RES%",Player2)
+    AreaCheckObject("%SOURCE_RES%",Player3)
+    AreaCheckObject("%SOURCE_RES%",Player4)
+    AreaCheckObject("%SOURCE_RES%",Player5)
+    AreaCheckObject("%SOURCE_RES%",Player6)
+THEN
+  RESPONSE #100
+    StartMovie("%NITEDAY%")
+    SetGlobalTimer("K#TimerSunrise","GLOBAL",ONE_HOUR)
+END
+>>>>>>>>
+
+OUTER_SET BG1AREA = IDS_OF_SYMBOL (AREATYPE BG1AREA)
+COPY_EXISTING_REGEXP GLOB ~.*\.ARE~ ~override~
+	READ_SHORT 0x48 flags
+	PATCH_IF (flags BAND BIT0) AND (flags BAND BIT1) AND (flags BAND BIT3) AND (flags BAND BIT6) BEGIN
+		PATCH_IF (flags BAND BG1AREA) != 0 BEGIN
+			SPRINT ~DAYNITE~ ~BGSUNSET~
+			SPRINT ~NITEDAY~ ~BGSUNRIS~
+		END ELSE BEGIN
+			SPRINT ~DAYNITE~ ~DAYNITE_~
+			SPRINT ~NITEDAY~ ~NITEDAY_~
+		END
+		INNER_ACTION BEGIN
+			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~ EVALUATE_BUFFER
+			PRINT ~%DAYNITE%/%NITEDAY% movies added to %SOURCE_RES%.BCS~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// Patch files                                      \\\\\
 /////                                                  \\\\\
 
@@ -238,6 +299,7 @@ OUTER_SPRINT remappedPrefix ~remapped~
 OUTER_SET strrefAdd = 0
 OUTER_SET ddsClonning = 0
 OUTER_SET traifyDLG = 0
+OUTER_SET skipTpBafD = 0
 INCLUDE ~EET/lib/macros.tph~
 
 COPY_EXISTING_REGEXP GLOB ~.+\.DLG$~ ~override~
