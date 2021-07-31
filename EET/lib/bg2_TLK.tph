@@ -174,3 +174,30 @@ STRING_SET 103204 @4000224 //000000031-Chapter 22 Start
 
 STRING_SET 23084 @4000300 //Traveling Hours -> Hours
 STRING_SET 5684 @4000301 //Destination Unreachable -> Unreachable
+
+/////                                                  \\\\\
+///// AoN BGEE audio references                        \\\\\
+/////                                                  \\\\\
+
+ACTION_FOR_EACH i IN 233196 233202 233208 233214 233220 233226 233232 233195 233201 233207 233213 233219 233225 233231 233199 233205 233211 233217 233223 233229 233235 233200 233206 233212 233218 233224 233230 233236 BEGIN
+	ACTION_GET_STRREF i male
+	ACTION_GET_STRREF_F i female
+	ACTION_GET_STRREF_S i male_sound
+	ACTION_GET_STRREF_FS i female_sound
+	OUTER_SET updated = 0
+	ACTION_FOR_EACH var IN male_sound female_sound BEGIN
+		OUTER_SPRINT source EVAL ~%%var%%~
+		ACTION_IF (~%source%~ STR_CMP ~~) BEGIN
+			ACTION_TO_UPPER source
+			ACTION_IF (VARIABLE_IS_SET $remapped_aon(~%source%~)) BEGIN
+				OUTER_TEXT_SPRINT match $remapped_aon(~%source%~)
+				PRINT ~Patching TLK %var% at %i% entry: %source% => %match% - WAV (AoN)~
+				OUTER_SET updated = 1
+				OUTER_SPRINT EVAL ~%var%~ ~%match%~
+			END
+		END
+	END
+	ACTION_IF (updated = 1) BEGIN
+		STRING_SET_EVALUATE i ~%male%~ [%male_sound%] ~%female%~ [%female_sound%]
+	END
+END
