@@ -1815,6 +1815,10 @@ END
 
 COPY ~%patch_dir%/spl~ ~override~
 
+//update op318s in SoD dragon breath after rename
+COPY_EXISTING ~BGDGBRHT.SPL~ ~override~
+	LPF ALTER_EFFECT STR_VAR match_resource = ~DRGRBRHT~ resource = ~BGDGBRHT~ END
+
 /////                                                  \\\\\
 ///// STO                                              \\\\\
 /////                                                  \\\\\
