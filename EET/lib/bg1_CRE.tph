@@ -650,3 +650,14 @@ COPY_EXISTING ~YESLIC.CRE~ ~override~
 		WRITE_LONG (0xa4 + nm * 0x4) ~-1~
 	END
 BUT_ONLY
+
+/////                                                            \\\\\
+///// SoD green dragons share filename with ToB attack           \\\\\
+///// sectypes differ, so DRGRBRHT -> BGDGBRHT rename            \\\\\
+/////                                                            \\\\\
+
+ACTION_FOR_EACH file IN BDDRGGRY BDMORENT BDURE4A BDZIATAR BEGIN
+	COPY_EXISTING ~%file%.CRE~ ~override~
+		LPF ALTER_EFFECT STR_VAR match_resource = ~DRGRBRHT~ resource = ~BGDGBRHT~ END
+	BUT_ONLY
+END

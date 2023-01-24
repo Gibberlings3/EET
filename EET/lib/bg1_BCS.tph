@@ -2065,6 +2065,26 @@ COPY_EXISTING ~FTOWBEZ.BCS~ ~override~
 	END
 BUT_ONLY
 
+/////                                                            \\\\\
+///// SoD green dragons share filename with ToB attack           \\\\\
+///// sectypes differ, so DRGRBRHT -> BGDGBRHT rename            \\\\\
+/////                                                            \\\\\
+
+ACTION_FOR_EACH file IN BDDRGGRY BDHALFGR BDMORENT BEGIN
+	COPY_EXISTING ~%file%.BCS~ ~override~
+		DECOMPILE_AND_PATCH BEGIN
+			SPRINT textToReplace ~DrGrBrHt~
+			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				REPLACE_TEXTUALLY ~%textToReplace%~ ~BGDGBRHT~
+				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+			END ELSE BEGIN
+				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			END
+		END
+	BUT_ONLY
+END
+
 //AJANTIS.BCS
 //ALBERT.BCS
 //ALORA.BCS
