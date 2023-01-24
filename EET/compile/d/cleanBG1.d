@@ -202,11 +202,3 @@ ADD_STATE_TRIGGER RBEREG 6 ~GlobalLT("Chapter","GLOBAL",8)~ 15 18 19
 
 REPLACE_STATE_TRIGGER RFRIEN 1 ~Global("Chapter","GLOBAL",7)~
 REPLACE_STATE_TRIGGER RFRIEN 3 ~GlobalLT("Chapter","GLOBAL",8)~ 4 5 6
-
-/////                                                  \\\\\
-///// workaround for engine differences                \\\\\
-/////                                                  \\\\\
-
-//local scripts are not processing after MakeUnselectable is used
-REPLACE_TRIGGER_TEXT SHARTJ ~ActionOverride("DORN",MakeUnselectable(1000))[%newline%]*MakeUnselectable(1000)~ ~ReallyForceSpellRES("K#UNSELE","SHARTEEL")
-ReallyForceSpellRES("K#UNSELE","DORN")~

@@ -1556,6 +1556,27 @@ COMPILE ~%patch_dir%/d~
 	~%MOD_FOLDER%/compile/d~
 
 /////                                                  \\\\\
+///// workaround for engine differences                \\\\\
+/////                                                  \\\\\
+
+//local scripts are not processing after MakeUnselectable is used
+//including this in cleanBG1.d fails on newline pattern matching
+COPY_EXISTING ~SHARTJ.DLG~ ~override~
+	DECOMPILE_AND_PATCH BEGIN
+		SPRINT textToReplace ~ActionOverride("DORN",MakeUnselectable(1000))
+MakeUnselectable(1000)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#UNSELE","SHARTEEL")
+			ReallyForceSpellRES("K#UNSELE","DORN")~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
+	END
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// EFF                                              \\\\\
 /////                                                  \\\\\
 
