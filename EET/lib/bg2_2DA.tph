@@ -331,6 +331,19 @@ COPY + ~%MOD_FOLDER%/temp/array/CHARSND.2DA~ ~%MOD_FOLDER%/temp/array~
 	END
 COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
 	REPLACE_TEXTUALLY ~dummy_entry~ ~~
+	// substitute story-specific AoN responses with more general ones
+	// BDTPAM08 ("Bhaalspawn" sounds a bit rude, when you think about it.) -> BDTPAM_7 (A hero's work is never done. So, get to work and stop bothering me.)
+	REPLACE_TEXTUALLY ~103542~ ~271378~
+	// BDTPEH08 (Am I the only person who remembers that march on Dragonspear Castle?) -> BDTPEH_7 (You wanna get striked?)
+	REPLACE_TEXTUALLY ~103566~ ~271394~
+	// BDTPEH09 (Bet you can't say Athkatla ten times fast.) -> BDTPEH_4 (Ow! My eye!)
+	REPLACE_TEXTUALLY ~103567~ ~233224~
+	// BDTPSD08 (I have this strange feeling I've forgotten something...) -> BDTPSD_8 (I'll always remember this adventure. And how you behaved.)
+	REPLACE_TEXTUALLY ~103572~ ~271399~
+	// BDTPSD09 (Not today, Belhifet!) -> BDTPSD_4 (Why do you persist in this foolishness?)
+	REPLACE_TEXTUALLY ~103573~ ~233230~
+	// BDTPTO09 (You remind me of that mouthy gnome.) -> BDTPTO_8 (Remember Dorn, the blackguard? He looked strangely familiar...)
+	REPLACE_TEXTUALLY ~103579~ ~271403~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 

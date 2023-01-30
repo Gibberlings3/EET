@@ -355,6 +355,25 @@ ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids miss
 END
 
 /////                                                  \\\\\
+///// Adventurers of Neverwinter                       \\\\\
+///// Collect SoD "become leader" lines                \\\\\
+/////                                                  \\\\\
+
+PRINT ~~
+PRINT ~Collect SoD AoN "Become Leader" responses...~
+
+ACTION_FOR_EACH file IN bdtpagb.wav bdtpamb.wav bdtpbeb.wav bdtpdgb.wav bdtpehb.wav bdtpsdb.wav bdtptob.wav BEGIN
+	ACTION_IF (FILE_EXISTS ~%bgee_dir%/lang/en_US/sounds/%file%~) BEGIN
+		COPY_LARGE + ~%bgee_dir%/lang/en_US/sounds/%file%~ ~%MOD_FOLDER%/temp/wav~
+	END
+END
+
+ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/lib/prep_AON.tph~ AND FILE_EXISTS ~%MOD_FOLDER%/temp/wav/bdtpagb.wav~ BEGIN
+	INCLUDE ~%MOD_FOLDER%/lib/prep_AON.tph~
+END
+
+
+/////                                                  \\\\\
 ///// BG2:EE files patching                            \\\\\
 /////                                                  \\\\\
 

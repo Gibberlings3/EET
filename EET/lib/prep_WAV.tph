@@ -163,6 +163,64 @@ ACTION_IF NOT ~%LANGUAGE_BG2%~ STR_EQ ~de_DE~ BEGIN
 		~%MOD_FOLDER%/temp/wav/CHANT220.WAV~
 END
 
+// 2.6 Adventurers of Neverwinter - suffixed responses b, 01, 08 and 09 differ between BGEE, SoD and BG2EE
+// On all platforms, SoD masks out BGEE
+ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/temp/wav/bdtpag00.WAV~ BEGIN
+	// include BGEE
+	COPY_LARGE + ~%MOD_FOLDER%/base/wav/BDTPAG_1.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAG_1.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPAG_2.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAG_2.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPAG_3.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAG_3.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPAG_4.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAG_4.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPAM_1.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAM_1.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPAM_2.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAM_2.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPAM_3.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAM_3.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPAM_4.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAM_4.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPBE_1.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPBE_1.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPBE_2.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPBE_2.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPBE_3.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPBE_3.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPBE_4.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPBE_4.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPDG_1.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPDG_1.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPDG_2.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPDG_2.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPDG_3.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPDG_3.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPDG_4.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPDG_4.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPEH_1.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPEH_1.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPEH_2.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPEH_2.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPEH_3.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPEH_3.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPEH_4.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPEH_4.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPSD_1.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPSD_1.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPSD_2.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPSD_2.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPSD_3.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPSD_3.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPSD_4.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPSD_4.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPTO_1.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPTO_1.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPTO_2.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPTO_2.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPTO_3.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPTO_3.WAV~
+		~%MOD_FOLDER%/base/wav/BDTPTO_4.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPTO_4.WAV~
+
+	// rename SoD
+	// become leader (b) files are collected separately
+	COPY_LARGE + ~%MOD_FOLDER%/temp/wav/bdtpag01.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAG_6.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag08.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAG_7.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag09.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAG_8.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam01.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAM_6.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam08.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAM_7.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam09.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPAM_8.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe01.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPBE_6.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe08.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPBE_7.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe09.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPBE_8.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg01.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPDG_6.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg08.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPDG_7.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg09.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPDG_8.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh01.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPEH_6.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh08.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPEH_7.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh09.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPEH_8.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd01.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPSD_6.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd08.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPSD_7.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd09.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPSD_8.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto01.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPTO_6.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto08.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPTO_7.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto09.WAV~ ~%MOD_FOLDER%/temp/wav/BDTPTO_8.WAV~
+END
+
 //renamed
 DELETE + ~%MOD_FOLDER%/temp/wav/EFF_M46.WAV~
 	~%MOD_FOLDER%/temp/wav/BLACK01.WAV~
@@ -3357,3 +3415,126 @@ DELETE + ~%MOD_FOLDER%/temp/wav/EFF_M46.WAV~
 	~%MOD_FOLDER%/temp/wav/ZOMBI06.WAV~
 	~%MOD_FOLDER%/temp/wav/ZOMBI08.WAV~
 	~%MOD_FOLDER%/temp/wav/ZOMBI09.WAV~
+
+//2.6 Adventures of Neverwinter voice pack duplicates
+ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/temp/wav/bdtpag00.WAV~ BEGIN
+	DELETE + ~%MOD_FOLDER%/temp/wav/bdtpag00.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag01.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag02.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag03.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag04.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag05.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag06.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag07.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag08.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag09.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag10.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag11.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag12.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag13.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag14.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag15.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag16.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpag00.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam01.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam02.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam03.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam04.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam05.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam06.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam07.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam08.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam09.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam10.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam11.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam12.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam13.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam14.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam15.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpam16.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe00.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe01.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe02.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe03.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe04.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe05.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe06.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe07.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe08.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe09.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe10.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe11.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe12.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe13.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe14.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe15.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpbe16.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg00.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg01.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg02.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg03.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg04.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg05.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg06.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg07.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg08.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg09.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg10.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg11.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg12.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg13.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg14.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg15.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpdg16.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh00.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh01.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh02.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh03.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh04.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh05.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh06.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh07.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh08.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh09.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh10.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh11.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh12.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh13.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh14.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh15.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpeh16.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd00.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd01.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd02.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd03.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd04.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd05.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd06.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd07.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd08.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd09.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd10.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd11.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd12.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd13.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd14.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd15.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpsd16.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto00.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto01.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto02.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto03.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto04.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto05.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto06.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto07.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto08.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto09.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto10.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto11.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto12.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto13.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto14.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto15.WAV~
+		~%MOD_FOLDER%/temp/wav/bdtpto16.WAV~
+END
