@@ -163,6 +163,23 @@ ACTION_IF NOT ~%LANGUAGE_BG2%~ STR_EQ ~de_DE~ BEGIN
 		~%MOD_FOLDER%/temp/wav/CHANT220.WAV~
 END
 
+// Some sets were rerecorded between BG1 and BG2, restore BG1
+COPY_LARGE + ~%MOD_FOLDER%/temp/wav/GAMES01.WAV~ ~%MOD_FOLDER%/temp/wav/GAMES01_.WAV~
+	~%MOD_FOLDER%/temp/wav/GAMES02.WAV~ ~%MOD_FOLDER%/temp/wav/GAMES02_.WAV~
+	~%MOD_FOLDER%/temp/wav/GAMES03.WAV~ ~%MOD_FOLDER%/temp/wav/GAMES03_.WAV~
+	~%MOD_FOLDER%/temp/wav/GAMES04.WAV~ ~%MOD_FOLDER%/temp/wav/GAMES04_.WAV~
+	~%MOD_FOLDER%/temp/wav/GAMES05.WAV~ ~%MOD_FOLDER%/temp/wav/GAMES05_.WAV~
+	~%MOD_FOLDER%/temp/wav/GAMES06.WAV~ ~%MOD_FOLDER%/temp/wav/GAMES06_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFG02.WAV~ ~%MOD_FOLDER%/temp/wav/GENFG02_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFG07.WAV~ ~%MOD_FOLDER%/temp/wav/GENFG07_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFG08.WAV~ ~%MOD_FOLDER%/temp/wav/GENFG08_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFG09.WAV~ ~%MOD_FOLDER%/temp/wav/GENFG09_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFG12.WAV~ ~%MOD_FOLDER%/temp/wav/GENFG12_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFT05.WAV~ ~%MOD_FOLDER%/temp/wav/GENFT05_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFT07.WAV~ ~%MOD_FOLDER%/temp/wav/GENFT07_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENFT10.WAV~ ~%MOD_FOLDER%/temp/wav/GENFT10_.WAV~
+	~%MOD_FOLDER%/temp/wav/GENMG08.WAV~ ~%MOD_FOLDER%/temp/wav/GENMG08_.WAV~
+
 // 2.6 Adventurers of Neverwinter - suffixed responses b, 01, 08 and 09 differ between BGEE, SoD and BG2EE
 // On all platforms, SoD masks out BGEE
 ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/temp/wav/bdtpag00.WAV~ BEGIN
