@@ -569,6 +569,68 @@ ACTION_FOR_EACH file IN IMOEN_ IMOEN IMOEN2 IMOE25 BEGIN
 END
 
 /////                                                  \\\\\
+///// fix BG:EE -> SoD soundset transition             \\\\\
+/////                                                  \\\\\
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY moved_soundslots BEGIN
+  ~SELECT_ACTION4~ => ~BG2EE_SELECT_RARE1~
+  ~SELECT_ACTION5~ => ~BG2EE_SELECT_RARE2~
+  ~SELECT_ACTION6~ => ~BG2EE_SELECT_RARE3~
+  ~SELECT_ACTION7~ => ~BG2EE_SELECT_RARE4~
+  /* deferred; EE Fixpack
+  ~BGEE_ACTION4~ => ~SELECT_ACTION4~
+  ~BGEE_ACTION5~ => ~SELECT_ACTION5~
+  ~BGEE_ACTION6~ => ~SELECT_ACTION6~
+  ~BGEE_ACTION7~ => ~SELECT_ACTION7~
+  */
+END
+
+ACTION_FOR_EACH file IN BDBAELOT BDDORN BDDYNAHE BDEDWIN BDKHALID BDMINSC BDRASAAD BDSAFANA BDVICONI BEGIN
+  COPY_EXISTING ~%file%.BCS~ ~override~
+    PATCH_PHP_EACH moved_soundslots AS bg1slot => bg2slot BEGIN
+  	  DECOMPILE_AND_PATCH BEGIN
+  	  	SPRINT textToReplace ~%bg1slot%~
+  	  	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+  	  	PATCH_IF (num_matches > 0) BEGIN
+  	  		REPLACE_TEXTUALLY ~%textToReplace%~ ~%bg2slot%~
+  	  		PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+  	  	END ELSE BEGIN
+  	  		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+  	  	END
+  	  END
+    END
+  BUT_ONLY
+END
+
+//Neera only has SELECT_ACTION4 and SELECT_ACTION5
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY neera_moved_soundslots BEGIN
+  ~SELECT_ACTION4~ => ~BG2EE_SELECT_RARE1~
+  ~SELECT_ACTION5~ => ~BG2EE_SELECT_RARE2~
+  /* deferred; EE Fixpack
+  ~BGEE_ACTION4~ => ~SELECT_ACTION4~
+  ~BGEE_ACTION5~ => ~SELECT_ACTION5~
+  ~BGEE_ACTION6~ => ~SELECT_ACTION6~
+  ~BGEE_ACTION7~ => ~SELECT_ACTION7~
+  */
+END
+
+COPY_EXISTING ~BDNEERA.BCS~ ~override~
+  PATCH_PHP_EACH neera_moved_soundslots AS bg1slot => bg2slot BEGIN
+	  DECOMPILE_AND_PATCH BEGIN
+	  	SPRINT textToReplace ~%bg1slot%~
+	  	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+	  	PATCH_IF (num_matches > 0) BEGIN
+	  		REPLACE_TEXTUALLY ~%textToReplace%~ ~%bg2slot%~
+	  		PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+	  	END ELSE BEGIN
+	  		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+	  	END
+	  END
+  END
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// added by BG:EE                                   \\\\\
 /////                                                  \\\\\
 
