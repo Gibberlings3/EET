@@ -676,6 +676,14 @@ COPY_EXISTING ~BDBALDUR.BCS~ ~override~
 		END ELSE BEGIN
 			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 		END
+		SPRINT textToReplace ~\([^!]StoryModeOn()[%newline%]*!CheckSpellState(Player[2-6],STORY_MODE)[%newline%]*InParty(Player[2-6])\)~
+		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+		PATCH_IF (num_matches > 0) BEGIN
+			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1 !AreaCheck("BD6100")~
+			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+		END ELSE BEGIN
+			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+		END
 	END
 BUT_ONLY
 
@@ -1320,6 +1328,11 @@ THEN
     SetGlobal("K#StoryMode","BD6100",1)
     SetGlobal("OHSMODE","GLOBAL",-1)
     ReallyForceSpellDeadRES("OHSMODE2",Player1)
+    ReallyForceSpellDeadRES("OHSMODE2",Player2)
+    ReallyForceSpellDeadRES("OHSMODE2",Player3)
+    ReallyForceSpellDeadRES("OHSMODE2",Player4)
+    ReallyForceSpellDeadRES("OHSMODE2",Player5)
+    ReallyForceSpellDeadRES("OHSMODE2",Player6)
     Continue()
 END
 >>>>>>>>
