@@ -561,14 +561,14 @@ ACTION_FOR_EACH file IN IMOEN_ IMOEN IMOEN2 IMOE25 BEGIN
 	EXTEND_BOTTOM ~%file%.BCS~ ~.../IMOEN-eb.baf~
 	COPY_EXISTING  ~%file%.BCS~ ~override~
 		DECOMPILE_AND_PATCH BEGIN
-      SPRINT textToReplace ~SetInterrupt(FALSE)[%newline%]*SetGlobal("BD_JOINXP","LOCALS",1)\(\([%newline%]*ChangeStat(Myself,XP,[0-9]+,SET)\)?[%newline%]*SetInterrupt(TRUE)\)~
-      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-      PATCH_IF (num_matches > 0) BEGIN
-        REPLACE_TEXTUALLY ~%textToReplace%~ ~SetInterrupt(FALSE) SetGlobal("BD_JOINXP","LOCALS",2) \1~
-        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-      END ELSE BEGIN
-        PATCH_PRINT ~Patching: could not find %textToReplace% in %SOURCE_FILESPEC%~
-      END
+			SPRINT textToReplace ~SetInterrupt(FALSE)[%newline%]*SetGlobal("BD_JOINXP","LOCALS",1)\(\([%newline%]*ChangeStat(Myself,XP,[0-9]+,SET)\)?[%newline%]*SetInterrupt(TRUE)\)~
+			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+			PATCH_IF (num_matches > 0) BEGIN
+				REPLACE_TEXTUALLY ~%textToReplace%~ ~SetInterrupt(FALSE) SetGlobal("BD_JOINXP","LOCALS",2) \1~
+				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+			END ELSE BEGIN
+				PATCH_PRINT ~Patching: could not find %textToReplace% in %SOURCE_FILESPEC%~
+			END
 		END
 	BUT_ONLY
 END
