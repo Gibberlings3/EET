@@ -1921,10 +1921,11 @@ MKDIR ~lang/%LANGUAGE_BG2%/movies~
 //BG1 movies with voice over
 ACTION_BASH_FOR ~%MOD_FOLDER%/base/lmovies~ ~^.+\.wbm$~ BEGIN
 	ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/%BASH_FOR_RES%.ogg~) BEGIN
-		AT_NOW ~%ffmpeg% -i %MOD_FOLDER%%os_slash%base%os_slash%lmovies%os_slash%%BASH_FOR_RES%.wbm -i %MOD_FOLDER%%os_slash%lang%os_slash%%LANGUAGE%%os_slash%movies%os_slash%%BASH_FOR_RES%.ogg -acodec copy -vcodec copy %MOD_FOLDER%%os_slash%temp%os_slash%%BASH_FOR_RES%.webm~
+		OUTER_SPRINT lang_folder ~%LANGUAGE%~
 	END ELSE BEGIN
-		AT_NOW ~%ffmpeg% -i %MOD_FOLDER%%os_slash%base%os_slash%lmovies%os_slash%%BASH_FOR_RES%.wbm -i %MOD_FOLDER%%os_slash%lang%os_slash%en_US%os_slash%movies%os_slash%%BASH_FOR_RES%.ogg -acodec copy -vcodec copy %MOD_FOLDER%%os_slash%temp%os_slash%%BASH_FOR_RES%.webm~
+		OUTER_SPRINT lang_folder ~en_US~
 	END
+	AT_NOW ~%ffmpeg% -i %MOD_FOLDER%%os_slash%base%os_slash%lmovies%os_slash%%BASH_FOR_RES%.wbm -i %MOD_FOLDER%%os_slash%lang%os_slash%%lang_folder%%os_slash%movies%os_slash%%BASH_FOR_RES%.ogg -acodec copy -vcodec copy %MOD_FOLDER%%os_slash%temp%os_slash%%BASH_FOR_RES%.webm~
 	COPY_LARGE ~%MOD_FOLDER%/temp/%BASH_FOR_RES%.webm~ ~lang/%LANGUAGE_BG2%/movies/%BASH_FOR_RES%.wbm~
 END
 
