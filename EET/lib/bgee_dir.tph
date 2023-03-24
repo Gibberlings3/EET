@@ -25,7 +25,20 @@ echo %%var%%>%MOD_FOLDER%/temp/programfiles.txt
 			OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
 				REPLACE_TEXTUALLY ~%WNL%~ ~~ //needed due to newline added by windows > command
 			END
-			ACTION_FOR_EACH dir IN ~%dir%/BeamDog/Games/00806~ ~%dir%/Baldur's Gate Enhanced Edition/Data/00806~ ~%dir%/GalaxyClient/Games/Baldur's Gate Enhanced Edition~ ~C:/GOG Games/Baldur's Gate - Enhanced Edition~ ~%dir%/Steam/steamapps/common/Baldur's Gate Enhanced Edition~ ~../Baldur's Gate - Enhanced Edition~ ~../00806~ BEGIN
+			ACTION_FOR_EACH dir IN
+				~%dir%/BeamDog/Games/00806~
+				~%dir%/Baldur's Gate Enhanced Edition/Data/00806~
+				~%dir%/Baldur's Gate Siege of Dragonspear/Data/00806~
+				~%dir%/GalaxyClient/Games/Baldur's Gate Enhanced Edition~
+				~C:/GOG Games/Baldur's Gate - Enhanced Edition~
+				~%dir%/Steam/steamapps/common/Baldur's Gate Enhanced Edition~
+				~../Baldur's Gate - Enhanced Edition~
+				~../Baldur's Gate Enhanced Edition~
+				~../Baldur's Gate Siege of Dragonspear~
+				~../00806~
+				~../../../Baldur's Gate Enhanced Edition/Data/00806~
+				~../../../Baldur's Gate Siege of Dragonspear/Data/00806~
+			BEGIN
 				ACTION_IF (FILE_EXISTS ~%dir%/movies/sodcin05.wbm~) AND (valid_dir = 0) AND (NOT VARIABLE_IS_SET $log_dir(~%dir%~)) BEGIN
 					ACTION_DEFINE_ASSOCIATIVE_ARRAY log_dir BEGIN ~%dir%~ => ~dummy~ END
 					OUTER_SPRINT bgee_dir ~%dir%~
@@ -43,7 +56,13 @@ echo %%var%%>%MOD_FOLDER%/temp/programfiles.txt
 		END
 	END
 END ELSE BEGIN //osx, unix
-	ACTION_FOR_EACH dir IN ~%quote%/Applications/Baldur's Gate - Enhanced Edition/Game Data/00806/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Contents/Resources%quote%~ ~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ ~%quote%/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~ BEGIN
+	ACTION_FOR_EACH dir IN
+		~%quote%/Applications/Baldur's Gate - Enhanced Edition/Game Data/00806/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
+		~%quote%/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
+		~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Contents/Resources%quote%~
+		~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
+		~%quote%/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
+	BEGIN
 		ACTION_IF (FILE_EXISTS ~%dir%/movies/sodcin05.wbm~) AND (valid_dir = 0) AND (NOT VARIABLE_IS_SET $log_dir(~%dir%~)) BEGIN
 			ACTION_DEFINE_ASSOCIATIVE_ARRAY log_dir BEGIN ~%dir%~ => ~dummy~ END
 			OUTER_SPRINT bgee_dir ~%dir%~
