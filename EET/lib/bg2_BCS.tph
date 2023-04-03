@@ -2027,6 +2027,28 @@ EXTEND_TOP ~AR0304.BCS~ ~.../AR0304-et.baf~
 
 <<<<<<<< .../AR0602-et.baf
 IF
+  !Global("ENDOFBG1","GLOBAL",0)
+  Global("K#NewGame","AR0602",0)
+THEN
+  RESPONSE #100
+    SetCursorState(TRUE)
+    // Order of placement is relevant
+    ActionOverride(Player6,JumpToPoint([3889.2479]))
+    ActionOverride(Player6,Face(SSE))
+    ActionOverride(Player5,JumpToPoint([3824.2447]))
+    ActionOverride(Player5,Face(E))
+    ActionOverride(Player4,JumpToPoint([3374.3068]))
+    ActionOverride(Player4,Face(NNE))
+    ActionOverride(Player3,JumpToPoint([3532.2956]))
+    ActionOverride(Player3,Face(NW))
+    ActionOverride(Player2,JumpToPoint([3585.2917]))
+    ActionOverride(Player2,Face(SSW))
+    ActionOverride(Player1,JumpToPoint([3741.2801]))
+    ActionOverride(Player1,Face(S))
+    Continue()
+END
+
+IF
   Global("K#ImoenImport","AR0602",0)
   BeenInParty("Imoen2")
   GlobalLT("chapter","GLOBAL",20)
@@ -2048,87 +2070,6 @@ THEN
     ActionOverride("Imoen2",CreateItem("IMOENHP1",1,0,0)) // Imoen's Belt
     ActionOverride("Imoen2",FillSlot(SLOT_BELT))
     ReallyForceSpellRES("K#PORIMO","Imoen2") // No such index
-    SetPlayerSound("Imoen2",-1,INITIAL_MEETING) // No such index
-    SetPlayerSound("Imoen2",11037,MORALE) // No, no! No, I'm not gonna end up dead in this place! I have to get out! I have to get to the surface!
-    SetPlayerSound("Imoen2",30726,HAPPY) // Now I remember why traveling with you was always so much fun.
-    SetPlayerSound("Imoen2",4338,UNHAPPY_ANNOYED) // I'll stick with you no matter what, but we should still try and be decent to people.
-    SetPlayerSound("Imoen2",30727,UNHAPPY_SERIOUS) // I think all this has really changed you. Come on, this isn't like us at all.
-    SetPlayerSound("Imoen2",-1,UNHAPPY_BREAKING_POINT) // No such index
-    SetPlayerSound("Imoen2",4337,LEADER) // Aww, come on. I'm not cut out for the leadership stuff.
-    SetPlayerSound("Imoen2",4339,TIRED) // *yawn* I'm getting sleepy. Wish we could stop for a bit.
-    SetPlayerSound("Imoen2",4333,BORED) // If we're going to do nothing, let's at least find a safer place to do it.
-    SetPlayerSound("Imoen2",11035,BATTLE_CRY1) // My blade will cut you down to size!
-    SetPlayerSound("Imoen2",30729,BATTLE_CRY2) // If I have to fight to get out of here, so be it!
-    SetPlayerSound("Imoen2",30730,BATTLE_CRY3) // You're not gonna keep me here!
-    SetPlayerSound("Imoen2",-1,BATTLE_CRY4) // No such index
-    SetPlayerSound("Imoen2",-1,BATTLE_CRY5) // No such index
-    SetPlayerSound("Imoen2",-1,ATTACK1) // No such index
-    SetPlayerSound("Imoen2",-1,ATTACK2) // No such index
-    SetPlayerSound("Imoen2",-1,ATTACK3) // No such index
-    SetPlayerSound("Imoen2",-1,ATTACK4) // No such index
-    SetPlayerSound("Imoen2",5395,DAMAGE) // 
-    SetPlayerSound("Imoen2",5396,DYING) // 
-    SetPlayerSound("Imoen2",4330,HURT) // Come on, now, don't let me suffer in this place. We've both had enough of that.
-    SetPlayerSound("Imoen2",30731,AREA_FOREST) // I wish I could spend more time in the forest. Oh, it feels so alive.
-    SetPlayerSound("Imoen2",30732,AREA_CITY) // I don't feel like I fit in with people in the city anymore.
-    SetPlayerSound("Imoen2",11036,AREA_DUNGEON) // This place is just too darn creepy. I really want out of here.
-    SetPlayerSound("Imoen2",30733,AREA_DAY) // Glad to see another day. I think the light hurts my eyes though.
-    SetPlayerSound("Imoen2",30734,AREA_NIGHT) // Might as well be up and about. I don't think I'd sleep anyway.
-    SetPlayerSound("Imoen2",30735,SELECT_COMMON1) // Yep?
-    SetPlayerSound("Imoen2",30736,SELECT_COMMON2) // Whatchu want?
-    SetPlayerSound("Imoen2",30737,SELECT_COMMON3) // Name it.
-    SetPlayerSound("Imoen2",30738,SELECT_COMMON4) // Ready and willing.
-    SetPlayerSound("Imoen2",30739,SELECT_COMMON5) // Somethin' up?
-    SetPlayerSound("Imoen2",30740,SELECT_COMMON6) // Time to move?
-    SetPlayerSound("Imoen2",11038,SELECT_ACTION1) // Gotcha.
-    SetPlayerSound("Imoen2",11039,SELECT_ACTION2) // Good to go.
-    SetPlayerSound("Imoen2",4335,SELECT_ACTION3) // Right you are.
-    SetPlayerSound("Imoen2",4336,SELECT_ACTION4) // All right, all right.
-    SetPlayerSound("Imoen2",11043,SELECT_ACTION5) // No problem at all.
-    SetPlayerSound("Imoen2",11042,SELECT_ACTION6) // You can count on me!
-    SetPlayerSound("Imoen2",11045,SELECT_ACTION7) // This way then?
-    SetPlayerSound("Imoen2",-1,INTERACTION1) // No such index
-    SetPlayerSound("Imoen2",-1,INTERACTION1) // No such index
-    SetPlayerSound("Imoen2",-1,INTERACTION2) // No such index
-    SetPlayerSound("Imoen2",-1,INTERACTION3) // No such index
-    SetPlayerSound("Imoen2",-1,INTERACTION4) // No such index
-    SetPlayerSound("Imoen2",-1,INTERACTION5) // No such index
-    SetPlayerSound("Imoen2",-1,INSULT1) // No such index
-    SetPlayerSound("Imoen2",-1,INSULT2) // No such index
-    SetPlayerSound("Imoen2",-1,INSULT3) // No such index
-    SetPlayerSound("Imoen2",-1,COMPLIMENT1) // No such index
-    SetPlayerSound("Imoen2",-1,COMPLIMENT2) // No such index
-    SetPlayerSound("Imoen2",-1,COMPLIMENT3) // No such index
-    SetPlayerSound("Imoen2",-1,SPECIAL1) // No such index
-    SetPlayerSound("Imoen2",-1,SPECIAL2) // No such index
-    SetPlayerSound("Imoen2",-1,SPECIAL3) // No such index
-    SetPlayerSound("Imoen2",-1,REACT_TO_DIE_GENERAL) // No such index
-    SetPlayerSound("Imoen2",-1,REACT_TO_DIE_SPECIFIC) // No such index
-    SetPlayerSound("Imoen2",-1,MISCELLANEOUS) // No such index
-    SetPlayerSound("Imoen2",-1,RESPONSE_TO_COMPLIMENT2) // No such index
-    SetPlayerSound("Imoen2",-1,RESPONSE_TO_COMPLIMENT3) // No such index
-    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT1) // No such index
-    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT2) // No such index
-    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT3) // No such index
-    SetPlayerSound("Imoen2",-1,DIALOG_HOSTILE) // No such index
-    SetPlayerSound("Imoen2",-1,DIALOG_DEFAULT) // No such index
-    SetPlayerSound("Imoen2",30741,SELECT_RARE1) // Right as rain.
-    SetPlayerSound("Imoen2",30742,SELECT_RARE2) // Just like old times. Well, except for the torture and all.
-    SetPlayerSound("Imoen2",30746,CRITICAL_HIT) // Gotcha good!
-    SetPlayerSound("Imoen2",30747,CRITICAL_MISS) // Next time...
-    SetPlayerSound("Imoen2",30748,TARGET_IMMUNE) // Gotta try something else.
-    SetPlayerSound("Imoen2",30749,INVENTORY_FULL) // Sorry, but I couldn't hold that last item. It's on the ground.
-    SetPlayerSound("Imoen2",30750,PICKED_POCKET) // Easy as pie.
-    SetPlayerSound("Imoen2",30751,EXISTANCE1) // Now you see me, now you don't.
-    SetPlayerSound("Imoen2",30752,EXISTANCE2) // Ugh! The magic fizzled. 
-    SetPlayerSound("Imoen2",30753,EXISTANCE3) // Shh! It's set and ready to go.
-    SetPlayerSound("Imoen2",-1,EXISTANCE4) // No such index
-    SetPlayerSound("Imoen2",10233,EXISTANCE5) // IMOEN chuckles when you ask her about her past, assuming you are just trying to keep her mind on happier times and places. She indulges you, and certainly does cheer up when speaking of how you spent your youths together in Candlekeep. She arrived there the same as you, in the company of your foster father Gorion, but despite this similarity, she grew up much more carefree than you did. Indeed, her lighthearted outlook has long kept her immune to the hardships of the world, though the dark confines and horrors of your current location have definitely taken their toll.
-    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE1) // No such index
-    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE2) // No such index
-    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE3) // No such index
-    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE4) // No such index
-    SetGlobal("K#ImoenImport","AR0602",1)
     Continue()
 END
 
@@ -2165,87 +2106,6 @@ THEN
     ActionOverride("Jaheira",SetNumTimesTalkedTo(0))
     //ActionOverride("Jaheira",DestroyAllEquipment())
     ReallyForceSpellRES("K#PORJAH","Jaheira") // No such index
-    SetPlayerSound("Jaheira",-1,INITIAL_MEETING) // No such index
-    SetPlayerSound("Jaheira",4008,MORALE) // I will not fall here!
-    SetPlayerSound("Jaheira",4010,HAPPY) // Our actions are good, and will serve the greater balance.
-    SetPlayerSound("Jaheira",4011,UNHAPPY_ANNOYED) // I hope this is not a sign of things to come. We must strive to maintain balance.
-    SetPlayerSound("Jaheira",4012,UNHAPPY_SERIOUS) // This is no longer a matter that can be brushed aside! Change your ways or we shall be at odds!
-    SetPlayerSound("Jaheira",4013,UNHAPPY_BREAKING_POINT) // I... I cannot believe the change in this group! For the greater balance, I... I must oppose you!
-    SetPlayerSound("Jaheira",4014,LEADER) // As I have said before, you could not have made a better choice.
-    SetPlayerSound("Jaheira",4015,TIRED) // Rest would be welcome lest we endanger ourselves.
-    SetPlayerSound("Jaheira",4016,BORED) // It is strange that we stand about when there is so much to do.
-    SetPlayerSound("Jaheira",4009,BATTLE_CRY1) // For the fallen!
-    SetPlayerSound("Jaheira",30765,BATTLE_CRY2) // Fall, creature! And feed the earth!
-    SetPlayerSound("Jaheira",30766,BATTLE_CRY3) // Nature take the life she gave!
-    SetPlayerSound("Jaheira",-1,BATTLE_CRY4) // No such index
-    SetPlayerSound("Jaheira",-1,BATTLE_CRY5) // No such index
-    SetPlayerSound("Jaheira",-1,ATTACK1) // No such index
-    SetPlayerSound("Jaheira",-1,ATTACK2) // No such index
-    SetPlayerSound("Jaheira",-1,ATTACK3) // No such index
-    SetPlayerSound("Jaheira",-1,ATTACK4) // No such index
-    SetPlayerSound("Jaheira",5353,DAMAGE) // 
-    SetPlayerSound("Jaheira",5354,DYING) // 
-    SetPlayerSound("Jaheira",4017,HURT) // I will require healing if I am to be of use to the group.
-    SetPlayerSound("Jaheira",4018,AREA_FOREST) // I am at peace in the outdoor places, though it never seems to last.
-    SetPlayerSound("Jaheira",4019,AREA_CITY) // I have no patience for cities. Our stay had best be a short one.
-    SetPlayerSound("Jaheira",4020,AREA_DUNGEON) // Nature could find a home here if it were properly cleansed and balanced.
-    SetPlayerSound("Jaheira",5352,AREA_DAY) // I welcome each day we see. Some are not so lucky. 
-    SetPlayerSound("Jaheira",4021,AREA_NIGHT) // Nature has many children that call the darkness home. I am not one of them. 
-    SetPlayerSound("Jaheira",4022,SELECT_COMMON1) // Nature's servant awaits.
-    SetPlayerSound("Jaheira",4023,SELECT_COMMON2) // I await your need.
-    SetPlayerSound("Jaheira",54350,SELECT_COMMON3) // Yes?
-    SetPlayerSound("Jaheira",4024,SELECT_COMMON4) // I am ready.
-    SetPlayerSound("Jaheira",30767,SELECT_COMMON5) // It is about time.
-    SetPlayerSound("Jaheira",30768,SELECT_COMMON6) // Speak your mind.
-    SetPlayerSound("Jaheira",4025,SELECT_ACTION1) // It is done.
-    SetPlayerSound("Jaheira",30769,SELECT_ACTION2) // I am willing.
-    SetPlayerSound("Jaheira",4027,SELECT_ACTION3) // I go.
-    SetPlayerSound("Jaheira",4028,SELECT_ACTION4) // As I would have done.
-    SetPlayerSound("Jaheira",4029,SELECT_ACTION5) // If it will help.
-    SetPlayerSound("Jaheira",4030,SELECT_ACTION6) // I thought as much.
-    SetPlayerSound("Jaheira",4031,SELECT_ACTION7) // As you would have it.
-    SetPlayerSound("Jaheira",-1,INTERACTION1) // No such index
-    SetPlayerSound("Jaheira",-1,INTERACTION1) // No such index
-    SetPlayerSound("Jaheira",-1,INTERACTION2) // No such index
-    SetPlayerSound("Jaheira",-1,INTERACTION3) // No such index
-    SetPlayerSound("Jaheira",-1,INTERACTION4) // No such index
-    SetPlayerSound("Jaheira",-1,INTERACTION5) // No such index
-    SetPlayerSound("Jaheira",-1,INSULT1) // No such index
-    SetPlayerSound("Jaheira",-1,INSULT2) // No such index
-    SetPlayerSound("Jaheira",-1,INSULT3) // No such index
-    SetPlayerSound("Jaheira",-1,COMPLIMENT1) // No such index
-    SetPlayerSound("Jaheira",-1,COMPLIMENT2) // No such index
-    SetPlayerSound("Jaheira",-1,COMPLIMENT3) // No such index
-    SetPlayerSound("Jaheira",-1,SPECIAL1) // No such index
-    SetPlayerSound("Jaheira",-1,SPECIAL2) // No such index
-    SetPlayerSound("Jaheira",-1,SPECIAL3) // No such index
-    SetPlayerSound("Jaheira",-1,REACT_TO_DIE_GENERAL) // No such index
-    SetPlayerSound("Jaheira",-1,REACT_TO_DIE_SPECIFIC) // No such index
-    SetPlayerSound("Jaheira",-1,MISCELLANEOUS) // No such index
-    SetPlayerSound("Jaheira",-1,RESPONSE_TO_COMPLIMENT2) // No such index
-    SetPlayerSound("Jaheira",-1,RESPONSE_TO_COMPLIMENT3) // No such index
-    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT1) // No such index
-    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT2) // No such index
-    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT3) // No such index
-    SetPlayerSound("Jaheira",-1,DIALOG_HOSTILE) // No such index
-    SetPlayerSound("Jaheira",-1,DIALOG_DEFAULT) // No such index
-    SetPlayerSound("Jaheira",30770,SELECT_RARE1) // You require nothing more?
-    SetPlayerSound("Jaheira",30771,SELECT_RARE2) // If you think it is wise to do so. So much comes back to haunt us.
-    SetPlayerSound("Jaheira",30772,CRITICAL_HIT) // With vengeance!
-    SetPlayerSound("Jaheira",30775,CRITICAL_MISS) // Ugh!
-    SetPlayerSound("Jaheira",30776,TARGET_IMMUNE) // Weapon has no effect!
-    SetPlayerSound("Jaheira",30777,INVENTORY_FULL) // I have too much in my pack as it is. You'll have to pick that up off the ground.
-    SetPlayerSound("Jaheira",30778,PICKED_POCKET) // 
-    SetPlayerSound("Jaheira",30779,EXISTANCE1) // 
-    SetPlayerSound("Jaheira",30780,EXISTANCE2) // My concentration is undone. My spell has failed!
-    SetPlayerSound("Jaheira",30781,EXISTANCE3) // 
-    SetPlayerSound("Jaheira",-1,EXISTANCE4) // No such index
-    SetPlayerSound("Jaheira",10199,EXISTANCE5) // When asked about her past, JAHEIRA glares as she speaks. She says that she was born in the Tethyr region to a loyalist of the King Alemander regime, unfortunately during the Tethyrian civil war. Her family was among the nobles targeted by the angry mobs of peasants, and she was only spared because a servant girl took her from their castle before it fell. An enclave of druids in the Forest of Tethir was willing to grant shelter, and Jaheira grew up headstrong in their care. She believes the only way to protect nature is to have an active role in the world, but the cost of this dedication seems to weigh heavily on her mind these days.  She grows quiet when you ask about recent events, and while she gives the appearance of her normal, strong-willed self, there is a look of doubt in her eyes. It would seem that she has seen too many friends fall to remain unaffected. She does not like the subject, and lets it drop.
-    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE1) // No such index
-    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE2) // No such index
-    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE3) // No such index
-    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE4) // No such index
-    SetGlobal("K#JaheiraImport","AR0602",1)
     Continue()
 END
 
@@ -2338,87 +2198,6 @@ THEN
     ChangeStat("MINSC",HATEDRACE,125,SET)
     ChangeAlignment("Minsc",CHAOTIC_GOOD)
     ReallyForceSpellRES("K#PORMIN","Minsc") // No such index
-    SetPlayerSound("Minsc",-1,INITIAL_MEETING) // No such index
-    SetPlayerSound("Minsc",30788,MORALE) // Despair not! I will inspire you by charging blindly on!
-    SetPlayerSound("Minsc",4087,HAPPY) // We are all heroes, you and Boo and I! Hamsters and rangers everywhere, rejoice!
-    SetPlayerSound("Minsc",4088,UNHAPPY_ANNOYED) // This behavior must not continue! Feel the burning stare of my hamster and change your ways!
-    SetPlayerSound("Minsc",4089,UNHAPPY_SERIOUS) // This is not right. Change our course or I will have to apply a considerable wallop of virtue!
-    SetPlayerSound("Minsc",4090,UNHAPPY_BREAKING_POINT) // Boo can stand only so much!
-    SetPlayerSound("Minsc",30790,LEADER) // Minsc will lead with blade and boot! Boo will take care of the details.
-    SetPlayerSound("Minsc",4092,TIRED) // We must rest soon. Boo is getting squirrely.
-    SetPlayerSound("Minsc",4093,BORED) // Boo must have his exercise lest he bite us all in hard-to-reach places.
-    SetPlayerSound("Minsc",4086,BATTLE_CRY1) // Go for the eyes, Boo, GO FOR THE EYES! RrraaaAAGHGHH!
-    SetPlayerSound("Minsc",30793,BATTLE_CRY2) // Feel the backhand of justice!
-    SetPlayerSound("Minsc",30794,BATTLE_CRY3) // Great fun! Hehe. Right, Boo?
-    SetPlayerSound("Minsc",-1,BATTLE_CRY4) // No such index
-    SetPlayerSound("Minsc",-1,BATTLE_CRY5) // No such index
-    SetPlayerSound("Minsc",-1,ATTACK1) // No such index
-    SetPlayerSound("Minsc",-1,ATTACK2) // No such index
-    SetPlayerSound("Minsc",-1,ATTACK3) // No such index
-    SetPlayerSound("Minsc",-1,ATTACK4) // No such index
-    SetPlayerSound("Minsc",5359,DAMAGE) // 
-    SetPlayerSound("Minsc",5360,DYING) // 
-    SetPlayerSound("Minsc",4094,HURT) // I must get aid soon. Boo is too young to have to avenge me.
-    SetPlayerSound("Minsc",4095,AREA_FOREST) // You know... I think the forest likes Boo.
-    SetPlayerSound("Minsc",5357,AREA_CITY) // Cities always teem with evil and decay. Let's give it a good shake and see what falls out!
-    SetPlayerSound("Minsc",4096,AREA_DUNGEON) // A den of stinking evil. Cover your nose, Boo. We will leave no crevice untouched!
-    SetPlayerSound("Minsc",5358,AREA_DAY) // Ahh, I prefer the bright of day. Evil must be able to see the justice I dispense!
-    SetPlayerSound("Minsc",4097,AREA_NIGHT) // Strange things go bump in the night, but none bump bigger than Minsc!
-    SetPlayerSound("Minsc",4098,SELECT_COMMON1) // You point, I punch.
-    SetPlayerSound("Minsc",4099,SELECT_COMMON2) // Swords, not words!
-    SetPlayerSound("Minsc",4100,SELECT_COMMON3) // Minsc and Boo stand ready.
-    SetPlayerSound("Minsc",30796,SELECT_COMMON4) // Every hamster has his day.
-    SetPlayerSound("Minsc",30798,SELECT_COMMON5) // Armored, sharpened, and raring to go.
-    SetPlayerSound("Minsc",30799,SELECT_COMMON6) // Boo says, "What?!"
-    SetPlayerSound("Minsc",4101,SELECT_ACTION1) // Where Minsc goes, evil stands aside.
-    SetPlayerSound("Minsc",30800,SELECT_ACTION2) // Jump on my sword while you can, evil. I won't be as gentle!
-    SetPlayerSound("Minsc",30801,SELECT_ACTION3) // Live by the sword, live a good long time!
-    SetPlayerSound("Minsc",4104,SELECT_ACTION4) // Stand back for justice!
-    SetPlayerSound("Minsc",30806,SELECT_ACTION5) // See battle, Boo? Run, Boo, Run!
-    SetPlayerSound("Minsc",30807,SELECT_ACTION6) // Make way, villainy! Hero coming through!
-    SetPlayerSound("Minsc",4107,SELECT_ACTION7) // Butt-kicking for goodness!
-    SetPlayerSound("Minsc",-1,INTERACTION1) // No such index
-    SetPlayerSound("Minsc",-1,INTERACTION1) // No such index
-    SetPlayerSound("Minsc",-1,INTERACTION2) // No such index
-    SetPlayerSound("Minsc",-1,INTERACTION3) // No such index
-    SetPlayerSound("Minsc",-1,INTERACTION4) // No such index
-    SetPlayerSound("Minsc",-1,INTERACTION5) // No such index
-    SetPlayerSound("Minsc",-1,INSULT1) // No such index
-    SetPlayerSound("Minsc",-1,INSULT2) // No such index
-    SetPlayerSound("Minsc",-1,INSULT3) // No such index
-    SetPlayerSound("Minsc",-1,COMPLIMENT1) // No such index
-    SetPlayerSound("Minsc",-1,COMPLIMENT2) // No such index
-    SetPlayerSound("Minsc",-1,COMPLIMENT3) // No such index
-    SetPlayerSound("Minsc",-1,SPECIAL1) // No such index
-    SetPlayerSound("Minsc",-1,SPECIAL2) // No such index
-    SetPlayerSound("Minsc",-1,SPECIAL3) // No such index
-    SetPlayerSound("Minsc",-1,REACT_TO_DIE_GENERAL) // No such index
-    SetPlayerSound("Minsc",-1,REACT_TO_DIE_SPECIFIC) // No such index
-    SetPlayerSound("Minsc",-1,MISCELLANEOUS) // No such index
-    SetPlayerSound("Minsc",-1,RESPONSE_TO_COMPLIMENT2) // No such index
-    SetPlayerSound("Minsc",-1,RESPONSE_TO_COMPLIMENT3) // No such index
-    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT1) // No such index
-    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT2) // No such index
-    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT3) // No such index
-    SetPlayerSound("Minsc",-1,DIALOG_HOSTILE) // No such index
-    SetPlayerSound("Minsc",-1,DIALOG_DEFAULT) // No such index
-    SetPlayerSound("Minsc",30808,SELECT_RARE1) // The bigger they are, the harder I hit!
-    SetPlayerSound("Minsc",30809,SELECT_RARE2) // Don't teach my hamster to suck eggs!
-    SetPlayerSound("Minsc",30937,CRITICAL_HIT) // Ah hay!
-    SetPlayerSound("Minsc",31850,CRITICAL_MISS) // Gah, that's not right!
-    SetPlayerSound("Minsc",31901,TARGET_IMMUNE) // No effect? I need bigger sword!
-    SetPlayerSound("Minsc",33805,INVENTORY_FULL) // I have had to drop what you gave me. I have only two arms and no more space.
-    SetPlayerSound("Minsc",34379,PICKED_POCKET) // 
-    SetPlayerSound("Minsc",34380,EXISTANCE1) // None shall see me... though my battle cry may give me away.
-    SetPlayerSound("Minsc",34381,EXISTANCE2) // I turned to shield Boo and have lost my spell. I am NOT sorry.
-    SetPlayerSound("Minsc",34744,EXISTANCE3) // 
-    SetPlayerSound("Minsc",-1,EXISTANCE4) // No such index
-    SetPlayerSound("Minsc",10185,EXISTANCE5) // When asked about his past, MINSC proclaims that he is a berserker warrior from the nation of Rashemen in the Utter East, though his affinity for animals speaks to his skill as a ranger as well. He originally came to the Sword Coast on a dajemma, a ritual journey to manhood, as the bodyguard of a young Wychlaran of Rashemen named Dynaheir. To his shame, Dynaheir is now dead, and he fears that the doors of the honored Ice Dragon Berserker Lodge are forever closed to him. This personal tragedy has obviously not strengthened Minsc's hold on reality, as evidenced by his continued dependence on his animal companion "Boo," a creature that he claims is a miniature giant space hamster. Apparently such things do exist somewhere in the Realms, but Minsc has surely taken too many blows to the head.
-    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE1) // No such index
-    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE2) // No such index
-    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE3) // No such index
-    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE4) // No such index
-    SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END
 
@@ -2503,6 +2282,289 @@ THEN
     SetGlobal("K#MinscImport","AR0602",1)
     Continue()
 END*/
+
+IF
+  !Global("ENDOFBG1","GLOBAL",0)
+  Global("K#NewGame","AR0602",0)
+THEN
+  RESPONSE #100
+    FadeFromColor([40.0],0)
+    Wait(1)
+    Continue()
+END
+
+IF
+  Global("K#ImoenImport","AR0602",0)
+  BeenInParty("Imoen2")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Imoen2",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetPlayerSound("Imoen2",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Imoen2",11037,MORALE) // No, no! No, I'm not gonna end up dead in this place! I have to get out! I have to get to the surface!
+    SetPlayerSound("Imoen2",30726,HAPPY) // Now I remember why traveling with you was always so much fun.
+    SetPlayerSound("Imoen2",4338,UNHAPPY_ANNOYED) // I'll stick with you no matter what, but we should still try and be decent to people.
+    SetPlayerSound("Imoen2",30727,UNHAPPY_SERIOUS) // I think all this has really changed you. Come on, this isn't like us at all.
+    SetPlayerSound("Imoen2",-1,UNHAPPY_BREAKING_POINT) // No such index
+    SetPlayerSound("Imoen2",4337,LEADER) // Aww, come on. I'm not cut out for the leadership stuff.
+    SetPlayerSound("Imoen2",4339,TIRED) // *yawn* I'm getting sleepy. Wish we could stop for a bit.
+    SetPlayerSound("Imoen2",4333,BORED) // If we're going to do nothing, let's at least find a safer place to do it.
+    SetPlayerSound("Imoen2",11035,BATTLE_CRY1) // My blade will cut you down to size!
+    SetPlayerSound("Imoen2",30729,BATTLE_CRY2) // If I have to fight to get out of here, so be it!
+    SetPlayerSound("Imoen2",30730,BATTLE_CRY3) // You're not gonna keep me here!
+    SetPlayerSound("Imoen2",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Imoen2",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK1) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK2) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK3) // No such index
+    SetPlayerSound("Imoen2",-1,ATTACK4) // No such index
+    SetPlayerSound("Imoen2",5395,DAMAGE) // 
+    SetPlayerSound("Imoen2",5396,DYING) // 
+    SetPlayerSound("Imoen2",4330,HURT) // Come on, now, don't let me suffer in this place. We've both had enough of that.
+    SetPlayerSound("Imoen2",30731,AREA_FOREST) // I wish I could spend more time in the forest. Oh, it feels so alive.
+    SetPlayerSound("Imoen2",30732,AREA_CITY) // I don't feel like I fit in with people in the city anymore.
+    SetPlayerSound("Imoen2",11036,AREA_DUNGEON) // This place is just too darn creepy. I really want out of here.
+    SetPlayerSound("Imoen2",30733,AREA_DAY) // Glad to see another day. I think the light hurts my eyes though.
+    SetPlayerSound("Imoen2",30734,AREA_NIGHT) // Might as well be up and about. I don't think I'd sleep anyway.
+    SetPlayerSound("Imoen2",30735,SELECT_COMMON1) // Yep?
+    SetPlayerSound("Imoen2",30736,SELECT_COMMON2) // Whatchu want?
+    SetPlayerSound("Imoen2",30737,SELECT_COMMON3) // Name it.
+    SetPlayerSound("Imoen2",30738,SELECT_COMMON4) // Ready and willing.
+    SetPlayerSound("Imoen2",30739,SELECT_COMMON5) // Somethin' up?
+    SetPlayerSound("Imoen2",30740,SELECT_COMMON6) // Time to move?
+    SetPlayerSound("Imoen2",11038,SELECT_ACTION1) // Gotcha.
+    SetPlayerSound("Imoen2",11039,SELECT_ACTION2) // Good to go.
+    SetPlayerSound("Imoen2",4335,SELECT_ACTION3) // Right you are.
+    SetPlayerSound("Imoen2",4336,SELECT_ACTION4) // All right, all right.
+    SetPlayerSound("Imoen2",11043,SELECT_ACTION5) // No problem at all.
+    SetPlayerSound("Imoen2",11042,SELECT_ACTION6) // You can count on me!
+    SetPlayerSound("Imoen2",11045,SELECT_ACTION7) // This way then?
+    SetPlayerSound("Imoen2",-1,INTERACTION1) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION1) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION2) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION3) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION4) // No such index
+    SetPlayerSound("Imoen2",-1,INTERACTION5) // No such index
+    SetPlayerSound("Imoen2",-1,INSULT1) // No such index
+    SetPlayerSound("Imoen2",-1,INSULT2) // No such index
+    SetPlayerSound("Imoen2",-1,INSULT3) // No such index
+    SetPlayerSound("Imoen2",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Imoen2",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Imoen2",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Imoen2",-1,SPECIAL1) // No such index
+    SetPlayerSound("Imoen2",-1,SPECIAL2) // No such index
+    SetPlayerSound("Imoen2",-1,SPECIAL3) // No such index
+    SetPlayerSound("Imoen2",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Imoen2",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Imoen2",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Imoen2",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Imoen2",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Imoen2",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Imoen2",30741,SELECT_RARE1) // Right as rain.
+    SetPlayerSound("Imoen2",30742,SELECT_RARE2) // Just like old times. Well, except for the torture and all.
+    SetPlayerSound("Imoen2",30746,CRITICAL_HIT) // Gotcha good!
+    SetPlayerSound("Imoen2",30747,CRITICAL_MISS) // Next time...
+    SetPlayerSound("Imoen2",30748,TARGET_IMMUNE) // Gotta try something else.
+    SetPlayerSound("Imoen2",30749,INVENTORY_FULL) // Sorry, but I couldn't hold that last item. It's on the ground.
+    SetPlayerSound("Imoen2",30750,PICKED_POCKET) // Easy as pie.
+    SetPlayerSound("Imoen2",30751,EXISTANCE1) // Now you see me, now you don't.
+    SetPlayerSound("Imoen2",30752,EXISTANCE2) // Ugh! The magic fizzled. 
+    SetPlayerSound("Imoen2",30753,EXISTANCE3) // Shh! It's set and ready to go.
+    SetPlayerSound("Imoen2",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Imoen2",10233,EXISTANCE5) // IMOEN chuckles when you ask her about her past, assuming you are just trying to keep her mind on happier times and places. She indulges you, and certainly does cheer up when speaking of how you spent your youths together in Candlekeep. She arrived there the same as you, in the company of your foster father Gorion, but despite this similarity, she grew up much more carefree than you did. Indeed, her lighthearted outlook has long kept her immune to the hardships of the world, though the dark confines and horrors of your current location have definitely taken their toll.
+    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE1) // No such index
+    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE2) // No such index
+    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE3) // No such index
+    SetPlayerSound("Imoen2",-1,BG2EE_SELECT_RARE4) // No such index
+    SetGlobal("K#ImoenImport","AR0602",1)
+    Continue()
+END
+
+IF
+  Global("K#JaheiraImport","AR0602",0)
+  BeenInParty("Jaheira")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Jaheira",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetPlayerSound("Jaheira",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Jaheira",4008,MORALE) // I will not fall here!
+    SetPlayerSound("Jaheira",4010,HAPPY) // Our actions are good, and will serve the greater balance.
+    SetPlayerSound("Jaheira",4011,UNHAPPY_ANNOYED) // I hope this is not a sign of things to come. We must strive to maintain balance.
+    SetPlayerSound("Jaheira",4012,UNHAPPY_SERIOUS) // This is no longer a matter that can be brushed aside! Change your ways or we shall be at odds!
+    SetPlayerSound("Jaheira",4013,UNHAPPY_BREAKING_POINT) // I... I cannot believe the change in this group! For the greater balance, I... I must oppose you!
+    SetPlayerSound("Jaheira",4014,LEADER) // As I have said before, you could not have made a better choice.
+    SetPlayerSound("Jaheira",4015,TIRED) // Rest would be welcome lest we endanger ourselves.
+    SetPlayerSound("Jaheira",4016,BORED) // It is strange that we stand about when there is so much to do.
+    SetPlayerSound("Jaheira",4009,BATTLE_CRY1) // For the fallen!
+    SetPlayerSound("Jaheira",30765,BATTLE_CRY2) // Fall, creature! And feed the earth!
+    SetPlayerSound("Jaheira",30766,BATTLE_CRY3) // Nature take the life she gave!
+    SetPlayerSound("Jaheira",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Jaheira",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK1) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK2) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK3) // No such index
+    SetPlayerSound("Jaheira",-1,ATTACK4) // No such index
+    SetPlayerSound("Jaheira",5353,DAMAGE) // 
+    SetPlayerSound("Jaheira",5354,DYING) // 
+    SetPlayerSound("Jaheira",4017,HURT) // I will require healing if I am to be of use to the group.
+    SetPlayerSound("Jaheira",4018,AREA_FOREST) // I am at peace in the outdoor places, though it never seems to last.
+    SetPlayerSound("Jaheira",4019,AREA_CITY) // I have no patience for cities. Our stay had best be a short one.
+    SetPlayerSound("Jaheira",4020,AREA_DUNGEON) // Nature could find a home here if it were properly cleansed and balanced.
+    SetPlayerSound("Jaheira",5352,AREA_DAY) // I welcome each day we see. Some are not so lucky. 
+    SetPlayerSound("Jaheira",4021,AREA_NIGHT) // Nature has many children that call the darkness home. I am not one of them. 
+    SetPlayerSound("Jaheira",4022,SELECT_COMMON1) // Nature's servant awaits.
+    SetPlayerSound("Jaheira",4023,SELECT_COMMON2) // I await your need.
+    SetPlayerSound("Jaheira",54350,SELECT_COMMON3) // Yes?
+    SetPlayerSound("Jaheira",4024,SELECT_COMMON4) // I am ready.
+    SetPlayerSound("Jaheira",30767,SELECT_COMMON5) // It is about time.
+    SetPlayerSound("Jaheira",30768,SELECT_COMMON6) // Speak your mind.
+    SetPlayerSound("Jaheira",4025,SELECT_ACTION1) // It is done.
+    SetPlayerSound("Jaheira",30769,SELECT_ACTION2) // I am willing.
+    SetPlayerSound("Jaheira",4027,SELECT_ACTION3) // I go.
+    SetPlayerSound("Jaheira",4028,SELECT_ACTION4) // As I would have done.
+    SetPlayerSound("Jaheira",4029,SELECT_ACTION5) // If it will help.
+    SetPlayerSound("Jaheira",4030,SELECT_ACTION6) // I thought as much.
+    SetPlayerSound("Jaheira",4031,SELECT_ACTION7) // As you would have it.
+    SetPlayerSound("Jaheira",-1,INTERACTION1) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION1) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION2) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION3) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION4) // No such index
+    SetPlayerSound("Jaheira",-1,INTERACTION5) // No such index
+    SetPlayerSound("Jaheira",-1,INSULT1) // No such index
+    SetPlayerSound("Jaheira",-1,INSULT2) // No such index
+    SetPlayerSound("Jaheira",-1,INSULT3) // No such index
+    SetPlayerSound("Jaheira",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Jaheira",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Jaheira",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Jaheira",-1,SPECIAL1) // No such index
+    SetPlayerSound("Jaheira",-1,SPECIAL2) // No such index
+    SetPlayerSound("Jaheira",-1,SPECIAL3) // No such index
+    SetPlayerSound("Jaheira",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Jaheira",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Jaheira",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Jaheira",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Jaheira",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Jaheira",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Jaheira",30770,SELECT_RARE1) // You require nothing more?
+    SetPlayerSound("Jaheira",30771,SELECT_RARE2) // If you think it is wise to do so. So much comes back to haunt us.
+    SetPlayerSound("Jaheira",30772,CRITICAL_HIT) // With vengeance!
+    SetPlayerSound("Jaheira",30775,CRITICAL_MISS) // Ugh!
+    SetPlayerSound("Jaheira",30776,TARGET_IMMUNE) // Weapon has no effect!
+    SetPlayerSound("Jaheira",30777,INVENTORY_FULL) // I have too much in my pack as it is. You'll have to pick that up off the ground.
+    SetPlayerSound("Jaheira",30778,PICKED_POCKET) // 
+    SetPlayerSound("Jaheira",30779,EXISTANCE1) // 
+    SetPlayerSound("Jaheira",30780,EXISTANCE2) // My concentration is undone. My spell has failed!
+    SetPlayerSound("Jaheira",30781,EXISTANCE3) // 
+    SetPlayerSound("Jaheira",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Jaheira",10199,EXISTANCE5) // When asked about her past, JAHEIRA glares as she speaks. She says that she was born in the Tethyr region to a loyalist of the King Alemander regime, unfortunately during the Tethyrian civil war. Her family was among the nobles targeted by the angry mobs of peasants, and she was only spared because a servant girl took her from their castle before it fell. An enclave of druids in the Forest of Tethir was willing to grant shelter, and Jaheira grew up headstrong in their care. She believes the only way to protect nature is to have an active role in the world, but the cost of this dedication seems to weigh heavily on her mind these days.  She grows quiet when you ask about recent events, and while she gives the appearance of her normal, strong-willed self, there is a look of doubt in her eyes. It would seem that she has seen too many friends fall to remain unaffected. She does not like the subject, and lets it drop.
+    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE1) // No such index
+    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE2) // No such index
+    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE3) // No such index
+    SetPlayerSound("Jaheira",-1,BG2EE_SELECT_RARE4) // No such index
+    SetGlobal("K#JaheiraImport","AR0602",1)
+    Continue()
+END
+
+IF
+  Global("K#MinscImport","AR0602",0)
+  BeenInParty("Minsc")
+  GlobalLT("chapter","GLOBAL",20)
+  !StateCheck("Minsc",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetPlayerSound("Minsc",-1,INITIAL_MEETING) // No such index
+    SetPlayerSound("Minsc",30788,MORALE) // Despair not! I will inspire you by charging blindly on!
+    SetPlayerSound("Minsc",4087,HAPPY) // We are all heroes, you and Boo and I! Hamsters and rangers everywhere, rejoice!
+    SetPlayerSound("Minsc",4088,UNHAPPY_ANNOYED) // This behavior must not continue! Feel the burning stare of my hamster and change your ways!
+    SetPlayerSound("Minsc",4089,UNHAPPY_SERIOUS) // This is not right. Change our course or I will have to apply a considerable wallop of virtue!
+    SetPlayerSound("Minsc",4090,UNHAPPY_BREAKING_POINT) // Boo can stand only so much!
+    SetPlayerSound("Minsc",30790,LEADER) // Minsc will lead with blade and boot! Boo will take care of the details.
+    SetPlayerSound("Minsc",4092,TIRED) // We must rest soon. Boo is getting squirrely.
+    SetPlayerSound("Minsc",4093,BORED) // Boo must have his exercise lest he bite us all in hard-to-reach places.
+    SetPlayerSound("Minsc",4086,BATTLE_CRY1) // Go for the eyes, Boo, GO FOR THE EYES! RrraaaAAGHGHH!
+    SetPlayerSound("Minsc",30793,BATTLE_CRY2) // Feel the backhand of justice!
+    SetPlayerSound("Minsc",30794,BATTLE_CRY3) // Great fun! Hehe. Right, Boo?
+    SetPlayerSound("Minsc",-1,BATTLE_CRY4) // No such index
+    SetPlayerSound("Minsc",-1,BATTLE_CRY5) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK1) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK2) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK3) // No such index
+    SetPlayerSound("Minsc",-1,ATTACK4) // No such index
+    SetPlayerSound("Minsc",5359,DAMAGE) // 
+    SetPlayerSound("Minsc",5360,DYING) // 
+    SetPlayerSound("Minsc",4094,HURT) // I must get aid soon. Boo is too young to have to avenge me.
+    SetPlayerSound("Minsc",4095,AREA_FOREST) // You know... I think the forest likes Boo.
+    SetPlayerSound("Minsc",5357,AREA_CITY) // Cities always teem with evil and decay. Let's give it a good shake and see what falls out!
+    SetPlayerSound("Minsc",4096,AREA_DUNGEON) // A den of stinking evil. Cover your nose, Boo. We will leave no crevice untouched!
+    SetPlayerSound("Minsc",5358,AREA_DAY) // Ahh, I prefer the bright of day. Evil must be able to see the justice I dispense!
+    SetPlayerSound("Minsc",4097,AREA_NIGHT) // Strange things go bump in the night, but none bump bigger than Minsc!
+    SetPlayerSound("Minsc",4098,SELECT_COMMON1) // You point, I punch.
+    SetPlayerSound("Minsc",4099,SELECT_COMMON2) // Swords, not words!
+    SetPlayerSound("Minsc",4100,SELECT_COMMON3) // Minsc and Boo stand ready.
+    SetPlayerSound("Minsc",30796,SELECT_COMMON4) // Every hamster has his day.
+    SetPlayerSound("Minsc",30798,SELECT_COMMON5) // Armored, sharpened, and raring to go.
+    SetPlayerSound("Minsc",30799,SELECT_COMMON6) // Boo says, "What?!"
+    SetPlayerSound("Minsc",4101,SELECT_ACTION1) // Where Minsc goes, evil stands aside.
+    SetPlayerSound("Minsc",30800,SELECT_ACTION2) // Jump on my sword while you can, evil. I won't be as gentle!
+    SetPlayerSound("Minsc",30801,SELECT_ACTION3) // Live by the sword, live a good long time!
+    SetPlayerSound("Minsc",4104,SELECT_ACTION4) // Stand back for justice!
+    SetPlayerSound("Minsc",30806,SELECT_ACTION5) // See battle, Boo? Run, Boo, Run!
+    SetPlayerSound("Minsc",30807,SELECT_ACTION6) // Make way, villainy! Hero coming through!
+    SetPlayerSound("Minsc",4107,SELECT_ACTION7) // Butt-kicking for goodness!
+    SetPlayerSound("Minsc",-1,INTERACTION1) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION1) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION2) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION3) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION4) // No such index
+    SetPlayerSound("Minsc",-1,INTERACTION5) // No such index
+    SetPlayerSound("Minsc",-1,INSULT1) // No such index
+    SetPlayerSound("Minsc",-1,INSULT2) // No such index
+    SetPlayerSound("Minsc",-1,INSULT3) // No such index
+    SetPlayerSound("Minsc",-1,COMPLIMENT1) // No such index
+    SetPlayerSound("Minsc",-1,COMPLIMENT2) // No such index
+    SetPlayerSound("Minsc",-1,COMPLIMENT3) // No such index
+    SetPlayerSound("Minsc",-1,SPECIAL1) // No such index
+    SetPlayerSound("Minsc",-1,SPECIAL2) // No such index
+    SetPlayerSound("Minsc",-1,SPECIAL3) // No such index
+    SetPlayerSound("Minsc",-1,REACT_TO_DIE_GENERAL) // No such index
+    SetPlayerSound("Minsc",-1,REACT_TO_DIE_SPECIFIC) // No such index
+    SetPlayerSound("Minsc",-1,MISCELLANEOUS) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_COMPLIMENT2) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_COMPLIMENT3) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT1) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT2) // No such index
+    SetPlayerSound("Minsc",-1,RESPONSE_TO_INSULT3) // No such index
+    SetPlayerSound("Minsc",-1,DIALOG_HOSTILE) // No such index
+    SetPlayerSound("Minsc",-1,DIALOG_DEFAULT) // No such index
+    SetPlayerSound("Minsc",30808,SELECT_RARE1) // The bigger they are, the harder I hit!
+    SetPlayerSound("Minsc",30809,SELECT_RARE2) // Don't teach my hamster to suck eggs!
+    SetPlayerSound("Minsc",30937,CRITICAL_HIT) // Ah hay!
+    SetPlayerSound("Minsc",31850,CRITICAL_MISS) // Gah, that's not right!
+    SetPlayerSound("Minsc",31901,TARGET_IMMUNE) // No effect? I need bigger sword!
+    SetPlayerSound("Minsc",33805,INVENTORY_FULL) // I have had to drop what you gave me. I have only two arms and no more space.
+    SetPlayerSound("Minsc",34379,PICKED_POCKET) // 
+    SetPlayerSound("Minsc",34380,EXISTANCE1) // None shall see me... though my battle cry may give me away.
+    SetPlayerSound("Minsc",34381,EXISTANCE2) // I turned to shield Boo and have lost my spell. I am NOT sorry.
+    SetPlayerSound("Minsc",34744,EXISTANCE3) // 
+    SetPlayerSound("Minsc",-1,EXISTANCE4) // No such index
+    SetPlayerSound("Minsc",10185,EXISTANCE5) // When asked about his past, MINSC proclaims that he is a berserker warrior from the nation of Rashemen in the Utter East, though his affinity for animals speaks to his skill as a ranger as well. He originally came to the Sword Coast on a dajemma, a ritual journey to manhood, as the bodyguard of a young Wychlaran of Rashemen named Dynaheir. To his shame, Dynaheir is now dead, and he fears that the doors of the honored Ice Dragon Berserker Lodge are forever closed to him. This personal tragedy has obviously not strengthened Minsc's hold on reality, as evidenced by his continued dependence on his animal companion "Boo," a creature that he claims is a miniature giant space hamster. Apparently such things do exist somewhere in the Realms, but Minsc has surely taken too many blows to the head.
+    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE1) // No such index
+    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE2) // No such index
+    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE3) // No such index
+    SetPlayerSound("Minsc",-1,BG2EE_SELECT_RARE4) // No such index
+    SetGlobal("K#MinscImport","AR0602",1)
+    Continue()
+END
 
 IF
   Global("ENDOFBG1","GLOBAL",0)
