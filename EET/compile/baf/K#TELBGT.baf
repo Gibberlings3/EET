@@ -75,12 +75,18 @@ IF
 THEN
   RESPONSE #100
     SetGlobal("K#FrameDelay","LOCALS",3)
-    ApplySpellRES("K#UNREST",Player1) // No such index
-    ApplySpellRES("K#UNREST",Player2) // No such index
-    ApplySpellRES("K#UNREST",Player3) // No such index
-    ApplySpellRES("K#UNREST",Player4) // No such index
-    ApplySpellRES("K#UNREST",Player5) // No such index
-    ApplySpellRES("K#UNREST",Player6) // No such index
+    ApplySpellRES("K#UNREST",Player1)
+    ApplySpellRES("K#UNREST",Player2)
+    ApplySpellRES("K#UNREST",Player3)
+    ApplySpellRES("K#UNREST",Player4)
+    ApplySpellRES("K#UNREST",Player5)
+    ApplySpellRES("K#UNREST",Player6)
+    ActionOverride(Player1,Rest())
+    ActionOverride(Player2,Rest())
+    ActionOverride(Player3,Rest())
+    ActionOverride(Player4,Rest())
+    ActionOverride(Player5,Rest())
+    ActionOverride(Player6,Rest())
 END
 
 IF
@@ -161,13 +167,6 @@ THEN
     Wait(1)
     StartMovie("INTRO15F")
     MoveToCampaign("SoA")
-    LeaveAreaLUAPanic("AR0602","",[3744.2801],S)
-    ActionOverride(Player1,LeaveAreaLUA("AR0602","",[3744.2801],S))
-    ActionOverride(Player2,LeaveAreaLUA("AR0602","",[3585.2917],SWW))
-    ActionOverride(Player3,LeaveAreaLUA("AR0602","",[3532.2956],NW))
-    ActionOverride(Player4,LeaveAreaLUA("AR0602","",[3374.3068],NNE))
-    ActionOverride(Player5,LeaveAreaLUA("AR0602","",[3824.2447],E))
-    ActionOverride(Player6,LeaveAreaLUA("AR0602","",[3889.2479],SSE))
     MultiPlayerSync()
     DestroySelf()
 END
