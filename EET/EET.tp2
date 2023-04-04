@@ -771,7 +771,7 @@ OUTER_SET cnt = 4000100
 ACTION_FOR_EACH entry IN EET_CMP_TEXT_BG1 EET_CMP_TEXT_SOD EET_CMP_TEXT_SOA EET_CMP_TEXT_TOB EET_CMP_TEXT_BP1 EET_CMP_TEXT_BP2 EET_CMP_TEXT_TUT EET_CMP_TITLE_BG1 EET_CMP_TITLE_SOD EET_CMP_TITLE_SOA EET_CMP_TITLE_TOB EET_CMP_TITLE_BP1 EET_CMP_TITLE_BP2 EET_CMP_TITLE_TUT EET_WARNING_TITLE EET_WARNING_TEXT EET_CHAPTER BEGIN
 	OUTER_SPRINT string (AT cnt)
 	OUTER_PATCH_SAVE string ~%string%~ BEGIN
-		REPLACE_TEXTUALLY ~%LNL%~ ~\n~
+		REPLACE_TEXTUALLY ~%MNL%?%LNL%~ ~\n~
 		REPLACE_TEXTUALLY ~"~ ~\"~
 	END
 	OUTER_SPRINT L_LUA ~%L_LUA%%LNL%%TAB%%entry% = "%string%",~
@@ -1582,8 +1582,7 @@ COMPILE ~%patch_dir%/d~
 //including this in cleanBG1.d fails on newline pattern matching
 COPY_EXISTING ~SHARTJ.DLG~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ActionOverride("DORN",MakeUnselectable(1000))
-MakeUnselectable(1000)~
+		SPRINT textToReplace ~ActionOverride("DORN",MakeUnselectable(1000))[%newline%]*MakeUnselectable(1000)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#UNSELE","SHARTEEL")
