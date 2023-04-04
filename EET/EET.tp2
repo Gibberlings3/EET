@@ -266,7 +266,7 @@ ACTION_IF (ret_val != 0) BEGIN
 END
 
 OUTER_SPRINT shell_cmd ~%lua% %MOD_FOLDER%/lib/tlk_cnt.lua~
-AT_NOW ~%shell_cmd%~
+AT_NOW ret_val ~%shell_cmd%~
 ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
 END
