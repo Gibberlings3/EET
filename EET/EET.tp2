@@ -100,9 +100,13 @@ OUTER_SPRINT tilde "~"
 
 ACTION_IF (DIRECTORY_EXISTS ~%MOD_FOLDER%/temp~) BEGIN
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-		AT_NOW ~rmdir /s /q %MOD_FOLDER%\temp~ EXACT
+		OUTER_SPRINT shell_cmd ~rmdir /s /q %MOD_FOLDER%\temp~
 	END ELSE BEGIN //osx, unix
-		AT_NOW ~rm -rf %MOD_FOLDER%/temp~ EXACT
+		OUTER_SPRINT shell_cmd ~rm -rf %MOD_FOLDER%/temp~
+	END
+	AT_NOW ret_val ~%shell_cmd%~ EXACT
+	ACTION_IF (ret_val != 0) BEGIN
+		WARN ~Shell command failed to execute: %shell_cmd%~
 	END
 END
 
@@ -193,7 +197,11 @@ ACTION_FOR_EACH file IN lua weidu BEGIN
 	END
 	OUTER_SPRINT tool EVAL ~%%file%%~
 	ACTION_IF NOT ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-		AT_NOW ~chmod +x %tool%~ EXACT
+		OUTER_SPRINT shell_cmd ~chmod +x %tool%~
+		AT_NOW ret_val ~%shell_cmd%~ EXACT
+		ACTION_IF (ret_val != 0) BEGIN
+			WARN ~Shell command failed to execute: %shell_cmd%~
+		END
 	END
 	PRINT ~%file% assigned to %tool%~
 END
@@ -251,14 +259,26 @@ ACTION_IF NOT ~%log%~ STR_EQ ~~ BEGIN
 	APPEND_OUTER + ~%MOD_FOLDER%/temp/append.tra~ ~%log%~
 END
 
-AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
+OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
+AT_NOW ret_val ~%shell_cmd%~
+ACTION_IF (ret_val != 0) BEGIN
+	WARN ~Shell command failed to execute: %shell_cmd%~
+END
 
-AT_NOW ~%lua% %MOD_FOLDER%/lib/tlk_cnt.lua~
+OUTER_SPRINT shell_cmd ~%lua% %MOD_FOLDER%/lib/tlk_cnt.lua~
+AT_NOW ret_val ~%shell_cmd%~
+ACTION_IF (ret_val != 0) BEGIN
+	WARN ~Shell command failed to execute: %shell_cmd%~
+END
 COPY + ~%MOD_FOLDER%/temp/tlk_cnt.txt~ ~%MOD_FOLDER%/temp~
 	READ_LONG 0xa "tlk_end"
 	SET tlk_end = tlk_end + 200000 - 1
 
-AT_NOW ~%lua% %MOD_FOLDER%/lib/tra_merge.lua~
+OUTER_SPRINT shell_cmd ~%lua% %MOD_FOLDER%/lib/tra_merge.lua~
+AT_NOW ret_val ~%shell_cmd%~
+ACTION_IF (ret_val != 0) BEGIN
+	WARN ~Shell command failed to execute: %shell_cmd%~
+END
 
 <<<<<<<< .../string_set.tph
 PRINT ~tlk_start = %tlk_start%; tlk_end = %tlk_end%~
@@ -278,8 +298,12 @@ ACTION_FOR_EACH var IN are bcs chr cre dlg eff ini itm pro spl sto vef vvc wed B
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
-	AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ret_val ~%shell_cmd%~
 	LAM bash_log
+	ACTION_IF (ret_val != 0) BEGIN
+		WARN ~Shell command failed to execute: %shell_cmd%~
+	END
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
 			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/%var%~
@@ -294,8 +318,12 @@ ACTION_FOR_EACH file IN baldur.gam worldmap.wmp bgmap.wmp sodmap.wmp BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%patch_dir%~
 	END ELSE BEGIN
-		AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%" --biff-get-rest "%file%"~
+		OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%" --biff-get-rest "%file%"~
+		AT_NOW ret_val ~%shell_cmd%~
 		LAM bash_log
+		ACTION_IF (ret_val != 0) BEGIN
+			WARN ~Shell command failed to execute: %shell_cmd%~
+		END
 	END
 END
 
@@ -317,8 +345,12 @@ END
 ACTION_FOR_EACH var IN bam bmp mos tis pvrz BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
-	AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%%os_slash%temp%os_slash%biff" --biff-get-rest "^.*\.%var%$"~
+	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%%os_slash%temp%os_slash%biff" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ret_val ~%shell_cmd%~
 	LAM bash_log
+	ACTION_IF (ret_val != 0) BEGIN
+		WARN ~Shell command failed to execute: %shell_cmd%~
+	END
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
 			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%~
@@ -333,8 +365,12 @@ ACTION_FOR_EACH var IN 2da /*plt*/ ttf wav wbm wfx BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%MOD_FOLDER%/temp/%var%~
-	AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/%var%" --biff-get-rest "^.*\.%var%$"~
+	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ret_val ~%shell_cmd%~
 	LAM bash_log
+	ACTION_IF (ret_val != 0) BEGIN
+		WARN ~Shell command failed to execute: %shell_cmd%~
+	END
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
 		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
 			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%MOD_FOLDER%/temp/%var%~
@@ -349,8 +385,12 @@ ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids miss
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%MOD_FOLDER%/temp/array~
 	END ELSE BEGIN
-		AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/array" --biff-get-rest "%file%"~
+		OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%MOD_FOLDER%/temp/array" --biff-get-rest "%file%"~
+		AT_NOW ret_val ~%shell_cmd%~
 		LAM bash_log
+		ACTION_IF (ret_val != 0) BEGIN
+			WARN ~Shell command failed to execute: %shell_cmd%~
+		END
 	END
 END
 
@@ -771,7 +811,7 @@ OUTER_SET cnt = 4000100
 ACTION_FOR_EACH entry IN EET_CMP_TEXT_BG1 EET_CMP_TEXT_SOD EET_CMP_TEXT_SOA EET_CMP_TEXT_TOB EET_CMP_TEXT_BP1 EET_CMP_TEXT_BP2 EET_CMP_TEXT_TUT EET_CMP_TITLE_BG1 EET_CMP_TITLE_SOD EET_CMP_TITLE_SOA EET_CMP_TITLE_TOB EET_CMP_TITLE_BP1 EET_CMP_TITLE_BP2 EET_CMP_TITLE_TUT EET_WARNING_TITLE EET_WARNING_TEXT EET_CHAPTER BEGIN
 	OUTER_SPRINT string (AT cnt)
 	OUTER_PATCH_SAVE string ~%string%~ BEGIN
-		REPLACE_TEXTUALLY ~%LNL%~ ~\n~
+		REPLACE_TEXTUALLY ~%MNL%?%LNL%~ ~\n~
 		REPLACE_TEXTUALLY ~"~ ~\"~
 	END
 	OUTER_SPRINT L_LUA ~%L_LUA%%LNL%%TAB%%entry% = "%string%",~
@@ -1163,8 +1203,12 @@ APPEND_OUTER + ~%MOD_FOLDER%/temp/tables.lua~ ~%tbl_lua%~
 OUTER_SPRINT tbl_lua ~~
 
 //LUA regexp conversion
-AT_NOW ~%lua% %MOD_FOLDER%/lib/main.lua~
+OUTER_SPRINT shell_cmd ~%lua% %MOD_FOLDER%/lib/main.lua~
+AT_NOW ret_val ~%shell_cmd%~
 LAM bash_log
+ACTION_IF (ret_val != 0) BEGIN
+	WARN ~Shell command failed to execute: %shell_cmd%~
+END
 
 /////                                                  \\\\\
 ///// PCU conversion                                   \\\\\
@@ -1582,8 +1626,7 @@ COMPILE ~%patch_dir%/d~
 //including this in cleanBG1.d fails on newline pattern matching
 COPY_EXISTING ~SHARTJ.DLG~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ActionOverride("DORN",MakeUnselectable(1000))
-MakeUnselectable(1000)~
+		SPRINT textToReplace ~ActionOverride("DORN",MakeUnselectable(1000))[%newline%]*MakeUnselectable(1000)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#UNSELE","SHARTEEL")
@@ -2326,7 +2369,7 @@ ACTION_PHP_EACH strref_wmp AS content => strref BEGIN
 			OUTER_SPRINT string $fl#NAME("%content%")
 		END ELSE ACTION_IF (VARIABLE_IS_SET $fl#TOOL("%content%")) AND ($fl#TOOL("%content%") STR_CMP "") BEGIN
 			OUTER_SPRINT string $fl#TOOL("%content%")
-        END ELSE BEGIN
+		END ELSE BEGIN
 			OUTER_SPRINT string ~~
 		END
 		STRING_SET_EVALUATE strref ~%string%~
