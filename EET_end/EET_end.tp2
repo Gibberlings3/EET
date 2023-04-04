@@ -756,13 +756,36 @@ END
 OUTER_SET str_min = 271375
 
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-	AT_NOW ~del /f "%USER_DIRECTORY%\save\saves.tra"~ EXACT
-	AT_NOW ~setup-EET.exe --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%\save\saves.tra"~
+	OUTER_SPRINT os_slash ~\~
+	OUTER_SPRINT exe ~.exe~
+	OUTER_SPRINT bin ~~
+	OUTER_SPRINT del ~del /f~
 END ELSE BEGIN //osx, unix
-	AT_NOW ~rm -f "%USER_DIRECTORY%/save/saves.tra"~ EXACT
-	AT_NOW ~chmod +x ./EET/bin/%WEIDU_OS%/weidu~ EXACT
-	AT_NOW ~./EET/bin/%WEIDU_OS%/weidu --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%/save/saves.tra"~
+	OUTER_SPRINT os_slash ~/~
+	OUTER_SPRINT exe ~~
+	OUTER_SPRINT bin ~./~
+	OUTER_SPRINT del ~rm -f~
 END
+
+LAF GET_SYSTEM_ARCH RET SYSTEM_ARCH END
+ACTION_IF ~%SYSTEM_ARCH%~ STR_EQ ~amd64~ BEGIN
+	OUTER_SPRINT arch_var ~x86_64%os_slash%~
+END
+
+ACTION_IF (FILE_EXISTS ~EET/bin/%WEIDU_OS%/%arch_var%weidu%exe%~) BEGIN
+	OUTER_SPRINT weidu ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%weidu%exe%~
+END ELSE ACTION_IF (FILE_EXISTS ~EET/bin/%WEIDU_OS%/weidu%exe%~) BEGIN
+	OUTER_SPRINT weidu ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%weidu%exe%~
+END ELSE ACTION_IF (FILE_EXISTS ~setup-eet_end%exe%~) BEGIN
+	OUTER_SPRINT weidu ~%bin%setup-eet_end%exe%~
+END
+PRINT ~weidu = %weidu%~
+
+AT_NOW ~%del% "%USER_DIRECTORY%%os_slash%save%os_slash%saves.tra"~ EXACT
+ACTION_IF (NOT ~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
+	AT_NOW ~chmod +x %weidu%~ EXACT
+END
+AT_NOW ~%weidu% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%%os_slash%save%os_slash%saves.tra"~ EXACT
 
 ACTION_IF FILE_EXISTS_IN_GAME ~add_spell.ids~ BEGIN
 	COPY_EXISTING - ~add_spell.ids~ ~.../add_spell.ids~
