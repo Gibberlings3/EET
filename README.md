@@ -12,7 +12,7 @@ I. Unite the Baldur's Gate series into a single, continuous world that doesn't f
 - United journal system that keeps track of all 22 chapters of your journey, from the beginning in Candlekeep up until the end of the Throne of Bhaal expansion.
 - No restrictions in travelling between BG1, SoD, BG2 and ToB areas, once they are discovered. All areas accessible from the same worldmap.
 
-II. Becoming a mod-friendly platform with the additional modding possibilities that come by fulfilling the first goal.
+II. Become a mod-friendly platform with the additional modding possibilities that come by fulfilling the first goal.
 - Solution for mods designed to affect BG1 and BG2 content at the same time (preserved variables, character adjustments, world state, saves, things that can vary between installations like spell references assigned by WeiDU, etc).
 - A way to create new content designed for higher-level parties in areas that normally wouldn't exist in the unmodded games or would be blocked after certain points of the story (BGT mod).
 - Intuitive conventions for renamed BG:EE files and modders resources that can be used for adopting existing mods.
