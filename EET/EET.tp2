@@ -381,7 +381,7 @@ ACTION_FOR_EACH var IN 2da /*plt*/ ttf wav wbm wfx BEGIN
 	END
 END
 
-ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids specific.ids spell.ids splstate.ids bgee.lua ui.menu BEGIN
+ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids ea.ids gtimes.ids kit.ids missile.ids projectl.ids race.ids specific.ids spell.ids splstate.ids bgee.lua ui.menu BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%MOD_FOLDER%/temp/array~
 	END ELSE BEGIN
