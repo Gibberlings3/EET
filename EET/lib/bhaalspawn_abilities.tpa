@@ -1,0 +1,557 @@
+// Returns the scripting for adding Bhaalspawn abilities to the protagonist on a new game.
+//
+// STR_VAR area           ARE resref for variable scope.
+// STR_VAR triggers_prep  Conditions for ability calculation blocks.
+// STR_VAR triggers_add   Conditions for ability application blocks.
+// RET script             Customized script for adding Bhaalspawn abilities.
+DEFINE_ACTION_FUNCTION LOAD_BHAALSPAWN_ABILITIES
+STR_VAR
+	area          = ~~
+	triggers_prep = ~~
+	triggers_add  = ~~
+RET
+	script
+BEGIN
+	OUTER_SPRINT bsa_area ~%area%~
+	OUTER_SPRINT bsa_triggers_prep ~%triggers_prep%~
+	OUTER_SPRINT bsa_triggers_add ~%triggers_add%~
+	COPY - ~.../bhaalspawn_abilities.baf~ ~.../null~
+		EVAL
+		READ_ASCII 0 script (BUFFER_LENGTH)
+END
+
+
+// Formula for choosing Bhaalspawn abilities (updated with RE'd info from Bubb13):
+// ALIGN  ABIL1         ABIL2         ABIL3         ABIL4         ABIL5         ABIL6
+// L_G    1(100)        1(100)        2(100)        2(100)        3(100)        3(100)
+// N_G    1(90)/4(10)   1(90)/4(10)   2(90)/5(10)   2(90)/5(10)   3(90)/6(10)   3(90)/6(10)
+// C_G    1(80)/4(20)   1(80)/4(20)   2(80)/5(20)   2(80)/5(20)   3(80)/6(20)   3(80)/6(20)
+// L_N    1(50)/4(50)   1(50)/4(50)   2(50)/5(50)   2(50)/5(50)   3(50)/6(50)   3(50)/6(50)
+// N_N    1(50)/4(50)   1(50)/4(50)   2(50)/5(50)   2(50)/5(50)   3(50)/6(50)   3(50)/6(50)
+// C_N    1(50)/4(50)   1(50)/4(50)   2(50)/5(50)   2(50)/5(50)   3(50)/6(50)   3(50)/6(50)
+// L_E    1(20)/4(80)   1(20)/4(80)   2(20)/5(80)   2(20)/5(80)   3(20)/6(80)   3(20)/6(80)
+// N_E    1(10)/4(90)   1(10)/4(90)   2(10)/5(90)   2(10)/5(90)   3(10)/6(90)   3(10)/6(90)
+// C_E    4(100)        4(100)        5(100)        5(100)        6(100)        6(100)
+
+// where primary numbers indicate 'X' in the SPIN10X ability resref,
+// and numbers in parentheses indicate probabilities in percent.
+
+<<<<<<<< .../bhaalspawn_abilities.baf
+////////// Calculating ability probabilities //////////
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,LAWFUL_GOOD)
+THEN
+  RESPONSE #100
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",1)
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",1)
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",2)
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",2)
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",3)
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",3)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_GOOD)
+THEN
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",1)
+    Continue()
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_GOOD)
+THEN
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",1)
+    Continue()
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_GOOD)
+THEN
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",2)
+    Continue()
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_GOOD)
+THEN
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",2)
+    Continue()
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_GOOD)
+THEN
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",3)
+    Continue()
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_GOOD)
+THEN
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",3)
+    Continue()
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",1)
+    Continue()
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",1)
+    Continue()
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",2)
+    Continue()
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",2)
+    Continue()
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",3)
+    Continue()
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,CHAOTIC_GOOD)
+THEN
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",3)
+    Continue()
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,MASK_GENEUTRAL)
+THEN
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",1)
+    Continue()
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,MASK_GENEUTRAL)
+THEN
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",1)
+    Continue()
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,MASK_GENEUTRAL)
+THEN
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",2)
+    Continue()
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,MASK_GENEUTRAL)
+THEN
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",2)
+    Continue()
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,MASK_GENEUTRAL)
+THEN
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",3)
+    Continue()
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,MASK_GENEUTRAL)
+THEN
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",3)
+    Continue()
+  RESPONSE #50
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,LAWFUL_EVIL)
+THEN
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",1)
+    Continue()
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,LAWFUL_EVIL)
+THEN
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",1)
+    Continue()
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,LAWFUL_EVIL)
+THEN
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",2)
+    Continue()
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,LAWFUL_EVIL)
+THEN
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",2)
+    Continue()
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,LAWFUL_EVIL)
+THEN
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",3)
+    Continue()
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,LAWFUL_EVIL)
+THEN
+  RESPONSE #20
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",3)
+    Continue()
+  RESPONSE #80
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",1)
+    Continue()
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",1)
+    Continue()
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",4)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",2)
+    Continue()
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",2)
+    Continue()
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",5)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",3)
+    Continue()
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,NEUTRAL_EVIL)
+THEN
+  RESPONSE #10
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",3)
+    Continue()
+  RESPONSE #90
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+  Alignment(Player1,CHAOTIC_EVIL)
+THEN
+  RESPONSE #100
+    SetGlobal("K#BhaalSpawnAbility1","%bsa_area%",4)
+    SetGlobal("K#BhaalSpawnAbility2","%bsa_area%",4)
+    SetGlobal("K#BhaalSpawnAbility3","%bsa_area%",5)
+    SetGlobal("K#BhaalSpawnAbility4","%bsa_area%",5)
+    SetGlobal("K#BhaalSpawnAbility5","%bsa_area%",6)
+    SetGlobal("K#BhaalSpawnAbility6","%bsa_area%",6)
+    Continue()
+END
+
+IF
+  %bsa_triggers_prep%
+  Global("K#NewGame","%bsa_area%",1)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","%bsa_area%",2)
+    Continue()
+END
+
+////////// Adding abilities to Player1 //////////
+IF
+  %bsa_triggers_add%
+  Global("K#NewGame","%bsa_area%",2)
+  Switch("K#BhaalSpawnAbility1","%bsa_area%")
+THEN
+  RESPONSE #1
+    ActionOverride(Player1,AddSpecialAbility("SPIN101"))
+    Continue()
+  RESPONSE #4
+    ActionOverride(Player1,AddSpecialAbility("SPIN104"))
+    Continue()
+END
+
+IF
+  %bsa_triggers_add%
+  Global("K#NewGame","%bsa_area%",2)
+  Switch("K#BhaalSpawnAbility2","%bsa_area%")
+THEN
+  RESPONSE #1
+    ActionOverride(Player1,AddSpecialAbility("SPIN101"))
+    Continue()
+  RESPONSE #4
+    ActionOverride(Player1,AddSpecialAbility("SPIN104"))
+    Continue()
+END
+
+IF
+  %bsa_triggers_add%
+  Global("K#NewGame","%bsa_area%",2)
+  Switch("K#BhaalSpawnAbility3","%bsa_area%")
+THEN
+  RESPONSE #2
+    ActionOverride(Player1,AddSpecialAbility("SPIN102"))
+    Continue()
+  RESPONSE #5
+    ActionOverride(Player1,AddSpecialAbility("SPIN105"))
+    Continue()
+END
+
+IF
+  %bsa_triggers_add%
+  Global("K#NewGame","%bsa_area%",2)
+  Switch("K#BhaalSpawnAbility4","%bsa_area%")
+THEN
+  RESPONSE #2
+    ActionOverride(Player1,AddSpecialAbility("SPIN102"))
+    Continue()
+  RESPONSE #5
+    ActionOverride(Player1,AddSpecialAbility("SPIN105"))
+    Continue()
+END
+
+IF
+  %bsa_triggers_add%
+  Global("K#NewGame","%bsa_area%",2)
+  Switch("K#BhaalSpawnAbility5","%bsa_area%")
+THEN
+  RESPONSE #3
+    ActionOverride(Player1,AddSpecialAbility("SPIN103"))
+    Continue()
+  RESPONSE #6
+    ActionOverride(Player1,AddSpecialAbility("SPIN106"))
+    Continue()
+END
+
+IF
+  %bsa_triggers_add%
+  Global("K#NewGame","%bsa_area%",2)
+  Switch("K#BhaalSpawnAbility6","%bsa_area%")
+THEN
+  RESPONSE #3
+    ActionOverride(Player1,AddSpecialAbility("SPIN103"))
+    Continue()
+  RESPONSE #6
+    ActionOverride(Player1,AddSpecialAbility("SPIN106"))
+    Continue()
+END
+
+IF
+  %bsa_triggers_add%
+  Global("K#NewGame","%bsa_area%",2)
+THEN
+  RESPONSE #100
+    SetGlobal("K#NewGame","%bsa_area%",3)
+    Continue()
+END
+>>>>>>>>
