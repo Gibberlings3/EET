@@ -1184,9 +1184,20 @@ THEN
     ReallyForceSpellDeadRES("OHSMODE3","Imoen2")
     Continue()
 END
+
+%bsa_script%
 >>>>>>>>
 
-EXTEND_TOP ~BD0120.BCS~ ~.../BD0120-et.baf~
+// Bhaalspawn ability creation for new SoD game
+LAF LOAD_BHAALSPAWN_ABILITIES
+	STR_VAR
+		area = ~BD0120~
+		triggers_prep = ~Global("NEWGAME_SOD","GLOBAL",1)~
+		triggers_add = ~Global("NEWGAME_SOD","GLOBAL",1) !Global("bd_plot","GLOBAL",0)~
+	RET
+		bsa_script = script
+END
+EXTEND_TOP ~BD0120.BCS~ ~.../BD0120-et.baf~ EVAL
 
 //BD1000.BCS
 COPY_EXISTING ~BD1000.BCS~ ~override~

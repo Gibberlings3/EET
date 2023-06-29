@@ -2617,39 +2617,7 @@ THEN
     Continue()
 END
 
-IF
-  Global("NEWGAME_SOA","GLOBAL",1)
-  Global("K#NewGame","AR0602",1)
-  Global("MoveScreen","AR0602",1)
-  ReputationGT(Player1,9)
-THEN
-  RESPONSE #100
-    SetGlobal("K#NewGame","AR0602",2)
-    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Cure Light Wounds
-    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Slow Poison
-    ActionOverride(Player1,AddSpecialAbility("SPIN102")) // Slow Poison
-    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Draw Upon Holy Might
-    ActionOverride(Player1,AddSpecialAbility("SPIN103")) // Draw Upon Holy Might
-    ActionOverride(Player1,AddSpecialAbility("SPIN101")) // Cure Light Wounds
-    Continue()
-END
-
-IF
-  Global("NEWGAME_SOA","GLOBAL",1)
-  Global("K#NewGame","AR0602",1)
-  Global("MoveScreen","AR0602",1)
-  ReputationLT(Player1,10)
-THEN
-  RESPONSE #100
-    SetGlobal("K#NewGame","AR0602",2)
-    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Larloch's Minor Drain
-    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Horror
-    ActionOverride(Player1,AddSpecialAbility("SPIN105")) // Horror
-    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Vampiric Touch
-    ActionOverride(Player1,AddSpecialAbility("SPIN106")) // Vampiric Touch
-    ActionOverride(Player1,AddSpecialAbility("SPIN104")) // Larloch's Minor Drain
-    Continue()
-END
+%bsa_script%
 
 IF
   Global("K#StoryMode","AR0602",0)
@@ -2665,7 +2633,16 @@ THEN
 END
 >>>>>>>>
 
-EXTEND_TOP ~AR0602.BCS~ ~.../AR0602-et.baf~
+// Bhaalspawn ability creation for new SoA game
+LAF LOAD_BHAALSPAWN_ABILITIES
+	STR_VAR
+		area = ~AR0602~
+		triggers_prep = ~Global("NEWGAME_SOA","GLOBAL",1)~
+		triggers_add = ~Global("NEWGAME_SOA","GLOBAL",1) Global("MoveScreen","AR0602",1)~
+	RET
+		bsa_script = script
+END
+EXTEND_TOP ~AR0602.BCS~ ~.../AR0602-et.baf~ EVAL
 
 COPY_EXISTING ~AR0602.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
