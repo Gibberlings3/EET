@@ -1232,6 +1232,19 @@ DEFINE_PATCH_MACRO ~EET_PCU_off_8675~ BEGIN
 	END
 END
 
+DEFINE_PATCH_MACRO ~EET_PCU_migrate_soundslots~ BEGIN
+	READ_LONG off "source"
+	SET absoff = off - cre_struct_off
+	PATCH_IF ("%source%" > 0) BEGIN
+		TEXT_SPRINT soundslot EVAL $migrated_soundslots(~%absoff%~)
+		SET updated = 1
+		WRITE_LONG dest "%source%"
+		SPRINT str ~Patching %SOURCE_FILESPEC% soundslot: %soundslot%~
+		SPRINTF str ~%s = %x => %x~ ("%str%" off dest)
+		PATCH_PRINT ~%str%~
+	END
+END
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY EET_cmd_list BEGIN
@@ -2893,6 +2906,20 @@ CO") BEGIN
 			END
 			PATCH_IF clone_update = 1 BEGIN
 				LPM EET_clone_update
+			END
+
+			/////////////////////////////////////////////////////////////////
+			//Migrate 9-click rare select sounds and additional action sounds
+			/////////////////////////////////////////////////////////////////
+			FOR (cnt2=0; cnt2<4; cnt2=cnt2+1) BEGIN
+				// rare select
+				SET off = ("%cre_struct_off%"+0x130+0x4*cnt2)
+				SET dest = ("%cre_struct_off%"+0x1d0+0x4*cnt2)
+				LPM EET_PCU_migrate_soundslots
+				// action4-7
+				SET off = ("%cre_struct_off%"+0x1e0+0x4*cnt2)
+				SET dest = ("%cre_struct_off%"+0x130+0x4*cnt2)
+				LPM EET_PCU_migrate_soundslots
 			END
 
 			TEXT_SPRINT ext_check ~cre~
