@@ -1946,7 +1946,8 @@ ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/sounds~ ~%bgee_dir%/lang/
 		END ELSE BEGIN
 			OUTER_SPRINT dest_file ~%BASH_FOR_RES%~
 		END
-		ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~) BEGIN
+		// skip copying renamed 2.6 AoN files as well
+		ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~ AND NOT (VARIABLE_IS_SET $remapped_aon(~%dest_file%~))) BEGIN
 			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~
 		END
 	END
