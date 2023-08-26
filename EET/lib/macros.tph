@@ -1235,10 +1235,10 @@ END
 DEFINE_PATCH_MACRO ~EET_PCU_migrate_soundslots~ BEGIN
 	READ_LONG off "source"
 	SET absoff = off - cre_struct_off
+	WRITE_LONG dest "%source%" // always needs to be done to ensure voiding ACTION4-ACTION7 audio slots after migration
 	PATCH_IF ("%source%" > 0) BEGIN
 		TEXT_SPRINT soundslot EVAL $migrated_soundslots(~%absoff%~)
 		SET updated = 1
-		WRITE_LONG dest "%source%"
 		SPRINT str ~Patching %SOURCE_FILESPEC% soundslot: %soundslot%~
 		SPRINTF str ~%s = %x => %x~ ("%str%" off dest)
 		PATCH_PRINT ~%str%~
