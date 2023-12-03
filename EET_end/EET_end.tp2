@@ -34,17 +34,18 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 				COPY_EXISTING ~%file%.2da~ ~override~
 					PRETTY_PRINT_2DA
 					PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
-						REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ %TAB%%WNL%]+[ ]+.+\)$~ BEGIN
-							PATCH_IF (~%MATCH1%~ STRING_MATCHES_REGEXP ~2DA[ ]+V1.0~ != 0) BEGIN
-								INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
-									COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
-									WHILE (num_matches < 7) BEGIN
-										REPLACE_TEXTUALLY ~$~ ~ ***~
-										SET num_matches = num_matches + 1
-									END
+						SET line_idx = 0
+						REPLACE_EVALUATE ~^.+$~ BEGIN
+							PATCH_IF (line_idx > 2) BEGIN  // process only table content
+								INNER_PATCH_SAVE MATCH0 ~%MATCH0%~ BEGIN
+									COUNT_REGEXP_INSTANCES ~[^ %TAB%%MNL%]+~ num_matches
+                  FOR (col = num_matches; col < 8; ++col) BEGIN
+                    REPLACE_TEXTUALLY ~$~ ~ ***~
+                  END
 								END
 							END
-						END ~%MATCH1%~
+							SET line_idx += 1
+						END ~%MATCH0%~
 						SPRINT game ~BG2~
 					END ELSE PATCH_IF (~%file%~ STR_EQ ~BGDIALOG~) BEGIN
 						SPRINT game ~BG1~
