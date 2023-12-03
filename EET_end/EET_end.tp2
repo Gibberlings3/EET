@@ -39,9 +39,9 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 							PATCH_IF (line_idx > 2) BEGIN  // process only table content
 								INNER_PATCH_SAVE MATCH0 ~%MATCH0%~ BEGIN
 									COUNT_REGEXP_INSTANCES ~[^ %TAB%%MNL%]+~ num_matches
-                  FOR (col = num_matches; col < 8; ++col) BEGIN
-                    REPLACE_TEXTUALLY ~$~ ~ ***~
-                  END
+									FOR (col = num_matches; col < 8; ++col) BEGIN
+										REPLACE_TEXTUALLY ~$~ ~ ***~
+									END
 								END
 							END
 							SET line_idx += 1
