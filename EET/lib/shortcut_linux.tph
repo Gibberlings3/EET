@@ -1,0 +1,105 @@
+// Creation of desktop shortcut for EET (Linux)
+
+// Preparations
+<<<<<<<< .../eet/get_paths.sh
+#!/bin/sh
+echo $HOME>EET/temp/user_path.txt
+echo $PWD>EET/temp/game_path.txt
+>>>>>>>>
+COPY ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/user_path.txt~  // mark for auto-removal
+     ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/game_path.txt~  // mark for auto-removal
+COPY ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/get_paths.sh~
+  REPLACE_TEXTUALLY ~%MNL%~ ~~
+AT_NOW ~chmod +x "%MOD_FOLDER%/temp/get_paths.sh"~
+AT_NOW ~"%MOD_FOLDER%/temp/get_paths.sh"~
+
+// Getting user path
+COPY ~%MOD_FOLDER%/temp/user_path.txt~ ~%MOD_FOLDER%/temp/user_path.txt~
+  SET eol = INDEX_BUFFER(~[%WNL%]~)
+  PATCH_IF (eol > 0) BEGIN
+    DELETE_BYTES eol (BUFFER_LENGTH - eol)
+  END
+  READ_ASCII 0x0 user_path (BUFFER_LENGTH)
+BUT_ONLY
+
+// Getting game path
+COPY ~%MOD_FOLDER%/temp/game_path.txt~ ~%MOD_FOLDER%/temp/game_path.txt~
+  SET eol = INDEX_BUFFER(~[%WNL%]~)
+  PATCH_IF (eol > 0) BEGIN
+    DELETE_BYTES eol (BUFFER_LENGTH - eol)
+  END
+  READ_ASCII 0x0 game_path (BUFFER_LENGTH)
+  // special character replacement; required according to the Desktop Entry Specification
+  REPLACE_TEXTUALLY ~\~ ~\\\\~
+  REPLACE_TEXTUALLY ~ ~ ~\\s~  
+  REPLACE_TEXTUALLY ~%TAB%~ ~\\t~
+  READ_ASCII 0x0 game_path_desktop (BUFFER_LENGTH)
+BUT_ONLY
+
+
+// Installing shortcut icons
+<<<<<<<< .../eet/install_icons.sh
+#!/bin/sh
+for size in 16 24 32 48 64 128 192 256; do
+  xdg-icon-resource install --noupdate --novendor --context apps --mode user --size $size "EET/docs/images/icons/eet-${size}.png" eet
+done
+xdg-icon-resource install --novendor --context apps --mode user --size 512 "EET/docs/images/icons/eet-512.png" eet
+>>>>>>>>
+// OUTER_SPRINT icon_path_base ~%user_path%/.local/share/icons/hicolor~
+COPY ~.../eet/install_icons.sh~ ~%MOD_FOLDER%/temp/install_icons.sh~
+  REPLACE_TEXTUALLY ~%MNL%~ ~~
+  EVAL
+AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_icons.sh"~
+AT_NOW ~"%MOD_FOLDER%/temp/install_icons.sh"~
+
+
+// Preparing desktop definition file
+<<<<<<<< .../eet/eet.desktop
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=EET
+Comment=Enhanced Edition Trilogy (EET)
+Exec="%game_path_desktop%/BaldursGateII"
+Path=%game_path_desktop%
+Icon=eet
+Terminal=false
+Categories=RolePlaying;Game;
+>>>>>>>>
+COPY ~.../eet/eet.desktop~ ~%MOD_FOLDER%/temp/eet.desktop~
+  REPLACE_TEXTUALLY ~%MNL%~ ~~
+  EVAL
+
+
+// Installing shortcuts
+<<<<<<<< .../eet/install_shortcuts.sh
+#!/bin/sh
+xdg-desktop-menu install --novendor --mode user "EET/temp/eet.desktop"
+xdg-desktop-icon install --novendor "EET/temp/eet.desktop"
+update-desktop-database "%menu_path%"
+>>>>>>>>
+OUTER_SPRINT menu_path ~%user_path%/.local/share/applications~
+OUTER_SPRINT desktop_path ~%user_path%/Desktop~
+COPY ~.../eet/install_shortcuts.sh~ ~%MOD_FOLDER%/temp/install_shortcuts.sh~
+  REPLACE_TEXTUALLY ~%MNL%~ ~~
+  EVAL
+AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_shortcuts.sh"~
+AT_NOW ~"%MOD_FOLDER%/temp/install_shortcuts.sh"~
+
+
+// Preparing uninstallation script
+<<<<<<<< .../eet/uninstall_shortcuts.sh
+#!/bin/sh
+# *** DO NOT REMOVE! REQUIRED BY THE "CREATE DESKTOP SHORTCUT" COMPONENT! ***
+xdg-desktop-icon uninstall eet.desktop
+xdg-desktop-menu uninstall --mode user eet.desktop
+for size in 16 24 32 48 64 128 192 256; do
+  xdg-icon-resource uninstall --noupdate --context apps --mode user --size $size eet
+done
+xdg-icon-resource uninstall --context apps --mode user --size 512 eet
+update-desktop-database "%menu_path%"
+>>>>>>>>
+COPY + ~.../eet/uninstall_shortcuts.sh~ ~%MOD_FOLDER%/uninstall_shortcuts.sh~
+  REPLACE_TEXTUALLY ~%MNL%~ ~~
+  EVAL
+AT_UNINSTALL ~test -x "%MOD_FOLDER%/uninstall_shortcuts.sh" && "%MOD_FOLDER%/uninstall_shortcuts.sh" && rm "%MOD_FOLDER%/uninstall_shortcuts.sh"~

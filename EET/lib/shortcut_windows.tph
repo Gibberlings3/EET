@@ -1,0 +1,40 @@
+// Creation of desktop shortcut for EET (Windows)
+
+<<<<<<<< .../userprofile.bat
+@echo off
+for /f "usebackq tokens=3*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do set DESKTOP=%%D
+for /F  %%a in ('echo %DESKTOP%') do echo %%a>EET/temp/path.txt
+>>>>>>>>
+
+//we're not setting %DESKTOP% in sLinkFile but echo and read it from external file (otherwise shortcut would not be registered for uninstallation)
+COPY + ~.../userprofile.bat~ ~%MOD_FOLDER%/temp/userprofile.bat~
+AT_NOW ~%MOD_FOLDER%/temp/userprofile.bat~
+COPY + ~%MOD_FOLDER%/temp/path.txt~ ~%MOD_FOLDER%/temp~
+  READ_ASCII 0x0 dir (%SOURCE_SIZE%)
+OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
+  REPLACE_TEXTUALLY ~%WNL%~ ~~
+END
+
+<<<<<<<< .../shortcut.bat
+@echo off
+
+set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
+
+echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
+echo sLinkFile = "EET\temp\EET.lnk" >> %SCRIPT%
+echo Set oLink = oWS.CreateShortcut(sLinkFile) >> %SCRIPT%
+echo oLink.TargetPath = "%CD%\Baldur.exe" >> %SCRIPT%
+: echo oLink.IconLocation = "%CD%\Baldur.exe, 0" >> %SCRIPT%
+echo oLink.IconLocation = "%CD%\EET\docs\images\eet.ico" >> %SCRIPT%
+echo oLink.WorkingDirectory = "%CD%" >> %SCRIPT%
+echo oLink.Description = "Enhanced Edition Trilogy (EET)" >> %SCRIPT%
+echo oLink.Save >> %SCRIPT%
+
+cscript /nologo %SCRIPT%
+del %SCRIPT%
+>>>>>>>>
+
+COPY + ~.../shortcut.bat~ ~shortcut.bat~
+AT_NOW ~shortcut.bat~
+DELETE + ~shortcut.bat~
+COPY ~%MOD_FOLDER%/temp/EET.lnk~ ~%dir%~
