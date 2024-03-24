@@ -79,6 +79,7 @@ LANGUAGE ~Simplified Chinese~
 BEGIN @900000 //EET - resource importation
 REQUIRE_PREDICATE ENGINE_IS ~bg2ee~ @900001 //Please install it on BG2:EE engine
 FORBID_COMPONENT ~setup-bp-bgt-worldmap.tp2~ ~0~ @900002 //EET should be installed BEFORE BP-BGT Worldmap
+DESIGNATED 0
 
 PRINT ~INTERACTIVE = %INTERACTIVE%~
 PRINT ~LANGUAGE = %LANGUAGE%~
@@ -2768,42 +2769,24 @@ ACTION_FOR_EACH file IN EET_end EET_gui BEGIN
 END
 
 
-ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Ss]~ = 0) BEGIN
-	PRINT ~Skipping shortcut creation~
-END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-<<<<<<<< .../userprofile.bat
-@echo off
-for /f "usebackq tokens=3*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do set DESKTOP=%%D
-for /F  %%a in ('echo %DESKTOP%') do echo %%a>EET/temp/path.txt
->>>>>>>>
-	//we're not setting %DESKTOP% in sLinkFile but echo and read it from external file (otherwise shortcut would not be registered for uninstallation)
-	COPY + ~.../userprofile.bat~ ~%MOD_FOLDER%/temp~
-	AT_NOW ~%MOD_FOLDER%/temp/userprofile.bat~
-	COPY + ~%MOD_FOLDER%/temp/path.txt~ ~%MOD_FOLDER%/temp~
-		READ_ASCII 0x0 dir (%SOURCE_SIZE%)
-	OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
-		REPLACE_TEXTUALLY ~%WNL%~ ~~
-	END
-<<<<<<<< .../shortcut.bat
-@echo off
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Desktop shortcut creation                        \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 
-set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
+BEGIN @900100 // Create desktop shortcut
+REQUIRE_COMPONENT ~EET.tp2~ 0 @910001 // This component requires EET core component to be installed first
+REQUIRE_PREDICATE (NOT VARIABLE_IS_SET ~argv[0]~ || INDEX(~s~ ~%argv[0]%~) < 0) @900101 // Skipped by WeiDU argument
+REQUIRE_PREDICATE (NOT ~%WEIDU_OS%~ STR_EQ ~osx~) @900102 // Not available for your system
+DESIGNATED 100
 
-echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
-echo sLinkFile = "EET\temp\EET.lnk" >> %SCRIPT%
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> %SCRIPT%
-echo oLink.TargetPath = "%CD%\Baldur.exe" >> %SCRIPT%
-: echo oLink.IconLocation = "%CD%\Baldur.exe, 0" >> %SCRIPT%
-echo oLink.IconLocation = "%CD%\EET\docs\images\eet.ico" >> %SCRIPT%
-echo oLink.WorkingDirectory = "%CD%" >> %SCRIPT%
-echo oLink.Description = "Enhanced Edition Trilogy (EET)" >> %SCRIPT%
-echo oLink.Save >> %SCRIPT%
-
-cscript /nologo %SCRIPT%
-del %SCRIPT%
->>>>>>>>
-	COPY + ~.../shortcut.bat~ ~shortcut.bat~
-	AT_NOW ~shortcut.bat~
-	DELETE + ~shortcut.bat~
-	COPY ~%MOD_FOLDER%/temp/EET.lnk~ ~%dir%~
+ACTION_IF (~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
+  INCLUDE ~%MOD_FOLDER%/lib/shortcut_windows.tph~
+END ELSE ACTION_IF (~%WEIDU_OS%~ STR_EQ ~unix~) BEGIN
+  INCLUDE ~%MOD_FOLDER%/lib/shortcut_linux.tph~
+END ELSE BEGIN
+  WARN ~WARNING: Shortcut creation not available for "%WEIDU_OS%"~
 END
