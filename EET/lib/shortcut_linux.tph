@@ -10,8 +10,7 @@ COPY ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/user_path.txt~  // mark for auto-
      ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/game_path.txt~  // mark for auto-removal
 COPY ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/get_paths.sh~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
-AT_NOW ~chmod +x "%MOD_FOLDER%/temp/get_paths.sh"~
-AT_NOW ~"%MOD_FOLDER%/temp/get_paths.sh"~
+AT_NOW ~chmod +x "%MOD_FOLDER%/temp/get_paths.sh"; "%MOD_FOLDER%/temp/get_paths.sh"~
 
 // Getting user path
 COPY ~%MOD_FOLDER%/temp/user_path.txt~ ~%MOD_FOLDER%/temp/user_path.txt~
@@ -49,8 +48,7 @@ xdg-icon-resource install --novendor --context apps --mode user --size 512 "EET/
 COPY ~.../eet/install_icons.sh~ ~%MOD_FOLDER%/temp/install_icons.sh~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
   EVAL
-AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_icons.sh"~
-AT_NOW ~"%MOD_FOLDER%/temp/install_icons.sh"~
+AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_icons.sh"; "%MOD_FOLDER%/temp/install_icons.sh"~
 
 
 // Preparing desktop definition file
@@ -83,8 +81,7 @@ OUTER_SPRINT desktop_path ~%user_path%/Desktop~
 COPY ~.../eet/install_shortcuts.sh~ ~%MOD_FOLDER%/temp/install_shortcuts.sh~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
   EVAL
-AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_shortcuts.sh"~
-AT_NOW ~"%MOD_FOLDER%/temp/install_shortcuts.sh"~
+AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_shortcuts.sh"; "%MOD_FOLDER%/temp/install_shortcuts.sh"~
 
 
 // Preparing uninstallation script
@@ -102,4 +99,4 @@ update-desktop-database "%menu_path%"
 COPY + ~.../eet/uninstall_shortcuts.sh~ ~%MOD_FOLDER%/uninstall_shortcuts.sh~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
   EVAL
-AT_UNINSTALL ~test -x "%MOD_FOLDER%/uninstall_shortcuts.sh" && "%MOD_FOLDER%/uninstall_shortcuts.sh" && rm "%MOD_FOLDER%/uninstall_shortcuts.sh"~
+AT_UNINSTALL ~test -f "%MOD_FOLDER%/uninstall_shortcuts.sh" && chmod +x "%MOD_FOLDER%/uninstall_shortcuts.sh" && "%MOD_FOLDER%/uninstall_shortcuts.sh" && rm "%MOD_FOLDER%/uninstall_shortcuts.sh"~
