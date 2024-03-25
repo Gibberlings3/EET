@@ -2,8 +2,8 @@
 
 <<<<<<<< .../userprofile.bat
 @echo off
-for /f "usebackq tokens=3*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do set DESKTOP=%%D
-for /F  %%a in ('echo %DESKTOP%') do echo %%a>EET/temp/path.txt
+for /f "tokens=3,*" %%a in ('reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop') do set DESKTOP=%%a
+for /f "delims=" %%a in ('echo %DESKTOP%') do echo %%a>EET/temp/path.txt
 >>>>>>>>
 
 //we're not setting %DESKTOP% in sLinkFile but echo and read it from external file (otherwise shortcut would not be registered for uninstallation)
