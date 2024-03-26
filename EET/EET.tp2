@@ -1019,15 +1019,16 @@ BUT_ONLY
 COPY ~engine.lua~ ~engine.lua~
 	REPLACE_TEXTUALLY ~engine_name[ %TAB%]*=[ %TAB%]*".*"~ ~engine_name = "Baldur's Gate - Enhanced Edition Trilogy"~
 
-OUTER_PATCH_SAVE USER_DIRECTORY_EET ~%USER_DIRECTORY%~ BEGIN
+LAF GET_USER_DIRECTORY RET user_directory END // retrieves user directory in the correct character encoding
+OUTER_PATCH_SAVE USER_DIRECTORY_EET ~%user_directory%~ BEGIN
 	REPLACE_TEXTUALLY ~Baldur's Gate II - Enhanced Edition~ ~Baldur's Gate - Enhanced Edition Trilogy~
 END
 
 ACTION_IF (NOT DIRECTORY_EXISTS ~%USER_DIRECTORY_EET%/save~) BEGIN
 	MKDIR ~%USER_DIRECTORY_EET%/save~
 END
-ACTION_IF (NOT FILE_EXISTS ~%USER_DIRECTORY_EET%/Baldur.lua~) AND (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.lua~) BEGIN
-	COPY + ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY_EET%~
+ACTION_IF (NOT FILE_EXISTS ~%USER_DIRECTORY_EET%/Baldur.lua~) AND (FILE_EXISTS ~%user_directory%/Baldur.lua~) BEGIN
+	COPY + ~%user_directory%/Baldur.lua~ ~%USER_DIRECTORY_EET%~
 END
 
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY_EET%/Baldur.lua~) BEGIN
