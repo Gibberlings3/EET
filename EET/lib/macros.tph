@@ -2,6 +2,56 @@
 //BEGIN Macros
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Returns the game's user directory (USER_DIRECTORY) in the right encoding for use with filesystem functions.
+DEFINE_ACTION_FUNCTION GET_USER_DIRECTORY
+STR_VAR
+  temp_directory = EVAL ~%MOD_FOLDER%/temp~ // where to store temporary data
+RET
+  user_directory  // path to the game's user directory
+BEGIN
+  ACTION_IF (~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
+    // On Windows the path string must be correctly encoded
+<<<<<<<< .../get_doc_path.bat
+@echo off
+for /f "tokens=3,*" %%a in ('reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Personal') do set DOC_DIR=%%a
+for /f "delims=" %%a in ('echo %DOC_DIR%') do echo %%a>"${temp_directory}\documents_path.txt"
+>>>>>>>>
+    MKDIR ~%temp_directory%~
+    COPY + ~.../get_doc_path.bat~ ~%temp_directory%/get_doc_path.bat~
+      // Replacing ${xxx} placeholders in batch file with content of %xxx%.
+      // This is needed as regular %xxx% variables have already a special meaning in batch files.
+      REPLACE_EVALUATE ~\${\([^}]+\)}~ BEGIN
+        SPRINT path_var EVAL ~%%MATCH1%%~
+        INNER_PATCH_SAVE path_var ~%path_var%~ BEGIN REPLACE_TEXTUALLY ~/~ ~\\~ END
+      END ~%path_var%~
+    AT_NOW ~%temp_directory%/get_doc_path.bat~
+    DELETE ~%temp_directory%/get_doc_path.bat~
+
+    // getting Documents directory
+    COPY + ~%temp_directory%/documents_path.txt~ ~%temp_directory%/documents_path.txt~
+      REPLACE_TEXTUALLY ~[%WNL%]+~ ~~
+      READ_ASCII 0 doc_dir (BUFFER_LENGTH)
+    DELETE ~%temp_directory%/documents_path.txt~
+
+    // getting game folder name
+    // OUTER_SPRINT game_folder ~Baldur's Gate II - Enhanced Edition~
+    // COPY ~engine.lua~ ~engine.lua~
+      // READ_ASCII 0 content (BUFFER_LENGTH)
+      // INNER_PATCH ~%content%~ BEGIN
+        // REPLACE_EVALUATE ~engine_name[ %TAB%]*=[ %TAB%]*"\([^"]+\)"~ BEGIN
+          // SPRINT game_folder ~%MATCH1%~
+        // END ~%MATCH0%~
+      // END
+    // BUT_ONLY IF_EXISTS
+
+    // assembling user directory
+    OUTER_SPRINT user_directory ~%doc_dir%\Baldur's Gate II - Enhanced Edition~
+  END ELSE BEGIN
+    // using WeiDU variable directly on non-Windows systems
+    OUTER_SPRINT user_directory ~%USER_DIRECTORY%~
+  END
+END
+
 DEFINE_ACTION_FUNCTION GET_SYSTEM_ARCH RET SYSTEM_ARCH BEGIN
 	ACTION_MATCH "%WEIDU_OS%" WITH
 	win32 BEGIN
