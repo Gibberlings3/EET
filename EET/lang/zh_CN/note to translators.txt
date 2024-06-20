@@ -1,22 +1,22 @@
-Most of EET strings are already translated elsewhere. If you are going to create a translation for EET you can use already available translations (if their authors are not against it of course) to save yourself about 90% of work.
+大多数EET（增强版）的字符串已经在其他地方翻译过了。如果你打算为EET创建翻译，你可以使用已经可用的翻译（当然，前提是它们的作者不反对），这样可以节省你大约90%的工作量。
 
-First of all notice that all files uses UTF-8 without boom encoding - this is not an error. Mod is design only for EE games, so ANSI encoding is not needed (in fact it crashes the game if text is added to LUA file, even if the file was previously converted with HANDLE_CHARSETS)
+首先，请注意所有文件都使用UTF-8编码无BOM编码——这不是错误。这个模组只设计用于EE（增强版）游戏，所以不需要ANSI编码（实际上，如果文本被添加到LUA文件中，即使文件之前已经用HANDLE_CHARSETS转换过，也会使游戏崩溃）。
 
-No need to translate SoD related strings (chapter text and dialogues) if SoD expansion has not been translated to your language.
+如果SoD扩展包还没有被翻译成你的语言，就没有必要翻译与SoD相关的字符串（章节文本和对话）。
 
-2da.tra - CHARSND.2DA strings refers to BG2 soundsets names (which are not named in BG2:EE for some reason) and BG1 default soundsets (other imported sets are already named).
-CAMPAIGN.2DA / UI.MENU.LUA section contains lines presented in 'Campaign Select' screen in main menu. For English text I've adopted direct quotes mentioned in intro movies and some marketing slogans found on the internet to describe each campaign. Feel free to write whatever you want there. No need for direct translation.
-SAVENAME.2DA section has names used for default saves made at the beginning of each chapter. Vanilla games already makes such saves so refer to them as a base for translation
-Worldmap GUI Strings - shorter versions of 'Destination Unreachable' and 'Travelling Hours' strings to make the patch 2.x worldmap less cluttered
+2da.tra - CHARSND.2DA字符串指的是BG2的声音集名称（由于某种原因，在BG2:EE中没有命名），以及BG1的默认声音集（其他导入的集合已经命名了）。
+CAMPAIGN.2DA / UI.MENU.LUA部分包含在主菜单的“战役选择”屏幕上显示的行。对于英文文本，我已经采用了在介绍片中直接提到的引用和我在互联网上找到的一些营销语来描述每个战役。你可以随意写任何你想到的内容。不用直接翻译。
+SAVENAME.2DA部分有用于在每个章节开始时创建的默认保存的名称。原始游戏已经做了这样的保存，所以可以参考它们作为翻译的基础。
+Worldmap GUI 字符串--"目的地无法到达 "和 "旅行时间 "字符串的简短版本，使 2.x 补丁的世界地图不再杂乱无章
 
-chapters.tra - large file that consists of chapter strings existing in BG:EE/SoD/BG2:EE TLK. Original string numbers are mentioned right above the string, so you can simply copy over their content. Most of the time it's a matter of changing the chapter number in the first line. Also as mentioned in the tra file strings @2000024-@2000037 requires additional work with changing the text from narrator perspective to CHARNAME perspective - no need for direct translation - the text should read like CHARNAME was writing it, so feel free to skip some parts and rewrite other bits of original narrator speech (this text is added to USER journal at the beginning of each chapter, no need to edit BG2 strings since they already have chapter start text from the CHARNAME perspective).
+chapters.tra - 这是一个包含在BG:EE/SoD/BG2:EE TLK中存在的章节字符串的大文件。原始字符串编号就写在字符串的正上方，所以你可以直接复制它们的内容。大多数时候，这只是一个改变第一行中的章节编号的问题。正如在tra文件中提到的，@2000024-@2000037需要额外的工作，将文本从叙述者的视角改为CHARNAME（角色名）的视角 - 不需要直接翻译 - 文本应该像CHARNAME写的一样，所以你可以随意跳过一些部分，重写原始叙述者的演讲的其他部分（这段文本在每个章节开始时添加到用户日志中，不需要编辑BG2字符串，因为它们已经有从CHARNAME视角的章节开始文本）。
 
-dialog.tra + compatibility.tra - for FATESP section use BG2:EE strings as a base (for example: 65010, 65018, 65021, 65016). @1000030 is based on BG2:EE 73956 string but keep in mind that this line should be gender neutral. BDSCHAEL.DLG is a file from vanilla SoD, so you can take base string from SoD TLK.
+dialog.tra + compatibility.tra - 对于FATESP部分，使用BG2:EE字符串作为基础（例如：65010, 65018, 65021, 65016）。@1000030基于BG2:EE 73956字符串，但请记住，这行应该是性别中立的。BDSCHAEL.DLG是来自原始SoD的文件，所以你可以从SoD TLK中获取基础字符串。
 
-map_mods_trans.tra - you can find many of these strings translated in BP-BGT Worldmap. Check out string numbers added as comments. Also check out if Miloch's Sword Coast Map Labels mod is available in your language for even more translated strings. ### instead of spaces and area names instead of string numbers are not a mistake. This file is not directly loaded, but EET reads it during installation to get these strings.
+map_mods_trans.tra - 你可以在BP-BGT世界地图中找到这些字符串的许多翻译。查看作为注释添加的字符串编号。另外，看看Miloch的剑海岸地图标签模组是否在你语言中可用，以获得更多翻译的字符串。###代替空格和区域名称代替字符串编号不是错误。这个文件不是直接加载的，但是EET在安装期间读取它以获取这些字符串。
 
-prompts.tra - this is a common file with WeiDU constants strings. There are many mods that come with such file, so you can just copy it over without any changes.
+prompts.tra - 这是一个包含WeiDU常量字符串的通用文件。有许多模组带有这样的文件，所以你可以直接复制它而不需要任何更改。
 
-setup.tra - strings related to WeiDU installation process (so don't use non-English language letters)
+setup.tra - 与WeiDU安装过程相关的字符串
 
-'movies' directory stores voices from the original BG1 movies: BEREGOST, INTRO, NASHKELL, WYVERN. You can send MVE files to WhiteAgnus, if you don't know how to export voice track only. If these 4 movies had not been localized in your country than let us know - in such case English ones will be used during installation.
+'movies' 目录存储原始BG1电影的声音：BEREGOST, INTRO, NASHKELL, WYVERN。如果你不知道如何仅导出声音轨道，可以将MVE文件发送给WhiteAgnus。如果这4部电影在你们国家没有被本地化，那么请告诉我们——在这种情况下，安装期间将使用英语版本。
