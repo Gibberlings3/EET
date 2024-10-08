@@ -192,6 +192,28 @@ IF ~GlobalGT("Chapter","GLOBAL",7)
 END
 END
 
+//Tersus (Bandit Camp) should hand out the number of leather armor according to party size
+//Workaround for difference in scripting behavior between BGEE and BG2EE
+ADD_TRANS_TRIGGER ~tersus~ 3 ~NumInPartyGT(5)~
+REPLACE_TRANS_ACTION ~tersus~ BEGIN 3 END BEGIN END ~\bPlayer[1-6]\b~ ~\0Fill~
+EXTEND_BOTTOM ~tersus~ 3
+  IF ~NumInParty(5)~ DO ~GiveItemCreate("LEAT01",Player1Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player2Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player3Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player4Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player5Fill,0,0,0)~ EXIT
+  IF ~NumInParty(4)~ DO ~GiveItemCreate("LEAT01",Player1Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player2Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player3Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player4Fill,0,0,0)~ EXIT
+  IF ~NumInParty(3)~ DO ~GiveItemCreate("LEAT01",Player1Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player2Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player3Fill,0,0,0)~ EXIT
+  IF ~NumInParty(2)~ DO ~GiveItemCreate("LEAT01",Player1Fill,0,0,0)
+                         GiveItemCreate("LEAT01",Player2Fill,0,0,0)~ EXIT
+  IF ~NumInParty(1)~ DO ~GiveItemCreate("LEAT01",Player1Fill,0,0,0)~ EXIT
+END
+
 //STO
 REPLACE_STATE_TRIGGER RBALDU 0 ~Global("Chapter","GLOBAL",7)~ 1 2 3 4 10 13 16 17
 REPLACE_STATE_TRIGGER RBALDU 6 ~GlobalLT("Chapter","GLOBAL",8)~ 7 8 11 12 18

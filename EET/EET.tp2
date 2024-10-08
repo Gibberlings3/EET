@@ -1608,6 +1608,38 @@ ACTION_FOR_EACH file IN FAMCAT_ FAMDUST_ FAMFAIR_ FAMFER_ FAMIMP_ FAMPSD_ FAMQUA
 	BUT_ONLY
 END
 
+/////                                                 \\\\\
+///// Creature animation fix for Centeol              \\\\\
+/////                                                 \\\\\
+
+//BG2 version of STATIC_SPIDER_WOMAN is not fully compatible with Centeol's BG1 creature animation
+//and results in a missing death animation and permanently blocked personal space even after death.
+//This code creates a patched copy of the animation and assigns it to Centeol.
+ACTION_IF (RESOURCE_CONTAINS ~4300.ini~ ~can_lie_down=0~) BEGIN
+  OUTER_FOR (slot = 0x4301; slot < 0x4400; ++slot) BEGIN
+    // finding next free animation slot
+    OUTER_PATCH ~~ BEGIN
+      SPRINTF centeol_ini_file ~%x.ini~ (slot)
+      INNER_PATCH_SAVE centeol_ini_file ~%centeol_ini_file%~ BEGIN DELETE_BYTES 0 2 END
+      PATCH_IF (NOT FILE_EXISTS_IN_GAME ~%centeol_ini_file%~) BEGIN
+        SET centeol_slot = slot
+        SPRINTF centeol_slot_hex ~%x~ (slot)
+        SET slot = 0x4400
+      END
+    END
+  END
+
+  COPY_EXISTING ~4300.ini~ ~override/%centeol_ini_file%~
+    REPLACE_TEXTUALLY EXACT_MATCH ~can_lie_down=0~ ~can_lie_down=1~
+
+  APPEND ~animate.ids~ ~%centeol_slot_hex% STATIC_SPIDER_WOMAN_BG1~
+
+  COPY_EXISTING ~centeo.cre~   ~override~
+                ~centeo01.cre~ ~override~
+    WRITE_LONG 0x28 centeol_slot
+  BUT_ONLY
+END
+
 /////                                                  \\\\\
 ///// DLG                                              \\\\\
 /////                                                  \\\\\
