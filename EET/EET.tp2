@@ -1908,34 +1908,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_portraitID BEGIN
 END
 ACTION_PHP_EACH table_EET_portraitID AS portrait => ID BEGIN
 	COPY ~%MOD_FOLDER%/base/spl/K#PORTR.SPL~ ~override/K#POR%ID%.SPL~
-		WRITE_ASCIIE ~0xae~ ~K#POR%ID%~ #8
-		WRITE_ASCIIE ~0xde~ ~%portrait%M~ #8 //Small portrait
-		WRITE_ASCIIE ~0x10e~ ~%portrait%L~ #8 //Large portrait
-END
-
-//assign NPC colors after resurrection from chunk death
-ACTION_DEFINE_ASSOCIATIVE_ARRAY table_EET_fileID BEGIN
-	"IMOEN" => "IMO"
-	"EDWIN" => "EDW"
-END
-ACTION_PHP_EACH table_EET_fileID AS file => ID BEGIN
-	COPY_EXISTING ~%file%.cre~ ~override~
-		READ_BYTE 0x2c "metal" //Metal Colour Index	9e
-		READ_BYTE 0x2d "minor" //Minor Colour Index
-		READ_BYTE 0x2e "major" //Major Colour Index
-		READ_BYTE 0x2f "skin" //Skin Colour Index
-		READ_BYTE 0x30 "leather" //Leather Colour Index
-		READ_BYTE 0x31 "armor" //Armor Colour Index
-		READ_BYTE 0x32 "hair" //Hair Colour Index
-	BUT_ONLY
-	COPY ~%MOD_FOLDER%/base/spl/K#COLOR.SPL~ ~override/K#COL%ID%.SPL~
-		WRITE_LONG 0x9e "metal"
-		WRITE_LONG 0xce "minor"
-		WRITE_LONG 0xfe "major"
-		WRITE_LONG 0x12e "skin"
-		WRITE_LONG 0x15e "leather"
-		WRITE_LONG 0x18e "armor"
-		WRITE_LONG 0xbe "hair"
+		WRITE_ASCIIE ~0xae~ ~%portrait%M~ #8 //Small portrait
+		WRITE_ASCIIE ~0xde~ ~%portrait%L~ #8 //Large portrait
 END
 
 COPY ~%patch_dir%/spl~ ~override~
