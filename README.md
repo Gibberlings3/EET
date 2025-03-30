@@ -1,6 +1,14 @@
+![Latest Release](https://img.shields.io/github/v/release/Gibberlings3/EET?include_prereleases&color=blue) 
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/Gibberlings3/EET?color=gold)
+![Platform](https://img.shields.io/static/v1?label=platform&message=windows%20%7C%20macOS%20%7C%20linux%20%7C%20Project%20Infinity&color=informational)
+![Language](https://img.shields.io/static/v1?label=language&message=English%20%7C%20Chinese%20%7C%20Czech%20%7C%20French%20%7C%20German%20%7C%20Polish%20%7C%20Russian%20%7C%20Spanish&color=limegreen)
+![Supported games](https://img.shields.io/static/v1?label=supported%20games&message=BG%20%7C%20BG2%20%7C%20BGT%20%7C%20BGEE%20%7C%20BG2EE%20%7C%20EET%20%7C%20IWD%20%7C%20IWDEE%20%7C%20IWD2%20%7C%20IWD-in-BG2%20%7C%20PsT%20%7C%20PsTEE&color=dodgerblue)
+
+![The G3 Logo](https://raw.githubusercontent.com/Gibberlings3/.github/master/profile/g3_neutral.png)
+
 # Baldur's Gate: Enhanced Edition Trilogy (EET)
 
--------------
+## Overview
 
 Baldur's Gate: Enhanced Edition Trilogy (EET) is a modification for Baldur's Gate II: Enhanced Edition that merges the whole saga into one game and provides continuity between the events of Baldur's Gate, Tales of the Sword Coast, Shadows of Amn, Throne of Bhaal and Siege of Dragonspear expansions (also for both Black Pits adventures). The name of this modification probably rings a bell to those who have been following the IE modding scene, thanks to the classic mod that inspired this project called Baldur's Gate Trilogy (BGT), developed by Bardez and Ascension64. While EET remains mostly faithful to the premise of BGT, it shouldn't be considered a direct continuation of that project. In fact, both mods share little to no common code and have made different design decisions in many aspects.
 
@@ -17,3 +25,13 @@ II. Become a mod-friendly platform with the additional modding possibilities tha
 - A way to create new content designed for higher-level parties in areas that normally wouldn't exist in the unmodded games or would be blocked after certain points of the story (BGT mod).
 - Intuitive conventions for renamed BG:EE files and modders resources that can be used for adopting existing mods.
 - Limited support for mods installed on BG:EE previous to installing EET on BG2:EE.
+
+## More Information
+
+:page_facing_up: [Project Page](https://www.gibberlings3.net/mods/other/eet/)  
+:page_facing_up: [Readme](https://gibberlings3.github.io/Documentation/readmes/readme-EET.html)  
+:page_facing_up: [Forum](https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/) 
+
+## 
+
+![GitHub repo size](https://img.shields.io/github/repo-size/Gibberlings3/EET?style=plastic&label=repo%20size)
