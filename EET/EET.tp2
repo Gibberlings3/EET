@@ -184,9 +184,11 @@ INCLUDE ~%MOD_FOLDER%/lib/bgee_dir.tph~
 INCLUDE ~%MOD_FOLDER%/lib/pcu_dict.tph~
 INCLUDE ~%MOD_FOLDER%/lib/add_spell_ex.tpa~
 
+OUTER_SET cd_eefp_bgee = 0
 ACTION_IF FILE_EXISTS ~%bgee_dir%/WeiDU.log~ BEGIN
 	COPY ~%bgee_dir%/WeiDU.log~ ~WeiDU-BGEE.log~
 		REPLACE_TEXTUALLY ~^//.*[%newline%]*~ ~~ //removes "Recently uninstalled" lines
+    COUNT_REGEXP_INSTANCES "~EEFIXPACK/SETUP-EEFIXPACK.TP2~ #[0-9]+ #0" cd_eefp_bgee
 END ELSE BEGIN
 	COPY ~.../blank.txt~ ~WeiDU-BGEE.log~
 END
