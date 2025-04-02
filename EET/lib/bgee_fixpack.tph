@@ -60,7 +60,7 @@ COPY_EXISTING ~BDPETR01.CRE~ ~override~
 	PATCH_IF (~%default%~ STR_EQ ~DPLAYER3~) BEGIN
 		WRITE_ASCII 0x268 ~~ #8
 	END ELSE BEGIN
-		PATCH_WARN ~WARNING: %BASH_FOR_FILE% no longer needs fixing~
+		PATCH_WARN ~WARNING: %SOURCE_FILE% no longer needs fixing~
 	END
 BUT_ONLY
 
