@@ -1,490 +1,375 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Baldur's Gate: Enhanced Edition Trilogy (EET)</title>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<link href="style/g3icon.ico" rel="icon" type="image/bmp" />
-<link rel="stylesheet" href="style/g3readme.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style/g3readme_cam_022916.css" type="text/css" />
+<link href="style/EET.ico" rel="icon" type="image/bmp" />
 </head>
 <body>
-<h1>Baldur's Gate: Enhanced Edition Trilogy (EET)</h1>
-<div class="section">
-  <p><strong><a href="http://www.gibberlings3.net/">A Gibberlings Three Mod</a></strong> <br />
-    <strong>Author</strong>: <a href="https://www.gibberlings3.net/profile/6804-k4thos/">K4thos</a><br>
-  <p><strong>On the web: </strong><a href="https://www.gibberlings3.net/forums/topic/27752-eet-overview/"><strong>Home page</strong></a> and <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/"><strong>discussion forum</strong></a></p>
-  <p><strong>Version 13.4</strong><br />
-    <strong>Languages: </strong>English, Polish, Spanish, German, French, Czech, Russian<br />
-    <strong>Platforms: </strong>Windows, Mac OS, Linux (<a href="https://www.gibberlings3.net/forums/topic/28516-the-linux-users-guide-to-installing-mods-on-the-enhanced-editions/">case insensitive partitions</a>)</p>
+<div id="container">
+  <div class="ribbon_menu">
+    <ul>
+      <li><a href="#Overview">Overview</a></li>
+      <li><a href="#Compatibility">Compatibility</a></li>
+      <li><a href="#Bugs">Bug Reporting</a></li>
+      <li><a href="#Installation">Installation</a></li>
+      <li><a href="#faq">FAQs</a></li>
+      <li><a href="#Troubleshooting">Troubleshooting</a></li>
+      <li><a href="#Thanks">Thanks</a></li>
+      <li><a href="#Credits">Credits</a></li>
+      <li><a href="#History">History</a></li>
+    </ul>
+    <span><img src="style/g3_logo_2018.gif" alt="G3" width="237" height="83" /></span> </div>
+  <div class="ribbon_bubble">
+    <div class="ribbon_rectangle">
+      <h1> Baldur's Gate: Enhanced Edition Trilogy (EET)</h1>
+    </div>
+    <div class="ribbon_triangle-l"></div>
+    <div class="ribbon_triangle-r"></div>
+    <div class="section">
+      <p> <strong><a href="http://www.gibberlings3.net/">A Gibberlings Three Mod</a><br />
+        Author</strong>: <a href="https://www.gibberlings3.net/profile/6804-k4thos/">K4thos</a><br />
+        <strong>On the web: </strong><a href="https://www.gibberlings3.net/mods/other/eet/">Home page</a>, <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/">discussion forum</a>, and <a href="https://discord.gg/yTzjMTb">Discord</a></p>
+      <p> <strong>Version 14.0</strong><br />
+        <strong>Languages:</strong> Chinese, Czech, English, French, German, Polish, Russian, and Spanish<br />
+        <strong>Platforms: </strong>Windows, macOS, Linux<br />
+        <strong>GitHub: </strong><a href="https://github.com/Gibberlings3/EET">Gibberlings3/EET</a> </p>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="Overview" name="Overview"></a>
+      <h2> Overview </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <p>Baldur's Gate: Enhanced Edition Trilogy (EET) is a modification for Baldur's Gate II: Enhanced Edition that merges whole saga into one game and provides continuity between the events of Baldur's Gate, Tales of the Sword Coast, Shadows of Amn, Throne of Bhaal and <a href="http://www.siegeofdragonspear.com/">Siege of Dragonspear</a> expansion (also for both Black Pits adventures). The name of this this modification probably rings a bell to those who have been following IE modding scene, thanks to the classic mod that inspired this project, called Baldur's Gate Trilogy (BGT), developed by Bardez and Ascension64. While EET remains mostly faithful to the premise of the BGT, it shouldn't be considered a direct continuation of that project. In fact both mods share little to no common code and took different design decisions in many aspects.</p>
+      <p>Baldur's Gate: Enhanced Edition Trilogy has two main goals:</p>
+      <p><strong>1. Uniting of the Baldur's Gate series into a single, continuous world that doesn't feel like 4 separate campaigns</strong></p>
+      <ul>
+        <li>Play all Infinity Engine Baldur's Gate saga games in Baldur's Gate II: Enhanced Edition engine. One game, complete package</li>
+        <li>Seamless experience, NPC continuity, better internal consistency between the games</li>
+        <li>United journal system that keeps track of all 22 chapters of your journey, from the beginning in Candlekeep up until the end of Throne of Bhaal expansion</li>
+        <li>No restrictions in travelling between BG1, SoD, BG2 and ToB areas, once they are discovered. All areas accessible from the same worldmap</li>
+      </ul>
+      <p><strong>2. Becoming a mod friendly platform with additional modding possibilities that comes with fulfilling the first goal</strong></p>
+      <ul>
+        <li>Solution for mods designed to affect BG1 and BG2 content at the same time (preserved variables, character adjustments, world state, saves, things that can vary between installations like spell references assigned by WeiDU etc.)</li>
+        <li>A way to create new content designed for higher level parties in areas that normally wouldn't exist in game (vanilla games) or would be blocked after certain points of the story (BGT mod)</li>
+        <li>Intuitive conventions for renamed BG:EE files and modders resources that can be used for adopting existing mods</li>
+        <li>Limited support for mods installed on BG:EE previous to installing EET on BG2:EE</li>
+      </ul>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="Compatibility" name="Compatibility"></a>
+      <h2> Compatibility </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <p>This mod has been designed to work with <acronym title="Baldur's Gate II: Enhanced Edition">BG2:EE</acronym> game.</p>
+      <p>EET offers two types of compatibility with mods:</p>
+      <ul>
+        <li>Mods installed on <acronym title="Baldur's Gate: Enhanced Edition">BG:EE</acronym> previous to installing EET on <acronym title="Baldur's Gate II: Enhanced Edition">BG2:EE</acronym></li>
+        <li>Mods installed after EET on <acronym title="Baldur's Gate II: Enhanced Edition">BG2:EE</acronym></li>
+      </ul>
+      <p>Installing mods that are not compatible with EET can break your game or prevent installer from working. Please visit <a href="https://www.gibberlings3.net/forums/topic/27741-mod-compatibility-list-for-eet/">this forum topic</a> for an up to date list of compatible mods and hints regarding installation.</p>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="Bugs" name="Bugs"></a>
+      <h2> Bug Reporting and Known Issues </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <p> If you should encounter any bugs, please report them to the authors at the <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/">Baldur's Gate: Enhanced Edition Trilogy</a> forum. In addition, EET is <a href="https://github.com/Gibberlings3/EET">available on GitHub</a>, so fixes and changes can be submitted by the community. </p>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="Installation" name="Installation"></a>
+      <h2> Installation </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <div class="code">
+        <p>Windows users planning to install other mods should consider using <strong><a href="https://forums.beamdog.com/discussion/74335/project-infinity-public-beta">Project Infinity</a></strong> or other mod managers to download, extract and install EET and other mods (just select &quot;Baldur's Gate II: EE / Enhanced Edition Trilogy&quot; option and the tool will handle both BG:EE and BG2:EE mods installation). This approach will save you a lot of time and ensure that selected mods are compatible with EET and installed in the correct order.</p>
+        <p>Linux support is experimental and currently works only on <a href="https://www.gibberlings3.net/forums/topic/28516-the-linux-users-guide-to-installing-mods-on-the-enhanced-editions/">case insensitive partitions</a>. In future EET will be adopted to support case sensitive system natively.</p>
+      </div>
+      <h3>EET core (setup-EET)</h3>
+      <p>Core EET component requires &quot;clean&quot; BG2:EE installation with latest patch (currently v2.6.6.0) and (optionally) the <a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
+      <p>The BG:EE + Siege of Dragonspear installation with latest patch (currently v2.6.6.0) and (optionally) the <a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. It should be either &quot;clean&quot; installation or with any combination of mods mentioned in section 1 of <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">this list</a>.</p>
+      <div class="code">
+        <p><strong>NOTE: If you use Steam or GOG version of Siege of Dragonspear, first you need to install Argent77's <a href="https://github.com/Argent77/A7-DlcMerger">DLCMerger</a> mod in your &quot;BG:EE + SoD&quot; directory to allow proper installation of any other mod. It only affects Steam and GoG platforms - you don't need to use it if you bought the game on Beamdog store.</strong></p>
+        <p><strong>SoD installation contains all BG:EE resources, so if you have expansion installed in separate directory, you should point to it during EET installation, rather than BG:EE.</strong></p>
+      </div>
+      <p>At least 4.66 GB free space is needed during installation. For virtual memory purposes, at least 500MB-1GB+ (depending on your operating system) more free disk space is recommended during installation. Once the installation is complete EET modification occupies at least 2.55 GB. Mods installed on BG:EE previous to installing EET on BG2:EE obviously increase free disk space requirements.</p>
+      <p>It is recommended that you disable virus scanners, spyware scanners, and other background on-the-fly file scanners during the installation. These programs have been known in some cases to interfere with the WeiDU installation process.</p>
+      <p>Installation within Program Files or Program Files (x86) is not recommended due to the potential for O/S related issues (e.g. <a href="https://en.wikipedia.org/wiki/User_Account_Control">UAC</a> trouble). Unless you are sure that you have full UAC permissions consider moving BG:EE and BG2:EE outside this directory (the game is DRM free, so there are no problems with doing so).</p>
+      <p>EET is packaged and installed with WeiDU and is distributed as a compressed archive. Extract the contents of the archive and move them to your BG2:EE game folder (directory with chitin.key file). Your game folder should then contain a EET folder and setup-EET.exe file. To initialize installation, double-click setup-EET.exe and follow the instructions on screen.</p>
+      <h4>Create desktop shortcut (setup-EET)</h4>
+      <p>This optional subcomponent creates an EET shortcut on the desktop. It is available for Windows and Linux platforms.</p>
+      <p><strong>This is NOT the end of installation - please read the below section.</strong></p>
+      <h3>EET end (setup-EET_end)</h3>
+      <div class="code">
+        <p><strong>After the core component is installed, your game folder should then contain additional setup-EET_end.exe file, which is REQUIRED to be installed AFTER ALL OTHER MODS.</strong></p>
+      </div>
+      <p>Once the component is installed and you decide to integrate more mods, you can safely uninstall it by running setup-EET_end.exe and than install it again once you are satisfied with your mod selection. No problems with reinstalling it too.</p>
+      <h3>Optional alternative GUI (setup-EET_gui)</h3>
+      <p>This component installs optional Siege of Dragonspear <acronym title="Graphical User Interface">GUI</acronym>. You can install it before other GUI mods.</p>
+      <h3>Auto-installation (for expert users)</h3>
+      <p>Instead of directly starting the installation go to the command line, navigate to your installation directory, and execute installers using the construction below. Alternatively, place the construction in a batch file or the Run... dialog in the Start menu.</p>
+      <p><strong>Initialise EET (setup-EET)</strong></p>
+      <div class="code">
+        <p>setup-EET.exe --force-install 0 --skip-at-view --language <em>X</em> --args-list <em>[flags]</em> <em>[path]</em></p>
+      </div>
+      <p>Parameters:</p>
+      <div class="code">
+        <table border="1">
+          <tr>
+            <td><em>X</em></td>
+            <td class="grow"><p>0 - English<br />
+                1 - Polski (Polish)<br />
+                2 - Spanish<br />
+                3 - French<br />
+                4 - Czech<br />
+                5 - Russian<br />
+                6 - Deutsch (German)</p></td>
+          </tr>
+          <tr>
+            <td><em>[flags]</em></td>
+            <td class="grow"><p>Any combination of below flags should be typed as one string (no whitespaces)</p>
+              <p>m or M - suppress failed installation message that normally shows up if BG:EE installation contains mods not listed on EET BG:EE mods compatibility list (not recommended unless you really know what you are doing)</p>
+              <p>b or B - skip biffing, all files will be copied to override</p>
+              <p>s or S - EET desktop shortcut won't be created</p>
+              <p>p or P - pre-define the full path to the Baldur's Gate: Enhanced Edition directory; if the path is invalid, setup will prompt for a valid path</p></td>
+          </tr>
+          <tr>
+            <td><em>[path]</em></td>
+            <td class="grow"><p>the full path, in quotes, to your Baldur's Gate: Enhanced Edition installation directory, used in conjunction with p or P in <em>[flags]</em></p></td>
+          </tr>
+        </table>
+      </div>
+      <p>Example:</p>
+      <div class="code">
+        <p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list sp &quot;C:\Program Files (x86)\BeamDog\Games\00806&quot;</p>
+      </div>
+      <p>This construction will install EET with the English language, skip desktop shortcut creation and pre-define the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
+      <hr />
+      <p><strong>Finalise EET (setup-EET_end)</strong></p>
+      <div class="code">
+        <p>setup-EET_end.exe --force-install Y --language <em>X</em></p>
+      </div>
+      <p>Parameters:</p>
+      <div class="code">
+        <table border="1">
+          <tr>
+            <td><em>X</em></td>
+            <td class="grow"><p>0 - English<br />
+                1 - Polski (Polish)<br />
+                2 - Spanish<br />
+                3 - French<br />
+                4 - Czech<br />
+                5 - Russian<br />
+                6 - Deutsch (German)</p></td>
+          </tr>
+          <tr>
+            <td><em>Y</em></td>
+            <td class="grow"><p>0 - Standard installation<br />
+                1 - <a href="#What about compatibility with saves?">Also update saves</a><br />
+              </p></td>
+          </tr>
+        </table>
+      </div>
+      <p>Example:</p>
+      <div class="code">
+        <p>setup-EET_end.exe --force-install 0 --language 0</p>
+      </div>
+      <p>This construction forces WeiDU to use English language and installs REQUIRED component that finalises EET installation.</p>
+      <hr />
+      <p><strong>Optional alternative GUI (setup-EET_gui)</strong></p>
+      <div class="code">
+        <p>setup-EET_gui.exe --force-install 0</p>
+      </div>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="faq" name="faq"></a>
+      <h2> Frequently Asked Questions </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <ul>
+        <li><a href="#How to start the game?">How to start the game?</a></li>
+        <li><a href="#What are the differences between EET and the original Baldur's Gate: Enhanced Edition?">What are the differences between EET and the original Baldur's Gate: Enhanced Edition?</a></li>
+        <li><a href="#What are the differences between EET and the original Siege of Dragonspear expansion?">What are the differences between EET and the original Siege of Dragonspear expansion?</a></li>
+        <li><a href="#What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?">What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?</a></li>
+        <li><a href="#What should be the general install order?">What should be the general install order?</a></li>
+        <li><a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">What mods can be installed on BG:EE previous to installing EET on BG2:EE?</a></li>
+        <li><a href="#What mods can be installed after EET?">What mods can be installed after EET?</a></li>
+        <li><a href="#How to add EET compatibility for other mods?">How to add EET compatibility for other mods?</a></li>
+        <li><a href="#What about compatibility with saves?">What about compatibility with saves?</a></li>
+        <li><a href="#How does NPC continuity work in EET?">How does NPC continuity work in EET?</a></li>
+        <li><a href="#What's the point in lifting restriction for travelling back to old areas?">What's the point in lifting restriction for travelling back to old areas?</a></li>
+        <li><a href="#Can you jump ahead in the story?">Can you jump ahead in the story?</a></li>
+        <li><a href="#Can I play EET in cooperative multiplayer?">Can I play EET in cooperative multiplayer?</a></li>
+      </ul>
+      <h3><a id="How to start the game?" name="How to start the game?"></a>How to start the game?</h3>
+      <p>You can start the game from the main menu, just like in vanilla games. By default the BG1 campaign is selected which allows you to play through whole Baldur's Gate saga from start to finish. There is a way to skip part of the story by using &quot;Select Campaign&quot; button in the main menu. Both Black Pits adventures and Tutorial are also available there.</p>
+      <h3><a id="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?"></a>What are the differences between EET and the original Baldur's Gate: Enhanced Edition?</h3>
+      <p>Nothing significant, at least in the way you're going to experience it. Technically there are some minor adjustments to make the BG1 portion of the game compatible with BG2 resources but it's not something that you will notice in game. Obviously the game won't be over after the BG1 end movie. Whole game is also using a new Worldmap.</p>
+      <h3><a id="What are the differences between EET and the original Siege of Dragonspear expansion?" name="What are the differences between EET and the original Siege of Dragonspear expansion?"></a>What are the differences between EET and the original Siege of Dragonspear expansion?</h3>
+      <p>Vanilla SoD blocks access to areas after moving from chapter to chapter which is against EET goals, so it's no longer a case here (areas always remain open). SoD worldmap has been merged with EET Worldmap. After finishing the story you will be automatically migrated into BG2. On top of that EET restores extended SoD ending (for some reason vanilla SoD has cut out playable part of the final scene).</p>
+      <h3><a id="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?"></a>What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?</h3>
+      <p>For the most part everything remains the same. There are however few new features:</p>
+      <ul>
+        <li>Full seamless transition between BG1 and BG2 portion of the game for join-able NPCs present in both games, regardless if you have them in party during transition (in vanilla game only CHARNAME could migrate to BG2 via character or save import functionality).</li>
+        <li>Full transition between BG2 and ToB portion of the game for join-able NPCs (in vanilla game only those in your party were moved to ToB - other characters were spawned with new CRE files loosing all adjustments you've made to them at some point).</li>
+        <li>A way to go back to BG1 areas in BG2: Shadows of Amn (as soon as you leave the Irenicus Dungeon).</li>
+        <li>A way to go back to BG1 and BG2 areas during Throne of Bhaal expansion (as soon as you leave Saradush).</li>
+      </ul>
+      <h3><a id="What should be the general install order?" name="What should be the general install order?"></a>What should be the general install order?</h3>
+      <p>The general mod install order looks like this:</p>
+      <ol>
+        <li>Mods installed on BG:EE</li>
+        <li>Initialise EET (setup-EET) installed on BG2:EE</li>
+        <li>Mods with native EET support installed on top of EET</li>
+        <li>Finalise EET (setup-EET_end) ends the whole EET installation</li>
+      </ol>
+      <p>You can make an exception for GUI mods (including setup-EET_gui) and install them at the very end, even after setup-EET_end.</p>
+      <h3><a id="What mods can be installed on BG:EE previous to installing EET on BG2:EE?" name="What mods can be installed on BG:EE previous to installing EET on BG2:EE?"></a>What mods can be installed on BG:EE previous to installing EET on BG2:EE?</h3>
+      <p>EET does the conversion of all BG:EE resources present in game &quot;on the fly&quot;. That is why it provides limited support for mods installed on BG:EE previous to installing EET on BG2:EE. The compatibility list is available <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">here</a>.</p>
+      <h3><a id="What mods can be installed after EET?" name="What mods can be installed after EET?"></a>What mods can be installed after EET?</h3>
+      <p>A list of mods that already supports EET natively is available <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">here</a>. It's not recommended to install any BG2:EE mods that are not present on the list. We are trying to keep it up to date, so please let us know in <a href="https://www.gibberlings3.net/forums/topic/27741-mod-compatibility-list-for-eet/">this topic</a>, if a mod with native support is not listed yet.</p>
+      <h3><a id="How to add EET compatibility for other mods?" name="How to add EET compatibility for other mods?"></a>How to add EET compatibility for other mods?</h3>
+      <p>Adopting existing mods to conventions and technical features used by EET is relatively easy and intuitive thanks to modder's resources and tools included in EET package that can be used to drastically reduce time needed for such conversion. Explanation of the scope of needed changes as well as guides on each step of accomplishing particular modding tasks without breaking compatibility with other platforms are available in <a href="docs/Modder's Notes.html">Modder's Notes</a>.</p>
+      <h3><a id="What about compatibility with saves?" name="What about compatibility with saves?"></a>What about compatibility with saves?</h3>
+      <p>Saves in EET behave exactly the same as in vanilla games which means you won't encounter any save problems when it comes to BG:EE, SoD and BG2:EE vanilla content (same is true for IWD:EE and IWD2 content, if you install IWD-in-EET mod), regardless of language chosen during installation and mod selection. It's also possible to share saves between different players without issues. Like in vanilla games this functionality is not extended to mod added content (mods not related to EET don't use persistent TLK entries). There is however an option to update mod added string references in saves via optional setup-EET_end component, if files needed for update from previous installation are available within saves directory. Saves updating can't be uninstalled, so manual saves backup is recommended before component installation. Depending on how many saves exist, this step may be quite lengthy. Keep in mind that if you didn't use other mods that add text to game than there is no need to update saves between different installations at all.</p>
+      <p>Save games from original BG:EE, SoD and BG2:EE are not directly supported - you need to start a new game.</p>
+      <h3><a id="How does NPC continuity work in EET?" name="How does NPC continuity work in EET?"></a>How does NPC continuity work in EET?</h3>
+      <p>BG1 to SoD migration works like in vanilla SoD (all of your party moves with you to Korlasz Family Tomb).</p>
+      <p>Character migration to BG2 starts at the end of SoD. Some characters are not continuous (those without BG2 content) and are disabled immediately, whereas others appear in Shadows of Amn and so continuity is required. Continuity only occurs when a joinable NPC was in your party at any point during BG1 or SoD (even if you didn't had that character in your end-game party he/she is still valid for transition) and is not dead. After character is moved to appropriate area some adjustments are being made if applicable (alignment, soundset, items, XP, dialogue and script updates). Otherwise, the appropriate level of the Shadows of Amn-resident joinable NPC is created or character doesn't show up at all if NPC has been killed during BG1 (except Imoen and Edwin due to plot requirements).</p>
+      <p>Like in vanilla game at the end of BG2 your party migrates to ToB. What has been changed is Fate Spirit old party member summoning mechanics. It no longer spawns new versions of creatures but moves characters from BG2 areas to Pocket Plane. Fate Spirit summoning NPC list is created dynamically depending on who you met during your BG1 and BG2 travels. For continuity sake NPCs that you don't know won't even show up on the list. During Fate Spirit dialogue you can receive one of 3 responses to your request:</p>
+      <ul>
+        <li><em><strong>I cannot do as you ask, child of Bhaal. The one you seek is dead and thus forever beyond my reach. Their thread no longer connects with yours.</strong></em> - originally used only for Yoshimo, now valid for every NPC that has been killed and left in that state.</li>
+        <li><em><strong>I cannot do as you ask, child of Bhaal. The thread of the one you speak is beyond my sight, as it no longer touches yours.</strong></em> - this unused line in vanilla game has been restored to cover BG1 NPCs that don't have content created in BG2. If you had a character in party at any time during BG1 (true for all NPCs, not only those with BG2 content) but that NPC didn't join you at least once during BG2 than he/she will show up on the summoning list, but you won't be able to summon such character.</li>
+        <li><em><strong>As you wish.</strong></em> - NPC will be summoned. Spawned NPC is the exact same creature that you left in BG2 (items and other adjustments are preserved, dialogue and script updates are made, if applicable, XP is increased to default starting ToB XP if NPC has less experience).</li>
+      </ul>
+      <h3><a id="What's the point in lifting restriction for travelling back to old areas?" name="What's the point in lifting restriction for travelling back to old areas?"></a>What's the point in lifting restriction for travelling back to old areas?</h3>
+      <p>Maybe it's just me, but I've never accepted BGT as a true seamless experience because the game still felt to me like 3 completely separate campaigns with BG1-&gt;BG2 transition added on top of it. As you can read in the beginning of the readme, the main goal of EET is not simple merging of the games, but actually to make it feel like a one, continuous journey. In order to achieve it EET lifts restrictions in travelling to old areas, provides continuous journal and chapter system, uses the same worldmap during whole game, and offers seamless transitions between story arcs. The second goal of EET is becoming a mod friendly platform with additional modding possibilities that comes with fulfilling the first goal. Currently there is nothing interesting in old areas but we hope that modders will be interested in creating new adventures and surprises designed for higher level parties during BG2 and/or ToB portion of the game. In other words it can be treated as a playground for modders to add new stuff to the game.</p>
+      <h3><a id="Can you jump ahead in the story?" name="Can you jump ahead in the story?"></a>Can you jump ahead in the story, like go to Athkatla and grab some NPCs like Keldorn or Aerie before doing Nashkel, etc.?</h3>
+      <p>No, you're still locked to the natural progression of the games, i.e. you can't access the BG2 areas before you actually reach that far. You could use the console to get there ahead of time of course, but it would be quite likely to break something.</p>
+      <h3><a id="Can I play EET in cooperative multiplayer?" name="Can I play EET in cooperative multiplayer?"></a>Can I play EET in cooperative multiplayer?</h3>
+      <p>Yes. EET supports up to 6 people in cooperative, cross-platform multiplayer from start to finish. Let us know if you notice any problems.</p>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="Troubleshooting" name="Troubleshooting"></a>
+      <h2>Troubleshooting</h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <h3>Fatal Installation Errors</h3>
+      <p><strong>I have Baldur's Gate: Enhanced Edition installed, but the installation does not accept the directory that I type in.</strong></p>
+      <p>The most likely scenario is that your installation is broken or that you use GOG or Steam version of SoD and didn't install Argent77 <a href="https://github.com/Argent77/A7-DlcMerger">DLCMerger</a> mod. SoD resources presence is verified with &quot;movies/sodcin05.wbm&quot; file within BG:EE directory. Try reinstalling Baldur's Gate: Enhanced Edition and install DLCMerger. You can also try parsing the BG:EE+SoD directory using command line as described in the <a href="#Installation">installation section</a>.</p>
+      <p><strong>&quot;(...) BG:EE mod is not recognized by EET, so it can't be imported to BG2:EE with EET&quot;</strong></p>
+      <p>Due to reasons specified in <a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">FAQ</a>, EET limits &quot;on the fly&quot; BG:EE resources conversion to vanilla BG:EE installation and mods listed in the compatibility list. Adding other mods is fast and easy, so the list will grow over time.</p>
+      <p><strong>&quot;TLK for language: (...) not found in BG:EE directory&quot;</strong></p>
+      <p>Check the selected BG:EE language directory if the TLK file is indeed there</p>
+      <p><strong>ERROR: COPY (...) FAILED: cannot open target</strong></p>
+      <p>WeiDU <a href="http://forums.pocketplane.net/index.php/topic,29566.new.html">fails when trying to modify hidden files</a>. Disable &quot;Hidden&quot; attribute.</p>
+      <p><strong>WeiDU stopped the installation because of error.</strong></p>
+      <p>You may not have a clean installation of Baldur's Gate II: Enhanced Edition or some resources are corrupted</p>
+      <ul>
+        <li>When the installation prompts for install again, quit the installation</li>
+        <li>Try reinstalling Baldur's Gate: Enhanced Edition and/or Baldur's Gate II: Enhanced Edition</li>
+        <li>If you have other modifications installed, try uninstalling those and then install EET</li>
+        <li>If you still experience problems, post the SETUP-EET.DEBUG file, located in your Baldur's Gate II: Enhanced Edition installation directory, in the <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/">mod forum</a></li>
+      </ul>
+      <h3>Minor Installation Errors</h3>
+      <p><strong>The mod finished installing successfully, but the message is &quot;Installed with Warnings&quot;.</strong></p>
+      <p>There are several additional precautions added into EET installation code to inform the player if something went wrong. Open up SETUP-EET.DEBUG located in your Baldur's Gate II: Enhanced Edition installation directory and search (ctrl+F) for the word &quot;warning&quot;. If you can't figure out how to fix the problem post this debug file in the <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/">mod forum</a>. Playing with installation that showed warnings is not recommended.</p>
+      <h3>In-game problems</h3>
+      <p><strong>The game has noticeable lag during Siege of Dragonspear areas with many NPCs.</strong></p>
+      <p>It has been reported that some low end graphic cards (integrated Intel HD3000 for example) are not beefed enough to handle such scenes well with Linear scaling. It's not related to EET in any way. In order to fix it go to Options -&gt; Graphics and enable &quot;Nearest Neighbour Scaling&quot;. Also update your GPU drivers if you don't use latest ones.</p>
+      <p><strong>Fog effect starts at the top-right of the map and expands in the shape of an anchor.</strong></p>
+      <p>It's a <a href="http://redmine.beamdog.com/issues/21711">known engine bug</a>. Hopefully it will be fixed in the next patch.</p>
+      <p><strong>The game crashes to desktop (CTD) after opening worldmap screen.</strong></p>
+      <p>According to Roxanne the source of the problem is not the game but occasional CPU overload of the graphic card. It's more likely to happen with the big worldmap image added by BP-BGT Worldmap. Try to disable background programs before starting the game. Also <a href="https://www.youtube.com/watch?v=nn2FB1P_Mn8">have you tried turning the computer off and on again</a>?</p>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="Thanks" name="Thanks"></a>
+      <h2> Thanks and Acknowledgements </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <h3>Kudos (in alphabetical order)</h3>
+      <ul>
+        <li>Many thanks to agb1 for Big World Setup and Big World Fixpack support</li>
+        <li>Many thanks to AL|EN for Big World Setup and Big World Fixpack support</li>
+        <li>Many thanks to Argent77 for Near Infinity development, TileConv compressor, tile2ee tool, beta testing and other major contributions</li>
+        <li>Many thanks to Ascension64 whose work on BGT-WeiDU inspired this mod</li>
+        <li>Many thanks to AstroBryGuy for Pull Request contribution on Github</li>
+        <li>Many thanks to AWizardDidIt for being a writer for EET related content (IWD-in-EET mod)</li>
+        <li>Many thanks to Bardez who created the original Baldur's Gate Trilogy</li>
+        <li>Many thanks to Beamdog for creating Enhanced Editions of Infinity Engine games</li>
+        <li>Many thanks to Bioware and Black Isle Studios for creating Baldur's Gate series</li>
+        <li>Many thanks to Children of Bhaal forum for hosting and support</li>
+        <li>Many thanks to Corvias for EET icon and linux support testing</li>
+        <li>Many thanks to Crevs Daak for Mac OS related Github contributions</li>
+        <li>Many thanks to dabus for integration with Big World Setup</li>
+        <li>Many thanks to Fouinto for beta testing</li>
+        <li>Many thanks to geminibruni for title fonts</li>
+        <li>Many thanks to Gibberlings Three Modding Community for hosting</li>
+        <li>Many thanks to GrimLefourbe for beta testing</li>
+        <li>Many thanks to Kirara for worldmap art</li>
+        <li>Many thanks to Mike1072 for tooltip.2da patching code and support</li>
+        <li>Many thanks to Miloch for Sword Coast Map Labels</li>
+        <li>Many thanks to Mr2150 for LUA code contribution and help with GUI related features</li>
+        <li>Many thanks to Pecca (Renegade) for permission to use his GUI resources</li>
+        <li>Many thanks to Rakhsev for improved EET.ico</li>
+        <li>Many thanks to repus7 for contribution on GitHub</li>
+        <li>Many thanks to Roxanne for beta testing and maintaining compatibility list</li>
+        <li>Many thanks to Sai for beta testing</li>
+        <li>Many thanks to Sam. for converting English BG1 movies to HD</li>
+        <li>Many thanks to Seaicons website for menu icons</li>
+        <li>Many thanks to Ulb for worldmap icons contribution</li>
+        <li>Many thanks to Weimer for creating the WeiDU utility</li>
+        <li>Many thanks to WhiteAgnus for GitHub contributions to the project</li>
+        <li>Many thanks to Wisp for the Enhanced Edition WeiDU development and the involvement in adding BP-BGT Worldmap support for BG2:EE</li>
+        <li>Many thanks to Yacomo, King Diamond, Erebusant, Weigo for BP-BGT Worldmap macros and icons</li>
+        <li>Many thanks to you and all the other players who have contributed to the completeness of this modification</li>
+      </ul>
+      <h3>Translations</h3>
+      <p><strong>Polish:</strong> Etamin, K4thos, Cahir, morgan</p>
+      <p><strong>Spanish:</strong> Saemon (previously used one by El Dunadan)</p>
+      <p><strong>German:</strong> jaydee2k, Shai Hulud and Weigo</p>
+      <p><strong>French:</strong> Chevalier Noir, Isaya, Jazira33</p>
+      <p><strong>Czech:</strong> Vicq</p>
+      <p><strong>Russian:</strong> NightLionG</p>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="Credits" name="Credits"></a>
+      <h2> Credits and Copyright Information </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <p>2012 - 2014 Hasbro, Inc. All Rights Reserved. Baldur's Gate, Dungeons &amp; Dragons, D&amp;D, the Forgotten Realms, Baldur's Gate, Wizards of the Coast and their logos are trademarks of Wizards of the Coast LLC in the U.S.A. and other countries. Hasbro and its logo are trademarks of Hasbro, Inc.</p>
+      <p>1998 BioWare Corp. All Rights Reserved. BioWare, the BioWare Infinity Engine and the BioWare logo are trademarks of Bioware Corp. Black Isle Studios and the Black Isle Studios logo are trademarks of Interplay Entertainment Corp.</p>
+      <p>2012 - 2018 Beamdog. All Rights Reserved.</p>
+      <p><strong>USE THIS MODIFICATION AT YOUR OWN RISK. This modification is not developed, supported, or endorsed by BioWare Corp., Hasbro, Beamdog.</strong></p>
+      <p>This is a community modification, created as a hobby for free. You can distribute among your peers as much as you like. My code is open sourced and released under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a>. Parts of code not written by myself belongs to respective authors.</p>
+      <p>Tools distributed with this package are under following open licenses: </p>
+      <ul>
+        <li>Oggdec, SoX are available under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a> (oggdec source code is available within the <a href="http://www.xiph.org/downloads/">vorbis-tools</a> package, SoX source code can be found at <a href="http://sox.sourceforge.net/">sourceforge</a>)</li>
+        <li>FFmpeg is available under the <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU Lesser General Public License (LGPL) version 2.1</a>, some parts of it are available under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU General Public License (GPL) version 2</a>, source code available at <a href="https://www.ffmpeg.org/download.html#get-sources">FFmpeg.org</a> </li>
+        <li>LUA is available under the <a href="http://opensource.org/licenses/MIT">MIT license</a>, source code available at <a href="https://www.lua.org/">lua.org</a></li>
+        <li><a href="http://www.weidu.org/">WeiDU</a> is distributed under the <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GPL 2.0 public license</a>, source code available at <a href="https://github.com/WeiDUorg/weidu">WeiDU Github repository</a></li>
+      </ul>
+      <p>This modification is available as an open repository on <a href="https://github.com/Gibberlings3/EET">GitHub</a>, which allows everyone to add new commits. Feel free to suggest improvements and fixes by directly modifying the code on the site. Any help on improving the mod is appreciated.</p>
+    </div>
+    <div class="ribbon_rectangle_h2"> <a id="History" name="History"></a>
+      <h2> Version History </h2>
+    </div>
+    <div class="ribbon_triangle_h2-l"></div>
+    <div class="ribbon_triangle_h2-r"></div>
+    <div class="section">
+      <p>All notable changes to this project are <a href="https://github.com/Gibberlings3/EET/releases">documented on GitHub</a>. </p>
+    </div>
+  </div>
 </div>
-
-<!-- ================== T a b l e ================== --><a id="table" name="Table of Contents"></a>
-<h2>Table of Contents</h2>
-<div class="section">
-	<ol>
-		<li><a href="#overview">Overview</a></li>
-		<li><a href="#compatibility">Compatibility with other mods</a></li>
-		<li><a href="#installation">Installation</a></li>
-		<li><a href="#faq">Frequently Asked Questions</a></li>
-		<li><a href="#troubleshooting">Troubleshooting</a></li>
-		<li><a href="#credits">Credits</a></li>
-		<li><a href="#legalese">Legalese</a></li>
-		<li><a href="#version">Version History</a></li>
-	</ol>
-</div>
-
-<!-- ================== O v e r v i e w ================== --><a id="overview" name="Overview"></a>
-<h2>Overview</h2>
-<div class="section">
-
-<p>Baldur's Gate: Enhanced Edition Trilogy (EET) is a modification for Baldur's Gate II: Enhanced Edition that merges whole saga into one game and provides continuity between the events of Baldur's Gate, Tales of the Sword Coast, Shadows of Amn, Throne of Bhaal and <a href="http://www.siegeofdragonspear.com/">Siege of Dragonspear</a> expansion (also for both Black Pits adventures). The name of this this modification probably rings a bell to those who have been following IE modding scene, thanks to the classic mod that inspired this project, called Baldur's Gate Trilogy (BGT), developed by Bardez and Ascension64. While EET remains mostly faithful to the premise of the BGT, it shouldn't be considered a direct continuation of that project. In fact both mods share little to no common code and took different design decisions in many aspects.</p>
-
-<p>Baldur's Gate: Enhanced Edition Trilogy has two main goals:</p>
-
-<p><strong>1. Uniting of the Baldur's Gate series into a single, continuous world that doesn't feel like 4 separate campaigns</strong></p>
-<ul>
-	<li>Play all Infinity Engine Baldur's Gate saga games in Baldur's Gate II: Enhanced Edition engine. One game, complete package</li>
-	<li>Seamless experience, NPC continuity, better internal consistency between the games</li>
-	<li>United journal system that keeps track of all 22 chapters of your journey, from the beginning in Candlekeep up until the end of Throne of Bhaal expansion</li>
-	<li>No restrictions in travelling between BG1, SoD, BG2 and ToB areas, once they are discovered. All areas accessible from the same worldmap</li>
-</ul>
-<p><strong>2. Becoming a mod friendly platform with additional modding possibilities that comes with fulfilling the first goal</strong></p>
-<ul>
-	<li>Solution for mods designed to affect BG1 and BG2 content at the same time (preserved variables, character adjustments, world state, saves, things that can vary between installations like spell references assigned by WeiDU etc.)</li>
-	<li>A way to create new content designed for higher level parties in areas that normally wouldn't exist in game (vanilla games) or would be blocked after certain points of the story (BGT mod)</li>
-	<li>Intuitive conventions for renamed BG:EE files and modders resources that can be used for adopting existing mods</li>
-	<li>Limited support for mods installed on BG:EE previous to installing EET on BG2:EE</li>
-</ul>
-
-</div>
-
-<!-- ================== C o m p a t i b i l i t y ================== --><a id="compatibility" name="compatibility"></a>
-<h2>Compatibility</h2>
-<div class="section">
-<p>This mod has been designed to work with <acronym title="Baldur's Gate II: Enhanced Edition">BG2:EE</acronym> game.</p>
-
-<p>EET offers two types of compatibility with mods:</p>
-<ul>
-	<li>Mods installed on <acronym title="Baldur's Gate: Enhanced Edition">BG:EE</acronym> previous to installing EET on <acronym title="Baldur's Gate II: Enhanced Edition">BG2:EE</acronym></li>
-	<li>Mods installed after EET on <acronym title="Baldur's Gate II: Enhanced Edition">BG2:EE</acronym></li>
-</ul>
-<p>Installing mods that are not compatible with EET can break your game or prevent installer from working. Please visit <a href="https://www.gibberlings3.net/forums/topic/27741-mod-compatibility-list-for-eet/">this forum topic</a> for an up to date list of compatible mods and hints regarding installation.</p>
-
-</div>
-
-<!-- ================== I n s t a l l a t i o n ================== --><a id="installation" name="installation"></a>
-
-<h2>Installation</h2>
-<div class="section">
-
-<div class="code">
-<p>Windows users planning to install other mods should consider using <strong><a href="https://forums.beamdog.com/discussion/74335/project-infinity-public-beta">Project Infinity</a></strong> or <strong><a href="https://baldursextendedworld.com/Install-Tool/">EE/EET Mod Install Tool</a></strong> to download, extract and install EET and other mods (just select "Baldur's Gate II: EE / Enhanced Edition Trilogy" option and the tool will handle both BG:EE and BG2:EE mods installation). This approach will save you a lot of time and ensure that selected mods are compatible with EET and installed in the correct order.</p>
-
-<p>Linux support is experimental and currently works only on <a href="https://www.gibberlings3.net/forums/topic/28516-the-linux-users-guide-to-installing-mods-on-the-enhanced-editions/">case insensitive partitions</a>. In future EET will be adopted to support case sensitive system natively.</p>
-</div>
-
-<h3>EET core (setup-EET)</h3>
-
-<p>Core EET component requires "clean" BG2:EE installation with latest patch (currently v2.5.16.6). Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
-
-<p>The BG:EE + Siege of Dragonspear installation with latest patch (currently v2.5.17.0) should be either "clean" installation or with any combination of mods mentioned in section 1 of <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">this list</a>.</p>
-
-<div class="code">
-<p><strong>NOTE: If you use Steam or GOG version of Siege of Dragonspear, first you need to install Argent77 <a href="https://github.com/Argent77/A7-DlcMerger">DLCMerger</a> mod in your "BG:EE + SoD" directory to allow proper installation of any other mod. It only affects Steam and GoG platforms - you don't need to use it if you bought the game on Beamdog store.</strong></p>
-<p><strong>SoD installation contains all BG:EE resources, so if you have expansion installed in separate directory, you should point to it during EET installation, rather than BG:EE.</strong></p>
-</div>
-
-<p>At least 4.66 GB free space is needed during installation. For virtual memory purposes, at least 500MB-1GB+ (depending on your operating system) more free disk space is recommended during installation. Once the installation is complete EET modification occupies at least 2.55 GB. Mods installed on BG:EE previous to installing EET on BG2:EE obviously increase free disk space requirements.</p>
-
-<p>It is recommended that you disable virus scanners, spyware scanners, and other background on-the-fly file scanners during the installation. These programs have been known in some cases to interfere with the WeiDU installation process.</p>
-
-<p>Installation within Program Files or Program Files (x86) is not recommended due to the potential for O/S related issues (e.g. <a href="https://en.wikipedia.org/wiki/User_Account_Control">UAC</a> trouble). Unless you are sure that you have full UAC permissions consider moving BG:EE and BG2:EE outside this directory (the game is DRM free, so there are no problems with doing so).</p>
-
-<p>EET is packaged and installed with WeiDU and is distributed as a compressed archive. Extract the contents of the archive and move them to your BG2:EE game folder (directory with chitin.key file). Your game folder should then contain a EET folder and setup-EET.exe file. To initialize installation, double-click setup-EET.exe and follow the instructions on screen.</p>
-
-<h4>Create desktop shortcut (setup-EET)</h4>
-
-<p>This optional subcomponent creates an EET shortcut on the desktop. It is available for Windows and Linux platforms.</p>
-
-<p><strong>This is NOT the end of installation - please read the below section.</strong></p>
-
-<h3>EET end (setup-EET_end)</h3>
-
-<div class="code">
-<p><strong>After the core component is installed, your game folder should then contain additional setup-EET_end.exe file, which is REQUIRED to be installed AFTER ALL OTHER MODS.</strong></p>
-</div>
-
-<p>Once the component is installed and you decide to integrate more mods, you can safely uninstall it by running setup-EET_end.exe and than install it again once you are satisfied with your mod selection. No problems with reinstalling it too.</p>
-
-<h3>Optional alternative GUI (setup-EET_gui)</h3>
-
-<p>This component installs optional Siege of Dragonspear <acronym title="Graphical User Interface">GUI</acronym>. You can install it before other GUI mods.</p>
-
-<h3>Auto-installation (for expert users)</h3>
-
-<p>Instead of directly starting the installation go to the command line, navigate to your installation directory, and execute installers using the construction below. Alternatively, place the construction in a batch file or the Run... dialog in the Start menu.</p>
-
-<p><strong>Initialise EET (setup-EET)</strong></p>
-
-<div class="code">
-<p>setup-EET.exe --force-install 0 --skip-at-view --language <em>X</em> --args-list <em>[flags]</em> <em>[path]</em></p>
-</div>
-
-<p>Parameters:</p>
-
-<div class="code">
-<table border="1">
-	<tr>
-		<td><em>X</em></td>
-		<td class="grow">
-		<p>0 - English<br />
-		1 - Polski (Polish)<br />
-		2 - Spanish<br />
-		3 - French<br />
-		4 - Czech<br />
-		5 - Russian<br />
-		6 - Deutsch (German)</p>
-		</td>
-	</tr>
-	<tr>
-		<td><em>[flags]</em></td>
-		<td class="grow">
-		<p>Any combination of below flags should be typed as one string (no whitespaces)</p>
-		<p>m or M - suppress failed installation message that normally shows up if BG:EE installation contains mods not listed on EET BG:EE mods compatibility list (not recommended unless you really know what you are doing)</p>
-		<p>b or B - skip biffing, all files will be copied to override</p>
-		<p>s or S - EET desktop shortcut won't be created</p>
-		<p>p or P - pre-define the full path to the Baldur's Gate: Enhanced Edition directory; if the path is invalid, setup will prompt for a valid path</p>
-		</td>
-	</tr>
-	<tr>
-		<td><em>[path]</em></td>
-		<td class="grow">
-		<p>the full path, in quotes, to your Baldur's Gate: Enhanced Edition installation directory, used in conjunction with p or P in <em>[flags]</em></p>
-		</td>
-	</tr>
-</table>
-</div>
-
-<p>Example:</p>
-
-<div class="code">
-<p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list sp "C:\Program Files (x86)\BeamDog\Games\00806"</p>
-</div>
-
-<p>This construction will install EET with the English language, skip desktop shortcut creation and pre-define the Baldur's Gate: Enhanced Edition directory as C:\Program Files (x86)\BeamDog\Games\00806.</p>
-
-<hr>
-
-<p><strong>Finalise EET (setup-EET_end)</strong></p>
-
-<div class="code">
-<p>setup-EET_end.exe --force-install Y --language <em>X</em></p>
-</div>
-
-<p>Parameters:</p>
-
-<div class="code">
-<table border="1">
-	<tr>
-		<td width="3%"><em>X</em></td>
-		<td class="grow">
-		<p>0 - English<br />
-		1 - Polski (Polish)<br />
-		2 - Spanish<br />
-		3 - French<br />
-		4 - Czech<br />
-		5 - Russian<br />
-		6 - Deutsch (German)</p>
-		</td>
-	</tr>
-	<tr>
-		<td width="3%"><em>Y</em></td>
-		<td class="grow">
-		<p>0 - Standard installation<br />
-		1 - <a href="#What about compatibility with saves?">Also update saves</a><br />
-		</td>
-	</tr>
-</table>
-</div>
-
-<p>Example:</p>
-
-<div class="code">
-<p>setup-EET_end.exe --force-install 0 --language 0</p>
-</div>
-
-<p>This construction forces WeiDU to use English language and installs REQUIRED component that finalises EET installation.</p>
-
-<hr>
-
-<p><strong>Optional alternative GUI (setup-EET_gui)</strong></p>
-
-<div class="code">
-<p>setup-EET_gui.exe --force-install 0</p>
-</div>
-
-</div>
-<!-- ================== F A Q ================== --><a id="faq" name="faq"></a>
-<h2>Frequently Asked Questions</h2>
-<div class="section">
-
-<ul>
-	<li><a href="#How to start the game?">How to start the game?</a></li>
-	<li><a href="#What are the differences between EET and the original Baldur's Gate: Enhanced Edition?">What are the differences between EET and the original Baldur's Gate: Enhanced Edition?</a></li>
-	<li><a href="#What are the differences between EET and the original Siege of Dragonspear expansion?">What are the differences between EET and the original Siege of Dragonspear expansion?</a></li>
-	<li><a href="#What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?">What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?</a></li>
-	<li><a href="#What should be the general install order?">What should be the general install order?</a></li>
-	<li><a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">What mods can be installed on BG:EE previous to installing EET on BG2:EE?</a></li>
-	<li><a href="#What mods can be installed after EET?">What mods can be installed after EET?</a></li>
-	<li><a href="#How to add EET compatibility for other mods?">How to add EET compatibility for other mods?</a></li>
-	<li><a href="#What about compatibility with saves?">What about compatibility with saves?</a></li>
-	<li><a href="#How does NPC continuity work in EET?">How does NPC continuity work in EET?</a></li>
-	<li><a href="#What's the point in lifting restriction for travelling back to old areas?">What's the point in lifting restriction for travelling back to old areas?</a></li>
-	<li><a href="#Can you jump ahead in the story?">Can you jump ahead in the story?</a></li>
-	<li><a href="#Can I play EET in cooperative multiplayer?">Can I play EET in cooperative multiplayer?</a></li>
-</ul>
-
-<a id="How to start the game?" name="How to start the game?"></a>
-<h3>How to start the game?</h3>
-<p>You can start the game from the main menu, just like in vanilla games. By default the BG1 campaign is selected which allows you to play through whole Baldur's Gate saga from start to finish. There is a way to skip part of the story by using "Select Campaign" button in the main menu. Both Black Pits adventures and Tutorial are also available there.</p>
-
-<a id="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate: Enhanced Edition?"></a>
-<h3>What are the differences between EET and the original Baldur's Gate: Enhanced Edition?</h3>
-<p>Nothing significant, at least in the way you're going to experience it. Technically there are some minor adjustments to make the BG1 portion of the game compatible with BG2 resources but it's not something that you will notice in game. Obviously the game won't be over after the BG1 end movie. Whole game is also using a new Worldmap.</p>
-
-<a id="What are the differences between EET and the original Siege of Dragonspear expansion?" name="What are the differences between EET and the original Siege of Dragonspear expansion?"></a>
-<h3>What are the differences between EET and the original Siege of Dragonspear expansion?</h3>
-<p>Vanilla SoD blocks access to areas after moving from chapter to chapter which is against EET goals, so it's no longer a case here (areas always remain open). SoD worldmap has been merged with EET Worldmap. After finishing the story you will be automatically migrated into BG2. On top of that EET restores extended SoD ending (for some reason vanilla SoD has cut out playable part of the final scene).</p>
-
-<a id="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?" name="What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?"></a>
-<h3>What are the differences between EET and the original Baldur's Gate II: Enhanced Edition?</h3>
-<p>For the most part everything remains the same. There are however few new features:</p>
-<ul>
-	<li>Full seamless transition between BG1 and BG2 portion of the game for join-able NPCs present in both games, regardless if you have them in party during transition (in vanilla game only CHARNAME could migrate to BG2 via character or save import functionality).</li>
-	<li>Full transition between BG2 and ToB portion of the game for join-able NPCs (in vanilla game only those in your party were moved to ToB - other characters were spawned with new CRE files loosing all adjustments you've made to them at some point).</li>
-	<li>A way to go back to BG1 areas in BG2: Shadows of Amn (as soon as you leave the Irenicus Dungeon).</li>
-	<li>A way to go back to BG1 and BG2 areas during Throne of Bhaal expansion (as soon as you leave Saradush).</li>
-</ul>
-
-<a id="What should be the general install order?" name="What should be the general install order?"></a>
-<h3>What should be the general install order?</h3>
-<p>The general mod install order looks like this:</p>
-<ol>
-	<li>Mods installed on BG:EE</li>
-	<li>Initialise EET (setup-EET) installed on BG2:EE</li>
-	<li>Mods with native EET support installed on top of EET</li>
-	<li>Finalise EET (setup-EET_end) ends the whole EET installation</li>
-</ol>
-<p>You can make an exception for GUI mods (including setup-EET_gui) and install them at the very end, even after setup-EET_end.</p>
-
-<a id="What mods can be installed on BG:EE previous to installing EET on BG2:EE?" name="What mods can be installed on BG:EE previous to installing EET on BG2:EE?"></a>
-<h3>What mods can be installed on BG:EE previous to installing EET on BG2:EE?</h3>
-<p>EET does the conversion of all BG:EE resources present in game "on the fly". That is why it provides limited support for mods installed on BG:EE previous to installing EET on BG2:EE. The compatibility list is available <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">here</a>.</p>
-
-<a id="What mods can be installed after EET?" name="What mods can be installed after EET?"></a>
-<h3>What mods can be installed after EET?</h3>
-<p>A list of mods that already supports EET natively is available <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">here</a>. It's not recommended to install any BG2:EE mods that are not present on the list. We are trying to keep it up to date, so please let us know in <a href="https://www.gibberlings3.net/forums/topic/27741-mod-compatibility-list-for-eet/">this topic</a>, if a mod with native support is not listed yet.</p>
-
-<a id="How to add EET compatibility for other mods?" name="How to add EET compatibility for other mods?"></a>
-<h3>How to add EET compatibility for other mods?</h3>
-<p>Adopting existing mods to conventions and technical features used by EET is relatively easy and intuitive thanks to modder's resources and tools included in EET package that can be used to drastically reduce time needed for such conversion. Explanation of the scope of needed changes as well as guides on each step of accomplishing particular modding tasks without breaking compatibility with other platforms are available in <a href="docs/Modder's Notes.html">Modder's Notes</a>.</p>
-
-<a id="What about compatibility with saves?" name="What about compatibility with saves?"></a>
-<h3>What about compatibility with saves?</h3>
-<p>Saves in EET behave exactly the same as in vanilla games which means you won't encounter any save problems when it comes to BG:EE, SoD and BG2:EE vanilla content (same is true for IWD:EE and IWD2 content, if you install IWD-in-EET mod), regardless of language chosen during installation and mod selection. It's also possible to share saves between different players without issues. Like in vanilla games this functionality is not extended to mod added content (mods not related to EET don't use persistent TLK entries). There is however an option to update mod added string references in saves via optional setup-EET_end component, if files needed for update from previous installation are available within saves directory. Saves updating can't be uninstalled, so manual saves backup is recommended before component installation. Depending on how many saves exist, this step may be quite lengthy. Keep in mind that if you didn't use other mods that add text to game than there is no need to update saves between different installations at all.</p>
-
-<p>Save games from original BG:EE, SoD and BG2:EE are not directly supported - you need to start a new game.</p>
-
-<a id="How does NPC continuity work in EET?" name="How does NPC continuity work in EET?"></a>
-<h3>How does NPC continuity work in EET?</h3>
-<p>BG1 to SoD migration works like in vanilla SoD (all of your party moves with you to Korlasz Family Tomb).</p>
-
-<p>Character migration to BG2 starts at the end of SoD. Some characters are not continuous (those without BG2 content) and are disabled immediately, whereas others appear in Shadows of Amn and so continuity is required. Continuity only occurs when a joinable NPC was in your party at any point during BG1 or SoD (even if you didn't had that character in your end-game party he/she is still valid for transition) and is not dead. After character is moved to appropriate area some adjustments are being made if applicable (alignment, soundset, items, XP, dialogue and script updates). Otherwise, the appropriate level of the Shadows of Amn-resident joinable NPC is created or character doesn't show up at all if NPC has been killed during BG1 (except Imoen and Edwin due to plot requirements).</p>
-
-<p>Like in vanilla game at the end of BG2 your party migrates to ToB. What has been changed is Fate Spirit old party member summoning mechanics. It no longer spawns new versions of creatures but moves characters from BG2 areas to Pocket Plane. Fate Spirit summoning NPC list is created dynamically depending on who you met during your BG1 and BG2 travels. For continuity sake NPCs that you don't know won't even show up on the list. During Fate Spirit dialogue you can receive one of 3 responses to your request:</p>
-<ul>
-	<li><em><strong>I cannot do as you ask, child of Bhaal. The one you seek is dead and thus forever beyond my reach. Their thread no longer connects with yours.</strong></em> - originally used only for Yoshimo, now valid for every NPC that has been killed and left in that state.</li>
-	<li><em><strong>I cannot do as you ask, child of Bhaal. The thread of the one you speak is beyond my sight, as it no longer touches yours.</strong></em> - this unused line in vanilla game has been restored to cover BG1 NPCs that don't have content created in BG2. If you had a character in party at any time during BG1 (true for all NPCs, not only those with BG2 content) but that NPC didn't join you at least once during BG2 than he/she will show up on the summoning list, but you won't be able to summon such character.</li>
-	<li><em><strong>As you wish.</strong></em> - NPC will be summoned. Spawned NPC is the exact same creature that you left in BG2 (items and other adjustments are preserved, dialogue and script updates are made, if applicable, XP is increased to default starting ToB XP if NPC has less experience).</li>
-</ul>
-
-<a id="What's the point in lifting restriction for travelling back to old areas?" name="What's the point in lifting restriction for travelling back to old areas?"></a>
-<h3>What's the point in lifting restriction for travelling back to old areas?</h3>
-<p>Maybe it's just me, but I've never accepted BGT as a true seamless experience because the game still felt to me like 3 completely separate campaigns with BG1->BG2 transition added on top of it. As you can read in the beginning of the readme, the main goal of EET is not simple merging of the games, but actually to make it feel like a one, continuous journey. In order to achieve it EET lifts restrictions in travelling to old areas, provides continuous journal and chapter system, uses the same worldmap during whole game, and offers seamless transitions between story arcs. The second goal of EET is becoming a mod friendly platform with additional modding possibilities that comes with fulfilling the first goal. Currently there is nothing interesting in old areas but we hope that modders will be interested in creating new adventures and surprises designed for higher level parties during BG2 and/or ToB portion of the game. In other words it can be treated as a playground for modders to add new stuff to the game.</p>
-
-<a id="Can you jump ahead in the story?" name="Can you jump ahead in the story?"></a>
-<h3>Can you jump ahead in the story, like go to Athkatla and grab some NPCs like Keldorn or Aerie before doing Nashkel, etc.?</h3>
-<p>No, you're still locked to the natural progression of the games, i.e. you can't access the BG2 areas before you actually reach that far. You could use the console to get there ahead of time of course, but it would be quite likely to break something.</p>
-
-<a id="Can I play EET in cooperative multiplayer?" name="Can I play EET in cooperative multiplayer?"></a>
-<h3>Can I play EET in cooperative multiplayer?</h3>
-<p>Yes. EET supports up to 6 people in cooperative, cross-platform multiplayer from start to finish. Let us know if you notice any problems.</p>
-
-</div>
-<!-- ================== T r o u b l e s h o o t i n g ================== --><a id="troubleshooting" name="troubleshooting"></a>
-<h2>Troubleshooting</h2>
-<div class="section">
-
-<h3>Fatal Installation Errors</h3>
-
-<p><strong>I have Baldur's Gate: Enhanced Edition installed, but the installation does not accept the directory that I type in.</strong></p>
-
-<p>The most likely scenario is that your installation is broken or that you use GOG or Steam version of SoD and didn't install Argent77 <a href="https://github.com/Argent77/A7-DlcMerger">DLCMerger</a> mod. SoD resources presence is verified with "movies/sodcin05.wbm" file within BG:EE directory. Try reinstalling Baldur's Gate: Enhanced Edition and install DLCMerger. You can also try parsing the BG:EE+SoD directory using command line as described in the <a href="#installation">installation section</a>.</p>
-
-<p><strong>"(...) BG:EE mod is not recognized by EET, so it can't be imported to BG2:EE with EET"</strong></p>
-
-<p>Due to reasons specified in <a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">FAQ</a>, EET limits "on the fly" BG:EE resources conversion to vanilla BG:EE installation and mods listed in the compatibility list. Adding other mods is fast and easy, so the list will grow over time.</p>
-
-<p><strong>"TLK for language: (...) not found in BG:EE directory"</strong></p>
-
-<p>Check the selected BG:EE language directory if the TLK file is indeed there</p>
-
-<p><strong>ERROR: COPY (...) FAILED: cannot open target</strong></p>
-
-<p>WeiDU <a href="http://forums.pocketplane.net/index.php/topic,29566.new.html">fails when trying to modify hidden files</a>. Disable "Hidden" attribute.</p>
-
-<p><strong>WeiDU stopped the installation because of error.</strong></p>
-
-<p>You may not have a clean installation of Baldur's Gate II: Enhanced Edition or some resources are corrupted</p>
-
-<ul>
-	<li>When the installation prompts for install again, quit the installation</li>
-	<li>Try reinstalling Baldur's Gate: Enhanced Edition and/or Baldur's Gate II: Enhanced Edition</li>
-	<li>If you have other modifications installed, try uninstalling those and then install EET</li>
-	<li>If you still experience problems, post the SETUP-EET.DEBUG file, located in your Baldur's Gate II: Enhanced Edition installation directory, in the <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/">mod forum</a></li>
-</ul>
-
-<h3>Minor Installation Errors</h3>
-
-<p><strong>The mod finished installing successfully, but the message is "Installed with Warnings".</strong></p>
-
-<p>There are several additional precautions added into EET installation code to inform the player if something went wrong. Open up SETUP-EET.DEBUG located in your Baldur's Gate II: Enhanced Edition installation directory and search (ctrl+F) for the word "warning". If you can't figure out how to fix the problem post this debug file in the <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/">mod forum</a>. Playing with installation that showed warnings is not recommended.</p>
-
-<h3>In-game problems</h3>
-
-<p><strong>The game has noticeable lag during Siege of Dragonspear areas with many NPCs.</strong></p>
-
-<p>It has been reported that some low end graphic cards (integrated Intel HD3000 for example) are not beefed enough to handle such scenes well with Linear scaling. It's not related to EET in any way. In order to fix it go to Options -> Graphics and enable "Nearest Neighbour Scaling". Also update your GPU drivers if you don't use latest ones.</p>
-
-<p><strong>Fog effect starts at the top-right of the map and expands in the shape of an anchor.</strong></p>
-
-<p>It's a <a href="http://redmine.beamdog.com/issues/21711">known engine bug</a>. Hopefully it will be fixed in the next patch.</p>
-
-<p><strong>The game crashes to desktop (CTD) after opening worldmap screen.</strong></p>
-
-<p>According to Roxanne the source of the problem is not the game but occasional CPU overload of the graphic card. It's more likely to happen with the big worldmap image added by BP-BGT Worldmap. Try to disable background programs before starting the game. Also <a href="https://www.youtube.com/watch?v=nn2FB1P_Mn8">have you tried turning the computer off and on again</a>?</p>
-
-</div>
-<!-- ================== C r e d i t s ================== --><a id="credits" name="credits"></a>
-<h2>Credits</h2>
-<div class="section">
-
-<h3>Kudos (in alphabetical order)</h3>
-
-<ul>
-	<li>Many thanks to agb1 for Big World Setup and Big World Fixpack support</li>
-	<li>Many thanks to AL|EN for Big World Setup and Big World Fixpack support</li>
-	<li>Many thanks to Argent77 for Near Infinity development, TileConv compressor, tile2ee tool, beta testing and other major contributions</li>
-	<li>Many thanks to Ascension64 whose work on BGT-WeiDU inspired this mod</li>
-	<li>Many thanks to AstroBryGuy for Pull Request contribution on Github</li>
-	<li>Many thanks to AWizardDidIt for being a writer for EET related content (IWD-in-EET mod)</li>
-	<li>Many thanks to Bardez who created the original Baldur's Gate Trilogy</li>
-	<li>Many thanks to Beamdog for creating Enhanced Editions of Infinity Engine games</li>
-	<li>Many thanks to Bioware and Black Isle Studios for creating Baldur's Gate series</li>
-	<li>Many thanks to Children of Bhaal forum for hosting and support</li>
-	<li>Many thanks to Corvias for EET icon and linux support testing</li>
-	<li>Many thanks to Crevs Daak for Mac OS related Github contributions</li>
-	<li>Many thanks to dabus for integration with Big World Setup</li>
-	<li>Many thanks to Fouinto for beta testing</li>
-	<li>Many thanks to geminibruni for title fonts</li>
-	<li>Many thanks to Gibberlings 3 Modding Community for hosting</li>
-	<li>Many thanks to GrimLefourbe for beta testing</li>
-	<li>Many thanks to Kirara for worldmap art</li>
-	<li>Many thanks to Mike1072 for tooltip.2da patching code and support</li>
-	<li>Many thanks to Miloch for Sword Coast Map Labels</li>
-	<li>Many thanks to Mr2150 for LUA code contribution and help with GUI related features</li>
-	<li>Many thanks to Pecca (Renegade) for permission to use his GUI resources</li>
-	<li>Many thanks to Rakhsev for improved EET.ico</li>
-	<li>Many thanks to repus7 for contribution on GitHub</li>
-	<li>Many thanks to Roxanne for beta testing and maintaining compatibility list</li>
-	<li>Many thanks to Sai for beta testing</li>
-	<li>Many thanks to Sam. for converting English BG1 movies to HD</li>
-	<li>Many thanks to Seaicons website for menu icons</li>
-	<li>Many thanks to Ulb for worldmap icons contribution</li>
-	<li>Many thanks to Weimer for creating the WeiDU utility</li>
-	<li>Many thanks to WhiteAgnus for GitHub contributions to the project</li>
-	<li>Many thanks to Wisp for the Enhanced Edition WeiDU development and the involvement in adding BP-BGT Worldmap support for BG2:EE</li>
-	<li>Many thanks to Yacomo, King Diamond, Erebusant, Weigo for BP-BGT Worldmap macros and icons</li>
-	<li>Many thanks to you and all the other players who have contributed to the completeness of this modification</li>
-</ul>
-
-<h3>Translations</h3>
-
-<p><strong>Polish:</strong> Etamin, K4thos, Cahir, morgan</p>
-<p><strong>Spanish:</strong> Saemon (previously used one by El Dunadan)</p>
-<p><strong>German:</strong> jaydee2k, Shai Hulud and Weigo</p>
-<p><strong>French:</strong> Chevalier Noir, Isaya, Jazira33</p>
-<p><strong>Czech:</strong> Vicq</p>
-<p><strong>Russian:</strong> NightLionG</p>
-
-</div>
-<!-- ================== L e g a l e s e ================== --><a id="legalese" name="legalese"></a>
-<h2>Legalese</h2>
-<div class="section">
-
-<p>2012 - 2014 Hasbro, Inc. All Rights Reserved. Baldur's Gate, Dungeons & Dragons, D&D, the Forgotten Realms, Baldur's Gate, Wizards of the Coast and their logos are trademarks of Wizards of the Coast LLC in the U.S.A. and other countries. Hasbro and its logo are trademarks of Hasbro, Inc.</p>
-
-<p>1998 BioWare Corp. All Rights Reserved. BioWare, the BioWare Infinity Engine and the BioWare logo are trademarks of Bioware Corp. Black Isle Studios and the Black Isle Studios logo are trademarks of Interplay Entertainment Corp.</p>
-
-<p>2012 - 2018 Beamdog. All Rights Reserved.</p>
-
-<p><strong>USE THIS MODIFICATION AT YOUR OWN RISK. This modification is not developed, supported, or endorsed by BioWare Corp., Hasbro, Beamdog.</strong></p>
-
-<p>This is a community modification, created as a hobby for free. You can distribute among your peers as much as you like. My code is open sourced and released under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a>. Parts of code not written by myself belongs to respective authors.</p>
-
-<p>Tools distributed with this package are under following open licenses:
-<ul>
-	<li>Oggdec, SoX are available under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a> (oggdec source code is available within the <a href="http://www.xiph.org/downloads/">vorbis-tools</a> package, SoX source code can be found at <a href="http://sox.sourceforge.net/">sourceforge</a>)</li>
-	<li>FFmpeg is available under the <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU Lesser General Public License (LGPL) version 2.1</a>, some parts of it are available under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU General Public License (GPL) version 2</a>, source code available at <a href="https://www.ffmpeg.org/download.html#get-sources">FFmpeg.org</a> </li>
-	<li>LUA is available under the <a href="http://opensource.org/licenses/MIT">MIT license</a>, source code available at <a href="https://www.lua.org/">lua.org</a></li>
-	<li><a href="http://www.weidu.org/">WeiDU</a> is distributed under the <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GPL 2.0 public license</a>, source code available at <a href="https://github.com/WeiDUorg/weidu">WeiDU Github repository</a></li>
-</ul>
-
-<p>This modification is available as an open repository on <a href="https://github.com/Gibberlings3/EET">GitHub</a>, which allows everyone to add new commits. Feel free to suggest improvements and fixes by directly modifying the code on the site. Any help on improving the mod is appreciated.</p>
-
-</div>
-<!-- ================== V e r s i o n   H i s t o r y ================== --><a id="version" name="version"></a>
-<h2>Version History</h2>
-<div class="section">
-
-All notable changes to this project are <a href="https://github.com/Gibberlings3/EET/releases">documented on GitHub</a>.
-
-</div>
-
-<script type="text/javascript">
-  <!--
-    function toggle(id) {
-      element = document.getElementById(id);
-      if ( element.style.display == 'none' ) {
-        element.style.display = '';
-        if ( document.all ) {
-          document.getElementById('vhistoryaddress').style.display = 'none'; // IE hack
-        }
-      } else {
-        element.style.display = 'none';
-        if ( document.all ) {
-          document.getElementById('vhistoryaddress').style.display = ''; // IE hack
-        }
-      }
-    }
-
-    elements = document.getElementsByTagName('*');
-    for ( var i = 0; i < elements.length; i++ ) {
-      if ( elements[i].className == 'hidelist' ) {
-        elements[i].style.display = 'none';
-      }
-    }
-  //-->
-</script>
-
 </body>
 </html>

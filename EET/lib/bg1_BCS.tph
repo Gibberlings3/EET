@@ -1346,7 +1346,10 @@ COPY_EXISTING ~BD6100.BCS~ ~override~
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
 			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
 		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      // camdawg: OK if not a match since we don't want it here (EEFP removes it anyway)
+      PATCH_IF !cd_eefp_bgee BEGIN 
+			  PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END   
 		END
 		SPRINT textToReplace ~\(ApplySpellRES("bdremove",Player1)\)~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1391,7 +1394,8 @@ EXTEND_TOP ~BD6100.BCS~ ~.../BD6100-et.baf~
 //BD6200.BCS
 COPY_EXISTING ~BD6200.BCS~ ~override~
 	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreature("bdimoen",\[775\.705\],E)[%newline%]*ActionOverride("bdimoen",MakeGlobalOverride())~
+    // camdawg: matching bdimoen (bgee 2.6 and incorrect) and imoen (eefp and correct) -- imoen converted to imoen2 by earlier work
+		SPRINT textToReplace ~CreateCreature("bdimoen",\[775\.705\],E)[%newline%]*ActionOverride("\(bdimoen\|imoen2\)",MakeGlobalOverride())~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
 		PATCH_IF (num_matches > 0) BEGIN
 			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("IMOEN2",SetGlobal("K#PartySoD","LOCALS",1))

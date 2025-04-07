@@ -48,6 +48,8 @@ COPY_EXISTING ~PRINCESS.ITM~ ~override~
 	LPF EET_PCU_core END
 BUT_ONLY
 
+ACTION_IF !cd_eefp_bgee BEGIN // if eefp was installed on bgee prior to merge, none of this should be necessary
+
 //http://gibberlings3.net/forums/index.php?showtopic=28161&page=19#entry246196
 COPY_EXISTING ~BDPETR01.CRE~ ~override~
 	~BDPETR02.CRE~ ~override~
@@ -58,7 +60,7 @@ COPY_EXISTING ~BDPETR01.CRE~ ~override~
 	PATCH_IF (~%default%~ STR_EQ ~DPLAYER3~) BEGIN
 		WRITE_ASCII 0x268 ~~ #8
 	END ELSE BEGIN
-		PATCH_WARN ~WARNING: %BASH_FOR_FILE% no longer needs fixing~
+		PATCH_WARN ~WARNING: %SOURCE_FILE% no longer needs fixing~
 	END
 BUT_ONLY
 
@@ -285,6 +287,8 @@ BUT_ONLY
 /*COPY_EXISTING ~BG0514.ARE~ ~override~
 	LPF REPLACE_AREA_ITEM STR_VAR old_item = SLNG03 new_item = SLNG05 END
 BUT_ONLY*/
+
+END // eefp check
 
 COPY_EXISTING ~IMPORT02.2DA~ ~override~
 	PRETTY_PRINT_2DA
