@@ -54,8 +54,8 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 					END ELSE BEGIN
 						SPRINT game ~~
 					END
-					READ_2DA_ENTRIES_NOW pdialog 1
-					FOR (j=3; j < pdialog; ++j) BEGIN
+					READ_2DA_ENTRIES_NOW pdialog 3
+					FOR (j=1; j < pdialog; ++j) BEGIN
 						READ_2DA_ENTRY_FORMER pdialog j 0 dv
 						TO_UPPER dv
 						READ_2DA_ENTRY_FORMER pdialog j 2 join
@@ -73,7 +73,7 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 									DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~%join_main%~ , ~%game%~ => ~~ END
 									SPRINT $EVAL ~%join_main%~(~%game%~) ~%dv%~
 								END
-								SET_2DA_ENTRY j 2 1 ~%join_main%~
+								SET_2DA_ENTRY j 2 3 ~%join_main%~
 							END
 						END
 						PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
@@ -94,10 +94,10 @@ COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
 									APPEND ~25DIALOG.2DA~ ~%dv% %25post% %join% %25dream%~
 								END
 							END
-							SET_2DA_ENTRY j 4 1 ~***~
-							SET_2DA_ENTRY j 5 1 ~***~
-							SET_2DA_ENTRY j 6 1 ~***~
-							SET_2DA_ENTRY j 7 1 ~***~
+							SET_2DA_ENTRY j 4 3 ~***~
+							SET_2DA_ENTRY j 5 3 ~***~
+							SET_2DA_ENTRY j 6 3 ~***~
+							SET_2DA_ENTRY j 7 3 ~***~
 						END
 					END
 					PRETTY_PRINT_2DA
