@@ -196,16 +196,27 @@ ACTION_IF ~%SYSTEM_ARCH%~ STR_EQ ~amd64~ BEGIN
 	OUTER_SPRINT arch_var ~x86_64%os_slash%~
 END
 PRINT ~arch_var = %arch_var%~
+
 ACTION_FOR_EACH file IN lua weidu BEGIN
 	ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%%file%%exe%~ BEGIN
 		OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%file%%exe%~
 	END ELSE ACTION_IF (NOT ~%arch_var%~ STR_EQ ~~) AND (FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%file%%exe%~) BEGIN
 		OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%file%%exe%~
 	END ELSE BEGIN
-		FAIL ~%file% not found~
+		ACTION_IF (~%WEIDU_OS%~ STR_EQ ~unix~) BEGIN
+			OUTER_SPRINT shell_cmd ~which %file%~
+			AT_NOW ret_val ~%shell_cmd%~ EXACT
+			ACTION_IF (ret_val != 0) BEGIN
+				WARN ~Shell command failed to execute: %shell_cmd%~
+				FAIL ~%file% not found, you'll need to add %file% to your path~
+			END
+			OUTER_SPRINT EVAL ~%file%~ ~%file%~
+		END ELSE BEGIN
+			FAIL ~%file% not found~
+		END
 	END
 	OUTER_SPRINT tool EVAL ~%%file%%~
-	ACTION_IF NOT ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 		OUTER_SPRINT shell_cmd ~chmod +x %tool%~
 		AT_NOW ret_val ~%shell_cmd%~ EXACT
 		ACTION_IF (ret_val != 0) BEGIN
@@ -2772,6 +2783,8 @@ ACTION_FOR_EACH file IN EET_end EET_gui BEGIN
 	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 		COPY ~setup-EET.command~ ~setup-%file%.command~
 			REPLACE_TEXTUALLY ~EET/EET.tp2 --log SETUP-EET.DEBUG~ ~%file%/%file%.tp2 --log SETUP-%file%.DEBUG~
+	END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~unix~ BEGIN
+		PRINT ~noop~
 	END ELSE BEGIN
 		COPY ~%weidu%~ ~setup-%file%%exe%~
 	END
