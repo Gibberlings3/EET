@@ -330,6 +330,16 @@ COPY_EXISTING_REGEXP GLOB ~.+\.CRE$~ ~override~
 	END
 BUT_ONLY
 
+ACTION_IF ((FILE_EXISTS_IN_GAME ~cdmk25.eff~) AND                                  // if effs for m'khiin's animation are present
+           (FILE_EXISTS ~eefixpack/files/lib/modder_mkhiin_animations.tph~)) BEGIN // as is the EEFP library
+
+  INCLUDE ~eefixpack/files/lib/modder_mkhiin_animations.tph~
+  COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
+    LPF cd_eefp_mkhiin_animation END 
+    BUT_ONLY 
+    
+END 
+
 /////                                                  \\\\\
 ///// Append missing entries                           \\\\\
 /////                                                  \\\\\

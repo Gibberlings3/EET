@@ -414,39 +414,43 @@ BUT_ONLY
 ///// ENTRIES.2DA                                      \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/ENTRIES.2DA~ ~%MOD_FOLDER%/temp/array~
-	PRETTY_PRINT_2DA
-	SPRINT textToReplace ~^AR3003 .+[%newline%]*AR3004 .+[%newline%]*AR3005 .+[%newline%]*AR3006 .+[%newline%]*AR3007 .+[%newline%]*AR3008 .+[%newline%]*AR3009 .+[%newline%]*AR3010 .+[%newline%]*AR3011 .+[%newline%]*AR3012 .+[%newline%]*AR3013 .+[%newline%]*AR3014 .+[%newline%]*AR3015 .+[%newline%]*AR3019 .+[%newline%]*AR5505 .+[%newline%]*AR6001 .+[%newline%]*AR6002 .+[%newline%]*AR6003 .+[%newline%]*AR6004 .+[%newline%]*AR6008 .+[%newline%]*AR6009 .+[%newline%]*AR6010 .+[%newline%]*AR6011 .+$~
-	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-	PATCH_IF (num_matches > 0) BEGIN
-		REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-	END ELSE BEGIN
-		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-	END
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 10 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 10 "col1"
-		SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 10 "%match%" SPRINT col1 ~%match%~ END
-		READ_2DA_ENTRY cnt 1 10 "col2"
-		READ_2DA_ENTRY cnt 2 10 "col3"
-		READ_2DA_ENTRY cnt 3 10 "col4"
-		READ_2DA_ENTRY cnt 4 10 "col5"
-		READ_2DA_ENTRY cnt 5 10 "col6"
-		READ_2DA_ENTRY cnt 6 10 "col7"
-		READ_2DA_ENTRY cnt 7 10 "col8"
-		READ_2DA_ENTRY cnt 8 10 "col9"
-		READ_2DA_ENTRY cnt 9 10 "col10"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
-			INNER_ACTION BEGIN
-				APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10%~
-				PRINT ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% appended to %SOURCE_FILESPEC%~
-			END
-		END
-	END
-COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
+ACTION_IF !cd_eefp_bgee BEGIN // entries already cleared by EEFP
+
+  COPY + ~%MOD_FOLDER%/temp/array/ENTRIES.2DA~ ~%MOD_FOLDER%/temp/array~
+    PRETTY_PRINT_2DA
+    SPRINT textToReplace ~^AR3003 .+[%newline%]*AR3004 .+[%newline%]*AR3005 .+[%newline%]*AR3006 .+[%newline%]*AR3007 .+[%newline%]*AR3008 .+[%newline%]*AR3009 .+[%newline%]*AR3010 .+[%newline%]*AR3011 .+[%newline%]*AR3012 .+[%newline%]*AR3013 .+[%newline%]*AR3014 .+[%newline%]*AR3015 .+[%newline%]*AR3019 .+[%newline%]*AR5505 .+[%newline%]*AR6001 .+[%newline%]*AR6002 .+[%newline%]*AR6003 .+[%newline%]*AR6004 .+[%newline%]*AR6008 .+[%newline%]*AR6009 .+[%newline%]*AR6010 .+[%newline%]*AR6011 .+$~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    PRETTY_PRINT_2DA
+    COUNT_2DA_ROWS 10 "cntrow"
+    FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+      READ_2DA_ENTRY cnt 0 10 "col1"
+      SPRINT match ~%col1%~ SPRINT res ~are~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col1%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 0 10 "%match%" SPRINT col1 ~%match%~ END
+      READ_2DA_ENTRY cnt 1 10 "col2"
+      READ_2DA_ENTRY cnt 2 10 "col3"
+      READ_2DA_ENTRY cnt 3 10 "col4"
+      READ_2DA_ENTRY cnt 4 10 "col5"
+      READ_2DA_ENTRY cnt 5 10 "col6"
+      READ_2DA_ENTRY cnt 6 10 "col7"
+      READ_2DA_ENTRY cnt 7 10 "col8"
+      READ_2DA_ENTRY cnt 8 10 "col9"
+      READ_2DA_ENTRY cnt 9 10 "col10"
+      PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.2DA~ ~^[%TAB% ]*%col1%[%TAB% ]+~)) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_RES%.2DA~ ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10%~
+          PRINT ~%col1% %col2% %col3% %col4% %col5% %col6% %col7% %col8% %col9% %col10% appended to %SOURCE_FILESPEC%~
+        END
+      END
+    END
+  COPY_EXISTING ~%SOURCE_RES%.2DA~ ~override~
+    PRETTY_PRINT_2DA
+  BUT_ONLY
+  
+END 
 
 /////                                                  \\\\\
 ///// EXTANIM.2DA                                      \\\\\
