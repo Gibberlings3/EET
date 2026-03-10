@@ -1414,9 +1414,10 @@ ACTION_PHP_EACH dir AS from => to BEGIN
 	OUTER_PATCH_SAVE dir_name ~%to%~ BEGIN
 		REPLACE_TEXTUALLY ~^.+/\([^/\\]+\)$~ ~\1~
 	END
-	ACTION_TO_UPPER dir_name
-	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%dir_name%~)) BEGIN
-		OUTER_TEXT_SPRINT dest_dir $table_2DA_songlist(~%dir_name%~)
+	OUTER_TEXT_SPRINT dir_name_against_songlist ~%dir_name%~
+	ACTION_TO_UPPER dir_name_against_songlist 
+	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%dir_name_against_songlist%~)) BEGIN
+		OUTER_TEXT_SPRINT dest_dir $table_2DA_songlist(~%dir_name_against_songlist%~)
 	END ELSE BEGIN
 		OUTER_SPRINT dest_dir ~%dir_name%~
 	END
@@ -1439,9 +1440,10 @@ ACTION_PHP_EACH dir AS from => to BEGIN
 END
 
 ACTION_BASH_FOR ~%bgee_dir%/music~ ~^.+\.mus$~ BEGIN
-	ACTION_TO_UPPER BASH_FOR_RES
-	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%BASH_FOR_RES%~)) BEGIN
-		OUTER_TEXT_SPRINT dest_res $table_2DA_songlist(~%BASH_FOR_RES%~)
+	OUTER_TEXT_SPRINT mus_name_against_songlist ~%BASH_FOR_RES%~
+	ACTION_TO_UPPER mus_name_against_songlist
+	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%mus_name_against_songlist%~)) BEGIN
+		OUTER_TEXT_SPRINT dest_res $table_2DA_songlist(~%mus_name_against_songlist%~)
 	END ELSE BEGIN
 		OUTER_SPRINT dest_res ~%BASH_FOR_RES%~
 	END
