@@ -108,19 +108,17 @@ PRINT ~argv[1] = %argv[1]%~
 >>>>>>>>
 
 COPY - ~weidu.conf~ ~.../weidu.conf~
-	COUNT_2DA_ROWS 3 weidu_conf_rows
-	FOR (weidu_conf_row=0; weidu_conf_row < weidu_conf_rows; ++weidu_conf_row) BEGIN
-		READ_2DA_ENTRY weidu_conf_row 0 3 weidu_conf_param
-		PATCH_IF ~%weidu_conf_param%~ STR_EQ ~lang_dir~ BEGIN
-			READ_2DA_ENTRY weidu_conf_row 2 3 "LANGUAGE_BG2"
-			INNER_PATCH_SAVE LANGUAGE_BG2 ~%LANGUAGE_BG2%~ BEGIN
-				REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
-					TO_UPPER MATCH1
-				END ~%MATCH1%~
-			END
-		END
+	REPLACE_EVALUATE ~\blang_dir[ %TAB%]*=[ %TAB%]*\([a-zA-Z0-9_]+\)~ BEGIN
+    	SPRINT LANGUAGE_BG2 ~%MATCH1%~
+  	END ~%MATCH0%~
+	INNER_PATCH_SAVE LANGUAGE_BG2 ~%LANGUAGE_BG2%~ BEGIN
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
+			TO_UPPER MATCH1
+		END ~%MATCH1%~
 	END
-	PATCH_PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
+BUT_ONLY
+
+PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
 OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
 OUTER_SPRINT slash ~/~

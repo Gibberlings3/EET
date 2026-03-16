@@ -133,18 +133,15 @@ COPY + ~.../bgee_dir.txt~ ~%MOD_FOLDER%/bgee_dir.txt~ EVALUATE_BUFFER
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/weidu.conf~ BEGIN
 	COPY - ~%bgee_dir%/weidu.conf~ ~.../%bgee_dir%~
-		COUNT_2DA_ROWS 3 weidu_conf_rows
-		FOR (weidu_conf_row=0; weidu_conf_row < weidu_conf_rows; ++weidu_conf_row) BEGIN
-			READ_2DA_ENTRY weidu_conf_row 0 3 weidu_conf_param
-			PATCH_IF ~%weidu_conf_param%~ STR_EQ ~lang_dir~ BEGIN
-				READ_2DA_ENTRY weidu_conf_row 2 3 "LANGUAGE_BG1"
-				INNER_PATCH_SAVE LANGUAGE_BG1 ~%LANGUAGE_BG1%~ BEGIN
-					REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
-						TO_UPPER MATCH1
-					END ~%MATCH1%~
-				END
-			END
+		REPLACE_EVALUATE ~\blang_dir[ %TAB%]*=[ %TAB%]*\([a-zA-Z0-9_]+\)~ BEGIN
+	    	SPRINT LANGUAGE_BG1 ~%MATCH1%~
+	  	END ~%MATCH0%~
+		INNER_PATCH_SAVE LANGUAGE_BG1 ~%LANGUAGE_BG1%~ BEGIN
+			REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
+				TO_UPPER MATCH1
+			END ~%MATCH1%~
 		END
+	BUT_ONLY
 END ELSE ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE%/dialog.tlk~ BEGIN
 	OUTER_SPRINT LANGUAGE_BG1 ~%LANGUAGE%~
 END ELSE ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE_BG2%/dialog.tlk~ BEGIN
