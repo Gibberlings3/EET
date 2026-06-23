@@ -327,6 +327,7 @@ menu
 	}
 	button
 	{
+	    on escape
 		area 649 462 260 76
 		bam 'STARTMBT'
 		sequence 5
@@ -777,6 +778,7 @@ menu
 	}
 	button
 	{
+	    on escape
 		area 649 462 260 76
 		bam 'STARTMBT'
 		sequence 5
@@ -1097,6 +1099,18 @@ menu
 	}
 	button
 	{
+		bam 'STARTMBT'
+		sequence 6
+		area 364 662 302 44
+		pad 10 8 10 8
+		text style "button"
+		text "IMPORT_FOLDER_LABEL"
+		enabled "e:IsAndroid()"
+		clickable lua "e:IsAndroid()"
+		action "Infinity_PushMenu( 'OPTIONS_DATA_FOLDER' )"
+	}
+	button
+	{
 		on escape
 		area 649 462 260 76
 		bam 'STARTMBT'
@@ -1191,6 +1205,18 @@ menu
 		text style "button"
 		text "GAMEPLAY_BUTTON"
 		action "Infinity_PushMenu( 'OPTIONS_GAMEPLAY' )"
+	}
+	button
+	{
+		bam 'STARTMBT'
+		sequence 6
+		area 362 661 302 44
+		pad 10 8 10 8
+		text style "button"
+		text "IMPORT_FOLDER_LABEL"
+		enabled "e:IsAndroid()"
+		clickable lua "e:IsAndroid()"
+		action "Infinity_PushMenu( 'OPTIONS_DATA_FOLDER' )"
 	}
 	button
 	{
