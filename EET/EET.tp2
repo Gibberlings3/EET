@@ -1355,12 +1355,18 @@ OUTER_SET ren_check = 0
 //conversion
 PRINT ~Please be patient during the conversion process. This may take some time...~
 
-ACTION_FOR_EACH var IN are /*bcs*/ cre /*dlg*/ eff ini itm pro spl sto vef vvc wed "" BEGIN
+ACTION_FOR_EACH var IN are /*bcs*/ cre /*dlg*/ eff ini itm pro spl sto vef vvc wed BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
 			LPF EET_PCU_core RET ext_check END
 			SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
 	END
+END
+
+ACTION_BASH_FOR ~%patch_dir%~ ~^.+$~ BEGIN
+	COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
+		LPF EET_PCU_core RET ext_check END
+		SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
 END
 
 PRINT ~Conversion complete. Statistics:
