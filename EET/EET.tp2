@@ -288,6 +288,7 @@ ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
 END
 
+/*
 OUTER_SPRINT shell_cmd ~%lua% %MOD_FOLDER%/lib/tlk_cnt.lua~
 PRINT ~%shell_cmd%~
 AT_NOW ret_val ~%shell_cmd%~
@@ -297,12 +298,24 @@ END
 COPY + ~%MOD_FOLDER%/temp/tlk_cnt.txt~ ~%MOD_FOLDER%/temp~
 	READ_LONG 0xa "tlk_end"
 	SET tlk_end = tlk_end + 200000 - 1
+*/
 
+COPY ~%bgee_dir%/lang/%LANGUAGE_BG1%/dialog.tlk~ ~%MOD_FOLDER%/temp/bgee-dialog.tlk~
+	READ_LONG 0xa "tlk_end"
+	SET tlk_end = tlk_end + 200000 - 1
+
+/*
 OUTER_SPRINT shell_cmd ~%lua% %MOD_FOLDER%/lib/tra_merge.lua~
 AT_NOW ret_val ~%shell_cmd%~
 ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
 END
+*/
+
+COPY ~%MOD_FOLDER%/temp/append.tra~ ~%MOD_FOLDER%/temp/string_set.tra~
+	APPEND_FILE ~%MOD_FOLDER%/temp/append.tra~
+	APPEND_FILE ~%MOD_FOLDER%/base/blank.tra~
+	APPEND_FILE ~%MOD_FOLDER%/temp/bgee.tra~
 
 <<<<<<<< .../string_set.tph
 PRINT ~tlk_start = %tlk_start%; tlk_end = %tlk_end%~
@@ -1181,6 +1194,7 @@ END
 ///// LUA conversion                                   \\\\\
 /////                                                  \\\\\
 
+/*
 PRINT ~~
 PRINT ~LUA conversion...~
 
@@ -1234,6 +1248,7 @@ LAM bash_log
 ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
 END
+*/
 
 /////                                                  \\\\\
 ///// PCU conversion                                   \\\\\
@@ -1368,7 +1383,7 @@ OUTER_SET ren_check = 0
 //conversion
 PRINT ~Please be patient during the conversion process. This may take some time...~
 
-ACTION_FOR_EACH var IN are /*bcs*/ cre /*dlg*/ eff ini itm pro spl sto vef vvc wed BEGIN
+ACTION_FOR_EACH var IN are bcs cre dlg eff ini itm pro spl sto vef vvc wed BEGIN
 	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
 		COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
 			LPF EET_PCU_core RET ext_check END
@@ -1569,9 +1584,14 @@ COPY_LARGE + ~%MOD_FOLDER%/base/bam~ ~%biff_dir%~
 
 PRINT ~Installing BCS files...~
 
+/*
 //compile scripts
 COMPILE ~%patch_dir%/baf~
 	~%MOD_FOLDER%/compile/baf~
+*/
+
+//copy scripts over
+COPY ~%patch_dir%/bcs~ ~override~
 
 //patching BG:EE scripts
 INCLUDE ~%MOD_FOLDER%/lib/bg1_BCS.tph~
@@ -1669,6 +1689,7 @@ END
 
 PRINT ~Installing DLG files...~
 
+/*
 COPY + ~%patch_dir%/d/BPNAJIM.d~ ~%patch_dir%/d~
 	REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]*GoToStartScreen()~ ~ClearAllActions()
     ReallyForceSpellRES("K#FAMREM",Player1)
@@ -1682,6 +1703,22 @@ BUT_ONLY
 
 COMPILE ~%patch_dir%/d~
 	~%MOD_FOLDER%/compile/d~
+*/
+
+COPY ~%patch_dir%/dlg/BPNAJIM.DLG~ ~%patch_dir%/dlg~
+	DECOMPILE_AND_PATCH BEGIN
+		REPLACE_TEXTUALLY ~IncrementChapter("BPEND")[%newline%]*GoToStartScreen()~ ~ClearAllActions()
+    	ReallyForceSpellRES("K#FAMREM",Player1)
+    	ReallyForceSpellRES("K#FAMREM",Player2)
+    	ReallyForceSpellRES("K#FAMREM",Player3)
+    	ReallyForceSpellRES("K#FAMREM",Player4)
+    	ReallyForceSpellRES("K#FAMREM",Player5)
+    	ReallyForceSpellRES("K#FAMREM",Player6)
+    	StartCutScene("K#CUTBP2")~
+	END
+BUT_ONLY
+
+COPY ~%patch_dir%/dlg~ ~override~
 
 /////                                                  \\\\\
 ///// workaround for engine differences                \\\\\
