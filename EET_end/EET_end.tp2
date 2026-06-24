@@ -791,6 +791,8 @@ END ELSE ACTION_IF (FILE_EXISTS ~EET/bin/%WEIDU_OS%/weidu%exe%~) BEGIN
 	OUTER_SPRINT weidu ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%weidu%exe%~
 END ELSE ACTION_IF (FILE_EXISTS ~setup-eet_end%exe%~) BEGIN
 	OUTER_SPRINT weidu ~%bin%setup-eet_end%exe%~
+END ELSE BEGIN
+	OUTER_SPRINT weidu ~weidu~
 END
 PRINT ~weidu = %weidu%~
 
@@ -799,13 +801,7 @@ AT_NOW ret_val ~%shell_cmd%~ EXACT
 ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
 END
-ACTION_IF (NOT ~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
-	OUTER_SPRINT shell_cmd ~chmod +x %weidu%~
-	AT_NOW ret_val ~%shell_cmd%~ EXACT
-	ACTION_IF (ret_val != 0) BEGIN
-		WARN ~Shell command failed to execute: %shell_cmd%~
-	END
-END
+
 OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%%os_slash%save%os_slash%saves.tra"~
 AT_NOW ret_val ~%shell_cmd%~ EXACT
 ACTION_IF (ret_val != 0) BEGIN

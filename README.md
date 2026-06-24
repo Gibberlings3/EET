@@ -25,6 +25,26 @@ II. Become a mod-friendly platform with the additional modding possibilities tha
 - Intuitive conventions for renamed BG:EE files and modders resources that can be used for adopting existing mods.
 - Limited support for mods installed on BG:EE previous to installing EET on BG2:EE.
 
+## Requirements for Linux and Macos Users
+
+- A recent version of weidu (anything newer than v248, will do fine) on your path, you likely already have this if you have install mods before. If not here is a short example on how to add weidu to your path:
+```bash
+export PATH="${PATH}:<path to weidu>"
+```
+where `<path to weidu>` is the folder containing your weidu binary, If you do not have weidu locally you can fetch it from github.
+
+- A recent version of Lua (bundled for windws is 5.3 Lua), your package manager's version should work as should homebrew/macports for macos. You can check the version of Lua you have on your path with, the following:
+
+```bash
+lua -v
+```
+
+you should see something like:
+
+```bash
+Lua 5.4.8  Copyright (C) 1994-2025 Lua.org, PUC-Rio
+```
+
 ## More Information
 
 :page_facing_up: [Project Page](https://www.gibberlings3.net/mods/other/eet/)  

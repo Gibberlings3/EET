@@ -3,6 +3,20 @@ AUTHOR ~K4thos (swit)~
 VERSION ~v14.0~
 README ~EET/lang/%LANGUAGE%/readme-EET.html~ ~EET/readme-EET.html~
 
+ALWAYS
+	ACTION_IF NOT ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+		ACTION_FOR_EACH file IN lua weidu BEGIN
+			OUTER_SPRINT shell_cmd ~which %file%~
+			AT_NOW ret_val ~%shell_cmd%~
+			ACTION_IF (ret_val != 0) BEGIN
+				FAIL ~%file% not on path, please add %file% to path~
+			END
+			OUTER_SPRINT EVAL ~%file%~ ~%file%~
+			PRINT ~%file% assigned to %file%~
+		END
+	END
+END
+
 LANGUAGE ~English~
 	~en_US~
 	~EET/lang/en_US/prompts.tra~
@@ -191,28 +205,21 @@ END ELSE BEGIN
 	COPY ~.../blank.txt~ ~WeiDU-BGEE.log~
 END
 
-LAF GET_SYSTEM_ARCH RET SYSTEM_ARCH END
-ACTION_IF ~%SYSTEM_ARCH%~ STR_EQ ~amd64~ BEGIN
-	OUTER_SPRINT arch_var ~x86_64%os_slash%~
-END
-PRINT ~arch_var = %arch_var%~
-ACTION_FOR_EACH file IN lua weidu BEGIN
-	ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%%file%%exe%~ BEGIN
-		OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%file%%exe%~
-	END ELSE ACTION_IF (NOT ~%arch_var%~ STR_EQ ~~) AND (FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%file%%exe%~) BEGIN
-		OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%file%%exe%~
-	END ELSE BEGIN
-		FAIL ~%file% not found~
+ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+	LAF GET_SYSTEM_ARCH RET SYSTEM_ARCH END
+	ACTION_IF ~%SYSTEM_ARCH%~ STR_EQ ~amd64~ BEGIN
+		OUTER_SPRINT arch_var ~x86_64%os_slash%~
 	END
-	OUTER_SPRINT tool EVAL ~%%file%%~
-	ACTION_IF NOT ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-		OUTER_SPRINT shell_cmd ~chmod +x %tool%~
-		AT_NOW ret_val ~%shell_cmd%~ EXACT
-		ACTION_IF (ret_val != 0) BEGIN
-			WARN ~Shell command failed to execute: %shell_cmd%~
+	PRINT ~arch_var = %arch_var%~
+	ACTION_FOR_EACH file IN lua weidu BEGIN
+		ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%%file%%exe%~ BEGIN
+			OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%file%%exe%~
+		END ELSE ACTION_IF (NOT ~%arch_var%~ STR_EQ ~~) AND (FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%file%%exe%~) BEGIN
+			OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%file%%exe%~
 		END
+		OUTER_SPRINT tool EVAL ~%%file%%~
+		PRINT ~%file% assigned to %tool%~
 	END
-	PRINT ~%file% assigned to %tool%~
 END
 
 /////                                                  \\\\\
@@ -271,12 +278,14 @@ ACTION_IF NOT ~%log%~ STR_EQ ~~ BEGIN
 END
 
 OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%MOD_FOLDER%/temp/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%MOD_FOLDER%/temp/bgee.tra"~
+PRINT ~%shell_cmd%~
 AT_NOW ret_val ~%shell_cmd%~
 ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
 END
 
 OUTER_SPRINT shell_cmd ~%lua% %MOD_FOLDER%/lib/tlk_cnt.lua~
+PRINT ~%shell_cmd%~
 AT_NOW ret_val ~%shell_cmd%~
 ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
@@ -2774,17 +2783,14 @@ COPY ~.../blank.txt~ ~override/EET.flag~
 APPEND ~EET.flag~ ~EET_JOURNAL~
 PRINT ~'EET.flag' file is used by WeiDU to recognize the installation as EET~
 
-
 ACTION_FOR_EACH file IN EET_end EET_gui BEGIN
-	//COPY + ~%MOD_FOLDER%/lib/%file%.tp2~ ~%file%.tp2~
-	ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
+  ACTION_IF ~%WEIDU_OS%~ STR_EQ ~osx~ BEGIN
 		COPY ~setup-EET.command~ ~setup-%file%.command~
 			REPLACE_TEXTUALLY ~EET/EET.tp2 --log SETUP-EET.DEBUG~ ~%file%/%file%.tp2 --log SETUP-%file%.DEBUG~
-	END ELSE BEGIN
+  END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 		COPY ~%weidu%~ ~setup-%file%%exe%~
 	END
 END
-
 
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
 /////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
@@ -2803,7 +2809,7 @@ DESIGNATED 100
 ACTION_IF (~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
   INCLUDE ~%MOD_FOLDER%/lib/shortcut_windows.tph~
 END ELSE ACTION_IF (~%WEIDU_OS%~ STR_EQ ~unix~) BEGIN
-  INCLUDE ~%MOD_FOLDER%/lib/shortcut_linux.tph~
+	INCLUDE ~%MOD_FOLDER%/lib/shortcut_linux.tph~
 END ELSE BEGIN
   WARN ~WARNING: Shortcut creation not available for "%WEIDU_OS%"~
 END

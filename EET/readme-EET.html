@@ -91,6 +91,22 @@
         <p>Windows users planning to install other mods should consider using <strong><a href="https://forums.beamdog.com/discussion/74335/project-infinity-public-beta">Project Infinity</a></strong> or other mod managers to download, extract and install EET and other mods (just select &quot;Baldur's Gate II: EE / Enhanced Edition Trilogy&quot; option and the tool will handle both BG:EE and BG2:EE mods installation). This approach will save you a lot of time and ensure that selected mods are compatible with EET and installed in the correct order.</p>
         <p>Linux support is experimental and currently works only on <a href="https://www.gibberlings3.net/forums/topic/28516-the-linux-users-guide-to-installing-mods-on-the-enhanced-editions/">case insensitive partitions</a>. In future EET will be adopted to support case sensitive system natively.</p>
       </div>
+      <h3>Installation Requirements for Macos/Linux</h3>
+      <p>A recent version of weidu (anything newer than v248, will do fine) on your path, you likely already have this if you have install mods before. If not here is a short example on how to add weidu to your path:
+      <div class="code">
+      export PATH="${PATH}:weidu_path"
+      </div>
+      where 'weidu_path' is the folder containing your weidu binary, If you do not have weidu locally you can fetch it from github.
+      </p>
+      <p>A recent version of Lua (bundled for windws is 5.3 Lua), your package manager's version should work as should homebrew/macports for macos. You can check the version of Lua you have on your path with, the following:
+      <div class="code">
+      lua -v
+      </div>
+      you should see something like:
+      <div class="code">
+      Lua 5.4.8  Copyright (C) 1994-2025 Lua.org, PUC-Rio
+      </div>
+      </p>
       <h3>EET core (setup-EET)</h3>
       <p>Core EET component requires &quot;clean&quot; BG2:EE installation with latest patch (currently v2.6.6.0) and (optionally) the <a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. Translations and voice-overs are of course allowed but installing other (especially larger) mods that changes DLG and BCS files, before EET, may cause problems with later patching, so it's better to keep the installation as clean as possible.</p>
       <p>The BG:EE + Siege of Dragonspear installation with latest patch (currently v2.6.6.0) and (optionally) the <a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. It should be either &quot;clean&quot; installation or with any combination of mods mentioned in section 1 of <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">this list</a>.</p>
