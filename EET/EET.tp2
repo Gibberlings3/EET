@@ -5,7 +5,7 @@ README ~EET/lang/%LANGUAGE%/readme-EET.html~ ~EET/readme-EET.html~
 
 ALWAYS
 	ACTION_IF NOT ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-		ACTION_FOR_EACH file IN lua weidu BEGIN
+		ACTION_FOR_EACH file IN /*lua*/ weidu BEGIN
 			OUTER_SPRINT shell_cmd ~which %file%~
 			AT_NOW ret_val ~%shell_cmd%~
 			ACTION_IF (ret_val != 0) BEGIN
@@ -215,7 +215,7 @@ ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 		OUTER_SPRINT arch_var ~x86_64%os_slash%~
 	END
 	PRINT ~arch_var = %arch_var%~
-	ACTION_FOR_EACH file IN lua weidu BEGIN
+	ACTION_FOR_EACH file IN /*lua*/ weidu BEGIN
 		ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%arch_var%%file%%exe%~ BEGIN
 			OUTER_SPRINT EVAL ~%file%~ ~%bin%%MOD_FOLDER%%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%%file%%exe%~
 		END ELSE ACTION_IF (NOT ~%arch_var%~ STR_EQ ~~) AND (FILE_EXISTS ~%MOD_FOLDER%/bin/%WEIDU_OS%/%file%%exe%~) BEGIN
