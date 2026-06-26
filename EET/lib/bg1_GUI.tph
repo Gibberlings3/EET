@@ -148,7 +148,7 @@ COPY ~%MOD_FOLDER%/temp/array/UI.MENU~ ~%MOD_FOLDER%/SoD_GUI~
 	
 	function getCampaignTooltip(buttonNum)
 		local campaign = startEngine:GetCampaign()
-		return t(startCampaignData[startButtons[campaign][buttonNum]].tooltip)
+		return getUiString(startCampaignData[startButtons[campaign][buttonNum]].tooltip)
 	end
 	
 	function getCampaignButtonSequence()
@@ -160,6 +160,7 @@ COPY ~%MOD_FOLDER%/temp/array/UI.MENU~ ~%MOD_FOLDER%/SoD_GUI~
 		local campaign = startEngine:GetCampaign()
 		local clickedCampaign = startButtons[campaign][buttonNum]
 		if(clickedCampaign == const.START_CAMPAIGN_SOD) then
+			resetSodLanguageIfNeeded()
 			startEngine:OnCampaignButtonClick('SOD',true)
 		elseif(clickedCampaign == const.START_CAMPAIGN_BP) then
 			startEngine:OnTBPButtonClick(true)
