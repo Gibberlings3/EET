@@ -2,6 +2,8 @@
 -- BGEE.LUA --
 -- -- -- -- --
 
+sodZipLanguages = languages
+
 styles['gamelog'] = {
 	color = 'B',
 	font = 'POSTANTI',
