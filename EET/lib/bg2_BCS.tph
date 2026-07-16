@@ -3600,6 +3600,22 @@ END
 EXTEND_BOTTOM ~AR4500.BCS~ ~.../AR4500-eb.baf~
 
 /////                                                  \\\\\
+///// AR5500 (Amkethran)                               \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~AR5500.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~TextScreen("CHPTXT9")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~TextScreen("CHPTXT9")~ ~TextScreen("CHPTXT21")~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
+BUT_ONLY
+
+/////                                                  \\\\\
 ///// AERIE                                            \\\\\
 /////                                                  \\\\\
 
@@ -3653,6 +3669,23 @@ COPY_EXISTING ~CUT205B.BCS~ ~override~
 		END
 	END
 BUT_ONLY
+
+/////                                                  \\\\\
+///// CUT248A (Throne of Bhaal intro cutscene)         \\\\\
+/////                                                  \\\\\
+
+COPY_EXISTING ~CUT248A.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~TextScreen("CHPTXT10")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~TextScreen("CHPTXT10")~ ~TextScreen("CHPTXT22")~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
+BUT_ONLY
+
 
 /////                                                  \\\\\
 ///// AR0500, OHNCUT1A, OH6000 (Neera spawn)           \\\\\
