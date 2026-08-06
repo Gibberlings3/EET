@@ -1,0 +1,56 @@
+// final adjustments to the EET installation
+
+// updating predefined campaign song indices
+// required if EE Fixpack is installed
+ACTION_DEFINE_ASSOCIATIVE_ARRAY campaign_song_indices BEGIN
+  // campaign label => song name
+  ~SOA~ => ~BG2Theme~
+  ~TOB~ => ~ThemeT~
+  ~BG1~ => ~OldTheme~
+  ~SOD~ => ~SoDTheme~
+  ~BP1~ => ~BPTHEME~
+  ~BP2~ => ~BPTHEME~
+  ~TUT~ => ~BGTHEME~
+END
+
+// caching song index references
+COPY_EXISTING ~songlist.2da~ ~override~
+  READ_2DA_ENTRIES_NOW songlist_table 3
+  FOR (row = 0; row < songlist_table; ++row) BEGIN
+    READ_2DA_ENTRY_FORMER songlist_table row 0 col0
+    PATCH_IF (IS_AN_INT ~col0~) BEGIN
+      SET song_index = col0
+      READ_2DA_ENTRY_FORMER songlist_table row 1 col1
+      PHP_EACH campaign_song_indices AS _ => name BEGIN
+        PATCH_IF (~%col1%~ STR_EQ ~%name%~) BEGIN
+          SET $song_refs(~%name%~) = song_index
+        END
+      END
+    END
+  END
+BUT_ONLY
+
+// updating song indices
+COPY_EXISTING ~campaign.2da~ ~override~
+  SET modified = 0
+  READ_2DA_ENTRIES_NOW campaign_table 1
+  FOR (row = 3; row < campaign_table; ++row) BEGIN
+    READ_2DA_ENTRY_FORMER campaign_table row 0 label
+    READ_2DA_ENTRY_FORMER campaign_table row 7 old_index
+    PATCH_IF (VARIABLE_IS_SET $campaign_song_indices(~%label%~)) BEGIN
+      SPRINT song_name $campaign_song_indices(~%label%~)
+      PATCH_IF (VARIABLE_IS_SET $song_refs(~%song_name%~)) BEGIN
+        SET new_index = $song_refs(~%song_name%~)
+        PATCH_IF (new_index != old_index) BEGIN
+          SET_2DA_ENTRY_LATER campaign_table_out row 7 new_index
+          SET modified = 1
+        END
+      END
+    END
+  END
+
+  PATCH_IF (modified) BEGIN
+    SET_2DA_ENTRIES_NOW campaign_table_out 1
+    PRETTY_PRINT_2DA
+  END
+BUT_ONLY
