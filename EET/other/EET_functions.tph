@@ -289,7 +289,7 @@ END
         COPY - ~.../blank.txt~ ~.../%override_ToB%.baf~
         COMPILE ~.../%override_ToB%.baf~
       END
-      ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_ToB%.BCS~ ~"BD_JOINXP"~)) BEGIN
+      ACTION_IF (FILE_CONTAINS_EVALUATED (~%override_ToB%.BCS~ ~"LOCALSBD_JOINXP"~)) BEGIN
         PRINT ~%override_ToB%.BCS already patched.~
       END ELSE BEGIN
         EXTEND_BOTTOM ~%override_ToB%.BCS~ ~.../XP_ToB-eb.baf~ EVALUATE_BUFFER
