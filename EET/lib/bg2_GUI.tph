@@ -1351,5 +1351,14 @@ end~~~~~
 end~~~~~
 	END
 	//==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 0
+    STR_VAR
+    pattern = ~clickable lua ".*createCharScreen:IsAdvancedButtonClickable() == true"~
+    string = ~~~~~clickable lua "currentCampaign ~= const.START_CAMPAIGN_TUT and createCharScreen:IsAdvancedButtonClickable() == true"~~~~~
+  END
+	//==========================================================================
 	REPLACE_TEXTUALLY ~^\([ %TAB%]\)\(text "Recent events text will go here."\)~ ~\1--\2~
 	REPLACE_TEXTUALLY ~clickable[ 	]+false~ ~clickable lua "false"~ //fixes Beamdog's wrong syntax
