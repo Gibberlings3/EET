@@ -7,21 +7,21 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[Pp]~ = 0) BEGIN
 	OUTER_SPRINT bgee_dir ~%argv[1]%~
 	OUTER_SET valid_dir = 1
 	PRINT ~%bgee_dir% directory assigned via auto install batch command~
-END ELSE ACTION_IF (FILE_EXISTS ~%BACKUP_FOLDER%/bgee_dir.txt~) BEGIN
-	COPY ~%BACKUP_FOLDER%/bgee_dir.txt~ ~%BACKUP_FOLDER%/bgee_dir.txt~
+END ELSE ACTION_IF (FILE_EXISTS ~%DATA_FOLDER%/bgee_dir.txt~) BEGIN
+	COPY ~%DATA_FOLDER%/bgee_dir.txt~ ~%DATA_FOLDER%/bgee_dir.txt~
 		READ_ASCII 0x0 bgee_dir (%SOURCE_SIZE%)
 	OUTER_SET valid_dir = 1
-	PRINT ~%bgee_dir% directory assigned via %BACKUP_FOLDER%/bgee_dir.txt~
+	PRINT ~%bgee_dir% directory assigned via %DATA_FOLDER%/bgee_dir.txt~
 END ELSE ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
 <<<<<<<< .../programfiles.bat
-echo %%var%%>%TEMP_FOLDER%/programfiles.txt
+echo %%var%%>"%TEMP_FOLDER%/programfiles.txt"
 >>>>>>>>
 	ACTION_FOR_EACH var IN ~programfiles~ ~programfiles(x86)~ ~ProgramW6432~ BEGIN
 		ACTION_IF (valid_dir = 0) BEGIN
 			COPY + ~.../programfiles.bat~ ~%TEMP_FOLDER%~ EVALUATE_BUFFER
 			AT_NOW ~%TEMP_FOLDER%/programfiles.bat~
 			COPY + ~%TEMP_FOLDER%/programfiles.txt~ ~%TEMP_FOLDER%~
-				READ_ASCII 0x0 dir (%SOURCE_SIZE%)
+				READ_ASCII 0x0 dir (SOURCE_SIZE)
 			OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
 				REPLACE_TEXTUALLY ~%WNL%~ ~~ //needed due to newline added by windows > command
 			END
@@ -36,6 +36,7 @@ echo %%var%%>%TEMP_FOLDER%/programfiles.txt
 				~../Baldur's Gate Enhanced Edition~
 				~../Baldur's Gate Siege of Dragonspear~
 				~../00806~
+				~../../../Baldur's Gate - Enhanced Edition/Data/00806~
 				~../../../Baldur's Gate Enhanced Edition/Data/00806~
 				~../../../Baldur's Gate Siege of Dragonspear/Data/00806~
 			BEGIN
@@ -56,12 +57,40 @@ echo %%var%%>%TEMP_FOLDER%/programfiles.txt
 		END
 	END
 END ELSE BEGIN //osx, unix
+  // determine home path of the current user
+<<<<<<<< .../homepath.sh
+#!/bin/sh
+echo "$HOME" >"%TEMP_FOLDER%/homepath.txt"
+>>>>>>>>
+  COPY + ~.../homepath.sh~ ~%TEMP_FOLDER%/homepath.sh~ EVALUATE_BUFFER
+  AT_NOW ~chmod +x "%TEMP_FOLDER%/homepath.sh" && "%TEMP_FOLDER%/homepath.sh"~ EXACT
+  OUTER_SPRINT home ~%tilde%~
+  COPY + ~%TEMP_FOLDER%/homepath.txt~ ~%TEMP_FOLDER%/homepath.txt~
+    READ_ASCII 0x0 home (SOURCE_SIZE)
+    INNER_PATCH_SAVE home ~%home%~ BEGIN REPLACE_TEXTUALLY ~[%WNL%]+~ ~~ END  // removing trailing newline
+  BUT_ONLY IF_EXISTS
+
 	ACTION_FOR_EACH dir IN
-		~%quote%/Applications/Baldur's Gate - Enhanced Edition/Game Data/00806/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
-		~%quote%/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
-		~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Contents/Resources%quote%~
-		~%quote%%tilde%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
-		~%quote%/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources%quote%~
+    // macos-specific
+		~/Applications/Baldur's Gate - Enhanced Edition/Game Data/00806/Baldur's Gate - Enhanced Edition.app/Contents/Resources~
+		~/Applications/Baldur's Gate - Enhanced Edition.app/Contents/Resources~
+		~%home%/Library/Application Support/Steam/steamapps/Baldur's Gate Enhanced Edition/Contents/Resources~
+		~%home%/Library/Application Support/Steam/steamapps/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources~
+		~%home%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Contents/Resources~
+		~%home%/Library/Application Support/Steam/steamapps/common/Baldur's Gate Enhanced Edition/Baldur's Gate - Enhanced Edition.app/Contents/Resources~
+		~/Applications/Baldur's Gate Enhanced Edition.app/Contents/Resources/game/Baldur's Gate - Enhanced Edition.app/Contents/Resources~
+    // generic
+    ~%home%/.steam/steam/steamapps/common/Baldur's Gate - Enhanced Edition~
+    ~%home%/.steam/steam/steamapps/common/Baldur's Gate Enhanced Edition~
+    ~%home%/GOG Games/Baldur's Gate - Enhanced Edition~
+    ~%home%/GOG Games/Baldur's Gate Enhanced Edition~
+    ~../Baldur's Gate - Enhanced Edition~
+    ~../Baldur's Gate Enhanced Edition~
+    ~../Baldur's Gate Siege of Dragonspear~
+    ~../00806~
+    ~../../../Baldur's Gate - Enhanced Edition/Data/00806~
+    ~../../../Baldur's Gate Enhanced Edition/Data/00806~
+    ~../../../Baldur's Gate Siege of Dragonspear/Data/00806~
 	BEGIN
 		ACTION_IF (FILE_EXISTS ~%dir%/movies/sodcin05.wbm~) AND (valid_dir = 0) AND (NOT VARIABLE_IS_SET $log_dir(~%dir%~)) BEGIN
 			ACTION_DEFINE_ASSOCIATIVE_ARRAY log_dir BEGIN ~%dir%~ => ~dummy~ END
@@ -129,7 +158,7 @@ END
 
 <<<<<<<< .../bgee_dir.txt
 %bgee_dir%>>>>>>>>
-COPY + ~.../bgee_dir.txt~ ~%BACKUP_FOLDER%/bgee_dir.txt~ EVALUATE_BUFFER
+COPY + ~.../bgee_dir.txt~ ~%DATA_FOLDER%/bgee_dir.txt~ EVALUATE_BUFFER
 
 ACTION_IF FILE_EXISTS ~%bgee_dir%/weidu.conf~ BEGIN
 	COPY - ~%bgee_dir%/weidu.conf~ ~.../%bgee_dir%~
@@ -145,6 +174,13 @@ END ELSE ACTION_IF FILE_EXISTS ~%bgee_dir%/lang/%LANGUAGE_BG2%/dialog.tlk~ BEGIN
 	OUTER_SPRINT LANGUAGE_BG1 ~%LANGUAGE_BG2%~
 END ELSE BEGIN
 	OUTER_SPRINT LANGUAGE_BG1 ~en_US~
+END
+
+// "bgee_dir_path" contains the platform-specific version of "bgee_dir" for use in external system calls
+ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+  OUTER_PATCH_SAVE bgee_dir_path ~%bgee_dir%~ BEGIN REPLACE_TEXTUALLY ~/~ ~\\~ END
+END ELSE BEGIN
+  OUTER_SPRINT bgee_dir_path ~%bgee_dir%~
 END
 
 PRINT ~LANGUAGE_BG1 = %LANGUAGE_BG1%~

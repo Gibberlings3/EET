@@ -5,7 +5,8 @@ README ~EET/lang/%LANGUAGE%/readme-EET.html~ ~EET/readme-EET.html~
 
 ALWAYS
   OUTER_TEXT_SPRINT WORK_FOLDER ~weidu_external~
-  OUTER_TEXT_SPRINT BACKUP_FOLDER ~%WORK_FOLDER%/backup/EET~
+  // folder for persistent data
+  OUTER_TEXT_SPRINT DATA_FOLDER ~%WORK_FOLDER%/data/EET~
   // folder for temporary data
   OUTER_TEXT_SPRINT TEMP_FOLDER ~%WORK_FOLDER%/temp/EET~
 END
@@ -101,14 +102,25 @@ PRINT ~argv[1] = %argv[1]%~
 <<<<<<<< .../blank.txt
 >>>>>>>>
 
-COPY - ~weidu.conf~ ~.../weidu.conf~
-	READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
+OUTER_SPRINT LANGUAGE_BG2 ~~
+COPY ~weidu.conf~ ~weidu.conf~
+  REPLACE_EVALUATE ~lang_dir[ %TAB%]*=[ %TAB%]*\([a-zA-Z][a-zA-Z]\)_\([a-zA-Z][a-zA-Z]\)~ BEGIN
+    TO_UPPER MATCH2
+    SPRINT LANGUAGE_BG2 ~%MATCH1%_%MATCH2%~
+  END ~%MATCH0%~
+	/*READ_2DA_ENTRY 0 2 3 "LANGUAGE_BG2"
 	INNER_PATCH_SAVE LANGUAGE_BG2 ~%LANGUAGE_BG2%~ BEGIN
 		REPLACE_EVALUATE CASE_INSENSITIVE ~\(..\)$~ BEGIN
 			TO_UPPER MATCH1
 		END ~%MATCH1%~
-	END
-	PATCH_PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
+	END*/
+BUT_ONLY IF_EXISTS
+
+ACTION_IF (~%LANGUAGE_BG2%~ STR_EQ ~~) BEGIN
+  OUTER_SPRINT LANGUAGE_BG2 ~en_US~
+  WARN ~Could not determine game language from weidu.conf. Falling back to English.~
+END
+PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
 OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
 OUTER_SPRINT slash ~/~
@@ -200,7 +212,11 @@ END
 
 // locating WeiDU binary
 LAF INIT_WEIDU_BIN RET weidu END
-PRINT ~weidu assigned to %weidu%~
+ACTION_IF (~%weidu%~ STR_EQ ~~) BEGIN
+  FAIL @900011  // WeiDU executable could not be determined.
+END ELSE BEGIN
+  PRINT ~weidu assigned to %weidu%~
+END
 
 /////                                                  \\\\\
 ///// Detect mods installed on BG:EE                   \\\\\
@@ -257,23 +273,24 @@ ACTION_IF NOT ~%log%~ STR_EQ ~~ BEGIN
 	APPEND_OUTER + ~%TEMP_FOLDER%/append.tra~ ~%log%~
 END
 
-OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%TEMP_FOLDER%/bgee.tra"~
+OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir_path%" --use-lang "%LANGUAGE_BG1%" --traify# 200000 --traify-tlk --out "%TEMP_FOLDER%/bgee.tra"~
 PRINT ~%shell_cmd%~
-AT_NOW ret_val ~%shell_cmd%~
+AT_NOW ret_val ~%shell_cmd%~ EXACT
 ACTION_IF (ret_val != 0) BEGIN
 	WARN ~Shell command failed to execute: %shell_cmd%~
 END
 
 // fetching number of BGEE string table entries
-ACTION_IF (FILE_EXISTS ~%BACKUP_FOLDER%/bgee_dir.txt~) BEGIN
-  COPY ~%BACKUP_FOLDER%/bgee_dir.txt~ ~%BACKUP_FOLDER%/bgee_dir.txt~
+ACTION_IF (FILE_EXISTS ~%DATA_FOLDER%/bgee_dir.txt~) BEGIN
+  COPY ~%DATA_FOLDER%/bgee_dir.txt~ ~%DATA_FOLDER%/bgee_dir.txt~
     READ_ASCII 0 bgee_dir (BUFFER_LENGTH)
   BUT_ONLY
 
   OUTER_SPRINT lang ~~
   COPY ~%bgee_dir%/weidu.conf~ ~%bgee_dir%/weidu.conf~
-    REPLACE_EVALUATE ~lang_dir[ %TAB%]*=[ %TAB%]*\([^ %TAB%%WNL%]+\)~ BEGIN
-      SPRINT lang ~%MATCH1%~
+    REPLACE_EVALUATE ~lang_dir[ %TAB%]*=[ %TAB%]*\([a-zA-Z][a-zA-Z]\)_\([a-zA-Z][a-zA-Z]\)~ BEGIN
+      TO_UPPER MATCH2
+      SPRINT lang ~%MATCH1%_%MATCH2%~
     END ~%MATCH0%~
   BUT_ONLY IF_EXISTS
 
@@ -307,16 +324,21 @@ ACTION_FOR_EACH var IN are bcs chr cre dlg eff ini itm pro spl sto vef vvc wed B
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%patch_dir%/%var%~
-	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
-	AT_NOW ret_val ~%shell_cmd%~
+	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir_path%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ret_val ~%shell_cmd%~ EXACT
 	LAM bash_log
 	ACTION_IF (ret_val != 0) BEGIN
 		WARN ~Shell command failed to execute: %shell_cmd%~
 	END
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
-		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
-			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%patch_dir%/%var%~
-		END
+    ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+      ACTION_CLEAR_ARRAY ~files~
+      GET_FILE_ARRAY files ~%dir%~ ~^.+\.%var%$~
+      ACTION_PHP_EACH files AS _ => filespec BEGIN
+      // ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
+        COPY_LARGE + ~%filespec%~ ~%patch_dir%/%var%~
+      END
+    END
 	END
 	ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/lib/prep_%var%.tph~ BEGIN
 		INCLUDE ~%MOD_FOLDER%/lib/prep_%var%.tph~
@@ -327,8 +349,8 @@ ACTION_FOR_EACH file IN baldur.gam worldmap.wmp bgmap.wmp sodmap.wmp BEGIN
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%patch_dir%~
 	END ELSE BEGIN
-		OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%" --biff-get-rest "%file%"~
-		AT_NOW ret_val ~%shell_cmd%~
+		OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir_path%" --use-lang "%LANGUAGE_BG1%" --out "%patch_dir%" --biff-get-rest "%file%"~
+		AT_NOW ret_val ~%shell_cmd%~ EXACT
 		LAM bash_log
 		ACTION_IF (ret_val != 0) BEGIN
 			WARN ~Shell command failed to execute: %shell_cmd%~
@@ -340,14 +362,14 @@ END
 ///// prepare other BG:EE resources                    \\\\\
 /////                                                  \\\\\
 
-OUTER_TEXT_SPRINT GUI_BACKUP_FOLDER ~%WORK_FOLDER%/backup/EET_gui~
+OUTER_TEXT_SPRINT GUI_DATA_FOLDER ~%WORK_FOLDER%/data/EET_gui~
 
 MKDIR ~%TEMP_FOLDER%/array~
 	~%bgee_dir%/lang/%LANGUAGE_BG1%/override~
 	~lang/%LANGUAGE_BG2%/sounds~
 	~%biff_dir%/pvrz~
 	~%biff_dir%/eetGUI~
-	~%GUI_BACKUP_FOLDER%/SoD_GUI~
+	~%GUI_DATA_FOLDER%/SoD_GUI~
 
 ACTION_FOR_EACH dir IN eetTU00 eetOH2 eetOH3 eetOH9 eetBG00 eetBG01 eetBG02 eetBG03 eetBG04 eetBG05 eetBG06 eetBG07 eetBG08 eetBG09 eetBG10 eetBG11 eetBG12 eetBG13 eetBG14 eetBG15 eetBG16 eetBG17 eetBG18 eetBG19 eetBG20 eetBG21 eetBG22 eetBG23 eetBG24 eetBG26 eetBG27 eetBG28 eetBG29 eetBG30 eetBG31 eetBG32 eetBG33 eetBG34 eetBG35 eetBG36 eetBG37 eetBG38 eetBG39 eetBG40 eetBG41 eetBG42 eetBG43 eetBG44 eetBG45 eetBG46 eetBG47 eetBG48 eetBG49 eetBG50 eetBG51 eetBG52 eetBG53 eetBG54 eetBG55 eetBG56 eetBG57 eetBG58 eetBG59 eetBG60 eetBG61 eetBD0 eetBD1 eetBD2 eetBD3 eetBD4 eetBD5 eetBD6 eetBD7 BEGIN
 	MKDIR ~%biff_dir%/%dir%~
@@ -362,16 +384,21 @@ END
 ACTION_FOR_EACH var IN bam bmp mos tis pvrz BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
-	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%os_biff_dir%" --biff-get-rest "^.*\.%var%$"~
-	AT_NOW ret_val ~%shell_cmd%~
+	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir_path%" --use-lang "%LANGUAGE_BG1%" --out "%os_biff_dir%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ret_val ~%shell_cmd%~ EXACT
 	LAM bash_log
 	ACTION_IF (ret_val != 0) BEGIN
 		WARN ~Shell command failed to execute: %shell_cmd%~
 	END
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
-		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
-			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%~
-		END
+    ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+      ACTION_CLEAR_ARRAY ~files~
+      GET_FILE_ARRAY files ~%dir%~ ~^.+\.%var%$~
+      ACTION_PHP_EACH files AS _ => filespec BEGIN
+      // ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
+        COPY_LARGE + ~%filespec%~ ~%biff_dir%~
+      END
+    END
 	END
 	ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/lib/prep_%var%.tph~ BEGIN
 		INCLUDE ~%MOD_FOLDER%/lib/prep_%var%.tph~
@@ -382,16 +409,21 @@ ACTION_FOR_EACH var IN 2da /*plt*/ ttf wav wbm wfx BEGIN
 	PRINT ~~
 	PRINT ~Preparing %var% files...~
 	MKDIR ~%TEMP_FOLDER%/%var%~
-	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%TEMP_FOLDER%/%var%" --biff-get-rest "^.*\.%var%$"~
-	AT_NOW ret_val ~%shell_cmd%~
+	OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir_path%" --use-lang "%LANGUAGE_BG1%" --out "%TEMP_FOLDER%/%var%" --biff-get-rest "^.*\.%var%$"~
+	AT_NOW ret_val ~%shell_cmd%~ EXACT
 	LAM bash_log
 	ACTION_IF (ret_val != 0) BEGIN
 		WARN ~Shell command failed to execute: %shell_cmd%~
 	END
 	ACTION_FOR_EACH dir IN ~%bgee_dir%/override~ ~%bgee_dir%/lang/%LANGUAGE_BG1%/override~ BEGIN
-		ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
-			COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%TEMP_FOLDER%/%var%~
-		END
+    ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+      ACTION_CLEAR_ARRAY ~files~
+      GET_FILE_ARRAY files ~%dir%~ ~^.+\.%var%$~
+      ACTION_PHP_EACH files AS _ => filespec BEGIN
+      // ACTION_BASH_FOR ~%dir%~ ~^.+\.%var%$~ BEGIN
+        COPY_LARGE + ~%filespec%~ ~%TEMP_FOLDER%/%var%~
+      END
+    END
 	END
 	ACTION_IF FILE_EXISTS ~%MOD_FOLDER%/lib/prep_%var%.tph~ BEGIN
 		INCLUDE ~%MOD_FOLDER%/lib/prep_%var%.tph~
@@ -402,8 +434,8 @@ ACTION_FOR_EACH file IN animate.ids anisnd.ids class.ids ea.ids gtimes.ids kit.i
 	ACTION_IF (FILE_EXISTS ~%bgee_dir%/override/%file%~) BEGIN
 		COPY_LARGE + ~%bgee_dir%/override/%file%~ ~%TEMP_FOLDER%/array~
 	END ELSE BEGIN
-		OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir%" --use-lang "%LANGUAGE_BG1%" --out "%TEMP_FOLDER%/array" --biff-get-rest "%file%"~
-		AT_NOW ret_val ~%shell_cmd%~
+		OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --logapp --log "%TEMP_FOLDER%/bash.debug" --game "%bgee_dir_path%" --use-lang "%LANGUAGE_BG1%" --out "%TEMP_FOLDER%/array" --biff-get-rest "%file%"~
+		AT_NOW ret_val ~%shell_cmd%~ EXACT
 		LAM bash_log
 		ACTION_IF (ret_val != 0) BEGIN
 			WARN ~Shell command failed to execute: %shell_cmd%~
@@ -699,21 +731,28 @@ ACTION_PHP_EACH source_idscode_name AS source_idscode => source_name BEGIN
 			END
 			ACTION_IF ref_exists = 1 BEGIN //already exists, delete resources
 				ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ BEGIN
-					ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
-						OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
-							REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
-						END
-						DELETE + ~%BASH_FOR_FILESPEC%~
-						ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
-							ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
-								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-								OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
-							END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
-								ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-								OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
-							END
-						END
-					END
+          ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+            ACTION_CLEAR_ARRAY ~files~
+            GET_FILE_ARRAY files ~%dir%~ ~^%source_res%.*$~
+            ACTION_PHP_EACH files AS _ => filespec BEGIN
+            // ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+              LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+              LAF EXT_OF_FILESPEC STR_VAR filespec RET filespec_ext = ext END
+              OUTER_PATCH_SAVE res ~%filespec_res%~ BEGIN
+                REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
+              END
+              DELETE + ~%file%~
+              ACTION_IF (NOT ~%filespec_res%~ STR_EQ ~%res%~) BEGIN
+                ACTION_IF ~%filespec_ext%~ STR_EQ ~spl~ BEGIN
+                  ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%filespec_res%~ => ~%res%~ END
+                  OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%filespec_res%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+                END ELSE ACTION_IF ~%filespec_ext%~ STR_EQ ~eff~ BEGIN
+                  ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%filespec_res%~ => ~%res%~ END
+                  OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%filespec_res%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%spell_name%%LNL%~
+                END
+              END
+            END
+          END
 				END
 			END
 		END
@@ -753,29 +792,37 @@ ACTION_PHP_EACH source_idscode_name AS source_idscode => source_name BEGIN
 				OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%source_res%%TAB%=>%TAB%%spell_res%%TAB%%slash%%slash%%source_name%%LNL%~
 			END
 			ACTION_FOR_EACH dir IN ~%patch_dir%/spl~ ~%patch_dir%/eff~ ~%biff_dir%~ BEGIN
-				ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
-					OUTER_PATCH_SAVE res ~%BASH_FOR_RES%~ BEGIN
-						REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
-					END
-					ACTION_IF (NOT FILE_EXISTS ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~) BEGIN
-						COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT%~
-						DELETE + ~%BASH_FOR_FILESPEC%~
-					END ELSE BEGIN
-						WARN ~WARNING: %BASH_FOR_DIRECTORY%/ADD_SPELL/%res%.%BASH_FOR_EXT% already exists~
-					END
-					ACTION_IF (NOT ~%BASH_FOR_RES%~ STR_EQ ~%res%~) BEGIN
-						ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~spl~ BEGIN
-							ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-							OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
-						END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~eff~ BEGIN
-							ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-							OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
-						END ELSE ACTION_IF ~%BASH_FOR_EXT%~ STR_EQ ~bam~ BEGIN
-							ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN ~%BASH_FOR_RES%~ => ~%res%~ END
-							OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%BASH_FOR_RES%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
-						END
-					END
-				END
+        ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+          ACTION_CLEAR_ARRAY ~files~
+          GET_FILE_ARRAY files ~%dir%~ ~^%source_res%.*$~
+          ACTION_PHP_EACH files AS _ => filespec BEGIN
+          // ACTION_BASH_FOR ~%dir%~ ~^%source_res%.*$~ BEGIN
+            LAF DIRECTORY_OF_FILESPEC STR_VAR filespec RET filespec_directory = directory END
+            LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+            LAF EXT_OF_FILESPEC STR_VAR filespec RET filespec_ext = ext END
+            OUTER_PATCH_SAVE res ~%filespec_res%~ BEGIN
+              REPLACE_TEXTUALLY ~^%source_res%~ ~%spell_res%~
+            END
+            ACTION_IF (NOT FILE_EXISTS ~%filespec_directory%/ADD_SPELL/%res%.%filespec_ext%~) BEGIN
+              COPY + ~%filespec%~ ~%filespec_directory%/ADD_SPELL/%res%.%filespec_ext%~
+              DELETE + ~%filespec%~
+            END ELSE BEGIN
+              WARN ~WARNING: %filespec_directory%/ADD_SPELL/%res%.%filespec_ext% already exists~
+            END
+            ACTION_IF (NOT ~%filespec_res%~ STR_EQ ~%res%~) BEGIN
+              ACTION_IF ~%filespec_ext%~ STR_EQ ~spl~ BEGIN
+                ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_spl BEGIN ~%filespec_res%~ => ~%res%~ END
+                OUTER_SPRINT log_remapped_spl ~%log_remapped_spl%%TAB%%filespec_res%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
+              END ELSE ACTION_IF ~%filespec_ext%~ STR_EQ ~eff~ BEGIN
+                ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_eff BEGIN ~%filespec_res%~ => ~%res%~ END
+                OUTER_SPRINT log_remapped_eff ~%log_remapped_eff%%TAB%%filespec_res%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
+              END ELSE ACTION_IF ~%filespec_ext%~ STR_EQ ~bam~ BEGIN
+                ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_bam BEGIN ~%filespec_res%~ => ~%res%~ END
+                OUTER_SPRINT log_remapped_bam ~%log_remapped_bam%%TAB%%filespec_res%%TAB%=>%TAB%%res%%TAB%%slash%%slash%%source_name%%LNL%~
+              END
+            END
+          END
+        END
 			END
 		END
 	END
@@ -799,13 +846,19 @@ ACTION_PHP_EACH splName_list AS source_idscode => source_name BEGIN
 END
 
 ACTION_FOR_EACH dir IN ~%biff_dir%~ ~%patch_dir%/eff~ ~%patch_dir%/spl~ BEGIN
-	ACTION_BASH_FOR ~%dir%/ADD_SPELL~ ~^.*$~ BEGIN
-		ACTION_IF (FILE_EXISTS ~%dir%/%BASH_FOR_FILE%~) BEGIN
-			WARN ~WARNING: %BASH_FOR_FILESPEC% already exists in %dir%~
-		END
-		COPY + ~%BASH_FOR_FILESPEC%~ ~%dir%~
-		DELETE + ~%BASH_FOR_FILESPEC%~
-	END
+  ACTION_IF (DIRECTORY_EXISTS ~%dir%/ADD_SPELL~) BEGIN
+    ACTION_CLEAR_ARRAY ~files~
+    GET_FILE_ARRAY files ~%dir%/ADD_SPELL~ ~^.*$~
+    ACTION_PHP_EACH files AS _ => filespec BEGIN
+    // ACTION_BASH_FOR ~%dir%/ADD_SPELL~ ~^.*$~ BEGIN
+      LAF FILE_OF_FILESPEC STR_VAR filespec RET filespec_file = file END
+      ACTION_IF (FILE_EXISTS ~%dir%/%filespec_file%~) BEGIN
+        WARN ~WARNING: %filespec% already exists in %dir%~
+      END
+      COPY + ~%filespec%~ ~%dir%~
+      DELETE + ~%filespec%~
+    END
+  END
 END
 
 //hide usable spells that can be enabled externally
@@ -1215,7 +1268,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splProt BEGIN%LNL%%log_remapped_splProt
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN%LNL%%log_remapped_splState%END%LNL%~
 
 // relocate updated "pcu_dict.tph" to keep EET folder immutable (restore original path if it causes issues)
-COPY ~%MOD_FOLDER%/lib/pcu_dict.tph~ ~%BACKUP_FOLDER%~
+COPY ~%MOD_FOLDER%/lib/pcu_dict.tph~ ~%DATA_FOLDER%~
 	APPEND_FILE ~%TEMP_FOLDER%/new_vars.tph~
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY arrayDDS_list BEGIN
@@ -1305,17 +1358,27 @@ OUTER_SET ren_check = 0
 PRINT ~Please be patient during the conversion process. This may take some time...~
 
 ACTION_FOR_EACH var IN are bcs cre dlg eff ini itm pro spl sto vef vvc wed BEGIN
-	ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
-		COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
-			LPF EET_PCU_core RET ext_check END
-			SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
-	END
+  ACTION_IF (DIRECTORY_EXISTS ~%patch_dir%/%var%~) BEGIN
+    ACTION_CLEAR_ARRAY ~files~
+    GET_FILE_ARRAY files ~%patch_dir%/%var%~ ~^.+$~
+    ACTION_PHP_EACH files AS _ => filespec BEGIN
+    // ACTION_BASH_FOR ~%patch_dir%/%var%~ ~^.+$~ BEGIN
+      COPY + ~%filespec%~ ~%filespec%~
+        LPF EET_PCU_core RET ext_check END
+        SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
+    END
+  END
 END
 
-ACTION_BASH_FOR ~%patch_dir%~ ~^.+$~ BEGIN
-	COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_DIRECTORY%~
-		LPF EET_PCU_core RET ext_check END
-		SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
+ACTION_IF (DIRECTORY_EXISTS ~%patch_dir%~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%patch_dir%~ ~^.+$~
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%patch_dir%~ ~^.+$~ BEGIN
+    COPY + ~%filespec%~ ~%filespec%~
+      LPF EET_PCU_core RET ext_check END
+      SET EVAL ~%ext_check%_check~ = EVAL ~%%ext_check%_check%~ + 1
+  END
 END
 
 PRINT ~Conversion complete. Statistics:
@@ -1353,9 +1416,14 @@ PRINT ~BG:EE files patching and installation...~
 /////                                                  \\\\\
 
 ACTION_FOR_EACH var IN b g3 000 UB xxx BEGIN
-	ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
-		COPY ~%BASH_FOR_FILESPEC%~ ~override~
-	END
+  ACTION_IF (DIRECTORY_EXISTS ~%bgee_dir%/override~) BEGIN
+    ACTION_CLEAR_ARRAY ~files~
+    GET_FILE_ARRAY files ~%bgee_dir%/override~ ~^.+\.%var%$~
+    ACTION_PHP_EACH files AS _ => filespec BEGIN
+    // ACTION_BASH_FOR ~%bgee_dir%/override~ ~^.+\.%var%$~ BEGIN
+      COPY ~%filespec%~ ~override~
+    END
+  END
 END
 
 /////                                                  \\\\\
@@ -1364,11 +1432,10 @@ END
 
 PRINT ~Installing ACM/MUS files...~
 
+ACTION_CLEAR_ARRAY ~dir~
 GET_DIRECTORY_ARRAY dir ~%bgee_dir%/music~ ~~
 ACTION_PHP_EACH dir AS from => to BEGIN
-	OUTER_PATCH_SAVE dir_name ~%to%~ BEGIN
-		REPLACE_TEXTUALLY ~^.+/\([^/\\]+\)$~ ~\1~
-	END
+  LAF FILE_OF_FILESPEC STR_VAR filespec = ~%to%~ RET dir_name = file END
 	OUTER_TEXT_SPRINT dir_name_against_songlist ~%dir_name%~
 	ACTION_TO_UPPER dir_name_against_songlist 
 	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%dir_name_against_songlist%~)) BEGIN
@@ -1380,32 +1447,42 @@ ACTION_PHP_EACH dir AS from => to BEGIN
 	ACTION_IF (NOT DIRECTORY_EXISTS ~music/%dest_dir%~) BEGIN
 		MKDIR ~music/%dest_dir%~
 	END ELSE BEGIN
-		ACTION_BASH_FOR ~music/%dest_dir%~ ~^.+$~ BEGIN
-			OUTER_SET copy_acm = 0
-		END
+    OUTER_SET copy_acm = 0
 	END
 	ACTION_IF (copy_acm = 1) BEGIN
-		ACTION_BASH_FOR ~%to%~ ~^.+$~ BEGIN
-			OUTER_PATCH_SAVE dest_file ~%BASH_FOR_FILE%~ BEGIN
-				REPLACE_TEXTUALLY ~^%dir_name%~ ~%dest_dir%~
-			END
-			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~music/%dest_dir%/%dest_file%~
-		END
+    ACTION_IF (DIRECTORY_EXISTS ~%to%~) BEGIN
+      ACTION_CLEAR_ARRAY ~files~
+      GET_FILE_ARRAY files ~%to%~ ~^.+$~
+      ACTION_PHP_EACH files AS _ => filespec BEGIN
+      // ACTION_BASH_FOR ~%to%~ ~^.+$~ BEGIN
+        LAF FILE_OF_FILESPEC STR_VAR filespec RET filespec_file = file END
+        OUTER_PATCH_SAVE dest_file ~%filespec_file%~ BEGIN
+          REPLACE_TEXTUALLY ~^%dir_name%~ ~%dest_dir%~
+        END
+        COPY_LARGE ~%filespec%~ ~music/%dest_dir%/%dest_file%~
+      END
+    END
 	END
 END
 
-ACTION_BASH_FOR ~%bgee_dir%/music~ ~^.+\.mus$~ BEGIN
-	OUTER_TEXT_SPRINT mus_name_against_songlist ~%BASH_FOR_RES%~
-	ACTION_TO_UPPER mus_name_against_songlist
-	ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%mus_name_against_songlist%~)) BEGIN
-		OUTER_TEXT_SPRINT dest_res $table_2DA_songlist(~%mus_name_against_songlist%~)
-	END ELSE BEGIN
-		OUTER_SPRINT dest_res ~%BASH_FOR_RES%~
-	END
-	ACTION_IF (NOT FILE_EXISTS ~music/%dest_res%.mus~) BEGIN
-		COPY ~%BASH_FOR_FILESPEC%~ ~music/%dest_res%.mus~
-			REPLACE_TEXTUALLY ~%BASH_FOR_RES%~ ~%dest_res%~
-	END
+ACTION_IF (DIRECTORY_EXISTS ~%bgee_dir%/music~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%bgee_dir%/music~ ~^.+\.mus$~
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%bgee_dir%/music~ ~^.+\.mus$~ BEGIN
+    LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+    OUTER_TEXT_SPRINT mus_name_against_songlist ~%filespec_res%~
+    ACTION_TO_UPPER mus_name_against_songlist
+    ACTION_IF (VARIABLE_IS_SET $table_2DA_songlist(~%mus_name_against_songlist%~)) BEGIN
+      OUTER_TEXT_SPRINT dest_res $table_2DA_songlist(~%mus_name_against_songlist%~)
+    END ELSE BEGIN
+      OUTER_SPRINT dest_res ~%filespec_res%~
+    END
+    ACTION_IF (NOT FILE_EXISTS ~music/%dest_res%.mus~) BEGIN
+      COPY ~%filespec%~ ~music/%dest_res%.mus~
+        REPLACE_TEXTUALLY ~%filespec_res%~ ~%dest_res%~
+    END
+  END
 END
 
 /////                                                  \\\\\
@@ -1543,11 +1620,17 @@ PRINT ~Installing CHR files...~
 
 MKDIR ~characters~
 
-ACTION_BASH_FOR ~%patch_dir%/chr~ ~^0.+\.chr$~ BEGIN //only starting with 0 number
-	OUTER_PATCH_SAVE file ~%BASH_FOR_RES%~ BEGIN
-		REPLACE_TEXTUALLY ~^[0-9].~ ~BG~
-	END
-	COPY ~%BASH_FOR_FILESPEC%~ ~characters/%file%.chr~
+ACTION_IF (DIRECTORY_EXISTS ~%patch_dir%/chr~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%patch_dir%/chr~ ~^0.+\.chr$~ //only starting with 0 number
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%patch_dir%/chr~ ~^0.+\.chr$~ BEGIN //only starting with 0 number
+    LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+    OUTER_PATCH_SAVE file ~%filespec_res%~ BEGIN
+      REPLACE_TEXTUALLY ~^[0-9].~ ~BG~
+    END
+    COPY ~%filespec%~ ~characters/%file%.chr~
+  END
 END
 
 /////                                                  \\\\\
@@ -1778,22 +1861,27 @@ OUTER_SPRINT array ~remapped_pvrz_base~
 OUTER_SET del_pvrz = 0
 
 ACTION_PHP_EACH gui_dir AS src_dir => dest_dir BEGIN
-	ACTION_BASH_FOR ~%src_dir%~ ~^.+\.[BM][AO][MS]$~ BEGIN
-		ACTION_IF ~%src_dir%~ STR_EQ ~%MOD_FOLDER%/base/gui/sod~ BEGIN
-			COPY ~%BASH_FOR_FILESPEC%~ ~%GUI_BACKUP_FOLDER%/SoD_GUI~
-				LPM EET_install_pvrz
-		END ELSE BEGIN
-			COPY + ~%BASH_FOR_FILESPEC%~ ~%dest_dir%~
-				LPM EET_install_pvrz
-		END
-	END
+  ACTION_IF (DIRECTORY_EXISTS ~%src_dir%~) BEGIN
+    ACTION_CLEAR_ARRAY ~files~
+    GET_FILE_ARRAY files ~%src_dir%~ ~^.+\.[BM][AO][MS]$~
+    ACTION_PHP_EACH files AS _ => filespec BEGIN
+    // ACTION_BASH_FOR ~%src_dir%~ ~^.+\.[BM][AO][MS]$~ BEGIN
+      ACTION_IF ~%src_dir%~ STR_EQ ~%MOD_FOLDER%/base/gui/sod~ BEGIN
+        COPY ~%filespec%~ ~%GUI_DATA_FOLDER%/SoD_GUI~
+          LPM EET_install_pvrz
+      END ELSE BEGIN
+        COPY + ~%filespec%~ ~%dest_dir%~
+          LPM EET_install_pvrz
+      END
+    END
+  END
 END
 
 COPY_EXISTING + ~NOPORTLG.BMP~ ~%biff_dir%/eetGUI/NOPORTLL.BMP~
 	~NOPORTMD.BMP~ ~%biff_dir%/eetGUI/NOPORTLM.BMP~
 	~NOPORTSM.BMP~ ~%biff_dir%/eetGUI/NOPORTLS.BMP~
 
-COPY ~%MOD_FOLDER%/base/lua/M_K#GUI.LUA~ ~%GUI_BACKUP_FOLDER%/SoD_GUI~
+COPY ~%MOD_FOLDER%/base/lua/M_K#GUI.LUA~ ~%GUI_DATA_FOLDER%/SoD_GUI~
 	~.../blank.txt~ ~override/M_K#GUI.LUA~
 
 INCLUDE ~%MOD_FOLDER%/lib/bg1_GUI.tph~
@@ -1920,18 +2008,25 @@ COPY ~%patch_dir%/vvc~ ~override~
 PRINT ~Installing WAV files...~
 
 ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/sounds~ ~%bgee_dir%/lang/en_US/sounds~ ~%bgee_dir%/sounds~ BEGIN
-	ACTION_BASH_FOR ~%dir%~ ~^.+\.wav$~ BEGIN
-		ACTION_TO_UPPER BASH_FOR_RES
-		ACTION_IF (VARIABLE_IS_SET $remapped_wav(~%BASH_FOR_RES%~)) BEGIN
-			OUTER_TEXT_SPRINT dest_file $remapped_wav(~%BASH_FOR_RES%~)
-		END ELSE BEGIN
-			OUTER_SPRINT dest_file ~%BASH_FOR_RES%~
-		END
-		// skip copying renamed 2.6 AoN files as well
-		ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~ AND NOT (VARIABLE_IS_SET $remapped_aon(~%dest_file%~))) BEGIN
-			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~
-		END
-	END
+  ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+    ACTION_CLEAR_ARRAY ~files~
+    GET_FILE_ARRAY files ~%dir%~ ~^.+\.wav$~
+    ACTION_PHP_EACH files AS _ => filespec BEGIN
+    // ACTION_BASH_FOR ~%dir%~ ~^.+\.wav$~ BEGIN
+      LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+      OUTER_SPRINT filespec_res_upper ~%filespec_res%~
+      ACTION_TO_UPPER filespec_res_upper
+      ACTION_IF (VARIABLE_IS_SET $remapped_wav(~%filespec_res_upper%~)) BEGIN
+        OUTER_TEXT_SPRINT dest_file $remapped_wav(~%filespec_res_upper%~)
+      END ELSE BEGIN
+        OUTER_SPRINT dest_file ~%filespec_res%~
+      END
+      // skip copying renamed 2.6 AoN files as well
+      ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~ AND NOT (VARIABLE_IS_SET $remapped_aon(~%dest_file%~))) BEGIN
+        COPY_LARGE ~%filespec%~ ~lang/%LANGUAGE_BG2%/sounds/%dest_file%.wav~
+      END
+    END
+  END
 END
 
 /////                                                  \\\\\
@@ -1944,40 +2039,53 @@ MKDIR ~lang/%LANGUAGE_BG2%/movies~
 	// ~%MOD_FOLDER%/EE_movies~
 
 //BG1 movies with voice over
-ACTION_BASH_FOR ~%MOD_FOLDER%/base/lmovies~ ~^.+\.wbm$~ BEGIN
-	// video
-	COPY_LARGE ~%MOD_FOLDER%/base/lmovies/%BASH_FOR_RES%.wbm~ ~movies~
-	// audio
-	ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/%BASH_FOR_RES%.ogg~) BEGIN
-		OUTER_SPRINT lang_folder ~%LANGUAGE%~
-	END ELSE BEGIN
-		OUTER_SPRINT lang_folder ~en_US~
-	END
-	COPY ~%tra_path%/%lang_folder%/movies/%BASH_FOR_RES%.ogg~ ~lang/%LANGUAGE_BG2%/movies/%BASH_FOR_RES%.wav~
-	// movie audio override
-	APPEND ~mvesnd.2da~ ~%BASH_FOR_RES% %BASH_FOR_RES% %BASH_FOR_RES%~
+ACTION_IF (DIRECTORY_EXISTS ~%MOD_FOLDER%/base/lmovies~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%MOD_FOLDER%/base/lmovies~ ~^.+\.wbm$~
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%MOD_FOLDER%/base/lmovies~ ~^.+\.wbm$~ BEGIN
+    LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+    // video
+    COPY_LARGE ~%MOD_FOLDER%/base/lmovies/%filespec_res%.wbm~ ~movies~
+    // audio
+    ACTION_IF (FILE_EXISTS ~%tra_path%/%LANGUAGE%/movies/%filespec_res%.ogg~) BEGIN
+      OUTER_SPRINT lang_folder ~%LANGUAGE%~
+    END ELSE BEGIN
+      OUTER_SPRINT lang_folder ~en_US~
+    END
+    COPY ~%tra_path%/%lang_folder%/movies/%filespec_res%.ogg~ ~lang/%LANGUAGE_BG2%/movies/%filespec_res%.wav~
+    // movie audio override
+    APPEND ~mvesnd.2da~ ~%filespec_res% %filespec_res% %filespec_res%~
+  END
+  COPY_EXISTING ~mvesnd.2da~ ~override~
+    PRETTY_PRINT_2DA
+  BUT_ONLY
 END
-COPY_EXISTING ~mvesnd.2da~ ~override~
-	PRETTY_PRINT_2DA
-BUT_ONLY
 
 //other movies
 COPY_LARGE ~%MOD_FOLDER%/base/movies~ ~lang/%LANGUAGE_BG2%/movies~
 
 ACTION_FOR_EACH dir IN ~%bgee_dir%/lang/%LANGUAGE_BG1%/movies~ ~%bgee_dir%/lang/en_US/movies~ ~%bgee_dir%/movies~ BEGIN
-	ACTION_BASH_FOR ~%dir%~ ~^.+\.wbm$~ BEGIN
-		ACTION_TO_UPPER BASH_FOR_RES
-		ACTION_IF (VARIABLE_IS_SET $remapped_mve(~%BASH_FOR_RES%~)) BEGIN
-			OUTER_TEXT_SPRINT dest_file $remapped_mve(~%BASH_FOR_RES%~)
-		END ELSE BEGIN
-			OUTER_SPRINT dest_file ~%BASH_FOR_RES%~
-		END
-		ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~ AND NOT FILE_EXISTS ~movies/%dest_file%.wbm~) BEGIN
-      COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~
-		// END ELSE BEGIN
-			// COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~%MOD_FOLDER%/EE_movies/%dest_file%.wbm~
-		END
-	END
+  ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+    ACTION_CLEAR_ARRAY ~files~
+    GET_FILE_ARRAY files ~%dir%~ ~^.+\.wbm$~
+    ACTION_PHP_EACH files AS _ => filespec BEGIN
+    // ACTION_BASH_FOR ~%dir%~ ~^.+\.wbm$~ BEGIN
+      LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+      OUTER_SPRINT filespec_res_upper ~%filespec_res%~
+      ACTION_TO_UPPER filespec_res_upper
+      ACTION_IF (VARIABLE_IS_SET $remapped_mve(~%filespec_res_upper%~)) BEGIN
+        OUTER_TEXT_SPRINT dest_file $remapped_mve(~%filespec_res_upper%~)
+      END ELSE BEGIN
+        OUTER_SPRINT dest_file ~%filespec_res%~
+      END
+      ACTION_IF (NOT FILE_EXISTS ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~ AND NOT FILE_EXISTS ~movies/%dest_file%.wbm~) BEGIN
+        COPY_LARGE ~%filespec%~ ~lang/%LANGUAGE_BG2%/movies/%dest_file%.wbm~
+      // END ELSE BEGIN
+        // COPY_LARGE ~%filespec%~ ~%MOD_FOLDER%/EE_movies/%dest_file%.wbm~
+      END
+    END
+  END
 END
 
 //disable hardcoded DAYNITE/NITEDAY playback
@@ -2704,31 +2812,48 @@ ACTION_IF (~%argv[0]%~ STRING_CONTAINS_REGEXP ~[bB]~ = 1) BEGIN
 		OUTER_SET totalSize = 0
 		OUTER_SET index = 0
 		MKDIR ~%biff_dir%/%biff%%index%~
-		ACTION_BASH_FOR ~%biff_1%~ ~%biff_2%~ BEGIN
-			ACTION_IF ( BASH_FOR_SIZE + totalSize > size ) AND ( totalSize > 0 ) BEGIN
-				MAKE_BIFF ~%biff%%index%~ BEGIN ~%biff_dir%/%biff%%index%~ ~^.*$~ END
-				OUTER_SET index = index + 1
-				OUTER_SET totalSize = 0
-				MKDIR ~%biff_dir%/%biff%%index%~
-			END
-			MOVE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%/%biff%%index%~
-			//COPY_LARGE + ~%BASH_FOR_FILESPEC%~ ~%biff_dir%/%biff%%index%~
-			//DELETE + ~%BASH_FOR_FILESPEC%~
-			OUTER_SET totalSize = totalSize + BASH_FOR_SIZE
-		END
+    ACTION_IF (DIRECTORY_EXISTS ~%biff_1%~) BEGIN
+      ACTION_CLEAR_ARRAY ~files~
+      GET_FILE_ARRAY files ~%biff_1%~ ~%biff_2%~
+      ACTION_PHP_EACH files AS _ => filespec BEGIN
+      // ACTION_BASH_FOR ~%biff_1%~ ~%biff_2%~ BEGIN
+        OUTER_SET filespec_size = SIZE_OF_FILE ~%filespec%~
+        ACTION_IF ( filespec_size + totalSize > size ) AND ( totalSize > 0 ) BEGIN
+          MAKE_BIFF ~%biff%%index%~ BEGIN ~%biff_dir%/%biff%%index%~ ~^.*$~ END
+          OUTER_SET index = index + 1
+          OUTER_SET totalSize = 0
+          MKDIR ~%biff_dir%/%biff%%index%~
+        END
+        MOVE + ~%filespec%~ ~%biff_dir%/%biff%%index%~
+        //COPY_LARGE + ~%filespec%~ ~%biff_dir%/%biff%%index%~
+        //DELETE + ~%filespec%~
+        OUTER_SET totalSize = totalSize + filespec_size
+      END
+    END
 		ACTION_IF ( totalSize > 0 ) BEGIN
 			MAKE_BIFF ~%biff%%index%~ BEGIN ~%biff_dir%/%biff%%index%~ ~^.*$~ END
 		END
 	END
 END ELSE BEGIN
-	ACTION_BASH_FOR ~%biff_dir%~ ~^.*$~ BEGIN
-		COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~override~
-	END
+  ACTION_IF (DIRECTORY_EXISTS ~%biff_dir%~) BEGIN
+    ACTION_CLEAR_ARRAY ~files~
+    GET_FILE_ARRAY files ~%biff_dir%~ ~^.*$~
+    ACTION_PHP_EACH files AS _ => filespec BEGIN
+    // ACTION_BASH_FOR ~%biff_dir%~ ~^.*$~ BEGIN
+      COPY_LARGE ~%filespec%~ ~override~
+    END
+  END
+  ACTION_CLEAR_ARRAY ~dir_array~
 	GET_DIRECTORY_ARRAY dir_array ~%biff_dir%~ ~~
 	ACTION_PHP_EACH dir_array AS index => dir BEGIN
-		ACTION_BASH_FOR ~%dir%~ ~^.*$~ BEGIN
-			COPY_LARGE ~%BASH_FOR_FILESPEC%~ ~override~
-		END
+    ACTION_IF (DIRECTORY_EXISTS ~%dir%~) BEGIN
+      ACTION_CLEAR_ARRAY ~files~
+      GET_FILE_ARRAY files ~%dir%~ ~^.*$~
+      ACTION_PHP_EACH files AS _ => filespec BEGIN
+      // ACTION_BASH_FOR ~%dir%~ ~^.*$~ BEGIN
+        COPY_LARGE ~%filespec%~ ~override~
+      END
+    END
 	END
 	COPY_LARGE ~%TEMP_FOLDER%/wav~ ~override~
 		~%TEMP_FOLDER%/wbm~ ~override~
@@ -2752,10 +2877,12 @@ ACTION_FOR_EACH file IN EET_end EET_gui BEGIN
       PRINT ~setup-EET.command not found. Skipping creation of setup-%file%.command.~
     END
   END ELSE BEGIN
-    ACTION_IF (FILE_EXISTS ~%setup_bin%~) BEGIN
-      COPY ~%setup_bin%~ ~setup-%file%%exe%~ IF_EXISTS
-    END ELSE BEGIN
-      PRINT ~%setup_bin% not found. Skipping creation of setup-%file%%exe%.~
+    ACTION_IF (NOT FILE_EXISTS ~setup-%file%%exe%~) BEGIN
+      ACTION_IF (FILE_EXISTS ~%setup_bin%~) BEGIN
+        COPY ~%setup_bin%~ ~setup-%file%%exe%~ IF_EXISTS
+      END ELSE BEGIN
+        PRINT ~%setup_bin% not found. Skipping creation of setup-%file%%exe%.~
+      END
     END
   END
 END

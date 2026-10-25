@@ -25,13 +25,13 @@ for /f "delims=" %%a in ('echo %DOC_DIR%') do echo %%a>"${temp_directory}\docume
         INNER_PATCH_SAVE path_var ~%path_var%~ BEGIN REPLACE_TEXTUALLY ~/~ ~\\~ END
       END ~%path_var%~
     AT_NOW ~%temp_directory%/get_doc_path.bat~
-    DELETE ~%temp_directory%/get_doc_path.bat~
+    DELETE + ~%temp_directory%/get_doc_path.bat~
 
     // getting Documents directory
     COPY + ~%temp_directory%/documents_path.txt~ ~%temp_directory%/documents_path.txt~
       REPLACE_TEXTUALLY ~[%WNL%]+~ ~~
       READ_ASCII 0 doc_dir (BUFFER_LENGTH)
-    DELETE ~%temp_directory%/documents_path.txt~
+    DELETE + ~%temp_directory%/documents_path.txt~
 
     // getting game folder name
     // OUTER_SPRINT game_folder ~Baldur's Gate II - Enhanced Edition~
@@ -110,7 +110,7 @@ DEFINE_ACTION_FUNCTION INIT_WEIDU_BIN
 INT_VAR
   use_system = 1  // whether to consider WeiDU binary in the system path
 STR_VAR
-  backup_folder = EVAL ~%WORK_FOLDER%/backup/%TP2_BASE_NAME%~ // where to install an internal copy of the WeiDU binary
+  bin_folder = EVAL ~weidu_external/data/%TP2_BASE_NAME%~ // where to install an internal copy of the WeiDU binary
 RET
   weidu           // path of the WeiDU binary; empty string if unavailable
 BEGIN
@@ -124,13 +124,15 @@ BEGIN
 
   // prefer currently used WeiDU binary over system binary
   ACTION_IF (FILE_EXISTS ~%WEIDU_EXECUTABLE%~) BEGIN
-    ACTION_IF (~%backup_folder%~ STRING_CONTAINS_REGEXP ~%~ == 0) BEGIN
-      // falling back to default backup folder
-      OUTER_SPRINT backup_folder ~weidu_external/backup/%TP2_BASE_NAME%~
+    ACTION_IF (~%bin_folder%~ STR_EQ ~~) BEGIN
+      OUTER_SPRINT bin_folder ~.~
+    END ELSE ACTION_IF (~%bin_folder%~ STRING_CONTAINS_REGEXP ~%~ == 0) BEGIN
+      // falling back to default binary folder
+      OUTER_SPRINT bin_folder ~weidu_external/data/%TP2_BASE_NAME%~
     END
 
-    MKDIR ~%backup_folder%~
-    OUTER_SPRINT weidu ~%backup_folder%/%weidu_bin%~
+    MKDIR ~%bin_folder%~
+    OUTER_SPRINT weidu ~%bin_folder%/%weidu_bin%~
     ACTION_IF (NOT FILE_EXISTS ~%weidu%~) BEGIN
       COPY ~%WEIDU_EXECUTABLE%~ ~%weidu%~
       ACTION_IF (NOT ~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN

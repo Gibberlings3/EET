@@ -788,8 +788,12 @@ ACTION_IF ~%SYSTEM_ARCH%~ STR_EQ ~amd64~ BEGIN
 	OUTER_SPRINT arch_var ~x86_64%os_slash%~
 END
 
-LAF INIT_WEIDU_BIN STR_VAR backup_folder = EVAL ~%WORK_FOLDER%/backup/EET~ RET weidu END
-PRINT ~weidu = %weidu%~
+LAF INIT_WEIDU_BIN STR_VAR bin_folder = EVAL ~%WORK_FOLDER%/data/EET~ RET weidu END
+ACTION_IF (~%weidu%~ STR_EQ ~~) BEGIN
+  FAIL @900011  // WeiDU executable could not be determined.
+END ELSE BEGIN
+  PRINT ~weidu = %weidu%~
+END
 
 OUTER_SPRINT shell_cmd ~%del% "%USER_DIRECTORY%%os_slash%save%os_slash%saves.tra"~
 AT_NOW ret_val ~%shell_cmd%~ EXACT

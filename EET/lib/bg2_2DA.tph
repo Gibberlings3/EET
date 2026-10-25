@@ -99,30 +99,36 @@ ACTION_FOR_EACH file IN WEAPPROF CLASCOLR CLASISKL THIEFSCL CLASTHAC BEGIN
 	BUT_ONLY
 END
 
-ACTION_BASH_FOR ~%TEMP_FOLDER%/array~ ~^K_.+$~ BEGIN
-	COPY_EXISTING ~%BASH_FOR_RES%.2DA~ ~override~
-		PRETTY_PRINT_2DA
-		COUNT_2DA_ROWS 2 "cntrow"
-		READ_2DA_ENTRY (cntrow - 1) 0 2 "col1"
-	BUT_ONLY
-	COPY + ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_FILESPEC%~
-		PRETTY_PRINT_2DA
-		COUNT_2DA_ROWS 2 "cntrow"
-		FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-			//READ_2DA_ENTRY cnt 0 2 "col1"
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			SPRINT match ~%col2%~ SPRINT res ~kit~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
-			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%BASH_FOR_RES%.2DA~ ~^[0-9]+[ ]+%col2%$~)) BEGIN
-				INNER_ACTION BEGIN
-					OUTER_SET col1 = col1 + 1
-					APPEND ~%BASH_FOR_RES%.2DA~ ~%col1% %col2%~
-					PRINT ~%col1% %col2% appended to %BASH_FOR_RES%.2DA~
-				END
-			END
-		END
-	COPY_EXISTING ~%BASH_FOR_RES%.2DA~ ~override~
-		PRETTY_PRINT_2DA
-	BUT_ONLY
+ACTION_IF (DIRECTORY_EXISTS ~%TEMP_FOLDER%/array~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%TEMP_FOLDER%/array~ ~^K_.+$~
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%TEMP_FOLDER%/array~ ~^K_.+$~ BEGIN
+    LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+    COPY_EXISTING ~%filespec_res%.2DA~ ~override~
+      PRETTY_PRINT_2DA
+      COUNT_2DA_ROWS 2 "cntrow"
+      READ_2DA_ENTRY (cntrow - 1) 0 2 "col1"
+    BUT_ONLY
+    COPY + ~%filespec%~ ~%filespec%~
+      PRETTY_PRINT_2DA
+      COUNT_2DA_ROWS 2 "cntrow"
+      FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+        //READ_2DA_ENTRY cnt 0 2 "col1"
+        READ_2DA_ENTRY cnt 1 2 "col2"
+        SPRINT match ~%col2%~ SPRINT res ~kit~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col2%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 1 2 "%match%" SPRINT col2 ~%match%~ END
+        PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%filespec_res%.2DA~ ~^[0-9]+[ ]+%col2%$~)) BEGIN
+          INNER_ACTION BEGIN
+            OUTER_SET col1 = col1 + 1
+            APPEND ~%filespec_res%.2DA~ ~%col1% %col2%~
+            PRINT ~%col1% %col2% appended to %filespec_res%.2DA~
+          END
+        END
+      END
+    COPY_EXISTING ~%filespec_res%.2DA~ ~override~
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+  END
 END
 
 /////                                                  \\\\\
@@ -563,15 +569,27 @@ COPY_EXISTING_REGEXP GLOB ~SPWI0[0-9]+\.SPL~ ~override~ //Wizard level 0 spells 
 		APPEND ~HIDESPL.2DA~ ~%SOURCE_RES% 1 0 0~ UNLESS ~%SOURCE_RES%~
 	END
 BUT_ONLY
-ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPWI[1-9][5-9][0-9]\.SPL~ BEGIN //Wizard level 1-9 spells index 50+
-	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
-		APPEND_OUTER + ~%TEMP_FOLDER%/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0 0~ UNLESS ~%BASH_FOR_RES%~
-	END
+ACTION_IF (DIRECTORY_EXISTS ~%patch_dir%/spl~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%patch_dir%/spl~ ~SPWI[1-9][5-9][0-9]\.SPL~ //Wizard level 1-9 spells index 50+
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPWI[1-9][5-9][0-9]\.SPL~ BEGIN //Wizard level 1-9 spells index 50+
+    LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+    ACTION_IF (~%filespec_res%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
+      APPEND_OUTER + ~%TEMP_FOLDER%/array/HIDESPL.2DA~ ~%filespec_res% 1 0 0~ UNLESS ~%filespec_res%~
+    END
+  END
 END
-ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPPR[1-7][5-9][0-9]\.SPL~ BEGIN //Priest level 1-7 spells index 50+
-	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
-		APPEND_OUTER + ~%TEMP_FOLDER%/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0 0~ UNLESS ~%BASH_FOR_RES%~
-	END
+ACTION_IF (DIRECTORY_EXISTS ~%patch_dir%/spl~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%patch_dir%/spl~ ~SPPR[1-7][5-9][0-9]\.SPL~ //Priest level 1-7 spells index 50+
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPPR[1-7][5-9][0-9]\.SPL~ BEGIN //Priest level 1-7 spells index 50+
+    LAF RES_OF_FILESPEC STR_VAR filespec RET filespec_res = res END
+    ACTION_IF (~%filespec_res%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
+      APPEND_OUTER + ~%TEMP_FOLDER%/array/HIDESPL.2DA~ ~%filespec_res% 1 0 0~ UNLESS ~%filespec_res%~
+    END
+  END
 END
 
 COPY_EXISTING ~HIDESPL.2DA~ ~override~
