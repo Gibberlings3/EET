@@ -3,17 +3,19 @@
 // Preparations
 <<<<<<<< .../eet/get_paths.sh
 #!/bin/sh
-echo $HOME>EET/temp/user_path.txt
-echo $PWD>EET/temp/game_path.txt
+echo $HOME>%TEMP_FOLDER%/user_path.txt
+echo $PWD>%TEMP_FOLDER%/game_path.txt
 >>>>>>>>
-COPY ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/user_path.txt~  // mark for auto-removal
-     ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/game_path.txt~  // mark for auto-removal
-COPY ~.../eet/get_paths.sh~ ~%MOD_FOLDER%/temp/get_paths.sh~
+COPY ~.../eet/get_paths.sh~ ~%TEMP_FOLDER%/user_path.txt~  // mark for auto-removal
+     ~.../eet/get_paths.sh~ ~%TEMP_FOLDER%/game_path.txt~  // mark for auto-removal
+  EVAL
+COPY ~.../eet/get_paths.sh~ ~%TEMP_FOLDER%/get_paths.sh~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
-AT_NOW ~chmod +x "%MOD_FOLDER%/temp/get_paths.sh"; "%MOD_FOLDER%/temp/get_paths.sh"~
+  EVAL
+AT_NOW ~chmod +x "%TEMP_FOLDER%/get_paths.sh"; "%TEMP_FOLDER%/get_paths.sh"~
 
 // Getting user path
-COPY ~%MOD_FOLDER%/temp/user_path.txt~ ~%MOD_FOLDER%/temp/user_path.txt~
+COPY ~%TEMP_FOLDER%/user_path.txt~ ~%TEMP_FOLDER%/user_path.txt~
   SET eol = INDEX_BUFFER(~[%WNL%]~)
   PATCH_IF (eol > 0) BEGIN
     DELETE_BYTES eol (BUFFER_LENGTH - eol)
@@ -22,7 +24,7 @@ COPY ~%MOD_FOLDER%/temp/user_path.txt~ ~%MOD_FOLDER%/temp/user_path.txt~
 BUT_ONLY
 
 // Getting game path
-COPY ~%MOD_FOLDER%/temp/game_path.txt~ ~%MOD_FOLDER%/temp/game_path.txt~
+COPY ~%TEMP_FOLDER%/game_path.txt~ ~%TEMP_FOLDER%/game_path.txt~
   SET eol = INDEX_BUFFER(~[%WNL%]~)
   PATCH_IF (eol > 0) BEGIN
     DELETE_BYTES eol (BUFFER_LENGTH - eol)
@@ -45,10 +47,10 @@ done
 xdg-icon-resource install --novendor --context apps --mode user --size 512 "EET/docs/images/icons/eet-512.png" eet
 >>>>>>>>
 // OUTER_SPRINT icon_path_base ~%user_path%/.local/share/icons/hicolor~
-COPY ~.../eet/install_icons.sh~ ~%MOD_FOLDER%/temp/install_icons.sh~
+COPY ~.../eet/install_icons.sh~ ~%TEMP_FOLDER%/install_icons.sh~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
   EVAL
-AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_icons.sh"; "%MOD_FOLDER%/temp/install_icons.sh"~
+AT_NOW ~chmod +x "%TEMP_FOLDER%/install_icons.sh"; "%TEMP_FOLDER%/install_icons.sh"~
 
 
 // Preparing desktop definition file
@@ -64,7 +66,7 @@ Icon=eet
 Terminal=false
 Categories=RolePlaying;Game;
 >>>>>>>>
-COPY ~.../eet/eet.desktop~ ~%MOD_FOLDER%/temp/eet.desktop~
+COPY ~.../eet/eet.desktop~ ~%TEMP_FOLDER%/eet.desktop~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
   EVAL
 
@@ -72,16 +74,16 @@ COPY ~.../eet/eet.desktop~ ~%MOD_FOLDER%/temp/eet.desktop~
 // Installing shortcuts
 <<<<<<<< .../eet/install_shortcuts.sh
 #!/bin/sh
-xdg-desktop-menu install --novendor --mode user "EET/temp/eet.desktop"
-xdg-desktop-icon install --novendor "EET/temp/eet.desktop"
+xdg-desktop-menu install --novendor --mode user "%TEMP_FOLDER%/eet.desktop"
+xdg-desktop-icon install --novendor "%TEMP_FOLDER%/eet.desktop"
 update-desktop-database "%menu_path%"
 >>>>>>>>
 OUTER_SPRINT menu_path ~%user_path%/.local/share/applications~
 OUTER_SPRINT desktop_path ~%user_path%/Desktop~
-COPY ~.../eet/install_shortcuts.sh~ ~%MOD_FOLDER%/temp/install_shortcuts.sh~
+COPY ~.../eet/install_shortcuts.sh~ ~%TEMP_FOLDER%/install_shortcuts.sh~
   REPLACE_TEXTUALLY ~%MNL%~ ~~
   EVAL
-AT_NOW ~chmod +x "%MOD_FOLDER%/temp/install_shortcuts.sh"; "%MOD_FOLDER%/temp/install_shortcuts.sh"~
+AT_NOW ~chmod +x "%TEMP_FOLDER%/install_shortcuts.sh"; "%TEMP_FOLDER%/install_shortcuts.sh"~
 
 
 // Preparing uninstallation script

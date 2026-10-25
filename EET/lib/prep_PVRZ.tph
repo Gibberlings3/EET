@@ -1,5 +1,5 @@
 ACTION_BASH_FOR ~%biff_dir%~ ~^BOX[1-8]\.PVRZ~ BEGIN
-	COPY ~%BASH_FOR_FILESPEC%~ ~%MOD_FOLDER%/SoD_GUI~
+	COPY ~%BASH_FOR_FILESPEC%~ ~%GUI_BACKUP_FOLDER%/SoD_GUI~
 	DELETE + ~%BASH_FOR_FILESPEC%~
 END
 
@@ -9,7 +9,7 @@ OUTER_SET reserve_index_cnt = 0
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY pvrz_dir BEGIN
 	~%biff_dir%~ , ~%biff_dir%~ => ~%biff_dir%/pvrz~
-	~%MOD_FOLDER%/SoD_GUI~ , ~%biff_dir%~ => ~%biff_dir%/eetGUI~
+	~%GUI_BACKUP_FOLDER%/SoD_GUI~ , ~%biff_dir%~ => ~%biff_dir%/eetGUI~
 END
 OUTER_SPRINT array ~remapped_pvrz~
 OUTER_SET del_pvrz = 1

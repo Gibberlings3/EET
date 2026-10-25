@@ -8,7 +8,7 @@ ACTION_FOR_EACH file IN CLASWEAP ABCLASRQ ABCLSMOD ABDCDSRQ ABDCSCRQ ALIGNMNT DU
 		//REPLACE_TEXTUALLY ~^WILD_MAGE ~ ~WILDMAGE ~
 		PRETTY_PRINT_2DA
 	BUT_ONLY
-	COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
+	COPY + ~%TEMP_FOLDER%/array/%file%.2DA~ ~%TEMP_FOLDER%/array~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_ROWS 3 "cntrow"
 		FOR (cnt = 1; cnt < cntrow; cnt = cnt + 1) BEGIN
@@ -37,7 +37,7 @@ ACTION_FOR_EACH file IN FALLEN LUABBR NUMWSLOT TRAPLIMT HPCLASS BEGIN
 		//REPLACE_TEXTUALLY ~^WILD_MAGE ~ ~WILDMAGE ~
 		PRETTY_PRINT_2DA
 	BUT_ONLY
-	COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
+	COPY + ~%TEMP_FOLDER%/array/%file%.2DA~ ~%TEMP_FOLDER%/array~
 		PRETTY_PRINT_2DA
 		REPLACE_TEXTUALLY ~^ARCHER ~ ~FERALAN ~
 		COUNT_2DA_ROWS 2 "cntrow"
@@ -72,7 +72,7 @@ ACTION_FOR_EACH file IN WEAPPROF CLASCOLR CLASISKL THIEFSCL CLASTHAC BEGIN
 			TEXT_SPRINT $EVAL ~%file%_array~(~%name%~) ~~
 		END
 	BUT_ONLY
-	COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
+	COPY + ~%TEMP_FOLDER%/array/%file%.2DA~ ~%TEMP_FOLDER%/array~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_COLS "cntcol"
 		FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN
@@ -99,7 +99,7 @@ ACTION_FOR_EACH file IN WEAPPROF CLASCOLR CLASISKL THIEFSCL CLASTHAC BEGIN
 	BUT_ONLY
 END
 
-ACTION_BASH_FOR ~%MOD_FOLDER%/temp/array~ ~^K_.+$~ BEGIN
+ACTION_BASH_FOR ~%TEMP_FOLDER%/array~ ~^K_.+$~ BEGIN
 	COPY_EXISTING ~%BASH_FOR_RES%.2DA~ ~override~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_ROWS 2 "cntrow"
@@ -162,7 +162,7 @@ COPY_EXISTING ~KIT.IDS~ ~override~
 	END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/KITLIST.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/KITLIST.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~^38[ 	]+OHTYR_OLD[%newline%]+~ ~~
 	REPLACE_TEXTUALLY ~^39[ 	]+FAKIE[%newline%]+~ ~~
@@ -260,7 +260,7 @@ END
 %index% %append%
 >>>>>>>>
 
-COPY + ~%MOD_FOLDER%/temp/array/CHARSND.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/CHARSND.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (i = 1; i < cntrow; i = i + 1) BEGIN
@@ -295,7 +295,7 @@ COPY_EXISTING ~CHARSND.2DA~ ~override~
 		TEXT_SPRINT $charsnd_array(~%name%~) ~~
 	END
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/CHARSND.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/CHARSND.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	COUNT_2DA_COLS "cntcol"
@@ -358,11 +358,11 @@ BUT_ONLY
 >>>>>>>>
 
 ACTION_FOR_EACH file IN CLEARAIR CLEARCLD CLEARTRP CLEARWHR BEGIN
-	ACTION_IF (FILE_EXISTS ~%MOD_FOLDER%/temp/array/%file%.2DA~) BEGIN
+	ACTION_IF (FILE_EXISTS ~%TEMP_FOLDER%/array/%file%.2DA~) BEGIN
 		ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%file%.2DA~) BEGIN
 			COPY ~.../CLEARXXX.2da~ ~override/%file%.2DA~
 		END
-		COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
+		COPY + ~%TEMP_FOLDER%/array/%file%.2DA~ ~%TEMP_FOLDER%/array~
 			PRETTY_PRINT_2DA
 			COUNT_2DA_ROWS 2 "cntrow"
 			FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -388,7 +388,7 @@ END
 ///// CONTAINR.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/CONTAINR.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/CONTAINR.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -416,7 +416,7 @@ BUT_ONLY
 
 ACTION_IF !cd_eefp_bgee BEGIN // entries already cleared by EEFP
 
-  COPY + ~%MOD_FOLDER%/temp/array/ENTRIES.2DA~ ~%MOD_FOLDER%/temp/array~
+  COPY + ~%TEMP_FOLDER%/array/ENTRIES.2DA~ ~%TEMP_FOLDER%/array~
     PRETTY_PRINT_2DA
     SPRINT textToReplace ~^AR3003 .+[%newline%]*AR3004 .+[%newline%]*AR3005 .+[%newline%]*AR3006 .+[%newline%]*AR3007 .+[%newline%]*AR3008 .+[%newline%]*AR3009 .+[%newline%]*AR3010 .+[%newline%]*AR3011 .+[%newline%]*AR3012 .+[%newline%]*AR3013 .+[%newline%]*AR3014 .+[%newline%]*AR3015 .+[%newline%]*AR3019 .+[%newline%]*AR5505 .+[%newline%]*AR6001 .+[%newline%]*AR6002 .+[%newline%]*AR6003 .+[%newline%]*AR6004 .+[%newline%]*AR6008 .+[%newline%]*AR6009 .+[%newline%]*AR6010 .+[%newline%]*AR6011 .+$~
     COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -456,7 +456,7 @@ END
 ///// EXTANIM.2DA                                      \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/EXTANIM.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/EXTANIM.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 20 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -479,7 +479,7 @@ BUT_ONLY
 ///// EXTSPEED.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/EXTSPEED.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/EXTSPEED.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -522,7 +522,7 @@ COPY_EXISTING ~HATERACE.2DA~ ~override~
 	END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/HATERACE.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/HATERACE.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -565,12 +565,12 @@ COPY_EXISTING_REGEXP GLOB ~SPWI0[0-9]+\.SPL~ ~override~ //Wizard level 0 spells 
 BUT_ONLY
 ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPWI[1-9][5-9][0-9]\.SPL~ BEGIN //Wizard level 1-9 spells index 50+
 	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
-		APPEND_OUTER + ~%MOD_FOLDER%/temp/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0 0~ UNLESS ~%BASH_FOR_RES%~
+		APPEND_OUTER + ~%TEMP_FOLDER%/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0 0~ UNLESS ~%BASH_FOR_RES%~
 	END
 END
 ACTION_BASH_FOR ~%patch_dir%/spl~ ~SPPR[1-7][5-9][0-9]\.SPL~ BEGIN //Priest level 1-7 spells index 50+
 	ACTION_IF (~%BASH_FOR_RES%~ STRING_CONTAINS_REGEXP ~50$~ = 1) BEGIN //spell index > 50
-		APPEND_OUTER + ~%MOD_FOLDER%/temp/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0 0~ UNLESS ~%BASH_FOR_RES%~
+		APPEND_OUTER + ~%TEMP_FOLDER%/array/HIDESPL.2DA~ ~%BASH_FOR_RES% 1 0 0~ UNLESS ~%BASH_FOR_RES%~
 	END
 END
 
@@ -585,7 +585,7 @@ COPY_EXISTING ~HIDESPL.2DA~ ~override~
 BUT_ONLY
 
 OUTER_SPRINT logHide ~~
-COPY + ~%MOD_FOLDER%/temp/array/HIDESPL.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/HIDESPL.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~^SPWI93[5-7] .+%LNL%~ ~~ //SUMMON_SKELETON_WARRIOR
 	//https://forums.beamdog.com/discussion/55314/dancing-lights-and-darkness-15-radius
@@ -623,8 +623,8 @@ COPY_EXISTING ~HIDESPL.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-COPY + ~.../blank.txt~ ~%MOD_FOLDER%/temp/HIDESPL.txt~
-APPEND_OUTER + ~%MOD_FOLDER%/temp/HIDESPL.txt~ ~%logHide%~
+COPY + ~.../blank.txt~ ~%TEMP_FOLDER%/HIDESPL.txt~
+APPEND_OUTER + ~%TEMP_FOLDER%/HIDESPL.txt~ ~%logHide%~
 
 /////                                                  \\\\\
 ///// IMPORT1-3.2DA                                    \\\\\
@@ -641,7 +641,7 @@ BUT_ONLY
 ///// ITEM_USE.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/ITEM_USE.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/ITEM_USE.2DA~ ~%TEMP_FOLDER%/array~
 	LPF 2DA_MISSING_COLS INT_VAR cols = 5 STR_VAR entry = ~-1~ END
 	COUNT_2DA_ROWS 5 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -671,7 +671,7 @@ BUT_ONLY
 ///// ITEMANIM.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/ITEMANIM.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/ITEMANIM.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -693,7 +693,7 @@ BUT_ONLY
 ///// ITEMDIAL.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/ITEMDIAL.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/ITEMDIAL.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -719,7 +719,7 @@ BUT_ONLY
 ///// ITEMEXCL.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/ITEMEXCL.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/ITEMEXCL.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -741,8 +741,8 @@ BUT_ONLY
 ///// MASTAREA.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/MASTAREA.2DA~ ~%MOD_FOLDER%/temp/array~
-	~%MOD_FOLDER%/temp/2da/SODMAREA.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/array/MASTAREA.2DA~ ~%TEMP_FOLDER%/array~
+	~%TEMP_FOLDER%/2da/SODMAREA.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -770,7 +770,7 @@ ACTION_FOR_EACH file IN MONSUM01 MONSUM02 MONSUM03 MONSUM04 MONSUM05 MONSUM06 MO
 		COUNT_2DA_ROWS 2 "cntrow"
 		READ_2DA_ENTRY (cntrow - 1) 0 2 "col1"
 	BUT_ONLY
-	COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
+	COPY + ~%TEMP_FOLDER%/array/%file%.2DA~ ~%TEMP_FOLDER%/array~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_ROWS 2 "cntrow"
 		FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -851,7 +851,7 @@ COPY_EXISTING ~MOVIDESC.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/MOVIDESC.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/MOVIDESC.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -875,7 +875,7 @@ BUT_ONLY
 ///// MSECTYPE.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/MSECTYPE.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/MSECTYPE.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -898,7 +898,7 @@ BUT_ONLY
 ///// PORTRAIT.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/PORTRAIT.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/PORTRAIT.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -926,12 +926,12 @@ COPY_EXISTING ~RNDTRES.2DA~ ~override~
 	REPLACE_TEXTUALLY ~^RNDTRE07 ~ ~SODTRE07 ~
 	REPLACE_TEXTUALLY ~^RNDTRE08 ~ ~SODTRE08 ~
 	REPLACE_TEXTUALLY ~^RNDTRE09 ~ ~SODTRE09 ~
-COPY + ~%MOD_FOLDER%/temp/array/RNDTREAS.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/RNDTREAS.2DA~ ~%TEMP_FOLDER%/array~
 	REPLACE_TEXTUALLY ~^GEMBLADE .+$[%newline%]*~ ~~
 
 OUTER_SET treasMag = 0
 ACTION_FOR_EACH file IN RNDMAGIC RNDTRES RNDTREAS RNDEQUIP RNDSCROL RNDWEP BEGIN
-	COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
+	COPY + ~%TEMP_FOLDER%/array/%file%.2DA~ ~%TEMP_FOLDER%/array~
 		PRETTY_PRINT_2DA
 		SPRINT textToReplace ~2DA[ %TAB%]+V1.0[%newline%]+.+[%newline%]+.+[%newline%]+~
 		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -991,7 +991,7 @@ ACTION_FOR_EACH file IN RNDMAGIC RNDTRES RNDTREAS RNDEQUIP RNDSCROL RNDWEP BEGIN
 		END
 END
 COPY_EXISTING ~rndtres.2da~ ~override~
-	APPEND_FILE ~%MOD_FOLDER%/temp/array/rndtres.2DA~
+	APPEND_FILE ~%TEMP_FOLDER%/array/rndtres.2DA~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 ACTION_FOR_EACH file IN RNDMAGIC RNDTREAS RNDEQUIP RNDSCROL RNDWEP BEGIN
@@ -1020,8 +1020,8 @@ END
 
 //unused code
 /*ACTION_FOR_EACH file IN RNDEQUIP RNDMAGIC RNDSCROL RNDTREAS RNDWEP RNDTRES BEGIN
-	ACTION_IF (FILE_EXISTS ~%MOD_FOLDER%/temp/array/%file%.2DA~) BEGIN
-		COPY + ~%MOD_FOLDER%/temp/array/%file%.2DA~ ~%MOD_FOLDER%/temp/array~
+	ACTION_IF (FILE_EXISTS ~%TEMP_FOLDER%/array/%file%.2DA~) BEGIN
+		COPY + ~%TEMP_FOLDER%/array/%file%.2DA~ ~%TEMP_FOLDER%/array~
 			PRETTY_PRINT_2DA
 			SPRINT textToReplace ~2DA[ %TAB%]+V1.0[%newline%]+.+[%newline%]+.+[%newline%]+~
 			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1077,7 +1077,7 @@ END
 			END
 			REPLACE_TEXTUALLY ~deleteMeDummy~ ~~
 		COPY_EXISTING ~rndtres.2da~ ~override~
-			APPEND_FILE ~%MOD_FOLDER%/temp/array/%file%.2DA~
+			APPEND_FILE ~%TEMP_FOLDER%/array/%file%.2DA~
 			PRETTY_PRINT_2DA
 		BUT_ONLY
 	END
@@ -1087,7 +1087,7 @@ END*/
 ///// SCRPDESC.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/SCRPDESC.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SCRPDESC.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1137,7 +1137,7 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_songlist BEGIN
 	"THEME" => "BGTHEME"
 END
 
-COPY + ~%MOD_FOLDER%/temp/array/SONGLIST.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SONGLIST.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	PHP_EACH table_2DA_songlist AS oldName => newName BEGIN
 		REPLACE_TEXTUALLY ~ %oldName% ~ ~ %newName% ~
@@ -1231,7 +1231,7 @@ COPY_EXISTING ~SPAWNGRP.2DA~ ~override~
 		TEXT_SPRINT $spawngrp_array(~%name%~) ~~
 	END
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/SPAWNGRP.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SPAWNGRP.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	COUNT_2DA_COLS "cntcol"
@@ -1289,7 +1289,7 @@ COPY_EXISTING ~SPLPROT.2DA~ ~override~
 	SET splProt_cnt = cntrow - 1
 	PATCH_PRINT ~splProt_cnt = %splProt_cnt%~
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/SPLPROT.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SPLPROT.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 4 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1325,7 +1325,7 @@ BUT_ONLY
 ///// SNDRESRF.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/SNDRESRF.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SNDRESRF.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1348,7 +1348,7 @@ BUT_ONLY
 ///// SPELDESC.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/SPELDESC.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SPELDESC.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1384,7 +1384,7 @@ BUT_ONLY
 
 INCLUDE ~%MOD_FOLDER%/lib/tooltip.tpa~
 
-COPY + ~%MOD_FOLDER%/temp/array/TOOLTIP.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/TOOLTIP.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 3 "cntrow"
 	COUNT_2DA_COLS "cntcol"
@@ -1409,7 +1409,7 @@ COPY + ~%MOD_FOLDER%/temp/array/TOOLTIP.2DA~ ~%MOD_FOLDER%/temp/array~
 ///// TRACKING.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/TRACKING.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/TRACKING.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	SPRINT textToReplace ~^AR3001 .+[%newline%]*AR3004 .+[%newline%]*AR3005 .+[%newline%]*AR3006 .+[%newline%]*AR3007 .+[%newline%]*AR3008 .+[%newline%]*AR3009 .+[%newline%]*AR3010 .+[%newline%]*AR3012 .+[%newline%]*AR3013 .+[%newline%]*AR3014 .+[%newline%]*AR3015 .+[%newline%]*AR3016 .+[%newline%]*AR3017 .+[%newline%]*AR3018 .+[%newline%]*AR3019 .+[%newline%]*AR3020 .+[%newline%]*AR3021 .+[%newline%]*AR3022 .+[%newline%]*AR3024 .+[%newline%]*AR3025 .+[%newline%]*AR3026 .+[%newline%]*AR3027 .+[%newline%]*AR4500 .+[%newline%]*AR5006 .+[%newline%]*AR5007 .+[%newline%]*AR5013 .+[%newline%]*AR5200 .+[%newline%]*AR5201 .+[%newline%]*AR5202 .+[%newline%]*AR5203 .+[%newline%]*AR5204 .+[%newline%]*AR5509 .+[%newline%]*AR6000 .+[%newline%]*AR6001 .+[%newline%]*AR6002 .+[%newline%]*AR6003 .+[%newline%]*AR6004 .+[%newline%]*AR6005 .+[%newline%]*AR6006 .+[%newline%]*AR6007 .+[%newline%]*AR6008 .+[%newline%]*AR6009 .+[%newline%]*AR6010 .+[%newline%]*AR6011 .+[%newline%]*AR6012 .+[%newline%]*AR6013 .+[%newline%]*AR6100 .+[%newline%]*AR6101 .+[%newline%]*AR6102 .+[%newline%]*AR6103 .+[%newline%]*AR6104 .+[%newline%]*AR6105 .+[%newline%]*AR6106 .+[%newline%]*AR6107 .+[%newline%]*AR6108 .+[%newline%]*AR6109 .+[%newline%]*AR6110 .+[%newline%]*AR6200 .+[%newline%]*AR6300 .+[%newline%]*AR6400 .+$~
 	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1470,7 +1470,7 @@ BUT_ONLY
 ///// XPLIST.2DA                                       \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/array/XPLIST.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/XPLIST.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	SPRINT textToReplace ~^2DA[ %TAB%]+V1.0[%newline%]+.+[%newline%]+.+[%newline%]+HEADS .+[%newline%]*SMITH .+[%newline%]*SMNPAR .+[%newline%]*SOLAR1 .+[%newline%]*SOLAR2 .+[%newline%]*PLOT01A .+[%newline%]*PLOT01B .+[%newline%]*PLOT01C .+[%newline%]*PLOT01D .+[%newline%]*PLOT01E .+[%newline%]*PLOT01F .+[%newline%]*PLOT01G .+[%newline%]*PLOT01H .+[%newline%]*PLOT2A .+[%newline%]*PLOT2B .+[%newline%]*PLOT2C .+[%newline%]*PLOT3A .+[%newline%]*PLOT3B .+[%newline%]*PLOT3C .+[%newline%]*PLOT4A .+[%newline%]*PLOT4B .+[%newline%]*PLOT4C .+[%newline%]*PLOT5A .+[%newline%]*PLOT5B .+[%newline%]*PLOT5C .+[%newline%]*PLOT5D .+[%newline%]*PLOT6A .+[%newline%]*PLOT6B .+[%newline%]*PLOT6C .+[%newline%]*PLOT6D .+[%newline%]*PLOT6E .+[%newline%]*PLOT6F .+[%newline%]*PLOT7A .+[%newline%]*PLOT7B .+[%newline%]*PLOT7C .+[%newline%]*PLOT7D .+[%newline%]*PLOT7E .+[%newline%]*PLOT7F .+[%newline%]*PLOT7G .+[%newline%]*PLOT7H .+[%newline%]*PLOT8A .+[%newline%]*PLOT8B .+[%newline%]*PLOT8C .+[%newline%]*PLOT8D .+[%newline%]*PLOT8E .+[%newline%]*PLOT8F .+[%newline%]*PLOT9A .+[%newline%]*PLOT10A .+[%newline%]*PLOT10B .+[%newline%]*PLOT11A .+[%newline%]*PLOT11B .+[%newline%]*PLOT11C .+[%newline%]*PLOT11D .+[%newline%]*PLOT11E .+[%newline%]*PLOT11F .+[%newline%]*PLOT13A .+[%newline%]*PLOT13B .+[%newline%]*PLOT14A .+[%newline%]*PLOT14B .+[%newline%]*PLOT14C .+[%newline%]*PLOT15A .+[%newline%]*PLOT18A .+[%newline%]*PLOT18B .+[%newline%]*SENDAI .+[%newline%]*YAGA .+[%newline%]*ABAZIGAL .+[%newline%]*GROMNIR .+[%newline%]*BALTH .+[%newline%]*PLOT21A .+[%newline%]*PLOT23A .+[%newline%]*CHALL01 .+[%newline%]*CHALL02 .+[%newline%]*PLOT24A .+[%newline%]*PLOT24B .+[%newline%]*PLOT25A .+[%newline%]*PLOT26A .+[%newline%]*PLOT27A .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+[%newline%]*QUEST6 .+$~
 	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1480,7 +1480,7 @@ COPY + ~%MOD_FOLDER%/temp/array/XPLIST.2DA~ ~%MOD_FOLDER%/temp/array~
 		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
 	END
 COPY_EXISTING ~XPLIST.2DA~ ~override~
-	APPEND_FILE ~%MOD_FOLDER%/temp/array/XPLIST.2DA~
+	APPEND_FILE ~%TEMP_FOLDER%/array/XPLIST.2DA~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -1491,7 +1491,7 @@ BUT_ONLY
 COPY_EXISTING ~FOGAREA.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/FOGAREA.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/FOGAREA.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 9 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1516,7 +1516,7 @@ BUT_ONLY
 COPY_EXISTING ~FOGPT.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/FOGPT.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/FOGPT.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 6 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1541,7 +1541,7 @@ BUT_ONLY
 COPY_EXISTING ~ITEMSPEC.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/ITEMSPEC.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/ITEMSPEC.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1566,7 +1566,7 @@ BUT_ONLY
 COPY_EXISTING ~PARTYAI.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/PARTYAI.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/PARTYAI.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1591,7 +1591,7 @@ BUT_ONLY
 COPY_EXISTING ~RACEFEAT.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/RACEFEAT.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/RACEFEAT.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1623,7 +1623,7 @@ COPY_EXISTING ~SMTABLES.2DA~ ~override~
 	SET smtables_cnt = smtables_cnt - 2
 	PRETTY_PRINT_2DA
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/SMTABLES.2DA~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SMTABLES.2DA~ ~%TEMP_FOLDER%/array~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (i = 1; i<"%cntrow%"; i=i+1) BEGIN
@@ -1648,19 +1648,19 @@ COPY + ~%MOD_FOLDER%/temp/array/SMTABLES.2DA~ ~%MOD_FOLDER%/temp/array~
 					OUTER_SPRINT log_remapped_sum ~%log_remapped_sum%%TAB%%index%%TAB%=>%TAB%%smtables_cnt%%TAB%%slash%%slash%%col2%%LNL%~
 				END
 			END
-			ACTION_IF (FILE_EXISTS ~%MOD_FOLDER%/temp/2da/%col2%.2DA~) BEGIN
+			ACTION_IF (FILE_EXISTS ~%TEMP_FOLDER%/2da/%col2%.2DA~) BEGIN
 				ACTION_IF (FILE_EXISTS_IN_GAME ~%col2%.2da~) BEGIN
-					OUTER_SPRINT copy_dir ~%MOD_FOLDER%/temp/array~
+					OUTER_SPRINT copy_dir ~%TEMP_FOLDER%/array~
 					OUTER_SET exists = 1
-					COPY + ~%MOD_FOLDER%/temp/2da/%col2%.2DA~ ~%MOD_FOLDER%/temp/array~
-					DELETE + ~%MOD_FOLDER%/temp/2da/%col2%.2DA~
+					COPY + ~%TEMP_FOLDER%/2da/%col2%.2DA~ ~%TEMP_FOLDER%/array~
+					DELETE + ~%TEMP_FOLDER%/2da/%col2%.2DA~
 					COPY_EXISTING ~%col2%.2da~ ~override~
 						COUNT_2DA_ROWS 4 "col1"
 						SET col1 = col1 + 1
 						PRETTY_PRINT_2DA
 					BUT_ONLY
 				END ELSE BEGIN
-					OUTER_SPRINT copy_dir ~%MOD_FOLDER%/temp/2da~
+					OUTER_SPRINT copy_dir ~%TEMP_FOLDER%/2da~
 					OUTER_SET exists = 0
 				END
 				COPY + ~%copy_dir%/%col2%.2DA~ ~%copy_dir%~
@@ -1728,8 +1728,8 @@ ACTION_DEFINE_ASSOCIATIVE_ARRAY table_2DA_bdbanter BEGIN
 END
 
 OUTER_SPRINT append ~~
-ACTION_IF (FILE_EXISTS ~%MOD_FOLDER%/temp/2da/BDBANTER.2DA~) BEGIN
-	COPY + ~%MOD_FOLDER%/temp/2da/BDBANTER.2DA~ ~%MOD_FOLDER%/temp/2da~
+ACTION_IF (FILE_EXISTS ~%TEMP_FOLDER%/2da/BDBANTER.2DA~) BEGIN
+	COPY + ~%TEMP_FOLDER%/2da/BDBANTER.2DA~ ~%TEMP_FOLDER%/2da~
 		PRETTY_PRINT_2DA
 		COUNT_2DA_ROWS 2 "cntrow"
 		PHP_EACH table_2DA_bdbanter AS dv => dlg BEGIN
@@ -1739,7 +1739,7 @@ ACTION_IF (FILE_EXISTS ~%MOD_FOLDER%/temp/2da/BDBANTER.2DA~) BEGIN
 			END
 		END
 		PRETTY_PRINT_2DA
-	APPEND_OUTER + ~%MOD_FOLDER%/temp/2da/BDBANTER.2DA~ ~%append%~
+	APPEND_OUTER + ~%TEMP_FOLDER%/2da/BDBANTER.2DA~ ~%append%~
 END ELSE BEGIN
 <<<<<<<< .../BDBANTER.2DA
 2DA      V1.0
@@ -1779,10 +1779,10 @@ MKHIIN   BDMKHIIB
 CORWIN   BDCORWIB
 GLINT    BDGLINTB
 >>>>>>>>
-	COPY + ~.../BDBANTER.2DA~ ~%MOD_FOLDER%/temp/2da~
+	COPY + ~.../BDBANTER.2DA~ ~%TEMP_FOLDER%/2da~
 END
 
-COPY + ~%MOD_FOLDER%/temp/2da/BGBANTER.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/BGBANTER.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1794,7 +1794,7 @@ COPY + ~%MOD_FOLDER%/temp/2da/BGBANTER.2DA~ ~%MOD_FOLDER%/temp/2da~
 		//SPRINT match ~%col3%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res PATCH_IF (NOT ~%col3%~ STR_EQ ~%match%~) BEGIN SET_2DA_ENTRY cnt 2 2 "%match%" SPRINT col3 ~%match%~ END
 	END
 	PRETTY_PRINT_2DA
-COPY + ~%MOD_FOLDER%/temp/2da/BDBANTER.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/BDBANTER.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
@@ -1809,7 +1809,7 @@ COPY_EXISTING ~PDIALOG.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/2da/BGDIALOG.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/BGDIALOG.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	SPRINT textToReplace ~^BDRASAAD .+[%newline%]*BDMINSC .+[%newline%]*BDDYNAHE .+[%newline%]*BDKHALID .+[%newline%]*BDJAHEIR .+[%newline%]*BDVICONI .+[%newline%]*BDEDWIN .+[%newline%]*BDNEERA .+[%newline%]*BDDORN .+[%newline%]*BDBAELOT .+[%newline%]*BDVOGHIL .+[%newline%]*BDMKHIIN .+[%newline%]*CORWIN .+[%newline%]*BDCLARA .+[%newline%]*BDSAFANA .+[%newline%]*BDGLINT .+[%newline%]*BDCAELAR .+[%newline%]*BDIMOEN .+$~
 	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
@@ -1840,7 +1840,7 @@ COPY + ~%MOD_FOLDER%/temp/2da/BGDIALOG.2DA~ ~%MOD_FOLDER%/temp/2da~
 	PRETTY_PRINT_2DA
 
 //only temporary to prevent EET_end.tp2 from appending BDIMOEN.DLG to IMOEN2J.DLG
-COPY + ~%MOD_FOLDER%/temp/2da/BDDIALOG.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/BDDIALOG.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~^IMOEN ~ ~IMOEN_ ~
 	PRETTY_PRINT_2DA
@@ -1854,8 +1854,8 @@ COPY_EXISTING ~STARTARE.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-APPEND_OUTER + ~%MOD_FOLDER%/temp/2da/BGSTARTA.2DA~ ~START_MP_XP_CAP 8000000~ UNLESS ~START_MP_XP_CAP~
-COPY + ~%MOD_FOLDER%/temp/2da/BGSTARTA.2DA~ ~%MOD_FOLDER%/temp/2da~
+APPEND_OUTER + ~%TEMP_FOLDER%/2da/BGSTARTA.2DA~ ~START_MP_XP_CAP 8000000~ UNLESS ~START_MP_XP_CAP~
+COPY + ~%TEMP_FOLDER%/2da/BGSTARTA.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~START_AREA[ %TAB%]+AR2600$~ ~START_AREA BG2600~
 	REPLACE_TEXTUALLY ~START_XP[ %TAB%]+[0-9]+$~ ~START_XP 0~
@@ -1863,7 +1863,7 @@ COPY + ~%MOD_FOLDER%/temp/2da/BGSTARTA.2DA~ ~%MOD_FOLDER%/temp/2da~
 	REPLACE_TEXTUALLY ~START_MP_XP_CAP[ %TAB%]+[0-9]+$~ ~START_MP_XP_CAP 8000000~
 	PRETTY_PRINT_2DA
 
-COPY + ~%MOD_FOLDER%/temp/2da/SODSTRTA.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/SODSTRTA.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~START_XP_CAP[ %TAB%]+[0-9]+$~ ~START_XP_CAP 8000000~ //~START_XP_CAP 500000~
 	REPLACE_TEXTUALLY ~START_MP_XP_CAP[ %TAB%]+[0-9]+$~ ~START_MP_XP_CAP 8000000~ //~START_MP_XP_CAP 161000~
@@ -1873,7 +1873,7 @@ COPY + ~%MOD_FOLDER%/temp/2da/SODSTRTA.2DA~ ~%MOD_FOLDER%/temp/2da~
 ///// TBPPARTY.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/2da/TBPPART_.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/TBPPART_.2DA~ ~%TEMP_FOLDER%/2da~
 	REPLACE_TEXTUALLY ~BPARTY01~ ~BPARTY1_~
 	REPLACE_TEXTUALLY ~BPARTY02~ ~BPARTY2_~
 	REPLACE_TEXTUALLY ~BPARTY03~ ~BPARTY3_~
@@ -1906,8 +1906,8 @@ COPY_EXISTING ~CLASTEXT.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/2da/BGCLATXT.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/SODCLTXT.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/BGCLATXT.2DA~ ~%TEMP_FOLDER%/2da~
+	~%TEMP_FOLDER%/2da/SODCLTXT.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~^OHTYR_OLD .+[%newline%]+~ ~~
 	PATCH_FOR_EACH class IN FIGHTER_MAGE FIGHTER_CLERIC FIGHTER_THIEF FIGHTER_MAGE_THIEF MAGE_THIEF CLERIC_MAGE CLERIC_THIEF FIGHTER_DRUID FIGHTER_MAGE_CLERIC CLERIC_RANGER BEGIN //assign correct biography for multi-class characters
@@ -1969,8 +1969,8 @@ COPY_EXISTING ~RACETEXT.2DA~ ~override~
 	PRETTY_PRINT_2DA
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/2da/BGRACTXT.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/SODRACE.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/BGRACTXT.2DA~ ~%TEMP_FOLDER%/2da~
+	~%TEMP_FOLDER%/2da/SODRACE.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_ROWS 6 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
@@ -1986,8 +1986,8 @@ COPY + ~%MOD_FOLDER%/temp/2da/BGRACTXT.2DA~ ~%MOD_FOLDER%/temp/2da~
 ///// INTERACT.2DA                                     \\\\\
 /////                                                  \\\\\
 
-COPY + ~%MOD_FOLDER%/temp/2da/INTERACT.2DA~ ~%MOD_FOLDER%/temp/2da~
-	~%MOD_FOLDER%/temp/2da/SODINTER.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/2da/INTERACT.2DA~ ~%TEMP_FOLDER%/2da~
+	~%TEMP_FOLDER%/2da/SODINTER.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	REPLACE_TEXTUALLY ~IMOEN~ ~IMOEN2~
 	PRETTY_PRINT_2DA
@@ -2006,8 +2006,8 @@ COPY_EXISTING ~REPUTATI.2DA~ ~override~
 		TEXT_SPRINT $reputati_array(~%name%~) ~~
 	END
 BUT_ONLY
-COPY + ~%MOD_FOLDER%/temp/array/REPUTATI.2DA~ ~%MOD_FOLDER%/temp/array~
-	~%MOD_FOLDER%/temp/2da/SODREPUT.2DA~ ~%MOD_FOLDER%/temp/2da~
+COPY + ~%TEMP_FOLDER%/array/REPUTATI.2DA~ ~%TEMP_FOLDER%/array~
+	~%TEMP_FOLDER%/2da/SODREPUT.2DA~ ~%TEMP_FOLDER%/2da~
 	PRETTY_PRINT_2DA
 	COUNT_2DA_COLS "cntcol"
 	FOR (i = 0; i < (cntcol - 1); i = i + 1) BEGIN

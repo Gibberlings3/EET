@@ -5,7 +5,7 @@
 // Returns the game's user directory (USER_DIRECTORY) in the right encoding for use with filesystem functions.
 DEFINE_ACTION_FUNCTION GET_USER_DIRECTORY
 STR_VAR
-  temp_directory = EVAL ~%MOD_FOLDER%/temp~ // where to store temporary data
+  temp_directory = EVAL ~%TEMP_FOLDER%~ // where to store temporary data
 RET
   user_directory  // path to the game's user directory
 BEGIN
@@ -103,6 +103,57 @@ echo %arch_var% >arch_var.txt
 	ACTION_IF (~%SYSTEM_ARCH%~ STRING_EQUAL ~~) BEGIN
 		OUTER_SPRINT SYSTEM_ARCH ~%WEIDU_ARCH%~
 	END
+END
+
+// Initialize a WeiDU executable for general use
+DEFINE_ACTION_FUNCTION INIT_WEIDU_BIN
+INT_VAR
+  use_system = 1  // whether to consider WeiDU binary in the system path
+STR_VAR
+  backup_folder = EVAL ~%WORK_FOLDER%/backup/%TP2_BASE_NAME%~ // where to install an internal copy of the WeiDU binary
+RET
+  weidu           // path of the WeiDU binary; empty string if unavailable
+BEGIN
+  OUTER_SPRINT weidu ~~
+
+  ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+    OUTER_SPRINT weidu_bin ~weidu.exe~
+  END ELSE BEGIN
+    OUTER_SPRINT weidu_bin ~weidu~
+  END
+
+  // prefer currently used WeiDU binary over system binary
+  ACTION_IF (FILE_EXISTS ~%WEIDU_EXECUTABLE%~) BEGIN
+    ACTION_IF (~%backup_folder%~ STRING_CONTAINS_REGEXP ~%~ == 0) BEGIN
+      // falling back to default backup folder
+      OUTER_SPRINT backup_folder ~weidu_external/backup/%TP2_BASE_NAME%~
+    END
+
+    MKDIR ~%backup_folder%~
+    OUTER_SPRINT weidu ~%backup_folder%/%weidu_bin%~
+    ACTION_IF (NOT FILE_EXISTS ~%weidu%~) BEGIN
+      COPY ~%WEIDU_EXECUTABLE%~ ~%weidu%~
+      ACTION_IF (NOT ~%WEIDU_OS%~ STR_EQ ~win32~) BEGIN
+        OUTER_SPRINT shell_cmd ~chmod +x "%weidu%" >/dev/null~
+        AT_NOW ret_val ~%shell_cmd%~ EXACT
+      END
+    END
+  END ELSE ACTION_IF (use_system) BEGIN
+    ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+      OUTER_SPRINT shell_cmd ~where /q %weidu_bin%~
+    END ELSE BEGIN
+      OUTER_SPRINT shell_cmd ~which %weidu_bin% >/dev/null 2>&1~
+    END
+    AT_NOW ret_val ~%shell_cmd%~ EXACT
+
+    ACTION_IF (ret_val == 0) BEGIN
+      OUTER_SPRINT weidu ~%weidu_bin%~
+    END
+  END
+
+  ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+    OUTER_PATCH_SAVE weidu ~%weidu%~ BEGIN REPLACE_TEXTUALLY ~/~ ~\\~ END
+  END
 END
 
 DEFINE_PATCH_FUNCTION ~EET_spellbooks~
@@ -444,7 +495,7 @@ END
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_ACTION_MACRO ~bash_log~ BEGIN //whenever this macro is invoked, it moves the contents of %MOD_FOLDER%/temp/bash.debug to the real log.
+DEFINE_ACTION_MACRO ~bash_log~ BEGIN //whenever this macro is invoked, it moves the contents of %TEMP_FOLDER%/bash.debug to the real log.
 	LOCAL_SET ln=0
 	LOCAL_SPRINT log ~~
 	ACTION_IF (FILE_EXISTS ~%temp_dir%/bash.debug~) AND (NOT FILE_SIZE ~%temp_dir%/bash.debug~ 0) BEGIN //don't do this if no log is available now.

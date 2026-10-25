@@ -21,7 +21,7 @@ COPY_EXISTING ~ANIMATE.IDS~ ~override~
 	REPLACE_TEXTUALLY ~SOD_TMP03~ ~HEPHERNAAN~
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/ANIMATE.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/ANIMATE.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
@@ -95,7 +95,7 @@ COPY_EXISTING ~ANISND.IDS~ ~override~
 	REPLACE_TEXTUALLY ~0xEF91 XF91~                                                    ~0xEF91 XF91     CGAMEANIMATIONTYPE_DONOT_USE2~
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/ANISND.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/ANISND.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 3 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 3 "col1"
@@ -125,7 +125,7 @@ PRINT ~BG1AREA = %BG1AREA% (%dummy%)~
 
 APPEND ~GTIMES.IDS~ ~2592000 ONE_YEAR~        UNLESS ~ONE_YEAR~
 
-COPY + ~%MOD_FOLDER%/temp/array/GTIMES.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/GTIMES.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
@@ -152,7 +152,7 @@ COPY + ~%MOD_FOLDER%/temp/array/GTIMES.IDS~ ~%MOD_FOLDER%/temp/array~
 	PATCH_PRINT ~ids_index = %ids_index_sprint%~
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/KIT.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/KIT.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < cntrow; cnt = cnt + 1) BEGIN
 		READ_2DA_ENTRY cnt 0 2 "col1"
@@ -259,7 +259,7 @@ COPY_EXISTING ~CLASS.IDS~ ~override~
 	END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/CLASS.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/CLASS.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
@@ -324,7 +324,7 @@ COPY_EXISTING ~RACE.IDS~ ~override~
 	END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/RACE.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/RACE.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
@@ -390,7 +390,7 @@ COPY_EXISTING ~SPECIFIC.IDS~ ~override~
 	END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/SPECIFIC.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SPECIFIC.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
@@ -455,7 +455,7 @@ COPY_EXISTING ~SPLSTATE.IDS~ ~override~
 	END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/SPLSTATE.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/SPLSTATE.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
@@ -521,7 +521,7 @@ COPY_EXISTING ~EA.IDS~ ~override~
 	END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/EA.IDS~ ~%MOD_FOLDER%/temp/array~
+COPY + ~%TEMP_FOLDER%/array/EA.IDS~ ~%TEMP_FOLDER%/array~
 	COUNT_2DA_ROWS 2 "cntrow"
 	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
 		SET noupdate = 0
