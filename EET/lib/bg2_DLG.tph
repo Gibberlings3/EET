@@ -3,23 +3,23 @@
 /////                                                  \\\\\
 
 COPY_EXISTING ~AATAQAH.DLG~ ~override~
-	~IGOLEM2.DLG~ ~override~
-	~ISHADMT1.DLG~ ~override~
-	~JAHEIRA.DLG~ ~override~
-	~MINSCA.DLG~ ~override~
-	~RIELEV.DLG~ ~override~
-	~UNUSED.DLG~ ~override~ //well, unused but still...
-	~YOSHIMO.DLG~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~"IMOEN"~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~"IMOEN2"~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  ~IGOLEM2.DLG~ ~override~
+  ~ISHADMT1.DLG~ ~override~
+  ~JAHEIRA.DLG~ ~override~
+  ~MINSCA.DLG~ ~override~
+  ~RIELEV.DLG~ ~override~
+  ~UNUSED.DLG~ ~override~ //well, unused but still...
+  ~YOSHIMO.DLG~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~"IMOEN"~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~"IMOEN2"~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -45,9 +45,9 @@ COMPILE ~.../FATESP.d~
 
 //check if Minsc and Jaheira are really in the AR0602
 COPY_EXISTING ~IMOEN10.DLG~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~~~~~\(IF ~\)\(~ THEN REPLY #61011 GOTO 27\)~~~~~ ~\1InMyArea("Jaheira") InMyArea("Minsc")\2~
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~~~~~\(IF ~\)\(~ THEN REPLY #61011 GOTO 27\)~~~~~ ~\1InMyArea("Jaheira") InMyArea("Minsc")\2~
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -55,7 +55,7 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~TOWNC01.DLG~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~CalanderDayLT(~ ~GlobalLT("K#TOWNC01_cnt","GLOBAL",~
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~CalanderDayLT(~ ~GlobalLT("K#TOWNC01_cnt","GLOBAL",~
+  END
 BUT_ONLY

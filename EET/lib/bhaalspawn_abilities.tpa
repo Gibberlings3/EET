@@ -6,18 +6,18 @@
 // RET script             Customized script for adding Bhaalspawn abilities.
 DEFINE_ACTION_FUNCTION LOAD_BHAALSPAWN_ABILITIES
 STR_VAR
-	area          = ~~
-	triggers_prep = ~~
-	triggers_add  = ~~
+  area          = ~~
+  triggers_prep = ~~
+  triggers_add  = ~~
 RET
-	script
+  script
 BEGIN
-	OUTER_SPRINT bsa_area ~%area%~
-	OUTER_SPRINT bsa_triggers_prep ~%triggers_prep%~
-	OUTER_SPRINT bsa_triggers_add ~%triggers_add%~
-	COPY - ~.../bhaalspawn_abilities.baf~ ~.../null~
-		EVAL
-		READ_ASCII 0 script (BUFFER_LENGTH)
+  OUTER_SPRINT bsa_area ~%area%~
+  OUTER_SPRINT bsa_triggers_prep ~%triggers_prep%~
+  OUTER_SPRINT bsa_triggers_add ~%triggers_add%~
+  COPY - ~.../bhaalspawn_abilities.baf~ ~.../null~
+    EVAL
+    READ_ASCII 0 script (BUFFER_LENGTH)
 END
 
 

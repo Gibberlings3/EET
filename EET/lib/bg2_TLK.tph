@@ -3,26 +3,26 @@
 /////                                                  \\\\\
 
 OUTER_FOR (i = 200000; i < NEXT_STRREF; ++i) BEGIN
-	ACTION_GET_STRREF i male
-	ACTION_GET_STRREF_F i female
-	ACTION_GET_STRREF_S i male_sound
-	ACTION_GET_STRREF_FS i female_sound
-	OUTER_SET updated = 0
-	ACTION_FOR_EACH var IN male_sound female_sound BEGIN
-		OUTER_SPRINT source EVAL ~%%var%%~
-		ACTION_IF (~%source%~ STR_CMP ~~) BEGIN
-			ACTION_TO_UPPER source
-			ACTION_IF (VARIABLE_IS_SET $remapped_wav(~%source%~)) BEGIN
-				OUTER_TEXT_SPRINT match $remapped_wav(~%source%~)
-				PRINT ~Patching TLK %var% at %i% entry: %source% => %match% - WAV~
-				OUTER_SET updated = 1
-				OUTER_SPRINT EVAL ~%var%~ ~%match%~
-			END
-		END
-	END
-	ACTION_IF (updated = 1) BEGIN
-		STRING_SET_EVALUATE i ~%male%~ [%male_sound%] ~%female%~ [%female_sound%]
-	END
+  ACTION_GET_STRREF i male
+  ACTION_GET_STRREF_F i female
+  ACTION_GET_STRREF_S i male_sound
+  ACTION_GET_STRREF_FS i female_sound
+  OUTER_SET updated = 0
+  ACTION_FOR_EACH var IN male_sound female_sound BEGIN
+    OUTER_SPRINT source EVAL ~%%var%%~
+    ACTION_IF (~%source%~ STR_CMP ~~) BEGIN
+      ACTION_TO_UPPER source
+      ACTION_IF (VARIABLE_IS_SET $remapped_wav(~%source%~)) BEGIN
+        OUTER_TEXT_SPRINT match $remapped_wav(~%source%~)
+        PRINT ~Patching TLK %var% at %i% entry: %source% => %match% - WAV~
+        OUTER_SET updated = 1
+        OUTER_SPRINT EVAL ~%var%~ ~%match%~
+      END
+    END
+  END
+  ACTION_IF (updated = 1) BEGIN
+    STRING_SET_EVALUATE i ~%male%~ [%male_sound%] ~%female%~ [%female_sound%]
+  END
 END
 
 /////                                                  \\\\\
@@ -30,94 +30,94 @@ END
 /////                                                  \\\\\
 
 ACTION_GET_STRREF 207149 string
-STRING_SET 7149	~%string%~
+STRING_SET 7149  ~%string%~
 
 /////                                                  \\\\\
 ///// Textscreen: chapters                             \\\\\
 /////                                                  \\\\\
 
 //BG1
-STRING_SET 211898	~~ [CHAP00B]
-STRING_SET 211899	~~ [CHAP00C]
+STRING_SET 211898  ~~ [CHAP00B]
+STRING_SET 211899  ~~ [CHAP00C]
 //BG2:SoA
-STRING_SET 48005	@2000014
-STRING_SET 61359	@2000015
-STRING_SET 61360	@2000016
-STRING_SET 8633		@2000017
-STRING_SET 55714	@2000018
-STRING_SET 61361	@2000019
-STRING_SET 1389		@2000020
-STRING_SET 61362	@2000021
+STRING_SET 48005  @2000014
+STRING_SET 61359  @2000015
+STRING_SET 61360  @2000016
+STRING_SET 8633   @2000017
+STRING_SET 55714  @2000018
+STRING_SET 61361  @2000019
+STRING_SET 1389   @2000020
+STRING_SET 61362  @2000021
 //BG2:ToB
-STRING_SET 71591	@2000022
-STRING_SET 71592	@2000023
+STRING_SET 71591  @2000022
+STRING_SET 71592  @2000023
 
 /////                                                  \\\\\
 ///// Textscreen: chapter number                       \\\\\
 /////                                                  \\\\\
 
 //BG1
-STRING_SET 216203	@2000051
-STRING_SET 216204	@2000052
-STRING_SET 216205	@2000053
-STRING_SET 216206	@2000054
-STRING_SET 216207	@2000055
-STRING_SET 216208	@2000056
-STRING_SET 216209	@2000057
+STRING_SET 216203 @2000051
+STRING_SET 216204 @2000052
+STRING_SET 216205 @2000053
+STRING_SET 216206 @2000054
+STRING_SET 216207 @2000055
+STRING_SET 216208 @2000056
+STRING_SET 216209 @2000057
 //SOD
-STRING_SET 256369	@2000058
-STRING_SET 256370	@2000059
-STRING_SET 256372	@2000060
-STRING_SET 256374	@2000061
-STRING_SET 256376	@2000062
-STRING_SET 256975	@2000063
+STRING_SET 256369 @2000058
+STRING_SET 256370 @2000059
+STRING_SET 256372 @2000060
+STRING_SET 256374 @2000061
+STRING_SET 256376 @2000062
+STRING_SET 256975 @2000063
 //BG2:SoA
-STRING_SET 74414	@2000064
-STRING_SET 74412	@2000065
-STRING_SET 74390	@2000066
-STRING_SET 74407	@2000067
-STRING_SET 74399	@2000068
-STRING_SET 74400	@2000069
-STRING_SET 74353	@2000070
+STRING_SET 74414  @2000064
+STRING_SET 74412  @2000065
+STRING_SET 74390  @2000066
+STRING_SET 74407  @2000067
+STRING_SET 74399  @2000068
+STRING_SET 74400  @2000069
+STRING_SET 74353  @2000070
 //BG2:ToB
-STRING_SET 71020	@2000071
-STRING_SET 71021	@2000072
-STRING_SET 71022	@2000073
+STRING_SET 71020  @2000071
+STRING_SET 71021  @2000072
+STRING_SET 71022  @2000073
 
 /////                                                  \\\\\
 ///// Journal                                          \\\\\
 /////                                                  \\\\\
 
 //BG1
-STRING_SET 216190	@2000024
-STRING_SET 215836	@2000025
-STRING_SET 215837	@2000026
-STRING_SET 215838	@2000027
-STRING_SET 215839	@2000028
-STRING_SET 215840	@2000029
-STRING_SET 215841	@2000030
+STRING_SET 216190 @2000024
+STRING_SET 215836 @2000025
+STRING_SET 215837 @2000026
+STRING_SET 215838 @2000027
+STRING_SET 215839 @2000028
+STRING_SET 215840 @2000029
+STRING_SET 215841 @2000030
 //SoD
-STRING_SET 256974	@2000032
-STRING_SET 256368	@2000033
-STRING_SET 256371	@2000034
-STRING_SET 256373	@2000035
-STRING_SET 256375	@2000036
-STRING_SET 256378	@2000037
+STRING_SET 256974 @2000032
+STRING_SET 256368 @2000033
+STRING_SET 256371 @2000034
+STRING_SET 256373 @2000035
+STRING_SET 256375 @2000036
+STRING_SET 256378 @2000037
 //BG2:SoA
-STRING_SET 34089	@2000038
-STRING_SET 23458	@2000039
-STRING_SET 8730		@2000040
-STRING_SET 23351	@2000041
-STRING_SET 20632	@2000042
-STRING_SET 20633	@2000043
-STRING_SET 10944	@2000044
-STRING_SET 11722	@2000045
-STRING_SET 23513	@2000046
-STRING_SET 5743		@2000047
+STRING_SET 34089  @2000038
+STRING_SET 23458  @2000039
+STRING_SET 8730   @2000040
+STRING_SET 23351  @2000041
+STRING_SET 20632  @2000042
+STRING_SET 20633  @2000043
+STRING_SET 10944  @2000044
+STRING_SET 11722  @2000045
+STRING_SET 23513  @2000046
+STRING_SET 5743   @2000047
 //BG2:ToB
-STRING_SET 73256	@2000048
-STRING_SET 73258	@2000049
-STRING_SET 73257	@2000050
+STRING_SET 73256  @2000048
+STRING_SET 73258  @2000049
+STRING_SET 73257  @2000050
 
 
 /////                                                  \\\\\
@@ -125,14 +125,14 @@ STRING_SET 73257	@2000050
 /////                                                  \\\\\
 
 ACTION_GET_STRREF 33347 bio_bg2
-STRING_SET 15881	~%bio_bg2%~
-STRING_SET 33347	~~
+STRING_SET 15881  ~%bio_bg2%~
+STRING_SET 33347  ~~
 
 /////                                                  \\\\\
 ///// FATESP.DLG                                       \\\\\
 /////                                                  \\\\\
 
-STRING_SET 73956	@1000030
+STRING_SET 73956  @1000030
 
 /////                                                  \\\\\
 ///// SAVENAME.2DA                                     \\\\\
@@ -172,32 +172,32 @@ STRING_SET 103204 @4000224 //000000031-Chapter 22 Start
 ///// WORLDMAP                                         \\\\\
 /////                                                  \\\\\
 
-STRING_SET 23084 @4000300 //Traveling Hours -> Hours
-STRING_SET 5684 @4000301 //Destination Unreachable -> Unreachable
+STRING_SET 23084  @4000300 //Traveling Hours -> Hours
+STRING_SET 5684   @4000301 //Destination Unreachable -> Unreachable
 
 /////                                                  \\\\\
 ///// AoN BGEE audio references                        \\\\\
 /////                                                  \\\\\
 
 ACTION_FOR_EACH i IN 233196 233202 233208 233214 233220 233226 233232 233195 233201 233207 233213 233219 233225 233231 233199 233205 233211 233217 233223 233229 233235 233200 233206 233212 233218 233224 233230 233236 BEGIN
-	ACTION_GET_STRREF i male
-	ACTION_GET_STRREF_F i female
-	ACTION_GET_STRREF_S i male_sound
-	ACTION_GET_STRREF_FS i female_sound
-	OUTER_SET updated = 0
-	ACTION_FOR_EACH var IN male_sound female_sound BEGIN
-		OUTER_SPRINT source EVAL ~%%var%%~
-		ACTION_IF (~%source%~ STR_CMP ~~) BEGIN
-			ACTION_TO_UPPER source
-			ACTION_IF (VARIABLE_IS_SET $remapped_aon(~%source%~)) BEGIN
-				OUTER_TEXT_SPRINT match $remapped_aon(~%source%~)
-				PRINT ~Patching TLK %var% at %i% entry: %source% => %match% - WAV (AoN)~
-				OUTER_SET updated = 1
-				OUTER_SPRINT EVAL ~%var%~ ~%match%~
-			END
-		END
-	END
-	ACTION_IF (updated = 1) BEGIN
-		STRING_SET_EVALUATE i ~%male%~ [%male_sound%] ~%female%~ [%female_sound%]
-	END
+  ACTION_GET_STRREF i male
+  ACTION_GET_STRREF_F i female
+  ACTION_GET_STRREF_S i male_sound
+  ACTION_GET_STRREF_FS i female_sound
+  OUTER_SET updated = 0
+  ACTION_FOR_EACH var IN male_sound female_sound BEGIN
+    OUTER_SPRINT source EVAL ~%%var%%~
+    ACTION_IF (~%source%~ STR_CMP ~~) BEGIN
+      ACTION_TO_UPPER source
+      ACTION_IF (VARIABLE_IS_SET $remapped_aon(~%source%~)) BEGIN
+        OUTER_TEXT_SPRINT match $remapped_aon(~%source%~)
+        PRINT ~Patching TLK %var% at %i% entry: %source% => %match% - WAV (AoN)~
+        OUTER_SET updated = 1
+        OUTER_SPRINT EVAL ~%var%~ ~%match%~
+      END
+    END
+  END
+  ACTION_IF (updated = 1) BEGIN
+    STRING_SET_EVALUATE i ~%male%~ [%male_sound%] ~%female%~ [%female_sound%]
+  END
 END
