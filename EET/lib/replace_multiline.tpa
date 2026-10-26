@@ -26,7 +26,7 @@ DEFINE_PATCH_FUNCTION REPLACE_MULTILINE
       REPLACE_TEXTUALLY ~\]~ ~\]~
       REPLACE_EVALUATE ~\([\$\^\.\*\+\?]\)~ BEGIN END ~\%MATCH1%~
     END
-    REPLACE_TEXTUALLY ~[%WNL%%LNL%%MNL%%TAB% ]+~ ~[%WNL%%LNL%%MNL%%TAB% ]+~
+    REPLACE_TEXTUALLY ~[%WNL%%TAB% ]+~ ~[%WNL%%TAB% ]+~
   END
   SET num_matches = 0
   PATCH_IF only_count = 0 BEGIN

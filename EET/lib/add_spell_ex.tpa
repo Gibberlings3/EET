@@ -90,7 +90,7 @@ BEGIN
         PRINT ~ADD_SPELL_EX: removing old %spell_num% %name% reference~
         COPY_EXISTING ~spell.ids~ ~override~
           ~add_spell.ids~ ~override~
-          REPLACE_TEXTUALLY ~%spell_num%[%TAB% ]+%name%[%WNL%%LNL%%MNL%%TAB% ]*~ ~~
+          REPLACE_TEXTUALLY ~%spell_num%[%TAB% ]+%name%[%WNL%%TAB% ]*~ ~~
         OUTER_SET outcome = 2
       END ELSE ACTION_IF (outcome = 0) AND (VARIABLE_IS_SET $local_spellNameLevel("%name%")) BEGIN //name of the same type already present
         LAF RES_NUM_OF_SPELL_NAME STR_VAR spell_name = EVAL ~%name%~ RET spell_num spell_res END
@@ -103,7 +103,7 @@ BEGIN
           PRINT ~ADD_SPELL_EX: removing old %spell_num% %name% reference~
           COPY_EXISTING ~spell.ids~ ~override~
             ~add_spell.ids~ ~override~
-            REPLACE_TEXTUALLY ~%spell_num%[%TAB% ]+%name%[%WNL%%LNL%%MNL%%TAB% ]*~ ~~
+            REPLACE_TEXTUALLY ~%spell_num%[%TAB% ]+%name%[%WNL%%TAB% ]*~ ~~
           OUTER_SET outcome = 2
         END
       END

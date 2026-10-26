@@ -122,7 +122,7 @@ ACTION_IF (~%LANGUAGE_BG2%~ STR_EQ ~~) BEGIN
 END
 PRINT ~LANGUAGE_BG2 = %LANGUAGE_BG2%~
 
-OUTER_SPRINT newline ~%WNL%%LNL%%MNL%%TAB% ~
+OUTER_SPRINT newline ~%WNL%%TAB% ~
 OUTER_SPRINT slash ~/~
 OUTER_SPRINT quote ~"~
 OUTER_SPRINT tilde "~"
@@ -932,7 +932,7 @@ COPY + ~%TEMP_FOLDER%/array/BGEE.lua~ ~%TEMP_FOLDER%/array~
   PATCH_INCLUDE ~%MOD_FOLDER%/lib/cheat_var.tph~
   REPLACE_TEXTUALLY ~filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'MALE\([0-9]+\)'~ ~filenames_stringrefs['BGMALE\1'~
   REPLACE_TEXTUALLY ~filenames_stringrefs[ %TAB%]*\[[ %TAB%]*'FEMALE\([0-9]+\)'~ ~filenames_stringrefs['BGFEML\1'~
-  REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*fontcolors\['\([A-Z0-9#_]+\)'\][ %TAB%]*=[ %TAB%]*'\([^']+\)'\([^%LNL%%WNL%]*\)~ BEGIN
+  REPLACE_EVALUATE CASE_INSENSITIVE ~^[ %TAB%]*fontcolors\['\([A-Z0-9#_]+\)'\][ %TAB%]*=[ %TAB%]*'\([^']+\)'\([^%WNL%]*\)~ BEGIN
     PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~bgee.lua~ ~^[ %TAB%]*fontcolors\['%MATCH1%'\]~)) BEGIN
       SPRINT fontcolors_var ~%fontcolors_var%fontcolors['%MATCH1%'] = '%MATCH2%'%MATCH3%%LNL%~
       //PATCH_PRINT ~fontcolors: %MATCH1% ; %MATCH2% ; %MATCH3%~

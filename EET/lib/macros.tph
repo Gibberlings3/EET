@@ -1803,14 +1803,14 @@ ACTION_PHP_EACH EET_cmd_list AS cmd => res_type BEGIN
 END
 
 DEFINE_PATCH_MACRO ~EET_PCU_match~ BEGIN
-  REPLACE_EVALUATE ~\("[^"%LNL%%WNL%]+"\)~ BEGIN
+  REPLACE_EVALUATE ~\("[^"%WNL%]+"\)~ BEGIN
     INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
       REPLACE_TEXTUALLY ~ ~ ~#space#~
     END
   END ~%MATCH1%~
-  REPLACE_TEXTUALLY ~\(ActionOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #comma# \2) #bracket#~
-  REPLACE_TEXTUALLY ~\(TriggerOverride([^,]+\),\([^%WNL%%LNL%%MNL%%TAB% ]+\)))~ ~\1) #comma# \2) #bracket#~
-  REPLACE_EVALUATE CASE_INSENSITIVE ~\([%WNL%%LNL%%MNL%%TAB% %tilde%%quote%!]\)\([A-Z]+\)(\([^%WNL%%LNL%%MNL%%TAB% ]+\))~ BEGIN //loop through all commands
+  REPLACE_TEXTUALLY ~\(ActionOverride([^,]+\),\([^%WNL%%TAB% ]+\)))~ ~\1) #comma# \2) #bracket#~
+  REPLACE_TEXTUALLY ~\(TriggerOverride([^,]+\),\([^%WNL%%TAB% ]+\)))~ ~\1) #comma# \2) #bracket#~
+  REPLACE_EVALUATE CASE_INSENSITIVE ~\([%WNL%%TAB% %tilde%%quote%!]\)\([A-Z]+\)(\([^%WNL%%TAB% ]+\))~ BEGIN //loop through all commands
     SPRINT init ~%MATCH1%~ //matched 
     SPRINT cmd ~%MATCH2%~ //matched command name
     SPRINT cmd_case ~%cmd%~
