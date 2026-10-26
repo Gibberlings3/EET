@@ -3,12 +3,12 @@
 /////                                                  \\\\\
 
 COPY_EXISTING ~ACTION.IDS~ ~override~
-	//REPLACE_TEXTUALLY ~AddJournalEntry(I:Entry~  ~AddJournalEntry(I:StrRef~
-	REPLACE_TEXTUALLY ~UseItemPoint(S:Item,P:Target\*,I:Ability\*)~ ~UseItemPoint(S:Item,P:Point*,I:Ability*)~
-	REPLACE_TEXTUALLY ~UseItemPointSlot(P:Target\*,I:Slot\*)~ ~UseItemPointSlot(P:Point*,I:Slot*SLOTS,I:Ability*)~
-	REPLACE_TEXTUALLY ~StartMusic(I:Slot\*,I:Flags\*MFLAGS)~ ~StartMusic(I:Slot*MUSIC,I:Flags*MFLAGS)~
-	REPLACE_TEXTUALLY ~StaticSequence(O:Object\*,I:Sequence\*)~ ~StaticSequence(O:Object*,I:Sequence*seq)~
-	REPLACE_TEXTUALLY ~SetGlobalRandom(S:Variable\*,S:Area\*,I:Count\*,I:Size\*)~ ~SetGlobalRandom(S:Name*,S:Area*,I:Count*,I:Size*)~
+  //REPLACE_TEXTUALLY ~AddJournalEntry(I:Entry~  ~AddJournalEntry(I:StrRef~
+  REPLACE_TEXTUALLY ~UseItemPoint(S:Item,P:Target\*,I:Ability\*)~ ~UseItemPoint(S:Item,P:Point*,I:Ability*)~
+  REPLACE_TEXTUALLY ~UseItemPointSlot(P:Target\*,I:Slot\*)~ ~UseItemPointSlot(P:Point*,I:Slot*SLOTS,I:Ability*)~
+  REPLACE_TEXTUALLY ~StartMusic(I:Slot\*,I:Flags\*MFLAGS)~ ~StartMusic(I:Slot*MUSIC,I:Flags*MFLAGS)~
+  REPLACE_TEXTUALLY ~StaticSequence(O:Object\*,I:Sequence\*)~ ~StaticSequence(O:Object*,I:Sequence*seq)~
+  REPLACE_TEXTUALLY ~SetGlobalRandom(S:Variable\*,S:Area\*,I:Count\*,I:Size\*)~ ~SetGlobalRandom(S:Name*,S:Area*,I:Count*,I:Size*)~
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -16,100 +16,100 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~ANIMATE.IDS~ ~override~
-	REPLACE_TEXTUALLY ~SOD_TMP01~ ~BELHIFET~
-	REPLACE_TEXTUALLY ~SOD_TMP02~ ~BELHIFET_PRIEST~
-	REPLACE_TEXTUALLY ~SOD_TMP03~ ~HEPHERNAAN~
+  REPLACE_TEXTUALLY ~SOD_TMP01~ ~BELHIFET~
+  REPLACE_TEXTUALLY ~SOD_TMP02~ ~BELHIFET_PRIEST~
+  REPLACE_TEXTUALLY ~SOD_TMP03~ ~HEPHERNAAN~
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/ANIMATE.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~^%col1%[ %TAB%]~)) BEGIN
-				READ_2DA_ENTRY cnt 1 2 "col2"
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2%~
-					PRINT ~%col1% %col2% appended to %SOURCE_FILE%~
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/ANIMATE.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~^%col1%[ %TAB%]~)) BEGIN
+        READ_2DA_ENTRY cnt 1 2 "col2"
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2%~
+          PRINT ~%col1% %col2% appended to %SOURCE_FILE%~
+        END
+      END
+    END
+  END
 
 /////                                                  \\\\\
 ///// ANISND.IDS                                       \\\\\
 /////                                                  \\\\\
 
 COPY_EXISTING ~ANISND.IDS~ ~override~
-	REPLACE_TEXTUALLY ~0x7101 MBAS2    CGAMEANIMATIONTYPE_BASILISK_GREATER~            ~0x7101 MBAS_GR  CGAMEANIMATIONTYPE_BASILISK_GREATER~
-	REPLACE_TEXTUALLY ~0x7200 MBER4    CGAMEANIMATIONTYPE_BEAR_BLACK~                  ~0x7200 MBER_BL  CGAMEANIMATIONTYPE_BEAR_BLACK~
-	REPLACE_TEXTUALLY ~0x7202 MBER3    CGAMEANIMATIONTYPE_BEAR_CAVE~                   ~0x7202 MBER_CA  CGAMEANIMATIONTYPE_BEAR_CAVE~
-	REPLACE_TEXTUALLY ~0x7203 MBER2    CGAMEANIMATIONTYPE_BEAR_POLAR~                  ~0x7203 MBER_PO  CGAMEANIMATIONTYPE_BEAR_POLAR~
-	REPLACE_TEXTUALLY ~0x7302 MEAE     CGAMEANIMATIONTYPE_SHAMBLING_MOUND~             ~0x7302 MEAE_SH  CGAMEANIMATIONTYPE_SHAMBLING_MOUND~
-	REPLACE_TEXTUALLY ~0x7312 MFIE     CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_PURPLE~       ~0x7312 MFIEG1B  CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_PURPLE~
-	REPLACE_TEXTUALLY ~0x7313 MFIS     CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_SMALL_PURPLE~ ~0x7313 MFISG1B  CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_SMALL_PURPLE~
-	REPLACE_TEXTUALLY ~0x7314 MFIE     CGAMEANIMATIONTYPE_BURNING_MAN~                 ~0x7314 MFIEG3B  CGAMEANIMATIONTYPE_BURNING_MAN~
-	REPLACE_TEXTUALLY ~0x7400 MDOG     CGAMEANIMATIONTYPE_DOG_WILD~                    ~0x7400 MDOG_WI  CGAMEANIMATIONTYPE_DOG_WILD~
-	REPLACE_TEXTUALLY ~0x7401 MDOG2    CGAMEANIMATIONTYPE_DOG_WAR~                     ~0x7401 MDOG_WA  CGAMEANIMATIONTYPE_DOG_WAR~
-	REPLACE_TEXTUALLY ~0x7402 MDOG     CGAMEANIMATIONTYPE_DOG_MOON~                    ~0x7402 MDOG_MO  CGAMEANIMATIONTYPE_DOG_MOON~
-	REPLACE_TEXTUALLY ~0x7501 MDOP2    CGAMEANIMATIONTYPE_DOPPLEGANGER_GREATER~        ~0x7501 MDOP_GR  CGAMEANIMATIONTYPE_DOPPLEGANGER_GREATER~
-	REPLACE_TEXTUALLY ~0x7701 MGHL     CGAMEANIMATIONTYPE_REVENANT~                    ~0x7701 MGHL_RE  CGAMEANIMATIONTYPE_REVENANT~
-	REPLACE_TEXTUALLY ~0x7702 MGHL2    CGAMEANIMATIONTYPE_GHAST~                       ~0x7702 MGHL_GA  CGAMEANIMATIONTYPE_GHAST~
-	REPLACE_TEXTUALLY ~0x7900 MSLM2    CGAMEANIMATIONTYPE_SLIME_GREEN~                 ~0x7900 MSLI_GR  CGAMEANIMATIONTYPE_SLIME_GREEN~
-	REPLACE_TEXTUALLY ~0x7901 MSLM3    CGAMEANIMATIONTYPE_SLIME_OLIVE~                 ~0x7901 MSLI_OL  CGAMEANIMATIONTYPE_SLIME_OLIVE~
-	REPLACE_TEXTUALLY ~0x7902 MSLM4    CGAMEANIMATIONTYPE_SLIME_MUSTARD~               ~0x7902 MSLI_MU  CGAMEANIMATIONTYPE_SLIME_MUSTARD~
-	REPLACE_TEXTUALLY ~0x7903 MSLM5    CGAMEANIMATIONTYPE_SLIME_OCHRE~                 ~0x7903 MSLI_OC  CGAMEANIMATIONTYPE_SLIME_OCHRE~
-	REPLACE_TEXTUALLY ~0x7904 MSLM     CGAMEANIMATIONTYPE_GRAY_OOZE~                   ~0x7904 MSLI     CGAMEANIMATIONTYPE_GRAY_OOZE~
-	REPLACE_TEXTUALLY ~0x7A00 MSPI     CGAMEANIMATIONTYPE_SPIDER_GIANT~                ~0x7A00 MSPI_GI  CGAMEANIMATIONTYPE_SPIDER_GIANT~
-	REPLACE_TEXTUALLY ~0x7A01 MSPI     CGAMEANIMATIONTYPE_SPIDER_HUGE~                 ~0x7A01 MSPI_HU  CGAMEANIMATIONTYPE_SPIDER_HUGE~
-	REPLACE_TEXTUALLY ~0x7A02 MSPI     CGAMEANIMATIONTYPE_SPIDER_PHASE~                ~0x7A02 MSPI_PH  CGAMEANIMATIONTYPE_SPIDER_PHASE~
-	REPLACE_TEXTUALLY ~0x7A03 MSPI     CGAMEANIMATIONTYPE_SPIDER_SWORD~                ~0x7A03 MSPI_SW  CGAMEANIMATIONTYPE_SPIDER_SWORD~
-	REPLACE_TEXTUALLY ~0x7A04 MSPI     CGAMEANIMATIONTYPE_SPIDER_WRAITH~               ~0x7A04 MSPI_WR  CGAMEANIMATIONTYPE_SPIDER_WRAITH~
-	REPLACE_TEXTUALLY ~0x7B01 MWLF     CGAMEANIMATIONTYPE_WOLF_WORG~                   ~0x7B01 MWLF_WO  CGAMEANIMATIONTYPE_WOLF_WORG~
-	REPLACE_TEXTUALLY ~0x7B02 MWLF     CGAMEANIMATIONTYPE_WOLF_DIRE~                   ~0x7B02 MWLF_DI  CGAMEANIMATIONTYPE_WOLF_DIRE~
-	REPLACE_TEXTUALLY ~0x7B03 MWLF2    CGAMEANIMATIONTYPE_WOLF_WINTER~                 ~0x7B03 MWLF_WI  CGAMEANIMATIONTYPE_WOLF_WINTER~
-	REPLACE_TEXTUALLY ~0x7B04 MWLF4    CGAMEANIMATIONTYPE_WOLF_VAMPIRIC~               ~0x7B04 MWLF_VA  CGAMEANIMATIONTYPE_WOLF_VAMPIRIC~
-	REPLACE_TEXTUALLY ~0x7B05 MWLF3    CGAMEANIMATIONTYPE_WOLF_DREAD~                  ~0x7B05 MWLF_DR  CGAMEANIMATIONTYPE_WOLF_DREAD~
-	REPLACE_TEXTUALLY ~0x7F3C MASL     CGAMEANIMATIONTYPE_ANTISOLAR~                   ~0x7F3C MASL     CGAMEANIMATIONTYPE_DEVA_MONADIC~
-	REPLACE_TEXTUALLY ~0x7F3E MFIG     CGAMEANIMATIONTYPE_FIRE_GIANT~                  ~0x7F3E MFIG     CGAMEANIMATIONTYPE_GIANT_FIRE~
-	REPLACE_TEXTUALLY ~0x7F3F MFIG     CGAMEANIMATIONTYPE_YAGA-SHURA~                  ~0x7F3F MFIGG1B  CGAMEANIMATIONTYPE_GIANT_YAGA-SHURA~
-	REPLACE_TEXTUALLY ~0x7F41 MDJC     CGAMEANIMATIONTYPE_EFREETI~                     ~0x7F41 MDJL_E1  CGAMEANIMATIONTYPE_EFREETI_NOBLE~
-	REPLACE_TEXTUALLY ~0x7F42 NRWZ     CGAMEANIMATIONTYPE_RED_WIZARD~                  ~0x7F42 NIRO_RD  CGAMEANIMATIONTYPE_RED_WIZARD~
-	REPLACE_TEXTUALLY ~0xE020 XXXX     CGAMEANIMATIONTYPE_DONOT_USE~                   ~0xE020 X020     CGAMEANIMATIONTYPE_DONOT_USE~
-	REPLACE_TEXTUALLY ~0xE420 MGO3     CGAMEANIMATIONTYPE_GOBLINELITE_AXE~             ~0xE420 MGO3     CGAMEANIMATIONTYPE_GOBLIN_ELITE_AXE~
-	REPLACE_TEXTUALLY ~0xE430 MGO4     CGAMEANIMATIONTYPE_GOBLINELITE_BOW~             ~0xE430 MGO4     CGAMEANIMATIONTYPE_GOBLIN_ELITE_BOW~
-	REPLACE_TEXTUALLY ~0xE500 MLIZ     CGAMEANIMATIONTYPE_LIZARDMAN_BROWN~             ~0xE500 MLIZ     CGAMEANIMATIONTYPE_LIZARD_MAN_ELITE~
-	REPLACE_TEXTUALLY ~0xE600 MMYC     CGAMEANIMATIONTYPE_MYCONID_ORANGE~              ~0xE600 MMYC     CGAMEANIMATIONTYPE_MYCONID_RED~
-	REPLACE_TEXTUALLY ~0xE700 MNO1     CGAMEANIMATIONTYPE_OROG_ORANGE~                 ~0xE700 MNO1     CGAMEANIMATIONTYPE_OROG~
-	REPLACE_TEXTUALLY ~0xE710 MNO2     CGAMEANIMATIONTYPE_OROG_BLUE~                   ~0xE710 MNO2     CGAMEANIMATIONTYPE_OROG_ELITE~
-	REPLACE_TEXTUALLY ~0xE720 MNO3     CGAMEANIMATIONTYPE_OROG_GRAY~                   ~0xE720 MNO3     CGAMEANIMATIONTYPE_OROG_CHIEFTAIN~
-	REPLACE_TEXTUALLY ~0xE800 MOR1     CGAMEANIMATIONTYPE_ORC_MELEE1~                  ~0xE800 MOR1     CGAMEANIMATIONTYPE_ORC_MELEE~
-	REPLACE_TEXTUALLY ~0xE810 MOR2     CGAMEANIMATIONTYPE_ORC_RANGE2~                  ~0xE810 MOR2     CGAMEANIMATIONTYPE_ORC_RANGE~
-	REPLACE_TEXTUALLY ~0xE820 MOR3     CGAMEANIMATIONTYPE_ORC_MELEE3~                  ~0xE820 MOR3     CGAMEANIMATIONTYPE_ORC_ELITE_MELEE~
-	REPLACE_TEXTUALLY ~0xE830 MOR4     CGAMEANIMATIONTYPE_ORC_RANGE4~                  ~0xE830 MOR4     CGAMEANIMATIONTYPE_ORC_ELITE_RANGE~
-	REPLACE_TEXTUALLY ~0xE910 MSA2     CGAMEANIMATIONTYPE_SALAMANDER_ICE~              ~0xE910 MSA2     CGAMEANIMATIONTYPE_SALAMANDER_FROST~
-	REPLACE_TEXTUALLY ~0xEA00 MSHR     CGAMEANIMATIONTYPE_SHROOM~                      ~0xEA00 MSHR     CGAMEANIMATIONTYPE_SHRIEKER~
-	REPLACE_TEXTUALLY ~0xED00 MYU1     CGAMEANIMATIONTYPE_YUANTI_GREEN~                ~0xED00 MYU1     CGAMEANIMATIONTYPE_YUAN-TI~
-	REPLACE_TEXTUALLY ~0xED10 MYU2     CGAMEANIMATIONTYPE_YUANTI_BROWN~                ~0xED10 MYU2     CGAMEANIMATIONTYPE_YUAN-TI_ELITE~
-	REPLACE_TEXTUALLY ~0xED20 MYU3     CGAMEANIMATIONTYPE_YUANTI_YELLOW~               ~0xED20 MYU3     CGAMEANIMATIONTYPE_YUAN-TI_PRIEST~
-	REPLACE_TEXTUALLY ~0xEF91 XF91~                                                    ~0xEF91 XF91     CGAMEANIMATIONTYPE_DONOT_USE2~
+  REPLACE_TEXTUALLY ~0x7101 MBAS2    CGAMEANIMATIONTYPE_BASILISK_GREATER~            ~0x7101 MBAS_GR  CGAMEANIMATIONTYPE_BASILISK_GREATER~
+  REPLACE_TEXTUALLY ~0x7200 MBER4    CGAMEANIMATIONTYPE_BEAR_BLACK~                  ~0x7200 MBER_BL  CGAMEANIMATIONTYPE_BEAR_BLACK~
+  REPLACE_TEXTUALLY ~0x7202 MBER3    CGAMEANIMATIONTYPE_BEAR_CAVE~                   ~0x7202 MBER_CA  CGAMEANIMATIONTYPE_BEAR_CAVE~
+  REPLACE_TEXTUALLY ~0x7203 MBER2    CGAMEANIMATIONTYPE_BEAR_POLAR~                  ~0x7203 MBER_PO  CGAMEANIMATIONTYPE_BEAR_POLAR~
+  REPLACE_TEXTUALLY ~0x7302 MEAE     CGAMEANIMATIONTYPE_SHAMBLING_MOUND~             ~0x7302 MEAE_SH  CGAMEANIMATIONTYPE_SHAMBLING_MOUND~
+  REPLACE_TEXTUALLY ~0x7312 MFIE     CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_PURPLE~       ~0x7312 MFIEG1B  CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_PURPLE~
+  REPLACE_TEXTUALLY ~0x7313 MFIS     CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_SMALL_PURPLE~ ~0x7313 MFISG1B  CGAMEANIMATIONTYPE_ELEMENTAL_FIRE_SMALL_PURPLE~
+  REPLACE_TEXTUALLY ~0x7314 MFIE     CGAMEANIMATIONTYPE_BURNING_MAN~                 ~0x7314 MFIEG3B  CGAMEANIMATIONTYPE_BURNING_MAN~
+  REPLACE_TEXTUALLY ~0x7400 MDOG     CGAMEANIMATIONTYPE_DOG_WILD~                    ~0x7400 MDOG_WI  CGAMEANIMATIONTYPE_DOG_WILD~
+  REPLACE_TEXTUALLY ~0x7401 MDOG2    CGAMEANIMATIONTYPE_DOG_WAR~                     ~0x7401 MDOG_WA  CGAMEANIMATIONTYPE_DOG_WAR~
+  REPLACE_TEXTUALLY ~0x7402 MDOG     CGAMEANIMATIONTYPE_DOG_MOON~                    ~0x7402 MDOG_MO  CGAMEANIMATIONTYPE_DOG_MOON~
+  REPLACE_TEXTUALLY ~0x7501 MDOP2    CGAMEANIMATIONTYPE_DOPPLEGANGER_GREATER~        ~0x7501 MDOP_GR  CGAMEANIMATIONTYPE_DOPPLEGANGER_GREATER~
+  REPLACE_TEXTUALLY ~0x7701 MGHL     CGAMEANIMATIONTYPE_REVENANT~                    ~0x7701 MGHL_RE  CGAMEANIMATIONTYPE_REVENANT~
+  REPLACE_TEXTUALLY ~0x7702 MGHL2    CGAMEANIMATIONTYPE_GHAST~                       ~0x7702 MGHL_GA  CGAMEANIMATIONTYPE_GHAST~
+  REPLACE_TEXTUALLY ~0x7900 MSLM2    CGAMEANIMATIONTYPE_SLIME_GREEN~                 ~0x7900 MSLI_GR  CGAMEANIMATIONTYPE_SLIME_GREEN~
+  REPLACE_TEXTUALLY ~0x7901 MSLM3    CGAMEANIMATIONTYPE_SLIME_OLIVE~                 ~0x7901 MSLI_OL  CGAMEANIMATIONTYPE_SLIME_OLIVE~
+  REPLACE_TEXTUALLY ~0x7902 MSLM4    CGAMEANIMATIONTYPE_SLIME_MUSTARD~               ~0x7902 MSLI_MU  CGAMEANIMATIONTYPE_SLIME_MUSTARD~
+  REPLACE_TEXTUALLY ~0x7903 MSLM5    CGAMEANIMATIONTYPE_SLIME_OCHRE~                 ~0x7903 MSLI_OC  CGAMEANIMATIONTYPE_SLIME_OCHRE~
+  REPLACE_TEXTUALLY ~0x7904 MSLM     CGAMEANIMATIONTYPE_GRAY_OOZE~                   ~0x7904 MSLI     CGAMEANIMATIONTYPE_GRAY_OOZE~
+  REPLACE_TEXTUALLY ~0x7A00 MSPI     CGAMEANIMATIONTYPE_SPIDER_GIANT~                ~0x7A00 MSPI_GI  CGAMEANIMATIONTYPE_SPIDER_GIANT~
+  REPLACE_TEXTUALLY ~0x7A01 MSPI     CGAMEANIMATIONTYPE_SPIDER_HUGE~                 ~0x7A01 MSPI_HU  CGAMEANIMATIONTYPE_SPIDER_HUGE~
+  REPLACE_TEXTUALLY ~0x7A02 MSPI     CGAMEANIMATIONTYPE_SPIDER_PHASE~                ~0x7A02 MSPI_PH  CGAMEANIMATIONTYPE_SPIDER_PHASE~
+  REPLACE_TEXTUALLY ~0x7A03 MSPI     CGAMEANIMATIONTYPE_SPIDER_SWORD~                ~0x7A03 MSPI_SW  CGAMEANIMATIONTYPE_SPIDER_SWORD~
+  REPLACE_TEXTUALLY ~0x7A04 MSPI     CGAMEANIMATIONTYPE_SPIDER_WRAITH~               ~0x7A04 MSPI_WR  CGAMEANIMATIONTYPE_SPIDER_WRAITH~
+  REPLACE_TEXTUALLY ~0x7B01 MWLF     CGAMEANIMATIONTYPE_WOLF_WORG~                   ~0x7B01 MWLF_WO  CGAMEANIMATIONTYPE_WOLF_WORG~
+  REPLACE_TEXTUALLY ~0x7B02 MWLF     CGAMEANIMATIONTYPE_WOLF_DIRE~                   ~0x7B02 MWLF_DI  CGAMEANIMATIONTYPE_WOLF_DIRE~
+  REPLACE_TEXTUALLY ~0x7B03 MWLF2    CGAMEANIMATIONTYPE_WOLF_WINTER~                 ~0x7B03 MWLF_WI  CGAMEANIMATIONTYPE_WOLF_WINTER~
+  REPLACE_TEXTUALLY ~0x7B04 MWLF4    CGAMEANIMATIONTYPE_WOLF_VAMPIRIC~               ~0x7B04 MWLF_VA  CGAMEANIMATIONTYPE_WOLF_VAMPIRIC~
+  REPLACE_TEXTUALLY ~0x7B05 MWLF3    CGAMEANIMATIONTYPE_WOLF_DREAD~                  ~0x7B05 MWLF_DR  CGAMEANIMATIONTYPE_WOLF_DREAD~
+  REPLACE_TEXTUALLY ~0x7F3C MASL     CGAMEANIMATIONTYPE_ANTISOLAR~                   ~0x7F3C MASL     CGAMEANIMATIONTYPE_DEVA_MONADIC~
+  REPLACE_TEXTUALLY ~0x7F3E MFIG     CGAMEANIMATIONTYPE_FIRE_GIANT~                  ~0x7F3E MFIG     CGAMEANIMATIONTYPE_GIANT_FIRE~
+  REPLACE_TEXTUALLY ~0x7F3F MFIG     CGAMEANIMATIONTYPE_YAGA-SHURA~                  ~0x7F3F MFIGG1B  CGAMEANIMATIONTYPE_GIANT_YAGA-SHURA~
+  REPLACE_TEXTUALLY ~0x7F41 MDJC     CGAMEANIMATIONTYPE_EFREETI~                     ~0x7F41 MDJL_E1  CGAMEANIMATIONTYPE_EFREETI_NOBLE~
+  REPLACE_TEXTUALLY ~0x7F42 NRWZ     CGAMEANIMATIONTYPE_RED_WIZARD~                  ~0x7F42 NIRO_RD  CGAMEANIMATIONTYPE_RED_WIZARD~
+  REPLACE_TEXTUALLY ~0xE020 XXXX     CGAMEANIMATIONTYPE_DONOT_USE~                   ~0xE020 X020     CGAMEANIMATIONTYPE_DONOT_USE~
+  REPLACE_TEXTUALLY ~0xE420 MGO3     CGAMEANIMATIONTYPE_GOBLINELITE_AXE~             ~0xE420 MGO3     CGAMEANIMATIONTYPE_GOBLIN_ELITE_AXE~
+  REPLACE_TEXTUALLY ~0xE430 MGO4     CGAMEANIMATIONTYPE_GOBLINELITE_BOW~             ~0xE430 MGO4     CGAMEANIMATIONTYPE_GOBLIN_ELITE_BOW~
+  REPLACE_TEXTUALLY ~0xE500 MLIZ     CGAMEANIMATIONTYPE_LIZARDMAN_BROWN~             ~0xE500 MLIZ     CGAMEANIMATIONTYPE_LIZARD_MAN_ELITE~
+  REPLACE_TEXTUALLY ~0xE600 MMYC     CGAMEANIMATIONTYPE_MYCONID_ORANGE~              ~0xE600 MMYC     CGAMEANIMATIONTYPE_MYCONID_RED~
+  REPLACE_TEXTUALLY ~0xE700 MNO1     CGAMEANIMATIONTYPE_OROG_ORANGE~                 ~0xE700 MNO1     CGAMEANIMATIONTYPE_OROG~
+  REPLACE_TEXTUALLY ~0xE710 MNO2     CGAMEANIMATIONTYPE_OROG_BLUE~                   ~0xE710 MNO2     CGAMEANIMATIONTYPE_OROG_ELITE~
+  REPLACE_TEXTUALLY ~0xE720 MNO3     CGAMEANIMATIONTYPE_OROG_GRAY~                   ~0xE720 MNO3     CGAMEANIMATIONTYPE_OROG_CHIEFTAIN~
+  REPLACE_TEXTUALLY ~0xE800 MOR1     CGAMEANIMATIONTYPE_ORC_MELEE1~                  ~0xE800 MOR1     CGAMEANIMATIONTYPE_ORC_MELEE~
+  REPLACE_TEXTUALLY ~0xE810 MOR2     CGAMEANIMATIONTYPE_ORC_RANGE2~                  ~0xE810 MOR2     CGAMEANIMATIONTYPE_ORC_RANGE~
+  REPLACE_TEXTUALLY ~0xE820 MOR3     CGAMEANIMATIONTYPE_ORC_MELEE3~                  ~0xE820 MOR3     CGAMEANIMATIONTYPE_ORC_ELITE_MELEE~
+  REPLACE_TEXTUALLY ~0xE830 MOR4     CGAMEANIMATIONTYPE_ORC_RANGE4~                  ~0xE830 MOR4     CGAMEANIMATIONTYPE_ORC_ELITE_RANGE~
+  REPLACE_TEXTUALLY ~0xE910 MSA2     CGAMEANIMATIONTYPE_SALAMANDER_ICE~              ~0xE910 MSA2     CGAMEANIMATIONTYPE_SALAMANDER_FROST~
+  REPLACE_TEXTUALLY ~0xEA00 MSHR     CGAMEANIMATIONTYPE_SHROOM~                      ~0xEA00 MSHR     CGAMEANIMATIONTYPE_SHRIEKER~
+  REPLACE_TEXTUALLY ~0xED00 MYU1     CGAMEANIMATIONTYPE_YUANTI_GREEN~                ~0xED00 MYU1     CGAMEANIMATIONTYPE_YUAN-TI~
+  REPLACE_TEXTUALLY ~0xED10 MYU2     CGAMEANIMATIONTYPE_YUANTI_BROWN~                ~0xED10 MYU2     CGAMEANIMATIONTYPE_YUAN-TI_ELITE~
+  REPLACE_TEXTUALLY ~0xED20 MYU3     CGAMEANIMATIONTYPE_YUANTI_YELLOW~               ~0xED20 MYU3     CGAMEANIMATIONTYPE_YUAN-TI_PRIEST~
+  REPLACE_TEXTUALLY ~0xEF91 XF91~                                                    ~0xEF91 XF91     CGAMEANIMATIONTYPE_DONOT_USE2~
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/ANISND.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 3 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~^%col1%[ %TAB%]~)) BEGIN
-				READ_2DA_ENTRY cnt 1 3 "col2"
-				READ_2DA_ENTRY cnt 2 3 "col3"
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2% %col3%~
-					PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILE%~
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/ANISND.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 3 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 3 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~^%col1%[ %TAB%]~)) BEGIN
+        READ_2DA_ENTRY cnt 1 3 "col2"
+        READ_2DA_ENTRY cnt 2 3 "col3"
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2% %col3%~
+          PRINT ~%col1% %col2% %col3% appended to %SOURCE_FILE%~
+        END
+      END
+    END
+  END
 
 /////                                                  \\\\\
 ///// AREATYPE.IDS                                     \\\\\
@@ -125,50 +125,50 @@ PRINT ~BG1AREA = %BG1AREA% (%dummy%)~
 
 APPEND ~GTIMES.IDS~ ~2592000 ONE_YEAR~        UNLESS ~ONE_YEAR~
 
-COPY + ~%MOD_FOLDER%/temp/array/GTIMES.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~[ %TAB%]%col2%[%newline%]+~)) BEGIN
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2%~
-					PRINT ~%col1% %col2% appended to %SOURCE_FILE%~
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/GTIMES.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      READ_2DA_ENTRY cnt 1 2 "col2"
+      PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~[ %TAB%]%col2%[%newline%]+~)) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_RES%.IDS~ ~%col1% %col2%~
+          PRINT ~%col1% %col2% appended to %SOURCE_FILE%~
+        END
+      END
+    END
+  END
 
 /////                                                  \\\\\
 ///// KIT.IDS                                          \\\\\
 /////                                                  \\\\\
 
 /*COPY_EXISTING ~KIT.IDS~ ~override~
-	COUNT_2DA_ROWS 2 "cntrow"
-	READ_2DA_ENTRY (cntrow - 1) 0 2 "ids_index"
-	SET ids_index = ids_index + 1
-	SPRINTF ids_index_sprint ~%x~ (ids_index) //%~
-	PATCH_PRINT ~ids_index = %ids_index_sprint%~
+  COUNT_2DA_ROWS 2 "cntrow"
+  READ_2DA_ENTRY (cntrow - 1) 0 2 "ids_index"
+  SET ids_index = ids_index + 1
+  SPRINTF ids_index_sprint ~%x~ (ids_index) //%~
+  PATCH_PRINT ~ids_index = %ids_index_sprint%~
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/KIT.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < cntrow; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~[ %TAB%]%col2%[%newline%]+~)) BEGIN
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_RES%.IDS~ ~%ids_index_sprint% %col2%~
-					PRINT ~%ids_index_sprint% %col2% appended to %SOURCE_FILE%~
-				END
-				SET ids_index = ids_index + 1
-				SPRINTF ids_index_sprint ~%x~ (ids_index) //%~
-				//PATCH_PRINT ~ids_index = %ids_index_sprint%~
-			END
-		END
-	END*/
+COPY + ~%TEMP_FOLDER%/array/KIT.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < cntrow; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      READ_2DA_ENTRY cnt 1 2 "col2"
+      PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~%SOURCE_RES%.IDS~ ~[ %TAB%]%col2%[%newline%]+~)) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_RES%.IDS~ ~%ids_index_sprint% %col2%~
+          PRINT ~%ids_index_sprint% %col2% appended to %SOURCE_FILE%~
+        END
+        SET ids_index = ids_index + 1
+        SPRINTF ids_index_sprint ~%x~ (ids_index) //%~
+        //PATCH_PRINT ~ids_index = %ids_index_sprint%~
+      END
+    END
+  END*/
 
 /////                                                  \\\\\
 ///// SONGLIST.IDS                                     \\\\\
@@ -242,137 +242,137 @@ APPEND ~SOUNDOFF.IDS~ ~74 BIO~                     UNLESS ~ BIO~
 /////                                                  \\\\\
 
 COPY_EXISTING ~CLASS.IDS~ ~override~
-	COUNT_REGEXP_INSTANCES ~^[ %TAB%]*22[ %TAB%]~ num_matches
-	PATCH_IF (num_matches >= 1) BEGIN
-		PATCH_WARN ~WARNING: CLASS.IDS already contains class assigned to slot 22~
-	END
-	REPLACE_TEXTUALLY ~\(21[ %TAB%]+SHAMAN\)~ ~\1
+  COUNT_REGEXP_INSTANCES ~^[ %TAB%]*22[ %TAB%]~ num_matches
+  PATCH_IF (num_matches >= 1) BEGIN
+    PATCH_WARN ~WARNING: CLASS.IDS already contains class assigned to slot 22~
+  END
+  REPLACE_TEXTUALLY ~\(21[ %TAB%]+SHAMAN\)~ ~\1
 22 CUSTOM_CLASS~
-	REPLACE_TEXTUALLY ~[ %TAB%]*221[ %TAB%]+SOD_TMP~ ~221 NEOTHELID~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "ids_index"
-		READ_2DA_ENTRY cnt 1 2 "ids_name"
-		TO_UPPER ids_name
-		DEFINE_ASSOCIATIVE_ARRAY class_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
-		DEFINE_ASSOCIATIVE_ARRAY class_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
-	END
+  REPLACE_TEXTUALLY ~[ %TAB%]*221[ %TAB%]+SOD_TMP~ ~221 NEOTHELID~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "ids_index"
+    READ_2DA_ENTRY cnt 1 2 "ids_name"
+    TO_UPPER ids_name
+    DEFINE_ASSOCIATIVE_ARRAY class_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
+    DEFINE_ASSOCIATIVE_ARRAY class_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
+  END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/CLASS.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			TO_UPPER col2
-			PATCH_IF (VARIABLE_IS_SET $class_ids_name(~%col2%~)) BEGIN
-				TEXT_SPRINT compare_col1 $class_ids_name(~%col2%~)
-				TEXT_SPRINT compare_col2 $class_ids_index(~%col1%~)
-				PATCH_IF (col1 != compare_col1) BEGIN
-					DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col1%~ => ~%compare_col1%~ END
-					DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col2%~ => ~%compare_col2%~ END
-					SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
-					SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
-				END
-				SET noupdate = 1
-			END ELSE PATCH_IF (VARIABLE_IS_SET $class_ids_index(~%col1%~)) BEGIN
-				TEXT_SPRINT compare_col2 $class_ids_index(~%col1%~)
-				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
-					FOR (cnt2 = 224; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
-						PATCH_IF (NOT VARIABLE_IS_SET $class_ids_index(~%cnt2%~)) BEGIN
-							SET ids_index = cnt2
-							DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col1%~ => ~%ids_index%~ END
-							DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%compare_col2%~ => ~%col2%~ END
-							SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
-							SPRINT log_remapped_class ~%log_remapped_class%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
-							SET cnt2 = 255
-						END
-						PATCH_IF (cnt2 = 254) BEGIN
-							PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
-							SET noupdate = 1
-						END
-					END
-				END
-			END ELSE BEGIN
-				SET ids_index = col1
-			END
-			PATCH_IF (noupdate = 0) BEGIN
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY class_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY class_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/CLASS.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    SET noupdate = 0
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      READ_2DA_ENTRY cnt 1 2 "col2"
+      TO_UPPER col2
+      PATCH_IF (VARIABLE_IS_SET $class_ids_name(~%col2%~)) BEGIN
+        TEXT_SPRINT compare_col1 $class_ids_name(~%col2%~)
+        TEXT_SPRINT compare_col2 $class_ids_index(~%col1%~)
+        PATCH_IF (col1 != compare_col1) BEGIN
+          DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col1%~ => ~%compare_col1%~ END
+          DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col2%~ => ~%compare_col2%~ END
+          SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+          SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
+        END
+        SET noupdate = 1
+      END ELSE PATCH_IF (VARIABLE_IS_SET $class_ids_index(~%col1%~)) BEGIN
+        TEXT_SPRINT compare_col2 $class_ids_index(~%col1%~)
+        PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
+          FOR (cnt2 = 224; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+            PATCH_IF (NOT VARIABLE_IS_SET $class_ids_index(~%cnt2%~)) BEGIN
+              SET ids_index = cnt2
+              DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%col1%~ => ~%ids_index%~ END
+              DEFINE_ASSOCIATIVE_ARRAY remapped_class BEGIN ~%compare_col2%~ => ~%col2%~ END
+              SPRINT log_remapped_class ~%log_remapped_class%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+              SPRINT log_remapped_class ~%log_remapped_class%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
+              SET cnt2 = 255
+            END
+            PATCH_IF (cnt2 = 254) BEGIN
+              PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
+              SET noupdate = 1
+            END
+          END
+        END
+      END ELSE BEGIN
+        SET ids_index = col1
+      END
+      PATCH_IF (noupdate = 0) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
+          PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY class_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY class_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
+        END
+      END
+    END
+  END
 
 /////                                                  \\\\\
 ///// RACE.IDS                                         \\\\\
 /////                                                  \\\\\
 
 COPY_EXISTING ~RACE.IDS~ ~override~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "ids_index"
-		READ_2DA_ENTRY cnt 1 2 "ids_name"
-		TO_UPPER ids_name
-		DEFINE_ASSOCIATIVE_ARRAY race_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
-		DEFINE_ASSOCIATIVE_ARRAY race_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
-	END
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "ids_index"
+    READ_2DA_ENTRY cnt 1 2 "ids_name"
+    TO_UPPER ids_name
+    DEFINE_ASSOCIATIVE_ARRAY race_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
+    DEFINE_ASSOCIATIVE_ARRAY race_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
+  END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/RACE.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			TO_UPPER col2
-			PATCH_IF (VARIABLE_IS_SET $race_ids_name(~%col2%~)) BEGIN
-				TEXT_SPRINT compare_col1 $race_ids_name(~%col2%~)
-				TEXT_SPRINT compare_col2 $race_ids_index(~%col1%~)
-				PATCH_IF (col1 != compare_col1) BEGIN
-					DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col1%~ => ~%compare_col1%~ END
-					DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col2%~ => ~%compare_col2%~ END
-					SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
-					SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
-				END
-				SET noupdate = 1
-			END ELSE PATCH_IF (VARIABLE_IS_SET $race_ids_index(~%col1%~)) BEGIN
-				TEXT_SPRINT compare_col2 $race_ids_index(~%col1%~)
-				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
-					FOR (cnt2 = 100; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
-						PATCH_IF (NOT VARIABLE_IS_SET $race_ids_index(~%cnt2%~)) BEGIN
-							SET ids_index = cnt2
-							DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col1%~ => ~%ids_index%~ END
-							DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%compare_col2%~ => ~%col2%~ END
-							SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
-							SPRINT log_remapped_race ~%log_remapped_race%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
-							SET cnt2 = 255
-						END
-						PATCH_IF (cnt2 = 254) BEGIN
-							PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
-							SET noupdate = 1
-						END
-					END
-				END
-			END ELSE BEGIN
-				SET ids_index = col1
-			END
-			PATCH_IF (noupdate = 0) BEGIN
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY race_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY race_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/RACE.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    SET noupdate = 0
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      READ_2DA_ENTRY cnt 1 2 "col2"
+      TO_UPPER col2
+      PATCH_IF (VARIABLE_IS_SET $race_ids_name(~%col2%~)) BEGIN
+        TEXT_SPRINT compare_col1 $race_ids_name(~%col2%~)
+        TEXT_SPRINT compare_col2 $race_ids_index(~%col1%~)
+        PATCH_IF (col1 != compare_col1) BEGIN
+          DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col1%~ => ~%compare_col1%~ END
+          DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col2%~ => ~%compare_col2%~ END
+          SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+          SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
+        END
+        SET noupdate = 1
+      END ELSE PATCH_IF (VARIABLE_IS_SET $race_ids_index(~%col1%~)) BEGIN
+        TEXT_SPRINT compare_col2 $race_ids_index(~%col1%~)
+        PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
+          FOR (cnt2 = 100; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+            PATCH_IF (NOT VARIABLE_IS_SET $race_ids_index(~%cnt2%~)) BEGIN
+              SET ids_index = cnt2
+              DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%col1%~ => ~%ids_index%~ END
+              DEFINE_ASSOCIATIVE_ARRAY remapped_race BEGIN ~%compare_col2%~ => ~%col2%~ END
+              SPRINT log_remapped_race ~%log_remapped_race%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+              SPRINT log_remapped_race ~%log_remapped_race%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
+              SET cnt2 = 255
+            END
+            PATCH_IF (cnt2 = 254) BEGIN
+              PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
+              SET noupdate = 1
+            END
+          END
+        END
+      END ELSE BEGIN
+        SET ids_index = col1
+      END
+      PATCH_IF (noupdate = 0) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
+          PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY race_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY race_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
+        END
+      END
+    END
+  END
 
 /////                                                  \\\\\
 ///// SPECIFIC.IDS                                     \\\\\
@@ -380,130 +380,130 @@ COPY + ~%MOD_FOLDER%/temp/array/RACE.IDS~ ~%MOD_FOLDER%/temp/array~
 
 APPEND ~SPECIFIC.IDS~ ~150 WATER_DWELLING~ UNLESS ~^150[ %TAB%]~
 COPY_EXISTING ~SPECIFIC.IDS~ ~override~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "ids_index"
-		READ_2DA_ENTRY cnt 1 2 "ids_name"
-		TO_UPPER ids_name
-		DEFINE_ASSOCIATIVE_ARRAY spec_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
-		DEFINE_ASSOCIATIVE_ARRAY spec_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
-	END
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "ids_index"
+    READ_2DA_ENTRY cnt 1 2 "ids_name"
+    TO_UPPER ids_name
+    DEFINE_ASSOCIATIVE_ARRAY spec_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
+    DEFINE_ASSOCIATIVE_ARRAY spec_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
+  END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/SPECIFIC.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			TO_UPPER col2
-			PATCH_IF (VARIABLE_IS_SET $spec_ids_name(~%col2%~)) BEGIN
-				TEXT_SPRINT compare_col1 $spec_ids_name(~%col2%~)
-				TEXT_SPRINT compare_col2 $spec_ids_index(~%col1%~)
-				PATCH_IF (col1 != compare_col1) BEGIN
-					DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col1%~ => ~%compare_col1%~ END
-					DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col2%~ => ~%compare_col2%~ END
-					SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
-					SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
-				END
-				SET noupdate = 1
-			END ELSE PATCH_IF (VARIABLE_IS_SET $spec_ids_index(~%col1%~)) BEGIN
-				TEXT_SPRINT compare_col2 $spec_ids_index(~%col1%~)
-				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
-					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
-						PATCH_IF (NOT VARIABLE_IS_SET $spec_ids_index(~%cnt2%~)) BEGIN
-							SET ids_index = cnt2
-							DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col1%~ => ~%ids_index%~ END
-							DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%compare_col2%~ => ~%col2%~ END
-							SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
-							SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
-							SET cnt2 = 255
-						END
-						PATCH_IF (cnt2 = 254) BEGIN
-							PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
-							SET noupdate = 1
-						END
-					END
-				END
-			END ELSE BEGIN
-				SET ids_index = col1
-			END
-			PATCH_IF (noupdate = 0) BEGIN
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY spec_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY spec_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/SPECIFIC.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    SET noupdate = 0
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      READ_2DA_ENTRY cnt 1 2 "col2"
+      TO_UPPER col2
+      PATCH_IF (VARIABLE_IS_SET $spec_ids_name(~%col2%~)) BEGIN
+        TEXT_SPRINT compare_col1 $spec_ids_name(~%col2%~)
+        TEXT_SPRINT compare_col2 $spec_ids_index(~%col1%~)
+        PATCH_IF (col1 != compare_col1) BEGIN
+          DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col1%~ => ~%compare_col1%~ END
+          DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col2%~ => ~%compare_col2%~ END
+          SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+          SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
+        END
+        SET noupdate = 1
+      END ELSE PATCH_IF (VARIABLE_IS_SET $spec_ids_index(~%col1%~)) BEGIN
+        TEXT_SPRINT compare_col2 $spec_ids_index(~%col1%~)
+        PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
+          FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+            PATCH_IF (NOT VARIABLE_IS_SET $spec_ids_index(~%cnt2%~)) BEGIN
+              SET ids_index = cnt2
+              DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%col1%~ => ~%ids_index%~ END
+              DEFINE_ASSOCIATIVE_ARRAY remapped_spec BEGIN ~%compare_col2%~ => ~%col2%~ END
+              SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+              SPRINT log_remapped_spec ~%log_remapped_spec%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
+              SET cnt2 = 255
+            END
+            PATCH_IF (cnt2 = 254) BEGIN
+              PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
+              SET noupdate = 1
+            END
+          END
+        END
+      END ELSE BEGIN
+        SET ids_index = col1
+      END
+      PATCH_IF (noupdate = 0) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
+          PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY spec_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY spec_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
+        END
+      END
+    END
+  END
 
 /////                                                  \\\\\
 ///// SPLSTATE.IDS                                     \\\\\
 /////                                                  \\\\\
 
 COPY_EXISTING ~SPLSTATE.IDS~ ~override~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "ids_index"
-		READ_2DA_ENTRY cnt 1 2 "ids_name"
-		TO_UPPER ids_name
-		DEFINE_ASSOCIATIVE_ARRAY splstate_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
-		DEFINE_ASSOCIATIVE_ARRAY splstate_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
-	END
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "ids_index"
+    READ_2DA_ENTRY cnt 1 2 "ids_name"
+    TO_UPPER ids_name
+    DEFINE_ASSOCIATIVE_ARRAY splstate_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
+    DEFINE_ASSOCIATIVE_ARRAY splstate_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
+  END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/SPLSTATE.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			TO_UPPER col2
-			PATCH_IF (VARIABLE_IS_SET $splstate_ids_name(~%col2%~)) BEGIN
-				TEXT_SPRINT compare_col1 $splstate_ids_name(~%col2%~)
-				TEXT_SPRINT compare_col2 $splstate_ids_index(~%col1%~)
-				PATCH_IF (col1 != compare_col1) BEGIN
-					DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col1%~ => ~%compare_col1%~ END
-					DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col2%~ => ~%compare_col2%~ END
-					SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
-					SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
-				END
-				SET noupdate = 1
-			END ELSE PATCH_IF (VARIABLE_IS_SET $splstate_ids_index(~%col1%~)) BEGIN
-				TEXT_SPRINT compare_col2 $splstate_ids_index(~%col1%~)
-				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
-					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
-						PATCH_IF (NOT VARIABLE_IS_SET $splstate_ids_index(~%cnt2%~)) BEGIN
-							SET ids_index = cnt2
-							DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col1%~ => ~%ids_index%~ END
-							DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%compare_col2%~ => ~%col2%~ END
-							SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
-							SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
-							SET cnt2 = 255
-						END
-						PATCH_IF (cnt2 = 254) BEGIN
-							PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
-							SET noupdate = 1
-						END
-					END
-				END
-			END ELSE BEGIN
-				SET ids_index = col1
-			END
-			PATCH_IF (noupdate = 0) BEGIN
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY splstate_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY splstate_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/SPLSTATE.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    SET noupdate = 0
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      READ_2DA_ENTRY cnt 1 2 "col2"
+      TO_UPPER col2
+      PATCH_IF (VARIABLE_IS_SET $splstate_ids_name(~%col2%~)) BEGIN
+        TEXT_SPRINT compare_col1 $splstate_ids_name(~%col2%~)
+        TEXT_SPRINT compare_col2 $splstate_ids_index(~%col1%~)
+        PATCH_IF (col1 != compare_col1) BEGIN
+          DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col1%~ => ~%compare_col1%~ END
+          DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col2%~ => ~%compare_col2%~ END
+          SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+          SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
+        END
+        SET noupdate = 1
+      END ELSE PATCH_IF (VARIABLE_IS_SET $splstate_ids_index(~%col1%~)) BEGIN
+        TEXT_SPRINT compare_col2 $splstate_ids_index(~%col1%~)
+        PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
+          FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+            PATCH_IF (NOT VARIABLE_IS_SET $splstate_ids_index(~%cnt2%~)) BEGIN
+              SET ids_index = cnt2
+              DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%col1%~ => ~%ids_index%~ END
+              DEFINE_ASSOCIATIVE_ARRAY remapped_splState BEGIN ~%compare_col2%~ => ~%col2%~ END
+              SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+              SPRINT log_remapped_splState ~%log_remapped_splState%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
+              SET cnt2 = 255
+            END
+            PATCH_IF (cnt2 = 254) BEGIN
+              PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
+              SET noupdate = 1
+            END
+          END
+        END
+      END ELSE BEGIN
+        SET ids_index = col1
+      END
+      PATCH_IF (noupdate = 0) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
+          PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY splstate_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY splstate_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
+        END
+      END
+    END
+  END
 
 /////                                                  \\\\\
 ///// EA.IDS                                           \\\\\
@@ -511,62 +511,62 @@ COPY + ~%MOD_FOLDER%/temp/array/SPLSTATE.IDS~ ~%MOD_FOLDER%/temp/array~
 
 APPEND ~EA.IDS~ ~7 REALLYCHARMED~ UNLESS ~^7[ %TAB%]~
 COPY_EXISTING ~EA.IDS~ ~override~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 2 "ids_index"
-		READ_2DA_ENTRY cnt 1 2 "ids_name"
-		TO_UPPER ids_name
-		DEFINE_ASSOCIATIVE_ARRAY ea_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
-		DEFINE_ASSOCIATIVE_ARRAY ea_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
-	END
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 2 "ids_index"
+    READ_2DA_ENTRY cnt 1 2 "ids_name"
+    TO_UPPER ids_name
+    DEFINE_ASSOCIATIVE_ARRAY ea_ids_index BEGIN ~%ids_index%~ => ~%ids_name%~ END
+    DEFINE_ASSOCIATIVE_ARRAY ea_ids_name BEGIN ~%ids_name%~ => ~%ids_index%~ END
+  END
 BUT_ONLY
 
-COPY + ~%MOD_FOLDER%/temp/array/EA.IDS~ ~%MOD_FOLDER%/temp/array~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		PATCH_IF IS_AN_INT col1 BEGIN
-			READ_2DA_ENTRY cnt 1 2 "col2"
-			TO_UPPER col2
-			PATCH_IF (VARIABLE_IS_SET $ea_ids_name(~%col2%~)) BEGIN
-				TEXT_SPRINT compare_col1 $ea_ids_name(~%col2%~)
-				TEXT_SPRINT compare_col2 $ea_ids_index(~%col1%~)
-				PATCH_IF (col1 != compare_col1) BEGIN
-					DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%col1%~ => ~%compare_col1%~ END
-					DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%col2%~ => ~%compare_col2%~ END
-					SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
-					SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
-				END
-				SET noupdate = 1
-			END ELSE PATCH_IF (VARIABLE_IS_SET $ea_ids_index(~%col1%~)) BEGIN
-				TEXT_SPRINT compare_col2 $ea_ids_index(~%col1%~)
-				PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
-					FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
-						PATCH_IF (NOT VARIABLE_IS_SET $ea_ids_index(~%cnt2%~)) BEGIN
-							SET ids_index = cnt2
-							DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%col1%~ => ~%ids_index%~ END
-							DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%compare_col2%~ => ~%col2%~ END
-							SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
-							SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
-							SET cnt2 = 255
-						END
-						PATCH_IF (cnt2 = 254) BEGIN
-							PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
-							SET noupdate = 1
-						END
-					END
-				END
-			END ELSE BEGIN
-				SET ids_index = col1
-			END
-			PATCH_IF (noupdate = 0) BEGIN
-				INNER_ACTION BEGIN
-					APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
-					PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY ea_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
-					ACTION_DEFINE_ASSOCIATIVE_ARRAY ea_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
-				END
-			END
-		END
-	END
+COPY + ~%TEMP_FOLDER%/array/EA.IDS~ ~%TEMP_FOLDER%/array~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 0; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    SET noupdate = 0
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    PATCH_IF IS_AN_INT col1 BEGIN
+      READ_2DA_ENTRY cnt 1 2 "col2"
+      TO_UPPER col2
+      PATCH_IF (VARIABLE_IS_SET $ea_ids_name(~%col2%~)) BEGIN
+        TEXT_SPRINT compare_col1 $ea_ids_name(~%col2%~)
+        TEXT_SPRINT compare_col2 $ea_ids_index(~%col1%~)
+        PATCH_IF (col1 != compare_col1) BEGIN
+          DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%col1%~ => ~%compare_col1%~ END
+          DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%col2%~ => ~%compare_col2%~ END
+          SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%col1%%TAB%=>%TAB%%compare_col1%%TAB%%slash%%slash%%col2%%LNL%~
+          SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%col2%%TAB%=>%TAB%%compare_col2%%TAB%%slash%%slash%%col1%%LNL%~
+        END
+        SET noupdate = 1
+      END ELSE PATCH_IF (VARIABLE_IS_SET $ea_ids_index(~%col1%~)) BEGIN
+        TEXT_SPRINT compare_col2 $ea_ids_index(~%col1%~)
+        PATCH_IF (NOT "%col2%" STR_EQ "%compare_col2%") BEGIN
+          FOR (cnt2 = 1; cnt2 < 255; cnt2 = cnt2 + 1) BEGIN
+            PATCH_IF (NOT VARIABLE_IS_SET $ea_ids_index(~%cnt2%~)) BEGIN
+              SET ids_index = cnt2
+              DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%col1%~ => ~%ids_index%~ END
+              DEFINE_ASSOCIATIVE_ARRAY remapped_ea BEGIN ~%compare_col2%~ => ~%col2%~ END
+              SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%col1%%TAB%=>%TAB%%ids_index%%TAB%%slash%%slash%%col2%%LNL%~
+              SPRINT log_remapped_ea ~%log_remapped_ea%%TAB%%compare_col2%%TAB%=>%TAB%%col2%%TAB%%slash%%slash%%col1%%LNL%~
+              SET cnt2 = 255
+            END
+            PATCH_IF (cnt2 = 254) BEGIN
+              PATCH_WARN ~WARNING: Not enough slots in %SOURCE_FILE% for %col2% entry~
+              SET noupdate = 1
+            END
+          END
+        END
+      END ELSE BEGIN
+        SET ids_index = col1
+      END
+      PATCH_IF (noupdate = 0) BEGIN
+        INNER_ACTION BEGIN
+          APPEND ~%SOURCE_FILE%~ ~%ids_index% %col2%~
+          PRINT ~%ids_index% %col2% appended to %SOURCE_FILE%~
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY ea_ids_index BEGIN ~%ids_index%~ => ~%col2%~ END
+          ACTION_DEFINE_ASSOCIATIVE_ARRAY ea_ids_name BEGIN ~%col2%~ => ~%ids_index%~ END
+        END
+      END
+    END
+  END

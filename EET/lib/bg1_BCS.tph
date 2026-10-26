@@ -4,57 +4,57 @@
 
 //local scripts are not processing after MakeUnselectable is used
 ACTION_FOR_EACH file IN BPPLOT ALORA BRANWEN_ CORAN DORN_ DYNAHEIR EDWIN_ ELDOTH FALDORN_ GARRICK_ IMOEN_ JAHEIRA_ KAGAIN KHALID KIVAN MINSC_ MONTARON NEERA_ QUAYLE RASAAD_ SAFANA SHARTEEL SKIE_ TIAX VICONIA_ XAN XZAR BEGIN
-	COPY_EXISTING ~%file%.BCS~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-			SPRINT textToReplace ~[ %TAB%]+\(MakeUnselectable(0)\)~
-			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-			PATCH_IF (num_matches > 0) BEGIN
-				REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  COPY_EXISTING ~%file%.BCS~ ~override~
+    DECOMPILE_AND_PATCH BEGIN
+      SPRINT textToReplace ~[ %TAB%]+\(MakeUnselectable(0)\)~
+      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+      PATCH_IF (num_matches > 0) BEGIN
+        REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
     ReallyForceSpellRES("K#UNSELR",Myself)~
-				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-			END ELSE BEGIN
-				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-			END
-			SPRINT textToReplace ~MakeUnselectable(5000)~
-			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-			PATCH_IF (num_matches > 0) BEGIN
-				REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#UNSELE",Myself)~
-				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-			END ELSE BEGIN
-				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-			END
-		END
-	BUT_ONLY
+        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+      END ELSE BEGIN
+        PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END
+      SPRINT textToReplace ~MakeUnselectable(5000)~
+      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+      PATCH_IF (num_matches > 0) BEGIN
+        REPLACE_TEXTUALLY ~%textToReplace%~ ~ReallyForceSpellRES("K#UNSELE",Myself)~
+        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+      END ELSE BEGIN
+        PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END
+    END
+  BUT_ONLY
 END
 
 COPY_EXISTING ~DORN_.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ActionOverride("SHARTEEL",MakeUnselectable(0))~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("SHARTEEL",MakeUnselectable(0))
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~ActionOverride("SHARTEEL",MakeUnselectable(0))~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("SHARTEEL",MakeUnselectable(0))
     ReallyForceSpellRES("K#UNSELR","DORN")
     ReallyForceSpellRES("K#UNSELR","SHARTEEL")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 ACTION_FOR_EACH file IN OH9310 OH9350 BEGIN
-	COPY_EXISTING ~%file%.BCS~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-			SPRINT textToReplace ~ActionOverride(\(Player[1-6]\),MakeUnselectable(5000))~
-			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-			PATCH_IF (num_matches > 0) BEGIN
-				REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride(\1,ReallyForceSpellRES("K#UNSELE",Myself))~
-				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-			END ELSE BEGIN
-				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-			END
-		END
-	BUT_ONLY
+  COPY_EXISTING ~%file%.BCS~ ~override~
+    DECOMPILE_AND_PATCH BEGIN
+      SPRINT textToReplace ~ActionOverride(\(Player[1-6]\),MakeUnselectable(5000))~
+      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+      PATCH_IF (num_matches > 0) BEGIN
+        REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride(\1,ReallyForceSpellRES("K#UNSELE",Myself))~
+        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+      END ELSE BEGIN
+        PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END
+    END
+  BUT_ONLY
 END
 
 /////                                                  \\\\\
@@ -63,9 +63,9 @@ END
 
 //BG0705.BCS
 COPY_EXISTING ~BG0705.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		COUNT_REGEXP_INSTANCES ~StartMovie("TAVERN")~ num_matches
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    COUNT_REGEXP_INSTANCES ~StartMovie("TAVERN")~ num_matches
+  END
 BUT_ONLY
 ACTION_IF (num_matches < 1) BEGIN
 <<<<<<<< .../BG0705-et.baf
@@ -77,24 +77,24 @@ THEN
     SetGlobal("EnteredElfsong","GLOBAL",1)
 END
 >>>>>>>>
-	EXTEND_TOP ~BG0705.BCS~ ~.../BG0705-et.baf~
+  EXTEND_TOP ~BG0705.BCS~ ~.../BG0705-et.baf~
 END
 
 //BG3300.BCS
 COPY_EXISTING ~BG3300.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SetGlobal("EnteredBeregost","GLOBAL",1)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		COUNT_REGEXP_INSTANCES ~StartMovie("BEREGOST")~ num_matches2
-		PATCH_IF (num_matches2 > 0) BEGIN
-		END ELSE PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~StartMovie("BEREGOST")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~SetGlobal("EnteredBeregost","GLOBAL",1)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    COUNT_REGEXP_INSTANCES ~StartMovie("BEREGOST")~ num_matches2
+    PATCH_IF (num_matches2 > 0) BEGIN
+    END ELSE PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~StartMovie("BEREGOST")
     SetGlobal("EnteredBeregost","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END	ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END  ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -102,101 +102,101 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~CUTCKEEP.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("CHPTXT6")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("CHPTXT6")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementChapter("CHPTXT6")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("CHPTXT6")
     AddJournalEntry(215840,INFO)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 COPY_EXISTING ~BDCUT10.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("chptxt8")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt8")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementChapter("chptxt8")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt8")
     AddJournalEntry(256974,INFO)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 COPY_EXISTING ~BD7100.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("SODTXT9")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("SODTXT9")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementChapter("SODTXT9")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("SODTXT9")
     AddJournalEntry(256368,INFO)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 COPY_EXISTING ~BD3000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("SODTXT10")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("SODTXT10")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementChapter("SODTXT10")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("SODTXT10")
     AddJournalEntry(256371,INFO)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 COPY_EXISTING ~BD4000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("chptxt11")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt11")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementChapter("chptxt11")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt11")
     AddJournalEntry(256373,INFO)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 COPY_EXISTING ~BD4400.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("chptxt12")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt12")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementChapter("chptxt12")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt12")
     AddJournalEntry(256375,INFO)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 COPY_EXISTING ~BDCUT61.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementChapter("chptxt13")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt13")
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementChapter("chptxt13")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementChapter("chptxt13")
     AddJournalEntry(256378,INFO)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -204,27 +204,27 @@ BUT_ONLY
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_sourceBase BEGIN
-	1 , ~BDDDD2A~ , ~CreateCreature("BDCCIMO",[^)]+)~ , ~BDCCIMO~ => ~Imoen2~
-	2 , ~BDDDD2B~ , ~CreateCreature("BDCCIMO",[^)]+)~ , ~BDCCIMO~ => ~Imoen2~
-	//3 , ~BD0103~ , ~CreateCreature("BDIMDEAD",[^)]+)~ , ~Imoen2~ => ~Imoen2~
-	//4 , ~BD0103~ , ~CreateCreature("BDIMOEN",[^)]+)~ , ~Imoen2~ => ~Imoen2~
-	//5 , ~BDSCRY01~ , ~CreateCreature("BDIMOEN",[^)]+)~ , ~Imoen2~ => ~Imoen2~
+  1 , ~BDDDD2A~ , ~CreateCreature("BDCCIMO",[^)]+)~ , ~BDCCIMO~ => ~Imoen2~
+  2 , ~BDDDD2B~ , ~CreateCreature("BDCCIMO",[^)]+)~ , ~BDCCIMO~ => ~Imoen2~
+  //3 , ~BD0103~ , ~CreateCreature("BDIMDEAD",[^)]+)~ , ~Imoen2~ => ~Imoen2~
+  //4 , ~BD0103~ , ~CreateCreature("BDIMOEN",[^)]+)~ , ~Imoen2~ => ~Imoen2~
+  //5 , ~BDSCRY01~ , ~CreateCreature("BDIMOEN",[^)]+)~ , ~Imoen2~ => ~Imoen2~
 END
 
 ACTION_PHP_EACH table_sourceBase AS source => base BEGIN
-	COPY_EXISTING ~%source_1%.BCS~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-			SPRINT textToReplace ~\(%source_2%\)~
-			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-			PATCH_IF (num_matches > 0) BEGIN
-				REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
-		ActionOverride("%source_3%",PolymorphCopy("%base%"))~
-				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-			END ELSE BEGIN
-				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-			END
-		END
-	BUT_ONLY
+  COPY_EXISTING ~%source_1%.BCS~ ~override~
+    DECOMPILE_AND_PATCH BEGIN
+      SPRINT textToReplace ~\(%source_2%\)~
+      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+      PATCH_IF (num_matches > 0) BEGIN
+        REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+    ActionOverride("%source_3%",PolymorphCopy("%base%"))~
+        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+      END ELSE BEGIN
+        PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END
+    END
+  BUT_ONLY
 END
 
 /////                                                  \\\\\
@@ -558,19 +558,19 @@ END
 >>>>>>>>
 
 ACTION_FOR_EACH file IN IMOEN_ IMOEN IMOEN2 IMOE25 BEGIN
-	EXTEND_BOTTOM ~%file%.BCS~ ~.../IMOEN-eb.baf~
-	COPY_EXISTING  ~%file%.BCS~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-			SPRINT textToReplace ~SetInterrupt(FALSE)[%newline%]*SetGlobal("BD_JOINXP","LOCALS",1)\(\([%newline%]*ChangeStat(Myself,XP,[0-9]+,SET)\)?[%newline%]*SetInterrupt(TRUE)\)~
-			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-			PATCH_IF (num_matches > 0) BEGIN
-				REPLACE_TEXTUALLY ~%textToReplace%~ ~SetInterrupt(FALSE) SetGlobal("BD_JOINXP","LOCALS",2) \1~
-				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-			END ELSE BEGIN
-				PATCH_PRINT ~Patching: could not find %textToReplace% in %SOURCE_FILESPEC%~
-			END
-		END
-	BUT_ONLY
+  EXTEND_BOTTOM ~%file%.BCS~ ~.../IMOEN-eb.baf~
+  COPY_EXISTING  ~%file%.BCS~ ~override~
+    DECOMPILE_AND_PATCH BEGIN
+      SPRINT textToReplace ~SetInterrupt(FALSE)[%newline%]*SetGlobal("BD_JOINXP","LOCALS",1)\(\([%newline%]*ChangeStat(Myself,XP,[0-9]+,SET)\)?[%newline%]*SetInterrupt(TRUE)\)~
+      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+      PATCH_IF (num_matches > 0) BEGIN
+        REPLACE_TEXTUALLY ~%textToReplace%~ ~SetInterrupt(FALSE) SetGlobal("BD_JOINXP","LOCALS",2) \1~
+        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+      END ELSE BEGIN
+        PATCH_PRINT ~Patching: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END
+    END
+  BUT_ONLY
 END
 
 /////                                                  \\\\\
@@ -593,16 +593,16 @@ END
 ACTION_FOR_EACH file IN BDBAELOT BDDORN BDDYNAHE BDEDWIN BDKHALID BDMINSC BDRASAAD BDSAFANA BDVICONI BEGIN
   COPY_EXISTING ~%file%.BCS~ ~override~
     PATCH_PHP_EACH moved_soundslots AS bg1slot => bg2slot BEGIN
-  	  DECOMPILE_AND_PATCH BEGIN
-  	  	SPRINT textToReplace ~%bg1slot%~
-  	  	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-  	  	PATCH_IF (num_matches > 0) BEGIN
-  	  		REPLACE_TEXTUALLY ~%textToReplace%~ ~%bg2slot%~
-  	  		PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-  	  	END ELSE BEGIN
-  	  		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-  	  	END
-  	  END
+      DECOMPILE_AND_PATCH BEGIN
+        SPRINT textToReplace ~%bg1slot%~
+        COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+        PATCH_IF (num_matches > 0) BEGIN
+          REPLACE_TEXTUALLY ~%textToReplace%~ ~%bg2slot%~
+          PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+        END ELSE BEGIN
+          PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+        END
+      END
     END
   BUT_ONLY
 END
@@ -622,16 +622,16 @@ END
 
 COPY_EXISTING ~BDNEERA.BCS~ ~override~
   PATCH_PHP_EACH neera_moved_soundslots AS bg1slot => bg2slot BEGIN
-	  DECOMPILE_AND_PATCH BEGIN
-	  	SPRINT textToReplace ~%bg1slot%~
-	  	COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-	  	PATCH_IF (num_matches > 0) BEGIN
-	  		REPLACE_TEXTUALLY ~%textToReplace%~ ~%bg2slot%~
-	  		PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-	  	END ELSE BEGIN
-	  		PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-	  	END
-	  END
+    DECOMPILE_AND_PATCH BEGIN
+      SPRINT textToReplace ~%bg1slot%~
+      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+      PATCH_IF (num_matches > 0) BEGIN
+        REPLACE_TEXTUALLY ~%textToReplace%~ ~%bg2slot%~
+        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+      END ELSE BEGIN
+        PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END
+    END
   END
 BUT_ONLY
 
@@ -669,27 +669,27 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~BDBALDUR.BCS~ ~override~
-R_B_B ~.../oBALDUR.baf~ ~.../nBALDUR.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBALDUR.baf in %SOURCE_FILE%~ END
+  R_B_B ~.../oBALDUR.baf~ ~.../nBALDUR.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBALDUR.baf in %SOURCE_FILE%~ END
 
 COPY_EXISTING ~BDBALDUR.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~FamiliarSummoner~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Player1~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~\([^!]StoryModeOn()[%newline%]*!CheckSpellState(Player[2-6],STORY_MODE)[%newline%]*InParty(Player[2-6])\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1 !AreaCheck("BD6100")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~FamiliarSummoner~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Player1~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~\([^!]StoryModeOn()[%newline%]*!CheckSpellState(Player[2-6],STORY_MODE)[%newline%]*InParty(Player[2-6])\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1 !AreaCheck("BD6100")~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../BDBALDUR-eb.baf
@@ -892,12 +892,12 @@ EXTEND_TOP ~BDBALDUR.BCS~ ~.../timers-et.baf~ //via bg2_BCS.tph
 
 //BDCUT08.BCS, BDDEBUG.BCS
 COPY_EXISTING ~BDCUT08.BCS~ ~override~
-	~BDDEBUG.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SetWorldmap("SODMAP")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetWorldmap("WORLDMAP")
+  ~BDDEBUG.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~SetWorldmap("SODMAP")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~SetWorldmap("WORLDMAP")
     //Can be visited + Has been visited
     RemoveWorldmapAreaFlag("BG0100",12)
     RemoveWorldmapAreaFlag("BG0200",12)
@@ -909,20 +909,20 @@ COPY_EXISTING ~BDCUT08.BCS~ ~override~
     RemoveWorldmapAreaFlag("BG1100",12)
     RemoveWorldmapAreaFlag("BG1200",12)
     RemoveWorldmapAreaFlag("BG1300",12)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BDCUT61.BCS
 COPY_EXISTING ~BDCUT61.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(IF[%newline%]*True()[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)[%newline%]*Wait(1)[%newline%]*ActionOverride(Player2,LeaveAreaLUA("bd0112","",\[855\.370\],S))\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches = 1) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IF
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~\(IF[%newline%]*True()[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)[%newline%]*Wait(1)[%newline%]*ActionOverride(Player2,LeaveAreaLUA("bd0112","",\[855\.370\],S))\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches = 1) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IF
   InPartyAllowDead(Player2)
   !Name("None",Player2)
 THEN
@@ -979,76 +979,76 @@ THEN
     CutSceneId(Player1)
     Wait(1)
     ActionOverride(Player2,LeaveAreaLUA("bd0112","",[855.370],S))~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD0101.BCS
 COPY_EXISTING ~BD0101.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		/*SPRINT textToReplace ~^\(  Global("bd_safana_spawn","bd0101",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    /*SPRINT textToReplace ~^\(  Global("bd_safana_spawn","bd0101",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",7)
   !StateCheck("Safana",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
-		SPRINT textToReplace ~^\(  Global("bd_dyna_spawn","bd0101",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END*/
+    SPRINT textToReplace ~^\(  Global("bd_dyna_spawn","bd0101",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",7)
   !StateCheck("Minsc",STATE_REALLY_DEAD)
   !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~^\(  Global("bd_minsc_spawn","bd0101",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~^\(  Global("bd_minsc_spawn","bd0101",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",7)
   !StateCheck("Minsc",STATE_REALLY_DEAD)
   !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~^\(  Global("bd_viconia_spawn","bd0101",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~^\(  Global("bd_viconia_spawn","bd0101",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",7)
   !StateCheck("Viconia",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD0103.BCS
 COPY_EXISTING ~BD0103.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ApplySpellRES("bddest","IMOEN2")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("IMOEN2",DestroySelf())~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~SetGlobal("BD_ENSURE_PARTY_GONE","BD0103",1)[%newline%]*END~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("BD_ENSURE_PARTY_GONE","BD0103",1)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~ApplySpellRES("bddest","IMOEN2")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("IMOEN2",DestroySelf())~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~SetGlobal("BD_ENSURE_PARTY_GONE","BD0103",1)[%newline%]*END~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("BD_ENSURE_PARTY_GONE","BD0103",1)
 END
 
 IF
@@ -1105,55 +1105,55 @@ THEN
     SetGlobal("K#PartySoD","BD0103",1)
     Continue()
 END~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD0108.BCS
 COPY_EXISTING ~BD0108.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~^\(  Global("BD_MINSC","BD0108",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~^\(  Global("BD_MINSC","BD0108",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",7)
   !StateCheck("Minsc",STATE_REALLY_DEAD)
   !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~^\(  Global("BD_DYNAHEIR","BD0108",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~^\(  Global("BD_DYNAHEIR","BD0108",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",7)
   !StateCheck("Minsc",STATE_REALLY_DEAD)
   !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD0111.BCS
 COPY_EXISTING ~BD0111.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~^\(  Global("BD_SPAWN_RASAAD","bd0111",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~^\(  Global("BD_SPAWN_RASAAD","bd0111",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",7)
   !StateCheck("Rasaad",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD0120.BCS
@@ -1190,184 +1190,184 @@ END
 
 // Bhaalspawn ability creation for new SoD game
 LAF LOAD_BHAALSPAWN_ABILITIES
-	STR_VAR
-		area = ~BD0120~
-		triggers_prep = ~Global("NEWGAME_SOD","GLOBAL",1)~
-		triggers_add = ~Global("NEWGAME_SOD","GLOBAL",1) !Global("bd_plot","GLOBAL",0)~
-	RET
-		bsa_script = script
+  STR_VAR
+    area = ~BD0120~
+    triggers_prep = ~Global("NEWGAME_SOD","GLOBAL",1)~
+    triggers_add = ~Global("NEWGAME_SOD","GLOBAL",1) !Global("bd_plot","GLOBAL",0)~
+  RET
+    bsa_script = script
 END
 EXTEND_TOP ~BD0120.BCS~ ~.../BD0120-et.baf~ EVAL
 
 //BD1000.BCS
 COPY_EXISTING ~BD1000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~^\(  Global("bd_edwin_spawn","bd1000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~^\(  Global("bd_edwin_spawn","bd1000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Edwin",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~^\(  Global("BD_BAELOTH_SPAWN","BD1000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~^\(  Global("BD_BAELOTH_SPAWN","BD1000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Baeloth",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~^\(  Global("bd_move_minsc","bd1000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~^\(  Global("bd_move_minsc","bd1000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Minsc",STATE_REALLY_DEAD)
   !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~^\(  Global("bd_move_dyna","bd1000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~^\(  Global("bd_move_dyna","bd1000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Minsc",STATE_REALLY_DEAD)
   !StateCheck("Dynaheir",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD2000.BCS
 COPY_EXISTING ~BD2000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~^\(  Global("bd_khal_spawn","bd2000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~^\(  Global("bd_khal_spawn","bd2000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Khalid",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~^\(  Global("bd_dorn_spawn","bd2000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~^\(  Global("bd_dorn_spawn","bd2000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Dorn",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD2100.BCS
 COPY_EXISTING ~BD2100.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~^\(  Global("BD_NEERA","BD2100",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~^\(  Global("BD_NEERA","BD2100",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Neera",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD6100.BCS
 COPY_EXISTING ~BD6100.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~IncrementGlobal("bd_finale","bd6100",10)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementGlobal("bd_finale","bd6100",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~StartMovie("sodcin05")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~StartMovie("sodcin05") FadeFromColor([30.0],0)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~ContinueGame(FALSE)[%newline%]*EndCredits()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~PlaySound("dpjon156")[%newline%]*Wait(4)[%newline%]*EndCutSceneMode()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~EndCutSceneMode()
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~IncrementGlobal("bd_finale","bd6100",10)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~IncrementGlobal("bd_finale","bd6100",1)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~StartMovie("sodcin05")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~StartMovie("sodcin05") FadeFromColor([30.0],0)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~ContinueGame(FALSE)[%newline%]*EndCredits()~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~PlaySound("dpjon156")[%newline%]*Wait(4)[%newline%]*EndCutSceneMode()~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~EndCutSceneMode()
     SetCursorState(TRUE)
     CreateCreatureObject("K#TELBGT",Player1,0,0,0)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~\(ActionOverride(Player6,SetSequence(SEQ_SLEEP))\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~\(ActionOverride(Player6,SetSequence(SEQ_SLEEP))\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
     ApplySpellRES("K#REST",Player1) // No such index
     ApplySpellRES("K#REST",Player2) // No such index
     ApplySpellRES("K#REST",Player3) // No such index
     ApplySpellRES("K#REST",Player4) // No such index
     ApplySpellRES("K#REST",Player5) // No such index
     ApplySpellRES("K#REST",Player6) // No such index~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~PlaySound("AMB_M160")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~PlaySound("AMB_M160")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
       // camdawg: OK if not a match since we don't want it here (EEFP removes it anyway)
       PATCH_IF !cd_eefp_bgee BEGIN 
-			  PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+        PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
       END   
-		END
-		SPRINT textToReplace ~\(ApplySpellRES("bdremove",Player1)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1 AdvanceTime(ONE_HOUR)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~SoundActivate(.*\([%newline%]*Wait(.*\)?~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+    END
+    SPRINT textToReplace ~\(ApplySpellRES("bdremove",Player1)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1 AdvanceTime(ONE_HOUR)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~SoundActivate(.*\([%newline%]*Wait(.*\)?~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../BD6100-et.baf
@@ -1393,12 +1393,12 @@ EXTEND_TOP ~BD6100.BCS~ ~.../BD6100-et.baf~
 
 //BD6200.BCS
 COPY_EXISTING ~BD6200.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
+  DECOMPILE_AND_PATCH BEGIN
     // camdawg: matching bdimoen (bgee 2.6 and incorrect) and imoen (eefp and correct) -- imoen converted to imoen2 by earlier work
-		SPRINT textToReplace ~CreateCreature("bdimoen",\[775\.705\],E)[%newline%]*ActionOverride("\(bdimoen\|imoen2\)",MakeGlobalOverride())~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("IMOEN2",SetGlobal("K#PartySoD","LOCALS",1))
+    SPRINT textToReplace ~CreateCreature("bdimoen",\[775\.705\],E)[%newline%]*ActionOverride("\(bdimoen\|imoen2\)",MakeGlobalOverride())~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("IMOEN2",SetGlobal("K#PartySoD","LOCALS",1))
     SmallWait(1)
     MoveGlobal("BD6200","Imoen2",[775.705])
     ApplySpellRES("bdresurr","Imoen2") // No such index
@@ -1413,94 +1413,94 @@ COPY_EXISTING ~BD6200.BCS~ ~override~
     ActionOverride("Imoen2",ChangeAIScript("",GENERAL))
     ActionOverride("Imoen2",ChangeAIScript("",DEFAULT))
     ActionOverride("Imoen2",SetDialog("BDIMOEN"))~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD7000.BCS
 COPY_EXISTING ~BD7000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~^\(  Global("bd_rasaad_spawn","bd7000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~^\(  Global("bd_rasaad_spawn","bd7000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   Global("Chapter","GLOBAL",8)
   !StateCheck("Rasaad",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BD7100.BCS
 COPY_EXISTING ~BD7100.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~^\(  Global("bd_jah_spawn","bd7100",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~^\(  Global("bd_jah_spawn","bd7100",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   GlobalLT("Chapter","GLOBAL",13)
   !StateCheck("Jaheira",STATE_REALLY_DEAD)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BDINTRO.BCS
 /*COPY_EXISTING ~BDINTRO.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(!?BeenInParty("safana")\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck("Safana",STATE_REALLY_DEAD)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~\(!?BeenInParty("safana")\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck("Safana",STATE_REALLY_DEAD)
   \1~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY*/
 
 //BDSODTRN.BCS
 COPY_EXISTING ~BDSODTRN.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SetGlobal("EndOfBG1","GLOBAL",2)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("EndOfBG1","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~Wait(1)[%newline%]*StartMovie("BGENDCRD")[%newline%]*FadeToColor(\[1\.0\],0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("EndOfBG1","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~SetGlobal("EndOfBG1","GLOBAL",2)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("EndOfBG1","GLOBAL",1)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~Wait(1)[%newline%]*StartMovie("BGENDCRD")[%newline%]*FadeToColor(\[1\.0\],0)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~SetGlobal("EndOfBG1","GLOBAL",1)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BG0125.BCS
 COPY_EXISTING ~BG0125.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~GlobalLT("EndOfBG1","GLOBAL",2)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("EndOfBG1","GLOBAL",0)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~GlobalLT("EndOfBG1","GLOBAL",2)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("EndOfBG1","GLOBAL",0)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BG0900.BCS
@@ -1543,8 +1543,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player1,1,1,0)
-	XEquipItem("staf01",Player1,SLOT_WEAPON,EQUIP)
-	ActionOverride(Player1,SelectWeaponAbility(SLOT_WEAPON,0))
+  XEquipItem("staf01",Player1,SLOT_WEAPON,EQUIP)
+  ActionOverride(Player1,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -1558,8 +1558,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player2,1,1,0)
-	XEquipItem("staf01",Player2,SLOT_WEAPON,EQUIP)
-	ActionOverride(Player2,SelectWeaponAbility(SLOT_WEAPON,0))
+  XEquipItem("staf01",Player2,SLOT_WEAPON,EQUIP)
+  ActionOverride(Player2,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -1573,8 +1573,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player3,1,1,0)
-	XEquipItem("staf01",Player3,SLOT_WEAPON,EQUIP)
-	ActionOverride(Player3,SelectWeaponAbility(SLOT_WEAPON,0))
+  XEquipItem("staf01",Player3,SLOT_WEAPON,EQUIP)
+  ActionOverride(Player3,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -1588,8 +1588,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player4,1,1,0)
-	XEquipItem("staf01",Player4,SLOT_WEAPON,EQUIP)
-	ActionOverride(Player4,SelectWeaponAbility(SLOT_WEAPON,0))
+  XEquipItem("staf01",Player4,SLOT_WEAPON,EQUIP)
+  ActionOverride(Player4,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -1603,8 +1603,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player5,1,1,0)
-	XEquipItem("staf01",Player5,SLOT_WEAPON,EQUIP)
-	ActionOverride(Player5,SelectWeaponAbility(SLOT_WEAPON,0))
+  XEquipItem("staf01",Player5,SLOT_WEAPON,EQUIP)
+  ActionOverride(Player5,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -1618,8 +1618,8 @@ IF
 THEN
   RESPONSE #100
     GiveItemCreate("staf01",Player6,1,1,0)
-	XEquipItem("staf01",Player6,SLOT_WEAPON,EQUIP)
-	ActionOverride(Player6,SelectWeaponAbility(SLOT_WEAPON,0))
+  XEquipItem("staf01",Player6,SLOT_WEAPON,EQUIP)
+  ActionOverride(Player6,SelectWeaponAbility(SLOT_WEAPON,0))
     Continue()
 END
 
@@ -1771,10 +1771,10 @@ END
 >>>>>>>>
 
 ACTION_IF FILE_EXISTS_IN_GAME ~BDCOAL50.BCS~ BEGIN
-	WARN ~WARNING: BDCOAL50.BCS exists!~
-	EXTEND_TOP ~BDCOAL50.BCS~ ~.../BDCOAL50.baf~
+  WARN ~WARNING: BDCOAL50.BCS exists!~
+  EXTEND_TOP ~BDCOAL50.BCS~ ~.../BDCOAL50.baf~
 END ELSE BEGIN
-	COMPILE ~.../BDCOAL50.baf~
+  COMPILE ~.../BDCOAL50.baf~
 END
 
 //Coast Way Crossing
@@ -1919,17 +1919,17 @@ EXTEND_TOP ~BD2100.BCS~ ~.../BD2100-et.baf~
 
 //Coalition Camp
 COPY_EXISTING ~BD3000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RemoveAreaFlag(NOTRAVEL)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~\(%textToReplace%\)~ ~RemoveWorldmapAreaFlag("BD2000",6)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RemoveAreaFlag(NOTRAVEL)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~\(%textToReplace%\)~ ~RemoveWorldmapAreaFlag("BD2000",6)
     \1~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../BD3000-et.baf
@@ -1963,19 +1963,19 @@ EXTEND_TOP ~BD3000.BCS~ ~.../BD3000-et.baf~
 
 //Dragonspear Castle, Exterior
 COPY_EXISTING ~BD4000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~AddAreaFlag(NOTRAVEL)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~\(%textToReplace%\)~ ~AddWorldmapAreaFlag("BD5000",6)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~AddAreaFlag(NOTRAVEL)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~\(%textToReplace%\)~ ~AddWorldmapAreaFlag("BD5000",6)
     AddWorldmapAreaFlag("BD7400",6)
     AddWorldmapAreaFlag("BD2000",6)
     \1~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../BD4000-et.baf
@@ -2082,10 +2082,10 @@ EXTEND_TOP ~BD5200.BCS~ ~.../BD5200-et.baf~
 
 //Coast Way Forest
 COPY_EXISTING ~BDSDDSKI.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~^\(IF$\)~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~^\(IF$\)~ ~\1
   Global("Chapter","GLOBAL",8)~
-	END
+  END
 BUT_ONLY
 
 <<<<<<<< .../BD7000-et.baf
@@ -2159,38 +2159,38 @@ EXTEND_TOP ~BD7100.BCS~ ~.../BD7100-et.baf~
 
 //FTOWBAZ.BCS, MTOWBAZ.BCS, NOBLBAZ.BCS, NOBWBAZ.BCS
 COPY_EXISTING ~FTOWBAZ.BCS~ ~override~
-	~MTOWBAZ.BCS~ ~override~//blank script in BG2:EE
-	~NOBLBAZ.BCS~ ~override~
-	~NOBWBAZ.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~Global("DukeThanks","GLOBAL",1)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("Chapter","GLOBAL",7)
+  ~MTOWBAZ.BCS~ ~override~//blank script in BG2:EE
+  ~NOBLBAZ.BCS~ ~override~
+  ~NOBWBAZ.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~Global("DukeThanks","GLOBAL",1)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("Chapter","GLOBAL",7)
   Global("DukeThanks","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //FTOWBEZ.BCS, FTOWNAZ.BCS, MTOWBEZ.BCS, MTOWNAZ.BCS
 COPY_EXISTING ~FTOWBEZ.BCS~ ~override~
-	~FTOWNAZ.BCS~ ~override~
-	~MTOWBEZ.BCS~ ~override~
-	~MTOWNAZ.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~GlobalGT("Chapter","GLOBAL",2)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~GlobalGT("Chapter","GLOBAL",2)
+  ~FTOWNAZ.BCS~ ~override~
+  ~MTOWBEZ.BCS~ ~override~
+  ~MTOWNAZ.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~GlobalGT("Chapter","GLOBAL",2)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~GlobalGT("Chapter","GLOBAL",2)
   GlobalLT("Chapter","GLOBAL",2)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //AJANTIS.BCS

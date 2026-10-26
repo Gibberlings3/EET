@@ -1,28 +1,34 @@
 COPY + ~%patch_dir%/itm/CMBRQ04.ITM~ ~%patch_dir%/itm~
-	WRITE_ASCII 0x3a ~IBRAC24#~ #8
+  WRITE_ASCII 0x3a ~IBRAC24#~ #8
 
 COPY ~%MOD_FOLDER%/compat/DarkHorizonsBGee/Ibrac24.bam~ ~%biff_dir%/Ibrac24#.bam~
 
 //these items has wrong Ability Effect index numbering, which may lead to out of bound reading (100% in CMSTQ04.ITM case)
-ACTION_BASH_FOR ~%MOD_FOLDER%/compat/DarkHorizonsBGee~ ~.*.itm~ BEGIN
-	COPY ~%MOD_FOLDER%/compat/DarkHorizonsBGee/%BASH_FOR_FILE%~ ~override~
-		PATCH_FOR_EACH offset IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
-			INNER_ACTION BEGIN
-				COPY - ~%patch_dir%/itm/%BASH_FOR_FILE%~ ~%patch_dir%/itm~
-					READ_LONG offset "strref"
-			END
-			LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
-			WRITE_LONG offset "%str%"
-		END
-	DELETE + ~%patch_dir%/itm/%BASH_FOR_FILE%~
+ACTION_IF (DIRECTORY_EXISTS ~%MOD_FOLDER%/compat/DarkHorizonsBGee~) BEGIN
+  ACTION_CLEAR_ARRAY ~files~
+  GET_FILE_ARRAY files ~%MOD_FOLDER%/compat/DarkHorizonsBGee~ ~.*.itm~
+  ACTION_PHP_EACH files AS _ => filespec BEGIN
+  // ACTION_BASH_FOR ~%MOD_FOLDER%/compat/DarkHorizonsBGee~ ~.*.itm~ BEGIN
+    LAF FILE_OF_FILESPEC STR_VAR filespec RET filespec_file = file END
+    COPY ~%MOD_FOLDER%/compat/DarkHorizonsBGee/%filespec_file%~ ~override~
+      PATCH_FOR_EACH offset IN 0x8 0xc 0x50 0x54 BEGIN //Name - Unidentified, Name - Identified, Description - Unidentified, Description - Identified
+        INNER_ACTION BEGIN
+          COPY - ~%patch_dir%/itm/%filespec_file%~ ~%patch_dir%/itm~
+            READ_LONG offset "strref"
+        END
+        LPF EET_strref INT_VAR str = strref add = strrefAdd RET str END
+        WRITE_LONG offset "%str%"
+      END
+    DELETE + ~%patch_dir%/itm/%filespec_file%~
+  END
 END
 
 //delete files existing in BG2:EE
-DELETE + ~%MOD_FOLDER%/temp/wav/BREGAX02.WAV~
-	~%MOD_FOLDER%/temp/wav/BREGAX03.WAV~
-	~%MOD_FOLDER%/temp/wav/BREGAX04.WAV~
-	~%MOD_FOLDER%/temp/wav/BREGAX05.WAV~
-	~%MOD_FOLDER%/temp/wav/BREGAX17.WAV~
-	~%MOD_FOLDER%/temp/bam/FIRE_1.bam~
-	~%MOD_FOLDER%/temp/bam/FIRE_4.bam~
-	~%MOD_FOLDER%/temp/bam/FIRE_4G2.bam~
+DELETE + ~%TEMP_FOLDER%/wav/BREGAX02.WAV~
+         ~%TEMP_FOLDER%/wav/BREGAX03.WAV~
+         ~%TEMP_FOLDER%/wav/BREGAX04.WAV~
+         ~%TEMP_FOLDER%/wav/BREGAX05.WAV~
+         ~%TEMP_FOLDER%/wav/BREGAX17.WAV~
+         ~%TEMP_FOLDER%/bam/FIRE_1.bam~
+         ~%TEMP_FOLDER%/bam/FIRE_4.bam~
+         ~%TEMP_FOLDER%/bam/FIRE_4G2.bam~

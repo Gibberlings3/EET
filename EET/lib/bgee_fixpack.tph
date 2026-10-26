@@ -6,127 +6,127 @@ OUTER_SPRINT remappedPrefix ~remapped_fixpack~
 
 //referenced BG2:EE strrefs (doesn't matter that much since these are mostly debug resources)
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_fixpack_tra BEGIN
-	200340 => 340 //Held
-	200384 => 384 //Held
-	200915 => 915 //Held
-	201473 => 1473 //Held
-	208364 => 8364 //Dominated
-	208823 => 8823 //Held
-	210554 => 10554 //Undead destroyed
-	239752 => 39752 //Stricken by a foul disease
-	240968 => 40968 //Two Levels Drained
-	240969 => 40969 //Three Levels Drained
-	240979 => 40979 //Four Levels Drained
-	241495 => 41495 //One Level Drained
-	241616 => 41616 //Five Levels Drained
-	254337 => 54337 //Diseased
-	264285 => 64285 //Vorpal Hit
-	272868 => 72868 //Casts True Sight
-	204742 => 4742 //Spell Ineffective
-	237605 => "-1"
-	235567 => "-1"
-	235544 => "-1"
-	237340 => "-1"
-	235542 => "-1"
-	235606 => "-1"
-	237613 => "-1"
-	237607 => "-1"
-	236317 => "-1"
-	235568 => "-1"
-	235484 => "-1"
-	235593 => "-1"
-	237801 => "-1"
+  200340 => 340 //Held
+  200384 => 384 //Held
+  200915 => 915 //Held
+  201473 => 1473 //Held
+  208364 => 8364 //Dominated
+  208823 => 8823 //Held
+  210554 => 10554 //Undead destroyed
+  239752 => 39752 //Stricken by a foul disease
+  240968 => 40968 //Two Levels Drained
+  240969 => 40969 //Three Levels Drained
+  240979 => 40979 //Four Levels Drained
+  241495 => 41495 //One Level Drained
+  241616 => 41616 //Five Levels Drained
+  254337 => 54337 //Diseased
+  264285 => 64285 //Vorpal Hit
+  272868 => 72868 //Casts True Sight
+  204742 => 4742 //Spell Ineffective
+  237605 => "-1"
+  235567 => "-1"
+  235544 => "-1"
+  237340 => "-1"
+  235542 => "-1"
+  235606 => "-1"
+  237613 => "-1"
+  237607 => "-1"
+  236317 => "-1"
+  235568 => "-1"
+  235484 => "-1"
+  235593 => "-1"
+  237801 => "-1"
 END
 
 COPY_EXISTING ~PRINCESS.ITM~ ~override~
-	~BDNEREID.CRE~ ~override~
-	~BDPWATER.CRE~ ~override~
-	~BDSALF01.CRE~ ~override~
-	~BDDTRAI.ITM~ ~override~
-	~REF1.ITM~ ~override~
-	~BDCONSTR.ITM~ ~override~
-	LPF EET_PCU_core END
+              ~BDNEREID.CRE~ ~override~
+              ~BDPWATER.CRE~ ~override~
+              ~BDSALF01.CRE~ ~override~
+              ~BDDTRAI.ITM~ ~override~
+              ~REF1.ITM~ ~override~
+              ~BDCONSTR.ITM~ ~override~
+  LPF EET_PCU_core END
 BUT_ONLY
 
 //http://www.shsforums.net/topic/56960-bgtee/page-7#entry585091
 //IMOEN.CRE has wrong stats and BG:EE added DV to it. Conflict with BG2 Tweaks ToB-Style NPCs unless fixed
 COPY_EXISTING ~IMOEN1.CRE~ ~override/IMOEN.CRE~
-	WRITE_ASCII 0x2CC ~IMOEN~ #8
+  WRITE_ASCII 0x2CC ~IMOEN~ #8
 
 ACTION_IF !cd_eefp_bgee BEGIN // if eefp was installed on bgee prior to merge, none of this should be necessary
 
 //http://gibberlings3.net/forums/index.php?showtopic=28161&page=19#entry246196
 COPY_EXISTING ~BDPETR01.CRE~ ~override~
-	~BDPETR02.CRE~ ~override~
-	~BDPETR03.CRE~ ~override~
-	~BDPETR04.CRE~ ~override~
-	~BDPETR05.CRE~ ~override~
-	READ_ASCII 0x268 "default"
-	PATCH_IF (~%default%~ STR_EQ ~DPLAYER3~) BEGIN
-		WRITE_ASCII 0x268 ~~ #8
-	END ELSE BEGIN
-		PATCH_WARN ~WARNING: %SOURCE_FILE% no longer needs fixing~
-	END
+              ~BDPETR02.CRE~ ~override~
+              ~BDPETR03.CRE~ ~override~
+              ~BDPETR04.CRE~ ~override~
+              ~BDPETR05.CRE~ ~override~
+  READ_ASCII 0x268 "default"
+  PATCH_IF (~%default%~ STR_EQ ~DPLAYER3~) BEGIN
+    WRITE_ASCII 0x268 ~~ #8
+  END ELSE BEGIN
+    PATCH_WARN ~WARNING: %SOURCE_FILE% no longer needs fixing~
+  END
 BUT_ONLY
 
 //junk in BG1801.ARE Rest Spawn entries (harmless but annoying during save update)
 COPY_EXISTING ~BG1801.ARE~ ~override~
-	// Missing Rest Spawn Remover
-	READ_LONG  0xc0 "rest_off" ELSE 0
-	PATCH_IF (rest_off > 0x11b) BEGIN
-		FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
-			READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
-			PATCH_IF (("%resref%" STRING_COMPARE_CASE "")                // ignore empty entries
-			AND ("%resref%" STRING_COMPARE_CASE "none")                  // ignore 'none'
-			AND ("%resref%" STRING_COMPARE_REGEXP "^[Rr][Dd].+$")) BEGIN // ignore creatures starting with RD
-				SET exists = 0
-				PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.cre~ BEGIN
-					SET exists = 1
-				END
-				PATCH_IF ("%exists%" = 0) BEGIN
-					PATCH_PRINT "%SOURCE_FILE% issue: Rest Spawn creature file does not exist (%resref%.cre)! Nulling..."
-					WRITE_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "NONE" #8
-				END
-			END
-		END
-		SET "none_count" = 0
-		FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
-			READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
-			PATCH_IF (("%resref%" STR_EQ "") OR ("%resref%" STR_EQ "none")) BEGIN
-				SET "none_count" = "none_count" + 1
-			END
-		END
-		READ_SHORT ("%rest_off%" + 0x98) "spawncount"
-		PATCH_IF (("%none_count%" = 10) AND ("%spawncount%" != 0)) BEGIN
-			PATCH_PRINT "%SOURCE_FILE% issue: No creatures in Rest Spawn Entry but area still set to spawn something! Setting number of spawnable creatures to 0..."
-			WRITE_SHORT ("%rest_off%" + 0x98) 0
-		END
-	END
+  // Missing Rest Spawn Remover
+  READ_LONG  0xc0 "rest_off" ELSE 0
+  PATCH_IF (rest_off > 0x11b) BEGIN
+    FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
+      READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
+      PATCH_IF (("%resref%" STRING_COMPARE_CASE "")                // ignore empty entries
+      AND ("%resref%" STRING_COMPARE_CASE "none")                  // ignore 'none'
+      AND ("%resref%" STRING_COMPARE_REGEXP "^[Rr][Dd].+$")) BEGIN // ignore creatures starting with RD
+        SET exists = 0
+        PATCH_IF FILE_EXISTS_IN_GAME ~%resref%.cre~ BEGIN
+          SET exists = 1
+        END
+        PATCH_IF ("%exists%" = 0) BEGIN
+          PATCH_PRINT "%SOURCE_FILE% issue: Rest Spawn creature file does not exist (%resref%.cre)! Nulling..."
+          WRITE_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "NONE" #8
+        END
+      END
+    END
+    SET "none_count" = 0
+    FOR (index = 0 ; index < 10 ; index = index + 1) BEGIN
+      READ_ASCII ("%rest_off%" + 0x48 + ("%index%" * 0x08)) "resref"
+      PATCH_IF (("%resref%" STR_EQ "") OR ("%resref%" STR_EQ "none")) BEGIN
+        SET "none_count" = "none_count" + 1
+      END
+    END
+    READ_SHORT ("%rest_off%" + 0x98) "spawncount"
+    PATCH_IF (("%none_count%" = 10) AND ("%spawncount%" != 0)) BEGIN
+      PATCH_PRINT "%SOURCE_FILE% issue: No creatures in Rest Spawn Entry but area still set to spawn something! Setting number of spawnable creatures to 0..."
+      WRITE_SHORT ("%rest_off%" + 0x98) 0
+    END
+  END
 BUT_ONLY
 
 //Dead NPCs stays in party in chapter 13
 COPY_EXISTING ~BDCUT61.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~InParty(~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~InPartyAllowDead(~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~InParty(~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~InPartyAllowDead(~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //missing XP and story mode code in Imoen script
 COPY_EXISTING ~IMOEN_.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		COUNT_REGEXP_INSTANCES ~OHSMODE3~ num_matches
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    COUNT_REGEXP_INSTANCES ~OHSMODE3~ num_matches
+  END
 BUT_ONLY
 
 ACTION_IF (num_matches > 0) BEGIN
-	WARN ~WARNING: .../IMOEN_-eb.baf fix for IMOEN_.BCS is no longer needed.~
+  WARN ~WARNING: .../IMOEN_-eb.baf fix for IMOEN_.BCS is no longer needed.~
 END ELSE BEGIN
 <<<<<<<< .../IMOEN_-eb.baf
 
@@ -139,45 +139,45 @@ THEN
     Continue()
 END
 >>>>>>>>
-	EXTEND_BOTTOM ~IMOEN_.BCS~ ~.../IMOEN_-eb.baf~
+  EXTEND_BOTTOM ~IMOEN_.BCS~ ~.../IMOEN_-eb.baf~
 END
 
 //https://forums.beamdog.com/discussion/comment/789128#Comment_789128
 //http://redmine.beamdog.com/issues/22244
 //Duplicated Neera and Dorn GAM entries
 COPY_EXISTING ~DORN_.DLG~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreatureObjectOffset("DORN",Myself,\[0\.0\])[%newline%]*DestroySelf()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~CreateCreatureObjectOffset("DORN",Myself,\[0\.0\])[%newline%]*DestroySelf()~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 COPY_EXISTING ~NEERA_.DLG~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreatureObjectOffset("NEERA",Myself,\[0\.0\])[%newline%]*DestroySelf()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~CreateCreatureObjectOffset("NEERA",Myself,\[0\.0\])[%newline%]*DestroySelf()~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //https://forums.beamdog.com/discussion/44826/bugged-dopplegangers-in-ar2619
 //Bugged ELMINS4.DLG if you kill either TETHTO3 or GORION3 before dialogue is triggered, also fix for 1-hit KO doppleganger change
 COPY_EXISTING ~GDCHANGE.BCS~ ~override~
-	~LDCHANGE.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~AttackedBy(\[ANYONE\],DEFAULT)~ ~AttackedBy([ANYONE],DEFAULT)
+  ~LDCHANGE.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~AttackedBy(\[ANYONE\],DEFAULT)~ ~AttackedBy([ANYONE],DEFAULT)
   HPGT(Myself,0)~ //this will prevent change if the first attack was fatal
-	END
+  END
 BUT_ONLY
 
 <<<<<<<< .../oELMINS4.baf
@@ -207,7 +207,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~ELMINS4.bcs~ ~override~
-R_B_B ~.../oELMINS4.baf~ ~.../nELMINS4.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oELMINS4.baf in %SOURCE_FILE%~ END //skips the dialogue if you killed one of them
+  R_B_B ~.../oELMINS4.baf~ ~.../nELMINS4.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oELMINS4.baf in %SOURCE_FILE%~ END //skips the dialogue if you killed one of them
 
 <<<<<<<< .../BG2619-et.baf
 IF
@@ -254,43 +254,43 @@ EXTEND_TOP ~BG2619.BCS~ ~.../BG2619-et.baf~ //DOPPLEGANGER_CHANGE if dialogue wa
 //Changes Thayan Bodyguards Alignment from NEUTRAL to NEUTRAL_EVIL in order to prevent shouts from making commoners hostile
 //related to this topic: https://forums.beamdog.com/discussion/33842/shout-bcs-broken-ai-behavior
 COPY_EXISTING ~NETHGUA1.CRE~ ~override~
-	~NETHGUA2.CRE~ ~override~
-	WRITE_BYTE 0x27b ~35~ //Alignment
+              ~NETHGUA2.CRE~ ~override~
+  WRITE_BYTE 0x27b ~35~ //Alignment
 BUT_ONLY
 
 //Tanari Aec'Letec is able follow you upstairs during fight due to "improved" (not at all) pathfinding added in BG2:EE patch 1.3, which allows for cheesy tactics. This code prevents such situation by disabling stairs during this fight
 COPY_EXISTING ~BG1002.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_TEXTUALLY ~SetGlobal("TanariXP","GLOBAL",1)~ ~TriggerActivation("Door1003",TRUE)
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~SetGlobal("TanariXP","GLOBAL",1)~ ~TriggerActivation("Door1003",TRUE)
     SetGlobal("TanariXP","GLOBAL",1)~
-		REPLACE_TEXTUALLY ~SetGlobal("Cult63Spawn","GLOBAL",1)~ ~TriggerActivation("Door1003",FALSE)
+    REPLACE_TEXTUALLY ~SetGlobal("Cult63Spawn","GLOBAL",1)~ ~TriggerActivation("Door1003",FALSE)
     SetGlobal("Cult63Spawn","GLOBAL",1)~
-	END
+  END
 BUT_ONLY
 
 //Beamdog added SHOUT.BCS to Cultists that are meant to stay and do nothing during Aec'Letec fight. They react to shout by moving which can make them stuck on each other. Vanilla BG1 implementation is more safe in this case
 COPY_EXISTING ~CULTD1.CRE~ ~override~
-	~CULTD2.CRE~ ~override~
-	~CULTD3.CRE~ ~override~
-	~CULTD4.CRE~ ~override~
-	~CULTD5.CRE~ ~override~
-	~CULTD6.CRE~ ~override~
-	READ_ASCII 0x248 ~script~ //Override script
-	PATCH_IF (~%script%~ STR_EQ ~SHOUT~) BEGIN
-		WRITE_ASCII 0x248 ~~ #8
-	END
+              ~CULTD2.CRE~ ~override~
+              ~CULTD3.CRE~ ~override~
+              ~CULTD4.CRE~ ~override~
+              ~CULTD5.CRE~ ~override~
+              ~CULTD6.CRE~ ~override~
+  READ_ASCII 0x248 ~script~ //Override script
+  PATCH_IF (~%script%~ STR_EQ ~SHOUT~) BEGIN
+    WRITE_ASCII 0x248 ~~ #8
+  END
 BUT_ONLY
 
 //IMPORT2.2DA in BG2:EE tries to import unique SLNG03.ITM from BG:EE. It points to common sling +3 but the correct item itself already exists in BG2:EE under the SLNG05.ITM name.
 
 //not needed, already converted by PCU patching
 /*COPY_EXISTING ~BG0514.ARE~ ~override~
-	LPF REPLACE_AREA_ITEM STR_VAR old_item = SLNG03 new_item = SLNG05 END
+  LPF REPLACE_AREA_ITEM STR_VAR old_item = SLNG03 new_item = SLNG05 END
 BUT_ONLY*/
 
 END // eefp check
 
 COPY_EXISTING ~IMPORT02.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~\bSLNG03\b~ ~SLNG05~
+  PRETTY_PRINT_2DA
+  REPLACE_TEXTUALLY ~\bSLNG03\b~ ~SLNG05~
 BUT_ONLY

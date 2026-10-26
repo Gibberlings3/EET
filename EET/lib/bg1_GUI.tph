@@ -1,22 +1,22 @@
 ACTION_FOR_EACH str IN 9582 9584 9583 9585 9586 9587 11327 10962 11315 18036 10640 23514 24432 24433 24434 18032 18033 18034 18035 18037 18044 18000 32205 32206 66654 65909 32709 32710 18021 66657 69567 32725 18042 17204 18015 18013 18014 18016 11352 18008 18009 18010 18011 18012 24680 32129 71374 20186 11322 19394 24364 15418 24359 24358 24356 24360 24357 24362 24363 31813 31827 11942 15918 15917 32729 10485 69563 24485 11824 24398 19531 16456 16189 19377 11331 16498 32217 17518 71373 15305 24313 17188 17237 17242 9602 17247 24315 25323 25319 25320 25321 25322 25324 25325 25326 25327 17253 17256 10963 24461 10811 15416 11973 20681 20274 11323 32898 BEGIN
-	ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_guistr BEGIN ~%str%~ => ~~ END
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_guistr BEGIN ~%str%~ => ~~ END
 END
 
-COPY ~%MOD_FOLDER%/temp/array/UI.MENU~ ~%MOD_FOLDER%/SoD_GUI~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~\([0-9][0-9][0-9][0-9]+\)~ BEGIN
-		PATCH_IF (VARIABLE_IS_SET $remapped_guistr(~%MATCH1%~)) BEGIN
-			SET old = MATCH1
-			MATCH1 = MATCH1 + 200000
-			PATCH_PRINT ~Patching %DEST_FILESPEC%: %old% => %MATCH1%~
-		END
-	END ~%MATCH1%~
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~"
+COPY ~%TEMP_FOLDER%/array/UI.MENU~ ~%GUI_DATA_FOLDER%/SoD_GUI~
+  REPLACE_EVALUATE CASE_INSENSITIVE ~\([0-9][0-9][0-9][0-9]+\)~ BEGIN
+    PATCH_IF (VARIABLE_IS_SET $remapped_guistr(~%MATCH1%~)) BEGIN
+      SET old = MATCH1
+      MATCH1 = MATCH1 + 200000
+      PATCH_PRINT ~Patching %DEST_FILESPEC%: %old% => %MATCH1%~
+    END
+  END ~%MATCH1%~
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~"
 		if game:GetMissionPackInfo() then
 			cheatAreaDisplayList = cheatAreasTutorial
 		elseif game:GetMissionPackInfoTBP() then
@@ -27,21 +27,21 @@ COPY ~%MOD_FOLDER%/temp/array/UI.MENU~ ~%MOD_FOLDER%/SoD_GUI~
 			cheatAreaDisplayList = cheatAreas
 		end
 	"~~~~~
-		string = ~~~~~"
+    string = ~~~~~"
 		if startCampaignData[currentCampaign].cheatAreasTable ~= nil then
 			cheatAreaDisplayList = startCampaignData[currentCampaign].cheatAreasTable
 		else
 			cheatAreaDisplayList = cheatAreas
 		end
 	"~~~~~ //"
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~menu
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~menu
 {
 	name 'START_CAMPAIGN_SELECT'
 	align center center
@@ -434,7 +434,7 @@ menu
 		text lua "CBaldurChitin:GetVersionString()"
 	}
 }~~~~~
-		string = ~~~~~menu
+    string = ~~~~~menu
 {
 	name 'START_INSTALLATION_WARNING'
 	align center center
@@ -771,14 +771,14 @@ menu
 		text lua "CBaldurChitin:GetVersionString()"
 	}
 }~~~~~ //"
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~menu
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~menu
 {
 	name 'START_SP'
 	align center center
@@ -939,7 +939,7 @@ menu
 	}
 
 }~~~~~
-		string = ~~~~~menu
+    string = ~~~~~menu
 {
 	name 'START_SP'
 	align center center
@@ -1093,14 +1093,14 @@ menu
 	}
 
 }~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~label
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~label
 	{
 		area 152 252 378 376
 		bam "BIGLOGO"
@@ -1133,7 +1133,7 @@ menu
 		sequence 0
 		frame 2
 	}~~~~~
-		string = ~~~~~label
+    string = ~~~~~label
 	{
 		area 100 205 488 460
 		bam "BIGLOGO"
@@ -1150,38 +1150,38 @@ menu
 		align center center
 		frame lua "getTitle()"
 	}~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~enabled "startEngine:GetCampaign() == const.START_CAMPAIGN_SOD"
 		name "flames~~~~~
-		string = ~~~~~enabled "Infinity_GetINIValue('Program Options','Active Campaign') == const.START_CAMPAIGN_SOD"
+    string = ~~~~~enabled "Infinity_GetINIValue('Program Options','Active Campaign') == const.START_CAMPAIGN_SOD"
 		name "flames~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~if(selectedMenuOpt == 1 and startEngine:GetCampaign() == const.START_CAMPAIGN_SOD) then~~~~~
-		string = ~~~~~if(selectedMenuOpt == 1 and Infinity_GetINIValue('Program Options','Active Campaign') == const.START_CAMPAIGN_SOD) then~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name "ESC_MENU"
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~if(selectedMenuOpt == 1 and startEngine:GetCampaign() == const.START_CAMPAIGN_SOD) then~~~~~
+    string = ~~~~~if(selectedMenuOpt == 1 and Infinity_GetINIValue('Program Options','Active Campaign') == const.START_CAMPAIGN_SOD) then~~~~~
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~name "ESC_MENU"
 	ignoreesc
 	align center center
 	onOpen "~~~~~
-		string = ~~~~~name "ESC_MENU"
+    string = ~~~~~name "ESC_MENU"
 	ignoreesc
 	align center center
 	onOpen "
@@ -1207,38 +1207,38 @@ menu
 		if (checkCampaign ~= currentCampaign) then
 			Infinity_SetINIValue('Program Options','Active Campaign',currentCampaign)
 		end~~~~~ //~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		warn = 0
-		STR_VAR
-		pattern = ~~~~~label
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    warn = 0
+    STR_VAR
+    pattern = ~~~~~label
 	{
 		area		240 208 378 376
 		bam 		BIGLOGO
 		frame 		1
 	}~~~~~
-		string = ~~~~~label
+    string = ~~~~~label
 	{
 		area 191 161 488 460
 		bam "BIGLOGO"
 		sequence 0
 		frame lua "getBigLogo()"
 	}~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~menu
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~menu
 {
 	name 'CHAPTER_WAITING_FOR_PROVIDER'~~~~~
-		string = ~~~~~menu
+    string = ~~~~~menu
 {
 	name 'EPILOGUE'
 	align center center
@@ -1296,31 +1296,31 @@ menu
 menu
 {
 	name 'CHAPTER_WAITING_FOR_PROVIDER'~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'CHARGEN_CLASS'
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~name 'CHARGEN_CLASS'
 	modal
 	align center center
 	ignoreesc
 	onopen "currentChargenClass = nil"~~~~~
-		string = ~~~~~name 'CHARGEN_CLASS'
+    string = ~~~~~name 'CHARGEN_CLASS'
 	modal
 	align center center
 	ignoreesc
 	onopen "currentChargenClass = nil currentChargenKit = nil"~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~button
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~button
 	{
 		enabled "chargen.levelingUp"
 		area 438 704 230 40
@@ -1333,7 +1333,7 @@ menu
 			currentChargenProficiency = nil
 		"
 	}~~~~~
-		string = ~~~~~button
+    string = ~~~~~button
 	{
 		enabled "chargen.levelingUp"
 		area 280 704 230 44
@@ -1360,19 +1360,19 @@ menu
 			createCharScreen:OnHighLevelAbilitiesButtonClick()
 		"
 	}~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~name 'CHARGEN_BIO'
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~name 'CHARGEN_BIO'
 	modal
 	align center center
 	ignoreesc
 	label~~~~~
-		string = ~~~~~name 'CHARGEN_BIO'
+    string = ~~~~~name 'CHARGEN_BIO'
 	modal
 	align center center
 	ignoreesc
@@ -1386,16 +1386,16 @@ menu
 		end
 	"
 	label~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~`
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~`
 TEXT_popup_big = 0~~~~~
-		string = ~~~~~`
+    string = ~~~~~`
 currentHLASelection = nil
 function chargenHLADescription()
 	if currentHLASelection == nil then
@@ -1539,14 +1539,14 @@ menu
 
 `
 TEXT_popup_big = 0~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~function matchMultiplayerGameType(gameVersion)
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~function matchMultiplayerGameType(gameVersion)
 	if gameVersion == "bgee-main" then
 		startEngine:OnSoAButtonClick(false)
 		e:CheckGUISong()
@@ -1558,7 +1558,7 @@ TEXT_popup_big = 0~~~~~
 		e:CheckGUISong()
 	end
 end~~~~~
-		string = ~~~~~function matchMultiplayerGameType(gameVersion)
+    string = ~~~~~function matchMultiplayerGameType(gameVersion)
 	if gameVersion == "bgee-main" then
 		startEngine:OnCampaignButtonClick('BG1',false)
 		e:CheckGUISong()
@@ -1579,22 +1579,22 @@ end~~~~~
 		e:CheckGUISong()
 	end
 end~~~~~
-	END
-	//==========================================================================
-	LPF REPLACE_MULTILINE
-		INT_VAR
-		num = 1
-		strict = 1
-		STR_VAR
-		pattern = ~~~~~function getCampaignBackground()
+  END
+  //==========================================================================
+  LPF REPLACE_MULTILINE
+    INT_VAR
+    num = 1
+    strict = 1
+    STR_VAR
+    pattern = ~~~~~function getCampaignBackground()
 	local campaign = startEngine:GetCampaign()
 	return startCampaignData[campaign].background
 end~~~~~
-		string = ~~~~~function getCampaignBackground()
+    string = ~~~~~function getCampaignBackground()
 	return startCampaignData[currentCampaign].background
 end~~~~~
-	END
-	//==========================================================================
+  END
+  //==========================================================================
   LPF REPLACE_MULTILINE
     INT_VAR
     num = 1
@@ -1603,6 +1603,6 @@ end~~~~~
     pattern = ~clickable lua ".*createCharScreen:IsAdvancedButtonClickable() == true"~
     string = ~~~~~clickable lua "currentCampaign ~= const.START_CAMPAIGN_TUT and createCharScreen:IsAdvancedButtonClickable() == true"~~~~~
   END
-	//==========================================================================
-	REPLACE_TEXTUALLY ~^\([ %TAB%]\)\(text "Recent events text will go here."\)~ ~\1--\2~
-	REPLACE_TEXTUALLY ~clickable[ 	]+false~ ~clickable lua "false"~ //fixes Beamdog's wrong syntax
+  //==========================================================================
+  REPLACE_TEXTUALLY ~^\([ %TAB%]\)\(text "Recent events text will go here."\)~ ~\1--\2~
+  REPLACE_TEXTUALLY ~clickable[ %TAB%]+false~ ~clickable lua "false"~ //fixes Beamdog's wrong syntax
