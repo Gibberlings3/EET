@@ -1,63 +1,68 @@
-BACKUP ~EET_gui/backup~
+BACKUP ~weidu_external/backup/EET_gui~
 AUTHOR ~K4thos (swit)~
 
+ALWAYS
+  OUTER_TEXT_SPRINT WORK_FOLDER ~weidu_external~
+  OUTER_TEXT_SPRINT DATA_FOLDER ~%WORK_FOLDER%/data/EET_gui~
+END
+
 LANGUAGE ~English~
-	~en_US~
-	~EET/lang/en_US/prompts.tra~
-	~EET/lang/en_US/setup.tra~
+  ~en_US~
+  ~EET/lang/en_US/prompts.tra~
+  ~EET/lang/en_US/setup.tra~
 LANGUAGE ~Polski (Polish)~
-	~pl_PL~
-	~EET/lang/pl_PL/prompts.tra~
-	~EET/lang/pl_PL/setup.tra~
+  ~pl_PL~
+  ~EET/lang/pl_PL/prompts.tra~
+  ~EET/lang/pl_PL/setup.tra~
 LANGUAGE ~Spanish~
-	~es_ES~
-	~EET/lang/es_ES/prompts.tra~
-	~EET/lang/es_ES/setup.tra~
+  ~es_ES~
+  ~EET/lang/es_ES/prompts.tra~
+  ~EET/lang/es_ES/setup.tra~
 LANGUAGE ~French~
-	~fr_FR~
-	~EET/lang/fr_FR/prompts.tra~
-	~EET/lang/fr_FR/setup.tra~
+  ~fr_FR~
+  ~EET/lang/fr_FR/prompts.tra~
+  ~EET/lang/fr_FR/setup.tra~
 LANGUAGE ~Czech~
-	~cs_CZ~
-	~EET/lang/cs_CZ/prompts.tra~
-	~EET/lang/cs_CZ/setup.tra~
+  ~cs_CZ~
+  ~EET/lang/cs_CZ/prompts.tra~
+  ~EET/lang/cs_CZ/setup.tra~
 LANGUAGE ~Russian~
-	~ru_RU~
-	~EET/lang/ru_RU/prompts.tra~
-	~EET/lang/ru_RU/setup.tra~
+  ~ru_RU~
+  ~EET/lang/ru_RU/prompts.tra~
+  ~EET/lang/ru_RU/setup.tra~
 LANGUAGE ~Deutsch (German)~
-	~de_DE~
-	~EET/lang/de_DE/prompts.tra~
-	~EET/lang/de_DE/setup.tra~
+  ~de_DE~
+  ~EET/lang/de_DE/prompts.tra~
+  ~EET/lang/de_DE/setup.tra~
 LANGUAGE ~Simplified Chinese~
-	~zh_CN~
-	~EET/lang/zh_CN/prompts.tra~
-	~EET/lang/zh_CN/setup.tra~
+  ~zh_CN~
+  ~EET/lang/zh_CN/prompts.tra~
+  ~EET/lang/zh_CN/setup.tra~
 LANGUAGE ~Italiano (Italian)~
-	~it_IT~
-	~EET/lang/it_IT/prompts.tra~
-	~EET/lang/it_IT/setup.tra~
-	
+  ~it_IT~
+  ~EET/lang/it_IT/prompts.tra~
+  ~EET/lang/it_IT/setup.tra~
+  
 BEGIN @920000
 SUBCOMPONENT @920001
 REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @920003
 
-COPY ~EET/SoD_GUI~ ~override~
+COPY ~%DATA_FOLDER%/SoD_GUI~ ~override~
 
 BEGIN @920002
 SUBCOMPONENT @920001
 REQUIRE_COMPONENT ~IWD-IN-EET/IWD-IN-EET.TP2~ ~0~ @920003
 
 ACTION_FOR_EACH file IN /*CHPTXT0*/ CHPTXT1 CHPTXT2 CHPTXT3 CHPTXT4 CHPTXT5 CHPTXT6 CHPTXT7 CHPTXT8 SODTXT9 SODTXT10 CHPTXT11 CHPTXT12 CHPTXT13 SCENE02 SCENE03 SCENE04 SCRTXT01 SCRTXT02 SCRTXT07 SCRTXT06 SCRTXT08 CHPTXT9 CHPTXT10 /*IDCHP0B IDCHP1B IDCHP2B IDCHP3B IDCHP4B IDCHP5B IDCHP6B IWCHP0B IWCHP1B IWCHP2B IWCHP3B IWCHP4B IWCHP5B IWCHP6B*/ BEGIN
-	COPY_EXISTING ~%file%.2DA~ ~override~
-		PRETTY_PRINT_2DA
-		SET_2DA_ENTRY 2 2 2 ""
-		SET_2DA_ENTRY 3 2 2 ""
-		PATCH_IF ~%file%~ STR_EQ ~CHPTXT0~ BEGIN
-			SET_2DA_ENTRY 4 2 2 ""
-		END
-		REPLACE_TEXTUALLY ~ [0-9]$~ ~~
-		PRETTY_PRINT_2DA
+  COPY_EXISTING ~%file%.2DA~ ~override~
+    PRETTY_PRINT_2DA
+    SET_2DA_ENTRY 2 2 2 ""
+    SET_2DA_ENTRY 3 2 2 ""
+    PATCH_IF ~%file%~ STR_EQ ~CHPTXT0~ BEGIN
+      SET_2DA_ENTRY 4 2 2 ""
+    END
+    REPLACE_TEXTUALLY ~ [0-9]$~ ~~
+    PRETTY_PRINT_2DA
 END
 
 COPY ~IWD-in-EET/IWD_GUI~ ~override~

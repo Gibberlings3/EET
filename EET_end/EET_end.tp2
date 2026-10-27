@@ -1,7 +1,10 @@
-BACKUP ~EET_end/backup~
+BACKUP ~weidu_external/backup/EET_end~
 AUTHOR ~K4thos (swit)~
 
 ALWAYS
+OUTER_TEXT_SPRINT WORK_FOLDER ~weidu_external~
+OUTER_TEXT_SPRINT TEMP_FOLDER ~%WORK_FOLDER%/temp/EET_end~
+
 CLEAR_ARRAYS
 
 /////                                                  \\\\\
@@ -11,116 +14,116 @@ CLEAR_ARRAYS
 INCLUDE ~%MOD_FOLDER%/lib/tables.tph~
 
 COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../CAMPAIGN.2DA~
-	READ_2DA_ENTRIES_NOW campaign_tbl 32
-	FOR (i=0; i < campaign_tbl; ++i) BEGIN
-		READ_2DA_ENTRY_FORMER campaign_tbl i 0 campaign
-		PATCH_PRINT ~Analyzing %campaign% campaign~
-		READ_2DA_ENTRY_FORMER campaign_tbl i 4 file
-		PATCH_IF (!VARIABLE_IS_SET $interdia_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
-			DEFINE_ASSOCIATIVE_ARRAY interdia_2da BEGIN ~%file%~ => ~~ END
-		END
-		READ_2DA_ENTRY_FORMER campaign_tbl i 30 file
-		PATCH_IF (!VARIABLE_IS_SET $clastext_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
-			DEFINE_ASSOCIATIVE_ARRAY clastext_2da BEGIN ~%file%~ => ~~ END
-		END
-		READ_2DA_ENTRY_FORMER campaign_tbl i 31 file
-		PATCH_IF (!VARIABLE_IS_SET $racetext_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
-			DEFINE_ASSOCIATIVE_ARRAY racetext_2da BEGIN ~%file%~ => ~~ END
-		END
-		READ_2DA_ENTRY_FORMER campaign_tbl i 11 file
-		PATCH_IF (!VARIABLE_IS_SET $pdialog_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
-			DEFINE_ASSOCIATIVE_ARRAY pdialog_2da BEGIN ~%file%~ => ~~ END
-			INNER_ACTION BEGIN
-				COPY_EXISTING ~%file%.2da~ ~override~
-					PRETTY_PRINT_2DA
-					PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
-						SET line_idx = 0
-						REPLACE_EVALUATE ~^.+$~ BEGIN
-							PATCH_IF (line_idx > 2) BEGIN  // process only table content
-								INNER_PATCH_SAVE MATCH0 ~%MATCH0%~ BEGIN
-									COUNT_REGEXP_INSTANCES ~[^ %TAB%%MNL%]+~ num_matches
-									FOR (col = num_matches; col < 8; ++col) BEGIN
-										REPLACE_TEXTUALLY ~$~ ~ ***~
-									END
-								END
-							END
-							SET line_idx += 1
-						END ~%MATCH0%~
-						SPRINT game ~BG2~
-					END ELSE PATCH_IF (~%file%~ STR_EQ ~BGDIALOG~) BEGIN
-						SPRINT game ~BG1~
-					END ELSE PATCH_IF (~%file%~ STR_EQ ~BDDIALOG~) BEGIN
-						SPRINT game ~SoD~
-					END ELSE BEGIN
-						SPRINT game ~~
-					END
-					READ_2DA_ENTRIES_NOW pdialog 3
-					FOR (j=1; j < pdialog; ++j) BEGIN
-						READ_2DA_ENTRY_FORMER pdialog j 0 dv
-						TO_UPPER dv
-						READ_2DA_ENTRY_FORMER pdialog j 2 join
-						TO_UPPER join
-						SET join_exists = 0
-						PATCH_IF (FILE_EXISTS_IN_GAME ~%join%.dlg~) BEGIN
-							SET join_exists = 1
-							PATCH_IF (!VARIABLE_IS_SET $table_dv(~%dv%~)) BEGIN
-								DEFINE_ASSOCIATIVE_ARRAY table_dv BEGIN ~%dv%~ => ~%join%~ END
-								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~~ , ~%game%~ => ~~ END
-								SPRINT $EVAL ~%join%~(~%game%~) ~%dv%~
-							END ELSE /*PATCH_IF (!VARIABLE_IS_SET $table_append_dlg(~%join%~))*/ BEGIN
-								TEXT_SPRINT join_main $table_dv(~%dv%~)
-								PATCH_IF (NOT ~%join%~ STR_EQ ~%join_main%~) BEGIN
-									DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~%join_main%~ , ~%game%~ => ~~ END
-									SPRINT $EVAL ~%join_main%~(~%game%~) ~%dv%~
-								END
-								SET_2DA_ENTRY j 2 3 ~%join_main%~
-							END
-						END
-						PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
-							READ_2DA_ENTRY_FORMER pdialog j 1 post
-							READ_2DA_ENTRY_FORMER pdialog j 3 dream
-							READ_2DA_ENTRY_FORMER pdialog j 4 25post
-							READ_2DA_ENTRY_FORMER pdialog j 5 25join
-							TO_UPPER 25join
-							READ_2DA_ENTRY_FORMER pdialog j 6 25dream
-							READ_2DA_ENTRY_FORMER pdialog j 7 25override
-							PATCH_IF (join_exists = 1) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) AND (NOT ~%25join%~ STR_EQ ~%join%~) BEGIN
-								DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%25join%~ , ~%join%~ , ~ToB~ => ~~ END
-								SPRINT $EVAL ~%join%~(~ToB~) ~%dv%~
-							END
-							PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25DIALOG.2DA~ ~^%dv% ~)) BEGIN
-								INNER_ACTION BEGIN
-									//PRINT ~Patching 25DIALOG.2DA: %dv% %25post% %join% %25dream%~
-									APPEND ~25DIALOG.2DA~ ~%dv% %25post% %join% %25dream%~
-								END
-							END
-							SET_2DA_ENTRY j 4 3 ~***~
-							SET_2DA_ENTRY j 5 3 ~***~
-							SET_2DA_ENTRY j 6 3 ~***~
-							SET_2DA_ENTRY j 7 3 ~***~
-						END
-					END
-					PRETTY_PRINT_2DA
-				BUT_ONLY
-			END
-		END
-	END
+  READ_2DA_ENTRIES_NOW campaign_tbl 32
+  FOR (i=0; i < campaign_tbl; ++i) BEGIN
+    READ_2DA_ENTRY_FORMER campaign_tbl i 0 campaign
+    PATCH_PRINT ~Analyzing %campaign% campaign~
+    READ_2DA_ENTRY_FORMER campaign_tbl i 4 file
+    PATCH_IF (!VARIABLE_IS_SET $interdia_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
+      DEFINE_ASSOCIATIVE_ARRAY interdia_2da BEGIN ~%file%~ => ~~ END
+    END
+    READ_2DA_ENTRY_FORMER campaign_tbl i 30 file
+    PATCH_IF (!VARIABLE_IS_SET $clastext_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
+      DEFINE_ASSOCIATIVE_ARRAY clastext_2da BEGIN ~%file%~ => ~~ END
+    END
+    READ_2DA_ENTRY_FORMER campaign_tbl i 31 file
+    PATCH_IF (!VARIABLE_IS_SET $racetext_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
+      DEFINE_ASSOCIATIVE_ARRAY racetext_2da BEGIN ~%file%~ => ~~ END
+    END
+    READ_2DA_ENTRY_FORMER campaign_tbl i 11 file
+    PATCH_IF (!VARIABLE_IS_SET $pdialog_2da(~%file%~)) AND (FILE_EXISTS_IN_GAME ~%file%.2da~) BEGIN
+      DEFINE_ASSOCIATIVE_ARRAY pdialog_2da BEGIN ~%file%~ => ~~ END
+      INNER_ACTION BEGIN
+        COPY_EXISTING ~%file%.2da~ ~override~
+          PRETTY_PRINT_2DA
+          PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
+            SET line_idx = 0
+            REPLACE_EVALUATE ~^.+$~ BEGIN
+              PATCH_IF (line_idx > 2) BEGIN  // process only table content
+                INNER_PATCH_SAVE MATCH0 ~%MATCH0%~ BEGIN
+                  COUNT_REGEXP_INSTANCES ~[^ %TAB%%MNL%]+~ num_matches
+                  FOR (col = num_matches; col < 8; ++col) BEGIN
+                    REPLACE_TEXTUALLY ~$~ ~ ***~
+                  END
+                END
+              END
+              SET line_idx += 1
+            END ~%MATCH0%~
+            SPRINT game ~BG2~
+          END ELSE PATCH_IF (~%file%~ STR_EQ ~BGDIALOG~) BEGIN
+            SPRINT game ~BG1~
+          END ELSE PATCH_IF (~%file%~ STR_EQ ~BDDIALOG~) BEGIN
+            SPRINT game ~SoD~
+          END ELSE BEGIN
+            SPRINT game ~~
+          END
+          READ_2DA_ENTRIES_NOW pdialog 3
+          FOR (j=1; j < pdialog; ++j) BEGIN
+            READ_2DA_ENTRY_FORMER pdialog j 0 dv
+            TO_UPPER dv
+            READ_2DA_ENTRY_FORMER pdialog j 2 join
+            TO_UPPER join
+            SET join_exists = 0
+            PATCH_IF (FILE_EXISTS_IN_GAME ~%join%.dlg~) BEGIN
+              SET join_exists = 1
+              PATCH_IF (!VARIABLE_IS_SET $table_dv(~%dv%~)) BEGIN
+                DEFINE_ASSOCIATIVE_ARRAY table_dv BEGIN ~%dv%~ => ~%join%~ END
+                DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~~ , ~%game%~ => ~~ END
+                SPRINT $EVAL ~%join%~(~%game%~) ~%dv%~
+              END ELSE /*PATCH_IF (!VARIABLE_IS_SET $table_append_dlg(~%join%~))*/ BEGIN
+                TEXT_SPRINT join_main $table_dv(~%dv%~)
+                PATCH_IF (NOT ~%join%~ STR_EQ ~%join_main%~) BEGIN
+                  DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%join%~ , ~%join_main%~ , ~%game%~ => ~~ END
+                  SPRINT $EVAL ~%join_main%~(~%game%~) ~%dv%~
+                END
+                SET_2DA_ENTRY j 2 3 ~%join_main%~
+              END
+            END
+            PATCH_IF (~%file%~ STR_EQ ~PDIALOG~) BEGIN
+              READ_2DA_ENTRY_FORMER pdialog j 1 post
+              READ_2DA_ENTRY_FORMER pdialog j 3 dream
+              READ_2DA_ENTRY_FORMER pdialog j 4 25post
+              READ_2DA_ENTRY_FORMER pdialog j 5 25join
+              TO_UPPER 25join
+              READ_2DA_ENTRY_FORMER pdialog j 6 25dream
+              READ_2DA_ENTRY_FORMER pdialog j 7 25override
+              PATCH_IF (join_exists = 1) AND (FILE_EXISTS_IN_GAME ~%25join%.dlg~) AND (NOT ~%25join%~ STR_EQ ~%join%~) BEGIN
+                DEFINE_ASSOCIATIVE_ARRAY table_append_dlg BEGIN ~%25join%~ , ~%join%~ , ~ToB~ => ~~ END
+                SPRINT $EVAL ~%join%~(~ToB~) ~%dv%~
+              END
+              PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25DIALOG.2DA~ ~^%dv% ~)) BEGIN
+                INNER_ACTION BEGIN
+                  //PRINT ~Patching 25DIALOG.2DA: %dv% %25post% %join% %25dream%~
+                  APPEND ~25DIALOG.2DA~ ~%dv% %25post% %join% %25dream%~
+                END
+              END
+              SET_2DA_ENTRY j 4 3 ~***~
+              SET_2DA_ENTRY j 5 3 ~***~
+              SET_2DA_ENTRY j 6 3 ~***~
+              SET_2DA_ENTRY j 7 3 ~***~
+            END
+          END
+          PRETTY_PRINT_2DA
+        BUT_ONLY
+      END
+    END
+  END
 
 COPY_EXISTING ~BDDIALOG.2DA~ ~override~
-	REPLACE_TEXTUALLY ~^IMOEN_ ~ ~IMOEN2 ~
+  REPLACE_TEXTUALLY ~^IMOEN_ ~ ~IMOEN2 ~
 BUT_ONLY
 
 ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
-	PRINT "~%file%~ , ~%file_1%~ , ~%file_2%~ => ~%var%~" //append , source, game => var
+  PRINT "~%file%~ , ~%file_1%~ , ~%file_2%~ => ~%var%~" //append , source, game => var
 END
 
 /////                                                  \\\\\
 ///// Prepare dialogue arrays                          \\\\\
 /////                                                  \\\\\
 
-OUTER_SPRINT ~newline~ ~%WNL%%LNL%%MNL%%TAB% ~
+OUTER_SPRINT ~newline~ ~%WNL%%TAB% ~
 
-MKDIR ~EET/temp/append/dlg~
+MKDIR ~%TEMP_FOLDER%/append/dlg~
 
 <<<<<<<< .../end.txt
 
@@ -132,105 +135,105 @@ BEGIN ~%file%~
 >>>>>>>>
 
 DEFINE_PATCH_FUNCTION ~PID_patching~
-	STR_VAR
-		source = ~~
-		array = ~~
-	RET
-		pid_trigger
-		pid_patched
-	BEGIN
-	SET pid_patched = 0
-	SPRINT pid_trigger ~~
-	PATCH_IF ~%source%~ STR_EQ ~BG1~ BEGIN
-		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) OR VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) OR VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
-			SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",0)%LNL%~
-			SET pid_patched = 1
-		END
-	END ELSE PATCH_IF ~%source%~ STR_EQ ~SoD~ BEGIN
-		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) BEGIN
-			SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",1)%LNL%~
-			SET pid_patched = 1
-		END
-		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) OR VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
-			SPRINT pid_trigger ~%pid_trigger%GlobalLT("CHAPTER","GLOBAL",13)%LNL%~
-			SET pid_patched = 1
-		END
-	END ELSE PATCH_IF ~%source%~ STR_EQ ~BG2~ BEGIN
-		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) OR VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) BEGIN
-			SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",2)%LNL%~
-			SET pid_patched = 1
-		END
-		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
-			SPRINT pid_trigger ~%pid_trigger%GlobalLT("CHAPTER","GLOBAL",20)%LNL%~
-			SET pid_patched = 1
-		END
-		END ELSE PATCH_IF ~%source%~ STR_EQ ~ToB~ BEGIN
-		PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) OR VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) OR VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) BEGIN
-			SPRINT pid_trigger ~%pid_trigger%GlobalGT("CHAPTER","GLOBAL",19)%LNL%~
-			SET pid_patched = 1
-		END
-	END
+  STR_VAR
+    source = ~~
+    array = ~~
+  RET
+    pid_trigger
+    pid_patched
+  BEGIN
+  SET pid_patched = 0
+  SPRINT pid_trigger ~~
+  PATCH_IF ~%source%~ STR_EQ ~BG1~ BEGIN
+    PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) OR VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) OR VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
+      SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",0)%LNL%~
+      SET pid_patched = 1
+    END
+  END ELSE PATCH_IF ~%source%~ STR_EQ ~SoD~ BEGIN
+    PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) BEGIN
+      SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",1)%LNL%~
+      SET pid_patched = 1
+    END
+    PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) OR VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
+      SPRINT pid_trigger ~%pid_trigger%GlobalLT("CHAPTER","GLOBAL",13)%LNL%~
+      SET pid_patched = 1
+    END
+  END ELSE PATCH_IF ~%source%~ STR_EQ ~BG2~ BEGIN
+    PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) OR VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) BEGIN
+      SPRINT pid_trigger ~%pid_trigger%Global("EndofBG1","GLOBAL",2)%LNL%~
+      SET pid_patched = 1
+    END
+    PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~ToB~) BEGIN
+      SPRINT pid_trigger ~%pid_trigger%GlobalLT("CHAPTER","GLOBAL",20)%LNL%~
+      SET pid_patched = 1
+    END
+    END ELSE PATCH_IF ~%source%~ STR_EQ ~ToB~ BEGIN
+    PATCH_IF VARIABLE_IS_SET $EVAL ~%array%~(~BG1~) OR VARIABLE_IS_SET $EVAL ~%array%~(~SoD~) OR VARIABLE_IS_SET $EVAL ~%array%~(~BG2~) BEGIN
+      SPRINT pid_trigger ~%pid_trigger%GlobalGT("CHAPTER","GLOBAL",19)%LNL%~
+      SET pid_patched = 1
+    END
+  END
 END
 
 ACTION_PHP_EACH table_append_dlg AS file => var BEGIN
-	ACTION_IF FILE_EXISTS_IN_GAME ~%file%.dlg~ BEGIN
-		ACTION_IF ~%file_1%~ STR_EQ ~~ BEGIN //source file
-			COPY_EXISTING ~%file%.dlg~ ~override~
-				READ_LONG 0x8 num_states
-				SPRINT EVAL ~num_states_%file%~ ~%num_states%~
-				DECOMPILE_AND_PATCH BEGIN
-					PATCH_PRINT ~Preparing %file%.dlg source file (%num_states% states starting from 0)~
-					REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\([^~]+\)~" BEGIN
-						SPRINT trigger ~~
-						PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
-							PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
-								SPRINT trigger ~%var%%LNL%~
-							END ELSE PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
-								LPF PID_patching STR_VAR source = EVAL ~%file_2%~ array = EVAL ~%file%~ RET pid_trigger pid_patched END
-								PATCH_IF pid_patched = 1 BEGIN
-									PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-									SPRINT trigger ~%pid_trigger%%trigger%~
-								END
-							END
-						END
-					END "%MATCH1%%trigger%%MATCH2%~"
-				END
-			BUT_ONLY
-		END ELSE BEGIN //appended file
-			COPY_EXISTING ~%file%.dlg~ ~EET/temp/append/dlg/%file%.d~
-				READ_LONG 0x8 num_states
-				SET num_states_src = EVAL ~num_states_%file_1%~
-				PATCH_PRINT ~Appending %file%.dlg to %file_1%.dlg (%num_states% appended states starting from %num_states_src%)~
-				SET EVAL ~num_states_%file_1%~ = num_states_src + num_states
-				DEFINE_ASSOCIATIVE_ARRAY remapped_states BEGIN
-					~%file%~ , ~%file_1%~ => ~%num_states_src%~
-				END
-				DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
-					~%file%~ => ~%file_1%~
-				END
-				DECOMPILE_DLG_TO_D
-				REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\([^~]+\)~" BEGIN
-					SPRINT trigger ~~
-					PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
-						PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
-							SPRINT trigger ~%var%%LNL%~
-						END ELSE PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
-							LPF PID_patching STR_VAR source = EVAL ~%file_2%~ array = EVAL ~%file_1%~ RET pid_trigger pid_patched END
-							PATCH_IF pid_patched = 1 BEGIN
-								PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
-								SPRINT trigger ~%pid_trigger%%trigger%~
-							END
-						END
-					END
-				END "%MATCH1%%trigger%%MATCH2%~"
-				REPLACE_TEXTUALLY CASE_SENSITIVE "THEN BEGIN \([0-9]+\)" "THEN BEGIN ~%file%\1~"
-				REPLACE_TEXTUALLY CASE_SENSITIVE "GOTO \([0-9]+\)" "GOTO ~%file%\1~"
-				REPLACE_TEXTUALLY ~~~~~^BEGIN \(~\)%SOURCE_RES%\(~\)$~~~~~ ~APPEND \1%file_1%\2~
-				APPEND_FILE ~.../end.txt~
-			COMPILE ~EET/temp/append/dlg/%file%.d~
-			COMPILE EVAL ~.../blank.d~
-		END
-	END
+  ACTION_IF FILE_EXISTS_IN_GAME ~%file%.dlg~ BEGIN
+    ACTION_IF ~%file_1%~ STR_EQ ~~ BEGIN //source file
+      COPY_EXISTING ~%file%.dlg~ ~override~
+        READ_LONG 0x8 num_states
+        SPRINT EVAL ~num_states_%file%~ ~%num_states%~
+        DECOMPILE_AND_PATCH BEGIN
+          PATCH_PRINT ~Preparing %file%.dlg source file (%num_states% states starting from 0)~
+          REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\([^~]+\)~" BEGIN
+            SPRINT trigger ~~
+            PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
+              PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
+                SPRINT trigger ~%var%%LNL%~
+              END ELSE PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
+                LPF PID_patching STR_VAR source = EVAL ~%file_2%~ array = EVAL ~%file%~ RET pid_trigger pid_patched END
+                PATCH_IF pid_patched = 1 BEGIN
+                  PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
+                  SPRINT trigger ~%pid_trigger%%trigger%~
+                END
+              END
+            END
+          END "%MATCH1%%trigger%%MATCH2%~"
+        END
+      BUT_ONLY
+    END ELSE BEGIN //appended file
+      COPY_EXISTING ~%file%.dlg~ ~%TEMP_FOLDER%/append/dlg/%file%.d~
+        READ_LONG 0x8 num_states
+        SET num_states_src = EVAL ~num_states_%file_1%~
+        PATCH_PRINT ~Appending %file%.dlg to %file_1%.dlg (%num_states% appended states starting from %num_states_src%)~
+        SET EVAL ~num_states_%file_1%~ = num_states_src + num_states
+        DEFINE_ASSOCIATIVE_ARRAY remapped_states BEGIN
+          ~%file%~ , ~%file_1%~ => ~%num_states_src%~
+        END
+        DEFINE_ASSOCIATIVE_ARRAY remapped_dlg BEGIN
+          ~%file%~ => ~%file_1%~
+        END
+        DECOMPILE_DLG_TO_D
+        REPLACE_EVALUATE CASE_SENSITIVE "^\(IF [ A-Z0-9#]*~  \)\([^~]+\)~" BEGIN
+          SPRINT trigger ~~
+          PATCH_IF (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"CHAPTER"~) AND (~%MATCH2%~ STRING_CONTAINS_REGEXP ~"ENDOFBG[1-2]"~) BEGIN
+            PATCH_IF NOT ~%var%~ STR_EQ ~~ BEGIN
+              SPRINT trigger ~%var%%LNL%~
+            END ELSE PATCH_IF ((~%MATCH2%~ STRING_CONTAINS_REGEXP ~IsGabber(Player1)~)=0) BEGIN
+              LPF PID_patching STR_VAR source = EVAL ~%file_2%~ array = EVAL ~%file_1%~ RET pid_trigger pid_patched END
+              PATCH_IF pid_patched = 1 BEGIN
+                PATCH_PRINT ~Patching %SOURCE_FILESPEC% - PID (%file_2%)~
+                SPRINT trigger ~%pid_trigger%%trigger%~
+              END
+            END
+          END
+        END "%MATCH1%%trigger%%MATCH2%~"
+        REPLACE_TEXTUALLY CASE_SENSITIVE "THEN BEGIN \([0-9]+\)" "THEN BEGIN ~%file%\1~"
+        REPLACE_TEXTUALLY CASE_SENSITIVE "GOTO \([0-9]+\)" "GOTO ~%file%\1~"
+        REPLACE_TEXTUALLY ~~~~~^BEGIN \(~\)%SOURCE_RES%\(~\)$~~~~~ ~APPEND \1%file_1%\2~
+        APPEND_FILE ~.../end.txt~
+      COMPILE ~%TEMP_FOLDER%/append/dlg/%file%.d~
+      COMPILE EVAL ~.../blank.d~
+    END
+  END
 END
 
 /////                                                  \\\\\
@@ -238,8 +241,8 @@ END
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY remapped_mve BEGIN
-	~DAYNITE~ => ~DAYNITE_~
-	~NITEDAY~ => ~NITEDAY_~
+  ~DAYNITE~ => ~DAYNITE_~
+  ~NITEDAY~ => ~NITEDAY_~
 END
 
 <<<<<<<< .../DAYNITE_NITEDAY-eb.baf
@@ -278,20 +281,20 @@ END
 
 OUTER_SET BG1AREA = IDS_OF_SYMBOL (AREATYPE BG1AREA)
 COPY_EXISTING_REGEXP GLOB ~.*\.ARE~ ~override~
-	READ_SHORT 0x48 flags
-	PATCH_IF (flags BAND BIT0) AND (flags BAND BIT1) AND (flags BAND BIT3) AND (flags BAND BIT6) BEGIN
-		PATCH_IF (flags BAND BG1AREA) != 0 BEGIN
-			SPRINT ~DAYNITE~ ~BGSUNSET~
-			SPRINT ~NITEDAY~ ~BGSUNRIS~
-		END ELSE BEGIN
-			SPRINT ~DAYNITE~ ~DAYNITE_~
-			SPRINT ~NITEDAY~ ~NITEDAY_~
-		END
-		INNER_ACTION BEGIN
-			EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~ EVALUATE_BUFFER
-			PRINT ~%DAYNITE%/%NITEDAY% movies added to %SOURCE_RES%.BCS~
-		END
-	END
+  READ_SHORT 0x48 flags
+  PATCH_IF (flags BAND BIT0) AND (flags BAND BIT1) AND (flags BAND BIT3) AND (flags BAND BIT6) BEGIN
+    PATCH_IF (flags BAND BG1AREA) != 0 BEGIN
+      SPRINT ~DAYNITE~ ~BGSUNSET~
+      SPRINT ~NITEDAY~ ~BGSUNRIS~
+    END ELSE BEGIN
+      SPRINT ~DAYNITE~ ~DAYNITE_~
+      SPRINT ~NITEDAY~ ~NITEDAY_~
+    END
+    INNER_ACTION BEGIN
+      EXTEND_BOTTOM ~%SOURCE_RES%.BCS~ ~.../DAYNITE_NITEDAY-eb.baf~ EVALUATE_BUFFER
+      PRINT ~%DAYNITE%/%NITEDAY% movies added to %SOURCE_RES%.BCS~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -306,28 +309,28 @@ OUTER_SET skipTpBafD = 0
 INCLUDE ~EET/lib/macros.tph~
 
 COPY_EXISTING_REGEXP GLOB ~.+\.DLG$~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		PHP_EACH remapped_states AS file => state BEGIN
-			REPLACE_EVALUATE CASE_INSENSITIVE ~\( EXTERN .\)%file%\(. \)\([0-9]+\)~ BEGIN
-				SET match = state + MATCH3
-				PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %file% => %file_1% - dlg; %MATCH3% => %match% - state~
-			END ~%MATCH1%%file_1%%MATCH2%%match%~
-		END
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([Tt]Dialog[A-Za-z]*("\)\([^"]+\)"~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res END ~\1%match%"~
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    PHP_EACH remapped_states AS file => state BEGIN
+      REPLACE_EVALUATE CASE_INSENSITIVE ~\( EXTERN .\)%file%\(. \)\([0-9]+\)~ BEGIN
+        SET match = state + MATCH3
+        PATCH_PRINT ~Patching %SOURCE_FILESPEC%: %file% => %file_1% - dlg; %MATCH3% => %match% - state~
+      END ~%MATCH1%%file_1%%MATCH2%%match%~
+    END
+    REPLACE_EVALUATE CASE_INSENSITIVE ~\([Tt]Dialog[A-Za-z]*("\)\([^"]+\)"~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res END ~\1%match%"~
+  END
 BUT_ONLY
 
 COPY_EXISTING_REGEXP GLOB ~.+\.BCS$~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\([Tt]Dialog[A-Za-z]*("\)\([^"]+\)"~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res END ~\1%match%"~
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_EVALUATE CASE_INSENSITIVE ~\([Tt]Dialog[A-Za-z]*("\)\([^"]+\)"~ BEGIN SPRINT match ~%MATCH2%~ SPRINT res ~dlg~ LPM EET_PCU_outer_res END ~\1%match%"~
+  END
 BUT_ONLY
 
 COPY_EXISTING_REGEXP GLOB ~.+\.CRE$~ ~override~
-	LPF ~FJ_CRE_VALIDITY~ RET valid END
-	PATCH_IF valid = 1 BEGIN
-		SET off = 0x2cc SPRINT res ~dlg~ LPM EET_PCU_off_res
-	END
+  LPF ~FJ_CRE_VALIDITY~ RET valid END
+  PATCH_IF valid = 1 BEGIN
+    SET off = 0x2cc SPRINT res ~dlg~ LPM EET_PCU_off_res
+  END
 BUT_ONLY
 
 ACTION_IF ((FILE_EXISTS_IN_GAME ~cdmk25.eff~) AND                                  // if effs for m'khiin's animation are present
@@ -346,10 +349,10 @@ END
 
 //CAMPAIGN.2DA
 COPY_EXISTING ~CAMPAIGN.2DA~ ~override~
-	SET_2DA_ENTRY 0 9 32 ~*~
-	SET_2DA_ENTRY 1 9 32 ~*~
-	SET_2DA_ENTRY 2 9 32 ~*~
-	SET_2DA_ENTRY 3 9 32 ~*~
+  SET_2DA_ENTRY 0 9 32 ~*~
+  SET_2DA_ENTRY 1 9 32 ~*~
+  SET_2DA_ENTRY 2 9 32 ~*~
+  SET_2DA_ENTRY 3 9 32 ~*~
 BUT_ONLY
 //even after disabling it from 2DA default files are still used
 <<<<<<<< .../NPCLEVEL.2DA
@@ -358,216 +361,216 @@ BUT_ONLY
  2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
 >>>>>>>>
 COPY ~.../NPCLEVEL.2DA~ ~override~
-	~.../NPCLEVEL.2DA~ ~override/NPCLVL25.2DA~
+  ~.../NPCLEVEL.2DA~ ~override/NPCLVL25.2DA~
 
 //PDIALOG
 //25DIALOG.2DA already patched with PDIALOG.2DA entries
 ACTION_PHP_EACH pdialog_2da AS file => dummy BEGIN
-	COPY_EXISTING ~%file%.2da~ ~override~
-		PRETTY_PRINT_2DA
-		REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
-			INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
-				COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
-				WHILE (num_matches < 3) BEGIN
-					REPLACE_TEXTUALLY ~$~ ~ ***~
-					SET num_matches = num_matches + 1
-				END
-			END
-		END ~%MATCH1%~
-		READ_2DA_ENTRIES_NOW pdialog_tbl 4
-		FOR (i=0; i < pdialog_tbl; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER pdialog_tbl i 0 dv
-			PATCH_IF (NOT ~%dv%~ STR_EQ ~POST_DIALOG_FILE~) BEGIN
-				PHP_EACH pdialog_2da AS cmp_file => dummy BEGIN
-					PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
-						READ_2DA_ENTRY_FORMER pdialog_tbl i 1 post
-						READ_2DA_ENTRY_FORMER pdialog_tbl i 2 join
-						READ_2DA_ENTRY_FORMER pdialog_tbl i 3 dream
-						INNER_ACTION BEGIN
-							//PRINT ~Patching %cmp_file%.2DA: %dv% %post% %join% %dream%~
-							APPEND ~%cmp_file%.2DA~ ~%dv% %post% %join% %dream%~
-							COPY_EXISTING ~%cmp_file%.2DA~ ~override~
-								PRETTY_PRINT_2DA
-							BUT_ONLY
-						END
-					END
-				END
-			END
-		END
-		PRETTY_PRINT_2DA
-	BUT_ONLY
+  COPY_EXISTING ~%file%.2da~ ~override~
+    PRETTY_PRINT_2DA
+    REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
+      INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+        COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
+        WHILE (num_matches < 3) BEGIN
+          REPLACE_TEXTUALLY ~$~ ~ ***~
+          SET num_matches = num_matches + 1
+        END
+      END
+    END ~%MATCH1%~
+    READ_2DA_ENTRIES_NOW pdialog_tbl 4
+    FOR (i=0; i < pdialog_tbl; ++i) BEGIN
+      READ_2DA_ENTRY_FORMER pdialog_tbl i 0 dv
+      PATCH_IF (NOT ~%dv%~ STR_EQ ~POST_DIALOG_FILE~) BEGIN
+        PHP_EACH pdialog_2da AS cmp_file => dummy BEGIN
+          PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+            READ_2DA_ENTRY_FORMER pdialog_tbl i 1 post
+            READ_2DA_ENTRY_FORMER pdialog_tbl i 2 join
+            READ_2DA_ENTRY_FORMER pdialog_tbl i 3 dream
+            INNER_ACTION BEGIN
+              //PRINT ~Patching %cmp_file%.2DA: %dv% %post% %join% %dream%~
+              APPEND ~%cmp_file%.2DA~ ~%dv% %post% %join% %dream%~
+              COPY_EXISTING ~%cmp_file%.2DA~ ~override~
+                PRETTY_PRINT_2DA
+              BUT_ONLY
+            END
+          END
+        END
+      END
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
 END
 
 //INTERDIA
 COPY_EXISTING ~INTERDIA.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	READ_2DA_ENTRIES_NOW interdia 3
-	FOR (i=0; i < interdia; ++i) BEGIN
-		READ_2DA_ENTRY_FORMER interdia i 0 dv
-		READ_2DA_ENTRY_FORMER interdia i 1 banter
-		READ_2DA_ENTRY_FORMER interdia i 2 25banter
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25BANTER.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
-			INNER_ACTION BEGIN
-				//PRINT ~Patching 25BANTER.2DA: %dv% %25banter%~
-				APPEND ~25BANTER.2DA~ ~%dv% %25banter%~
-				COPY_EXISTING ~25BANTER.2DA~ ~override~
-					PRETTY_PRINT_2DA
-				BUT_ONLY
-			END
-		END
-		SET_2DA_ENTRY i 2 3 ~***~
-	END
-	PRETTY_PRINT_2DA
+  PRETTY_PRINT_2DA
+  READ_2DA_ENTRIES_NOW interdia 3
+  FOR (i=0; i < interdia; ++i) BEGIN
+    READ_2DA_ENTRY_FORMER interdia i 0 dv
+    READ_2DA_ENTRY_FORMER interdia i 1 banter
+    READ_2DA_ENTRY_FORMER interdia i 2 25banter
+    PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~25BANTER.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+      INNER_ACTION BEGIN
+        //PRINT ~Patching 25BANTER.2DA: %dv% %25banter%~
+        APPEND ~25BANTER.2DA~ ~%dv% %25banter%~
+        COPY_EXISTING ~25BANTER.2DA~ ~override~
+          PRETTY_PRINT_2DA
+        BUT_ONLY
+      END
+    END
+    SET_2DA_ENTRY i 2 3 ~***~
+  END
+  PRETTY_PRINT_2DA
 BUT_ONLY
 
 ACTION_PHP_EACH interdia_2da AS file => dummy BEGIN
-	COPY_EXISTING ~%file%.2da~ ~override~
-		PRETTY_PRINT_2DA
-		READ_2DA_ENTRIES_NOW interdia_tbl 2
-		FOR (i=1; i < interdia_tbl; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER interdia_tbl i 0 dv
-			PATCH_IF (NOT ~%dv%~ STR_EQ ~FILE~) BEGIN
-				PHP_EACH interdia_2da AS cmp_file => dummy BEGIN
-					PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) /*AND (NOT ~%cmp_file%~ STR_EQ ~BDBANTER~)*/ AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
-						READ_2DA_ENTRY_FORMER interdia_tbl i 1 banter
-						INNER_ACTION BEGIN
-							//PRINT ~Patching %cmp_file%.2DA: %dv% %banter%~
-							APPEND ~%cmp_file%.2DA~ ~%dv% %banter%~
-							COPY_EXISTING ~%cmp_file%.2DA~ ~override~
-								PRETTY_PRINT_2DA
-							BUT_ONLY
-						END
-					END
-				END
-			END
-		END
-		PRETTY_PRINT_2DA
-	BUT_ONLY
+  COPY_EXISTING ~%file%.2da~ ~override~
+    PRETTY_PRINT_2DA
+    READ_2DA_ENTRIES_NOW interdia_tbl 2
+    FOR (i=1; i < interdia_tbl; ++i) BEGIN
+      READ_2DA_ENTRY_FORMER interdia_tbl i 0 dv
+      PATCH_IF (NOT ~%dv%~ STR_EQ ~FILE~) BEGIN
+        PHP_EACH interdia_2da AS cmp_file => dummy BEGIN
+          PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) /*AND (NOT ~%cmp_file%~ STR_EQ ~BDBANTER~)*/ AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%dv%[ %TAB%]~)) BEGIN
+            READ_2DA_ENTRY_FORMER interdia_tbl i 1 banter
+            INNER_ACTION BEGIN
+              //PRINT ~Patching %cmp_file%.2DA: %dv% %banter%~
+              APPEND ~%cmp_file%.2DA~ ~%dv% %banter%~
+              COPY_EXISTING ~%cmp_file%.2DA~ ~override~
+                PRETTY_PRINT_2DA
+              BUT_ONLY
+            END
+          END
+        END
+      END
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
 END
 
 //CLASSTEXT
 ACTION_PHP_EACH clastext_2da AS file => dummy BEGIN
-	COPY_EXISTING ~%file%.2da~ ~override~
-		PRETTY_PRINT_2DA
-		REPLACE_TEXTUALLY ~^[ ]+CLASSID[ ]+KITID .+$~ ~ CLASSID KITID LOWER DESCSTR MIXED BIOGRAPHY FALLEN BRIEFDESC FALLEN_NOTICE~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
-			INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
-				COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
-				WHILE (num_matches < 9) BEGIN
-					REPLACE_TEXTUALLY ~$~ ~ -1~
-					SET num_matches = num_matches + 1
-				END
-			END
-		END ~%MATCH1%~
-		READ_2DA_ENTRIES_NOW clastext_tbl 10
-		FOR (i=0; i < clastext_tbl; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
-			PHP_EACH clastext_2da AS cmp_file => dummy BEGIN
-				PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%class%[ %TAB%]~)) BEGIN
-					READ_2DA_ENTRY_FORMER clastext_tbl i 1 classid
-					READ_2DA_ENTRY_FORMER clastext_tbl i 2 kitid
-					READ_2DA_ENTRY_FORMER clastext_tbl i 3 lower
-					READ_2DA_ENTRY_FORMER clastext_tbl i 4 descstr
-					READ_2DA_ENTRY_FORMER clastext_tbl i 5 mixed
-					READ_2DA_ENTRY_FORMER clastext_tbl i 6 biography
-					READ_2DA_ENTRY_FORMER clastext_tbl i 7 fallen
-					READ_2DA_ENTRY_FORMER clastext_tbl i 8 briefdesc
-					READ_2DA_ENTRY_FORMER clastext_tbl i 9 fallen_notice
-					INNER_ACTION BEGIN
-						//PRINT ~Patching %cmp_file%.2DA: %class% %classid% %kitid% %lower% %descstr% %mixed% %biography% %fallen% %briefdesc% %fallen_notice%~
-						APPEND ~%cmp_file%.2DA~ ~%class% %classid% %kitid% %lower% %descstr% %mixed% %biography% %fallen% %briefdesc% %fallen_notice%~
-						COPY_EXISTING ~%cmp_file%.2da~ ~override~
-							PRETTY_PRINT_2DA
-						BUT_ONLY
-					END
-				END
-			END
-		END
-		PRETTY_PRINT_2DA
-	BUT_ONLY
+  COPY_EXISTING ~%file%.2da~ ~override~
+    PRETTY_PRINT_2DA
+    REPLACE_TEXTUALLY ~^[ ]+CLASSID[ ]+KITID .+$~ ~ CLASSID KITID LOWER DESCSTR MIXED BIOGRAPHY FALLEN BRIEFDESC FALLEN_NOTICE~
+    REPLACE_EVALUATE CASE_INSENSITIVE ~^\([^ ]+[ ]+[^ ]+[ ]+.+\)$~ BEGIN
+      INNER_PATCH_SAVE MATCH1 ~%MATCH1%~ BEGIN
+        COUNT_REGEXP_INSTANCES ~[ ]+~ num_matches
+        WHILE (num_matches < 9) BEGIN
+          REPLACE_TEXTUALLY ~$~ ~ -1~
+          SET num_matches = num_matches + 1
+        END
+      END
+    END ~%MATCH1%~
+    READ_2DA_ENTRIES_NOW clastext_tbl 10
+    FOR (i=0; i < clastext_tbl; ++i) BEGIN
+      READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
+      PHP_EACH clastext_2da AS cmp_file => dummy BEGIN
+        PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%class%[ %TAB%]~)) BEGIN
+          READ_2DA_ENTRY_FORMER clastext_tbl i 1 classid
+          READ_2DA_ENTRY_FORMER clastext_tbl i 2 kitid
+          READ_2DA_ENTRY_FORMER clastext_tbl i 3 lower
+          READ_2DA_ENTRY_FORMER clastext_tbl i 4 descstr
+          READ_2DA_ENTRY_FORMER clastext_tbl i 5 mixed
+          READ_2DA_ENTRY_FORMER clastext_tbl i 6 biography
+          READ_2DA_ENTRY_FORMER clastext_tbl i 7 fallen
+          READ_2DA_ENTRY_FORMER clastext_tbl i 8 briefdesc
+          READ_2DA_ENTRY_FORMER clastext_tbl i 9 fallen_notice
+          INNER_ACTION BEGIN
+            //PRINT ~Patching %cmp_file%.2DA: %class% %classid% %kitid% %lower% %descstr% %mixed% %biography% %fallen% %briefdesc% %fallen_notice%~
+            APPEND ~%cmp_file%.2DA~ ~%class% %classid% %kitid% %lower% %descstr% %mixed% %biography% %fallen% %briefdesc% %fallen_notice%~
+            COPY_EXISTING ~%cmp_file%.2da~ ~override~
+              PRETTY_PRINT_2DA
+            BUT_ONLY
+          END
+        END
+      END
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
 END
 
 //RACETEXT
 ACTION_PHP_EACH racetext_2da AS file => dummy BEGIN
-	COPY_EXISTING ~%file%.2da~ ~override~
-		PRETTY_PRINT_2DA
-		READ_2DA_ENTRIES_NOW racetext_tbl 6
-		FOR (i=0; i < racetext_tbl; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
-			PHP_EACH racetext_2da AS cmp_file => dummy BEGIN
-				PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%race%[ %TAB%]~)) BEGIN
-					READ_2DA_ENTRY_FORMER racetext_tbl i 1 id
-					READ_2DA_ENTRY_FORMER racetext_tbl i 2 name
-					READ_2DA_ENTRY_FORMER racetext_tbl i 3 descstr
-					READ_2DA_ENTRY_FORMER racetext_tbl i 4 uppercase
-					READ_2DA_ENTRY_FORMER racetext_tbl i 5 biography
-					INNER_ACTION BEGIN
-						//PRINT ~Patching %cmp_file%.2DA: %race% %id% %name% %descstr% %uppercase% %biography%~
-						APPEND ~%cmp_file%.2DA~ ~%race% %id% %name% %descstr% %uppercase% %biography%~
-						COPY_EXISTING ~%cmp_file%.2da~ ~override~
-							PRETTY_PRINT_2DA
-						BUT_ONLY
-					END
-				END
-			END
-		END
-		PRETTY_PRINT_2DA
-	BUT_ONLY
+  COPY_EXISTING ~%file%.2da~ ~override~
+    PRETTY_PRINT_2DA
+    READ_2DA_ENTRIES_NOW racetext_tbl 6
+    FOR (i=0; i < racetext_tbl; ++i) BEGIN
+      READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
+      PHP_EACH racetext_2da AS cmp_file => dummy BEGIN
+        PATCH_IF (NOT ~%file%~ STR_EQ ~%cmp_file%~) AND (NOT FILE_CONTAINS_EVALUATED (~%cmp_file%.2DA~ ~^[ %TAB%]*%race%[ %TAB%]~)) BEGIN
+          READ_2DA_ENTRY_FORMER racetext_tbl i 1 id
+          READ_2DA_ENTRY_FORMER racetext_tbl i 2 name
+          READ_2DA_ENTRY_FORMER racetext_tbl i 3 descstr
+          READ_2DA_ENTRY_FORMER racetext_tbl i 4 uppercase
+          READ_2DA_ENTRY_FORMER racetext_tbl i 5 biography
+          INNER_ACTION BEGIN
+            //PRINT ~Patching %cmp_file%.2DA: %race% %id% %name% %descstr% %uppercase% %biography%~
+            APPEND ~%cmp_file%.2DA~ ~%race% %id% %name% %descstr% %uppercase% %biography%~
+            COPY_EXISTING ~%cmp_file%.2da~ ~override~
+              PRETTY_PRINT_2DA
+            BUT_ONLY
+          END
+        END
+      END
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
 END
 
 //MASTAREA
 COPY_EXISTING ~SODMAREA.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		SET noupdate = 0
-		READ_2DA_ENTRY cnt 0 2 "col1"
-		READ_2DA_ENTRY cnt 1 2 "col2"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~MASTAREA.2DA~ ~[ %TAB%]*%col1%[ %TAB%]~)) BEGIN
-			INNER_ACTION BEGIN
-				APPEND ~MASTAREA.2DA~ ~%col1% %col2%~
-				//PRINT ~%col1% %col2% appended to MASTAREA.2DA~
-			END
-		END
-	END
+  PRETTY_PRINT_2DA
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    SET noupdate = 0
+    READ_2DA_ENTRY cnt 0 2 "col1"
+    READ_2DA_ENTRY cnt 1 2 "col2"
+    PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~MASTAREA.2DA~ ~[ %TAB%]*%col1%[ %TAB%]~)) BEGIN
+      INNER_ACTION BEGIN
+        APPEND ~MASTAREA.2DA~ ~%col1% %col2%~
+        //PRINT ~%col1% %col2% appended to MASTAREA.2DA~
+      END
+    END
+  END
 COPY_EXISTING ~MASTAREA.2DA~ ~override~
-	PRETTY_PRINT_2DA
+  PRETTY_PRINT_2DA
 BUT_ONLY
 
 //REPUTATI
 COPY_EXISTING ~REPUTATI.2DA~ ~override~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	REPLACE_TEXTUALLY ~^ $~ ~~
-	COUNT_2DA_ROWS 3 "cntrow"
+  PRETTY_PRINT_2DA
+  REPLACE_TEXTUALLY ~$~ ~ ~
+  REPLACE_TEXTUALLY ~^ $~ ~~
+  COUNT_2DA_ROWS 3 "cntrow"
 BUT_ONLY
 COPY_EXISTING - ~SODREPUT.2DA~ ~.../SODREPUT.2DA~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~$~ ~ ~
-	COUNT_2DA_COLS "cntcol"
-	FOR (cnt = 1; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY 0 cnt 3 "name"
-		PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~REPUTATI.2DA~ ~[ ]%name%[ ]~)) BEGIN
-			PATCH_PRINT ~Patching REPUTATI.2DA: %name%~
-			SET updated = 0
-			SPRINT col ~dummy_entry dummy_entry %name%~
-			FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
-				READ_2DA_ENTRY cnt2 (cnt + 1) 3 "add"
-				SPRINT col ~%col% %add%~
-			END
-			INNER_ACTION BEGIN
-				APPEND_COL ~REPUTATI.2DA~ ~%col%~
-				OUTER_PATCH_SAVE ~col~ ~%col%~ BEGIN //for easier DEBUG reading
-					REPLACE_TEXTUALLY ~dummy_entry ~ ~~
-					REPLACE_TEXTUALLY ~[ ]+~ ~ ~
-				END
-				//PRINT ~%col% column appended to %SOURCE_FILE%~
-			END
-		END
-	END
+  PRETTY_PRINT_2DA
+  REPLACE_TEXTUALLY ~$~ ~ ~
+  COUNT_2DA_COLS "cntcol"
+  FOR (cnt = 1; cnt < (cntcol - 1); cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY 0 cnt 3 "name"
+    PATCH_IF (NOT FILE_CONTAINS_EVALUATED (~REPUTATI.2DA~ ~[ ]%name%[ ]~)) BEGIN
+      PATCH_PRINT ~Patching REPUTATI.2DA: %name%~
+      SET updated = 0
+      SPRINT col ~dummy_entry dummy_entry %name%~
+      FOR (cnt2 = 1; cnt2 < cntrow; cnt2 = cnt2 + 1) BEGIN
+        READ_2DA_ENTRY cnt2 (cnt + 1) 3 "add"
+        SPRINT col ~%col% %add%~
+      END
+      INNER_ACTION BEGIN
+        APPEND_COL ~REPUTATI.2DA~ ~%col%~
+        OUTER_PATCH_SAVE ~col~ ~%col%~ BEGIN //for easier DEBUG reading
+          REPLACE_TEXTUALLY ~dummy_entry ~ ~~
+          REPLACE_TEXTUALLY ~[ ]+~ ~ ~
+        END
+        //PRINT ~%col% column appended to %SOURCE_FILE%~
+      END
+    END
+  END
 COPY_EXISTING ~REPUTATI.2DA~ ~override~
-	REPLACE_TEXTUALLY ~dummy_entry~ ~~
-	PRETTY_PRINT_2DA
+  REPLACE_TEXTUALLY ~dummy_entry~ ~~
+  PRETTY_PRINT_2DA
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -575,150 +578,150 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING - ~KITLIST.2da~ ~.../override~
-	PRETTY_PRINT_2DA
-	REPLACE_TEXTUALLY ~BEASTMASTER~ ~BEAST_MASTER~
-	REPLACE_TEXTUALLY ~TALOS~ ~GODTALOS~
-	REPLACE_TEXTUALLY ~HELM~ ~GODHELM~
-	REPLACE_TEXTUALLY ~LATHANDER~ ~GODLATHANDER~
-	REPLACE_TEXTUALLY ~BEAST_FRIEND~ ~AVENGER~
-	REPLACE_TEXTUALLY ~ASSASIN~ ~ASSASSIN~
-	COUNT_2DA_ROWS 3 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 0 3 "kit_num"
-		READ_2DA_ENTRY cnt 1 3 "name"
-		TO_UPPER name
-		DEFINE_ASSOCIATIVE_ARRAY table_kitlist BEGIN ~%name%~ => ~%kit_num%~ END
-	END
+  PRETTY_PRINT_2DA
+  REPLACE_TEXTUALLY ~BEASTMASTER~ ~BEAST_MASTER~
+  REPLACE_TEXTUALLY ~TALOS~ ~GODTALOS~
+  REPLACE_TEXTUALLY ~HELM~ ~GODHELM~
+  REPLACE_TEXTUALLY ~LATHANDER~ ~GODLATHANDER~
+  REPLACE_TEXTUALLY ~BEAST_FRIEND~ ~AVENGER~
+  REPLACE_TEXTUALLY ~ASSASIN~ ~ASSASSIN~
+  COUNT_2DA_ROWS 3 "cntrow"
+  FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 0 3 "kit_num"
+    READ_2DA_ENTRY cnt 1 3 "name"
+    TO_UPPER name
+    DEFINE_ASSOCIATIVE_ARRAY table_kitlist BEGIN ~%name%~ => ~%kit_num%~ END
+  END
 BUT_ONLY
 
 COPY_EXISTING - ~CLASTEXT.2da~ ~.../override~
-	READ_2DA_ENTRIES_NOW clastext_tbl 10
-	FOR (i=0; i < clastext_tbl; ++i) BEGIN
-		READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
-		TO_UPPER class
-		READ_2DA_ENTRY_FORMER clastext_tbl i 1 classid
-		READ_2DA_ENTRY_FORMER clastext_tbl i 2 kitid
-		SET define = 1
-		PATCH_IF (VARIABLE_IS_SET $table_kitlist(~%class%~)) BEGIN //Kit
-			TEXT_SPRINT kitid $table_kitlist(~%class%~)
-		END ELSE BEGIN
-			PATCH_MATCH ~%class%~ WITH
-			~FIGHTER_MAGE~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~FIGHTER_MAGE_THIEF~ ~MAGE_THIEF~ ~CLERIC_MAGE~ ~CLERIC_THIEF~ ~FIGHTER_DRUID~ ~FIGHTER_MAGE_CLERIC~ ~CLERIC_RANGER~ BEGIN
-				SET kitid = "-1" //Multi-class
-				SET define = 1
-			END
-			~FERALAN~ BEGIN
-				SPRINT class ~ARCHER~
-				SET kitid = 7
-			END
-			~ARCHER~ BEGIN
-				SET kitid = 7
-			END
-			~WILDMAGE~ BEGIN
-				SPRINT class ~WILD_MAGE~
-				SET kitid = 30
-			END
-			~WILD_MAGE~ BEGIN
-				SET kitid = 30
-			END
-			DEFAULT
-				PATCH_IF (kitid = 16384) AND (~%class%~ STRING_CONTAINS_REGEXP ~FALLEN_~) BEGIN //Trueclass
-					SET kitid = 0
-				END ELSE BEGIN
-					SET define = 0
-				END
-			END
-		END
-		PATCH_IF (define = 1) BEGIN
-			//PATCH_PRINT ~%class%: classid = %classid%, kitid = %kitid%~
-			DEFINE_ASSOCIATIVE_ARRAY valid_class BEGIN ~%class%~ => ~~ END
-			SPRINT EVAL ~%class%~ ~{%classid%,%kitid%~
-		END ELSE BEGIN
-			PATCH_PRINT ~Skipping: %class%~
-		END
-	END
+  READ_2DA_ENTRIES_NOW clastext_tbl 10
+  FOR (i=0; i < clastext_tbl; ++i) BEGIN
+    READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
+    TO_UPPER class
+    READ_2DA_ENTRY_FORMER clastext_tbl i 1 classid
+    READ_2DA_ENTRY_FORMER clastext_tbl i 2 kitid
+    SET define = 1
+    PATCH_IF (VARIABLE_IS_SET $table_kitlist(~%class%~)) BEGIN //Kit
+      TEXT_SPRINT kitid $table_kitlist(~%class%~)
+    END ELSE BEGIN
+      PATCH_MATCH ~%class%~ WITH
+      ~FIGHTER_MAGE~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~FIGHTER_MAGE_THIEF~ ~MAGE_THIEF~ ~CLERIC_MAGE~ ~CLERIC_THIEF~ ~FIGHTER_DRUID~ ~FIGHTER_MAGE_CLERIC~ ~CLERIC_RANGER~ BEGIN
+        SET kitid = "-1" //Multi-class
+        SET define = 1
+      END
+      ~FERALAN~ BEGIN
+        SPRINT class ~ARCHER~
+        SET kitid = 7
+      END
+      ~ARCHER~ BEGIN
+        SET kitid = 7
+      END
+      ~WILDMAGE~ BEGIN
+        SPRINT class ~WILD_MAGE~
+        SET kitid = 30
+      END
+      ~WILD_MAGE~ BEGIN
+        SET kitid = 30
+      END
+      DEFAULT
+        PATCH_IF (kitid = 16384) AND (~%class%~ STRING_CONTAINS_REGEXP ~FALLEN_~) BEGIN //Trueclass
+          SET kitid = 0
+        END ELSE BEGIN
+          SET define = 0
+        END
+      END
+    END
+    PATCH_IF (define = 1) BEGIN
+      //PATCH_PRINT ~%class%: classid = %classid%, kitid = %kitid%~
+      DEFINE_ASSOCIATIVE_ARRAY valid_class BEGIN ~%class%~ => ~~ END
+      SPRINT EVAL ~%class%~ ~{%classid%,%kitid%~
+    END ELSE BEGIN
+      PATCH_PRINT ~Skipping: %class%~
+    END
+  END
 BUT_ONLY
 
 COPY_EXISTING - ~RACETEXT.2da~ ~.../override~
-	READ_2DA_ENTRIES_NOW racetext_tbl 6
-	FOR (i=0; i < racetext_tbl; ++i) BEGIN
-		READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
-		TO_UPPER race
-		READ_2DA_ENTRY_FORMER racetext_tbl i 1 id
-		DEFINE_ASSOCIATIVE_ARRAY valid_race BEGIN ~%race%~ => ~~ END
-		SPRINT EVAL ~%race%~ ~{%id%~
-	END
+  READ_2DA_ENTRIES_NOW racetext_tbl 6
+  FOR (i=0; i < racetext_tbl; ++i) BEGIN
+    READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
+    TO_UPPER race
+    READ_2DA_ENTRY_FORMER racetext_tbl i 1 id
+    DEFINE_ASSOCIATIVE_ARRAY valid_race BEGIN ~%race%~ => ~~ END
+    SPRINT EVAL ~%race%~ ~{%id%~
+  END
 BUT_ONLY
 
 COPY_EXISTING ~bgee.lua~ ~override~
-	REPLACE_EVALUATE CASE_INSENSITIVE ~START_CAMPAIGN_\([A-Z0-9]+\)~ BEGIN
-		FOR (i=0; i < campaign_tbl; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER campaign_tbl i 0 campaign
-			PATCH_IF (~%MATCH1%~ STR_EQ ~%campaign%~) BEGIN
-				//PATCH_PRINT ~campaign = %campaign%~
-				READ_2DA_ENTRY_FORMER campaign_tbl i 30 clastext
-				READ_2DA_ENTRY_FORMER campaign_tbl i 31 racetext
-				INNER_ACTION BEGIN
-					ACTION_IF FILE_EXISTS_IN_GAME ~%clastext%.2da~ BEGIN
-						COPY_EXISTING ~%clastext%.2da~ ~override~
-							READ_2DA_ENTRIES_NOW clastext_tbl 10
-							FOR (i=0; i < clastext_tbl; ++i) BEGIN
-								READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
-								TO_UPPER class
-								PATCH_IF (VARIABLE_IS_SET $valid_class(~%class%~)) BEGIN
-									READ_2DA_ENTRY_FORMER clastext_tbl i 6 biography
-									PATCH_IF (biography = "-1") AND ((~%campaign%~ STR_EQ ~SOA~) OR (~%campaign%~ STR_EQ ~TOB~)) BEGIN
-										SET biography = 15881
-									END
-									SPRINT content EVAL ~%%class%%~
-									SPRINT EVAL ~%class%~ ~%content%,%biography%~
-								END
-							END
-						BUT_ONLY
-					END ELSE BEGIN
-						ACTION_PHP_EACH valid_class AS class => dummy BEGIN
-							OUTER_SPRINT content EVAL ~%%class%%~
-							OUTER_SPRINT EVAL ~%class%~ ~%content%,15882~
-						END
-					END
-					ACTION_IF FILE_EXISTS_IN_GAME ~%racetext%.2da~ BEGIN
-						COPY_EXISTING ~%racetext%.2da~ ~override~
-							READ_2DA_ENTRIES_NOW racetext_tbl 6
-							FOR (i=0; i < racetext_tbl; ++i) BEGIN
-								READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
-								TO_UPPER race
-								PATCH_IF (VARIABLE_IS_SET $valid_race(~%race%~)) BEGIN
-									READ_2DA_ENTRY_FORMER racetext_tbl i 5 biography
-									SPRINT content EVAL ~%%race%%~
-									SPRINT EVAL ~%race%~ ~%content%,%biography%~
-								END
-							END
-						BUT_ONLY
-					END ELSE BEGIN
-						ACTION_PHP_EACH valid_race AS race => dummy BEGIN
-							OUTER_SPRINT content EVAL ~%%race%%~
-							OUTER_SPRINT EVAL ~%race%~ ~%content%,-1~
-						END
-					END
-				END
-			END
-		END
-	END ~START_CAMPAIGN_%MATCH1%~
+  REPLACE_EVALUATE CASE_INSENSITIVE ~START_CAMPAIGN_\([A-Z0-9]+\)~ BEGIN
+    FOR (i=0; i < campaign_tbl; ++i) BEGIN
+      READ_2DA_ENTRY_FORMER campaign_tbl i 0 campaign
+      PATCH_IF (~%MATCH1%~ STR_EQ ~%campaign%~) BEGIN
+        //PATCH_PRINT ~campaign = %campaign%~
+        READ_2DA_ENTRY_FORMER campaign_tbl i 30 clastext
+        READ_2DA_ENTRY_FORMER campaign_tbl i 31 racetext
+        INNER_ACTION BEGIN
+          ACTION_IF FILE_EXISTS_IN_GAME ~%clastext%.2da~ BEGIN
+            COPY_EXISTING ~%clastext%.2da~ ~override~
+              READ_2DA_ENTRIES_NOW clastext_tbl 10
+              FOR (i=0; i < clastext_tbl; ++i) BEGIN
+                READ_2DA_ENTRY_FORMER clastext_tbl i 0 class
+                TO_UPPER class
+                PATCH_IF (VARIABLE_IS_SET $valid_class(~%class%~)) BEGIN
+                  READ_2DA_ENTRY_FORMER clastext_tbl i 6 biography
+                  PATCH_IF (biography = "-1") AND ((~%campaign%~ STR_EQ ~SOA~) OR (~%campaign%~ STR_EQ ~TOB~)) BEGIN
+                    SET biography = 15881
+                  END
+                  SPRINT content EVAL ~%%class%%~
+                  SPRINT EVAL ~%class%~ ~%content%,%biography%~
+                END
+              END
+            BUT_ONLY
+          END ELSE BEGIN
+            ACTION_PHP_EACH valid_class AS class => dummy BEGIN
+              OUTER_SPRINT content EVAL ~%%class%%~
+              OUTER_SPRINT EVAL ~%class%~ ~%content%,15882~
+            END
+          END
+          ACTION_IF FILE_EXISTS_IN_GAME ~%racetext%.2da~ BEGIN
+            COPY_EXISTING ~%racetext%.2da~ ~override~
+              READ_2DA_ENTRIES_NOW racetext_tbl 6
+              FOR (i=0; i < racetext_tbl; ++i) BEGIN
+                READ_2DA_ENTRY_FORMER racetext_tbl i 0 race
+                TO_UPPER race
+                PATCH_IF (VARIABLE_IS_SET $valid_race(~%race%~)) BEGIN
+                  READ_2DA_ENTRY_FORMER racetext_tbl i 5 biography
+                  SPRINT content EVAL ~%%race%%~
+                  SPRINT EVAL ~%race%~ ~%content%,%biography%~
+                END
+              END
+            BUT_ONLY
+          END ELSE BEGIN
+            ACTION_PHP_EACH valid_race AS race => dummy BEGIN
+              OUTER_SPRINT content EVAL ~%%race%%~
+              OUTER_SPRINT EVAL ~%race%~ ~%content%,-1~
+            END
+          END
+        END
+      END
+    END
+  END ~START_CAMPAIGN_%MATCH1%~
 BUT_ONLY
 
 OUTER_SPRINT append_class ~~
 ACTION_PHP_EACH valid_class AS class => dummy BEGIN
-	OUTER_SPRINT content EVAL ~%%class%%~
-	OUTER_SPRINT append_class ~%append_class%%LNL%%TAB%%content%}, --%class%~
+  OUTER_SPRINT content EVAL ~%%class%%~
+  OUTER_SPRINT append_class ~%append_class%%LNL%%TAB%%content%}, --%class%~
 END
 OUTER_SPRINT append_race ~~
 ACTION_PHP_EACH valid_race AS race => dummy BEGIN
-	OUTER_SPRINT content EVAL ~%%race%%~
-	OUTER_SPRINT append_race ~%append_race%%LNL%%TAB%%content%}, --%race%~
+  OUTER_SPRINT content EVAL ~%%race%%~
+  OUTER_SPRINT append_race ~%append_race%%LNL%%TAB%%content%}, --%race%~
 END
 COPY_EXISTING ~M_K#TBL.lua~ ~override~
-	REPLACE_TEXTUALLY ~\(bioClassData = {\)~ ~\1%append_class%~
-	REPLACE_TEXTUALLY ~\(bioRaceData = {\)~ ~\1%append_race%~
+  REPLACE_TEXTUALLY ~\(bioClassData = {\)~ ~\1%append_class%~
+  REPLACE_TEXTUALLY ~\(bioRaceData = {\)~ ~\1%append_race%~
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -726,22 +729,22 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~BDSODIMP.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		REPLACE_EVALUATE CASE_INSENSITIVE ~PartyHasItem("\([^"]+\)")~ BEGIN
-			DEFINE_ASSOCIATIVE_ARRAY item_import_list BEGIN ~%MATCH1%~ => dummy END
-		END ~PartyHasItem("%MATCH1%")~
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_EVALUATE CASE_INSENSITIVE ~PartyHasItem("\([^"]+\)")~ BEGIN
+      DEFINE_ASSOCIATIVE_ARRAY item_import_list BEGIN ~%MATCH1%~ => dummy END
+    END ~PartyHasItem("%MATCH1%")~
+  END
 BUT_ONLY
 
 COPY_EXISTING ~IMPORT01.2DA~ ~override~
-	~IMPORT02.2DA~ ~override~
-	~IMPORT03.2DA~ ~override~
-	~K#IMPORT.2DA~ ~override~
-	COUNT_2DA_ROWS 2 "cntrow"
-	FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
-		READ_2DA_ENTRY cnt 1 2 "item"
-		DEFINE_ASSOCIATIVE_ARRAY item_import_list BEGIN ~%item%~ => dummy END
-	END
+  ~IMPORT02.2DA~ ~override~
+  ~IMPORT03.2DA~ ~override~
+  ~K#IMPORT.2DA~ ~override~
+  COUNT_2DA_ROWS 2 "cntrow"
+  FOR (cnt = 1; cnt < "%cntrow%"; cnt = cnt + 1) BEGIN
+    READ_2DA_ENTRY cnt 1 2 "item"
+    DEFINE_ASSOCIATIVE_ARRAY item_import_list BEGIN ~%item%~ => dummy END
+  END
 BUT_ONLY
 
 <<<<<<<< .../K#TELBGT-et.baf
@@ -752,12 +755,12 @@ THEN
   RESPONSE #100
     TakePartyItem("%item%")
     DestroyItem("%item%")
-	AddStoreItem("K#IMPORT","%item%",1,1)
+  AddStoreItem("K#IMPORT","%item%",1,1)
     Continue()
 END
 >>>>>>>>
 ACTION_PHP_EACH item_import_list AS item => dummy BEGIN
-	EXTEND_TOP ~K#TELBGT.BCS~ ~.../K#TELBGT-et.baf~ EVALUATE_BUFFER
+  EXTEND_TOP ~K#TELBGT.BCS~ ~.../K#TELBGT-et.baf~ EVALUATE_BUFFER
 END
 
 /////                                                  \\\\\
@@ -769,47 +772,43 @@ END
 OUTER_SET str_min = 271375
 
 ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
-	OUTER_SPRINT os_slash ~\~
-	OUTER_SPRINT exe ~.exe~
-	OUTER_SPRINT bin ~~
-	OUTER_SPRINT del ~del /f~
+  OUTER_SPRINT os_slash ~\~
+  OUTER_SPRINT exe ~.exe~
+  OUTER_SPRINT bin ~~
+  OUTER_SPRINT del ~del /f~
 END ELSE BEGIN //osx, unix
-	OUTER_SPRINT os_slash ~/~
-	OUTER_SPRINT exe ~~
-	OUTER_SPRINT bin ~./~
-	OUTER_SPRINT del ~rm -f~
+  OUTER_SPRINT os_slash ~/~
+  OUTER_SPRINT exe ~~
+  OUTER_SPRINT bin ~./~
+  OUTER_SPRINT del ~rm -f~
 END
 
 LAF GET_SYSTEM_ARCH RET SYSTEM_ARCH END
 ACTION_IF ~%SYSTEM_ARCH%~ STR_EQ ~amd64~ BEGIN
-	OUTER_SPRINT arch_var ~x86_64%os_slash%~
+  OUTER_SPRINT arch_var ~x86_64%os_slash%~
 END
 
-ACTION_IF (FILE_EXISTS ~EET/bin/%WEIDU_OS%/%arch_var%weidu%exe%~) BEGIN
-	OUTER_SPRINT weidu ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%%arch_var%weidu%exe%~
-END ELSE ACTION_IF (FILE_EXISTS ~EET/bin/%WEIDU_OS%/weidu%exe%~) BEGIN
-	OUTER_SPRINT weidu ~%bin%EET%os_slash%bin%os_slash%%WEIDU_OS%%os_slash%weidu%exe%~
-END ELSE ACTION_IF (FILE_EXISTS ~setup-eet_end%exe%~) BEGIN
-	OUTER_SPRINT weidu ~%bin%setup-eet_end%exe%~
+LAF INIT_WEIDU_BIN STR_VAR bin_folder = EVAL ~%WORK_FOLDER%/data/EET~ RET weidu END
+ACTION_IF (~%weidu%~ STR_EQ ~~) BEGIN
+  FAIL @900011  // WeiDU executable could not be determined.
 END ELSE BEGIN
-	OUTER_SPRINT weidu ~weidu~
+  PRINT ~weidu = %weidu%~
 END
-PRINT ~weidu = %weidu%~
 
 OUTER_SPRINT shell_cmd ~%del% "%USER_DIRECTORY%%os_slash%save%os_slash%saves.tra"~
 AT_NOW ret_val ~%shell_cmd%~ EXACT
 ACTION_IF (ret_val != 0) BEGIN
-	WARN ~Shell command failed to execute: %shell_cmd%~
+  WARN ~Shell command failed to execute: %shell_cmd%~
 END
 
 OUTER_SPRINT shell_cmd ~%weidu% --noautoupdate --no-auto-tp2 --traify-tlk --min %str_min% --out "%USER_DIRECTORY%%os_slash%save%os_slash%saves.tra"~
 AT_NOW ret_val ~%shell_cmd%~ EXACT
 ACTION_IF (ret_val != 0) BEGIN
-	WARN ~Shell command failed to execute: %shell_cmd%~
+  WARN ~Shell command failed to execute: %shell_cmd%~
 END
 
 ACTION_IF FILE_EXISTS_IN_GAME ~add_spell.ids~ BEGIN
-	COPY_EXISTING - ~add_spell.ids~ ~.../add_spell.ids~
+  COPY_EXISTING - ~add_spell.ids~ ~.../add_spell.ids~
 END
 
 OUTER_SET str_max = 2999999
@@ -818,90 +817,98 @@ str_min = %str_min%
 str_max = %str_max%
 >>>>>>>>
 COPY + ~.../saves.txt~ ~%USER_DIRECTORY%/save/saves.txt~ EVALUATE_BUFFER
-	PATCH_IF FILE_EXISTS ~.../add_spell.ids~ BEGIN
-		APPEND_FILE ~.../add_spell.ids~
-	END
+  PATCH_IF FILE_EXISTS ~.../add_spell.ids~ BEGIN
+    APPEND_FILE ~.../add_spell.ids~
+  END
 
 ACTION_IF (FILE_EXISTS ~%USER_DIRECTORY%/Baldur.lua~) BEGIN
-	COPY + ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY%~
-		REPLACE_TEXTUALLY ~^.+'EET Installation State'.+$~ ~SetPrivateProfileString('Program Options','EET Installation State','2')~
-	BUT_ONLY
+  COPY + ~%USER_DIRECTORY%/Baldur.lua~ ~%USER_DIRECTORY%~
+    REPLACE_TEXTUALLY ~^.+'EET Installation State'.+$~ ~SetPrivateProfileString('Program Options','EET Installation State','2')~
+  BUT_ONLY
 END
 
 ACTION_IF (!FILE_CONTAINS ~override/EET.flag~ ~TRA_EXPORTED~) BEGIN
-	APPEND + ~EET.flag~ ~TRA_EXPORTED~
+  APPEND + ~EET.flag~ ~TRA_EXPORTED~
 END
 
 // Works around a bug in the game engine which fails to load KEY files containing backslashes as pathname separator
 // Problem shows up after MAKE_BIFF is used on osx and linux games
 COPY ~chitin.key~ ~chitin.key~
-	READ_LONG 0x08 numBiffs
-	READ_LONG 0x10 ofsBiffs
-	FOR (idx = 0; idx < numBiffs; ++idx) BEGIN
-		SET curOfs = ofsBiffs + idx*12
-		READ_LONG (curOfs + 0x04) ofsBiffName
-		READ_SHORT (curOfs + 0x08) lenBiffName
-		READ_ASCII ofsBiffName biffName ELSE ~~ (lenBiffName) NULL
-		PATCH_IF (NOT ~%biffName%~ STRING_EQUAL_CASE ~~) BEGIN
-			INNER_PATCH_SAVE biffName ~%biffName%~ BEGIN
-				REPLACE_TEXTUALLY ~\\~ ~/~
-			END
-			WRITE_ASCIIE ofsBiffName ~%biffName%~
-		END
-	END
+  READ_LONG 0x08 numBiffs
+  READ_LONG 0x10 ofsBiffs
+  FOR (idx = 0; idx < numBiffs; ++idx) BEGIN
+    SET curOfs = ofsBiffs + idx*12
+    READ_LONG (curOfs + 0x04) ofsBiffName
+    READ_SHORT (curOfs + 0x08) lenBiffName
+    READ_ASCII ofsBiffName biffName ELSE ~~ (lenBiffName) NULL
+    PATCH_IF (NOT ~%biffName%~ STRING_EQUAL_CASE ~~) BEGIN
+      INNER_PATCH_SAVE biffName ~%biffName%~ BEGIN
+        REPLACE_TEXTUALLY ~\\~ ~/~
+      END
+      WRITE_ASCIIE ofsBiffName ~%biffName%~
+    END
+  END
 BUT_ONLY
 
 //Compatibility with Rough World (installed on BG:EE)
 ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?K9ROUGHWORLD\.TP2. #[0-9]+ #7 ") BEGIN //Fixed Insane Difficulty
-	COPY_EXISTING_REGEXP GLOB ~.*\.CRE$~ ~override~
-		WRITE_LONG 0x10 (THIS | BIT22)
-	BUT_ONLY
+  COPY_EXISTING_REGEXP GLOB ~.*\.CRE$~ ~override~
+    WRITE_LONG 0x10 (THIS | BIT22)
+  BUT_ONLY
 END
 ACTION_IF (FILE_CONTAINS ~WeiDU-BGEE.log~ "^~[^/]*/?K9ROUGHWORLD\.TP2. #[0-9]+ #8 ") BEGIN //Only Autosaves
-	COPY_EXISTING_REGEXP GLOB ~.*\.ARE$~ ~override~
-		WRITE_SHORT 0x0014 (THIS | BIT0)
-	BUT_ONLY
+  COPY_EXISTING_REGEXP GLOB ~.*\.ARE$~ ~override~
+    WRITE_SHORT 0x0014 (THIS | BIT0)
+  BUT_ONLY
+END
+
+// cleanup
+ACTION_IF ~%WEIDU_OS%~ STR_EQ ~win32~ BEGIN
+  OUTER_PATCH_SAVE WIN_TEMP_FOLDER ~%TEMP_FOLDER%~ BEGIN REPLACE_TEXTUALLY EXACT_MATCH ~/~ ~\\~ END
+  AT_EXIT ~rmdir /s /q "%WIN_TEMP_FOLDER%"~ EXACT
+END ELSE BEGIN //osx, unix
+  AT_EXIT ~rm -rf "%TEMP_FOLDER%"~ EXACT
 END
 
 END
 
 LANGUAGE ~English~
-	~en_US~
-	~EET/lang/en_US/prompts.tra~
-	~EET/lang/en_US/setup.tra~
+  ~en_US~
+  ~EET/lang/en_US/prompts.tra~
+  ~EET/lang/en_US/setup.tra~
 LANGUAGE ~Polski (Polish)~
-	~pl_PL~
-	~EET/lang/pl_PL/prompts.tra~
-	~EET/lang/pl_PL/setup.tra~
+  ~pl_PL~
+  ~EET/lang/pl_PL/prompts.tra~
+  ~EET/lang/pl_PL/setup.tra~
 LANGUAGE ~Spanish~
-	~es_ES~
-	~EET/lang/es_ES/prompts.tra~
-	~EET/lang/es_ES/setup.tra~
+  ~es_ES~
+  ~EET/lang/es_ES/prompts.tra~
+  ~EET/lang/es_ES/setup.tra~
 LANGUAGE ~French~
-	~fr_FR~
-	~EET/lang/fr_FR/prompts.tra~
-	~EET/lang/fr_FR/setup.tra~
+  ~fr_FR~
+  ~EET/lang/fr_FR/prompts.tra~
+  ~EET/lang/fr_FR/setup.tra~
 LANGUAGE ~Czech~
-	~cs_CZ~
-	~EET/lang/cs_CZ/prompts.tra~
-	~EET/lang/cs_CZ/setup.tra~
+  ~cs_CZ~
+  ~EET/lang/cs_CZ/prompts.tra~
+  ~EET/lang/cs_CZ/setup.tra~
 LANGUAGE ~Russian~
-	~ru_RU~
-	~EET/lang/ru_RU/prompts.tra~
-	~EET/lang/ru_RU/setup.tra~
+  ~ru_RU~
+  ~EET/lang/ru_RU/prompts.tra~
+  ~EET/lang/ru_RU/setup.tra~
 LANGUAGE ~Deutsch (German)~
-	~de_DE~
-	~EET/lang/de_DE/prompts.tra~
-	~EET/lang/de_DE/setup.tra~
+  ~de_DE~
+  ~EET/lang/de_DE/prompts.tra~
+  ~EET/lang/de_DE/setup.tra~
 LANGUAGE ~Simplified Chinese~
-	~zh_CN~
-	~EET/lang/zh_CN/prompts.tra~
-	~EET/lang/zh_CN/setup.tra~
+  ~zh_CN~
+  ~EET/lang/zh_CN/prompts.tra~
+  ~EET/lang/zh_CN/setup.tra~
 LANGUAGE ~Italiano (Italian)~
-	~it_IT~
-	~EET/lang/it_IT/prompts.tra~
-	~EET/lang/it_IT/setup.tra~
-	
+  ~it_IT~
+  ~EET/lang/it_IT/prompts.tra~
+  ~EET/lang/it_IT/setup.tra~
+  
 BEGIN @910002 //Standard installation
 SUBCOMPONENT @910000 //EET end - last mod in install order
 REQUIRE_COMPONENT ~EET/EET.tp2~ ~0~ @910001 //This component requires EET core component to be installed first

@@ -39,22 +39,22 @@ THEN
 END
 >>>>>>>>
 ACTION_FOR_EACH file IN NPCMAGE1 MAGE2 RERAK02 BEGIN
-	COPY_EXISTING ~%file%.BCS~ ~override~
-		REPLACE_BCS_BLOCK ~.../%file%.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~WARNING: .../%file%.baf doesn't exist within %file%.BCS~ END
-	BUT_ONLY
+  COPY_EXISTING ~%file%.BCS~ ~override~
+    REPLACE_BCS_BLOCK ~.../%file%.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~WARNING: .../%file%.baf doesn't exist within %file%.BCS~ END
+  BUT_ONLY
 END
 
 COPY_EXISTING ~CEFALDOR.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ApplySpell(Myself,CLERIC_RESIST_COLD)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~ApplySpell(Myself,CLERIC_RESIST_COLD)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -63,10 +63,10 @@ BUT_ONLY
 
 //Leftover BG:EE ARE scripts code
 ACTION_FOR_EACH file IN AR0100 AR0101 AR0103 AR0106 AR0108 AR0111 AR0112 AR0114 AR0115 AR0119 AR0121 AR0123 AR0125 AR0128 AR0130 AR0137 AR0138 AR0145 AR0146 AR0149 AR0153 AR0608 AR0612 AR1803 AR2301 AR2609 AR2611 AR2626 AR3300 AR3304 AR3352 AR5400 AR5405 BEGIN
-	ACTION_IF NOT FILE_EXISTS_IN_GAME ~%file%.ARE~ BEGIN //just to be sure that other mod didn't add these areas
-		COPY - ~.../blank.txt~ ~.../%file%.baf~
-		COMPILE ~.../%file%.baf~
-	END
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~%file%.ARE~ BEGIN //just to be sure that other mod didn't add these areas
+    COPY - ~.../blank.txt~ ~.../%file%.baf~
+    COMPILE ~.../%file%.baf~
+  END
 END
 //Leftover BG:EE ARE scripts code used in scripts that are also used in BG2:EE
 <<<<<<<< .../AR0514.baf
@@ -162,9 +162,9 @@ THEN
 END
 >>>>>>>>
 ACTION_FOR_EACH file IN AR0514 AR2001 BEGIN
-	COPY_EXISTING ~%file%.BCS~ ~override~
-		REPLACE_BCS_BLOCK ~.../%file%.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~WARNING: .../%file%.baf doesn't exist within %file%.BCS~ END
-	BUT_ONLY
+  COPY_EXISTING ~%file%.BCS~ ~override~
+    REPLACE_BCS_BLOCK ~.../%file%.baf~ ~.../blank.baf~ ON_MISMATCH PATCH_WARN ~WARNING: .../%file%.baf doesn't exist within %file%.BCS~ END
+  BUT_ONLY
 END
 
 /////                                                  \\\\\
@@ -172,17 +172,17 @@ END
 /////                                                  \\\\\
 
 COPY_EXISTING ~ACHIEVEM.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(^[%TAB% ]*Dead("Sendai")\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~\(^[%TAB% ]*Dead("Sendai")\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
   AreaCheck("AR6108")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -219,21 +219,21 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~BALDUR.BCS~ ~override~
-	~BALDUR25.BCS~ ~override~
-R_B_B ~.../oBALDUR.baf~ ~.../nBALDUR.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBALDUR.baf in %SOURCE_FILE%~ END
+              ~BALDUR25.BCS~ ~override~
+  R_B_B ~.../oBALDUR.baf~ ~.../nBALDUR.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oBALDUR.baf in %SOURCE_FILE%~ END
 
 COPY_EXISTING ~BALDUR.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(^[%TAB% ]*Global("JosterLeave","GLOBAL",1)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("JosterLeave","GLOBAL",1)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~\(^[%TAB% ]*Global("JosterLeave","GLOBAL",1)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("JosterLeave","GLOBAL",1)
   !AreaType(BG1AREA)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../BALDUR-eb.baf
@@ -1429,38 +1429,38 @@ EXTEND_BOTTOM ~DS3483.BCS~ ~.../DS3483-eb.baf~
 /////                                                  \\\\\
 
 COPY_EXISTING ~DPLAYER2.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~!InParty(Myself)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~!InParty(Myself)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
   !InParty(Myself)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
 
-		SPRINT textToReplace ~BreakingPoint()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
+    SPRINT textToReplace ~BreakingPoint()~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
   BreakingPoint()~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
 
-		SPRINT textToReplace ~Global("IHATEYOUALL","LOCALS",1)[%newline%]*InParty(Myself)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
+    SPRINT textToReplace ~Global("IHATEYOUALL","LOCALS",1)[%newline%]*InParty(Myself)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
   Global("IHATEYOUALL","LOCALS",1)
   InParty(Myself)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 
 <<<<<<<< .../DPLAYER2-eb.baf
 IF
@@ -1550,17 +1550,17 @@ EXTEND_BOTTOM ~DPLAYER2.BCS~ ~.../DPLAYER2-eb.baf~
 /////                                                  \\\\\
 
 COPY_EXISTING ~DPLAYER3.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~Global("OHN_NEERA_RENC","GLOBAL",1)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~Global("OHN_NEERA_RENC","GLOBAL",1)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~Global("ENDOFBG1","GLOBAL",2)
   Global("OHN_NEERA_RENC","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 
 <<<<<<<< .../oDPLAYER3.baf
 IF
@@ -1599,7 +1599,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~DPLAYER3.bcs~ ~override~
-R_B_B ~.../oDPLAYER3.baf~ ~.../nDPLAYER3.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oDPLAYER3.baf in %SOURCE_FILE%~ END
+  R_B_B ~.../oDPLAYER3.baf~ ~.../nDPLAYER3.baf~ ON_MISMATCH PATCH_WARN ~WARNING: Could not find block matching .../oDPLAYER3.baf in %SOURCE_FILE%~ END
 
 /////                                                  \\\\\
 ///// PLAYER1D.BCS                                     \\\\\
@@ -1723,22 +1723,22 @@ EXTEND_BOTTOM ~PLAYER1D.BCS~ ~.../PLAYER1D-eb.baf~
 /////                                                  \\\\\
 
 COPY_EXISTING ~CLONROOM.BCS~ ~override~
-	~CUT01.BCS~ ~override~
-	~CUTD1.BCS~ ~override~
-	~CUTSKIP2.BCS~ ~override~
-	~ELLEROOM.BCS~ ~override~
-	~LIBRARY.BCS~ ~override~
-	~NEWGAME.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~"Imoen"~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~"Imoen2"~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+              ~CUT01.BCS~ ~override~
+              ~CUTD1.BCS~ ~override~
+              ~CUTSKIP2.BCS~ ~override~
+              ~ELLEROOM.BCS~ ~override~
+              ~LIBRARY.BCS~ ~override~
+              ~NEWGAME.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~"Imoen"~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~"Imoen2"~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -1746,17 +1746,17 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~CUT100A.BCS~ ~override~
-	~CUT100B.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~MoveToExpansion()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~MoveToCampaign("ToB")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+              ~CUT100B.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~MoveToExpansion()~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~MoveToCampaign("ToB")~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -1764,35 +1764,35 @@ BUT_ONLY
 /////                                                  \\\\\
 
 ACTION_DEFINE_ASSOCIATIVE_ARRAY table_sourceBase BEGIN
-	1 , ~CUT01~ , ~ CreateCreature("CSIMOEN",[^)]+)~ , ~CSIMOEN~ => ~Imoen2~ //Waukeen Promenade Imoen
-	2 , ~MOVIE01A~ , ~ LeaveAreaLUA("AR0069","",\[0\.0\],S)~ , ~cuimoen~ => ~Imoen2~ //AR0069.ARE
-	3 , ~MOVIE02A~ , ~ LeaveAreaLUA("AR0070","",\[0\.0\],S)~ , ~cuimoen2~ => ~Imoen2~ //AR0070.ARE
-	4 , ~MOVIE03A~ , ~ LeaveAreaLUA("AR0071","",\[0\.0\],S)~ , ~cuimoen3~ => ~Imoen2~ //AR0071.ARE
-	5 , ~MOVIE03B~ , ~ LeaveAreaLUA("AR0071","",\[0\.0\],S)~ , ~cuimoen3~ => ~Imoen2~ //AR0071.ARE
-	6 , ~CUT67D~ , ~ CreateCreatureDoor("dpimo01",[^)]+)~ , ~dpimo01~ => ~Imoen2~
-	7 , ~CUT69C~ , ~ CreateCreatureDoor("dpimo01",[^)]+)~ , ~dpimo01~ => ~Imoen2~
-	8 , ~CUT28A~ , ~ LeaveAreaLUA("AR0011","",\[799\.1579\],N)~ , ~dream1~ => ~Imoen2~ //AR0011.ARE
-	9 , ~CUT49A~ , ~ LeaveAreaLUA("AR0013","",\[1491\.1173\],W)~ , ~drim01~ => ~Imoen2~ //AR0013.ARE
-	10 , ~CUT49C~ , ~ LeaveAreaLUA("AR0014","",\[721\.654\],N)~ , ~drim02~ => ~Imoen2~ //AR0014.ARE
-	11 , ~CUT41H~ , ~ LeaveAreaLUA("AR0028","",\[2680\.2104\],NW)~ , ~ppdrimov~ => ~Imoen2~ //AR0028.ARE
-	12 , ~AR1515~ , ~ CreateCreature("ppimoen",\[937\.1229\],E)~ , ~ppimoen~ => ~Imoen2~ //Spellhold Imoen
-	13 , ~CUT41F~ , ~ CreateCreature("ppimoen",\[1098\.537\],S)~ , ~ppimoen~ => ~Imoen2~ //Spellhold Imoen
+  1 , ~CUT01~ , ~ CreateCreature("CSIMOEN",[^)]+)~ , ~CSIMOEN~ => ~Imoen2~ //Waukeen Promenade Imoen
+  2 , ~MOVIE01A~ , ~ LeaveAreaLUA("AR0069","",\[0\.0\],S)~ , ~cuimoen~ => ~Imoen2~ //AR0069.ARE
+  3 , ~MOVIE02A~ , ~ LeaveAreaLUA("AR0070","",\[0\.0\],S)~ , ~cuimoen2~ => ~Imoen2~ //AR0070.ARE
+  4 , ~MOVIE03A~ , ~ LeaveAreaLUA("AR0071","",\[0\.0\],S)~ , ~cuimoen3~ => ~Imoen2~ //AR0071.ARE
+  5 , ~MOVIE03B~ , ~ LeaveAreaLUA("AR0071","",\[0\.0\],S)~ , ~cuimoen3~ => ~Imoen2~ //AR0071.ARE
+  6 , ~CUT67D~ , ~ CreateCreatureDoor("dpimo01",[^)]+)~ , ~dpimo01~ => ~Imoen2~
+  7 , ~CUT69C~ , ~ CreateCreatureDoor("dpimo01",[^)]+)~ , ~dpimo01~ => ~Imoen2~
+  8 , ~CUT28A~ , ~ LeaveAreaLUA("AR0011","",\[799\.1579\],N)~ , ~dream1~ => ~Imoen2~ //AR0011.ARE
+  9 , ~CUT49A~ , ~ LeaveAreaLUA("AR0013","",\[1491\.1173\],W)~ , ~drim01~ => ~Imoen2~ //AR0013.ARE
+  10 , ~CUT49C~ , ~ LeaveAreaLUA("AR0014","",\[721\.654\],N)~ , ~drim02~ => ~Imoen2~ //AR0014.ARE
+  11 , ~CUT41H~ , ~ LeaveAreaLUA("AR0028","",\[2680\.2104\],NW)~ , ~ppdrimov~ => ~Imoen2~ //AR0028.ARE
+  12 , ~AR1515~ , ~ CreateCreature("ppimoen",\[937\.1229\],E)~ , ~ppimoen~ => ~Imoen2~ //Spellhold Imoen
+  13 , ~CUT41F~ , ~ CreateCreature("ppimoen",\[1098\.537\],S)~ , ~ppimoen~ => ~Imoen2~ //Spellhold Imoen
 END
 
 ACTION_PHP_EACH table_sourceBase AS source => base BEGIN
-	COPY_EXISTING ~%source_1%.BCS~ ~override~
-		DECOMPILE_AND_PATCH BEGIN
-			SPRINT textToReplace ~\(%source_2%\)~
-			COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-			PATCH_IF (num_matches > 0) BEGIN
-				REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
-		ActionOverride("%source_3%",PolymorphCopy("%base%"))~
-				PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-			END ELSE BEGIN
-				PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-			END
-		END
-	BUT_ONLY
+  COPY_EXISTING ~%source_1%.BCS~ ~override~
+    DECOMPILE_AND_PATCH BEGIN
+      SPRINT textToReplace ~\(%source_2%\)~
+      COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+      PATCH_IF (num_matches > 0) BEGIN
+        REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+    ActionOverride("%source_3%",PolymorphCopy("%base%"))~
+        PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+      END ELSE BEGIN
+        PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+      END
+    END
+  BUT_ONLY
 END
 
 //AR0012.ARE Imoen
@@ -2635,21 +2635,21 @@ END
 
 // Bhaalspawn ability creation for new SoA game
 LAF LOAD_BHAALSPAWN_ABILITIES
-	STR_VAR
-		area = ~AR0602~
-		triggers_prep = ~Global("NEWGAME_SOA","GLOBAL",1)~
-		triggers_add = ~Global("NEWGAME_SOA","GLOBAL",1) Global("MoveScreen","AR0602",1)~
-	RET
-		bsa_script = script
+  STR_VAR
+    area = ~AR0602~
+    triggers_prep = ~Global("NEWGAME_SOA","GLOBAL",1)~
+    triggers_add = ~Global("NEWGAME_SOA","GLOBAL",1) Global("MoveScreen","AR0602",1)~
+  RET
+    bsa_script = script
 END
 EXTEND_TOP ~AR0602.BCS~ ~.../AR0602-et.baf~ EVAL
 
 COPY_EXISTING ~AR0602.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~TakePartyGold(2147483647)[%newline%]*ActionOverride(Player1,DestroyAllEquipment())[%newline%]*ActionOverride(Player2,DestroyAllEquipment())[%newline%]*ActionOverride(Player3,DestroyAllEquipment())[%newline%]*ActionOverride(Player4,DestroyAllEquipment())[%newline%]*ActionOverride(Player5,DestroyAllEquipment())[%newline%]*ActionOverride(Player6,DestroyAllEquipment())~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~TakeObjectGoldGlobal("K#ImportGold","GLOBAL",Player1)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~TakePartyGold(2147483647)[%newline%]*ActionOverride(Player1,DestroyAllEquipment())[%newline%]*ActionOverride(Player2,DestroyAllEquipment())[%newline%]*ActionOverride(Player3,DestroyAllEquipment())[%newline%]*ActionOverride(Player4,DestroyAllEquipment())[%newline%]*ActionOverride(Player5,DestroyAllEquipment())[%newline%]*ActionOverride(Player6,DestroyAllEquipment())~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~TakeObjectGoldGlobal("K#ImportGold","GLOBAL",Player1)
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player1,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player2,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player3,ALL))
@@ -2657,19 +2657,19 @@ COPY_EXISTING ~AR0602.BCS~ ~override~
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player5,ALL))
     ActionOverride("K#ImportContainer",TakeCreatureItems(Player6,ALL))
     MoveContainerContents("BD6100*K#ImportContainer","AR0602*K#ImportContainer")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~ActionOverride("Picture1",CreateItem("MISC47",0,0,0))~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("Picture1",TakePartyItem("MISC47")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~ActionOverride("Picture1",CreateItem("MISC47",0,0,0))~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~ActionOverride("Picture1",TakePartyItem("MISC47")~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -2677,16 +2677,16 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~AR0607.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ActionOverride("Aerie",SetBeenInPartyFlags())~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~ActionOverride("Aerie",SetBeenInPartyFlags())~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -3061,7 +3061,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~AR0900.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~.../AR0900-rbOld.baf~ ~.../AR0900-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../AR0900-rbOld.baf in %SOURCE_FILE%~ END
+  REPLACE_BCS_BLOCK ~.../AR0900-rbOld.baf~ ~.../AR0900-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../AR0900-rbOld.baf in %SOURCE_FILE%~ END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -3316,7 +3316,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~AR2000.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~.../AR2000-rbOld.baf~ ~.../AR2000-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../AR2000-rbOld.baf in %SOURCE_FILE%~ END
+  REPLACE_BCS_BLOCK ~.../AR2000-rbOld.baf~ ~.../AR2000-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../AR2000-rbOld.baf in %SOURCE_FILE%~ END
 BUT_ONLY
 
 <<<<<<<< .../OHR_JOIN-rbOld.baf
@@ -3401,7 +3401,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~OHR_JOIN.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~.../OHR_JOIN-rbOld.baf~ ~.../OHR_JOIN-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OHR_JOIN-rbOld.baf in %SOURCE_FILE%.~ END
+  REPLACE_BCS_BLOCK ~.../OHR_JOIN-rbOld.baf~ ~.../OHR_JOIN-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OHR_JOIN-rbOld.baf in %SOURCE_FILE%.~ END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -3409,17 +3409,17 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~AR2601.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(SetEncounterProbability("AR2500","AR1700",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~\(SetEncounterProbability("AR2500","AR1700",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1
     SetEncounterProbability("AR2500","AR3000",0)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -3427,24 +3427,24 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~AR4000.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~OnCreation()[%newline%]*\(Global("TurnDay","AR4000",0)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~IF[%newline%]*InParty(".+")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches >= 21) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find 21 matches for %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~OnCreation()[%newline%]*\(Global("TurnDay","AR4000",0)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~IF[%newline%]*InParty(".+")[%newline%]*Global(".+","GLOBAL",0)[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*SetGlobal(".+","GLOBAL",2)[%newline%]*END~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches >= 21) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find 21 matches for %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../AR4000-et.baf
@@ -3565,25 +3565,25 @@ EXTEND_TOP ~AR4000.BCS~ ~.../AR4000-et.baf~
 /////                                                  \\\\\
 
 COPY_EXISTING ~AR4500.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SpawnPlane","GLOBAL",0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~%textToReplace%
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~SpawnPlane","GLOBAL",0)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~%textToReplace%
   Global("NEWGAME_TOB","GLOBAL",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~ActionOverride("[^"]+",SetBeenInPartyFlags())~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~ActionOverride("[^"]+",SetBeenInPartyFlags())~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../AR4500-eb.baf
@@ -3620,16 +3620,16 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~AERIE.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~SetBeenInPartyFlags()~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~SetBeenInPartyFlags()~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -3637,18 +3637,18 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~BDSODIMP.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~\(PartyHasItem("\)\([^"]+\)\(")[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)\)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~\1\2\3
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~\(PartyHasItem("\)\([^"]+\)\(")[%newline%]*THEN[%newline%]*RESPONSE #100[%newline%]*CutSceneId(Player1)\)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~\1\2\3
     TakePartyItem("\2")
     DestroyItem("\2")~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -3656,18 +3656,18 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~CUT205B.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreature("Sarevok",\[1986\.1145\],S)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("Sarevok",[1986.1145],S)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~CreateCreature("Sarevok",\[1986\.1145\],S)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("Sarevok",[1986.1145],S)
     SetGlobal("SPRITE_IS_DEADSAREVOK","GLOBAL",0)
     ActionOverride("Sarevok",SetNumTimesTalkedTo(0))~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -3692,30 +3692,30 @@ BUT_ONLY
 /////                                                  \\\\\
 
 COPY_EXISTING ~OHNMCUT1.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreature("OHNELLIS",\[3848\.448\],NNW)[%newline%]*END~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("OHNELLIS",[3848.448],NNW)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~CreateCreature("OHNELLIS",\[3848\.448\],NNW)[%newline%]*END~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~CreateCreature("OHNELLIS",[3848.448],NNW)
     Continue()
 END~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
   DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HasDLC("Neera")~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~HasDLC("Neera")
-			InMyArea("NEERA")
-			!StateCheck("NEERA",CD_STATE_NOTVALID)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+    SPRINT textToReplace ~HasDLC("Neera")~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~HasDLC("Neera")
+      InMyArea("NEERA")
+      !StateCheck("NEERA",CD_STATE_NOTVALID)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../OHNMCUT1-et.baf
@@ -3926,16 +3926,16 @@ END*/
 EXTEND_TOP ~OHNMCUT1.BCS~ ~.../OHNMCUT1-et.baf~
 
 COPY_EXISTING ~OHNCUT1A.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~CreateCreature("NEERA8",\[3927\.485\],NNW)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~CreateCreature("NEERA8",\[3927\.485\],NNW)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../OH6000-rbOld.baf
@@ -4017,7 +4017,7 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~OH6000.BCS~ ~override~
-	REPLACE_BCS_BLOCK ~.../OH6000-rbOld.baf~ ~.../OH6000-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OH6000-rbOld.baf in %SOURCE_FILE%.~ END
+  REPLACE_BCS_BLOCK ~.../OH6000-rbOld.baf~ ~.../OH6000-rbNew.baf~ ON_MISMATCH PATCH_WARN ~WARNING: could not find REPLACE_BCS_BLOCK matching .../OH6000-rbOld.baf in %SOURCE_FILE%.~ END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -4064,144 +4064,144 @@ EXTEND_TOP ~OH8000.BCS~ ~.../OH8000-et.baf~
 
 //AMNISE.BCS
 COPY_EXISTING ~AMNISE.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~NumTimesTalkedTo(0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!Allegiance(Myself,ENEMY)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~NumTimesTalkedTo(0)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!Allegiance(Myself,ENEMY)
   NumTimesTalkedTo(0)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //ANKHEG.BCS
 COPY_EXISTING ~ANKHEG.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //BLBEAR.BCS
 COPY_EXISTING ~BLBEAR.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),75)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),75)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),75)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),75)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //DEMGLASU.BCS
 COPY_EXISTING ~DEMGLASU.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~See(\[ANYONE\])~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~See([ANYONE])
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~See(\[ANYONE\])~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~See([ANYONE])
   Global("Prep","LOCALS",1)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //DEMNABSU.BCS
 COPY_EXISTING ~DEMNABSU.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~ForceSpell(LastSeenBy(Myself),0)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpell(LastSeenBy(Myself),TANARI_DEATH_GAZE)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~ForceSpell(LastSeenBy(Myself),0)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~ForceSpell(LastSeenBy(Myself),TANARI_DEATH_GAZE)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //DEMSUC.BCS
 COPY_EXISTING ~DEMSUC.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),30)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),30)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),30)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //FIGHTER4.BCS
 COPY_EXISTING ~FIGHTER4.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //GBASILSK.BCS
 COPY_EXISTING ~GBASILSK.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //GENSHY.BCS
 COPY_EXISTING ~GENSHY.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),100)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastSeenBy(Myself),100)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),100)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastSeenBy(Myself),100)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //GIBBER.BCS
 COPY_EXISTING ~GIBBER.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),75)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),75)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),75)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),75)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //INITDLG.BCS, INITDLG2.BCS, INITMAIN.BCS
@@ -4218,222 +4218,222 @@ END
 >>>>>>>>
 
 COPY_EXISTING ~INITDLG.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~See(\[PC\])~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~See([PC])
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~See(\[PC\])~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~See([PC])
   !Allegiance(Myself,ENEMY)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 EXTEND_TOP ~INITDLG.BCS~ ~.../INITx-et.baf~
 
 COPY_EXISTING ~INITDLG2.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~See(\[PC\])~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~See([PC])
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~See(\[PC\])~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~See([PC])
   !Allegiance(Myself,ENEMY)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 EXTEND_TOP ~INITDLG2.BCS~ ~.../INITx-et.baf~
 
 COPY_EXISTING ~INITMAIN.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~See(Player1)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~See(Player1)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~See(Player1)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~See(Player1)
   !Allegiance(Myself,ENEMY)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 EXTEND_TOP ~INITMAIN.BCS~ ~.../INITx-et.baf~
 
 //LBASILSK.BCS
 COPY_EXISTING ~LBASILSK.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),45)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),45)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //MAGE1.BCS
 COPY_EXISTING ~MAGE1.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_ARMOR)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CheckStatGT(Myself,4,ARMORCLASS)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_ARMOR)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~CheckStatGT(Myself,4,ARMORCLASS)
   HaveSpell(WIZARD_ARMOR)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //MAGE3.BCS
 COPY_EXISTING ~MAGE3.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_GHOST_ARMOR)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~CheckStatGT(Myself,2,ARMORCLASS)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_GHOST_ARMOR)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~CheckStatGT(Myself,2,ARMORCLASS)
   HaveSpell(WIZARD_GHOST_ARMOR)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //MAGE4.BCS
 COPY_EXISTING ~MAGE4.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_INVISIBLE)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_INVISIBLE)
   !StateCheck(Myself,STATE_IMPROVEDINVISIBILITY)
   HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //MAGE5.BCS
 COPY_EXISTING ~MAGE5.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_MIRRORIMAGE)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_MIRRORIMAGE)
   HaveSpell(WIZARD_MIRROR_IMAGE)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //MAGE6.BCS
 COPY_EXISTING ~MAGE6.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_SHADOW_DOOR)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_INVISIBLE)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_SHADOW_DOOR)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_INVISIBLE)
   !StateCheck(Myself,STATE_IMPROVEDINVISIBILITY)
   HaveSpell(WIZARD_SHADOW_DOOR)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //MAGE7.BCS
 COPY_EXISTING ~MAGE7.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_MIRRORIMAGE)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_MIRRORIMAGE)
   HaveSpell(WIZARD_MIRROR_IMAGE)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
 
-		SPRINT textToReplace ~HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!CheckStatGT(Myself,0,MINORGLOBE)
+    SPRINT textToReplace ~HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!CheckStatGT(Myself,0,MINORGLOBE)
   !CheckStatGT(Myself,0,SHIELDGLOBE)
   HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //MAGE8.BCS
 COPY_EXISTING ~MAGE8.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_MIRRORIMAGE)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_MIRROR_IMAGE)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_MIRRORIMAGE)
   HaveSpell(WIZARD_MIRROR_IMAGE)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
 
-		SPRINT textToReplace ~HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!CheckStatGT(Myself,0,MINORGLOBE)
+    SPRINT textToReplace ~HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!CheckStatGT(Myself,0,MINORGLOBE)
   !CheckStatGT(Myself,0,SHIELDGLOBE)
   HaveSpell(WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //PREY.BCS
 COPY_EXISTING ~PREY.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),15)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastSeenBy(Myself),15)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(LastSeenBy(Myself),15)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastSeenBy(Myself),15)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //PRIEST4.BCS
 COPY_EXISTING ~PRIEST4.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),15)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),15)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),15)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),15)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //QUASIT01.BCS
@@ -4503,57 +4503,57 @@ EXTEND_TOP ~QUASIT01.BCS~ ~.../QUASIT01-et.baf~
 //needed due to "multiplayer cloning bug": http://forum.baldursgate.com/discussion/10389/bug-random-commoners-appear-final-fight-thief-maze-werewolf-island/p1
 //Beamdog simply changed RunAwayFrom action to RunAwayFromNoLeaveArea to "fix" this issue
 COPY_EXISTING ~RUNENEMY.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //SEEENEMY.BCS
 COPY_EXISTING ~SEEENEMY.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		//no need to create more conflicts with BG2 mods when not necessary
-		/*SPRINT textToReplace ~!Allegiance(Myself,ENEMY)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!Allegiance(Myself,EVILCUTOFF)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END*/
+  DECOMPILE_AND_PATCH BEGIN
+    //no need to create more conflicts with BG2 mods when not necessary
+    /*SPRINT textToReplace ~!Allegiance(Myself,ENEMY)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!Allegiance(Myself,EVILCUTOFF)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END*/
 
-		SPRINT textToReplace ~!Class(LastSeenBy(Myself),FLAMING_FIST)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!Class(LastSeenBy(Myself),FLAMING_FIST)
+    SPRINT textToReplace ~!Class(LastSeenBy(Myself),FLAMING_FIST)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!Class(LastSeenBy(Myself),FLAMING_FIST)
   !Class(LastSeenBy(Myself),CANDLEKEEP_WATCHER)
   !Class(LastSeenBy(Myself),AMNISH_SOLDIER)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //SHADFI02.BCS
 COPY_EXISTING ~SHADFI02.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~See(NearestEnemyOf(Myself))~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~See(NearestEnemyOf(Myself))
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~See(NearestEnemyOf(Myself))~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~See(NearestEnemyOf(Myself))
   HPPercentGT(Myself,49)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //SHOUT.BCS
@@ -4572,57 +4572,57 @@ EXTEND_TOP ~SHOUT.BCS~ ~.../SHOUT-et.baf~
 
 //SIRSPELL.BCS
 COPY_EXISTING ~SIRSPELL.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_INVISIBLE)
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~!StateCheck(Myself,STATE_INVISIBLE)
   !StateCheck(Myself,STATE_IMPROVEDINVISIBILITY)
   HaveSpell(WIZARD_IMPROVED_INVISIBILITY)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //WDRUNSGT.BCS
 COPY_EXISTING ~WDRUNSGT.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //WTASIGHT.BCS
 COPY_EXISTING ~WTASIGHT.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~See(NearestEnemyOf(Myself))~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~See(NearestEnemyOf(Myself))
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~See(NearestEnemyOf(Myself))~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~See(NearestEnemyOf(Myself))
   InWeaponRange(LastSeenBy(Myself))~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
 
-		SPRINT textToReplace ~AttackedBy(\[ANYONE\],DEFAULT)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~AttackedBy([ANYONE],DEFAULT)
+    SPRINT textToReplace ~AttackedBy(\[ANYONE\],DEFAULT)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~AttackedBy([ANYONE],DEFAULT)
   InWeaponRange(LastSeenBy(Myself))~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 <<<<<<<< .../WTASIGHT-eb.baf
@@ -4639,38 +4639,38 @@ EXTEND_BOTTOM ~WTASIGHT.BCS~ ~.../WTASIGHT-eb.baf~
 
 //WTRUNSGT.BCS
 COPY_EXISTING ~WTRUNSGT.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),150)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),150)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),150)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),150)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(NearestEnemyOf(Myself),150)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(NearestEnemyOf(Myself),150)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+    SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),150)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),150)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 //WTRUNWAT.BCS
 COPY_EXISTING ~WTRUNWAT.BCS~ ~override~
-	DECOMPILE_AND_PATCH BEGIN
-		SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),150)~
-		COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
-		PATCH_IF (num_matches > 0) BEGIN
-			REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),150)~
-			PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
-		END ELSE BEGIN
-			PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
-		END
-	END
+  DECOMPILE_AND_PATCH BEGIN
+    SPRINT textToReplace ~RunAwayFrom(LastAttackerOf(Myself),150)~
+    COUNT_REGEXP_INSTANCES ~%textToReplace%~ num_matches
+    PATCH_IF (num_matches > 0) BEGIN
+      REPLACE_TEXTUALLY ~%textToReplace%~ ~RunAwayFromNoLeaveArea(LastAttackerOf(Myself),150)~
+      PATCH_PRINT ~Patching: %num_matches% matches found in %SOURCE_FILESPEC% for REPLACE_TEXTUALLY: %textToReplace%~
+    END ELSE BEGIN
+      PATCH_WARN ~WARNING: could not find %textToReplace% in %SOURCE_FILESPEC%~
+    END
+  END
 BUT_ONLY
 
 /////                                                  \\\\\
@@ -4687,7 +4687,7 @@ END
 >>>>>>>>
 
 ACTION_FOR_EACH script IN ANKHEG CDRYAD DIREWOLF GBASILSK GIBBER GNOLLF HAMA HOBGOBF KOBOLDF LBASILSK OGRE PRIEST1 PRIEST2 PRIEST3 PRIEST4 PRIEST5 PSPIDER WARDOG WDARSGT WDASIGHT WILDDOG WTARSGT WTASIGHT XVART BEGIN
-	EXTEND_TOP ~%script%.BCS~ ~.../STATE_PANIC-et.baf~
+  EXTEND_TOP ~%script%.BCS~ ~.../STATE_PANIC-et.baf~
 END
 
 /////                                                  \\\\\

@@ -3,16 +3,21 @@
 <<<<<<<< .../userprofile.bat
 @echo off
 for /f "tokens=3,*" %%a in ('reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop') do set DESKTOP=%%a
-for /f "delims=" %%a in ('echo %DESKTOP%') do echo %%a>EET/temp/path.txt
+for /f "delims=" %%a in ('echo %DESKTOP%') do echo %%a>%TEMP_FOLDER%/path.txt
 >>>>>>>>
 
 //we're not setting %DESKTOP% in sLinkFile but echo and read it from external file (otherwise shortcut would not be registered for uninstallation)
-COPY + ~.../userprofile.bat~ ~%MOD_FOLDER%/temp/userprofile.bat~
-AT_NOW ~%MOD_FOLDER%/temp/userprofile.bat~
-COPY + ~%MOD_FOLDER%/temp/path.txt~ ~%MOD_FOLDER%/temp~
+COPY + ~.../userprofile.bat~ ~%TEMP_FOLDER%/userprofile.bat~
+  EVAL
+AT_NOW ~%TEMP_FOLDER%/userprofile.bat~
+COPY + ~%TEMP_FOLDER%/path.txt~ ~%TEMP_FOLDER%~
   READ_ASCII 0x0 dir (%SOURCE_SIZE%)
 OUTER_PATCH_SAVE dir ~%dir%~ BEGIN
   REPLACE_TEXTUALLY ~%WNL%~ ~~
+END
+
+OUTER_PATCH_SAVE WIN_TEMP_FOLDER ~%TEMP_FOLDER%~ BEGIN
+  REPLACE_TEXTUALLY EXACT_MATCH ~/~ ~\\~
 END
 
 <<<<<<<< .../shortcut.bat
@@ -21,7 +26,7 @@ END
 set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
 
 echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
-echo sLinkFile = "EET\temp\EET.lnk" >> %SCRIPT%
+echo sLinkFile = "__TEMP_FOLDER__\EET.lnk" >> %SCRIPT%
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> %SCRIPT%
 echo oLink.TargetPath = "%CD%\__BINARY__" >> %SCRIPT%
 : echo oLink.IconLocation = "%CD%\__BINARY__, 0" >> %SCRIPT%
@@ -43,6 +48,7 @@ END
 
 COPY + ~.../shortcut.bat~ ~shortcut.bat~
   REPLACE_TEXTUALLY CASE_SENSITIVE EXACT_MATCH ~__BINARY__~ ~%BINARY%~
+  REPLACE_TEXTUALLY CASE_SENSITIVE EXACT_MATCH ~__TEMP_FOLDER__~ ~%WIN_TEMP_FOLDER%~
 AT_NOW ~shortcut.bat~
 DELETE + ~shortcut.bat~
-COPY ~%MOD_FOLDER%/temp/EET.lnk~ ~%dir%~
+COPY ~%TEMP_FOLDER%/EET.lnk~ ~%dir%~

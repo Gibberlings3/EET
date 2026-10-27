@@ -84,24 +84,16 @@
     <div class="section">
       <div class="code">
         <p>Gli utenti Windows che intendono installare altri mod dovrebbero prendere in considerazione <strong><a href="https://forums.beamdog.com/discussion/74335/project-infinity-public-beta">Project Infinity</a></strong> o un altro mod manager per scaricare, estrarre e installare EET insieme agli altri mod. È sufficiente selezionare l'opzione &quot;Baldur's Gate II: EE / Enhanced Edition Trilogy&quot; e lo strumento gestirà l'installazione dei mod sia per BG:EE sia per BG2:EE. Questo approccio consente di risparmiare molto tempo e aiuta a garantire che i mod selezionati siano compatibili con EET e installati nell'ordine corretto.</p>
-        <p>Il supporto Linux è sperimentale e al momento funziona soltanto su <a href="https://www.gibberlings3.net/forums/topic/28516-the-linux-users-guide-to-installing-mods-on-the-enhanced-editions/">partizioni non sensibili alle maiuscole/minuscole</a>. In futuro EET verrà adattato per supportare nativamente i file system case-sensitive.</p>
+        <p>Su Linux EET può essere installato sia su <a href="https://www.gibberlings3.net/forums/topic/28516-the-linux-users-guide-to-installing-mods-on-the-enhanced-editions/">partizioni non sensibili alle maiuscole/minuscole</a> sia su partizioni che distinguono le maiuscole dalle minuscole. In quest'ultimo caso è richiesta la versione 251 o successiva di WeiDU.</p>
       </div>
-      <h3>Requisiti di installazione per macOS/Linux</h3>
-      <p>È richiesta una versione recente di WeiDU (qualunque versione successiva alla v248 va bene) disponibile nel PATH. Probabilmente è già presente se hai installato mod in precedenza; in caso contrario, ecco un breve esempio per aggiungere WeiDU al PATH:</p>
-      <div class="code">export PATH="${PATH}:weidu_path"</div>
-      <p>dove <code>weidu_path</code> è la cartella che contiene l'eseguibile WeiDU. Se non possiedi WeiDU in locale, puoi scaricarlo da GitHub.</p>
-      <p>È inoltre richiesta una versione recente di Lua (su Windows è inclusa Lua 5.3). La versione fornita dal gestore pacchetti dovrebbe funzionare, così come quelle disponibili tramite Homebrew/MacPorts su macOS. Puoi controllare la versione di Lua presente nel PATH con:</p>
-      <div class="code">lua -v</div>
-      <p>Dovresti ottenere un risultato simile a:</p>
-      <div class="code">Lua 5.4.8  Copyright (C) 1994-2025 Lua.org, PUC-Rio</div>
       <h3>EET core (setup-EET)</h3>
-      <p>Il componente principale di EET richiede un'installazione &quot;pulita&quot; di BG2:EE con l'ultima patch (attualmente v2.6.6.0) e, facoltativamente, l'<a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. Traduzioni e doppiaggi sono naturalmente consentiti, ma installare prima di EET altri mod, soprattutto di grandi dimensioni, che modificano file DLG e BCS può causare problemi con le patch successive; è quindi preferibile mantenere l'installazione il più pulita possibile.</p>
-      <p>È inoltre necessaria un'installazione di BG:EE + Siege of Dragonspear con l'ultima patch (attualmente v2.6.6.0) e, facoltativamente, l'<a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. Deve trattarsi di un'installazione &quot;pulita&quot; oppure contenere soltanto una combinazione dei mod indicati nella sezione 1 di <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">questo elenco</a>.</p>
+      <p>Il componente principale di EET richiede un'installazione &quot;pulita&quot; di BG2:EE con l'ultima patch (attualmente v2.7.3.0) e, facoltativamente, l'<a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. Traduzioni e doppiaggi sono naturalmente consentiti, ma installare prima di EET altri mod, soprattutto di grandi dimensioni, che modificano file DLG e BCS può causare problemi con le patch successive; è quindi preferibile mantenere l'installazione il più pulita possibile.</p>
+      <p>È inoltre necessaria un'installazione di BG:EE + Siege of Dragonspear con l'ultima patch (attualmente v2.7.3.0) e, facoltativamente, l'<a href="https://www.gibberlings3.net/mods/fixes/eefp/">Enhanced Edition Fixpack</a>. Deve trattarsi di un'installazione &quot;pulita&quot; oppure contenere soltanto una combinazione dei mod indicati nella sezione 1 di <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">questo elenco</a>.</p>
       <div class="code">
-        <p><strong>NOTA: se usi la versione Steam o GOG di Siege of Dragonspear, devi prima installare il mod <a href="https://github.com/Argent77/A7-DlcMerger">DLCMerger</a> di Argent77 nella cartella &quot;BG:EE + SoD&quot;, così da consentire la corretta installazione degli altri mod. Questo riguarda soltanto le versioni Steam e GOG: non è necessario se hai acquistato il gioco dallo store Beamdog.</strong></p>
+        <p><strong>NOTA: se usi la versione Steam o GOG di Siege of Dragonspear, devi prima installare il mod <a href="https://github.com/Argent77/A7-DlcMerger">DLC Merger</a> di Argent77 nella cartella &quot;BG:EE + SoD&quot;, così da consentire la corretta installazione degli altri mod. Questo riguarda soltanto le versioni Steam e GOG: non è necessario se hai acquistato il gioco dallo store Beamdog.</strong></p>
         <p><strong>L'installazione di SoD contiene tutte le risorse di BG:EE; se l'espansione è installata in una cartella separata, durante l'installazione di EET devi indicare quella cartella anziché quella di BG:EE.</strong></p>
       </div>
-      <p>Durante l'installazione sono necessari almeno 4,66 GB di spazio libero. Per la memoria virtuale è consigliato disporre di ulteriori 500 MB-1 GB o più, a seconda del sistema operativo. Una volta completata l'installazione, EET occupa almeno 2,55 GB. I mod installati su BG:EE prima di EET aumentano naturalmente lo spazio richiesto.</p>
+      <p>Durante l'installazione sono necessari almeno 4,8 GB di spazio libero. Per la memoria virtuale è consigliato disporre di ulteriori 500 MB-1 GB o più, a seconda del sistema operativo. Una volta completata l'installazione, EET occupa almeno 2,65 GB. I mod installati su BG:EE prima di EET aumentano naturalmente lo spazio richiesto.</p>
       <p>Durante l'installazione è consigliabile disattivare antivirus, antispyware e altri programmi che analizzano i file in tempo reale. In alcuni casi tali programmi possono interferire con l'installazione WeiDU.</p>
       <p>Non è consigliabile installare il gioco all'interno di Program Files o Program Files (x86), a causa di possibili problemi legati al sistema operativo (per esempio <a href="https://en.wikipedia.org/wiki/User_Account_Control">UAC</a>). Se non sei certo di disporre di tutte le autorizzazioni UAC, valuta di spostare BG:EE e BG2:EE fuori da queste cartelle. Il gioco è privo di DRM, quindi lo spostamento non crea problemi.</p>
       <p>EET viene distribuito come archivio compresso ed è installato tramite WeiDU. Estrai il contenuto dell'archivio e spostalo nella cartella di BG2:EE, quella che contiene <code>chitin.key</code>. La cartella del gioco dovrebbe quindi contenere la directory EET e il file <code>setup-EET.exe</code>. Per iniziare l'installazione fai doppio clic su <code>setup-EET.exe</code> e segui le istruzioni a schermo.</p>
@@ -139,15 +131,16 @@
             <p>Qualunque combinazione dei flag seguenti deve essere digitata come un'unica stringa, senza spazi:</p>
             <p>m o M - sopprime il messaggio di installazione non riuscita che normalmente compare se BG:EE contiene mod non presenti nell'elenco di compatibilità dei mod BG:EE per EET (sconsigliato, a meno che tu sappia esattamente cosa stai facendo);</p>
             <p>b o B - salta il biffing; tutti i file verranno copiati nella cartella override;</p>
-            <p>s o S - non crea il collegamento EET sul desktop;</p>
+            <p>s o S - (deprecato) non crea il collegamento EET sul desktop;</p>
             <p>p o P - predefinisce il percorso completo della directory di Baldur's Gate: Enhanced Edition; se il percorso non è valido, l'installer ne richiederà uno corretto.</p>
+            <p>d o D - non elimina i dati temporanei di un precedente tentativo di installazione.</p>
           </td></tr>
           <tr><td><em>[path]</em></td><td class="grow"><p>Il percorso completo, tra virgolette, della directory di Baldur's Gate: Enhanced Edition, utilizzato insieme a p o P in <em>[flags]</em>.</p></td></tr>
         </table>
       </div>
       <p>Esempio:</p>
-      <div class="code"><p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list sp &quot;C:\Program Files (x86)\BeamDog\Games\00806&quot;</p></div>
-      <p>Questo comando installa EET in inglese, evita la creazione del collegamento sul desktop e predefinisce <code>C:\Program Files (x86)\BeamDog\Games\00806</code> come directory di Baldur's Gate: Enhanced Edition.</p>
+      <div class="code"><p>setup-EET.exe --force-install 0 --skip-at-view --language 0 --args-list p &quot;C:\Program Files (x86)\BeamDog\Games\00806&quot;</p></div>
+      <p>Questo comando installa EET in inglese e predefinisce <code>C:\Program Files (x86)\BeamDog\Games\00806</code> come directory di Baldur's Gate: Enhanced Edition.</p>
       <hr />
 
       <p><strong>Finalizzare EET (setup-EET_end)</strong></p>
@@ -224,9 +217,9 @@
         <li>mod installati su BG:EE;</li>
         <li>inizializzazione di EET (<code>setup-EET</code>) installata su BG2:EE;</li>
         <li>mod con supporto nativo a EET installati sopra EET;</li>
-        <li>finalizzazione di EET (<code>setup-EET_end</code>), che conclude l'intera installazione.</li>
+        <li>finalizzazione di EET (<code>setup-EET_end</code>), che conclude l'installazione di EET;</li>
+        <li>la maggior parte dei mod della GUI e i componenti per cui è espressamente consentita l'installazione dopo <code>setup-EET_end</code> (consulta i rispettivi readme).</li>
       </ol>
-      <p>I mod della GUI, incluso <code>setup-EET_gui</code>, costituiscono un'eccezione e possono essere installati alla fine, anche dopo <code>setup-EET_end</code>.</p>
 
       <h3><a id="What mods can be installed on BG:EE previous to installing EET on BG2:EE?" name="What mods can be installed on BG:EE previous to installing EET on BG2:EE?"></a>Quali mod si possono installare su BG:EE prima di installare EET su BG2:EE?</h3>
       <p>EET converte &quot;al volo&quot; tutte le risorse di BG:EE presenti nel gioco. Per questo offre un supporto limitato ai mod installati su BG:EE prima di installare EET su BG2:EE. L'elenco di compatibilità è disponibile <a href="https://k4thos.github.io/EET-Compatibility-List/EET-Compatibility-List.html">qui</a>.</p>
@@ -266,7 +259,7 @@
     <div class="section">
       <h3>Errori fatali di installazione</h3>
       <p><strong>Ho installato Baldur's Gate: Enhanced Edition, ma l'installer non accetta la directory che inserisco.</strong></p>
-      <p>Lo scenario più probabile è che l'installazione sia danneggiata oppure che tu stia usando la versione GOG o Steam di SoD senza avere installato <a href="https://github.com/Argent77/A7-DlcMerger">DLCMerger</a> di Argent77. La presenza delle risorse di SoD viene verificata tramite il file <code>movies/sodcin05.wbm</code> nella directory di BG:EE. Prova a reinstallare Baldur's Gate: Enhanced Edition e DLCMerger. Puoi anche provare a passare la directory BG:EE+SoD dalla riga di comando come descritto nella <a href="#Installation">sezione sull'installazione</a>.</p>
+      <p>Lo scenario più probabile è che l'installazione sia danneggiata oppure che tu stia usando la versione GOG o Steam di SoD senza avere installato <a href="https://github.com/Argent77/A7-DlcMerger">DLC Merger</a> di Argent77. La presenza delle risorse di SoD viene verificata tramite il file <code>movies/sodcin05.wbm</code> nella directory di BG:EE. Prova a reinstallare Baldur's Gate: Enhanced Edition e DLC Merger. Puoi anche provare a passare la directory BG:EE+SoD dalla riga di comando come descritto nella <a href="#Installation">sezione sull'installazione</a>.</p>
       <p><strong>&quot;Il mod (...) per BG:EE non risulta riconosciuto da EET e quindi non puo essere importato in BG2:EE con EET&quot;</strong></p>
       <p>Per le ragioni spiegate nelle <a href="#What mods can be installed on BG:EE previous to installing EET on BG2:EE?">FAQ</a>, EET limita la conversione &quot;al volo&quot; delle risorse di BG:EE all'installazione originale e ai mod presenti nell'elenco di compatibilità. Aggiungere il supporto per altri mod è relativamente rapido e semplice, quindi l'elenco può crescere nel tempo.</p>
       <p><strong>&quot;TLK for language: (...) not found in BG:EE directory&quot;</strong></p>
@@ -287,6 +280,8 @@
       <p>Il codice di installazione di EET include diverse verifiche aggiuntive per avvisare il giocatore se qualcosa è andato storto. Apri <code>SETUP-EET.DEBUG</code> nella directory di Baldur's Gate II: Enhanced Edition e cerca (Ctrl+F) la parola &quot;warning&quot;. Se non riesci a capire come correggere il problema, pubblica il file di debug nel <a href="https://www.gibberlings3.net/forums/forum/195-enhanced-edition-trilogy/">forum del mod</a>. Non è consigliabile giocare con un'installazione che ha mostrato avvisi.</p>
 
       <h3>Problemi durante il gioco</h3>
+      <p><strong>All'avvio del gioco compare la schermata iniziale predefinita di BG2:EE, senza la selezione della campagna.</strong></p>
+      <p>Può accadere se la versione della patch del gioco non è più supportata dalla versione attuale di EET. Puoi aggiornare il gioco all'ultima patch oppure installare una versione di EET che supporti ancora la versione del gioco in uso.</p>
       <p><strong>Il gioco presenta rallentamenti evidenti nelle aree di Siege of Dragonspear con molti PNG.</strong></p>
       <p>È stato segnalato che alcune schede grafiche poco potenti, per esempio le Intel HD3000 integrate, non gestiscono bene scene di questo tipo con il ridimensionamento lineare. Il problema non è legato a EET. Per correggerlo vai in Opzioni -&gt; Grafica e abilita &quot;Nearest Neighbour Scaling&quot;. Aggiorna inoltre i driver della GPU se non stai usando quelli più recenti.</p>
       <p><strong>L'effetto nebbia parte dall'angolo superiore destro della mappa e si espande a forma di ancora.</strong></p>
@@ -354,13 +349,13 @@
       <p>2012 - 2018 Beamdog. Tutti i diritti riservati.</p>
       <p><strong>UTILIZZA QUESTA MODIFICA A TUO RISCHIO. Questa modifica non è sviluppata, supportata o approvata da BioWare Corp., Hasbro o Beamdog.</strong></p>
       <p>Questa è una modifica della comunità, creata gratuitamente come hobby. Puoi distribuirla liberamente. Il codice è open source ed è pubblicato secondo la <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License versione 3</a>. Le parti di codice non scritte dall'autore appartengono ai rispettivi autori.</p>
-      <p>Gli strumenti distribuiti con questo pacchetto sono disponibili secondo le seguenti licenze open source:</p>
+      <!--<p>Gli strumenti distribuiti con questo pacchetto sono disponibili secondo le seguenti licenze open source:</p>
       <ul>
         <li>Oggdec e SoX sono disponibili secondo la <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License versione 3</a> (il codice sorgente di oggdec è disponibile nel pacchetto <a href="http://www.xiph.org/downloads/">vorbis-tools</a>; quello di SoX è disponibile su <a href="http://sox.sourceforge.net/">SourceForge</a>).</li>
         <li>FFmpeg è disponibile secondo la <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU Lesser General Public License (LGPL) versione 2.1</a>; alcune parti sono disponibili secondo la <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU General Public License (GPL) versione 2</a>. Il codice sorgente è disponibile su <a href="https://www.ffmpeg.org/download.html#get-sources">FFmpeg.org</a>.</li>
         <li>LUA è disponibile secondo la <a href="http://opensource.org/licenses/MIT">licenza MIT</a>; il codice sorgente è disponibile su <a href="https://www.lua.org/">lua.org</a>.</li>
         <li><a href="http://www.weidu.org/">WeiDU</a> è distribuito secondo la <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">licenza pubblica GPL 2.0</a>; il codice sorgente è disponibile nel <a href="https://github.com/WeiDUorg/weidu">repository GitHub di WeiDU</a>.</li>
-      </ul>
+      </ul>-->
       <p>Questa modifica è disponibile come repository aperto su <a href="https://github.com/Gibberlings3/EET">GitHub</a>, che permette a chiunque di proporre nuovi commit. Sentiti libero di suggerire miglioramenti e correzioni modificando direttamente il codice sul sito. Qualunque contributo al miglioramento del mod è apprezzato.</p>
     </div>
 
