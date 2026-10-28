@@ -25,9 +25,16 @@ II. Become a mod-friendly platform with the additional modding possibilities tha
 - Intuitive conventions for renamed BG:EE files and modders resources that can be used for adopting existing mods.
 - Limited support for mods installed on BG:EE previous to installing EET on BG2:EE.
 
-## Requirements for Linux Users
+## Requirements for Linux and macOS Users
 
-WeiDU v251 or later is required if the mod is installed on a case-sensitive filesystem.
+A recent version of WeiDU in your path. You likely already have this if you have installed mods before. If not here is a short example on how to add WeiDU to your path:
+
+```bash
+export PATH="${PATH}:<path to weidu>"
+```
+where `<path to weidu>` is the folder containing the WeiDU binary. If you do not have WeiDU locally you can fetch it from [GitHub](https://github.com/WeiDUorg/weidu/releases?q=prerelease%3Afalse).
+
+On Linux WeiDU version 251 or later is required if the mod is installed on a case-sensitive filesystem.
 
 ## More Information
 
